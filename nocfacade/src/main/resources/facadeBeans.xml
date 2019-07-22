@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <alias name="nocUserFacadeImpl" alias="userFacade"/>
+    <bean id="nocUserFacadeImpl" class="com.hkt.btu.noc.facade.impl.NocUserFacadeImpl" />
+
+    <alias name="nocUserGroupFacadeImpl" alias="userGroupFacade"/>
+    <bean id="nocUserGroupFacadeImpl" class="com.hkt.btu.noc.facade.impl.NocUserGroupFacadeImpl" />
+
+    <alias name="nocCompanyFacadeImpl" alias="companyFacade"/>
+    <bean id="nocCompanyFacadeImpl" class="com.hkt.btu.noc.facade.impl.NocCompanyFacadeImpl" />
+
+    <alias name="nocAccessRequestFacade" alias="accessRequestFacade"/>
+    <bean id="nocAccessRequestFacade" class="com.hkt.btu.noc.facade.impl.NocAccessRequestFacadeImpl" />
+
+    <alias name="nocConfigParamFacade" alias="configParamFacade"/>
+    <bean id="nocConfigParamFacade" class="com.hkt.btu.noc.facade.impl.NocConfigParamFacadeImpl" />
+
+    <alias name="nocSiteConfigFacade" alias="siteConfigFacade"/>
+    <bean id="nocSiteConfigFacade" class="com.hkt.btu.noc.facade.impl.NocSiteConfigFacadeImpl" />
+
+    <alias name="nocJobFacade" alias="jobFacade"/>
+    <bean id="nocJobFacade" class="com.hkt.btu.noc.facade.impl.NocJobFacadeImpl" />
+
+    <alias name="nocHealthCheckFacade" alias="healthCheckFacade"/>
+    <bean id="nocHealthCheckFacade" class="com.hkt.btu.noc.facade.impl.NocHealthCheckFacadeImpl" />
+
+    <alias name="nocAuditTrailFacade" alias="auditTrailFacade"/>
+    <bean id="nocAuditTrailFacade" class="com.hkt.btu.noc.facade.impl.NocAuditTrailFacadeImpl" />
+
+
+    <!-- Populator -->
+    <alias name="nocUserDataPopulator" alias="userDataPopulator"/>
+    <bean id="nocUserDataPopulator" class="com.hkt.btu.noc.facade.populator.NocUserDataPopulator"/>
+
+    <alias name="nocUserGroupDataPopulator" alias="userGroupDataPopulator"/>
+    <bean id="nocUserGroupDataPopulator" class="com.hkt.btu.noc.facade.populator.NocUserGroupDataPopulator"/>
+
+    <alias name="nocCompanyDataPopulator" alias="companyDataPopulator"/>
+    <bean id="nocCompanyDataPopulator" class="com.hkt.btu.noc.facade.populator.NocCompanyDataPopulator"/>
+
+    <alias name="nocAccessRequestDataPopulator" alias="accessRequestDataPopulator"/>
+    <bean id="nocAccessRequestDataPopulator" class="com.hkt.btu.noc.facade.populator.NocAccessRequestDataPopulator"/>
+    <alias name="nocAccessRequestVisitorDataPopulator" alias="accessRequestVisitorDataPopulator"/>
+    <bean id="nocAccessRequestVisitorDataPopulator" class="com.hkt.btu.noc.facade.populator.NocAccessRequestVisitorDataPopulator"/>
+    <alias name="nocAccessRequestEquipDataPopulator" alias="accessRequestEquipDataPopulator"/>
+    <bean id="nocAccessRequestEquipDataPopulator" class="com.hkt.btu.noc.facade.populator.NocAccessRequestEquipDataPopulator"/>
+
+    <alias name="nocConfigParamDataPopulator" alias="configParamDataPopulator"/>
+    <bean id="nocConfigParamDataPopulator" class="com.hkt.btu.noc.facade.populator.NocConfigParamDataPopulator"/>
+
+    <alias name="nocOperationHistDataPopulator" alias="operationHistDataPopulator"/>
+    <bean id="nocOperationHistDataPopulator" class="com.hkt.btu.noc.facade.populator.NocOperationHistDataPopulator"/>
+
+    <alias name="nocSiteInstanceDataPopulator" alias="siteInstanceDataPopulator"/>
+    <bean id="nocSiteInstanceDataPopulator" class="com.hkt.btu.noc.facade.populator.NocSiteConfigDataPopulator"/>
+
+    <alias name="nocCronJobProfileDataPopulator" alias="cronJobProfileDataPopulator"/>
+    <bean id="nocCronJobProfileDataPopulator" class="com.hkt.btu.noc.facade.populator.NocCronJobProfileDataPopulator"/>
+
+    <alias name="nocCronJobInstDataPopulator" alias="cronJobInstDataPopulator"/>
+    <bean id="nocCronJobInstDataPopulator" class="com.hkt.btu.noc.facade.populator.NocCronJobInstDataPopulator"/>
+
+    <alias name="nocAccessRequestLocDataPopulator" alias="accessRequestLocDataPopulator"/>
+    <bean id="nocAccessRequestLocDataPopulator" class="com.hkt.btu.noc.facade.populator.NocAccessRequestLocDataPopulator"/>
+
+</beans>

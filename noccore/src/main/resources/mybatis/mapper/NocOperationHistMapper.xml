@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hkt.btu.noc.core.dao.mapper.NocOperationHistMapper" >
+    <resultMap id="NocOperationHistEntity" type="com.hkt.btu.noc.core.dao.entity.NocOperationHistEntity" >
+        <result column="LOG_ID" property="logId" />
+        <result column="ITEM_TYPE" property="itemType" />
+        <result column="ITEM_ID" property="itemId" />
+        <result column="DETAIL" property="detail" />
+
+        <result column="USER_ID" property="userId" />
+
+        <result column="CREATEDATE" property="createdate" />
+    </resultMap>
+
+    <select id="getOptHistListByItemTypeAndId" resultMap="NocOperationHistEntity" >
+        select *
+        from NOC_OPERATION_HIST
+        where ITEM_TYPE = #{itemType}
+        and ITEM_ID = #{itemId}
+        order by CREATEDATE
+    </select>
+
+    <insert id="insertOperationHist" parameterType="com.hkt.btu.noc.core.dao.entity.NocOperationHistEntity"
+            useGeneratedKeys="true" keyProperty="logId">
+        insert into NOC_OPERATION_HIST (LOG_ID, ITEM_TYPE, ITEM_ID, DETAIL, USER_ID, CREATEDATE)
+        values (#{logId}, #{itemType}, #{itemId}, #{detail}, #{userId}, #{createdate})
+    </insert>
+
+</mapper>

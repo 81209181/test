@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Access Request</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <h1 class="row">Access Request</h1>
+
+    <form class="row" th:object="${accessRequestData}">
+        <div class="col-md-12">
+            <div class="d-inline-block col-md-5 form-group">
+                <label>Ticket Number</label>
+                <input th:id="target-request-id" type="text" th:field="*{hashedRequestId}" class="form-control" readonly>
+            </div>
+            <div class="d-inline-block col-md-5 form-group">
+                <label>Status</label>
+                <input type="text" th:field="*{status}" class="form-control" readonly>
+            </div>
+        </div>
+
+        <h2>Details of Requestor</h2>
+        <div class="col-md-12">
+            <div class="d-inline-block col-md-5 form-group">
+                <label>Requestor ID</label>
+                <input type="text" th:field="*{requesterId}" class="form-control" readonly>
+
+                <label>Name of Requestor</label>
+                <input type="text" th:field="*{requesterName}" class="form-control" readonly>
+                <label>Company Name</label>
+                <input type="text" th:field="*{companyName}" class="form-control" readonly>
+            </div>
+            <div class="d-inline-block col-md-5 form-group">
+                <label>Mobile</label>
+                <input type="tel" th:field="*{mobile}" class="form-control" readonly>
+
+                <label>Email (Login ID)</label>
+                <input type="email" th:field="*{email}" class="form-control" readonly>
+            </div>
+        </div>
+
+        <h2>Details of Visit</h2>
+        <div class="col-md-12">
+            <div class="d-inline-block col-md-10 form-group">
+                <label>Visit Reason</label>
+                <input type="text" th:field="*{visitReason}" class="form-control" readonly>
+            </div>
+            <div class="d-inline-block col-md-5 form-group align-top">
+                <label>Visit Date</label>
+                <input type="date" th:field="*{visitDate}" class="form-control" readonly>
+
+                <label>From</label>
+                <input type="time" th:field="*{visitTimeFrom}" class="form-control" readonly>
+
+                <label>To</label>
+                <input type="time" th:field="*{visitTimeTo}" class="form-control" readonly>
+            </div>
+            <div class="d-inline-block col-md-5 form-group align-top">
+                <label>Visit Location</label>
+                <input type="text" th:field="*{visitLocation}" class="form-control" readonly>
+
+                <label>Rack Num.</label>
+                <input type="text" th:field="*{visitRackNum}" class="form-control" readonly>
+            </div>
+        </div>
+
+        <h2>Details of Visitors</h2>
+        <div class="col-md-12">
+            <table class="table table-sm table-hover">
+                <thead class="thead-dark">
+                <tr>
+                    <!--<th>&lt;!&ndash;counter&ndash;&gt;</th>-->
+                    <th>Name</th>
+                    <th>Company/Section</th>
+                    <th>* Visitor's ID</th>
+                    <th>Mobile</th>
+                    <th>Visitor Card No.</th>
+                    <th>Time In</th>
+                    <th>Time Out</th>
+                </tr>
+                </thead>
+                <tbody class="table-striped">
+                <tr th:each="visitor, itemStat : *{visitorDataList}">
+                    <td><input type="text" th:field="*{visitorDataList[__${itemStat.index}__].name}" readonly/></td>
+                    <td><input type="text" th:field="*{visitorDataList[__${itemStat.index}__].company}" readonly/></td>
+                    <td><input type="text" th:field="*{visitorDataList[__${itemStat.index}__].staffId}" readonly/></td>
+                    <td><input type="tel" th:field="*{visitorDataList[__${itemStat.index}__].mobile}" readonly/></td>
+                    <td><input type="text" th:field="*{visitorDataList[__${itemStat.index}__].visitorCardNum}" readonly/></td>
+                    <td><input type="time" th:field="*{visitorDataList[__${itemStat.index}__].timeIn}" readonly/></td>
+                    <td><input type="time" th:field="*{visitorDataList[__${itemStat.index}__].timeOut}" readonly/></td>
+                </tr>
+                </tbody>
+            </table>
+            <div style="padding-left: 20px">* Visitor's ID: Staff ID / HKID / Passport Number (first 4 digits)</div>
+        </div>
+
+        <h2>Details of Equipment Move In/Out</h2>
+        <div class="col-md-12">
+            <table class="table table-sm table-hover">
+                <thead class="thead-dark">
+                <tr>
+                    <!--<th>&lt;!&ndash;counter&ndash;&gt;</th>-->
+                    <th>Brand</th>
+                    <th>Type</th>
+                    <th>Model</th>
+                    <th>Serial Num</th>
+                    <th>Rack#</th>
+                    <th>U#</th>
+                    <th>In/Out</th>
+                </tr>
+                </thead>
+                <tbody class="table-striped">
+                <tr th:each="visitor, itemStat : *{equipDataList}">
+                    <td><input type="text" th:field="*{equipDataList[__${itemStat.index}__].eqBrand}" readonly/></td>
+                    <td><input type="text" th:field="*{equipDataList[__${itemStat.index}__].eqType}" readonly/></td>
+                    <td><input type="text" th:field="*{equipDataList[__${itemStat.index}__].eqModel}" readonly/></td>
+                    <td><input type="text" th:field="*{equipDataList[__${itemStat.index}__].eqSerialNum}" readonly/></td>
+                    <td><input type="text" th:field="*{equipDataList[__${itemStat.index}__].eqRackNum}" readonly/></td>
+                    <td><input type="text" th:field="*{equipDataList[__${itemStat.index}__].eqUNum}" readonly/></td>
+                    <td><input type="text" th:field="*{equipDataList[__${itemStat.index}__].action}" readonly/></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Operation History</h2>
+        <div class="col-md-12">
+            <table th:id="request-opt-hist-table" class="table table-sm table-hover">
+                <thead class="thead-dark">
+                <tr>
+                    <th>Date</th>
+                    <th>User ID</th>
+                    <th>Detail</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="col-md-12">
+            <div class="d-inline-block col-md-10 form-group">
+                <a class="btn btn-lg btn-primary float-right" th:href="@{/user/access-request/re-create(hashedRequestId=*{hashedRequestId})}" role="button"><i class="far fa-copy"></i> Copy to New Request</a>
+            </div>
+        </div>
+    </form>
+
+    <script type="text/javascript" th:src="@{/js/viewAccessRequest.js}"></script>
+</div>
+</body>
+</html>

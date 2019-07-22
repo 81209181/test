@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Search Access Request</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <form th:id="search-access-request" class="form-inline">
+        <input th:id="search-hashed-request-id" type="number" class="form-control mb-2 mr-sm-2" placeholder="Ticket Number">
+        <select th:id="search-access-status" class="form-control mb-2 mr-sm-2">
+            <option value="" selected>--Any Status--</option>
+            <option th:each="status : ${requestStatusList}" th:value="${status}" th:text="${status}"></option>
+        </select>
+        <input th:id="search-access-visit-from" type="date" class="form-control mb-2 mr-sm-2">
+        <input th:id="search-access-visit-to" type="date" class="form-control mb-2 mr-sm-2">
+        <select th:id="search-access-visit-loc" class="form-control mb-2 mr-sm-2">
+            <option value="" selected>--Location--</option>
+            <option th:each="loc : ${requestLocMap}" th:value="${loc.key}" th:text="${loc.value.name}"></option>
+        </select>
+        <button type="submit" class="btn btn-lg btn-primary mb-2"><i class="fas fa-search"></i> Search</button>
+    </form>
+
+    <h1>Access Request Search</h1>
+    <table th:id="searchAccessRequestTable" class="display">
+        <thead>
+        <tr>
+            <th>Ticket Num</th>
+            <th>Status</th>
+            <th>Visit Date</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Location</th>
+            <th>Create Date</th>
+            <th>Visitor Count</th>
+            <th><!--view link--></th>
+        </tr>
+        </thead>
+
+        <tbody></tbody>
+
+        <tfoot>
+        <tr>
+            <th>Ticket Num</th>
+            <th>Status</th>
+            <th>Visit Date</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Location</th>
+            <th>Create Date</th>
+            <th>Update Date</th>
+            <th><!--view link--></th>
+        </tr>
+        </tfoot>
+    </table>
+
+    <script type="text/javascript" th:src="@{/js/searchAccessRequestExternal.js}"></script>
+</div>
+</body>
+</html>

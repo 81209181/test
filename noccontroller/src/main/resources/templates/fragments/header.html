@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html lang="en"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="header">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+        <div class="navbar-header">
+            <div sec:authorize="isAuthenticated()" th:remove="tag">
+                <a class="navbar-brand" th:href="@{/user/}">
+                    <img th:src="@{/img/logo-site.png}" alt="logo"/>
+                </a>
+            </div>
+            <div sec:authorize="!isAuthenticated()" th:remove="tag">
+                <a class="navbar-brand" th:href="@{/login}">
+                    <img th:src="@{/img/logo-site.png}" alt="logo"/>
+                </a>
+            </div>
+        </div>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li sec:authorize="hasAnyAuthority('ROOT')" class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="systemConfigDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        System
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" th:href="@{/system/site-config/index}">Site Info</a>
+                        <a class="dropdown-item" th:href="@{/system/config-param/search}">Config Param</a>
+                        <a class="dropdown-item" th:href="@{/system/job/list}">Cron Job</a>
+                    </div>
+                </li>
+                <li sec:authorize="hasAnyAuthority('ADMIN', 'C_ADMIN')" class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userManDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        User Management
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" th:href="@{/admin/manage-user/create-user}">Create User</a>
+                        <a class="dropdown-item" th:href="@{/admin/manage-user/search-user}">Search User</a>
+
+                        <div sec:authorize="hasAnyAuthority('ADMIN')" th:remove="tag" >
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" th:href="@{/admin/manage-company/create-company}">Create Company</a>
+                            <a class="dropdown-item" th:href="@{/admin/manage-company/search-company}">Search Company</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" th:href="@{/admin/manage-group/list-user-grp}">List User Group</a>
+                        </div>
+                    </div>
+                </li>
+                <li sec:authorize="hasAnyAuthority('USER', 'C_USER')" class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="accessFormDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Access Request
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" th:href="@{/user/access-request/pending}">Request Summary</a>
+                        <a class="dropdown-item" th:href="@{/user/access-request/create}">Create Request</a>
+                        <a class="dropdown-item" th:href="@{/user/access-request/search}">Search Request</a>
+
+
+                        <div sec:authorize="hasAnyAuthority('USER')" th:remove="tag" >
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" th:href="@{/user/access-request/search-visitor}">Search Visitor</a>
+                        </div>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/public/contact-us}">Contact Us</a>
+                </li>
+            </ul>
+
+
+            <ul sec:authorize="isAuthenticated()" class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link"><span sec:authentication="name"></span></a>
+                </li>
+                <li sec:authorize="isAuthenticated()" class="nav-item">
+                    <a class="nav-link" th:href="@{/user/my-account}">My Account</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/public/logout}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+
+</th:block>
+</body>
+</html>

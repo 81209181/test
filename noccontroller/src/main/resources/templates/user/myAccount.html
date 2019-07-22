@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Account</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+    <h1>User Profile</h1>
+    <form class="row">
+        <div class="col-md-12">
+            <div class="d-inline-block col-md-5 form-group">
+                <label>User ID</label>
+                <input th:id="my-user-id" type="number" class="form-control" readonly>
+
+                <label>Email (Login ID)</label>
+                <input th:id="my-email" type="email" class="form-control" readonly>
+
+                <label>Name</label>
+                <input th:id="my-name" type="text" class="form-control" readonly>
+
+                <label>Mobile</label>
+                <input th:id="my-mobile" type="tel" class="form-control" readonly>
+            </div>
+
+            <div class="d-inline-block col-md-5 form-group">
+                <label>Status</label>
+                <input th:id="my-status" type="text" class="form-control" readonly>
+
+                <label>Login Tried</label>
+                <input th:id="my-login-tried" type="number" class="form-control" readonly>
+
+                <label>Password Modify Date</label>
+                <input th:id="my-password-modify-date" type="text" class="form-control" readonly>
+            </div>
+
+            <div class="d-inline-block col-md-5 form-group">
+                <label>Company ID</label>
+                <input th:id="my-company-id" type="text" class="form-control" readonly>
+                <label>Company Name</label>
+                <input th:id="my-company-name" type="text" class="form-control" readonly>
+
+                <label>Staff ID / HKID / Passport Number (first 4 digits)</label>
+                <input th:id="my-staff-id" type="text" class="form-control" readonly>
+
+                <label>User Group</label>
+                <select th:id="my-user-group" class="form-control" readonly multiple></select>
+            </div>
+
+        </div>
+    </form>
+
+    <h1>Update Password</h1>
+    <form class="row"  th:id="update-pwd-form" th:object="${updatePwdFormData}">
+        <div class="col-md-12">
+            <div class="d-inline-block col-md-5 form-group">
+                <input th:id="oldPassword" type="password" th:field="*{oldPassword}" class="form-control" placeholder="Old Password" required>
+                <input th:id="newPassword" type="password" th:field="*{newPassword}" class="form-control" placeholder="New Password" required>
+                <input th:id="newPasswordRe" type="password" th:field="*{newPasswordRe}" class="form-control" placeholder="New Password (re-enter)" required>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="d-inline-block col-md-5 form-group">
+                <button th:id="btn-update-pwd" type="submit" class="btn btn-lg btn-primary"><i class="far fa-save"></i> Update</button>
+            </div>
+        </div>
+    </form>
+
+    <script type="text/javascript" th:src="@{/js/myAccount.js}"></script>
+</div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>List User Group</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <h1>User Group List</h1>
+    <table id="userGroupTable" class="display">
+        <thead>
+            <tr>
+                <th>Group ID</th>
+                <th>Group Name</th>
+                <th>Group Desc</th>
+                <th>Parent Group ID</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>Group ID</th>
+                <th>Group Name</th>
+                <th>Group Desc</th>
+                <th>Parent Group ID</th>
+            </tr>
+        </tfoot>
+    </table>
+
+    <script type="text/javascript" th:src="@{/js/listUserGrp.js}"></script>
+</div>
+</body>
+</html>

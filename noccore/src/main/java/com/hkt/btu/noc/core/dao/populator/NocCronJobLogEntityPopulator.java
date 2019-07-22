@@ -1,0 +1,44 @@
+package com.hkt.btu.noc.core.dao.populator;
+
+import com.hkt.btu.common.core.dao.populator.EntityPopulator;
+import com.hkt.btu.noc.core.dao.entity.NocCronJobLogEntity;
+import com.hkt.btu.noc.core.service.bean.NocCronJobProfileBean;
+import com.hkt.btu.noc.core.service.bean.NocSiteConfigBean;
+import org.quartz.JobDetail;
+import org.quartz.JobKey;
+
+
+public class NocCronJobLogEntityPopulator implements EntityPopulator<NocCronJobLogEntity> {
+
+
+    public void populate(JobDetail jobDetail, NocCronJobLogEntity entity) {
+        if(jobDetail==null){
+            return;
+        }
+
+        JobKey jobKey = jobDetail.getKey();
+        if(jobKey!=null){
+            entity.setJobGroup(jobKey.getGroup());
+            entity.setJobName(jobKey.getName());
+        }
+
+        entity.setJobClass(jobDetail.getJobClass().getName());
+    }
+
+    public void populate(NocCronJobProfileBean profileBean, NocCronJobLogEntity entity) {
+        if (profileBean==null){
+            return;
+        }
+
+        entity.setJobGroup(profileBean.getKeyGroup());
+        entity.setJobName(profileBean.getKeyName());
+        entity.setJobClass(profileBean.getJobClass());
+    }
+
+    public void populate(NocSiteConfigBean nocSiteConfigBean, NocCronJobLogEntity entity) {
+        if (nocSiteConfigBean==null){
+            return;
+        }
+        entity.setServerIp(nocSiteConfigBean.getServerAddress());
+    }
+}

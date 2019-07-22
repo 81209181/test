@@ -1,0 +1,8 @@
+Database Connection
+1. copy tomcat conf from \setup\server\tomcat\conf\local_server.xml
+
+Keystore
+1. copy /setup/keystore/uat/skyexchange-aes-keystore.jck to /opt/keystore/skyexchange-aes-keystore.jck
+2. add JVM arguement
+    -DstorePass=39e0db64-7344-406f-836e-9741a986ff0b
+

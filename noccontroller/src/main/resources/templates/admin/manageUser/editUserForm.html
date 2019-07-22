@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit User</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <h1>Edit User</h1>
+
+    <form th:id="editUserForm" class="row">
+        <div class="col-md-12">
+            <div class="d-inline-block col-md-5 form-group">
+                <label>User ID</label>
+                <input th:id="edit-user-id" th:attr="value = ${editUserId}" type="text" class="form-control" readonly>
+
+                <label>Email (Login ID)</label>
+                <input th:id="edit-email" type="email" class="form-control" readonly>
+
+                <label>Name</label>
+                <input th:id="edit-name" type="text" class="form-control" maxlength="100" required>
+
+                <label>Mobile</label>
+                <input th:id="edit-mobile" type="tel" class="form-control" maxlength="15" required>
+            </div>
+
+            <div class="d-inline-block col-md-5 form-group">
+                <label>Status</label>
+                <input th:id="edit-status" type="text" class="form-control" readonly>
+
+                <label>Login Tried</label>
+                <input th:id="edit-login-tried" type="number" class="form-control" readonly>
+
+                <label>Password Modify Date</label>
+                <input th:id="edit-password-modify-date" type="text" class="form-control" readonly>
+            </div>
+
+            <div class="d-inline-block col-md-5 form-group">
+                <label>Company ID</label>
+                <input th:id="edit-company-id" type="text" class="form-control" readonly>
+
+                <label>Company Name</label>
+                <input th:id="edit-company-name" type="text" class="form-control" readonly>
+
+                <label>Staff ID / HKID / Passport Number (first 4 digits)</label>
+                <input th:id="edit-staff-id" type="text" class="form-control" maxlength="4" required>
+
+                <label>User Group</label>
+                <div class="d-block">
+                    <div class="form-check form-check-inline" th:if="${userGroupDataMap?.get('ADMIN')}" >
+                        <input class="form-check-input" type="checkbox" th:id="edit-user-group-admin" value="ADMIN">
+                        <label class="form-check-label">ADMIN</label>
+                    </div>
+                    <div class="form-check form-check-inline" th:if="${userGroupDataMap?.get('USER')}" >
+                        <input class="form-check-input" type="checkbox" th:id="edit-user-group-user" value="USER">
+                        <label class="form-check-label">USER</label>
+                    </div>
+                    <div class="form-check form-check-inline" th:if="${userGroupDataMap?.get('C_ADMIN')}" >
+                        <input class="form-check-input" type="checkbox" th:id="edit-user-group-cadmin"  value="C_ADMIN" >
+                        <label class="form-check-label">C_ADMIN</label>
+                    </div>
+                    <div class="form-check form-check-inline" th:if="${userGroupDataMap?.get('C_USER')}" >
+                        <input class="form-check-input" type="checkbox" th:id="edit-user-group-cuser" value="C_USER" >
+                        <label class="form-check-label">C_USER</label>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="d-inline-block col-md-10 form-group">
+                <button th:id="btnActivateUser" class="btn btn-lg btn-success float-left mr-sm-2" type="button"><i class="fas fa-check-circle"></i> Activate</button>
+                <button th:id="btnDeactivateUser" class="btn btn-lg btn-danger float-left mr-sm-2" type="button"><i class="fas fa-times-circle"></i> Deactivate</button>
+                <button th:id="btnUpdateUser" class="btn btn-lg btn-primary float-right mr-sm-2" type="button"><i class="far fa-save"></i> Save</button>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <span class="row">
+                <p>
+                    <i>* User Group:</i> <br/>
+                    <small style="padding-left: 4em;" th:if="${userGroupDataMap?.get('C_ADMIN')}">
+                        <i>C_ADMIN: <span th:text="${userGroupDataMap?.get('C_ADMIN')?.groupDesc}" th:remove="tag"></span></i>
+                        <br/>
+                    </small>
+                    <small style="padding-left: 4em;" th:if="${userGroupDataMap?.get('C_USER')}">
+                        <i>C_USER: <span th:text="${userGroupDataMap?.get('C_USER')?.groupDesc}" th:remove="tag"></span></i>
+                    </small>
+                </p>
+            </span>
+            <span class="row"><i>* Activate: Activate user account.</i></span>
+            <span class="row"><i>* Deactivate: Suspend/delete user account.</i></span>
+        </div>
+    </form>
+
+    <script type="text/javascript" th:src="@{/js/editUserForm.js}"></script>
+</div>
+</body>
+</html>

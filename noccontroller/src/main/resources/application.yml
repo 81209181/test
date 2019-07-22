@@ -1,0 +1,12 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    jndi-name: java:comp/env/jdbc/skyexch
+
+mybatis:
+  mapperLocations: classpath:mybatis/mapper/*.xml
+  config-location: classpath:mybatis/mybatis-config.xml
+
+project:
+  buildtime: @buildTimestamp@

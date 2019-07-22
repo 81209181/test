@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="pageMsg">
+    <div id="pageMsg">
+        <!-- info msg -->
+        <div th:id="infoMsg" class="alert alert-success" role="alert" style="display: none" th:text="${'info message'}"></div>
+        <script th:if="!${#strings.isEmpty(infoMsg)}" th:inline="javascript">
+            /*<![CDATA[*/
+            $(document).ready(function () {
+                var msg = [[${infoMsg}]];
+                showInfoMsg(msg);
+            });
+            /*]]>*/
+        </script>
+
+        <!-- error msg -->
+        <div th:id="errorMsg" class="alert alert-danger" role="alert" style="display: none" th:text="${'error message'}"></div>
+        <script th:if="!${#strings.isEmpty(errorMsg)}" th:inline="javascript">
+            /*<![CDATA[*/
+            $(document).ready(function () {
+                var msg = [[${errorMsg}]];
+                showErrorMsg(msg);
+            });
+            /*]]>*/
+        </script>
+
+        <script type="text/javascript" th:src="@{/js/pageMsg.js}"></script>
+    </div>
+</th:block>
+</body>
+</html>

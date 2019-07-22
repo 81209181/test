@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Home</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+    <h1>This is ADMIN index page.</h1>
+    <p><a th:href="@{/user/}">Back to home page</a></p>
+</div>
+</body>
+</html>

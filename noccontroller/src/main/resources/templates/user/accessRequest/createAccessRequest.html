@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Access Request</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <h1 class="row">Create Access Request</h1>
+
+    <form class="row" th:action="@{/user/access-request/create}" th:object="${createAccessForm}" method="post">
+        <h2>Details of Requestor</h2>
+        <div class="col-md-12">
+            <div class="d-inline-block col-md-5 form-group">
+                <label>Name of Requestor</label>
+                <input type="text" th:field="*{requesterName}" class="form-control" readonly>
+
+                <label>Company Name</label>
+                <input type="text" th:field="*{companyName}" class="form-control" readonly>
+            </div>
+            <div class="d-inline-block col-md-5 form-group">
+                <label>Mobile</label>
+                <input type="tel" th:field="*{mobile}" class="form-control" readonly>
+
+                <label>Email (Login ID)</label>
+                <input type="email" th:field="*{email}" class="form-control" readonly>
+            </div>
+        </div>
+
+        <h2>Details of Visit</h2>
+        <div class="col-md-12">
+            <div class="d-inline-block col-md-10 form-group">
+                <label>Visit Reason</label>
+                <input type="text" th:field="*{visitReason}" class="form-control" maxlength="250" required>
+            </div>
+            <div class="d-inline-block col-md-5 form-group align-top">
+                <label>Visit Date</label>
+                <input type="date" th:field="*{visitDate}" class="form-control" required>
+
+                <label>From</label>
+                <input type="time" th:field="*{visitTimeFrom}" class="form-control" required>
+
+                <label>To</label>
+                <input type="time" th:field="*{visitTimeTo}" class="form-control" required>
+            </div>
+            <div class="d-inline-block col-md-5 form-group align-top">
+                <label>Visit Location</label>
+                <select class="form-control mb-2 mr-sm-2" th:field="*{visitLocation}" required>
+                    <option value="" selected>--Please Select--</option>
+                    <option th:each="loc : ${requestLocMap}" th:value="${loc.key}" th:text="${loc.value.name}"></option>
+                </select>
+
+                <label>Rack Num.</label>
+                <input type="text" th:field="*{visitRackNum}" class="form-control" maxlength="30" required>
+            </div>
+        </div>
+
+        <h2>Details of Visitors</h2>
+        <div class="col-md-12">
+            <table th:id="table-visitor-list" class="table table-sm table-hover">
+                <thead class="thead-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Company/Section</th>
+                    <th>* Visitor's ID</th>
+                    <th>Mobile</th>
+                </tr>
+                </thead>
+                <!-- has visitors -->
+                <tbody class="table-striped" th:if="${! #bools.isTrue(canOnlySubmitSelfVisit)}">
+                    <tr th:each="visitor, itemStat : *{visitorDataList}">
+                        <td><input th:placeholder="'Visitor ' + ${itemStat.count}" type="text"
+                                   th:field="*{visitorDataList[__${itemStat.index}__].name}" maxlength="100" /></td>
+                        <td><input type="text" th:field="*{visitorDataList[__${itemStat.index}__].company}" maxlength="100" /></td>
+                        <td><input type="text" th:field="*{visitorDataList[__${itemStat.index}__].staffId}" maxlength="4" /></td>
+                        <td><input type="tel" th:field="*{visitorDataList[__${itemStat.index}__].mobile}" maxlength="15" /></td>
+                    </tr>
+                </tbody>
+
+                <!-- self visit-->
+                <tbody class="table-striped" th:if="${#bools.isTrue(canOnlySubmitSelfVisit)}">
+                    <tr th:each="visitor, itemStat : *{visitorDataList}">
+                        <td><input th:placeholder="'Visitor ' + ${itemStat.count}" type="text"
+                                   th:field="*{visitorDataList[__${itemStat.index}__].name}" maxlength="100" readonly/></td>
+                        <td><input type="text" th:field="*{visitorDataList[__${itemStat.index}__].company}" maxlength="100" readonly/></td>
+                        <td><input type="text" th:field="*{visitorDataList[__${itemStat.index}__].staffId}" maxlength="4" readonly/></td>
+                        <td><input type="tel" th:field="*{visitorDataList[__${itemStat.index}__].mobile}" maxlength="15" readonly/></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="padding-left: 20px">* Visitor's ID: Staff ID / HKID / Passport Number (first 4 digits)</div>
+            <div th:if="${#bools.isTrue(canOnlySubmitSelfVisit)}" style="padding-left: 20px">* Restricted to self-visit only</div>
+            <button th:if="${! #bools.isTrue(canOnlySubmitSelfVisit)}" th:id="btn-add-visitor" class="btn btn-info float-right" type="button"><i class="fas fa-plus"></i></button>
+        </div>
+
+
+        <h2>Details of Equipment Move In/Out</h2>
+        <div class="col-md-12">
+            <table th:id="table-equip-list" class="table table-sm table-hover">
+                <thead class="thead-dark">
+                <tr>
+                    <th>Brand</th>
+                    <th>Type</th>
+                    <th>Model</th>
+                    <th>Serial Num</th>
+                    <th>Rack#</th>
+                    <th>U#</th>
+                    <th>In/Out</th>
+                </tr>
+                </thead>
+                <tbody class="table-striped">
+                <tr th:each="equip, itemStat : *{equipDataList}">
+                    <td><input th:placeholder="'Equipment ' + ${itemStat.count}" type="text" th:field="*{equipDataList[__${itemStat.index}__].eqBrand}" /></td>
+                    <td><input type="text" th:field="*{equipDataList[__${itemStat.index}__].eqType}" maxlength="100" /></td>
+                    <td><input type="text" th:field="*{equipDataList[__${itemStat.index}__].eqModel}" maxlength="100" /></td>
+                    <td><input type="text" th:field="*{equipDataList[__${itemStat.index}__].eqSerialNum}" maxlength="100" /></td>
+                    <td><input type="text" th:field="*{equipDataList[__${itemStat.index}__].eqRackNum}" maxlength="30" /></td>
+                    <td><input type="number" th:field="*{equipDataList[__${itemStat.index}__].eqUNum}" maxlength="30" /></td>
+                    <td>
+                        <select th:field="*{equipDataList[__${itemStat.index}__].action}">
+                            <option value="" selected>--Please Select--</option>
+                            <option th:value="IN" th:text="IN"></option>
+                            <option th:value="OUT" th:text="OUT"></option>
+                        </select>
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+            <button th:id="btn-add-equip" class="btn btn-info float-right" type="button"><i class="fas fa-plus"></i></button>
+        </div>
+
+        <div class="col-md-12">
+            <div class="d-inline-block col-md-10 form-group">
+                <button type="submit" class="btn btn-lg btn-primary float-right"><i class="fab fa-telegram-plane"></i> Submit</button>
+            </div>
+        </div>
+    </form>
+
+    <div id="input-template" style="display: none;"><!--suppress SpellCheckingInspection -->
+        <table>
+            <tbody>
+                <tr class="visitor-tr">
+                    <td><input placeholder="Visitor __inputCounter__" type="text" maxlength="30" id="visitorDataList__inputArrayCounter__.name" name="visitorDataList[__inputArrayCounter__].name" value=""></td>
+                    <td><input type="text" maxlength="100" id="visitorDataList__inputArrayCounter__.company" name="visitorDataList[__inputArrayCounter__].company" value=""></td>
+                    <td><input type="text" maxlength="4" id="visitorDataList__inputArrayCounter__.staffId" name="visitorDataList[__inputArrayCounter__].staffId" value=""></td>
+                    <td><input type="tel" maxlength="15" id="visitorDataList__inputArrayCounter__.mobile" name="visitorDataList[__inputArrayCounter__].mobile" value=""></td>
+                </tr>
+                <tr class="equip-tr">
+                    <td><input placeholder="Equipment __inputCounter__" type="text" id="equipDataList__inputArrayCounter__.eqBrand" name="equipDataList[__inputArrayCounter__].eqBrand" value=""></td>
+                    <td><input type="text" maxlength="100" id="equipDataList__inputArrayCounter__.eqType" name="equipDataList[__inputArrayCounter__].eqType" value=""></td>
+                    <td><input type="text" maxlength="100" id="equipDataList__inputArrayCounter__.eqModel" name="equipDataList[__inputArrayCounter__].eqModel" value=""></td>
+                    <td><input type="text" maxlength="100" id="equipDataList__inputArrayCounter__.eqSerialNum" name="equipDataList[__inputArrayCounter__].eqSerialNum" value=""></td>
+                    <td><input type="text" maxlength="30" id="equipDataList__inputArrayCounter__.eqRackNum" name="equipDataList[__inputArrayCounter__].eqRackNum" value=""></td>
+                    <td><input type="number" maxlength="30" id="equipDataList__inputArrayCounter__.eqUNum" name="equipDataList[__inputArrayCounter__].eqUNum" value=""></td>
+                    <td>
+                        <select id="equipDataList__inputArrayCounter__.action" name="equipDataList[__inputArrayCounter__].action">
+                            <option value="" selected>--Please Select--</option>
+                            <option value="IN">IN</option>
+                            <option value="OUT">OUT</option>
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script type="text/javascript" th:src="@{/js/createAccessRequest.js}"></script>
+</div>
+</body>
+</html>

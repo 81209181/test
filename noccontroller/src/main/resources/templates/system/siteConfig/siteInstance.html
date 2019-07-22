@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Site Config</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <h1>Site Instance</h1>
+    <form class="row">
+        <div class="col-md-12">
+            <div class="d-inline-block col-md-5 form-group">
+                <label>Server Address</label>
+                <input th:id="server-address" type="text" class="form-control" readonly>
+                <label>Server Hostname</label>
+                <input th:id="server-hostname" type="text" class="form-control" readonly>
+                <label>Server Type</label>
+                <input th:id="server-type" type="text" class="form-control" readonly>
+                <label>Cronjob Auto-schedule Hostname</label>
+                <input th:id="cronjob-hostname" type="text" class="form-control" readonly>
+            </div>
+
+            <div class="d-inline-block col-md-5 form-group">
+                <label>App Name</label>
+                <input th:id="app-name" type="text" class="form-control" readonly>
+                <label>Given Domain</label>
+                <input th:id="given-domain" type="text" class="form-control" readonly>
+                <label>Context Path</label>
+                <input th:id="app-context-path" type="text" class="form-control" readonly>
+                <label>Http URL</label>
+                <input th:id="app-http-url" type="text" class="form-control" readonly>
+                <label>Https URL</label>
+                <input th:id="app-https-url" type="text" class="form-control" readonly>
+            </div>
+
+            <div class="d-inline-block col-md-5 form-group">
+                <label>Login Tried Limit</label>
+                <input th:id="login-tried-limit" type="number" class="form-control" readonly>
+                <label>Password Lifespan (day)</label>
+                <input th:id="password-lifespan" type="number" class="form-control" readonly>
+                <label>Password Reset OTP Lifespan (min)</label>
+                <input th:id="password-reset-otp-lifespan" type="number" class="form-control" readonly>
+            </div>
+
+            <div class="d-inline-block col-md-5 form-group">
+                <label>Mail Host</label>
+                <input th:id="mail-host" type="text" class="form-control" readonly>
+                <label>Mail Port</label>
+                <input th:id="mail-port" type="text" class="form-control" readonly>
+                <label>Mail Username</label>
+                <input th:id="mail-username" type="text" class="form-control" readonly>
+            </div>
+        </div>
+    </form>
+
+    <button th:id="btnReloadSiteConfig" type="submit" class="btn btn-lg btn-primary mb-2"><i class="fas fa-sync"></i> Reload</button>
+
+    <script type="text/javascript" th:src="@{/js/siteConfig.js}"></script>
+</div>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Company</title>
+</head>
+<body>
+    <div layout:fragment="content" th:remove="tag">
+
+        <h1>Create Company</h1>
+
+        <form class="row" action="#" th:action="@{/admin/manage-company/create-company}" th:object="${inputCompData}" method="post">
+            <div class="col-md-12">
+                <div class="d-inline-block col-md-5 form-group">
+                    <label>Name</label>
+                    <input type="text" th:field="*{name}" class="form-control" placeholder="Company Name"  maxlength="100" required>
+
+                    <label>Remarks</label>
+                    <input type="text" th:field="*{remarks}" class="form-control" placeholder="(optional)" maxlength="250" >
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="d-inline-block col-md-5 form-group">
+                    <button type="submit" class="btn btn-lg btn-primary float-right"><i class="fab fa-telegram-plane"></i> Create</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

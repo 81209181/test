@@ -1,0 +1,12 @@
+body{
+    background: url('../img/pic-building-04.jpg') no-repeat top;
+    background-size: cover;
+}
+
+#loginDiv{
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 20px;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    border-radius: 25px;
+}

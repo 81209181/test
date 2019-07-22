@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="footer">
+    <footer class="footer bg-white text-muted">
+
+        <!-- normal screen -->
+        <div class="row d-md-block d-none">
+            <div class="row">
+                <div class="col-md-4">
+                    <img style="margin-top: 3px; height: 37px" th:src="@{/img/logo-footer-hkt.png}" alt="logo-footer-hkt">
+                </div>
+                <div class="col-md-8">
+                    <div class="row">
+                        <img style="height:12px; margin: 5px 0 4px auto" th:src="@{/img/logo-footer-pccw.png}" alt="logo-footer-pccw">
+                    </div>
+                    <div class="row">
+                        <small style="margin: 0 0 0 auto">
+                            <i>Tested with Google Chrome 70.</i>
+                            <!--/*@thymesVar id="projectBuildtime" type="java.lang.String"*/-->
+                            <i>Build: <span th:text="${projectBuildtime}"></span></i>
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <small>
+                        <a href="https://www.hkt.com/Privacy+Statement?language=en_US" target="_blank">Privacy Statement</a>
+                        <span> | </span>
+                        <a href="https://www.hkt.com/Terms+of+use?language=en_US" target="_blank">Terms of Use</a>
+                    </small>
+                </div>
+                <div class="col-md-8 text-md-right">
+                    <small><i>© Hong Kong Telecommunications (HKT) Limited 2019. All Rights Reserved.</i></small>
+                </div>
+            </div>
+        </div>
+
+        <!-- small screen -->
+        <div class="row d-md-none d-sm-block">
+            <div class="row col-12">
+                <img style="height: 37px; margin: 0 auto" th:src="@{/img/logo-footer-hkt.png}" alt="logo-footer-hkt">
+                <img style="height: 12px; margin: 17px auto" th:src="@{/img/logo-footer-pccw.png}" alt="logo-footer-pccw">
+            </div>
+
+            <div class="row col-12">
+                <small>
+                    <a href="https://www.hkt.com/Privacy+Statement?language=en_US" target="_blank">Privacy Statement</a>
+                    <span> | </span>
+                    <a href="https://www.hkt.com/Terms+of+use?language=en_US" target="_blank">Terms of Use</a>
+                </small>
+            </div>
+
+            <div class="row col-12">
+                <small>
+                    <i>Tested with Google Chrome 70.</i>
+                    <!--/*@thymesVar id="projectBuildtime" type="java.lang.String"*/-->
+                    <i>Build: <span th:text="${projectBuildtime}"></span></i>
+                </small>
+            </div>
+
+            <div class="row col-12">
+                <small><i>© Hong Kong Telecommunications (HKT) Limited 2019. All Rights Reserved.</i></small>
+            </div>
+        </div>
+    </footer>
+
+</th:block>
+</body>
+</html>
