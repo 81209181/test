@@ -39,8 +39,8 @@ public class NocSensitiveDataServiceImpl implements NocSensitiveDataService {
     private static final int IV_BYTE_LENGTH = IV_BIT_LENGTH / 8;
 
     // keystore
-    private static final String KEYSTORE_PATH = File.separator + "opt" + File.separator + "keystore" + File.separator + "skyexchange-aes-keystore.jck";
-
+    //private static final String KEYSTORE_PATH = File.separator + "opt" + File.separator + "keystore" + File.separator + "skyexchange-aes-keystore.jck";
+    private static final String KEYSTORE_PATH = "D:" + File.separator + "skyexchange-aes-keystore.jck";
     @Value("${storePass}")
     private String storePass;
 

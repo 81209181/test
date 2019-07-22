@@ -13,18 +13,25 @@ function hideInfoMsg(){
 function showErrorMsg(msg){
     // redirect, if needed
     let inputJson = safeParseJson(msg);
-    if(inputJson!=null){
-        let jsonResponse = inputJson.hasOwnProperty("responseJSON") ?  inputJson.responseJSON : inputJson;
+    if(inputJson!=null) {
+        let jsonResponse = inputJson.hasOwnProperty("responseJSON") ? inputJson.responseJSON : inputJson;
         let status = jsonResponse.status;
         let message = jsonResponse.message;
+        let exceptionType = jsonResponse.error;
 
         let ctx = $("meta[name='_ctx']").attr("content");
-        if(status===403 && message==="Forbidden"){
-            window.location.href = ctx + "/login?error=FORBIDDEN";
-            return;
-        } else if (status===403 && message==="Please login again."){
-            window.location.href = ctx + "/login?error=TIMEOUT";
-            return;
+        if (status === 403) {
+            if (message === "Forbidden" || message === "TIMEOUT") {
+                window.location.href = ctx + "/login?error=" + message;
+                return;
+            } else if (message === "INSUFFICIENT" || message === "HELP") {
+                showErrorMsg("Insufficient authority.");
+                return;
+            }
+        } else if (status !== 200) {
+            if (exceptionType !== null) {
+                msg = exceptionType;
+            }
         }
     }
 

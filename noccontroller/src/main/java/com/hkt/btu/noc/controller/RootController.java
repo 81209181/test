@@ -1,6 +1,6 @@
 package com.hkt.btu.noc.controller;
 
-import com.hkt.btu.common.spring.security.web.authentication.BtuExceptionMappingAuthenticationFailureHandler.LOGIN_ERROR;
+import com.hkt.btu.common.spring.security.web.authentication.BtuLoginUrlAuthenticationEntryPoint.LOGIN_ERROR;
 import com.hkt.btu.noc.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.noc.facade.NocUserFacade;
 import com.hkt.btu.noc.facade.data.ResetPwdFormData;
@@ -38,18 +38,22 @@ public class RootController {
             model.addAttribute(PageMsgController.INFO_MSG, "You have been logged out.");
         }
         if(error!=null){
-            if(StringUtils.equals(error, LOGIN_ERROR.LOCK)){
-                model.addAttribute(PageMsgController.ERROR_MSG, "Account deactivated. Please contact admin.");
-            } else if(StringUtils.equals(error, LOGIN_ERROR.BAD_CREDENTIALS)){
-                model.addAttribute(PageMsgController.ERROR_MSG, "Invalid username or password.");
-            } else if(StringUtils.equals(error, LOGIN_ERROR.FORBIDDEN)){
-                model.addAttribute(PageMsgController.ERROR_MSG, "Please login again. (Timeout/Forbidden).");
-            } else if(StringUtils.equals(error, LOGIN_ERROR.TIMEOUT)){
-                model.addAttribute(PageMsgController.ERROR_MSG, "Please login again. (Timeout)");
-            } else if(StringUtils.equals(error, LOGIN_ERROR.LOGIN)){
-                model.addAttribute(PageMsgController.ERROR_MSG, "Please login.");
+            if(StringUtils.equals(error, LOGIN_ERROR.LOCK.name())){
+                model.addAttribute(PageMsgController.ERROR_MSG, LOGIN_ERROR.LOCK.getMsg());
+            } else if(StringUtils.equals(error, LOGIN_ERROR.BAD_CREDENTIALS.name())){
+                model.addAttribute(PageMsgController.ERROR_MSG, LOGIN_ERROR.BAD_CREDENTIALS.getMsg());
+            } else if(StringUtils.equals(error, LOGIN_ERROR.FORBIDDEN.name())){
+                model.addAttribute(PageMsgController.ERROR_MSG, LOGIN_ERROR.FORBIDDEN.getMsg());
+            } else if(StringUtils.equals(error, LOGIN_ERROR.TIMEOUT.name())){
+                model.addAttribute(PageMsgController.ERROR_MSG, LOGIN_ERROR.TIMEOUT.getMsg());
+            } else if(StringUtils.equals(error, LOGIN_ERROR.LOGIN.name())){
+                model.addAttribute(PageMsgController.ERROR_MSG, LOGIN_ERROR.LOGIN.getMsg());
+            } else if(StringUtils.equals(error, LOGIN_ERROR.INSUFFICIENT_AUTH.name())){
+                model.addAttribute(PageMsgController.ERROR_MSG, LOGIN_ERROR.INSUFFICIENT_AUTH.getMsg());
+            } else if(StringUtils.equals(error, LOGIN_ERROR.HELP.name())){
+                model.addAttribute(PageMsgController.ERROR_MSG, LOGIN_ERROR.HELP.getMsg());
             } else{
-                model.addAttribute(PageMsgController.ERROR_MSG, "Login error.");
+                model.addAttribute(PageMsgController.ERROR_MSG, LOGIN_ERROR.UNKNOWN.getMsg());
             }
         }
 

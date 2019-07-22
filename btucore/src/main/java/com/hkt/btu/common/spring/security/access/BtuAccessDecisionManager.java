@@ -1,5 +1,8 @@
 package com.hkt.btu.common.spring.security.access;
 
+import com.hkt.btu.common.core.exception.InsufficientUserGroupException;
+import com.hkt.btu.common.core.exception.MissingRequiredUserGroupException;
+import com.hkt.btu.common.core.exception.NoAuthFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,10 +29,9 @@ public class BtuAccessDecisionManager implements AccessDecisionManager {
     public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> configAttributes)
             throws AccessDeniedException, InsufficientAuthenticationException {
         if( CollectionUtils.isEmpty(configAttributes) ){
-            LOG.warn("No user group requirement config found.");
-            throw new AccessDeniedException("No user group requirement config found.");
+            throw new MissingRequiredUserGroupException();
         } else if ( authentication==null ){
-            throw new AccessDeniedException("No authentication found.");
+            throw new NoAuthFoundException();
         }
 
         // loop all required user group config
@@ -54,8 +56,7 @@ public class BtuAccessDecisionManager implements AccessDecisionManager {
         }
 
         // fail, meeting NONE of the user group config
-        LOG.debug("Insufficient User Group！");
-        throw new AccessDeniedException("Insufficient User Group！");
+        throw new InsufficientUserGroupException();
     }
 
     @Override

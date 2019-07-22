@@ -55,7 +55,7 @@
     <alias name="btuAuditTrailServiceImpl" alias="auditTrailService"/>
     <bean id="btuAuditTrailServiceImpl" class="com.hkt.btu.common.core.service.impl.BtuAuditTrailServiceImpl" />-->
 
-    <alias name="btuSessionService" alias="sessionService"/>
-    <bean id="btuSessionService" class="com.hkt.btu.common.core.service.impl.BtuSessionServiceImpl" />
+    <alias name="btuHttpService" alias="httpService"/>
+    <bean id="btuHttpService" class="com.hkt.btu.common.core.service.impl.BtuHttpServiceImpl" />
 
 </beans>

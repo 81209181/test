@@ -19,6 +19,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.annotation.Resource;
 
+import static com.hkt.btu.common.spring.security.web.authentication.BtuLoginUrlAuthenticationEntryPoint.LOGIN_URI;
+
 
 @Configuration
 @EnableWebSecurity
@@ -81,7 +83,7 @@ public class BtuSecurityConfig extends WebSecurityConfigurerAdapter {
                 // Login config
                 .and()
                 .formLogin()
-                    .loginPage("/login") // login request mapping
+                    .loginPage(LOGIN_URI) // login request mapping
                     .successHandler(btuLoginSuccessHandler)
                     .failureHandler(btuExcepMapAuthFailureHandler)
                     .permitAll()

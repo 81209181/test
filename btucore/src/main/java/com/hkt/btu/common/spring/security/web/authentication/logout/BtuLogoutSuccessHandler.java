@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.hkt.btu.common.spring.security.web.authentication.BtuLoginUrlAuthenticationEntryPoint.LOGIN_URI;
+
 
 public class BtuLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
 
@@ -19,7 +21,7 @@ public class BtuLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
 
     public BtuLogoutSuccessHandler(){
         super();
-        super.setDefaultTargetUrl("/login?logout");
+        super.setDefaultTargetUrl(LOGIN_URI + "?logout");
     }
 
     @Override
