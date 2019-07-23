@@ -24,7 +24,7 @@ function showErrorMsg(msg){
             if (message === "Forbidden" || message === "TIMEOUT") {
                 window.location.href = ctx + "/login?error=" + message;
                 return;
-            } else if (message === "INSUFFICIENT" || message === "HELP") {
+            } else if (message === "INSUFFICIENT_AUTH" || message === "HELP") {
                 showErrorMsg("Insufficient authority.");
                 return;
             }
