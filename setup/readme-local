@@ -1,8 +1,11 @@
 Database Connection
-1. copy tomcat conf from \setup\server\tomcat\conf\local_server.xml
+1. copy tomcat conf/server.xml from /setup/server/tomcat/conf/server.xml
+2. concat setup/server/tomcat/conf/local_catalina.properties to conf/catalina.properties
+    - servicedesk.db.url
+    - servicedesk.db.username
+    - servicedesk.db.password
 
 Keystore
-1. copy /setup/keystore/uat/skyexchange-aes-keystore.jck to /opt/keystore/skyexchange-aes-keystore.jck
-2. add JVM arguement
-    -DstorePass=39e0db64-7344-406f-836e-9741a986ff0b
-
+1. copy /setup/keystore/uat/aes-keystore.jck to /opt/keystore/aes-keystore.jck
+2. concat setup/server/tomcat/conf/local_catalina.properties to conf/catalina.properties
+    - servicedesk.aesKeystore.storePass
