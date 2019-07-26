@@ -1,9 +1,9 @@
 package com.hkt.btu.noc.core.service.impl;
 
+import com.hkt.btu.common.core.exception.UserNotFoundException;
 import com.hkt.btu.noc.core.dao.entity.NocCompanyEntity;
 import com.hkt.btu.noc.core.dao.mapper.NocCompanyMapper;
 import com.hkt.btu.noc.core.exception.CompanyNotFoundException;
-import com.hkt.btu.noc.core.exception.UserNotFoundException;
 import com.hkt.btu.noc.core.service.NocCompanyService;
 import com.hkt.btu.noc.core.service.NocUserService;
 import com.hkt.btu.noc.core.service.bean.NocCompanyBean;
@@ -95,7 +95,7 @@ public class NocCompanyServiceImpl implements NocCompanyService {
     @Override
     @Transactional
     public void updateCompany(Integer companyId, String name, String remarks)
-            throws CompanyNotFoundException, DuplicateKeyException, UserNotFoundException{
+            throws CompanyNotFoundException, DuplicateKeyException, UserNotFoundException {
         Integer modifyby = nocUserService.getCurrentUserUserId();
         int updateCount = nocCompanyMapper.updateCompanyByCompanyId(companyId, modifyby, name, remarks);
         if(updateCount==0){

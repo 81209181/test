@@ -1,5 +1,6 @@
 package com.hkt.btu.noc.core.service.impl;
 
+import com.hkt.btu.common.core.exception.UserNotFoundException;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.core.service.impl.BtuUserServiceImpl;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
@@ -55,9 +56,14 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
     @Override
     public BtuUserBean getCurrentUserBean() throws UserNotFoundException {
         BtuUser btuUser = this.getCurrentUser();
-        if (btuUser==null){
+        BtuUserBean userBean = btuUser.getUserBean();
+        NocUserBean nocUserBean = new NocUserBean();
+        nocUserBean.setUserId(30);
+        nocUserBean.setName(userBean.getUsername());
+        btuUser.setUserBean(nocUserBean);
+        if (btuUser == null) {
             throw new UserNotFoundException("No UserBean found in security context!");
-        }else if (btuUser.getUserBean() instanceof NocUserBean) {
+        } else if (btuUser.getUserBean() instanceof NocUserBean) {
             return btuUser.getUserBean();
         }
         throw new UserNotFoundException("No NocUserBean found in security context!");
@@ -71,7 +77,7 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
 
         // get user data
         NocUserEntity nocUserEntity = nocUserMapper.getUserByEmail(email);
-        if (nocUserEntity==null) {
+        if (nocUserEntity == null) {
             return null;
         }
 
@@ -94,7 +100,7 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
 
     @Override
     public NocUserBean getUserByUserId(Integer userId) throws UserNotFoundException {
-        if(userId==null){
+        if (userId == null) {
             throw new UserNotFoundException("Empty user id input.");
         }
 
@@ -103,7 +109,7 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
 
         // get user data
         NocUserEntity nocUserEntity = nocUserMapper.getUserByUserId(userId, companyId);
-        if (nocUserEntity==null) {
+        if (nocUserEntity == null) {
             throw new UserNotFoundException("Cannot find user with id " + userId + ".");
         }
 
@@ -123,7 +129,7 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
     public Integer createUser(String name, String mobile, String email, String staffId,
                               Integer companyId, List<String> groupIdList)
             throws DuplicateUserEmailException, UserNotFoundException, GeneralSecurityException {
-        if(StringUtils.isEmpty(name)){
+        if (StringUtils.isEmpty(name)) {
             throw new InvalidInputException("Empty user name.");
         } else if (StringUtils.isEmpty(email)) {
             throw new InvalidInputException("Empty email.");
@@ -134,7 +140,7 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
 
         // check current user has right to create user of company
         boolean isEligibleCompany = isEligibleCompany(companyId);
-        if( ! isEligibleCompany ){
+        if (!isEligibleCompany) {
             LOG.warn("Ineligible to create user of selected company (" + companyId + ") by user (" + createby + ").");
             throw new InvalidInputException("Invalid company ID.");
         }
@@ -142,7 +148,7 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
 
         // check current user has right to create user of user group
         boolean isEligibleUserGroup = nocUserGroupService.isEligibleToGrantUserGroup(groupIdList);
-        if( ! isEligibleUserGroup ){
+        if (!isEligibleUserGroup) {
             LOG.warn("Ineligible to create user of selected user group (" + groupIdList + ") by user (" + createby + ").");
             throw new InvalidInputException("Invalid user group.");
         }
@@ -150,7 +156,7 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
 
         // check email duplicated
         NocUserEntity userEntity = nocUserMapper.getUserByEmail(email);
-        if (userEntity!=null){
+        if (userEntity != null) {
             throw new DuplicateUserEmailException();
         }
 
@@ -160,7 +166,7 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
         // generate dummy password
         UUID uuid = UUID.randomUUID();
         String password = uuid.toString();
-        String encodedPassword = encodePassword( password );
+        String encodedPassword = encodePassword(password);
 
         // encrypt
         byte[] encryptedMobile = StringUtils.isEmpty(mobile) ? null : nocSensitiveDataService.encryptFromString(mobile);
@@ -184,8 +190,8 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
         Integer newUserId = nocUserEntity.getUserId();
 
         // create user group relation in db
-        if ( ! CollectionUtils.isEmpty(groupIdList) ) {
-            for(String groupId : groupIdList){
+        if (!CollectionUtils.isEmpty(groupIdList)) {
+            for (String groupId : groupIdList) {
                 nocUserGroupMapper.insertUserUserGroup(newUserId, groupId, createby);
             }
         }
@@ -195,9 +201,9 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
         // send init password email
         try {
             requestResetPassword(email);
-        } catch (UserNotFoundException e){
+        } catch (UserNotFoundException e) {
             LOG.warn("User not found (" + email + ").");
-        } catch (Exception e){
+        } catch (Exception e) {
             LOG.error(e.getMessage(), e);
         }
 
@@ -210,8 +216,8 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
                            Boolean isNewAdmin, Boolean isNewUser, Boolean isNewCAdmin, Boolean isNewCUser)
             throws UserNotFoundException, InsufficientAuthorityException, InvalidInputException, GeneralSecurityException {
         NocUserBean currentUser = (NocUserBean) this.getCurrentUserBean();
-        if(currentUser.getUserId().equals(userId)){
-            throw new InvalidInputException ("Cannot update your own account!");
+        if (currentUser.getUserId().equals(userId)) {
+            throw new InvalidInputException("Cannot update your own account!");
         }
 
         // get modifier
@@ -230,10 +236,10 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
         String mobile = StringUtils.equals(newMobile, targetUserBean.getMobile()) ? null : newMobile;
         String staffId = StringUtils.equals(newStaffId, targetUserBean.getStaffId()) ? null : newStaffId;
 
-        Boolean updateIsAdmin = isTargetAdmin==isNewAdmin ? null : isNewAdmin;
-        Boolean updateIsUser = isTargetUser==isNewUser ? null : isNewUser;
-        Boolean updateIsCAdmin = isTargetCAdmin==isNewCAdmin ? null : isNewCAdmin;
-        Boolean updateIsCUser = isTargetCUser==isNewCUser ? null : isNewCUser;
+        Boolean updateIsAdmin = isTargetAdmin == isNewAdmin ? null : isNewAdmin;
+        Boolean updateIsUser = isTargetUser == isNewUser ? null : isNewUser;
+        Boolean updateIsCAdmin = isTargetCAdmin == isNewCAdmin ? null : isNewCAdmin;
+        Boolean updateIsCUser = isTargetCUser == isNewCUser ? null : isNewCUser;
 
         // encrypt
         byte[] encryptedMobile = StringUtils.isEmpty(mobile) ? null : nocSensitiveDataService.encryptFromString(mobile);
@@ -245,7 +251,7 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
         // update user group
         nocUserGroupService.updateUserGroup(userId, updateIsAdmin, updateIsUser, updateIsCAdmin, updateIsCUser, modifier);
 
-        LOG.info( String.format("Updated user. [name:%b, mobile:%b, staffId:%b]", name!=null, mobile!=null, staffId!=null) );
+        LOG.info(String.format("Updated user. [name:%b, mobile:%b, staffId:%b]", name != null, mobile != null, staffId != null));
     }
 
     @Override
@@ -256,9 +262,9 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
         Integer companyIdRestriction = getCompanyIdRestriction();
 
 
-        if(companyIdRestriction==null){
+        if (companyIdRestriction == null) {
             result = nocCompanyService.getAllCompany();
-        }else {
+        } else {
             NocCompanyBean nocCompanyBean = nocCompanyService.getCompanyById(companyIdRestriction);
             result = new LinkedList<>();
             result.add(nocCompanyBean);
@@ -267,14 +273,14 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
         return result;
     }
 
-    private boolean isEligibleCompany(Integer companyId){
+    private boolean isEligibleCompany(Integer companyId) {
         List<NocCompanyBean> eligibleCompanyList = getEligibleCompanyList();
-        if(CollectionUtils.isEmpty(eligibleCompanyList)){
+        if (CollectionUtils.isEmpty(eligibleCompanyList)) {
             return false;
         }
 
-        for(NocCompanyBean nocCompanyBean : eligibleCompanyList){
-            if(companyId.equals(nocCompanyBean.getCompanyId())){
+        for (NocCompanyBean nocCompanyBean : eligibleCompanyList) {
+            if (companyId.equals(nocCompanyBean.getCompanyId())) {
                 return true;
             }
         }
@@ -294,7 +300,7 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
 
         // find current user in db
         NocUserEntity nocUserEntity = nocUserMapper.getUserByUserId(userId, null);
-        if(nocUserEntity==null){
+        if (nocUserEntity == null) {
             throw new UserNotFoundException("User not found in database (" + userId + ").");
         }
         String encodedOldPwd = nocUserEntity.getPassword();
@@ -306,9 +312,9 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
         // check password history
         LOG.info("Checking conflict with password history...");
         List<String> passwordHistoryList = nocUserMapper.getPasswordHistByUserId(userId);
-        if(!CollectionUtils.isEmpty(passwordHistoryList)){
-            for(String encodedPastPassword : passwordHistoryList){
-                if(matchPassword(rawNewPassword, encodedPastPassword)){
+        if (!CollectionUtils.isEmpty(passwordHistoryList)) {
+            for (String encodedPastPassword : passwordHistoryList) {
+                if (matchPassword(rawNewPassword, encodedPastPassword)) {
                     throw new InvalidPasswordException("Conflict with password history.");
                 }
             }
@@ -325,14 +331,14 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
     public void updateUserPwd(Integer userId, String rawOldPassword, String rawNewPassword)
             throws UserNotFoundException, InvalidPasswordException {
         NocUserEntity nocUserEntity = nocUserMapper.getUserByUserId(userId, null);
-        if(nocUserEntity==null){
+        if (nocUserEntity == null) {
             throw new UserNotFoundException("User not found in database (" + userId + ").");
         }
 
         // check old password
         LOG.info("Checking input matches with old password...");
         String encodedOldPwd = nocUserEntity.getPassword();
-        if(! matchPassword(rawOldPassword, encodedOldPwd)){
+        if (!matchPassword(rawOldPassword, encodedOldPwd)) {
             throw new InvalidPasswordException("Incorrect old password.");
         }
 
@@ -348,7 +354,7 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
             throws UserNotFoundException, InvalidPasswordException, InvalidInputException {
         // check otp
         NocOtpBean nocOtpBean = nocOtpService.getValidResetPwdOtp(otp);
-        if(nocOtpBean==null){
+        if (nocOtpBean == null) {
             throw new InvalidInputException("Invalid OTP.");
         }
 
@@ -366,8 +372,8 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
     @Transactional
     public void activateUserByUsername(String username) throws UserNotFoundException, InvalidInputException {
         NocUserBean currentUser = (NocUserBean) this.getCurrentUserBean();
-        if( StringUtils.equals(currentUser.getEmail(), username) ){
-            throw new InvalidInputException ("Cannot activate your own account!");
+        if (StringUtils.equals(currentUser.getEmail(), username)) {
+            throw new InvalidInputException("Cannot activate your own account!");
         }
 
         Integer modifyby = getCurrentUserUserId();
@@ -388,10 +394,10 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
         nocUserMapper.updateUserStatusByUsername(username, NocUserEntity.STATUS.LOCKED, modifyby);
     }
 
-    public void disableUserByUsername(String username) throws UserNotFoundException, InvalidInputException{
+    public void disableUserByUsername(String username) throws UserNotFoundException, InvalidInputException {
         NocUserBean currentUser = (NocUserBean) this.getCurrentUserBean();
-        if( StringUtils.equals(currentUser.getEmail(), username) ){
-            throw new InvalidInputException ("Cannot deactivate your own account!");
+        if (StringUtils.equals(currentUser.getEmail(), username)) {
+            throw new InvalidInputException("Cannot deactivate your own account!");
         }
 
         Integer modifyby = getCurrentUserUserId();
@@ -399,45 +405,45 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
     }
 
     public boolean isEnabled(BtuUserBean btuUserBean) {
-        if (btuUserBean==null){
+        if (btuUserBean == null) {
             return false;
         }
-        return ! NocUserEntity.STATUS.DISABLE.equals(btuUserBean.getStatus());
+        return !NocUserEntity.STATUS.DISABLE.equals(btuUserBean.getStatus());
     }
 
     public boolean isNonLocked(BtuUserBean btuUserBean) {
-        if (btuUserBean==null){
+        if (btuUserBean == null) {
             return false;
         }
-        return ! NocUserEntity.STATUS.LOCKED.equals(btuUserBean.getStatus());
+        return !NocUserEntity.STATUS.LOCKED.equals(btuUserBean.getStatus());
     }
 
-    private void checkValidPassword(String plaintext) throws InvalidPasswordException{
+    private void checkValidPassword(String plaintext) throws InvalidPasswordException {
         final int MIN_LENGTH = 8;
         final int MAX_LENGTH = 20;
 
         // check length
-        if(StringUtils.isEmpty(plaintext)){
+        if (StringUtils.isEmpty(plaintext)) {
             throw new InvalidPasswordException("Empty password.");
-        } else if (plaintext.length()<MIN_LENGTH){
+        } else if (plaintext.length() < MIN_LENGTH) {
             throw new InvalidPasswordException("Password should be at least " + MIN_LENGTH + " char long.");
-        } else if (plaintext.length()>MAX_LENGTH){
+        } else if (plaintext.length() > MAX_LENGTH) {
             throw new InvalidPasswordException("Password should be at most " + MAX_LENGTH + " char long.");
         }
 
-        final String REGEX_NUM   = ".*[0-9].*";
+        final String REGEX_NUM = ".*[0-9].*";
         final String REGEX_ALPHA = ".*[a-zA-Z].*";
 
         // check pattern
         boolean hasNum = plaintext.matches(REGEX_NUM);
         boolean hasAlpha = plaintext.matches(REGEX_ALPHA);
-        if(!hasNum || !hasAlpha){
+        if (!hasNum || !hasAlpha) {
             throw new InvalidPasswordException("Password must contain both numeric and alphabetic characters.");
         }
     }
 
     public Page<NocUserBean> searchUser(Pageable pageable, Integer userId, String email, String name, String userGroupId)
-            throws AuthorityNotFoundException{
+            throws AuthorityNotFoundException {
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
 
@@ -447,9 +453,9 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
         // determine company id restriction
         Integer companyId = getCompanyIdRestriction();
 
-        LOG.info( String.format(
+        LOG.info(String.format(
                 "Searching user with {userId: %s, email: %s, name: %s, companyId: %s, userGroupId: %s}",
-                userId, email, name, companyId, userGroupId) );
+                userId, email, name, companyId, userGroupId));
 
         // get total count
         Integer totalCount = nocUserMapper.countSearchUser(companyId, userId, email, name, userGroupId);
@@ -457,8 +463,8 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
         // get content
         List<NocUserEntity> nocUserEntityList = nocUserMapper.searchUser(offset, pageSize, companyId, userId, email, name, userGroupId);
         List<NocUserBean> nocUserBeanList = new LinkedList<>();
-        if(! CollectionUtils.isEmpty(nocUserEntityList)){
-            for (NocUserEntity nocUserEntity : nocUserEntityList){
+        if (!CollectionUtils.isEmpty(nocUserEntityList)) {
+            for (NocUserEntity nocUserEntity : nocUserEntityList) {
                 NocUserBean nocUserBean = new NocUserBean();
                 nocUserBeanPopulator.populate(nocUserEntity, nocUserBean);
                 nocUserBeanList.add(nocUserBean);
@@ -476,12 +482,12 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
         NocUserBean currentUser;
         try {
             currentUser = (NocUserBean) getCurrentUserBean();
-        }catch (UserNotFoundException e){
+        } catch (UserNotFoundException e) {
             throw new AuthorityNotFoundException(e.getMessage());
         }
 
         Integer companyIdRestriction = currentUser.getCompanyId();
-        if(isInternalUser()){
+        if (isInternalUser()) {
             // internal user has no restriction over company id (independent of user id)
             return null;
         }
@@ -497,12 +503,12 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
         NocUserBean currentUser;
         try {
             currentUser = (NocUserBean) getCurrentUserBean();
-        }catch (UserNotFoundException e){
+        } catch (UserNotFoundException e) {
             throw new AuthorityNotFoundException(e.getMessage());
         }
 
         Integer userIdRestriction = currentUser.getUserId();
-        if(isAdminUser()){
+        if (isAdminUser()) {
             // admin user has no restriction over user id (independent of company id)
             return null;
         }
@@ -523,18 +529,18 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
 
     public void requestResetPassword(String username) throws UserNotFoundException, MessagingException {
         NocUserEntity nocUserEntity = nocUserMapper.getUserByEmail(username);
-        if(nocUserEntity==null){
+        if (nocUserEntity == null) {
             throw new UserNotFoundException();
         }
 
         Integer userId = nocUserEntity.getUserId();
         String otp = nocOtpService.generatePwdResetOtp(userId);
-        boolean isNewlyCreated = nocUserEntity.getPasswordModifydate()==null;
+        boolean isNewlyCreated = nocUserEntity.getPasswordModifydate() == null;
         LOG.info("Generated password OTP successfully for user " + username + ".");
 
 
         // send otp email
-        if(isNewlyCreated) {
+        if (isNewlyCreated) {
             String recipient = nocUserEntity.getEmail();
 
             Map<String, Object> dataMap = new HashMap<>();

@@ -1,8 +1,8 @@
 package com.hkt.btu.noc.core.service;
 
+import com.hkt.btu.common.core.exception.UserNotFoundException;
 import com.hkt.btu.noc.core.exception.CompanyNotFoundException;
 import com.hkt.btu.noc.core.exception.InvalidInputException;
-import com.hkt.btu.noc.core.exception.UserNotFoundException;
 import com.hkt.btu.noc.core.service.bean.NocCompanyBean;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;

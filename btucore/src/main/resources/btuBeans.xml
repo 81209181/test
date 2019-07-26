@@ -41,6 +41,12 @@
     <alias name="btuTemplateEngineService" alias="templateEngineService"/>
     <bean id="btuTemplateEngineService" class="com.hkt.btu.common.core.service.impl.BtuTemplateEngineServiceImpl" />
 
+    <alias name="LdapAuthenticationProvider" alias="customLdapAuthenticationProvider"/>
+    <bean id="LdapAuthenticationProvider" class="com.hkt.btu.common.spring.security.authentication.LdapAuthenticationProvider" />
+
+    <alias name="LdapAuthenticationProcessor" alias="customLdapAuthenticationProcessor"/>
+    <bean id="LdapAuthenticationProcessor" class="com.hkt.btu.common.spring.security.authentication.LdapAuthenticationProcessor" />
+
     <!-- BTU Service -->
     <!--!!! To be overridden and implemented by each application (with bean alias) !!!-->
     <!--<alias name="btuSiteConfigService" alias="siteConfigService"/>

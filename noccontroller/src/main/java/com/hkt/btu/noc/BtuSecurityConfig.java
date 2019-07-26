@@ -4,6 +4,7 @@ import com.hkt.btu.common.spring.security.access.BtuAccessDeniedHandler;
 import com.hkt.btu.common.spring.security.access.BtuDaoAuthenticationProvider;
 import com.hkt.btu.common.spring.security.access.intercept.BtuSecurityInterceptor;
 import com.hkt.btu.common.spring.security.access.intercept.BtuSecurityMetadataSource;
+import com.hkt.btu.common.spring.security.authentication.LdapAuthenticationProvider;
 import com.hkt.btu.common.spring.security.web.authentication.BtuExceptionMappingAuthenticationFailureHandler;
 import com.hkt.btu.common.spring.security.web.authentication.BtuLoginSuccessHandler;
 import com.hkt.btu.common.spring.security.web.authentication.BtuLoginUrlAuthenticationEntryPoint;
@@ -50,13 +51,16 @@ public class BtuSecurityConfig extends WebSecurityConfigurerAdapter {
     @Resource(name = "btuPasswordEncoder")
     BCryptPasswordEncoder btuPasswordEncoder;
 
+    @Resource(name = "LdapAuthenticationProvider")
+    LdapAuthenticationProvider ldapAuth;
+
 
     @SuppressWarnings("RedundantThrows")
     @Override
     protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
         btuDaoAuthenticationProvider.setPasswordEncoder(btuPasswordEncoder);
-        auth.authenticationProvider(btuDaoAuthenticationProvider);
-
+        //auth.authenticationProvider(btuDaoAuthenticationProvider);
+        auth.authenticationProvider(ldapAuth);
         // BCryptPasswordEncoder Online: https://www.dailycred.com/article/bcrypt-calculator
         // BCrypt round: 10 (spring security default)
     }
@@ -77,38 +81,38 @@ public class BtuSecurityConfig extends WebSecurityConfigurerAdapter {
                         BtuSecurityMetadataSource.RESERVED_ANT_PATH_IMG,
                         BtuSecurityMetadataSource.RESERVED_ANT_PATH_WEBJAR,
                         BtuSecurityMetadataSource.RESERVED_ANT_PATH_ERROR,
-                        BtuSecurityMetadataSource.RESERVED_ANT_PATH_PUBLIC ).permitAll()
+                        BtuSecurityMetadataSource.RESERVED_ANT_PATH_PUBLIC).permitAll()
                 .anyRequest().authenticated()
 
                 // Login config
                 .and()
                 .formLogin()
-                    .loginPage(LOGIN_URI) // login request mapping
-                    .successHandler(btuLoginSuccessHandler)
-                    .failureHandler(btuExcepMapAuthFailureHandler)
-                    .permitAll()
+                .loginPage(LOGIN_URI) // login request mapping
+                .successHandler(btuLoginSuccessHandler)
+                .failureHandler(btuExcepMapAuthFailureHandler)
+                .permitAll()
 
                 // Logout config
                 .and()
                 .logout()
-                    .invalidateHttpSession(true)
-                    .clearAuthentication(true)
-                    .logoutRequestMatcher(new AntPathRequestMatcher("/public/logout")) // logout request mapping
-                    .logoutSuccessHandler(btuLogoutSuccessHandler)
-                    .permitAll()
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
+                .logoutRequestMatcher(new AntPathRequestMatcher("/public/logout")) // logout request mapping
+                .logoutSuccessHandler(btuLogoutSuccessHandler)
+                .permitAll()
 
                 // User group control over incoming uri
                 .and()
                 .addFilterAfter(btuSecurityInterceptor, FilterSecurityInterceptor.class)
 
                 .exceptionHandling()
-                    .authenticationEntryPoint(btuLoginUrlAuthenticationEntryPoint)
-                    .accessDeniedHandler(btuAccessDeniedHandler)
-                ;
+                .authenticationEntryPoint(btuLoginUrlAuthenticationEntryPoint)
+                .accessDeniedHandler(btuAccessDeniedHandler)
+        ;
 
-                /* HTTP falls over HTTPS is done and assured by server setting.
-                 * Hence, https should not be enforced by application.
-                 */
+        /* HTTP falls over HTTPS is done and assured by server setting.
+         * Hence, https should not be enforced by application.
+         */
 //                .requiresChannel()
 //                .antMatchers("/**").requiresSecure() // always require https
     }

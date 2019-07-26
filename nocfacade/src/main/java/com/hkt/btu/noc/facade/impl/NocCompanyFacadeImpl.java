@@ -1,9 +1,9 @@
 package com.hkt.btu.noc.facade.impl;
 
+import com.hkt.btu.common.core.exception.UserNotFoundException;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.noc.core.exception.CompanyNotFoundException;
 import com.hkt.btu.noc.core.exception.InvalidInputException;
-import com.hkt.btu.noc.core.exception.UserNotFoundException;
 import com.hkt.btu.noc.core.service.NocCompanyService;
 import com.hkt.btu.noc.core.service.NocInputCheckService;
 import com.hkt.btu.noc.core.service.bean.NocCompanyBean;

@@ -1,5 +1,6 @@
 package com.hkt.btu.noc.core.service.impl;
 
+import com.hkt.btu.common.core.exception.UserNotFoundException;
 import com.hkt.btu.noc.core.dao.entity.NocAccessRequestVisitorEntity;
 import com.hkt.btu.noc.core.dao.mapper.NocAccessRequestVisitorMapper;
 import com.hkt.btu.noc.core.dao.populator.NocAccessRequestVisitorEntityPopulator;

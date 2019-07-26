@@ -1,4 +1,4 @@
-package com.hkt.btu.noc.core.exception;
+package com.hkt.btu.common.core.exception;
 
 public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException(){

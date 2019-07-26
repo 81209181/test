@@ -6,8 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
+import java.io.FileNotFoundException;
+
 @MapperScan("com.hkt.btu.noc.core.dao.mapper")
-@SpringBootApplication(scanBasePackages = {"com.hkt.btu"})//, exclude = DataSourceAutoConfiguration.class)
+@SpringBootApplication(scanBasePackages = {"com.hkt.btu"})//exclude = DataSourceAutoConfiguration.class)
 public class NocApplication extends SpringBootServletInitializer {
 
     @Override
@@ -15,8 +17,7 @@ public class NocApplication extends SpringBootServletInitializer {
         return application.sources(NocApplication.class);
     }
 
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws FileNotFoundException {
         SpringApplication.run(NocApplication.class);
     }
 }
