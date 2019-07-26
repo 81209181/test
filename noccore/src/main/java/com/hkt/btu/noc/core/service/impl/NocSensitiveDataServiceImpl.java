@@ -39,14 +39,13 @@ public class NocSensitiveDataServiceImpl implements NocSensitiveDataService {
     private static final int IV_BYTE_LENGTH = IV_BIT_LENGTH / 8;
 
     // keystore
-    //private static final String KEYSTORE_PATH = File.separator + "opt" + File.separator + "keystore" + File.separator + "skyexchange-aes-keystore.jck";
-    private static final String KEYSTORE_PATH = "D:" + File.separator + "skyexchange-aes-keystore.jck";
-    @Value("${storePass}")
+    private static final String KEYSTORE_PATH = File.separator + "opt" + File.separator + "keystore" + File.separator + "aes-keystore.jck";
+    @Value("${servicedesk.aesKeystore.storePass}")
     private String storePass;
 
     // key
     private static final int LATEST_KEY_ALIAS = 1; // [INPUT] alias of latest key
-    private static final char[] KEY_PASS = {'s', 'k', 'y', 'e', 'x', 'c', 'h', 'a', 'n', 'g', 'e'};
+    private static final char[] KEY_PASS = {'s', 'e', 'r', 'v', 'i', 'c', 'e', 'd', 'e', 's', 'k'};
     private static Map<Integer, Key> CACHED_KEY_MAP = new HashMap<>();
 
 

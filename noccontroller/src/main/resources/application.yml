@@ -1,20 +1,12 @@
-server:
-  port: 8082
-
-
 spring:
   main:
     allow-bean-definition-overriding: true
   datasource:
-    #jndi-name: java:comp/env/jdbc/skyexch
-    url: jdbc:mysql://10.111.6.49:3306/skyexch
-    username: skyexch
-    password: dwfm123
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    jndi-name: java:comp/env/jdbc/servdesk
 
 mybatis:
   mapperLocations: classpath:mybatis/mapper/*.xml
   config-location: classpath:mybatis/mybatis-config.xml
 
 project:
-  buildtime: #@buildTimestamp@
+  buildtime: @buildTimestamp@

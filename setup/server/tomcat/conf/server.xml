@@ -161,16 +161,16 @@
                prefix="localhost_access_log" suffix=".txt"
                pattern="%h %l %u %t &quot;%r&quot; %s %b" />
 
-        <Context path="/skyexchange" reloadable="true" swallowOutput="true" >
-          <Resource name="jdbc/skyexch"
+        <Context path="/servicedesk" reloadable="true" swallowOutput="true" >
+          <Resource name="jdbc/servdesk"
                     auth="Container" type="javax.sql.DataSource"
                     initialSize="8" minIdle="8" maxIdle="16" maxTotal="64" maxWaitMillis="10000"
                     removeAbandonedOnBorrow="true" removeAbandonedTimeout="300"
                     maxConnLifetimeMillis="14400000"
-                    validationQuery="SELECT 1" validationQueryTimeout="10"
+                    validationQuery="SELECT 1 FROM DUAL" validationQueryTimeout="10"
                     testWhileIdle="true" timeBetweenEvictionRunsMillis="3600000"
-                    username="skyexch" password="dwfm123"
-                    url="jdbc:mysql://10.111.6.49:3306/skyexch"
+                    username="${servicedesk.db.username}" password="${servicedesk.db.password}"
+                    url="${servicedesk.db.url}"
                     driverClassName="com.mysql.jdbc.Driver" />
         </Context>
       </Host>
