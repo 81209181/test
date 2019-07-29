@@ -3,15 +3,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>skyexchange</artifactId>
+        <artifactId>servicedesk</artifactId>
         <groupId>com.hkt.btu</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>noccore</artifactId>
+    <artifactId>sdfacade</artifactId>
 
-    <name>noccore</name>
+    <name>sdfacade</name>
 
     <properties>
         <java.version>11</java.version>
@@ -27,13 +27,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>1.3.2</version>
-        </dependency>
-        <dependency>
             <groupId>com.hkt.btu</groupId>
-            <artifactId>btucore</artifactId>
+            <artifactId>sdcore</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>

@@ -4,18 +4,18 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.hkt.btu</groupId>
-    <artifactId>skyexchange</artifactId>
+    <artifactId>servicedesk</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <modules>
         <module>btucore</module>
-        <module>noccore</module>
-        <module>nocfacade</module>
-        <module>noccontroller</module>
+        <module>sdcore</module>
+        <module>sdfacade</module>
+        <module>sdcontroller</module>
     </modules>
     <packaging>pom</packaging>
 
-    <name>skyexchange</name>
-    <description>Sky Exchange</description>
+    <name>servicedesk</name>
+    <description>service desk</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
