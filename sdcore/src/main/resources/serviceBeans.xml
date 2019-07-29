@@ -12,9 +12,9 @@
     <alias name="nocUserService" alias="btuUserService"/>
     <bean id="nocUserService" class="com.hkt.btu.noc.core.service.impl.NocUserServiceImpl"/>
 
-    <alias name="nocPathCtrlService" alias="pathCtrlService"/>
+  <!--  <alias name="nocPathCtrlService" alias="pathCtrlService"/>
     <alias name="nocPathCtrlService" alias="btuPathCtrlService"/>
-    <bean id="nocPathCtrlService" class="com.hkt.btu.noc.core.service.impl.NocPathCtrlServiceImpl" />
+    <bean id="nocPathCtrlService" class="com.hkt.btu.noc.core.service.impl.NocPathCtrlServiceImpl" />-->
 
     <alias name="nocAuditTrailService" alias="auditTrailService"/>
     <alias name="nocAuditTrailService" alias="btuAuditTrailService"/>
