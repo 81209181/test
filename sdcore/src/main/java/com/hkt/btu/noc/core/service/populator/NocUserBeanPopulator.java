@@ -2,7 +2,6 @@ package com.hkt.btu.noc.core.service.populator;
 
 
 import com.hkt.btu.common.core.service.populator.AbstractBeanPopulator;
-import com.hkt.btu.noc.core.dao.entity.NocAccessRequestEntity;
 import com.hkt.btu.noc.core.dao.entity.NocUserEntity;
 import com.hkt.btu.noc.core.dao.entity.NocUserGroupEntity;
 import com.hkt.btu.noc.core.service.NocSensitiveDataService;
@@ -57,13 +56,6 @@ public class NocUserBeanPopulator extends AbstractBeanPopulator<NocUserBean> {
         }
 
         target.setAuthorities(grantedAuthSet);
-    }
-
-    public void populate(NocAccessRequestEntity source, NocUserBean target){
-        target.setUserId(source.getRequesterId());
-        target.setName(source.getRequesterName());
-        target.setMobile( nocSensitiveDataService.decryptToStringSafe(source.getMobile()) );
-        target.setEmail( nocSensitiveDataService.decryptToStringSafe(source.getEmail()) );
     }
 
 }

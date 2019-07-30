@@ -37,12 +37,7 @@ public class ManageUserController {
     @GetMapping("/create-user")
     public String createUserForm (final Model model,
                                   @ModelAttribute("createUserFormData") CreateUserFormData createUserFormData,
-                                  @ModelAttribute("companyOptionList") LinkedList<NocCompanyData> companyOptionList,
                                   @ModelAttribute("userGroupOptionDataMap") HashMap<String, NocUserGroupData> userGroupOptionDataMap) {
-        companyOptionList = userFacade.getEligibleCompanyList();
-        if(!CollectionUtils.isEmpty(companyOptionList)){
-            model.addAttribute("companyOptionList", companyOptionList);
-        }
 
         // user group info
         List<NocUserGroupData> userGroupDataList = nocUserGroupFacade.getEligibleUserGroupList();

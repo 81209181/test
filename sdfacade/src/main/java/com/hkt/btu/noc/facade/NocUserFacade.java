@@ -15,7 +15,6 @@ public interface NocUserFacade {
 
 
     CreateResultData createUser(CreateUserFormData createUserFormData);
-    LinkedList<NocCompanyData> getEligibleCompanyList();
 
     String updateUser(UpdateUserFormData updateUserFormData);
 

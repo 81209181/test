@@ -4,7 +4,6 @@ package com.hkt.btu.noc.core.service;
 import com.hkt.btu.common.core.exception.UserNotFoundException;
 import com.hkt.btu.common.core.service.BtuUserService;
 import com.hkt.btu.noc.core.exception.*;
-import com.hkt.btu.noc.core.service.bean.NocCompanyBean;
 import com.hkt.btu.noc.core.service.bean.NocUserBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,8 +39,6 @@ public interface NocUserService extends BtuUserService {
     void updateUser(Integer userId, String newName, String newMobile, String newStaffId,
                     Boolean isNewAdmin, Boolean isNewUser, Boolean isNewCAdmin, Boolean isNewCUser)
             throws UserNotFoundException, InsufficientAuthorityException, GeneralSecurityException;
-
-    List<NocCompanyBean> getEligibleCompanyList();
 
     void requestResetPassword(String username) throws UserNotFoundException, MessagingException;
 }

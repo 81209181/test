@@ -10,7 +10,6 @@ import com.hkt.btu.noc.core.dao.mapper.NocUserGroupMapper;
 import com.hkt.btu.noc.core.dao.mapper.NocUserMapper;
 import com.hkt.btu.noc.core.exception.*;
 import com.hkt.btu.noc.core.service.*;
-import com.hkt.btu.noc.core.service.bean.NocCompanyBean;
 import com.hkt.btu.noc.core.service.bean.NocEmailBean;
 import com.hkt.btu.noc.core.service.bean.NocOtpBean;
 import com.hkt.btu.noc.core.service.bean.NocUserBean;
@@ -43,8 +42,6 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
 
     @Resource(name = "userGroupService")
     NocUserGroupService nocUserGroupService;
-    @Resource(name = "companyService")
-    NocCompanyService nocCompanyService;
     @Resource(name = "otpService")
     NocOtpService nocOtpService;
     @Resource(name = "emailService")
@@ -137,14 +134,6 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
 
         // get current user user id
         Integer createby = getCurrentUserUserId();
-
-        // check current user has right to create user of company
-        boolean isEligibleCompany = isEligibleCompany(companyId);
-        if (!isEligibleCompany) {
-            LOG.warn("Ineligible to create user of selected company (" + companyId + ") by user (" + createby + ").");
-            throw new InvalidInputException("Invalid company ID.");
-        }
-
 
         // check current user has right to create user of user group
         boolean isEligibleUserGroup = nocUserGroupService.isEligibleToGrantUserGroup(groupIdList);
@@ -254,39 +243,6 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
         LOG.info(String.format("Updated user. [name:%b, mobile:%b, staffId:%b]", name != null, mobile != null, staffId != null));
     }
 
-    @Override
-    public List<NocCompanyBean> getEligibleCompanyList() {
-        List<NocCompanyBean> result;
-
-        // determine company id restriction
-        Integer companyIdRestriction = getCompanyIdRestriction();
-
-
-        if (companyIdRestriction == null) {
-            result = nocCompanyService.getAllCompany();
-        } else {
-            NocCompanyBean nocCompanyBean = nocCompanyService.getCompanyById(companyIdRestriction);
-            result = new LinkedList<>();
-            result.add(nocCompanyBean);
-        }
-
-        return result;
-    }
-
-    private boolean isEligibleCompany(Integer companyId) {
-        List<NocCompanyBean> eligibleCompanyList = getEligibleCompanyList();
-        if (CollectionUtils.isEmpty(eligibleCompanyList)) {
-            return false;
-        }
-
-        for (NocCompanyBean nocCompanyBean : eligibleCompanyList) {
-            if (companyId.equals(nocCompanyBean.getCompanyId())) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 
     /**
      * Its public invoking method should be marked @Transactional.

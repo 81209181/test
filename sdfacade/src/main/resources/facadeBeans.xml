@@ -9,12 +9,6 @@
     <alias name="nocUserGroupFacadeImpl" alias="userGroupFacade"/>
     <bean id="nocUserGroupFacadeImpl" class="com.hkt.btu.noc.facade.impl.NocUserGroupFacadeImpl" />
 
-    <alias name="nocCompanyFacadeImpl" alias="companyFacade"/>
-    <bean id="nocCompanyFacadeImpl" class="com.hkt.btu.noc.facade.impl.NocCompanyFacadeImpl" />
-
-    <alias name="nocAccessRequestFacade" alias="accessRequestFacade"/>
-    <bean id="nocAccessRequestFacade" class="com.hkt.btu.noc.facade.impl.NocAccessRequestFacadeImpl" />
-
     <alias name="nocConfigParamFacade" alias="configParamFacade"/>
     <bean id="nocConfigParamFacade" class="com.hkt.btu.noc.facade.impl.NocConfigParamFacadeImpl" />
 
@@ -38,21 +32,8 @@
     <alias name="nocUserGroupDataPopulator" alias="userGroupDataPopulator"/>
     <bean id="nocUserGroupDataPopulator" class="com.hkt.btu.noc.facade.populator.NocUserGroupDataPopulator"/>
 
-    <alias name="nocCompanyDataPopulator" alias="companyDataPopulator"/>
-    <bean id="nocCompanyDataPopulator" class="com.hkt.btu.noc.facade.populator.NocCompanyDataPopulator"/>
-
-    <alias name="nocAccessRequestDataPopulator" alias="accessRequestDataPopulator"/>
-    <bean id="nocAccessRequestDataPopulator" class="com.hkt.btu.noc.facade.populator.NocAccessRequestDataPopulator"/>
-    <alias name="nocAccessRequestVisitorDataPopulator" alias="accessRequestVisitorDataPopulator"/>
-    <bean id="nocAccessRequestVisitorDataPopulator" class="com.hkt.btu.noc.facade.populator.NocAccessRequestVisitorDataPopulator"/>
-    <alias name="nocAccessRequestEquipDataPopulator" alias="accessRequestEquipDataPopulator"/>
-    <bean id="nocAccessRequestEquipDataPopulator" class="com.hkt.btu.noc.facade.populator.NocAccessRequestEquipDataPopulator"/>
-
     <alias name="nocConfigParamDataPopulator" alias="configParamDataPopulator"/>
     <bean id="nocConfigParamDataPopulator" class="com.hkt.btu.noc.facade.populator.NocConfigParamDataPopulator"/>
-
-    <alias name="nocOperationHistDataPopulator" alias="operationHistDataPopulator"/>
-    <bean id="nocOperationHistDataPopulator" class="com.hkt.btu.noc.facade.populator.NocOperationHistDataPopulator"/>
 
     <alias name="nocSiteInstanceDataPopulator" alias="siteInstanceDataPopulator"/>
     <bean id="nocSiteInstanceDataPopulator" class="com.hkt.btu.noc.facade.populator.NocSiteConfigDataPopulator"/>
@@ -62,8 +43,5 @@
 
     <alias name="nocCronJobInstDataPopulator" alias="cronJobInstDataPopulator"/>
     <bean id="nocCronJobInstDataPopulator" class="com.hkt.btu.noc.facade.populator.NocCronJobInstDataPopulator"/>
-
-    <alias name="nocAccessRequestLocDataPopulator" alias="accessRequestLocDataPopulator"/>
-    <bean id="nocAccessRequestLocDataPopulator" class="com.hkt.btu.noc.facade.populator.NocAccessRequestLocDataPopulator"/>
 
 </beans>

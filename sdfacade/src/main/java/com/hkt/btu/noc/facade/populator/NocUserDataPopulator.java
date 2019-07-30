@@ -2,7 +2,6 @@ package com.hkt.btu.noc.facade.populator;
 
 
 import com.hkt.btu.common.facade.populator.AbstractDataPopulator;
-import com.hkt.btu.noc.core.service.bean.NocCompanyBean;
 import com.hkt.btu.noc.core.service.bean.NocUserBean;
 import com.hkt.btu.noc.facade.data.NocUserData;
 import org.apache.commons.collections4.CollectionUtils;
@@ -45,10 +44,6 @@ public class NocUserDataPopulator extends AbstractDataPopulator<NocUserData> {
         target.setLoginTried(null);
         target.setPasswordModifyDate(null);
         target.setUserGroupList(null);
-    }
-
-    public void populate(NocCompanyBean source, NocUserData target) {
-        target.setCompanyName(source.getName());
     }
 
     public void populateSensitiveData(NocUserBean source, NocUserData target){

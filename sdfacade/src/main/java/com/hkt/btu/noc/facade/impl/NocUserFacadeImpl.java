@@ -3,14 +3,11 @@ package com.hkt.btu.noc.facade.impl;
 import com.hkt.btu.common.core.exception.UserNotFoundException;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.noc.core.exception.*;
-import com.hkt.btu.noc.core.service.NocCompanyService;
 import com.hkt.btu.noc.core.service.NocInputCheckService;
 import com.hkt.btu.noc.core.service.NocUserService;
-import com.hkt.btu.noc.core.service.bean.NocCompanyBean;
 import com.hkt.btu.noc.core.service.bean.NocUserBean;
 import com.hkt.btu.noc.facade.NocUserFacade;
 import com.hkt.btu.noc.facade.data.*;
-import com.hkt.btu.noc.facade.populator.NocCompanyDataPopulator;
 import com.hkt.btu.noc.facade.populator.NocUserDataPopulator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -22,7 +19,6 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import java.security.GeneralSecurityException;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -32,15 +28,12 @@ public class NocUserFacadeImpl implements NocUserFacade {
 
     @Resource(name = "userService")
     NocUserService nocUserService;
-    @Resource(name = "companyService")
-    NocCompanyService nocCompanyService;
+
     @Resource(name = "inputCheckService")
     NocInputCheckService nocInputCheckService;
 
     @Resource(name = "userDataPopulator")
     NocUserDataPopulator userDataPopulator;
-    @Resource(name = "companyDataPopulator")
-    NocCompanyDataPopulator nocCompanyDataPopulator;
 
 
     @Override
@@ -77,24 +70,6 @@ public class NocUserFacadeImpl implements NocUserFacade {
         }
 
         return CreateResultData.of(newUserId);
-    }
-
-    @Override
-    public LinkedList<NocCompanyData> getEligibleCompanyList() {
-        List<NocCompanyBean> nocCompanyBeanList = nocUserService.getEligibleCompanyList();
-        if(CollectionUtils.isEmpty(nocCompanyBeanList)){
-            return new LinkedList<>();
-        }
-
-        LinkedList<NocCompanyData> dataList = new LinkedList<>();
-        for(NocCompanyBean bean : nocCompanyBeanList){
-            NocCompanyData data = new NocCompanyData();
-            nocCompanyDataPopulator.populate(bean, data);
-            dataList.add(data);
-        }
-
-        dataList.sort(Comparator.comparing(NocCompanyData::getName));
-        return dataList;
     }
 
     @Override
@@ -289,14 +264,8 @@ public class NocUserFacadeImpl implements NocUserFacade {
             userDataPopulator.populate(nocUserBean, userData);
             userDataPopulator.populateSensitiveData(nocUserBean, userData);
 
-            // get company info
-            NocCompanyBean nocCompanyBean = nocCompanyService.getCompanyById(nocUserBean.getCompanyId());
-            userDataPopulator.populate(nocCompanyBean, userData);
         } catch (UserNotFoundException e){
             return null;
-        } catch (CompanyNotFoundException e){
-            LOG.warn("Company data corrupted of companyId=" + userData.getCompanyId() + ".");
-            return userData;
         }
 
         return userData;
@@ -311,15 +280,9 @@ public class NocUserFacadeImpl implements NocUserFacade {
             userDataPopulator.populate(nocUserBean, userData);
             userDataPopulator.populateSensitiveData(nocUserBean, userData);
 
-            // get company info
-            NocCompanyBean nocCompanyBean = nocCompanyService.getCompanyById(nocUserBean.getCompanyId());
-            userDataPopulator.populate(nocCompanyBean, userData);
         } catch (UserNotFoundException e){
             LOG.warn(e.getMessage());
             return null;
-        } catch (CompanyNotFoundException e){
-            LOG.warn("Company data corrupted of companyId=" + userData.getCompanyId() + ".");
-            return userData;
         }
 
         return userData;

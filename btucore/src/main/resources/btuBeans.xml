@@ -53,12 +53,12 @@
     <bean id="btuSiteConfigService" class="com.hkt.btu.common.core.service.impl.BtuSiteConfigServiceImpl" />
 
     <alias name="btuUserService" alias="userService"/>
-    <bean id="btuUserService" class="com.hkt.btu.common.core.service.impl.BtuUserServiceImpl" />
+    <bean id="btuUserService" class="com.hkt.btu.common.core.service.impl.BtuUserServiceImpl" />-->
 
     <alias name="btuPathCtrlService" alias="pathCtrlService"/>
     <bean id="btuPathCtrlService" class="com.hkt.btu.common.core.service.impl.BtuPathCtrlServiceImpl" />
 
-    <alias name="btuAuditTrailServiceImpl" alias="auditTrailService"/>
+    <!--<alias name="btuAuditTrailServiceImpl" alias="auditTrailService"/>
     <bean id="btuAuditTrailServiceImpl" class="com.hkt.btu.common.core.service.impl.BtuAuditTrailServiceImpl" />-->
 
     <alias name="btuHttpService" alias="httpService"/>
