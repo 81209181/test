@@ -11,7 +11,9 @@ import org.apache.logging.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.glassfish.jersey.jackson.internal.jackson.jaxrs.annotation.JacksonFeatures;
 import org.quartz.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.Resource;
@@ -28,13 +30,16 @@ public class NocJobAspect {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 
-    @Resource(name = "cronJobProfileService")
+//    @Resource(name = "cronJobProfileService")
+    @Autowired
     NocCronJobProfileService nocCronJobProfileService;
-    @Resource(name = "cronJobLogService")
+//    @Resource(name = "cronJobLogService")
+    @Autowired
     NocCronJobLogService nocCronJobLogService;
-    @Resource(name = "emailService")
+//    @Resource(name = "emailService")
+    @Autowired
     NocEmailService nocEmailService;
-    @Resource(name = "configParamService")
+    @Resource(name = "NocConfigParamService")
     NocConfigParamService nocConfigParamService;
 
 

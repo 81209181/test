@@ -4,10 +4,11 @@ import com.hkt.btu.noc.core.exception.InvalidInputException;
 import com.hkt.btu.noc.core.service.NocInputCheckService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 
-
+@Service
 public class NocInputCheckServiceImpl implements NocInputCheckService {
 
     @Override

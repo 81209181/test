@@ -6,12 +6,13 @@ import com.hkt.btu.noc.core.service.bean.NocCronJobInstBean;
 import org.quartz.CronTrigger;
 import org.quartz.JobDetail;
 import org.quartz.Trigger;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-
+@Component
 public class NocCronJobInstBeanPopulator extends AbstractBeanPopulator<NocCronJobInstBean> {
 
     public void populate(JobDetail jobDetail, NocCronJobInstBean target) {

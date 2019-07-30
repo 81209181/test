@@ -15,8 +15,10 @@ import com.hkt.btu.noc.facade.populator.NocUserDataPopulator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -26,20 +28,21 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
+@Service
 public class NocUserFacadeImpl implements NocUserFacade {
     private static final Logger LOG = LogManager.getLogger(NocUserFacadeImpl.class);
 
 
-    @Resource(name = "userService")
+    @Resource(name = "NocUserService")
     NocUserService nocUserService;
-    @Resource(name = "companyService")
+    @Autowired
     NocCompanyService nocCompanyService;
-    @Resource(name = "inputCheckService")
+    @Autowired
     NocInputCheckService nocInputCheckService;
 
-    @Resource(name = "userDataPopulator")
+    @Autowired
     NocUserDataPopulator userDataPopulator;
-    @Resource(name = "companyDataPopulator")
+    @Autowired
     NocCompanyDataPopulator nocCompanyDataPopulator;
 
 

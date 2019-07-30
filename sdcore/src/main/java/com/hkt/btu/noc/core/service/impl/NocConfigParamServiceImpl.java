@@ -9,6 +9,8 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -19,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+@Service("NocConfigParamService")
 public class NocConfigParamServiceImpl implements NocConfigParamService {
     private static final Logger LOG = LogManager.getLogger(NocConfigParamServiceImpl.class);
 
@@ -26,7 +29,7 @@ public class NocConfigParamServiceImpl implements NocConfigParamService {
     @Resource
     private NocConfigParamMapper nocConfigParamMapper;
 
-    @Resource(name = "configParamBeanPopulator")
+    @Autowired
     NocConfigParamBeanPopulator nocConfigParamBeanPopulator;
 
     public Map<String, Object> getConfigParamByConfigGroup(String configGroup) {

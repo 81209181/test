@@ -4,10 +4,12 @@ package com.hkt.btu.noc.core.service.populator;
 import com.hkt.btu.common.core.service.populator.AbstractBeanPopulator;
 import com.hkt.btu.noc.core.service.bean.NocSiteConfigBean;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletContext;
 import java.net.InetAddress;
 
+@Component
 public class NocSiteConfigBeanPopulator extends AbstractBeanPopulator<NocSiteConfigBean> {
 
 

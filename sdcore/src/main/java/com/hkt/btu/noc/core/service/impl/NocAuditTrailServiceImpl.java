@@ -8,13 +8,15 @@ import com.hkt.btu.noc.core.service.NocUserService;
 import com.hkt.btu.noc.core.service.bean.NocUserBean;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
+@Service("NocAuditTrailService")
 public class NocAuditTrailServiceImpl implements NocAuditTrailService {
     private static final Logger LOG = LogManager.getLogger(NocAuditTrailServiceImpl.class);
 
-    @Resource (name = "userService")
+    @Resource (name = "NocUserService")
     NocUserService userService;
 
     @Resource

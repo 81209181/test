@@ -18,10 +18,12 @@ import com.hkt.btu.noc.core.service.populator.NocUserBeanPopulator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
@@ -30,6 +32,7 @@ import javax.mail.MessagingException;
 import java.security.GeneralSecurityException;
 import java.util.*;
 
+@Service("NocUserService")
 public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserService {
     private static final Logger LOG = LogManager.getLogger(NocUserServiceImpl.class);
 
@@ -38,19 +41,19 @@ public class NocUserServiceImpl extends BtuUserServiceImpl implements NocUserSer
     @Resource
     NocUserGroupMapper nocUserGroupMapper;
 
-    @Resource(name = "userBeanPopulator")
+    @Autowired
     NocUserBeanPopulator nocUserBeanPopulator;
 
-    @Resource(name = "userGroupService")
+    @Autowired
     NocUserGroupService nocUserGroupService;
-    @Resource(name = "companyService")
+    @Autowired
     NocCompanyService nocCompanyService;
-    @Resource(name = "otpService")
+    @Autowired
     NocOtpService nocOtpService;
-    @Resource(name = "emailService")
+    @Autowired
     NocEmailService nocEmailService;
 
-    @Resource(name = "sensitiveDataService")
+    @Autowired
     NocSensitiveDataService nocSensitiveDataService;
 
     @Override

@@ -7,6 +7,7 @@ import com.hkt.btu.noc.facade.NocCompanyFacade;
 import com.hkt.btu.noc.facade.data.CreateResultData;
 import com.hkt.btu.noc.facade.data.NocCompanyData;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ import javax.validation.Valid;
 @RequestMapping(value = "/admin/manage-company")
 public class ManageCompanyController {
 
-    @Resource(name = "companyFacade")
+    @Autowired
     NocCompanyFacade nocCompanyFacade;
 
 

@@ -2,13 +2,14 @@ package com.hkt.btu.noc.core.service.populator;
 
 
 import com.hkt.btu.common.core.service.populator.AbstractBeanPopulator;
-import com.hkt.btu.noc.core.dao.entity.NocAccessRequestEntity;
 import com.hkt.btu.noc.core.dao.entity.NocUserEntity;
 import com.hkt.btu.noc.core.dao.entity.NocUserGroupEntity;
 import com.hkt.btu.noc.core.service.NocSensitiveDataService;
 import com.hkt.btu.noc.core.service.bean.NocUserBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -16,9 +17,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Component
 public class NocUserBeanPopulator extends AbstractBeanPopulator<NocUserBean> {
 
-    @Resource(name = "sensitiveDataService")
+//    @Resource(name = "sensitiveDataService")
+    @Autowired
     NocSensitiveDataService nocSensitiveDataService;
 
     public void populate(NocUserEntity source, NocUserBean target) {
@@ -59,11 +62,11 @@ public class NocUserBeanPopulator extends AbstractBeanPopulator<NocUserBean> {
         target.setAuthorities(grantedAuthSet);
     }
 
-    public void populate(NocAccessRequestEntity source, NocUserBean target){
+  /*  public void populate(NocAccessRequestEntity source, NocUserBean target){
         target.setUserId(source.getRequesterId());
         target.setName(source.getRequesterName());
         target.setMobile( nocSensitiveDataService.decryptToStringSafe(source.getMobile()) );
         target.setEmail( nocSensitiveDataService.decryptToStringSafe(source.getEmail()) );
-    }
+    }*/
 
 }

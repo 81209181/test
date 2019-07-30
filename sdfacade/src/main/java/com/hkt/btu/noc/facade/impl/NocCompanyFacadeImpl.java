@@ -15,24 +15,26 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.LinkedList;
 import java.util.List;
 
-
+@Service
 public class NocCompanyFacadeImpl implements NocCompanyFacade {
     private static final Logger LOG = LogManager.getLogger(NocCompanyFacadeImpl.class);
 
-    @Resource(name = "companyService")
+    @Autowired
     NocCompanyService nocCompanyService;
-    @Resource(name = "inputCheckService")
+    @Autowired
     NocInputCheckService nocInputCheckService;
 
-    @Resource(name = "companyDataPopulator")
+    @Autowired
     NocCompanyDataPopulator nocCompanyDataPopulator;
 
 

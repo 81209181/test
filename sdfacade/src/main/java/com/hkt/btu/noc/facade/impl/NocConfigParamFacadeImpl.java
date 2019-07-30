@@ -5,19 +5,22 @@ import com.hkt.btu.noc.core.service.bean.NocConfigParamBean;
 import com.hkt.btu.noc.facade.NocConfigParamFacade;
 import com.hkt.btu.noc.facade.data.NocConfigParamData;
 import com.hkt.btu.noc.facade.populator.NocConfigParamDataPopulator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.LinkedList;
 import java.util.List;
 
-
+@Service
 public class NocConfigParamFacadeImpl implements NocConfigParamFacade {
 
-    @Resource(name = "configParamService")
+    @Resource(name = "NocConfigParamService")
     NocConfigParamService nocConfigParamService;
 
-    @Resource(name = "configParamDataPopulator")
+//    @Resource(name = "NocConfigParamDataPopulator")
+    @Autowired
     NocConfigParamDataPopulator nocConfigParamDataPopulator;
 
     @Override

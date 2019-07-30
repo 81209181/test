@@ -7,6 +7,7 @@ import com.hkt.btu.noc.facade.data.ResetPwdFormData;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +23,8 @@ import javax.validation.Valid;
 public class RootController {
     private static final Logger LOG = LogManager.getLogger(RootController.class);
 
-    @Resource(name = "userFacade")
+//    @Resource(name = "userFacade")
+    @Autowired
     NocUserFacade nocUserFacade;
 
     @GetMapping({"", "index"})

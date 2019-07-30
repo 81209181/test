@@ -5,7 +5,9 @@ import com.hkt.btu.common.facade.populator.AbstractDataPopulator;
 import com.hkt.btu.noc.core.service.bean.NocCronJobProfileBean;
 import com.hkt.btu.noc.facade.data.NocCronJobInstData;
 import com.hkt.btu.noc.facade.data.NocCronJobProfileData;
+import org.springframework.stereotype.Component;
 
+@Component
 public class NocCronJobProfileDataPopulator extends AbstractDataPopulator<NocCronJobInstData> {
 
     public void populate(NocCronJobProfileBean source, NocCronJobProfileData target) {

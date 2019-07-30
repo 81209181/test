@@ -6,14 +6,16 @@ import com.hkt.btu.noc.facade.data.NocAccessRequestData;
 import com.hkt.btu.noc.facade.data.NocAccessRequestVisitorData;
 import com.hkt.btu.noc.facade.data.NocUserData;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
 
-
+@Service
 public class NocAuditTrailFacadeImpl implements NocAuditTrailFacade {
 
-    @Resource(name = "auditTrailService")
+    @Resource(name = "NocAuditTrailService")
     NocAuditTrailService nocAuditTrailService;
 
 

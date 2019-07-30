@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
@@ -24,7 +25,7 @@ import java.util.Properties;
 
 import static com.hkt.btu.noc.core.service.bean.NocEmailBean.*;
 
-
+@Service
 public class NocEmailServiceImpl implements NocEmailService {
     private static final Logger LOG = LogManager.getLogger(NocEmailServiceImpl.class);
 
@@ -37,7 +38,7 @@ public class NocEmailServiceImpl implements NocEmailService {
 
     @Resource(name = "templateEngineService")
     BtuTemplateEngineService btuTemplateEngineService;
-    @Resource(name = "siteConfigService")
+    @Resource(name = "NocSiteConfigService")
     NocSiteConfigService nocSiteConfigService;
 
     private JavaMailSender javaMailSender;

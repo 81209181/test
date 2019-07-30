@@ -5,6 +5,8 @@ import com.hkt.btu.noc.core.service.bean.NocUserGroupBean;
 import com.hkt.btu.noc.facade.NocUserGroupFacade;
 import com.hkt.btu.noc.facade.data.NocUserGroupData;
 import com.hkt.btu.noc.facade.populator.NocUserGroupDataPopulator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -13,12 +15,14 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+@Service
 public class NocUserGroupFacadeImpl implements NocUserGroupFacade {
 
-    @Resource(name = "userGroupService")
+//    @Resource(name = "userGroupService")
+    @Autowired
     NocUserGroupService nocUserGroupService;
 
-    @Resource(name = "userGroupDataPopulator")
+    @Autowired
     NocUserGroupDataPopulator nocUserGroupDataPopulator;
 
     @Override

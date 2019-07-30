@@ -11,10 +11,12 @@ import com.hkt.btu.noc.core.service.populator.NocCompanyBeanPopulator;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -22,6 +24,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+@Service
 public class NocCompanyServiceImpl implements NocCompanyService {
     private static final Logger LOG = LogManager.getLogger(NocCompanyServiceImpl.class);
 
@@ -29,10 +32,10 @@ public class NocCompanyServiceImpl implements NocCompanyService {
     @Resource
     NocCompanyMapper nocCompanyMapper;
 
-    @Resource(name = "userService")
+    @Autowired
     NocUserService nocUserService;
 
-    @Resource(name = "companyBeanPopulator")
+    @Autowired
     NocCompanyBeanPopulator nocCompanyBeanPopulator;
 
     @Override

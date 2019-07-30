@@ -2,6 +2,7 @@ package com.hkt.btu.noc.controller;
 
 
 import com.hkt.btu.noc.facade.NocHealthCheckFacade;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +16,7 @@ import javax.annotation.Resource;
 @RequestMapping(value = "/public")
 public class PublicController {
 
-    @Resource(name = "healthCheckFacade")
+    @Autowired
     NocHealthCheckFacade nocHealthCheckFacade;
 
 

@@ -15,6 +15,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.quartz.SchedulerException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -22,18 +24,18 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-
+@Service
 public class NocJobFacadeImpl implements NocJobFacade {
     private static final Logger LOG = LogManager.getLogger(NocJobFacadeImpl.class);
 
-    @Resource(name = "schedulerService")
+    @Autowired
     NocSchedulerService nocSchedulerService;
-    @Resource(name = "cronJobProfileService")
+    @Autowired
     NocCronJobProfileService nocCronJobProfileService;
 
-    @Resource(name = "cronJobInstDataPopulator")
+    @Autowired
     NocCronJobInstDataPopulator nocCronJobInstDataPopulator;
-    @Resource(name = "cronJobProfileDataPopulator")
+    @Autowired
     NocCronJobProfileDataPopulator nocCronJobProfileDataPopulator;
 
     @Override

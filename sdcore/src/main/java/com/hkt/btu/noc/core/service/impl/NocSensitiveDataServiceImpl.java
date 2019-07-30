@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.GCMParameterSpec;
@@ -27,6 +28,7 @@ import java.util.Map;
 // iv length:       16 byte random (128 bit)
 // output length:   4(alias length) + 16(iv length)  + encrypted input byte length + 16(GCM auth tag length)
 //                  = 36 byte + input byte length
+@Service
 public class NocSensitiveDataServiceImpl implements NocSensitiveDataService {
     private static final Logger LOG = LogManager.getLogger(NocSensitiveDataServiceImpl.class);
 
@@ -40,7 +42,7 @@ public class NocSensitiveDataServiceImpl implements NocSensitiveDataService {
 
     // keystore
     private static final String KEYSTORE_PATH = File.separator + "opt" + File.separator + "keystore" + File.separator + "aes-keystore.jck";
-    @Value("${servicedesk.aesKeystore.storePass}")
+//    @Value("${servicedesk.aesKeystore.storePass}")
     private String storePass;
 
     // key

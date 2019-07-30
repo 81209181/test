@@ -2,12 +2,12 @@ package com.hkt.btu.noc.facade.populator;
 
 
 import com.hkt.btu.common.facade.populator.AbstractDataPopulator;
-import com.hkt.btu.noc.core.service.bean.NocCompanyBean;
 import com.hkt.btu.noc.core.service.bean.NocUserBean;
 import com.hkt.btu.noc.facade.data.NocUserData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@Component
 public class NocUserDataPopulator extends AbstractDataPopulator<NocUserData> {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -47,9 +48,6 @@ public class NocUserDataPopulator extends AbstractDataPopulator<NocUserData> {
         target.setUserGroupList(null);
     }
 
-    public void populate(NocCompanyBean source, NocUserData target) {
-        target.setCompanyName(source.getName());
-    }
 
     public void populateSensitiveData(NocUserBean source, NocUserData target){
         target.setStaffId(source.getStaffId());

@@ -15,12 +15,15 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class NocCronJobProfileServiceImpl implements NocCronJobProfileService {
     private static final Logger LOG = LogManager.getLogger(NocCronJobProfileServiceImpl.class);
 
@@ -28,14 +31,15 @@ public class NocCronJobProfileServiceImpl implements NocCronJobProfileService {
     @Resource
     NocCronJobMapper nocCronJobMapper;
 
-    @Resource(name = "siteConfigService")
+    @Resource(name = "NocSiteConfigService")
     NocSiteConfigService nocSiteConfigService;
-    @Resource(name = "userService")
+    @Autowired
     NocUserService nocUserService;
-    @Resource(name = "cronJobLogService")
+    @Autowired
     NocCronJobLogService nocCronJobLogService;
 
-    @Resource(name = "cronJobProfileBeanPopulator")
+//    @Resource(name = "cronJobProfileBeanPopulator")
+    @Autowired
     NocCronJobProfileBeanPopulator nocCronJobProfileBeanPopulator;
 
 
