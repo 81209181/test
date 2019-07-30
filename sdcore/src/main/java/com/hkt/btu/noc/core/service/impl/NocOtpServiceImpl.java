@@ -7,19 +7,22 @@ import com.hkt.btu.noc.core.service.NocOtpService;
 import com.hkt.btu.noc.core.service.NocSiteConfigService;
 import com.hkt.btu.noc.core.service.bean.NocOtpBean;
 import com.hkt.btu.noc.core.service.populator.NocOtpBeanPopulator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Service
 public class NocOtpServiceImpl implements NocOtpService {
     @Resource
     NocOtpMapper nocOtpMapper;
 
-    @Resource(name = "otpBeanPopulator")
+    @Autowired
     NocOtpBeanPopulator nocOtpBeanPopulator;
 
-    @Resource(name = "siteConfigService")
+    @Resource(name = "NocSiteConfigService")
     NocSiteConfigService nocSiteConfigService;
 
 

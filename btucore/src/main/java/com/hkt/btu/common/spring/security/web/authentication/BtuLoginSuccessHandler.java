@@ -2,8 +2,10 @@ package com.hkt.btu.common.spring.security.web.authentication;
 
 import com.hkt.btu.common.core.service.BtuAuditTrailService;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -12,9 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+@Service
 public class BtuLoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
-    @Resource(name = "auditTrailService")
+    @Resource(name = "BtuAuditTrailService")
     BtuAuditTrailService auditTrailService;
 
     public BtuLoginSuccessHandler(){

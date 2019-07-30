@@ -3,6 +3,7 @@ package com.hkt.btu.noc;
 import com.hkt.btu.noc.core.service.NocSchedulerService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -14,7 +15,7 @@ public class NocSchedulerStartUpHandler implements ApplicationRunner {
     private static final Logger LOG = LogManager.getLogger(NocSchedulerStartUpHandler.class);
 
 
-    @Resource(name = "schedulerService")
+    @Autowired
     private NocSchedulerService nocSchedulerService;
 
 

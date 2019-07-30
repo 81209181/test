@@ -14,7 +14,15 @@
             <!--/*@thymesVar id="email_global_logo_hkt_cid" type="java.lang.String"*/-->
             <!--/*@thymesVar id="email_global_logo_pccw_grp_cid" type="java.lang.String"*/-->
 
-            <!--/*@thymesVar id="default_email_body" type="java.lang.String"*/-->
+            <!--/*@thymesVar id="ticketNum" type="java.lang.String"*/-->
+            <!--/*@thymesVar id="requestorName" type="java.lang.String"*/-->
+            <!--/*@thymesVar id="requestorUserId" type="java.lang.String"*/-->
+            <!--/*@thymesVar id="requestorCompany" type="java.lang.String"*/-->
+            <!--/*@thymesVar id="visitLoc" type="java.lang.String"*/-->
+            <!--/*@thymesVar id="visitDate" type="java.lang.String"*/-->
+            <!--/*@thymesVar id="visitTime" type="java.lang.String"*/-->
+            <!--/*@thymesVar id="visitorCount" type="java.lang.String"*/-->
+
 
             <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color:#fff;">
                 <tbody>
@@ -34,16 +42,50 @@
                             <div style="margin:20px">
                                 <div class="email-opening" style="margin-bottom: 40px">
                                     <p>
-                                        Dear Developer,
-                                        <br><br>
+                                        Dear NFM Team,
                                     </p>
                                 </div>
 
 
 
                                 <div class="email-content">
-                                    <p>Stack Trace: </p>
-                                    <p th:utext="${default_email_body}"></p>
+                                    <p>
+                                        <span>The below access request is received.</span><br>
+                                        Please go to <span th:text="${email_global_web_name}">SkyExchange</span> for more details.<br>
+                                    </p>
+
+                                    <table border="0" cellspacing="0" cellpadding="0">
+                                        <tbody>
+                                        <tr>
+                                            <td style="padding-left:10px">Ticket Number: </td>
+                                            <td style="padding-left:10px"><span th:text="${ticketNum}">ticketNum</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-left:10px">Name of Requestor: </td>
+                                            <td style="padding-left:10px"><span th:text="${requestorName} + '(User ID: ' + ${requestorUserId} + ')'">requestorName (User ID: requestorUserId)</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-left:10px">Company of Requestor: </td>
+                                            <td style="padding-left:10px"><span th:text="${requestorCompany}">requestorCompany</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-left:10px">Visit Location: </td>
+                                            <td style="padding-left:10px"><span th:text="${visitLoc}">visitLoc</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-left:10px">Visit Date: </td>
+                                            <td style="padding-left:10px"><span th:text="${visitDate}">visitDate</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-left:10px">Visit Time: </td>
+                                            <td style="padding-left:10px"> <span th:text="${visitTime}">visitTime</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-left:10px">Number of Visitors: </td>
+                                            <td style="padding-left:10px"><span th:text="${visitorCount}">visitorCount</span></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
 
 

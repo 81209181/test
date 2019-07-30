@@ -6,8 +6,9 @@ import com.hkt.btu.noc.core.service.bean.NocCronJobProfileBean;
 import com.hkt.btu.noc.core.service.bean.NocSiteConfigBean;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class NocCronJobLogEntityPopulator implements EntityPopulator<NocCronJobLogEntity> {
 
 

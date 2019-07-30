@@ -5,15 +5,17 @@ import com.hkt.btu.noc.core.service.NocHealthCheckService;
 import com.hkt.btu.noc.facade.NocHealthCheckFacade;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 
-
+@Service
 public class NocHealthCheckFacadeImpl implements NocHealthCheckFacade {
     private static final Logger LOG = LogManager.getLogger(NocHealthCheckFacadeImpl.class);
 
-    @Resource(name = "healthCheckService")
+    @Autowired
     NocHealthCheckService nocHealthCheckService;
 
     @Override

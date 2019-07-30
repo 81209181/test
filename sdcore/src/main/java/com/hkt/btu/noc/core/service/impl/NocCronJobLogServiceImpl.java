@@ -12,22 +12,27 @@ import com.hkt.btu.noc.core.service.NocUserService;
 import com.hkt.btu.noc.core.service.bean.NocCronJobProfileBean;
 import com.hkt.btu.noc.core.service.bean.NocSiteConfigBean;
 import org.quartz.JobDetail;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
+@Service
 public class NocCronJobLogServiceImpl implements NocCronJobLogService {
 
     @Resource
     NocCronJobLogMapper nocCronJobLogMapper;
 
-    @Resource(name = "cronJobLogEntityPopulator")
+//    @Resource(name = "cronJobLogEntityPopulator")
+    @Autowired
     NocCronJobLogEntityPopulator nocCronJobLogEntityPopulator;
 
-    @Resource(name = "userService")
+    @Autowired
     NocUserService nocUserService;
-    @Resource(name = "siteConfigService")
+    @Resource(name = "NocSiteConfigService")
     NocSiteConfigService nocSiteConfigService;
-    @Resource(name = "cronJobProfileService")
+//    @Resource(name = "cronJobProfileService")
+    @Autowired
     NocCronJobProfileService nocCronJobProfileService;
 
 

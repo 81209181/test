@@ -5,6 +5,7 @@ import com.hkt.btu.noc.facade.NocAuditTrailFacade;
 import com.hkt.btu.noc.facade.NocUserFacade;
 import com.hkt.btu.noc.facade.data.NocUserData;
 import com.hkt.btu.noc.facade.data.UpdatePwdFormData;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +18,9 @@ import javax.validation.Valid;
 @RequestMapping("/user")
 public class UserController {
 
-    @Resource(name = "userFacade")
+    @Autowired
     NocUserFacade userFacade;
-    @Resource(name = "auditTrailFacade")
+    @Autowired
     NocAuditTrailFacade nocAuditTrailFacade;
 
     @GetMapping({"", "/", "/index"})

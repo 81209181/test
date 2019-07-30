@@ -16,7 +16,7 @@ import static com.hkt.btu.common.spring.security.web.authentication.BtuLoginUrlA
 
 public class BtuLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
 
-    @Resource(name = "auditTrailService")
+    @Resource(name = "BtuAuditTrailService")
     BtuAuditTrailService auditTrailService;
 
     public BtuLogoutSuccessHandler(){

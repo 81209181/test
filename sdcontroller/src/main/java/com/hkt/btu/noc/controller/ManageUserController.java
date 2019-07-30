@@ -9,6 +9,7 @@ import com.hkt.btu.noc.facade.NocUserGroupFacade;
 import com.hkt.btu.noc.facade.data.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -27,11 +28,12 @@ import java.util.List;
 @RequestMapping(value = "/admin/manage-user")
 public class ManageUserController {
 
-    @Resource(name = "userFacade")
+//    @Resource(name = "userFacade")
+    @Autowired
     NocUserFacade userFacade;
-    @Resource(name = "userGroupFacade")
+    @Autowired
     NocUserGroupFacade nocUserGroupFacade;
-    @Resource(name = "auditTrailFacade")
+    @Autowired
     NocAuditTrailFacade nocAuditTrailFacade;
 
     @GetMapping("/create-user")

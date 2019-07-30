@@ -8,6 +8,7 @@ import com.hkt.btu.noc.facade.data.NocConfigParamData;
 import com.hkt.btu.noc.facade.data.NocCronJobInstData;
 import com.hkt.btu.noc.facade.data.NocCronJobProfileData;
 import com.hkt.btu.noc.facade.data.NocSiteConfigData;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,11 +25,11 @@ import java.util.List;
 @RequestMapping(value = "/system")
 public class SystemController {
 
-    @Resource(name = "configParamFacade")
+    @Autowired
     NocConfigParamFacade nocConfigParamFacade;
-    @Resource(name = "siteConfigFacade")
+    @Autowired
     NocSiteConfigFacade nocSiteConfigFacade;
-    @Resource(name = "jobFacade")
+    @Autowired
     NocJobFacade nocJobFacade;
 
 

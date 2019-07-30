@@ -14,8 +14,10 @@ import com.hkt.btu.noc.core.service.bean.NocUserGroupBean;
 import com.hkt.btu.noc.core.service.populator.NocUserGroupBeanPopulator;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -24,18 +26,20 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+@Service
 public class NocUserGroupServiceImpl implements NocUserGroupService {
 
 
     @Resource
     NocUserGroupMapper nocUserGroupMapper;
 
-    @Resource(name = "userGroupBeanPopulator")
+//    @Resource(name = "userGroupBeanPopulator")
+    @Autowired
     NocUserGroupBeanPopulator nocUserGroupBeanPopulator;
 
-    @Resource(name = "nocConfigParamService")
+    @Resource(name = "NocConfigParamService")
     NocConfigParamService nocConfigParamService;
-    @Resource(name = "userService")
+    @Resource(name = "NocUserService")
     NocUserService nocUserService;
 
     @Override

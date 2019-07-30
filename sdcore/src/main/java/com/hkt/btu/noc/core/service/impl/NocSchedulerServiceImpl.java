@@ -19,6 +19,7 @@ import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
 import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.text.ParseException;
@@ -28,6 +29,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+@Service
 public class NocSchedulerServiceImpl implements NocSchedulerService {
     private static final Logger LOG = LogManager.getLogger(NocSchedulerServiceImpl.class);
 
@@ -37,12 +39,14 @@ public class NocSchedulerServiceImpl implements NocSchedulerService {
     @Autowired
     private ApplicationContext context;
 
-    @Resource(name = "cronJobProfileService")
+//    @Resource(name = "cronJobProfileService")
+    @Autowired
     NocCronJobProfileService nocCronJobProfileService;
-    @Resource(name = "cronJobLogService")
+    @Autowired
     NocCronJobLogService nocCronJobLogService;
 
-    @Resource(name = "cronJobInstBeanPopulator")
+//    @Resource(name = "cronJobInstBeanPopulator")
+    @Autowired
     NocCronJobInstBeanPopulator nocCronJobInstBeanPopulator;
 
 

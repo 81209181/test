@@ -4,8 +4,9 @@ import com.hkt.btu.common.core.service.BtuAuditTrailService;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Service;
 
-
+@Service("BtuAuditTrailService")
 public class BtuAuditTrailServiceImpl implements BtuAuditTrailService {
     private static final Logger LOG = LogManager.getLogger(BtuAuditTrailServiceImpl.class);
 

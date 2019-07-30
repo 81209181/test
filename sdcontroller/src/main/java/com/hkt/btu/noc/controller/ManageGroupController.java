@@ -3,6 +3,7 @@ package com.hkt.btu.noc.controller;
 
 import com.hkt.btu.noc.facade.NocUserGroupFacade;
 import com.hkt.btu.noc.facade.data.NocUserGroupData;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +17,7 @@ import java.util.List;
 @RequestMapping(value = "/admin/manage-group")
 public class ManageGroupController {
 
-    @Resource(name = "userGroupFacade")
+    @Autowired
     NocUserGroupFacade nocUserGroupFacade;
 
     @GetMapping("/list-user-grp")

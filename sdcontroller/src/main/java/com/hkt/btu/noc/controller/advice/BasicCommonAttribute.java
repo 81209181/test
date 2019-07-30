@@ -2,12 +2,11 @@ package com.hkt.btu.noc.controller.advice;
 
 import com.hkt.btu.noc.facade.NocSiteConfigFacade;
 import com.hkt.btu.noc.facade.data.NocSiteConfigData;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
-
-import javax.annotation.Resource;
 
 @ControllerAdvice(basePackages="com.hkt.btu.noc.controller")
 public class BasicCommonAttribute {
@@ -18,7 +17,7 @@ public class BasicCommonAttribute {
 	@Value("${project.buildtime}")
 	public String buildTime = "N/A";
 
-	@Resource(name = "siteConfigFacade")
+	@Autowired
     NocSiteConfigFacade nocSiteConfigFacade;
 
 	@ModelAttribute

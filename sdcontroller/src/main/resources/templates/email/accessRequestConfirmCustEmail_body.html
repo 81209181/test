@@ -14,7 +14,13 @@
             <!--/*@thymesVar id="email_global_logo_hkt_cid" type="java.lang.String"*/-->
             <!--/*@thymesVar id="email_global_logo_pccw_grp_cid" type="java.lang.String"*/-->
 
-            <!--/*@thymesVar id="default_email_body" type="java.lang.String"*/-->
+            <!--/*@thymesVar id="ticketNum" type="java.lang.String"*/-->
+            <!--/*@thymesVar id="requestorName" type="java.lang.String"*/-->
+            <!--/*@thymesVar id="visitLoc" type="java.lang.String"*/-->
+            <!--/*@thymesVar id="visitDate" type="java.lang.String"*/-->
+            <!--/*@thymesVar id="visitTime" type="java.lang.String"*/-->
+            <!--/*@thymesVar id="visitorCount" type="java.lang.String"*/-->
+
 
             <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color:#fff;">
                 <tbody>
@@ -34,16 +40,56 @@
                             <div style="margin:20px">
                                 <div class="email-opening" style="margin-bottom: 40px">
                                     <p>
-                                        Dear Developer,
-                                        <br><br>
+                                        Dear
+                                        <span th:if="${#strings.isEmpty(email_basic_recipient_name)}"> Valued Customer,</span>
+                                        <span th:if="!${#strings.isEmpty(email_basic_recipient_name)}" th:text="${email_basic_recipient_name}+','"></span>
                                     </p>
                                 </div>
 
 
 
                                 <div class="email-content">
-                                    <p>Stack Trace: </p>
-                                    <p th:utext="${default_email_body}"></p>
+                                    <p>
+                                        <span>Thank you for submitting the access request to HKT <span th:text="${email_global_web_name}">SkyExchange</span>.</span><br>
+                                        Your application is well-received and has been approved.<br>
+                                    </p>
+
+                                    <p style="margin-bottom: 0">
+                                        Please verify the request information: <br>
+                                    </p>
+                                    <table border="0" cellspacing="0" cellpadding="0">
+                                        <tbody>
+                                        <tr>
+                                            <td style="padding-left:10px">Ticket Number: </td>
+                                            <td style="padding-left:10px"><span th:text="${ticketNum}">ticketNum</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-left:10px">Name of Requestor: </td>
+                                            <td style="padding-left:10px"><span th:text="${requestorName}">requestorName</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-left:10px">Visit Location: </td>
+                                            <td style="padding-left:10px"><span th:text="${visitLoc}">visitLoc</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-left:10px">Visit Date: </td>
+                                            <td style="padding-left:10px"><span th:text="${visitDate}">visitDate</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-left:10px">Visit Time: </td>
+                                            <td style="padding-left:10px"> <span th:text="${visitTime}">visitTime</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-left:10px">Number of Visitors: </td>
+                                            <td style="padding-left:10px"><span th:text="${visitorCount}">visitorCount</span></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <p>
+                                        Please present the <u>Ticket Number</u> and <u>all Visitors' Staff ID / HKID / Passport</u> for on-site registration.<br>
+                                        Access will be denied without valid Visitors' Staff ID / HKID / Passport.<br>
+                                    </p>
                                 </div>
 
 

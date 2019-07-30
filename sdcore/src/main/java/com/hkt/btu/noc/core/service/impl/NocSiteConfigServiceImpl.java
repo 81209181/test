@@ -12,6 +12,9 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.glassfish.jersey.jackson.internal.jackson.jaxrs.annotation.JacksonFeatures;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletContext;
@@ -19,19 +22,20 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
 
+@Service("NocSiteConfigService")
 public class NocSiteConfigServiceImpl implements NocSiteConfigService {
     private static final Logger LOG = LogManager.getLogger(NocSiteConfigServiceImpl.class);
 
     private static NocSiteConfigBean nocSiteConfigBean;
 
-    @Resource(name = "configParamService")
+    @Resource(name = "NocConfigParamService")
     NocConfigParamService nocConfigParamService;
-    @Resource(name = "emailService")
+    @Autowired
     NocEmailService nocEmailService;
-    @Resource(name = "sensitiveDataService")
+    @Autowired
     NocSensitiveDataService nocSensitiveDataService;
 
-    @Resource(name = "siteConfigBeanPopulator")
+    @Autowired
     NocSiteConfigBeanPopulator nocSiteConfigBeanPopulator;
 
     @Resource
