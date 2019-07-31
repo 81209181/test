@@ -48,30 +48,30 @@ public class BtuSecurityMetadataSource implements FilterInvocationSecurityMetada
     public static final String RESERVED_ANT_PATH_PUBLIC = "/public/**";
 
 
-//    @Resource (name = "pathCtrlService")
+    //    @Resource (name = "pathCtrlService")
     @Autowired  //use demo
-    BtuPathCtrlService pathCtrlService;
+            BtuPathCtrlService pathCtrlService;
 
     @PostConstruct
     public void loadResourceDefine() {
-        reloadResourceDefine();
+        //reloadResourceDefine();
     }
 
-    private void reloadResourceDefine(){
+    private void reloadResourceDefine() {
         Map<RequestMatcher, Collection<ConfigAttribute>> newResourceMap = buildResourceMapFromDb();
 
-        if(MapUtils.isEmpty(newResourceMap)){
+        if (MapUtils.isEmpty(newResourceMap)) {
             LOG.error("Secured URLs config is empty.");
             LOG.error("Secured URLs config CANNOT be re-loaded from DB.");
         } else {
             resourceMap = newResourceMap;
-            LOG.info( String.format("Secured URLs config successfully re-loaded from DB. Applying on %d URLs.",
-                    newResourceMap.keySet().size()) );
+            LOG.info(String.format("Secured URLs config successfully re-loaded from DB. Applying on %d URLs.",
+                    newResourceMap.keySet().size()));
         }
     }
 
     @SuppressWarnings("Duplicates")
-    private Map<RequestMatcher, Collection<ConfigAttribute>> buildResourceMapFromDb(){
+    private Map<RequestMatcher, Collection<ConfigAttribute>> buildResourceMapFromDb() {
         Map<RequestMatcher, Collection<ConfigAttribute>> newResourceMap = new HashMap<>();
         Map<String, RequestMatcher> uriMatcherIndexRefMap = new HashMap<>();
 
@@ -80,7 +80,7 @@ public class BtuSecurityMetadataSource implements FilterInvocationSecurityMetada
 
 
         // add config form db data
-        if(! CollectionUtils.isEmpty(userGroupPathCtrlBeanList)) {
+        if (!CollectionUtils.isEmpty(userGroupPathCtrlBeanList)) {
             for (BtuUserGroupPathCtrlBean ctrlBean : userGroupPathCtrlBeanList) {
                 if (ctrlBean == null) {
                     continue;
@@ -124,7 +124,7 @@ public class BtuSecurityMetadataSource implements FilterInvocationSecurityMetada
 
     @Override
     public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
-        final HttpServletRequest request = ((FilterInvocation) object).getRequest();
+       /* final HttpServletRequest request = ((FilterInvocation) object).getRequest();
 
         List<ConfigAttribute> results = new ArrayList<>();
 
@@ -139,18 +139,20 @@ public class BtuSecurityMetadataSource implements FilterInvocationSecurityMetada
             return CONFIG_LIST_DENY_ALL;
         } else {
             return results;
-        }
+        }*/
+        return null;
     }
 
     @Override
     public Collection<ConfigAttribute> getAllConfigAttributes() {
-        Set<ConfigAttribute> allAttributes = new HashSet<>();
+       /* Set<ConfigAttribute> allAttributes = new HashSet<>();
         for (Map.Entry<RequestMatcher, Collection<ConfigAttribute>> entry : resourceMap
                 .entrySet()) {
             allAttributes.addAll(entry.getValue());
         }
 
-        return allAttributes;
+        return allAttributes;*/
+        return null;
     }
 
     @Override

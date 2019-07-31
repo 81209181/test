@@ -2,11 +2,14 @@ spring:
   main:
     allow-bean-definition-overriding: true
   datasource:
-    jndi-name: java:comp/env/jdbc/servdesk
+    url: jdbc:oracle:thin:@10.111.14.154:1521/sdsDEV
+    username: sd
+    password: dwfm123
+    #jndi-name: java:comp/env/jdbc/servdesk
 
 mybatis:
   mapperLocations: classpath:mybatis/mapper/*.xml
   config-location: classpath:mybatis/mybatis-config.xml
 
 project:
-  buildtime: @buildTimestamp@
+  buildtime: #@buildTimestamp@

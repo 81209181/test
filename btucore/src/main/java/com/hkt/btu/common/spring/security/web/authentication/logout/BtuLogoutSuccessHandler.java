@@ -31,7 +31,7 @@ public class BtuLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
                 null : (BtuUser) authentication.getPrincipal();
 
         // add audit trail
-        auditTrailService.insertLogoutAuditTrail(user);
+        //auditTrailService.insertLogoutAuditTrail(user);
 
         // redirect to defaultTargetUrl
         super.onLogoutSuccess(httpServletRequest, httpServletResponse, authentication);

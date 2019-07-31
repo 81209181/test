@@ -1,9 +1,12 @@
 package com.hkt.btu.common.spring.security.authentication;
 
 
+import com.hkt.btu.common.core.service.authentication.LdapAuthenticationProcessor;
 import com.hkt.btu.common.core.service.bean.BtuLdapBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
+import com.hkt.btu.common.spring.security.exception.ChangePasswordException;
+import com.hkt.btu.common.spring.security.exception.NotPermittedLogonException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.*;
@@ -30,39 +33,11 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
     @Resource
     LdapAuthenticationProcessor ldapAuthProcessor;
 
-    /*@Resource(name = "customLdapUserDetailsService")
-    UserDetailsService userDetailService;
-	@Resource(name = "ldapInfoService")
-	BtuLdapInfoService btuLdapInfoService;
-
-	@Resource(name = "encryptionService")
-	BtuEncryptionService encryptionService;*/
-
     private String domain;
 
     @Override
     public Authentication authenticate(Authentication auth) throws AuthenticationException {
-		/*if (domain == null || domain.isEmpty()) {
-//			return super.authenticate(auth);
-			String staffId = auth.getPrincipal().toString();
-			//PpmsUserEntity userEnt = null;
-			try {
-				userEnt = ppmsUserMapper.getUserByStaffId(staffId);
-			} catch (SQLException e) {
-				LOG.error(e.getMessage(), e);
-			}
-			if (userEnt == null)
-				throw new BadCredentialsException("User (" + staffId + ") not Found");
-			else if (StringUtils.isEmpty(userEnt.getLdapDomain())) {
-				throw new BadCredentialsException("User (" + staffId + ") is not LDAP user");
-			}
-			else
-				domain = userEnt.getLdapDomain();
-		}*/
         try {
-            //String username = auth.getPrincipal().toString();
-            //BtuLdapBean ldapInfo = btuLdapInfoService.getLdapInfoByName(domain);
-            //BtuUser userDetails = (BtuUser) userDetailService.loadUserByUsername(auth.getPrincipal().toString());
             BtuUserBean btuUserBean = new BtuUserBean();
             btuUserBean.setUsername((String) auth.getPrincipal());
             btuUserBean.setPassword((String) auth.getCredentials());
@@ -85,8 +60,6 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
             ldapInfo.setPrincipleName("@corphq.hk.pccw.com");
             ldapAuthProcessor.authenticationOnly(ldapInfo, auth);
 
-            //userDetails.getUserBean().setPassword(encryptionService.encrypt(auth.getCredentials().toString()));
-
             return createSuccessAuthentication(userDetails, auth, userDetails);
         } catch (javax.naming.AuthenticationException authEx) {
             String result = "";
@@ -98,15 +71,17 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
             if (startIndex > 0 && endIndex > startIndex)
                 code = authEx.getExplanation().substring(startIndex + 5, endIndex);
 
-            if (code.equals("525"))
+            if (code.equals("525")) {
                 result = "User not found in directory";
-            else if (code.equals("52e"))
+            } else if (code.equals("52e")) {
                 result = "Invalid login credentials";
-            else if (code.equals("530"))
+            } else if (code.equals("530")) {
                 result = "Not permitted to logon at this time. Please contact administrator.";
-            else if (code.equals("531"))
+                throw new NotPermittedLogonException(result);
+            } else if (code.equals("531")) {
                 result = "Not permitted to logon at this workstation";
-            else if (code.equals("532")) {
+                throw new NotPermittedLogonException(result);
+            } else if (code.equals("532")) {
                 result = "Password has expired. Please change your password.";
                 throw new CredentialsExpiredException(result);
             } else if (code.equals("533")) {
@@ -114,18 +89,15 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
                 throw new DisabledException(result);
             } else if (code.equals("701")) {
                 result = "Your account has expired. Please contact administrator.";
-                //throw new AccountExpiredException(result);
                 throw new DisabledException(result);
-            } else if (code.equals("773"))
+            } else if (code.equals("773")) {
                 result = "Please change your password.";
-            else if (code.equals("775")) {
+                throw new ChangePasswordException(result);
+            } else if (code.equals("775")) {
                 result = "Your account is locked. Please contact administrator.";
                 throw new LockedException(result);
             } else result = authEx.getExplanation();
-
             LOG.debug(result);
-            ;
-
             throw new BadCredentialsException(result);
         } catch (NamingException e) {
             throw new BadCredentialsException(e.getExplanation());

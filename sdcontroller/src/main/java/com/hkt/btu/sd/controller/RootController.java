@@ -23,7 +23,7 @@ import javax.validation.Valid;
 public class RootController {
     private static final Logger LOG = LogManager.getLogger(RootController.class);
 
-//    @Resource(name = "userFacade")
+    //    @Resource(name = "userFacade")
     @Autowired
     SdUserFacade sdUserFacade;
 
@@ -36,27 +36,11 @@ public class RootController {
     public String login(final Model model,
                         @RequestParam(required = false) String logout,
                         @RequestParam(required = false) String error) {
-        if(logout!=null){
+        if (logout != null) {
             model.addAttribute(PageMsgController.INFO_MSG, "You have been logged out.");
         }
-        if(error!=null){
-            if(StringUtils.equals(error, LOGIN_ERROR.LOCK.name())){
-                model.addAttribute(PageMsgController.ERROR_MSG, LOGIN_ERROR.LOCK.getMsg());
-            } else if(StringUtils.equals(error, LOGIN_ERROR.BAD_CREDENTIALS.name())){
-                model.addAttribute(PageMsgController.ERROR_MSG, LOGIN_ERROR.BAD_CREDENTIALS.getMsg());
-            } else if(StringUtils.equals(error, LOGIN_ERROR.FORBIDDEN.name())){
-                model.addAttribute(PageMsgController.ERROR_MSG, LOGIN_ERROR.FORBIDDEN.getMsg());
-            } else if(StringUtils.equals(error, LOGIN_ERROR.TIMEOUT.name())){
-                model.addAttribute(PageMsgController.ERROR_MSG, LOGIN_ERROR.TIMEOUT.getMsg());
-            } else if(StringUtils.equals(error, LOGIN_ERROR.LOGIN.name())){
-                model.addAttribute(PageMsgController.ERROR_MSG, LOGIN_ERROR.LOGIN.getMsg());
-            } else if(StringUtils.equals(error, LOGIN_ERROR.INSUFFICIENT_AUTH.name())){
-                model.addAttribute(PageMsgController.ERROR_MSG, LOGIN_ERROR.INSUFFICIENT_AUTH.getMsg());
-            } else if(StringUtils.equals(error, LOGIN_ERROR.HELP.name())){
-                model.addAttribute(PageMsgController.ERROR_MSG, LOGIN_ERROR.HELP.getMsg());
-            } else{
-                model.addAttribute(PageMsgController.ERROR_MSG, LOGIN_ERROR.UNKNOWN.getMsg());
-            }
+        if (error != null) {
+            model.addAttribute(PageMsgController.ERROR_MSG, LOGIN_ERROR.getValue(error));
         }
 
         return "login";
@@ -70,7 +54,7 @@ public class RootController {
                                 @ModelAttribute("isInit") String isInit,
                                 @ModelAttribute("otpEmail") String otpEmail,
                                 @ModelAttribute("resetPwdFormData") ResetPwdFormData resetPwdFormData) {
-        if(!StringUtils.isEmpty(otp) && !StringUtils.isEmpty(email)){
+        if (!StringUtils.isEmpty(otp) && !StringUtils.isEmpty(email)) {
             LOG.error("[Security Concern] Password init/reset link should not contain both email and OTP!");
             model.addAttribute(PageMsgController.ERROR_MSG, "Insecure link.");
             return "login";
@@ -78,10 +62,10 @@ public class RootController {
 
         model.addAttribute("isInit", init);
 
-        if(!StringUtils.isEmpty(otp)) {
+        if (!StringUtils.isEmpty(otp)) {
             resetPwdFormData.setResetOtp(otp);
             model.addAttribute("resetPwdFormData", resetPwdFormData);
-        } else if(!StringUtils.isEmpty(email)) {
+        } else if (!StringUtils.isEmpty(email)) {
             model.addAttribute("otpEmail", email);
         }
 
@@ -91,18 +75,19 @@ public class RootController {
     @PostMapping(value = "reset-password")
     public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPwdFormData resetPwdFormData) {
         String errorMsg = sdUserFacade.resetPassword(resetPwdFormData);
-        if(errorMsg==null){
+        if (errorMsg == null) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
-        }else {
+        } else {
             return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
         }
     }
+
     @PostMapping(value = "reset-password-otp")
     public ResponseEntity<?> requestResetPassword(@RequestParam String email) {
         String errorMsg = sdUserFacade.requestResetPassword(email);
-        if(errorMsg==null){
+        if (errorMsg == null) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
-        }else {
+        } else {
             return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
         }
     }

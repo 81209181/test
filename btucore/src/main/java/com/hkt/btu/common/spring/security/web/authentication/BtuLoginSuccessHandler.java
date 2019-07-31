@@ -33,7 +33,7 @@ public class BtuLoginSuccessHandler extends SavedRequestAwareAuthenticationSucce
                 null : (BtuUser) authentication.getPrincipal();
 
         // add audit trail
-        auditTrailService.insertLoginAuditTrail(user);
+        //auditTrailService.insertLoginAuditTrail(user);
 
         // set timeout for inactive session
         HttpSession session = httpServletRequest.getSession(false);

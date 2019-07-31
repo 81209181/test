@@ -5,47 +5,60 @@
 
     <!-- BTU Spring Security -->
     <alias name="btuLoginSuccessHandler" alias="customLoginSuccessHandler"/>
-    <bean id="btuLoginSuccessHandler" class="com.hkt.btu.common.spring.security.web.authentication.BtuLoginSuccessHandler"/>
+    <bean id="btuLoginSuccessHandler"
+          class="com.hkt.btu.common.spring.security.web.authentication.BtuLoginSuccessHandler"/>
 
     <alias name="btuExceptMapAuthFailureHandler" alias="customExceptMapAuthFailureHandler"/>
-    <bean id="btuExceptMapAuthFailureHandler" class="com.hkt.btu.common.spring.security.web.authentication.BtuExceptionMappingAuthenticationFailureHandler"/>
+    <bean id="btuExceptMapAuthFailureHandler"
+          class="com.hkt.btu.common.spring.security.web.authentication.BtuExceptionMappingAuthenticationFailureHandler"/>
 
     <alias name="btuLogoutSuccessHandler" alias="customLogoutSuccessHandler"/>
-    <bean id="btuLogoutSuccessHandler" class="com.hkt.btu.common.spring.security.web.authentication.logout.BtuLogoutSuccessHandler"/>
+    <bean id="btuLogoutSuccessHandler"
+          class="com.hkt.btu.common.spring.security.web.authentication.logout.BtuLogoutSuccessHandler"/>
 
     <alias name="btuLoginUrlAuthenticationEntryPoint" alias="customLoginUrlAuthenticationEntryPoint"/>
-    <bean id="btuLoginUrlAuthenticationEntryPoint" class="com.hkt.btu.common.spring.security.web.authentication.BtuLoginUrlAuthenticationEntryPoint"/>
+    <bean id="btuLoginUrlAuthenticationEntryPoint"
+          class="com.hkt.btu.common.spring.security.web.authentication.BtuLoginUrlAuthenticationEntryPoint"/>
 
     <alias name="btuAccessDeniedHandler" alias="customAccessDeniedHandler"/>
     <bean id="btuAccessDeniedHandler" class="com.hkt.btu.common.spring.security.access.BtuAccessDeniedHandler"/>
 
     <alias name="btuSecurityMetadataSource" alias="customBtuSecurityMetadataSource"/>
-    <bean id="btuSecurityMetadataSource" class="com.hkt.btu.common.spring.security.access.intercept.BtuSecurityMetadataSource"/>
+    <bean id="btuSecurityMetadataSource"
+          class="com.hkt.btu.common.spring.security.access.intercept.BtuSecurityMetadataSource"/>
 
     <alias name="btuAccessDecisionManager" alias="customBtuAccessDecisionManager"/>
     <bean id="btuAccessDecisionManager" class="com.hkt.btu.common.spring.security.access.BtuAccessDecisionManager"/>
 
     <alias name="btuSecurityInterceptor" alias="customBtuSecurityInterceptor"/>
-    <bean id="btuSecurityInterceptor" class="com.hkt.btu.common.spring.security.access.intercept.BtuSecurityInterceptor"/>
+    <bean id="btuSecurityInterceptor"
+          class="com.hkt.btu.common.spring.security.access.intercept.BtuSecurityInterceptor"/>
 
     <alias name="btuUserDetailsService" alias="customBtuUserDetailsService"/>
-    <bean id="btuUserDetailsService" class="com.hkt.btu.common.spring.security.core.userdetails.BtuUserDetailsServiceImpl"/>
+    <bean id="btuUserDetailsService"
+          class="com.hkt.btu.common.spring.security.core.userdetails.BtuUserDetailsServiceImpl"/>
 
     <alias name="btuDaoAuthenticationProvider" alias="customBtuDaoAuthenticationProvider"/>
-    <bean id="btuDaoAuthenticationProvider" class="com.hkt.btu.common.spring.security.access.BtuDaoAuthenticationProvider" />
+    <bean id="btuDaoAuthenticationProvider"
+          class="com.hkt.btu.common.spring.security.access.BtuDaoAuthenticationProvider"/>
 
     <alias name="btuBCryptPasswordEncoder" alias="btuPasswordEncoder"/>
-    <bean id="btuBCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+    <bean id="btuBCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
 
     <!-- Thymeleaf Template Service -->
     <alias name="btuTemplateEngineService" alias="templateEngineService"/>
-    <bean id="btuTemplateEngineService" class="com.hkt.btu.common.core.service.impl.BtuTemplateEngineServiceImpl" />
+    <bean id="btuTemplateEngineService" class="com.hkt.btu.common.core.service.impl.BtuTemplateEngineServiceImpl"/>
 
     <alias name="LdapAuthenticationProvider" alias="customLdapAuthenticationProvider"/>
-    <bean id="LdapAuthenticationProvider" class="com.hkt.btu.common.spring.security.authentication.LdapAuthenticationProvider" />
+    <bean id="LdapAuthenticationProvider"
+          class="com.hkt.btu.common.spring.security.authentication.LdapAuthenticationProvider"/>
 
     <alias name="LdapAuthenticationProcessor" alias="customLdapAuthenticationProcessor"/>
-    <bean id="LdapAuthenticationProcessor" class="com.hkt.btu.common.spring.security.authentication.LdapAuthenticationProcessor" />
+    <bean id="LdapAuthenticationProcessor"
+          class="com.hkt.btu.common.core.service.authentication.LdapAuthenticationProcessor"/>
+
+    <alias name="LdapService" alias="ldapService"/>
+    <bean id="LdapService" class="com.hkt.btu.common.core.service.impl.LdapServiceImpl"/>
 
     <!-- BTU Service -->
     <!--!!! To be overridden and implemented by each application (with bean alias) !!!-->
@@ -56,12 +69,12 @@
     <bean id="btuUserService" class="com.hkt.btu.common.core.service.impl.BtuUserServiceImpl" />-->
 
     <alias name="btuPathCtrlService" alias="pathCtrlService"/>
-    <bean id="btuPathCtrlService" class="com.hkt.btu.common.core.service.impl.BtuPathCtrlServiceImpl" />
+    <bean id="btuPathCtrlService" class="com.hkt.btu.common.core.service.impl.BtuPathCtrlServiceImpl"/>
 
     <!--<alias name="btuAuditTrailServiceImpl" alias="auditTrailService"/>
     <bean id="btuAuditTrailServiceImpl" class="com.hkt.btu.common.core.service.impl.BtuAuditTrailServiceImpl" />-->
 
     <alias name="btuHttpService" alias="httpService"/>
-    <bean id="btuHttpService" class="com.hkt.btu.common.core.service.impl.BtuHttpServiceImpl" />
+    <bean id="btuHttpService" class="com.hkt.btu.common.core.service.impl.BtuHttpServiceImpl"/>
 
 </beans>
