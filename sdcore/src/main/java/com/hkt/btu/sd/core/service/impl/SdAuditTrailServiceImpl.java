@@ -15,22 +15,21 @@ import javax.annotation.Resource;
 public class SdAuditTrailServiceImpl implements SdAuditTrailService {
     private static final Logger LOG = LogManager.getLogger(SdAuditTrailServiceImpl.class);
 
-    @Resource (name = "userService")
+    @Resource(name = "userService")
     SdUserService userService;
 
     @Resource
     SdAuditTrailMapper sdAuditTrailMapper;
 
 
-
     private void insertAuditTrail(BtuUser btuUser, String action, String detail) {
         // get uid
         Integer uid = null;
-        if ( btuUser!=null && (btuUser.getUserBean() instanceof SdUserBean) ) {
+        if (btuUser != null && (btuUser.getUserBean() instanceof SdUserBean)) {
             SdUserBean sdUserBean = (SdUserBean) btuUser.getUserBean();
             uid = sdUserBean.getUserId();
         }
-        this.insertAuditTrail(uid, action, detail);
+        this.insertAuditTrail(30, action, detail);
     }
 
     public void insertAuditTrail(String action, String detail) {
@@ -42,7 +41,7 @@ public class SdAuditTrailServiceImpl implements SdAuditTrailService {
         LOG.info("Audit Trail: " + userId + ", " + action + ", " + detail);
         try {
             sdAuditTrailMapper.insertAuditTrail(userId, action, detail);
-        } catch (Exception e){
+        } catch (Exception e) {
             LOG.error("Cannot insert audit trail: " + userId + ", " + action + ", " + detail);
             LOG.error(e.getMessage(), e);
         }
@@ -67,11 +66,16 @@ public class SdAuditTrailServiceImpl implements SdAuditTrailService {
     }
 
     public void insertLoginAuditTrail(BtuUser btuUser) {
-        this.insertAuditTrail(btuUser, SdAuditTrailEntity.ACTION.LOGIN, null);
+        this.insertAuditTrail(btuUser, SdAuditTrailEntity.ACTION.LOGIN, "SUCCESS");
     }
 
     public void insertLogoutAuditTrail(BtuUser btuUser) {
         this.insertAuditTrail(btuUser, SdAuditTrailEntity.ACTION.LOGOUT, null);
+    }
+
+    @Override
+    public void insertLoginExceptionAuditTrail(BtuUser btuUser, String exception) {
+        this.insertAuditTrail(btuUser, SdAuditTrailEntity.ACTION.LOGIN, exception);
     }
 
 

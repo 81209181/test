@@ -1,9 +1,12 @@
 package com.hkt.btu.common.spring.security.authentication;
 
 
+import com.hkt.btu.common.core.service.BtuAuditTrailService;
 import com.hkt.btu.common.core.service.authentication.LdapAuthenticationProcessor;
 import com.hkt.btu.common.core.service.bean.BtuLdapBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
+import com.hkt.btu.common.core.service.constant.LdapError;
+import com.hkt.btu.common.core.service.constant.LdapEnum;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
 import com.hkt.btu.common.spring.security.exception.ChangePasswordException;
 import com.hkt.btu.common.spring.security.exception.NotPermittedLogonException;
@@ -20,8 +23,8 @@ import org.springframework.security.core.userdetails.UserDetailsChecker;
 
 import javax.annotation.Resource;
 import javax.naming.NamingException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
@@ -29,14 +32,21 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
 
     private UserDetailsChecker preAuthenticationChecks = new DefaultPreAuthenticationChecks();
 
+    private static final Map<String, String> LDAP_ERROR_CODE = Collections.unmodifiableMap
+            (Arrays.stream(LdapError.values()).
+                    collect(Collectors.toMap(constant -> constant.getCode(), constant -> constant.getMsg())));
 
     @Resource
     LdapAuthenticationProcessor ldapAuthProcessor;
+
+    @Resource(name = "auditTrailService")
+    BtuAuditTrailService auditTrailService;
 
     private String domain;
 
     @Override
     public Authentication authenticate(Authentication auth) throws AuthenticationException {
+        BtuUser userDetails = null;
         try {
             BtuUserBean btuUserBean = new BtuUserBean();
             btuUserBean.setUsername((String) auth.getPrincipal());
@@ -45,7 +55,7 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
             grantedAuthSet.add(new SimpleGrantedAuthority("ADMIN"));
             grantedAuthSet.add(new SimpleGrantedAuthority("USER"));
             btuUserBean.setAuthorities(grantedAuthSet);
-            BtuUser userDetails = BtuUser.of((String) auth.getPrincipal(),
+            userDetails = BtuUser.of((String) auth.getPrincipal(),
                     (String) auth.getCredentials(),
                     true,
                     true,
@@ -54,11 +64,16 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
                     grantedAuthSet,
                     btuUserBean);
 
-            preAuthenticationChecks.check(userDetails);
+            //preAuthenticationChecks.check(userDetails);
             BtuLdapBean ldapInfo = new BtuLdapBean();
-            ldapInfo.setLdapServerUrl("ldaps://ldaps.corphq.hk.pccw.com:636/");
-            ldapInfo.setPrincipleName("@corphq.hk.pccw.com");
+            ldapInfo.setLdapServerUrl(LdapEnum.PCCW.getHostUrl());
+            ldapInfo.setPrincipleName(LdapEnum.PCCW.getPrincipalName());
+
+            // login ldap
             ldapAuthProcessor.authenticationOnly(ldapInfo, auth);
+
+            //if success, record it
+            auditTrailService.insertLoginAuditTrail(userDetails);
 
             return createSuccessAuthentication(userDetails, auth, userDetails);
         } catch (javax.naming.AuthenticationException authEx) {
@@ -71,33 +86,36 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
             if (startIndex > 0 && endIndex > startIndex)
                 code = authEx.getExplanation().substring(startIndex + 5, endIndex);
 
+            // log exception
+            auditTrailService.insertLoginExceptionAuditTrail(userDetails, LDAP_ERROR_CODE.get(code));
             if (code.equals("525")) {
-                result = "User not found in directory";
+                result = LdapError.USER_NOT_FOUND.getMsg();
             } else if (code.equals("52e")) {
-                result = "Invalid login credentials";
+                result = LdapError.INVALID_LOGIN.getMsg();
             } else if (code.equals("530")) {
-                result = "Not permitted to logon at this time. Please contact administrator.";
+                result = LdapError.NOT_PERMITTED_LOGIN_TIME.getMsg();
                 throw new NotPermittedLogonException(result);
             } else if (code.equals("531")) {
-                result = "Not permitted to logon at this workstation";
+                result = LdapError.NOT_PERMITTED_LOGIN_WORKSTATION.getMsg();
                 throw new NotPermittedLogonException(result);
             } else if (code.equals("532")) {
-                result = "Password has expired. Please change your password.";
+                result = LdapError.PWD_EXPIRED.getMsg();
                 throw new CredentialsExpiredException(result);
             } else if (code.equals("533")) {
-                result = "Your account is disabled. Please contact administrator.";
+                result = LdapError.ACCOUNT_DISABLED.getMsg();
                 throw new DisabledException(result);
             } else if (code.equals("701")) {
-                result = "Your account has expired. Please contact administrator.";
+                result = LdapError.ACCOUNT_EXPIRED.getMsg();
                 throw new DisabledException(result);
             } else if (code.equals("773")) {
-                result = "Please change your password.";
+                result = LdapError.CHANGE_PWD.getMsg();
                 throw new ChangePasswordException(result);
             } else if (code.equals("775")) {
-                result = "Your account is locked. Please contact administrator.";
+                result = LdapError.LOCK.getMsg();
                 throw new LockedException(result);
             } else result = authEx.getExplanation();
             LOG.debug(result);
+
             throw new BadCredentialsException(result);
         } catch (NamingException e) {
             throw new BadCredentialsException(e.getExplanation());

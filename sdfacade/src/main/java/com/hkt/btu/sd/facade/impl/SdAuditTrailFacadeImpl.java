@@ -9,7 +9,7 @@ import javax.annotation.Resource;
 
 public class SdAuditTrailFacadeImpl implements SdAuditTrailFacade {
 
-    @Resource(name = "auditTrailService")
+    //@Resource(name = "auditTrailService")
     SdAuditTrailService sdAuditTrailService;
 
 

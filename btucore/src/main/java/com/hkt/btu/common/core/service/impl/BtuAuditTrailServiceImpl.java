@@ -12,11 +12,16 @@ public class BtuAuditTrailServiceImpl implements BtuAuditTrailService {
 
     @Override
     public void insertLoginAuditTrail(BtuUser user) {
-        LOG.info(user.getUsername() + "successfully login.");
+        LOG.info("User:" +user.getUsername() + " successfully login.");
     }
 
     @Override
     public void insertLogoutAuditTrail(BtuUser user) {
-        LOG.info(user.getUsername() + "successfully logout.");
+        LOG.info("User:" +user.getUsername() + " successfully logout.");
+    }
+
+    @Override
+    public void insertLoginExceptionAuditTrail(BtuUser user, String exception) {
+        LOG.error("User:" + user.getUsername() + " ,login error:" + exception);
     }
 }

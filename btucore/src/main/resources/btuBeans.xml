@@ -71,8 +71,8 @@
     <alias name="btuPathCtrlService" alias="pathCtrlService"/>
     <bean id="btuPathCtrlService" class="com.hkt.btu.common.core.service.impl.BtuPathCtrlServiceImpl"/>
 
-    <!--<alias name="btuAuditTrailServiceImpl" alias="auditTrailService"/>
-    <bean id="btuAuditTrailServiceImpl" class="com.hkt.btu.common.core.service.impl.BtuAuditTrailServiceImpl" />-->
+    <alias name="btuAuditTrailServiceImpl" alias="auditTrailService"/>
+    <bean id="btuAuditTrailServiceImpl" class="com.hkt.btu.common.core.service.impl.BtuAuditTrailServiceImpl" />
 
     <alias name="btuHttpService" alias="httpService"/>
     <bean id="btuHttpService" class="com.hkt.btu.common.core.service.impl.BtuHttpServiceImpl"/>
