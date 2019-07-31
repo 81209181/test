@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hkt.btu.noc.core.dao.mapper.NocOtpMapper" >
+<mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdOtpMapper" >
 
-    <resultMap id="NocOtpEntity" type="com.hkt.btu.noc.core.dao.entity.NocOtpEntity" >
+    <resultMap id="SdOtpEntity" type="com.hkt.btu.sd.core.dao.entity.SdOtpEntity" >
         <result column="USER_ID" property="userId" />
         <result column="ACTION" property="action" />
         <result column="OTP" property="otp" />
@@ -14,7 +14,7 @@
         <result column="CREATEBY" property="createby" />
     </resultMap>
 
-    <select id="getOtp" resultMap="NocOtpEntity" >
+    <select id="getOtp" resultMap="SdOtpEntity" >
         select *
         from NOC_OTP
         where EXPIRYDATE >= CURRENT_TIMESTAMP

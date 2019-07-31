@@ -7,7 +7,6 @@ import com.hkt.btu.common.core.service.bean.BtuSiteConfigBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,10 +18,10 @@ import java.time.LocalDateTime;
 public class BtuUserDetailsServiceImpl implements UserDetailsService {
     private static final Logger LOG = LogManager.getLogger(BtuUserDetailsServiceImpl.class);
 
-    @Resource(name = "BtuUserService")
+    @Resource(name = "userService")
     BtuUserService userService;
 
-    @Resource (name = "NocSiteConfigService")
+    @Resource (name = "siteConfigService")
     BtuSiteConfigService siteConfigService;
 
 
@@ -33,7 +32,6 @@ public class BtuUserDetailsServiceImpl implements UserDetailsService {
 
         // get user
         BtuUserBean userBean = userService.getUserBeanByUsername(username);
-
         if (userBean == null) {
             LOG.warn("User " + username + " not found");
             throw new UsernameNotFoundException("User " + username + " not found");

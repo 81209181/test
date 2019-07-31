@@ -4,8 +4,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <!-- Populator -->
-    <alias name="nocCronJobLogEntityPopulator" alias="cronJobLogEntityPopulator"/>
-    <bean id="nocCronJobLogEntityPopulator" class="com.hkt.btu.noc.core.dao.populator.NocCronJobLogEntityPopulator"/>
+    <alias name="sdCronJobLogEntityPopulator" alias="cronJobLogEntityPopulator"/>
+    <bean id="sdCronJobLogEntityPopulator" class="com.hkt.btu.sd.core.dao.populator.SdCronJobLogEntityPopulator"/>
 
 
 </beans>

@@ -2,8 +2,8 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hkt.btu.noc.core.dao.mapper.NocUserMapper" >
-    <resultMap id="NocUserEntity" type="com.hkt.btu.noc.core.dao.entity.NocUserEntity" >
+<mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdUserMapper" >
+    <resultMap id="SdUserEntity" type="com.hkt.btu.sd.core.dao.entity.SdUserEntity" >
         <result column="USER_ID" property="userId" />
         <result column="NAME" property="name" />
         <result column="STATUS" property="status" />
@@ -23,13 +23,13 @@
         <result column="REMARKS" property="remarks" />
     </resultMap>
 
-    <select id="getUserByEmail" resultMap="NocUserEntity" >
+    <select id="getUserByEmail" resultMap="SdUserEntity" >
         select *
         from NOC_USER
         where email = #{email}
     </select>
 
-    <select id="getUserByUserId" resultMap="NocUserEntity" >
+    <select id="getUserByUserId" resultMap="SdUserEntity" >
         select *
         from NOC_USER
         where USER_ID = #{userId}
@@ -60,7 +60,7 @@
         select 1 from dual
     </select>
 
-    <insert id="insertUser" parameterType="com.hkt.btu.noc.core.dao.entity.NocUserEntity"
+    <insert id="insertUser" parameterType="com.hkt.btu.sd.core.dao.entity.SdUserEntity"
             useGeneratedKeys="true" keyProperty="userId">
         insert into NOC_USER (NAME, STATUS, MOBILE, EMAIL, COMPANY_ID, STAFF_ID, PASSWORD, PASSWORD_MODIFYDATE, CREATEBY, MODIFYBY)
         values (#{name}, #{status}, #{mobile}, #{email}, #{companyId}, #{staffId}, #{password}, null, #{createby}, #{createby})
@@ -118,7 +118,7 @@
             </if>
         </where>
     </sql>
-    <select id="searchUser" resultMap="NocUserEntity" >
+    <select id="searchUser" resultMap="SdUserEntity" >
         # noinspection SqlResolve
         select u.*
         <include refid="searchUserSql"/>

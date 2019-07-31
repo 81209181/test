@@ -30,10 +30,10 @@ public class BtuDaoAuthenticationProvider extends DaoAuthenticationProvider {
         super.setUserDetailsService(userDetailsService);
     }
 
-    @Resource (name = "NocSiteConfigService")
+    @Resource (name = "siteConfigService")
     BtuSiteConfigService siteConfigService;
 
-    @Resource(name = "BtuUserService")
+    @Resource(name = "userService")
     BtuUserService userService;
 
 

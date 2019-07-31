@@ -3,45 +3,45 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <alias name="nocUserFacadeImpl" alias="userFacade"/>
-    <bean id="nocUserFacadeImpl" class="com.hkt.btu.noc.facade.impl.NocUserFacadeImpl" />
+    <alias name="sdUserFacadeImpl" alias="userFacade"/>
+    <bean id="sdUserFacadeImpl" class="com.hkt.btu.sd.facade.impl.SdUserFacadeImpl" />
 
-    <alias name="nocUserGroupFacadeImpl" alias="userGroupFacade"/>
-    <bean id="nocUserGroupFacadeImpl" class="com.hkt.btu.noc.facade.impl.NocUserGroupFacadeImpl" />
+    <alias name="sdUserGroupFacadeImpl" alias="userGroupFacade"/>
+    <bean id="sdUserGroupFacadeImpl" class="com.hkt.btu.sd.facade.impl.SdUserGroupFacadeImpl" />
 
-    <alias name="nocConfigParamFacade" alias="configParamFacade"/>
-    <bean id="nocConfigParamFacade" class="com.hkt.btu.noc.facade.impl.NocConfigParamFacadeImpl" />
+    <alias name="sdConfigParamFacade" alias="configParamFacade"/>
+    <bean id="sdConfigParamFacade" class="com.hkt.btu.sd.facade.impl.SdConfigParamFacadeImpl" />
 
-    <alias name="nocSiteConfigFacade" alias="siteConfigFacade"/>
-    <bean id="nocSiteConfigFacade" class="com.hkt.btu.noc.facade.impl.NocSiteConfigFacadeImpl" />
+    <alias name="sdSiteConfigFacade" alias="siteConfigFacade"/>
+    <bean id="sdSiteConfigFacade" class="com.hkt.btu.sd.facade.impl.SdSiteConfigFacadeImpl" />
 
-    <alias name="nocJobFacade" alias="jobFacade"/>
-    <bean id="nocJobFacade" class="com.hkt.btu.noc.facade.impl.NocJobFacadeImpl" />
+    <alias name="sdJobFacade" alias="jobFacade"/>
+    <bean id="sdJobFacade" class="com.hkt.btu.sd.facade.impl.SdJobFacadeImpl" />
 
-    <alias name="nocHealthCheckFacade" alias="healthCheckFacade"/>
-    <bean id="nocHealthCheckFacade" class="com.hkt.btu.noc.facade.impl.NocHealthCheckFacadeImpl" />
+    <alias name="sdHealthCheckFacade" alias="healthCheckFacade"/>
+    <bean id="sdHealthCheckFacade" class="com.hkt.btu.sd.facade.impl.SdHealthCheckFacadeImpl" />
 
-    <alias name="nocAuditTrailFacade" alias="auditTrailFacade"/>
-    <bean id="nocAuditTrailFacade" class="com.hkt.btu.noc.facade.impl.NocAuditTrailFacadeImpl" />
+    <alias name="sdAuditTrailFacade" alias="auditTrailFacade"/>
+    <bean id="sdAuditTrailFacade" class="com.hkt.btu.sd.facade.impl.SdAuditTrailFacadeImpl" />
 
 
     <!-- Populator -->
-    <alias name="nocUserDataPopulator" alias="userDataPopulator"/>
-    <bean id="nocUserDataPopulator" class="com.hkt.btu.noc.facade.populator.NocUserDataPopulator"/>
+    <alias name="sdUserDataPopulator" alias="userDataPopulator"/>
+    <bean id="sdUserDataPopulator" class="com.hkt.btu.sd.facade.populator.SdUserDataPopulator"/>
 
-    <alias name="nocUserGroupDataPopulator" alias="userGroupDataPopulator"/>
-    <bean id="nocUserGroupDataPopulator" class="com.hkt.btu.noc.facade.populator.NocUserGroupDataPopulator"/>
+    <alias name="sdUserGroupDataPopulator" alias="userGroupDataPopulator"/>
+    <bean id="sdUserGroupDataPopulator" class="com.hkt.btu.sd.facade.populator.SdUserGroupDataPopulator"/>
 
-    <alias name="nocConfigParamDataPopulator" alias="configParamDataPopulator"/>
-    <bean id="nocConfigParamDataPopulator" class="com.hkt.btu.noc.facade.populator.NocConfigParamDataPopulator"/>
+    <alias name="sdConfigParamDataPopulator" alias="configParamDataPopulator"/>
+    <bean id="sdConfigParamDataPopulator" class="com.hkt.btu.sd.facade.populator.SdConfigParamDataPopulator"/>
 
-    <alias name="nocSiteInstanceDataPopulator" alias="siteInstanceDataPopulator"/>
-    <bean id="nocSiteInstanceDataPopulator" class="com.hkt.btu.noc.facade.populator.NocSiteConfigDataPopulator"/>
+    <alias name="sdSiteInstanceDataPopulator" alias="siteInstanceDataPopulator"/>
+    <bean id="sdSiteInstanceDataPopulator" class="com.hkt.btu.sd.facade.populator.SdSiteConfigDataPopulator"/>
 
-    <alias name="nocCronJobProfileDataPopulator" alias="cronJobProfileDataPopulator"/>
-    <bean id="nocCronJobProfileDataPopulator" class="com.hkt.btu.noc.facade.populator.NocCronJobProfileDataPopulator"/>
+    <alias name="sdCronJobProfileDataPopulator" alias="cronJobProfileDataPopulator"/>
+    <bean id="sdCronJobProfileDataPopulator" class="com.hkt.btu.sd.facade.populator.SdCronJobProfileDataPopulator"/>
 
-    <alias name="nocCronJobInstDataPopulator" alias="cronJobInstDataPopulator"/>
-    <bean id="nocCronJobInstDataPopulator" class="com.hkt.btu.noc.facade.populator.NocCronJobInstDataPopulator"/>
+    <alias name="sdCronJobInstDataPopulator" alias="cronJobInstDataPopulator"/>
+    <bean id="sdCronJobInstDataPopulator" class="com.hkt.btu.sd.facade.populator.SdCronJobInstDataPopulator"/>
 
 </beans>
