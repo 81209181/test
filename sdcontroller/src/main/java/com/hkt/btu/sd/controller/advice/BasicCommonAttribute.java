@@ -2,11 +2,12 @@ package com.hkt.btu.sd.controller.advice;
 
 import com.hkt.btu.sd.facade.SdSiteConfigFacade;
 import com.hkt.btu.sd.facade.data.SdSiteConfigData;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
+
+import javax.annotation.Resource;
 
 @ControllerAdvice(basePackages="com.hkt.btu.sd.controller")
 public class BasicCommonAttribute {
@@ -17,7 +18,7 @@ public class BasicCommonAttribute {
 	@Value("${project.buildtime}")
 	public String buildTime = "N/A";
 
-	@Autowired
+	@Resource(name = "siteConfigFacade")
     SdSiteConfigFacade sdSiteConfigFacade;
 
 	@ModelAttribute

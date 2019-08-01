@@ -5,7 +5,6 @@ import com.hkt.btu.sd.facade.SdAuditTrailFacade;
 import com.hkt.btu.sd.facade.SdUserFacade;
 import com.hkt.btu.sd.facade.data.SdUserData;
 import com.hkt.btu.sd.facade.data.UpdatePwdFormData;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +17,9 @@ import javax.validation.Valid;
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
+    @Resource(name = "userFacade")
     SdUserFacade userFacade;
-    @Autowired
+    @Resource(name = "auditTrailFacade")
     SdAuditTrailFacade sdAuditTrailFacade;
 
     @GetMapping({"", "/", "/index"})

@@ -2,7 +2,6 @@ package com.hkt.btu.sd.controller;
 
 
 import com.hkt.btu.sd.facade.SdHealthCheckFacade;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +15,7 @@ import javax.annotation.Resource;
 @RequestMapping(value = "/public")
 public class PublicController {
 
-    @Autowired
+    @Resource(name = "healthCheckFacade")
     SdHealthCheckFacade sdHealthCheckFacade;
 
 

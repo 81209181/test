@@ -3,7 +3,6 @@ package com.hkt.btu.sd;
 import com.hkt.btu.sd.core.service.SdSchedulerService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -15,7 +14,7 @@ public class SdSchedulerStartUpHandler implements ApplicationRunner {
     private static final Logger LOG = LogManager.getLogger(SdSchedulerStartUpHandler.class);
 
 
-    @Autowired
+    @Resource(name = "schedulerService")
     private SdSchedulerService sdSchedulerService;
 
 

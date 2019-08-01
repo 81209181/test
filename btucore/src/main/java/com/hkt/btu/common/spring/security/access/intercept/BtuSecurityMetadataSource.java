@@ -48,13 +48,12 @@ public class BtuSecurityMetadataSource implements FilterInvocationSecurityMetada
     public static final String RESERVED_ANT_PATH_PUBLIC = "/public/**";
 
 
-    //    @Resource (name = "pathCtrlService")
-    @Autowired  //use demo
-            BtuPathCtrlService pathCtrlService;
+    @Resource (name = "pathCtrlService")
+    BtuPathCtrlService pathCtrlService;
 
     @PostConstruct
     public void loadResourceDefine() {
-        //reloadResourceDefine();
+        reloadResourceDefine();
     }
 
     private void reloadResourceDefine() {
