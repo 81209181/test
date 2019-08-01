@@ -4,7 +4,6 @@ import com.hkt.btu.sd.core.exception.InvalidInputException;
 import com.hkt.btu.sd.core.service.SdInputCheckService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
-import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 

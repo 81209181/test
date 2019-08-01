@@ -2,7 +2,6 @@ package com.hkt.btu.common.spring.security.web.authentication;
 
 import com.hkt.btu.common.core.service.BtuAuditTrailService;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Service;

@@ -4,7 +4,6 @@ package com.hkt.btu.sd.core.service.populator;
 import com.hkt.btu.common.core.service.populator.AbstractBeanPopulator;
 import com.hkt.btu.sd.core.service.bean.SdSiteConfigBean;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletContext;
 import java.net.InetAddress;

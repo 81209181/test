@@ -6,7 +6,6 @@ import com.hkt.btu.sd.core.service.bean.SdCronJobInstBean;
 import org.quartz.CronTrigger;
 import org.quartz.JobDetail;
 import org.quartz.Trigger;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
