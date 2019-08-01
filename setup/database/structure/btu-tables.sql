@@ -298,65 +298,60 @@ END;
 -- +M ..............NI. ................................ ...M...............,M........................ 
 -- +MMMMMMMMMMMMMMMMMI.MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM ...MMMMMMMMMMMMMMMMMM.MMMMMMMMMMMMMMMMMMMMMMM
 -- User Group
-CREATE TABLE USER_GROUP(
-  GROUP_ID              varchar2(10),
-  GROUP_NAME            varchar2(50)                    not null,
-  PARENT_GROUP          varchar2(10),
-  STATUS                varchar2(2),
-
-  CREATEDATE            date     default SYSDATE        not null,
-  CREATEBY              varchar2(10)                    not null,
-  MODIFYDATE            date     default SYSDATE        not null,
-  MODIFYBY              varchar2(10)                    not null,
-  REMARKS               varchar2(250),
-
-  CONSTRAINT PK_USER_GROUP PRIMARY KEY (GROUP_ID)
-);
-
-CREATE OR REPLACE TRIGGER TRIGGER_USER_GROUP_1
-    BEFORE INSERT ON USER_GROUP
-    FOR EACH ROW
-BEGIN
-    :NEW.CREATEDATE := SYSDATE;
-END;
-
-CREATE OR REPLACE TRIGGER TRIGGER_USER_GROUP_2
-    BEFORE UPDATE ON USER_GROUP
-    FOR EACH ROW
-BEGIN
-    :NEW.CREATEDATE := :OLD.CREATEDATE;
-    :NEW.CREATEBY := :OLD.CREATEBY;
-    :NEW.MODIFYDATE := SYSDATE;
-END;
-
-
-CREATE TABLE USER_GROUP_USER(
-  USER_ID               varchar2(10)                not null,
-  GROUP_ID              varchar2(10)                not null,
-  CREATEDATE            date    default SYSDATE     not null,
-  CREATEBY              varchar2(10)                not null
-);
-
-CREATE INDEX IDX_USER_USER_GROUP_1 ON USER_GROUP_USER (USER_ID);
-CREATE INDEX IDX_USER_USER_GROUP_2 ON USER_GROUP_USER (GROUP_ID);
-CREATE UNIQUE INDEX IDX_USER_USER_GROUP_3 ON USER_GROUP_USER (USER_ID,GROUP_ID);
+-- CREATE TABLE USER_GROUP(
+--   GROUP_ID              varchar2(10),
+--   GROUP_NAME            varchar2(50)                    not null,
+--   PARENT_GROUP          varchar2(10),
+--   STATUS                varchar2(2),
+--
+--   CREATEDATE            date     default SYSDATE        not null,
+--   CREATEBY              varchar2(10)                    not null,
+--   MODIFYDATE            date     default SYSDATE        not null,
+--   MODIFYBY              varchar2(10)                    not null,
+--   REMARKS               varchar2(250),
+--
+--   CONSTRAINT PK_USER_GROUP PRIMARY KEY (GROUP_ID)
+-- );
+--
+-- CREATE OR REPLACE TRIGGER TRIGGER_USER_GROUP_1
+--     BEFORE INSERT ON USER_GROUP
+--     FOR EACH ROW
+-- BEGIN
+--     :NEW.CREATEDATE := SYSDATE;
+-- END;
+--
+-- CREATE OR REPLACE TRIGGER TRIGGER_USER_GROUP_2
+--     BEFORE UPDATE ON USER_GROUP
+--     FOR EACH ROW
+-- BEGIN
+--     :NEW.CREATEDATE := :OLD.CREATEDATE;
+--     :NEW.CREATEBY := :OLD.CREATEBY;
+--     :NEW.MODIFYDATE := SYSDATE;
+-- END;
 
 
-
-
-
-
-
-CREATE TABLE USER_GROUP_PATH_CTRL(
-                                     GROUP_ID        varchar2(8)                          not null,
-                                     PATH_CTRL_ID    number                                 not null,
-                                     CREATEDATE      date default SYSDATE not null,
-                                     CREATEBY        number                                 not null,
-                                     REMARKS         varchar2(250)
-);
-CREATE UNIQUE INDEX IDX_USER_GROUP_PATH_CTRL_1 ON USER_GROUP_PATH_CTRL (GROUP_ID,PATH_CTRL_ID);
-CREATE INDEX IDX_USER_GROUP_PATH_CTRL_2 ON USER_GROUP_PATH_CTRL (GROUP_ID);
-CREATE INDEX IDX_USER_GROUP_PATH_CTRL_3 ON USER_GROUP_PATH_CTRL (PATH_CTRL_ID);
+-- CREATE TABLE USER_GROUP_USER(
+--   USER_ID               varchar2(10)                not null,
+--   GROUP_ID              varchar2(10)                not null,
+--   CREATEDATE            date    default SYSDATE     not null,
+--   CREATEBY              varchar2(10)                not null
+-- );
+--
+-- CREATE INDEX IDX_USER_USER_GROUP_1 ON USER_GROUP_USER (USER_ID);
+-- CREATE INDEX IDX_USER_USER_GROUP_2 ON USER_GROUP_USER (GROUP_ID);
+-- CREATE UNIQUE INDEX IDX_USER_USER_GROUP_3 ON USER_GROUP_USER (USER_ID,GROUP_ID);
+--
+--
+-- CREATE TABLE USER_GROUP_PATH_CTRL(
+--                                      GROUP_ID        varchar2(10)                           not null,
+--                                      PATH_CTRL_ID    number                                 not null,
+--                                      CREATEDATE      date           default SYSDATE         not null,
+--                                      CREATEBY        varchar2(10)                           not null,
+--                                      REMARKS         varchar2(250)
+-- );
+-- CREATE UNIQUE INDEX IDX_USER_GROUP_PATH_CTRL_1 ON USER_GROUP_PATH_CTRL (GROUP_ID,PATH_CTRL_ID);
+-- CREATE INDEX IDX_USER_GROUP_PATH_CTRL_2 ON USER_GROUP_PATH_CTRL (GROUP_ID);
+-- CREATE INDEX IDX_USER_GROUP_PATH_CTRL_3 ON USER_GROUP_PATH_CTRL (PATH_CTRL_ID);
 
 
 
@@ -368,9 +363,9 @@ CREATE TABLE PATH_CTRL(
                           STATUS          varchar2(2)                                     null,
                           DESCRIPTION     varchar2(50)                                    not null,
                           CREATEDATE      date          default SYSDATE                   not null,
-                          CREATEBY        varchar2(20)                                    not null,
+                          CREATEBY        varchar2(10)                                    not null,
                           MODIFYDATE      date          default SYSDATE                   not null,
-                          MODIFYBY        varchar2(20)                                    not null,
+                          MODIFYBY        varchar2(10)                                    not null,
                           REMARKS         varchar2(250),
                           CONSTRAINT PK_PATH_CTRL PRIMARY KEY (PATH_CTRL_ID)
 );
