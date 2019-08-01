@@ -16,10 +16,10 @@ import static com.hkt.btu.common.spring.security.web.authentication.BtuLoginUrlA
 
 public class BtuLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
 
-    @Resource(name = "BtuAuditTrailService")
+    @Resource(name = "auditTrailService")
     BtuAuditTrailService auditTrailService;
 
-    public BtuLogoutSuccessHandler(){
+    public BtuLogoutSuccessHandler() {
         super();
         super.setDefaultTargetUrl(LOGIN_URI + "?logout");
     }
@@ -27,11 +27,11 @@ public class BtuLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
     @Override
     public void onLogoutSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
         // log user logout
-        BtuUser user = (authentication==null || !(authentication.getPrincipal() instanceof BtuUser) ) ?
+        BtuUser user = (authentication == null || !(authentication.getPrincipal() instanceof BtuUser)) ?
                 null : (BtuUser) authentication.getPrincipal();
 
         // add audit trail
-        //auditTrailService.insertLogoutAuditTrail(user);
+        auditTrailService.insertLogoutAuditTrail(user);
 
         // redirect to defaultTargetUrl
         super.onLogoutSuccess(httpServletRequest, httpServletResponse, authentication);

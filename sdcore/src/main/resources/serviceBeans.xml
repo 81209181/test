@@ -13,7 +13,6 @@
     <bean id="sdUserService" class="com.hkt.btu.sd.core.service.impl.SdUserServiceImpl"/>
 
     <alias name="sdAuditTrailService" alias="auditTrailService"/>
-    <alias name="sdAuditTrailService" alias="btuAuditTrailService"/>
     <bean id="sdAuditTrailService" class="com.hkt.btu.sd.core.service.impl.SdAuditTrailServiceImpl"/>
 
     <alias name="sdConfigParamService" alias="configParamService"/>

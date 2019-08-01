@@ -55,7 +55,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         BtuUser btuUser = this.getCurrentUser();
         BtuUserBean userBean = btuUser.getUserBean();
         SdUserBean sdUserBean = new SdUserBean();
-        sdUserBean.setUserId(30);
+        sdUserBean.setUserId(Integer.parseInt(userBean.getUsername()));
         sdUserBean.setName(userBean.getUsername());
         btuUser.setUserBean(sdUserBean);
         if (btuUser == null) {

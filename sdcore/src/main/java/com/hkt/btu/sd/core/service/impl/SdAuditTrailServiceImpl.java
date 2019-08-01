@@ -29,7 +29,7 @@ public class SdAuditTrailServiceImpl implements SdAuditTrailService {
             SdUserBean sdUserBean = (SdUserBean) btuUser.getUserBean();
             uid = sdUserBean.getUserId();
         }
-        this.insertAuditTrail(30, action, detail);
+        this.insertAuditTrail(Integer.parseInt(btuUser.getUsername()), action, detail);
     }
 
     public void insertAuditTrail(String action, String detail) {
@@ -70,7 +70,7 @@ public class SdAuditTrailServiceImpl implements SdAuditTrailService {
     }
 
     public void insertLogoutAuditTrail(BtuUser btuUser) {
-        this.insertAuditTrail(btuUser, SdAuditTrailEntity.ACTION.LOGOUT, null);
+        this.insertAuditTrail(btuUser, SdAuditTrailEntity.ACTION.LOGOUT, "SUCCESS");
     }
 
     @Override
