@@ -6,7 +6,6 @@ import com.hkt.btu.sd.core.service.bean.SdCronJobProfileBean;
 import com.hkt.btu.sd.core.service.bean.SdSiteConfigBean;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
-import org.springframework.stereotype.Component;
 
 public class SdCronJobLogEntityPopulator implements EntityPopulator<SdCronJobLogEntity> {
 

@@ -5,8 +5,6 @@ import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.facade.data.*;
 import org.springframework.data.domain.Pageable;
 
-import java.util.LinkedList;
-
 public interface SdUserFacade {
     SdUserData getCurrentUser();
     SdUserData getUserByUserId(Integer userId);

@@ -2,7 +2,6 @@ package com.hkt.btu.sd.core.service.impl;
 
 import com.hkt.btu.sd.core.dao.mapper.SdHealthCheckMapper;
 import com.hkt.btu.sd.core.service.SdHealthCheckService;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;

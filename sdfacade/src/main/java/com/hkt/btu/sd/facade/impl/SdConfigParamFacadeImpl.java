@@ -5,8 +5,6 @@ import com.hkt.btu.sd.core.service.bean.SdConfigParamBean;
 import com.hkt.btu.sd.facade.SdConfigParamFacade;
 import com.hkt.btu.sd.facade.data.SdConfigParamData;
 import com.hkt.btu.sd.facade.populator.SdConfigParamDataPopulator;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;

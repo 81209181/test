@@ -4,8 +4,6 @@ import com.hkt.btu.sd.core.service.SdAuditTrailService;
 import com.hkt.btu.sd.facade.SdAuditTrailFacade;
 import com.hkt.btu.sd.facade.data.SdUserData;
 
-import javax.annotation.Resource;
-
 
 public class SdAuditTrailFacadeImpl implements SdAuditTrailFacade {
 
