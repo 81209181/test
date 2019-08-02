@@ -5,7 +5,6 @@ import com.hkt.btu.sd.core.dao.entity.SdAuditTrailEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdAuditTrailMapper;
 import com.hkt.btu.sd.core.service.SdAuditTrailService;
 import com.hkt.btu.sd.core.service.SdUserService;
-import com.hkt.btu.sd.core.service.bean.SdUserBean;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,13 +21,7 @@ public class SdAuditTrailServiceImpl implements SdAuditTrailService {
 
 
     private void insertAuditTrail(BtuUser btuUser, String action, String detail) {
-        // get uid
-        Integer uid = null;
-        if (btuUser != null && (btuUser.getUserBean() instanceof SdUserBean)) {
-            SdUserBean sdUserBean = (SdUserBean) btuUser.getUserBean();
-            uid = sdUserBean.getUserId();
-        }
-        this.insertAuditTrail(Integer.parseInt(btuUser.getUsername()), action, detail);
+        this.insertAuditTrail(btuUser.getUsername(), action, detail);
     }
 
     public void insertAuditTrail(String action, String detail) {
@@ -36,7 +29,7 @@ public class SdAuditTrailServiceImpl implements SdAuditTrailService {
         this.insertAuditTrail(btuUser, action, detail);
     }
 
-    public void insertAuditTrail(Integer userId, String action, String detail) {
+    public void insertAuditTrail(String userId, String action, String detail) {
         LOG.info("Audit Trail: " + userId + ", " + action + ", " + detail);
         try {
             sdAuditTrailMapper.insertAuditTrail(userId, action, detail);

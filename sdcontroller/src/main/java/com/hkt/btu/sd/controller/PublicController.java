@@ -19,8 +19,6 @@ public class PublicController {
     @Autowired
     SdHealthCheckFacade sdHealthCheckFacade;
 
-
-
     @GetMapping("/contact-us")
     public String contactUs() {
         return "public/contactUs";
@@ -29,9 +27,9 @@ public class PublicController {
     @GetMapping(value = "health-check")
     public ResponseEntity healthCheck() {
         String errorMsg = sdHealthCheckFacade.healthCheck();
-        if(errorMsg==null){
+        if (errorMsg == null) {
             return ResponseEntity.ok().body("success");
-        }else {
+        } else {
             return ResponseEntity.badRequest().body("fail");
         }
     }
