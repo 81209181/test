@@ -33,7 +33,7 @@ public class BtuSensitiveDataServiceImpl implements BtuSensitiveDataService {
 
     // keystore
     private static final String KEYSTORE_PATH = File.separator + "opt" + File.separator + "keystore" + File.separator + "aes-keystore.jck";
-//    @Value("${servicedesk.aesKeystore.storePass}")
+    @Value("${servicedesk.aesKeystore.storePass}")
     private String storePass;
 
     // key
