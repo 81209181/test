@@ -116,6 +116,7 @@ public class BtuSecurityMetadataSource implements FilterInvocationSecurityMetada
         newResourceMap.put(new AntPathRequestMatcher(RESERVED_ANT_PATH_WEBJAR), CONFIG_LIST_PERMIT_ALL);
         newResourceMap.put(new AntPathRequestMatcher(RESERVED_ANT_PATH_ERROR), CONFIG_LIST_PERMIT_ALL);
         newResourceMap.put(new AntPathRequestMatcher(RESERVED_ANT_PATH_PUBLIC), CONFIG_LIST_PERMIT_ALL);
+        newResourceMap.put(new AntPathRequestMatcher("/**"), CONFIG_LIST_PERMIT_ALL); // todo remove after RBAC implementation
 
         return newResourceMap;
     }
