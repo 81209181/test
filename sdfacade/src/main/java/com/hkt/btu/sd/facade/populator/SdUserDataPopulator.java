@@ -1,8 +1,8 @@
 package com.hkt.btu.sd.facade.populator;
 
 
+import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.facade.populator.AbstractDataPopulator;
-import com.hkt.btu.sd.core.service.bean.SdUserBean;
 import com.hkt.btu.sd.facade.data.SdUserData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +24,7 @@ public class SdUserDataPopulator extends AbstractDataPopulator<SdUserData> {
             Map.entry("L", "Locked")
     );
 
-    public void populate(SdUserBean source, SdUserData target) {
+    public void populate(BtuUserBean source, SdUserData target) {
         target.setUserId(source.getUserId());
         target.setName(source.getName());
         target.setEmail(source.getEmail());
@@ -46,7 +46,7 @@ public class SdUserDataPopulator extends AbstractDataPopulator<SdUserData> {
         target.setUserGroupList(null);
     }
 
-    public void populateSensitiveData(SdUserBean source, SdUserData target){
+    public void populateSensitiveData(BtuUserBean source, SdUserData target){
         target.setStaffId(source.getStaffId());
         target.setMobile(source.getMobile());
         target.setLoginTried(source.getLoginTried());

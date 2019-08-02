@@ -17,7 +17,7 @@ import java.io.IOException;
 @Service
 public class BtuLoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
-    @Resource(name = "BtuAuditTrailService")
+    @Resource(name = "auditTrailService")
     BtuAuditTrailService auditTrailService;
 
     public BtuLoginSuccessHandler(){

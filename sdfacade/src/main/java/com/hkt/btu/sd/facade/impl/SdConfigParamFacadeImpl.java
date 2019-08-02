@@ -1,12 +1,10 @@
 package com.hkt.btu.sd.facade.impl;
 
-import com.hkt.btu.sd.core.service.SdConfigParamService;
-import com.hkt.btu.sd.core.service.bean.SdConfigParamBean;
+import com.hkt.btu.common.core.service.BtuConfigParamService;
+import com.hkt.btu.common.core.service.bean.BtuConfigParamBean;
 import com.hkt.btu.sd.facade.SdConfigParamFacade;
 import com.hkt.btu.sd.facade.data.SdConfigParamData;
 import com.hkt.btu.sd.facade.populator.SdConfigParamDataPopulator;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -16,22 +14,22 @@ import java.util.List;
 public class SdConfigParamFacadeImpl implements SdConfigParamFacade {
 
     @Resource(name = "configParamService")
-    SdConfigParamService sdConfigParamService;
+    BtuConfigParamService configParamService;
 
     @Resource(name = "configParamDataPopulator")
-    SdConfigParamDataPopulator sdConfigParamDataPopulator;
+    SdConfigParamDataPopulator configParamDataPopulator;
 
     @Override
     public List<SdConfigParamData> getAllConfigParam() {
-        List<SdConfigParamBean> beanList = sdConfigParamService.getAllConfigParam();
+        List<BtuConfigParamBean> beanList = configParamService.getAllConfigParam();
         if(CollectionUtils.isEmpty(beanList)){
             return null;
         }
 
         List<SdConfigParamData> dataList = new LinkedList<>();
-        for(SdConfigParamBean bean : beanList){
+        for(BtuConfigParamBean bean : beanList){
             SdConfigParamData data = new SdConfigParamData();
-            sdConfigParamDataPopulator.populate(bean, data);
+            configParamDataPopulator.populate(bean, data);
             dataList.add(data);
         }
 

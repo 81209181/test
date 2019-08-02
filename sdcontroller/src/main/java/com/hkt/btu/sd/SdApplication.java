@@ -8,7 +8,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 
 import java.io.FileNotFoundException;
 
-@MapperScan("com.hkt.btu.sd.core.dao.mapper")
+@MapperScan("com.hkt.btu.common.core.dao.mapper")
 @SpringBootApplication(scanBasePackages = {"com.hkt.btu"})//exclude = DataSourceAutoConfiguration.class)
 public class SdApplication extends SpringBootServletInitializer {
 

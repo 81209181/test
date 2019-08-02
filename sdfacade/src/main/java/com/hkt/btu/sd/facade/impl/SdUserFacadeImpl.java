@@ -1,11 +1,10 @@
 package com.hkt.btu.sd.facade.impl;
 
-import com.hkt.btu.common.core.exception.UserNotFoundException;
+import com.hkt.btu.common.core.exception.*;
+import com.hkt.btu.common.core.service.BtuInputCheckService;
+import com.hkt.btu.common.core.service.BtuUserService;
+import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.facade.data.PageData;
-import com.hkt.btu.sd.core.exception.*;
-import com.hkt.btu.sd.core.service.SdInputCheckService;
-import com.hkt.btu.sd.core.service.SdUserService;
-import com.hkt.btu.sd.core.service.bean.SdUserBean;
 import com.hkt.btu.sd.facade.SdUserFacade;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.populator.SdUserDataPopulator;
@@ -27,13 +26,13 @@ public class SdUserFacadeImpl implements SdUserFacade {
 
 
     @Resource(name = "userService")
-    SdUserService sdUserService;
+    BtuUserService userService;
 
     @Resource(name = "inputCheckService")
-    SdInputCheckService sdInputCheckService;
+    BtuInputCheckService inputCheckService;
 
     @Resource(name = "userDataPopulator")
-    SdUserDataPopulator userDataPopulator;
+    SdUserDataPopulator sdUserDataPopulator;
 
 
     @Override
@@ -52,10 +51,10 @@ public class SdUserFacadeImpl implements SdUserFacade {
 
         // check input
         try {
-            sdInputCheckService.checkName(name);
-            sdInputCheckService.checkMobile(mobile);
-            sdInputCheckService.checkStaffIdHkidPassport(staffId);
-            sdInputCheckService.checkEmail(email);
+            inputCheckService.checkName(name);
+            inputCheckService.checkMobile(mobile);
+            inputCheckService.checkStaffIdHkidPassport(staffId);
+            inputCheckService.checkEmail(email);
         }catch (InvalidInputException e){
             return CreateResultData.of(e.getMessage());
         }
@@ -63,7 +62,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
         // create new user
         Integer newUserId;
         try {
-            newUserId = sdUserService.createUser(name, mobile, email, staffId, companyId, userGroupIdList);
+            newUserId = userService.createUser(name, mobile, email, staffId, companyId, userGroupIdList);
         } catch (InvalidInputException | UserNotFoundException | DuplicateUserEmailException | GeneralSecurityException e){
             LOG.warn(e.getMessage());
             return CreateResultData.of(e.getMessage());
@@ -92,15 +91,15 @@ public class SdUserFacadeImpl implements SdUserFacade {
 
         // check input
         try {
-            sdInputCheckService.checkName(name);
-            sdInputCheckService.checkMobile(mobile);
-            sdInputCheckService.checkStaffIdHkidPassport(staffId);
+            inputCheckService.checkName(name);
+            inputCheckService.checkMobile(mobile);
+            inputCheckService.checkStaffIdHkidPassport(staffId);
         } catch (InvalidInputException e){
             return e.getMessage();
         }
 
         try {
-            sdUserService.updateUser(userId, name, mobile, staffId, isAdmin, isUser, isCAdmin, isCUser);
+            userService.updateUser(userId, name, mobile, staffId, isAdmin, isUser, isCAdmin, isCUser);
         } catch (UserNotFoundException | InsufficientAuthorityException | InvalidInputException e) {
             LOG.warn(e.getMessage());
             return e.getMessage();
@@ -116,11 +115,11 @@ public class SdUserFacadeImpl implements SdUserFacade {
     public String activateUser(Integer userId) {
         try {
             // check access to user
-            SdUserBean userBean = sdUserService.getUserByUserId(userId);
+            BtuUserBean userBean = userService.getUserByUserId(userId);
             String username = userBean.getEmail();
 
             // activate user
-            sdUserService.activateUserByUsername(username);
+            userService.activateUserByUsername(username);
             return null;
         } catch (UserNotFoundException | InvalidInputException e){
             LOG.warn(e.getMessage());
@@ -132,11 +131,11 @@ public class SdUserFacadeImpl implements SdUserFacade {
     public String deactivateUser(Integer userId) {
         try {
             // check access to user
-            SdUserBean userBean = sdUserService.getUserByUserId(userId);
+            BtuUserBean userBean = userService.getUserByUserId(userId);
             String username = userBean.getEmail();
 
             // deactivate user
-            sdUserService.disableUserByUsername(username);
+            userService.disableUserByUsername(username);
             return null;
         } catch (UserNotFoundException | InvalidInputException e){
             LOG.warn(e.getMessage());
@@ -165,7 +164,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
 
         // update password
         try {
-            sdUserService.updateUserPwd(sdUserData.getUserId(), oldPassword, newPassword);
+            userService.updateUserPwd(sdUserData.getUserId(), oldPassword, newPassword);
         } catch (UserNotFoundException e){
             LOG.warn("Data rollback.");
             LOG.warn(e.getMessage(), e);
@@ -194,7 +193,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
 
         // reset password
         try {
-            sdUserService.resetPwd(otp, newPassword);
+            userService.resetPwd(otp, newPassword);
         } catch (UserNotFoundException e){
             LOG.warn("Data rollback.");
             LOG.warn(e.getMessage(), e);
@@ -215,7 +214,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
         }
 
         try {
-            sdUserService.requestResetPassword(email);
+            userService.requestResetPassword(email);
         } catch (UserNotFoundException e){
             LOG.warn("User not found (" + email + ").");
             return e.getMessage();
@@ -233,20 +232,20 @@ public class SdUserFacadeImpl implements SdUserFacade {
         name = StringUtils.trimToNull(name);
         userGroupId = StringUtils.trimToNull(userGroupId);
 
-        Page<SdUserBean> pageBean;
+        Page<BtuUserBean> pageBean;
         try {
-            pageBean = sdUserService.searchUser(pageable, userId, email, name, userGroupId);
+            pageBean = userService.searchUser(pageable, userId, email, name, userGroupId);
         }catch (AuthorityNotFoundException e){
             return new PageData<>(e.getMessage());
         }
 
         // populate content
-        List<SdUserBean> beanList = pageBean.getContent();
+        List<BtuUserBean> beanList = pageBean.getContent();
         List<SdUserData> dataList = new LinkedList<>();
         if(!CollectionUtils.isEmpty(beanList)){
-            for(SdUserBean bean : beanList){
+            for(BtuUserBean bean : beanList){
                 SdUserData data = new SdUserData();
-                userDataPopulator.populate(bean, data);
+                sdUserDataPopulator.populate(bean, data);
                 dataList.add(data);
             }
         }
@@ -260,9 +259,9 @@ public class SdUserFacadeImpl implements SdUserFacade {
 
         try {
             // get user info
-            SdUserBean sdUserBean = (SdUserBean) sdUserService.getCurrentUserBean();
-            userDataPopulator.populate(sdUserBean, userData);
-            userDataPopulator.populateSensitiveData(sdUserBean, userData);
+            BtuUserBean sdUserBean = (BtuUserBean) userService.getCurrentUserBean();
+            sdUserDataPopulator.populate(sdUserBean, userData);
+            sdUserDataPopulator.populateSensitiveData(sdUserBean, userData);
 
         } catch (UserNotFoundException e){
             return null;
@@ -276,9 +275,9 @@ public class SdUserFacadeImpl implements SdUserFacade {
 
         try {
             // get user info
-            SdUserBean sdUserBean = sdUserService.getUserByUserId(userId);
-            userDataPopulator.populate(sdUserBean, userData);
-            userDataPopulator.populateSensitiveData(sdUserBean, userData);
+            BtuUserBean sdUserBean = userService.getUserByUserId(userId);
+            sdUserDataPopulator.populate(sdUserBean, userData);
+            sdUserDataPopulator.populateSensitiveData(sdUserBean, userData);
 
         } catch (UserNotFoundException e){
             LOG.warn(e.getMessage());
@@ -290,6 +289,6 @@ public class SdUserFacadeImpl implements SdUserFacade {
 
     @Override
     public boolean isInternalUser() {
-        return sdUserService.isInternalUser();
+        return userService.isInternalUser();
     }
 }
