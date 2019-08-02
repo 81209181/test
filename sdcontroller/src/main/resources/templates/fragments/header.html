@@ -23,7 +23,8 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li sec:authorize="hasAnyAuthority('ROOT')" class="nav-item dropdown">
+<!--                <li sec:authorize="hasAnyAuthority('ROOT')" class="nav-item dropdown">-->
+                <li sec:authorize="isAuthenticated()" class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="systemConfigDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         System
                     </a>
@@ -33,6 +34,7 @@
                         <a class="dropdown-item" th:href="@{/system/job/list}">Cron Job</a>
                     </div>
                 </li>
+
                 <li sec:authorize="hasAnyAuthority('ADMIN', 'C_ADMIN')" class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="userManDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         User Management
@@ -50,6 +52,8 @@
                         </div>
                     </div>
                 </li>
+
+
                 <li sec:authorize="hasAnyAuthority('USER', 'C_USER')" class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="accessFormDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Access Request
