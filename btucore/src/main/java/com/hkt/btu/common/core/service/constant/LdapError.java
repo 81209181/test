@@ -1,7 +1,7 @@
 package com.hkt.btu.common.core.service.constant;
 
 /**
- *  Ldap Error Code
+ * Ldap Error Code
  */
 public enum LdapError {
     USER_NOT_FOUND("525", "User not found in directory"),
@@ -17,7 +17,7 @@ public enum LdapError {
     private String code;
     private String msg;
 
-    private LdapError(String code, String msg) {
+    LdapError(String code, String msg) {
         this.code = code;
         this.msg = msg;
     }

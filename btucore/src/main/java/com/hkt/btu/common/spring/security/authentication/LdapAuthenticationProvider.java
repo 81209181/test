@@ -2,7 +2,7 @@ package com.hkt.btu.common.spring.security.authentication;
 
 
 import com.hkt.btu.common.core.service.BtuAuditTrailService;
-import com.hkt.btu.common.core.service.authentication.LdapAuthenticationProcessor;
+import com.hkt.btu.common.core.service.BtuLdapService;
 import com.hkt.btu.common.core.service.bean.BtuLdapBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.core.service.constant.LdapError;
@@ -37,7 +37,7 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
                     collect(Collectors.toMap(constant -> constant.getCode(), constant -> constant.getMsg())));
 
     @Resource
-    LdapAuthenticationProcessor ldapAuthProcessor;
+    BtuLdapService btuLdapService;
 
     @Resource(name = "auditTrailService")
     BtuAuditTrailService auditTrailService;
@@ -70,7 +70,8 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
             ldapInfo.setPrincipleName(LdapEnum.PCCW.getPrincipalName());
 
             // login ldap
-            ldapAuthProcessor.authenticationOnly(ldapInfo, auth);
+            btuLdapService.authenticationOnly(ldapInfo, auth);
+
 
             //if success, record it
             auditTrailService.insertLoginAuditTrail(userDetails);

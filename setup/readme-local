@@ -9,3 +9,7 @@ Keystore
 1. copy /setup/keystore/uat/aes-keystore.jck to /opt/keystore/aes-keystore.jck
 2. concat setup/server/tomcat/conf/local_catalina.properties to conf/catalina.properties
     - servicedesk.aesKeystore.storePass
+
+JVM Option
+Add VM Option for local development
+-Dcom.sun.jndi.ldap.object.disableEndpointIdentification=true

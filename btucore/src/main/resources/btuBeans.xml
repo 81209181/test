@@ -53,12 +53,8 @@
     <bean id="LdapAuthenticationProvider"
           class="com.hkt.btu.common.spring.security.authentication.LdapAuthenticationProvider"/>
 
-    <alias name="LdapAuthenticationProcessor" alias="customLdapAuthenticationProcessor"/>
-    <bean id="LdapAuthenticationProcessor"
-          class="com.hkt.btu.common.core.service.authentication.LdapAuthenticationProcessor"/>
-
     <alias name="LdapService" alias="ldapService"/>
-    <bean id="LdapService" class="com.hkt.btu.common.core.service.impl.LdapServiceImpl"/>
+    <bean id="LdapService" class="com.hkt.btu.common.core.service.impl.BtuLdapServiceImpl"/>
 
     <!-- BTU Service -->
     <!--!!! To be overridden and implemented by each application (with bean alias) !!!-->
@@ -72,7 +68,7 @@
     <bean id="btuPathCtrlService" class="com.hkt.btu.common.core.service.impl.BtuPathCtrlServiceImpl"/>
 
     <alias name="btuAuditTrailServiceImpl" alias="auditTrailService"/>
-    <bean id="btuAuditTrailServiceImpl" class="com.hkt.btu.common.core.service.impl.BtuAuditTrailServiceImpl" />
+    <bean id="btuAuditTrailServiceImpl" class="com.hkt.btu.common.core.service.impl.BtuAuditTrailServiceImpl"/>
 
     <alias name="btuConfigParamService" alias="configParamService"/>
     <bean id="btuConfigParamService" class="com.hkt.btu.common.core.service.impl.BtuConfigParamServiceImpl"/>
