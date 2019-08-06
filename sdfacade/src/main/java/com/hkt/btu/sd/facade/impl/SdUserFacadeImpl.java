@@ -221,6 +221,8 @@ public class SdUserFacadeImpl implements SdUserFacade {
         } catch (MessagingException e){
             LOG.error(e.getMessage(), e);
             return "Failed to send email.";
+        } catch (InvalidInputException e) {
+            return "Please do not submit duplicate.";
         }
 
         return null;
