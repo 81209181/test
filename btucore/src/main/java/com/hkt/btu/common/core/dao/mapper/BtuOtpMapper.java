@@ -8,4 +8,5 @@ public interface BtuOtpMapper {
     BtuOtpEntity getOtp(String otp, String action);
     void insertOtp(Integer userId, String action, String otp, LocalDateTime expirydate, Integer createby);
     void expireOtp(String otp);
+    BtuOtpEntity getOtpByUserId(Integer userId, String action);
 }
