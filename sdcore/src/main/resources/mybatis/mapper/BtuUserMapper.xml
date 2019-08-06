@@ -2,34 +2,41 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdUserMapper" >
-    <resultMap id="SdUserEntity" type="com.hkt.btu.sd.core.dao.entity.SdUserEntity" >
-        <result column="USER_ID" property="userId" />
-        <result column="NAME" property="name" />
-        <result column="STATUS" property="status" />
-        <result column="MOBILE" property="mobile" />
-        <result column="EMAIL" property="email" />
-        <result column="COMPANY_ID" property="companyId" />
-        <result column="STAFF_ID" property="staffId" />
+<mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdUserMapper">
+    <resultMap id="SdUserEntity" type="com.hkt.btu.sd.core.dao.entity.SdUserEntity">
+        <result column="USER_ID" property="userId"/>
+        <result column="NAME" property="name"/>
+        <result column="STATUS" property="status"/>
+        <result column="MOBILE" property="mobile"/>
+        <result column="EMAIL" property="email"/>
+        <result column="COMPANY_ID" property="companyId"/>
+        <result column="STAFF_ID" property="staffId"/>
+        <result column="LDAP_DOMAIN" property="ldapDomain"/>
 
-        <result column="PASSWORD" property="password" />
-        <result column="PASSWORD_MODIFYDATE" property="passwordModifydate" />
-        <result column="LOGIN_TRIED" property="loginTried" />
+        <result column="PASSWORD" property="password"/>
+        <result column="PASSWORD_MODIFYDATE" property="passwordModifydate"/>
+        <result column="LOGIN_TRIED" property="loginTried"/>
 
-        <result column="CREATEDATE" property="createdate" />
-        <result column="CREATEBY" property="createby" />
-        <result column="MODIFYDATE" property="modifydate" />
-        <result column="MODIFYBY" property="modifyby" />
-        <result column="REMARKS" property="remarks" />
+        <result column="CREATEDATE" property="createdate"/>
+        <result column="CREATEBY" property="createby"/>
+        <result column="MODIFYDATE" property="modifydate"/>
+        <result column="MODIFYBY" property="modifyby"/>
+        <result column="REMARKS" property="remarks"/>
     </resultMap>
 
-    <select id="getUserByEmail" resultMap="SdUserEntity" >
+    <select id="getUserByEmail" resultMap="SdUserEntity">
         select *
-        from NOC_USER
+        from USER_PROFILE
         where email = #{email}
     </select>
 
-    <select id="getUserByUserId" resultMap="SdUserEntity" >
+    <select id="getUserByLdapDomain" resultMap="SdUserEntity">
+        select *
+        from USER_PROFILE
+        where ldap_domain like #{ldapDomain}
+    </select>
+
+    <select id="getUserByUserId" resultMap="SdUserEntity">
         select *
         from NOC_USER
         where USER_ID = #{userId}
@@ -38,25 +45,25 @@
         </if>
     </select>
 
-    <update id="addLoginTriedByUsername" >
-        update NOC_USER
+    <update id="addLoginTriedByUsername">
+        update USER_PROFILE
         set LOGIN_TRIED = LOGIN_TRIED + 1
         where EMAIL = #{username}
     </update>
 
-    <update id="resetLoginTriedByUsername" >
-        update NOC_USER
+    <update id="resetLoginTriedByUsername">
+        update USER_PROFILE
         set LOGIN_TRIED = 0
         where EMAIL = #{username}
     </update>
 
-    <update id="updateUserStatusByUsername" >
+    <update id="updateUserStatusByUsername">
         update NOC_USER
         set STATUS = #{status}, MODIFYBY = #{modifyby}
         where EMAIL = #{username}
     </update>
 
-    <select id="getNewUserId" resultType="Integer" >
+    <select id="getNewUserId" resultType="Integer">
         select 1 from dual
     </select>
 

@@ -38,10 +38,6 @@
     <bean id="btuUserDetailsService"
           class="com.hkt.btu.common.spring.security.core.userdetails.BtuUserDetailsServiceImpl"/>
 
-    <alias name="btuDaoAuthenticationProvider" alias="customBtuDaoAuthenticationProvider"/>
-    <bean id="btuDaoAuthenticationProvider"
-          class="com.hkt.btu.common.spring.security.access.BtuDaoAuthenticationProvider"/>
-
     <alias name="btuBCryptPasswordEncoder" alias="btuPasswordEncoder"/>
     <bean id="btuBCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
 
@@ -67,6 +63,13 @@
     <alias name="btuPathCtrlService" alias="pathCtrlService"/>
     <bean id="btuPathCtrlService" class="com.hkt.btu.common.core.service.impl.BtuPathCtrlServiceImpl" />
 
+    <alias name="btuDaoAuthenticationProvider" alias="customBtuDaoAuthenticationProvider"/>
+    <bean id="btuDaoAuthenticationProvider"
+          class="com.hkt.btu.common.spring.security.authentication.BtuDaoAuthenticationProvider"/>
+
+    <alias name="DbDaoAuthenticationProvider" alias="customDbDaoAuthenticationProvider"/>
+    <bean id="DbDaoAuthenticationProvider"
+          class="com.hkt.btu.common.spring.security.authentication.DbDaoAuthenticationProvider"/>
 <!--    <alias name="btuAuditTrailServiceImpl" alias="auditTrailService"/>-->
 <!--    <bean id="btuAuditTrailServiceImpl" class="com.hkt.btu.common.core.service.impl.BtuAuditTrailServiceImpl" />-->
 

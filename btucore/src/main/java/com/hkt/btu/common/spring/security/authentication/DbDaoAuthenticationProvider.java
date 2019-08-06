@@ -1,6 +1,7 @@
-package com.hkt.btu.common.spring.security.access;
+package com.hkt.btu.common.spring.security.authentication;
 
 
+import com.hkt.btu.common.core.service.BtuAuditTrailService;
 import com.hkt.btu.common.core.service.BtuSiteConfigService;
 import com.hkt.btu.common.core.service.BtuUserService;
 import com.hkt.btu.common.core.service.bean.BtuSiteConfigBean;
@@ -19,8 +20,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 import javax.annotation.Resource;
 
-public class BtuDaoAuthenticationProvider extends DaoAuthenticationProvider {
-    private static final Logger LOG = LogManager.getLogger(BtuDaoAuthenticationProvider.class);
+public class DbDaoAuthenticationProvider extends DaoAuthenticationProvider {
+    private static final Logger LOG = LogManager.getLogger(DbDaoAuthenticationProvider.class);
 
     @Resource(name = "customBtuUserDetailsService")
     @Qualifier("userDetailsService")
@@ -35,12 +36,15 @@ public class BtuDaoAuthenticationProvider extends DaoAuthenticationProvider {
     @Resource(name = "userService")
     BtuUserService userService;
 
+    @Resource(name = "auditTrailService")
+    BtuAuditTrailService auditTrailService;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         try {
             Authentication auth = super.authenticate(authentication);
             User user = (User) auth.getPrincipal();
+
 
             // if reach here, means login success, else exception will be thrown
             // reset the user login attempts

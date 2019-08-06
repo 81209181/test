@@ -24,9 +24,12 @@ public class SdUserEntity extends BaseEntity {
     private Integer companyId;
     private byte[] staffId;
 
+    private String ldapDomain;
     private String password;
     private LocalDateTime passwordModifydate;
     private Integer loginTried;
+
+
 
 
     public Integer getUserId() {
@@ -107,5 +110,13 @@ public class SdUserEntity extends BaseEntity {
 
     public void setStaffId(byte[] staffId) {
         this.staffId = staffId;
+    }
+
+    public String getLdapDomain() {
+        return ldapDomain;
+    }
+
+    public void setLdapDomain(String ldapDomain) {
+        this.ldapDomain = ldapDomain;
     }
 }

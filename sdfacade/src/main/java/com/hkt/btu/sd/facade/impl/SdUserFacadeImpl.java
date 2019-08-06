@@ -28,6 +28,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
 
     @Resource(name = "userService")
     SdUserService sdUserService;
+
     @Resource(name = "inputCheckService")
     SdInputCheckService sdInputCheckService;
 
@@ -261,7 +262,8 @@ public class SdUserFacadeImpl implements SdUserFacade {
             // get user info
             SdUserBean sdUserBean = (SdUserBean) sdUserService.getCurrentUserBean();
             userDataPopulator.populate(sdUserBean, userData);
-            userDataPopulator.populateSensitiveData(sdUserBean, userData);
+            // TODO: Encryption function will be done later
+            //userDataPopulator.populateSensitiveData(sdUserBean, userData);
 
         } catch (UserNotFoundException e){
             return null;

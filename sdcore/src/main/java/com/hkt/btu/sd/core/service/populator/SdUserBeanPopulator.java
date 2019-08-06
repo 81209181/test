@@ -2,7 +2,6 @@ package com.hkt.btu.sd.core.service.populator;
 
 
 import com.hkt.btu.common.core.service.populator.AbstractBeanPopulator;
-import com.hkt.btu.sd.core.dao.entity.SdAccessRequestEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserGroupEntity;
 import com.hkt.btu.sd.core.service.SdSensitiveDataService;
@@ -30,23 +29,24 @@ public class SdUserBeanPopulator extends AbstractBeanPopulator<SdUserBean> {
         target.setPassword(source.getPassword());
         target.setPasswordModifydate(source.getPasswordModifydate());
         target.setLoginTried(source.getLoginTried());
-
+        target.setLdapDomain(source.getLdapDomain());
         // SdUserBean
         target.setUserId(source.getUserId());
         target.setName(source.getName());
         target.setEmail(source.getEmail());
         target.setCompanyId(source.getCompanyId());
 
+        // TODO: Encryption function will be done later
         // encrypted data
-        String decryptedMobile = sdSensitiveDataService.decryptToStringSafe(source.getMobile());
+        /*String decryptedMobile = sdSensitiveDataService.decryptToStringSafe(source.getMobile());
         target.setMobile(decryptedMobile);
-
+        // TODO: Encryption function will be done later
         String decryptedStaffId = sdSensitiveDataService.decryptToStringSafe(source.getStaffId());
-        target.setStaffId(decryptedStaffId);
+        target.setStaffId(decryptedStaffId);*/
     }
 
     public void populate(List<SdUserGroupEntity> userGroupEntityList, SdUserBean target) {
-        if(CollectionUtils.isEmpty(userGroupEntityList)){
+        if (CollectionUtils.isEmpty(userGroupEntityList)) {
             return;
         }
 
@@ -57,13 +57,6 @@ public class SdUserBeanPopulator extends AbstractBeanPopulator<SdUserBean> {
         }
 
         target.setAuthorities(grantedAuthSet);
-    }
-
-    public void populate(SdAccessRequestEntity source, SdUserBean target){
-        target.setUserId(source.getRequesterId());
-        target.setName(source.getRequesterName());
-        target.setMobile( sdSensitiveDataService.decryptToStringSafe(source.getMobile()) );
-        target.setEmail( sdSensitiveDataService.decryptToStringSafe(source.getEmail()) );
     }
 
 }
