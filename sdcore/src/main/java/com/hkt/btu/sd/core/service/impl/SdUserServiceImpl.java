@@ -10,7 +10,6 @@ import com.hkt.btu.sd.core.dao.mapper.SdUserGroupMapper;
 import com.hkt.btu.sd.core.dao.mapper.SdUserMapper;
 import com.hkt.btu.sd.core.exception.*;
 import com.hkt.btu.sd.core.service.*;
-import com.hkt.btu.sd.core.service.bean.SdCompanyBean;
 import com.hkt.btu.sd.core.service.bean.SdEmailBean;
 import com.hkt.btu.sd.core.service.bean.SdOtpBean;
 import com.hkt.btu.sd.core.service.bean.SdUserBean;
@@ -43,8 +42,6 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
     @Resource(name = "userGroupService")
     SdUserGroupService sdUserGroupService;
-    @Resource(name = "companyService")
-    SdCompanyService sdCompanyService;
     @Resource(name = "otpService")
     SdOtpService sdOtpService;
     @Resource(name = "emailService")
@@ -137,13 +134,6 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
         // get current user user id
         Integer createby = getCurrentUserUserId();
-
-        // check current user has right to create user of company
-        boolean isEligibleCompany = isEligibleCompany(companyId);
-        if (!isEligibleCompany) {
-            LOG.warn("Ineligible to create user of selected company (" + companyId + ") by user (" + createby + ").");
-            throw new InvalidInputException("Invalid company ID.");
-        }
 
 
         // check current user has right to create user of user group
@@ -252,40 +242,6 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         sdUserGroupService.updateUserGroup(userId, updateIsAdmin, updateIsUser, updateIsCAdmin, updateIsCUser, modifier);
 
         LOG.info(String.format("Updated user. [name:%b, mobile:%b, staffId:%b]", name != null, mobile != null, staffId != null));
-    }
-
-    @Override
-    public List<SdCompanyBean> getEligibleCompanyList() {
-        List<SdCompanyBean> result;
-
-        // determine company id restriction
-        Integer companyIdRestriction = getCompanyIdRestriction();
-
-
-        if (companyIdRestriction == null) {
-            result = sdCompanyService.getAllCompany();
-        } else {
-            SdCompanyBean sdCompanyBean = sdCompanyService.getCompanyById(companyIdRestriction);
-            result = new LinkedList<>();
-            result.add(sdCompanyBean);
-        }
-
-        return result;
-    }
-
-    private boolean isEligibleCompany(Integer companyId) {
-        List<SdCompanyBean> eligibleCompanyList = getEligibleCompanyList();
-        if (CollectionUtils.isEmpty(eligibleCompanyList)) {
-            return false;
-        }
-
-        for (SdCompanyBean sdCompanyBean : eligibleCompanyList) {
-            if (companyId.equals(sdCompanyBean.getCompanyId())) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**

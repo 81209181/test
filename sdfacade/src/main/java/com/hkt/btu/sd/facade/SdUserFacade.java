@@ -15,7 +15,6 @@ public interface SdUserFacade {
 
 
     CreateResultData createUser(CreateUserFormData createUserFormData);
-    LinkedList<SdCompanyData> getEligibleCompanyList();
 
     String updateUser(UpdateUserFormData updateUserFormData);
 

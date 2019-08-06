@@ -4,7 +4,6 @@ package com.hkt.btu.sd.core.service;
 import com.hkt.btu.common.core.exception.UserNotFoundException;
 import com.hkt.btu.common.core.service.BtuUserService;
 import com.hkt.btu.sd.core.exception.*;
-import com.hkt.btu.sd.core.service.bean.SdCompanyBean;
 import com.hkt.btu.sd.core.service.bean.SdUserBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,8 +39,6 @@ public interface SdUserService extends BtuUserService {
     void updateUser(Integer userId, String newName, String newMobile, String newStaffId,
                     Boolean isNewAdmin, Boolean isNewUser, Boolean isNewCAdmin, Boolean isNewCUser)
             throws UserNotFoundException, InsufficientAuthorityException, GeneralSecurityException;
-
-    List<SdCompanyBean> getEligibleCompanyList();
 
     void requestResetPassword(String username) throws UserNotFoundException, MessagingException;
 }

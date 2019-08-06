@@ -3,14 +3,11 @@ package com.hkt.btu.sd.facade.impl;
 import com.hkt.btu.common.core.exception.UserNotFoundException;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.core.exception.*;
-import com.hkt.btu.sd.core.service.SdCompanyService;
 import com.hkt.btu.sd.core.service.SdInputCheckService;
 import com.hkt.btu.sd.core.service.SdUserService;
-import com.hkt.btu.sd.core.service.bean.SdCompanyBean;
 import com.hkt.btu.sd.core.service.bean.SdUserBean;
 import com.hkt.btu.sd.facade.SdUserFacade;
 import com.hkt.btu.sd.facade.data.*;
-import com.hkt.btu.sd.facade.populator.SdCompanyDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdUserDataPopulator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -31,15 +28,11 @@ public class SdUserFacadeImpl implements SdUserFacade {
 
     @Resource(name = "userService")
     SdUserService sdUserService;
-    @Resource(name = "companyService")
-    SdCompanyService sdCompanyService;
     @Resource(name = "inputCheckService")
     SdInputCheckService sdInputCheckService;
 
     @Resource(name = "userDataPopulator")
     SdUserDataPopulator userDataPopulator;
-    @Resource(name = "companyDataPopulator")
-    SdCompanyDataPopulator sdCompanyDataPopulator;
 
 
     @Override
@@ -76,24 +69,6 @@ public class SdUserFacadeImpl implements SdUserFacade {
         }
 
         return CreateResultData.of(newUserId);
-    }
-
-    @Override
-    public LinkedList<SdCompanyData> getEligibleCompanyList() {
-        List<SdCompanyBean> sdCompanyBeanList = sdUserService.getEligibleCompanyList();
-        if(CollectionUtils.isEmpty(sdCompanyBeanList)){
-            return new LinkedList<>();
-        }
-
-        LinkedList<SdCompanyData> dataList = new LinkedList<>();
-        for(SdCompanyBean bean : sdCompanyBeanList){
-            SdCompanyData data = new SdCompanyData();
-            sdCompanyDataPopulator.populate(bean, data);
-            dataList.add(data);
-        }
-
-        dataList.sort(Comparator.comparing(SdCompanyData::getName));
-        return dataList;
     }
 
     @Override
@@ -288,9 +263,6 @@ public class SdUserFacadeImpl implements SdUserFacade {
             userDataPopulator.populate(sdUserBean, userData);
             userDataPopulator.populateSensitiveData(sdUserBean, userData);
 
-            // get company info
-            SdCompanyBean sdCompanyBean = sdCompanyService.getCompanyById(sdUserBean.getCompanyId());
-            userDataPopulator.populate(sdCompanyBean, userData);
         } catch (UserNotFoundException e){
             return null;
         }
@@ -307,9 +279,6 @@ public class SdUserFacadeImpl implements SdUserFacade {
             userDataPopulator.populate(sdUserBean, userData);
             userDataPopulator.populateSensitiveData(sdUserBean, userData);
 
-            // get company info
-            SdCompanyBean sdCompanyBean = sdCompanyService.getCompanyById(sdUserBean.getCompanyId());
-            userDataPopulator.populate(sdCompanyBean, userData);
         } catch (UserNotFoundException e){
             LOG.warn(e.getMessage());
             return null;

@@ -2,7 +2,6 @@ package com.hkt.btu.sd.facade.populator;
 
 
 import com.hkt.btu.common.facade.populator.AbstractDataPopulator;
-import com.hkt.btu.sd.core.service.bean.SdCompanyBean;
 import com.hkt.btu.sd.core.service.bean.SdUserBean;
 import com.hkt.btu.sd.facade.data.SdUserData;
 import org.apache.commons.collections4.CollectionUtils;

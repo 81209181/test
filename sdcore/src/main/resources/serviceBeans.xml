@@ -26,29 +26,11 @@
     <alias name="sdUserGroupService" alias="userGroupService"/>
     <bean id="sdUserGroupService" class="com.hkt.btu.sd.core.service.impl.SdUserGroupServiceImpl"/>
 
-    <alias name="sdCompanyService" alias="companyService"/>
-    <bean id="sdCompanyService" class="com.hkt.btu.sd.core.service.impl.SdCompanyServiceImpl"/>
-
     <alias name="sdOtpService" alias="otpService"/>
     <bean id="sdOtpService" class="com.hkt.btu.sd.core.service.impl.SdOtpServiceImpl"/>
 
     <alias name="sdEmailService" alias="emailService"/>
     <bean id="sdEmailService" class="com.hkt.btu.sd.core.service.impl.SdEmailServiceImpl"/>
-
-    <alias name="sdAccessRequestService" alias="accessRequestService"/>
-    <bean id="sdAccessRequestService" class="com.hkt.btu.sd.core.service.impl.SdAccessRequestServiceImpl"/>
-
-    <alias name="sdAccessRequestVisitorService" alias="accessRequestVisitorService"/>
-    <bean id="sdAccessRequestVisitorService" class="com.hkt.btu.sd.core.service.impl.SdAccessRequestVisitorServiceImpl"/>
-
-    <alias name="sdAccessRequestEquipService" alias="accessRequestEquipService"/>
-    <bean id="sdAccessRequestEquipService" class="com.hkt.btu.sd.core.service.impl.SdAccessRequestEquipServiceImpl"/>
-
-    <alias name="sdAccessRequestHashService" alias="accessRequestHashService"/>
-    <bean id="sdAccessRequestHashService" class="com.hkt.btu.sd.core.service.impl.SdAccessRequestHashServiceImpl"/>
-
-    <alias name="sdOperationHistService" alias="operationHistService"/>
-    <bean id="sdOperationHistService" class="com.hkt.btu.sd.core.service.impl.SdOperationHistServiceImpl"/>
 
     <alias name="sdSensitiveDataService" alias="sensitiveDataService"/>
     <bean id="sdSensitiveDataService" class="com.hkt.btu.sd.core.service.impl.SdSensitiveDataServiceImpl"/>
@@ -80,20 +62,8 @@
     <alias name="sdUserGroupBeanPopulator" alias="userGroupBeanPopulator"/>
     <bean id="sdUserGroupBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserGroupBeanPopulator"/>
 
-    <alias name="sdCompanyBeanPopulator" alias="companyBeanPopulator"/>
-    <bean id="sdCompanyBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdCompanyBeanPopulator"/>
-
     <alias name="sdOtpBeanPopulator" alias="otpBeanPopulator"/>
     <bean id="sdOtpBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdOtpBeanPopulator"/>
-
-    <alias name="sdAccessRequestBeanPopulator" alias="accessRequestBeanPopulator"/>
-    <bean id="sdAccessRequestBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdAccessRequestBeanPopulator"/>
-
-    <alias name="sdAccessRequestVisitorBeanPopulator" alias="accessRequestVisitorBeanPopulator"/>
-    <bean id="sdAccessRequestVisitorBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdAccessRequestVisitorBeanPopulator"/>
-
-    <alias name="sdAccessRequestEquipBeanPopulator" alias="accessRequestEquipBeanPopulator"/>
-    <bean id="sdAccessRequestEquipBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdAccessRequestEquipBeanPopulator"/>
 
     <alias name="sdConfigParamBeanPopulator" alias="configParamBeanPopulator"/>
     <bean id="sdConfigParamBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdConfigParamBeanPopulator"/>

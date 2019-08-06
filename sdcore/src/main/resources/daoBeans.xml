@@ -4,15 +4,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <!-- Populator -->
-    <alias name="sdAccessRequestEntityPopulator" alias="accessRequestEntityPopulator"/>
-    <bean id="sdAccessRequestEntityPopulator" class="com.hkt.btu.sd.core.dao.populator.SdAccessRequestEntityPopulator"/>
-
-    <alias name="sdAccessRequestVisitorEntityPopulator" alias="accessRequestVisitorEntityPopulator"/>
-    <bean id="sdAccessRequestVisitorEntityPopulator" class="com.hkt.btu.sd.core.dao.populator.SdAccessRequestVisitorEntityPopulator"/>
-
-    <alias name="sdAccessRequestEquipEntityPopulator" alias="accessRequestEquipEntityPopulator"/>
-    <bean id="sdAccessRequestEquipEntityPopulator" class="com.hkt.btu.sd.core.dao.populator.SdAccessRequestEquipEntityPopulator"/>
-
     <alias name="sdCronJobLogEntityPopulator" alias="cronJobLogEntityPopulator"/>
     <bean id="sdCronJobLogEntityPopulator" class="com.hkt.btu.sd.core.dao.populator.SdCronJobLogEntityPopulator"/>
 

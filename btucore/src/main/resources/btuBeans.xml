@@ -58,77 +58,19 @@
 
     <!-- BTU Service -->
     <!--!!! To be overridden and implemented by each application (with bean alias) !!!-->
-    <alias name="btuSiteConfigService" alias="siteConfigService"/>
+    <!--<alias name="btuSiteConfigService" alias="siteConfigService"/>
     <bean id="btuSiteConfigService" class="com.hkt.btu.common.core.service.impl.BtuSiteConfigServiceImpl" />
 
     <alias name="btuUserService" alias="userService"/>
-    <bean id="btuUserService" class="com.hkt.btu.common.core.service.impl.BtuUserServiceImpl" />
+    <bean id="btuUserService" class="com.hkt.btu.common.core.service.impl.BtuUserServiceImpl" />-->
 
     <alias name="btuPathCtrlService" alias="pathCtrlService"/>
-    <bean id="btuPathCtrlService" class="com.hkt.btu.common.core.service.impl.BtuPathCtrlServiceImpl"/>
+    <bean id="btuPathCtrlService" class="com.hkt.btu.common.core.service.impl.BtuPathCtrlServiceImpl" />
 
-    <alias name="btuAuditTrailServiceImpl" alias="auditTrailService"/>
-    <bean id="btuAuditTrailServiceImpl" class="com.hkt.btu.common.core.service.impl.BtuAuditTrailServiceImpl"/>
-
-    <alias name="btuConfigParamService" alias="configParamService"/>
-    <bean id="btuConfigParamService" class="com.hkt.btu.common.core.service.impl.BtuConfigParamServiceImpl"/>
-
-    <alias name="btuUserGroupService" alias="userGroupService"/>
-    <bean id="btuUserGroupService" class="com.hkt.btu.common.core.service.impl.BtuUserGroupServiceImpl"/>
-
-    <alias name="btuOtpService" alias="otpService"/>
-    <bean id="btuOtpService" class="com.hkt.btu.common.core.service.impl.BtuOtpServiceImpl"/>
-
-    <alias name="btuEmailService" alias="emailService"/>
-    <bean id="btuEmailService" class="com.hkt.btu.common.core.service.impl.BtuEmailServiceImpl"/>
+<!--    <alias name="btuAuditTrailServiceImpl" alias="auditTrailService"/>-->
+<!--    <bean id="btuAuditTrailServiceImpl" class="com.hkt.btu.common.core.service.impl.BtuAuditTrailServiceImpl" />-->
 
     <alias name="btuHttpService" alias="httpService"/>
     <bean id="btuHttpService" class="com.hkt.btu.common.core.service.impl.BtuHttpServiceImpl"/>
-
-    <alias name="btuSensitiveDataService" alias="sensitiveDataService"/>
-    <bean id="btuSensitiveDataService" class="com.hkt.btu.common.core.service.impl.BtuSensitiveDataServiceImpl"/>
-
-    <alias name="btuSchedulerService" alias="schedulerService"/>
-    <bean id="btuSchedulerService" class="com.hkt.btu.common.core.service.impl.BtuSchedulerServiceImpl"/>
-
-    <alias name="btuCronJobProfileService" alias="cronJobProfileService"/>
-    <bean id="btuCronJobProfileService" class="com.hkt.btu.common.core.service.impl.BtuConJobProfileServiceImpl"/>
-
-    <alias name="btuCronJobLogService" alias="cronJobLogService"/>
-    <bean id="btuCronJobLogService" class="com.hkt.btu.common.core.service.impl.BtuCronJobLogServiceImpl"/>
-
-    <alias name="btuInputCheckService" alias="inputCheckService"/>
-    <bean id="btuInputCheckService" class="com.hkt.btu.common.core.service.impl.BtuInputCheckServiceImpl"/>
-
-    <alias name="btuHealthCheckService" alias="healthCheckService"/>
-    <bean id="btuHealthCheckService" class="com.hkt.btu.common.core.service.impl.BtuHealthCheckServiceImpl"/>
-
-    <!-- Populator -->
-    <alias name="btuCronJobLogEntityPopulator" alias="cronJobLogEntityPopulator"/>
-    <bean id="btuCronJobLogEntityPopulator" class="com.hkt.btu.common.core.dao.populator.BtuCronJobLogEntityPopulator"/>
-
-    <alias name="btuUserBeanPopulator" alias="userBeanPopulator"/>
-    <bean id="btuUserBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuUserBeanPopulator"/>
-
-    <alias name="btuUserGroupPathCtrlBeanPopulator" alias="pathCtrlBeanPopulator"/>
-    <bean id="btuUserGroupPathCtrlBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuUserGroupPathCtrlBeanPopulator"/>
-
-    <alias name="btuUserGroupBeanPopulator" alias="userGroupBeanPopulator"/>
-    <bean id="btuUserGroupBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuUserGroupBeanPopulator"/>
-
-    <alias name="btuOtpBeanPopulator" alias="otpBeanPopulator"/>
-    <bean id="btuOtpBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuOtpBeanPopulator"/>
-
-    <alias name="btuConfigParamBeanPopulator" alias="configParamBeanPopulator"/>
-    <bean id="btuConfigParamBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuConfigParamBeanPopulator"/>
-
-    <alias name="btuCronJobProfileBeanPopulator" alias="cronJobProfileBeanPopulator"/>
-    <bean id="btuCronJobProfileBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuCronJobProfileBeanPopulator"/>
-
-    <alias name="btuCronJobInstBeanPopulator" alias="cronJobInstBeanPopulator"/>
-    <bean id="btuCronJobInstBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuCronJobInstBeanPopulator"/>
-
-    <alias name="btuSiteConfigBeanPopulator" alias="siteConfigBeanPopulator"/>
-    <bean id="btuSiteConfigBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuSiteConfigBeanPopulator"/>
 
 </beans>

@@ -9,12 +9,6 @@
     <alias name="sdUserGroupFacadeImpl" alias="userGroupFacade"/>
     <bean id="sdUserGroupFacadeImpl" class="com.hkt.btu.sd.facade.impl.SdUserGroupFacadeImpl" />
 
-    <alias name="sdCompanyFacadeImpl" alias="companyFacade"/>
-    <bean id="sdCompanyFacadeImpl" class="com.hkt.btu.sd.facade.impl.SdCompanyFacadeImpl" />
-
-    <alias name="sdAccessRequestFacade" alias="accessRequestFacade"/>
-    <bean id="sdAccessRequestFacade" class="com.hkt.btu.sd.facade.impl.SdAccessRequestFacadeImpl" />
-
     <alias name="sdConfigParamFacade" alias="configParamFacade"/>
     <bean id="sdConfigParamFacade" class="com.hkt.btu.sd.facade.impl.SdConfigParamFacadeImpl" />
 
@@ -38,21 +32,8 @@
     <alias name="sdUserGroupDataPopulator" alias="userGroupDataPopulator"/>
     <bean id="sdUserGroupDataPopulator" class="com.hkt.btu.sd.facade.populator.SdUserGroupDataPopulator"/>
 
-    <alias name="sdCompanyDataPopulator" alias="companyDataPopulator"/>
-    <bean id="sdCompanyDataPopulator" class="com.hkt.btu.sd.facade.populator.SdCompanyDataPopulator"/>
-
-    <alias name="sdAccessRequestDataPopulator" alias="accessRequestDataPopulator"/>
-    <bean id="sdAccessRequestDataPopulator" class="com.hkt.btu.sd.facade.populator.SdAccessRequestDataPopulator"/>
-    <alias name="sdAccessRequestVisitorDataPopulator" alias="accessRequestVisitorDataPopulator"/>
-    <bean id="sdAccessRequestVisitorDataPopulator" class="com.hkt.btu.sd.facade.populator.SdAccessRequestVisitorDataPopulator"/>
-    <alias name="sdAccessRequestEquipDataPopulator" alias="accessRequestEquipDataPopulator"/>
-    <bean id="sdAccessRequestEquipDataPopulator" class="com.hkt.btu.sd.facade.populator.SdAccessRequestEquipDataPopulator"/>
-
     <alias name="sdConfigParamDataPopulator" alias="configParamDataPopulator"/>
     <bean id="sdConfigParamDataPopulator" class="com.hkt.btu.sd.facade.populator.SdConfigParamDataPopulator"/>
-
-    <alias name="sdOperationHistDataPopulator" alias="operationHistDataPopulator"/>
-    <bean id="sdOperationHistDataPopulator" class="com.hkt.btu.sd.facade.populator.SdOperationHistDataPopulator"/>
 
     <alias name="sdSiteInstanceDataPopulator" alias="siteInstanceDataPopulator"/>
     <bean id="sdSiteInstanceDataPopulator" class="com.hkt.btu.sd.facade.populator.SdSiteConfigDataPopulator"/>
@@ -62,8 +43,5 @@
 
     <alias name="sdCronJobInstDataPopulator" alias="cronJobInstDataPopulator"/>
     <bean id="sdCronJobInstDataPopulator" class="com.hkt.btu.sd.facade.populator.SdCronJobInstDataPopulator"/>
-
-    <alias name="sdAccessRequestLocDataPopulator" alias="accessRequestLocDataPopulator"/>
-    <bean id="sdAccessRequestLocDataPopulator" class="com.hkt.btu.sd.facade.populator.SdAccessRequestLocDataPopulator"/>
 
 </beans>

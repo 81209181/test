@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.core.service.impl;
 
+import com.hkt.btu.common.core.service.impl.BtuAuditTrailServiceImpl;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
 import com.hkt.btu.sd.core.dao.entity.SdAuditTrailEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdAuditTrailMapper;
@@ -11,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Resource;
 
-public class SdAuditTrailServiceImpl implements SdAuditTrailService {
+public class SdAuditTrailServiceImpl extends BtuAuditTrailServiceImpl implements SdAuditTrailService {
     private static final Logger LOG = LogManager.getLogger(SdAuditTrailServiceImpl.class);
 
     @Resource (name = "userService")
