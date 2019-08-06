@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.core.service.impl;
 
+import com.hkt.btu.common.core.service.impl.BtuConfigParamServiceImpl;
 import com.hkt.btu.sd.core.dao.entity.SdConfigParamEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdConfigParamMapper;
 import com.hkt.btu.sd.core.service.SdConfigParamService;
@@ -19,7 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class SdConfigParamServiceImpl implements SdConfigParamService {
+public class SdConfigParamServiceImpl extends BtuConfigParamServiceImpl implements SdConfigParamService {
     private static final Logger LOG = LogManager.getLogger(SdConfigParamServiceImpl.class);
 
 
