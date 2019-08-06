@@ -4,111 +4,111 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <!-- Service -->
-    <alias name="nocSiteConfigService" alias="siteConfigService"/>
-    <alias name="nocSiteConfigService" alias="btuSiteConfigService"/>
-    <bean id="nocSiteConfigService" class="com.hkt.btu.noc.core.service.impl.NocSiteConfigServiceImpl"/>
+    <alias name="sdSiteConfigService" alias="siteConfigService"/>
+    <alias name="sdSiteConfigService" alias="btuSiteConfigService"/>
+    <bean id="sdSiteConfigService" class="com.hkt.btu.sd.core.service.impl.SdSiteConfigServiceImpl"/>
 
-    <alias name="nocUserService" alias="userService"/>
-    <alias name="nocUserService" alias="btuUserService"/>
-    <bean id="nocUserService" class="com.hkt.btu.noc.core.service.impl.NocUserServiceImpl"/>
+    <alias name="sdUserService" alias="userService"/>
+    <alias name="sdUserService" alias="btuUserService"/>
+    <bean id="sdUserService" class="com.hkt.btu.sd.core.service.impl.SdUserServiceImpl"/>
 
-  <!--  <alias name="nocPathCtrlService" alias="pathCtrlService"/>
-    <alias name="nocPathCtrlService" alias="btuPathCtrlService"/>
-    <bean id="nocPathCtrlService" class="com.hkt.btu.noc.core.service.impl.NocPathCtrlServiceImpl" />-->
+  <!--  <alias name="sdPathCtrlService" alias="pathCtrlService"/>
+    <alias name="sdPathCtrlService" alias="btuPathCtrlService"/>
+    <bean id="sdPathCtrlService" class="SdPathCtrlServiceImpl" />-->
 
-    <alias name="nocAuditTrailService" alias="auditTrailService"/>
-    <alias name="nocAuditTrailService" alias="btuAuditTrailService"/>
-    <bean id="nocAuditTrailService" class="com.hkt.btu.noc.core.service.impl.NocAuditTrailServiceImpl"/>
+    <alias name="sdAuditTrailService" alias="auditTrailService"/>
+    <alias name="sdAuditTrailService" alias="btuAuditTrailService"/>
+    <bean id="sdAuditTrailService" class="com.hkt.btu.sd.core.service.impl.SdAuditTrailServiceImpl"/>
 
-    <alias name="nocConfigParamService" alias="configParamService"/>
-    <bean id="nocConfigParamService" class="com.hkt.btu.noc.core.service.impl.NocConfigParamServiceImpl"/>
+    <alias name="sdConfigParamService" alias="configParamService"/>
+    <bean id="sdConfigParamService" class="com.hkt.btu.sd.core.service.impl.SdConfigParamServiceImpl"/>
 
-    <alias name="nocUserGroupService" alias="userGroupService"/>
-    <bean id="nocUserGroupService" class="com.hkt.btu.noc.core.service.impl.NocUserGroupServiceImpl"/>
+    <alias name="sdUserGroupService" alias="userGroupService"/>
+    <bean id="sdUserGroupService" class="com.hkt.btu.sd.core.service.impl.SdUserGroupServiceImpl"/>
 
-    <alias name="nocCompanyService" alias="companyService"/>
-    <bean id="nocCompanyService" class="com.hkt.btu.noc.core.service.impl.NocCompanyServiceImpl"/>
+    <alias name="sdCompanyService" alias="companyService"/>
+    <bean id="sdCompanyService" class="com.hkt.btu.sd.core.service.impl.SdCompanyServiceImpl"/>
 
-    <alias name="nocOtpService" alias="otpService"/>
-    <bean id="nocOtpService" class="com.hkt.btu.noc.core.service.impl.NocOtpServiceImpl"/>
+    <alias name="sdOtpService" alias="otpService"/>
+    <bean id="sdOtpService" class="com.hkt.btu.sd.core.service.impl.SdOtpServiceImpl"/>
 
-    <alias name="nocEmailService" alias="emailService"/>
-    <bean id="nocEmailService" class="com.hkt.btu.noc.core.service.impl.NocEmailServiceImpl"/>
+    <alias name="sdEmailService" alias="emailService"/>
+    <bean id="sdEmailService" class="com.hkt.btu.sd.core.service.impl.SdEmailServiceImpl"/>
 
-    <alias name="nocAccessRequestService" alias="accessRequestService"/>
-    <bean id="nocAccessRequestService" class="com.hkt.btu.noc.core.service.impl.NocAccessRequestServiceImpl"/>
+    <alias name="sdAccessRequestService" alias="accessRequestService"/>
+    <bean id="sdAccessRequestService" class="com.hkt.btu.sd.core.service.impl.SdAccessRequestServiceImpl"/>
 
-    <alias name="nocAccessRequestVisitorService" alias="accessRequestVisitorService"/>
-    <bean id="nocAccessRequestVisitorService" class="com.hkt.btu.noc.core.service.impl.NocAccessRequestVisitorServiceImpl"/>
+    <alias name="sdAccessRequestVisitorService" alias="accessRequestVisitorService"/>
+    <bean id="sdAccessRequestVisitorService" class="com.hkt.btu.sd.core.service.impl.SdAccessRequestVisitorServiceImpl"/>
 
-    <alias name="nocAccessRequestEquipService" alias="accessRequestEquipService"/>
-    <bean id="nocAccessRequestEquipService" class="com.hkt.btu.noc.core.service.impl.NocAccessRequestEquipServiceImpl"/>
+    <alias name="sdAccessRequestEquipService" alias="accessRequestEquipService"/>
+    <bean id="sdAccessRequestEquipService" class="com.hkt.btu.sd.core.service.impl.SdAccessRequestEquipServiceImpl"/>
 
-    <alias name="nocAccessRequestHashService" alias="accessRequestHashService"/>
-    <bean id="nocAccessRequestHashService" class="com.hkt.btu.noc.core.service.impl.NocAccessRequestHashServiceImpl"/>
+    <alias name="sdAccessRequestHashService" alias="accessRequestHashService"/>
+    <bean id="sdAccessRequestHashService" class="com.hkt.btu.sd.core.service.impl.SdAccessRequestHashServiceImpl"/>
 
-    <alias name="nocOperationHistService" alias="operationHistService"/>
-    <bean id="nocOperationHistService" class="com.hkt.btu.noc.core.service.impl.NocOperationHistServiceImpl"/>
+    <alias name="sdOperationHistService" alias="operationHistService"/>
+    <bean id="sdOperationHistService" class="com.hkt.btu.sd.core.service.impl.SdOperationHistServiceImpl"/>
 
-    <alias name="nocSensitiveDataService" alias="sensitiveDataService"/>
-    <bean id="nocSensitiveDataService" class="com.hkt.btu.noc.core.service.impl.NocSensitiveDataServiceImpl"/>
+    <alias name="sdSensitiveDataService" alias="sensitiveDataService"/>
+    <bean id="sdSensitiveDataService" class="com.hkt.btu.sd.core.service.impl.SdSensitiveDataServiceImpl"/>
 
-    <alias name="nocSchedulerService" alias="schedulerService"/>
-    <bean id="nocSchedulerService" class="com.hkt.btu.noc.core.service.impl.NocSchedulerServiceImpl"/>
+    <alias name="sdSchedulerService" alias="schedulerService"/>
+    <bean id="sdSchedulerService" class="com.hkt.btu.sd.core.service.impl.SdSchedulerServiceImpl"/>
 
-    <alias name="nocCronJobProfileService" alias="cronJobProfileService"/>
-    <bean id="nocCronJobProfileService" class="com.hkt.btu.noc.core.service.impl.NocCronJobProfileServiceImpl"/>
+    <alias name="sdCronJobProfileService" alias="cronJobProfileService"/>
+    <bean id="sdCronJobProfileService" class="com.hkt.btu.sd.core.service.impl.SdCronJobProfileServiceImpl"/>
 
-    <alias name="nocCronJobLogService" alias="cronJobLogService"/>
-    <bean id="nocCronJobLogService" class="com.hkt.btu.noc.core.service.impl.NocCronJobLogServiceImpl"/>
+    <alias name="sdCronJobLogService" alias="cronJobLogService"/>
+    <bean id="sdCronJobLogService" class="com.hkt.btu.sd.core.service.impl.SdCronJobLogServiceImpl"/>
 
-    <alias name="nocInputCheckService" alias="inputCheckService"/>
-    <bean id="nocInputCheckService" class="com.hkt.btu.noc.core.service.impl.NocInputCheckServiceImpl"/>
+    <alias name="sdInputCheckService" alias="inputCheckService"/>
+    <bean id="sdInputCheckService" class="com.hkt.btu.sd.core.service.impl.SdInputCheckServiceImpl"/>
 
-    <alias name="nocHealthCheckService" alias="healthCheckService"/>
-    <bean id="nocHealthCheckService" class="com.hkt.btu.noc.core.service.impl.NocHealthCheckServiceImpl"/>
+    <alias name="sdHealthCheckService" alias="healthCheckService"/>
+    <bean id="sdHealthCheckService" class="com.hkt.btu.sd.core.service.impl.SdHealthCheckServiceImpl"/>
 
 
 
     <!-- Populator -->
-    <alias name="nocUserBeanPopulator" alias="userBeanPopulator"/>
-    <bean id="nocUserBeanPopulator" class="com.hkt.btu.noc.core.service.populator.NocUserBeanPopulator"/>
+    <alias name="sdUserBeanPopulator" alias="userBeanPopulator"/>
+    <bean id="sdUserBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserBeanPopulator"/>
 
-    <alias name="nocUserGroupPathCtrlBeanPopulator" alias="pathCtrlBeanPopulator"/>
-    <bean id="nocUserGroupPathCtrlBeanPopulator" class="com.hkt.btu.noc.core.service.populator.NocUserGroupPathCtrlBeanPopulator"/>
+    <alias name="sdUserGroupPathCtrlBeanPopulator" alias="pathCtrlBeanPopulator"/>
+    <bean id="sdUserGroupPathCtrlBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserGroupPathCtrlBeanPopulator"/>
 
-    <alias name="nocUserGroupBeanPopulator" alias="userGroupBeanPopulator"/>
-    <bean id="nocUserGroupBeanPopulator" class="com.hkt.btu.noc.core.service.populator.NocUserGroupBeanPopulator"/>
+    <alias name="sdUserGroupBeanPopulator" alias="userGroupBeanPopulator"/>
+    <bean id="sdUserGroupBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserGroupBeanPopulator"/>
 
-    <alias name="nocCompanyBeanPopulator" alias="companyBeanPopulator"/>
-    <bean id="nocCompanyBeanPopulator" class="com.hkt.btu.noc.core.service.populator.NocCompanyBeanPopulator"/>
+    <alias name="sdCompanyBeanPopulator" alias="companyBeanPopulator"/>
+    <bean id="sdCompanyBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdCompanyBeanPopulator"/>
 
-    <alias name="nocOtpBeanPopulator" alias="otpBeanPopulator"/>
-    <bean id="nocOtpBeanPopulator" class="com.hkt.btu.noc.core.service.populator.NocOtpBeanPopulator"/>
+    <alias name="sdOtpBeanPopulator" alias="otpBeanPopulator"/>
+    <bean id="sdOtpBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdOtpBeanPopulator"/>
 
-    <alias name="nocAccessRequestBeanPopulator" alias="accessRequestBeanPopulator"/>
-    <bean id="nocAccessRequestBeanPopulator" class="com.hkt.btu.noc.core.service.populator.NocAccessRequestBeanPopulator"/>
+    <alias name="sdAccessRequestBeanPopulator" alias="accessRequestBeanPopulator"/>
+    <bean id="sdAccessRequestBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdAccessRequestBeanPopulator"/>
 
-    <alias name="nocAccessRequestVisitorBeanPopulator" alias="accessRequestVisitorBeanPopulator"/>
-    <bean id="nocAccessRequestVisitorBeanPopulator" class="com.hkt.btu.noc.core.service.populator.NocAccessRequestVisitorBeanPopulator"/>
+    <alias name="sdAccessRequestVisitorBeanPopulator" alias="accessRequestVisitorBeanPopulator"/>
+    <bean id="sdAccessRequestVisitorBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdAccessRequestVisitorBeanPopulator"/>
 
-    <alias name="nocAccessRequestEquipBeanPopulator" alias="accessRequestEquipBeanPopulator"/>
-    <bean id="nocAccessRequestEquipBeanPopulator" class="com.hkt.btu.noc.core.service.populator.NocAccessRequestEquipBeanPopulator"/>
+    <alias name="sdAccessRequestEquipBeanPopulator" alias="accessRequestEquipBeanPopulator"/>
+    <bean id="sdAccessRequestEquipBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdAccessRequestEquipBeanPopulator"/>
 
-    <alias name="nocConfigParamBeanPopulator" alias="configParamBeanPopulator"/>
-    <bean id="nocConfigParamBeanPopulator" class="com.hkt.btu.noc.core.service.populator.NocConfigParamBeanPopulator"/>
+    <alias name="sdConfigParamBeanPopulator" alias="configParamBeanPopulator"/>
+    <bean id="sdConfigParamBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdConfigParamBeanPopulator"/>
 
-    <alias name="nocOperationHistBeanPopulator" alias="operationHistBeanPopulator"/>
-    <bean id="nocOperationHistBeanPopulator" class="com.hkt.btu.noc.core.service.populator.NocOperationHistBeanPopulator"/>
+    <alias name="sdOperationHistBeanPopulator" alias="operationHistBeanPopulator"/>
+    <bean id="sdOperationHistBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdOperationHistBeanPopulator"/>
 
-    <alias name="nocCronJobProfileBeanPopulator" alias="cronJobProfileBeanPopulator"/>
-    <bean id="nocCronJobProfileBeanPopulator" class="com.hkt.btu.noc.core.service.populator.NocCronJobProfileBeanPopulator"/>
+    <alias name="sdCronJobProfileBeanPopulator" alias="cronJobProfileBeanPopulator"/>
+    <bean id="sdCronJobProfileBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdCronJobProfileBeanPopulator"/>
 
-    <alias name="nocCronJobInstBeanPopulator" alias="cronJobInstBeanPopulator"/>
-    <bean id="nocCronJobInstBeanPopulator" class="com.hkt.btu.noc.core.service.populator.NocCronJobInstBeanPopulator"/>
+    <alias name="sdCronJobInstBeanPopulator" alias="cronJobInstBeanPopulator"/>
+    <bean id="sdCronJobInstBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdCronJobInstBeanPopulator"/>
 
-    <alias name="nocSiteConfigBeanPopulator" alias="siteConfigBeanPopulator"/>
-    <bean id="nocSiteConfigBeanPopulator" class="com.hkt.btu.noc.core.service.populator.NocSiteConfigBeanPopulator"/>
+    <alias name="sdSiteConfigBeanPopulator" alias="siteConfigBeanPopulator"/>
+    <bean id="sdSiteConfigBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdSiteConfigBeanPopulator"/>
 
 
 </beans>

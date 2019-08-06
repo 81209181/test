@@ -2,8 +2,8 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hkt.btu.noc.core.dao.mapper.NocConfigParamMapper" >
-    <resultMap id="ConfigParamEntity" type="com.hkt.btu.noc.core.dao.entity.NocConfigParamEntity" >
+<mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdConfigParamMapper" >
+    <resultMap id="ConfigParamEntity" type="com.hkt.btu.sd.core.dao.entity.SdConfigParamEntity" >
         <result column="CONFIG_GROUP" property="configGroup" />
         <result column="CONFIG_KEY" property="configKey" />
         <result column="CONFIG_VALUE" property="configValue" />

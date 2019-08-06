@@ -2,8 +2,8 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hkt.btu.noc.core.dao.mapper.NocAccessRequestVisitorMapper" >
-    <resultMap id="NocAccessRequestVisitorEntity" type="com.hkt.btu.noc.core.dao.entity.NocAccessRequestVisitorEntity" >
+<mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdAccessRequestVisitorMapper" >
+    <resultMap id="SdAccessRequestVisitorEntity" type="com.hkt.btu.sd.core.dao.entity.SdAccessRequestVisitorEntity" >
         <result column="VISITOR_ACCESS_ID" property="visitorAccessId" />
         <result column="ACCESS_REQUEST_ID" property="accessRequestId" />
         <result column="HASHED_ID" property="hashedRequestId" />
@@ -27,7 +27,7 @@
         <result column="REMARKS" property="remarks" />
     </resultMap>
 
-    <select id="getAccessRequestVisitorsByAccessRequestId" resultMap="NocAccessRequestVisitorEntity">
+    <select id="getAccessRequestVisitorsByAccessRequestId" resultMap="SdAccessRequestVisitorEntity">
         select v.*, h.HASHED_ID
         from NOC_ACCESS_REQUEST_VISITOR v
         left join NOC_ACCESS_REQUEST r
@@ -79,7 +79,7 @@
             </if>
         </where>
     </sql>
-    <select id="searchVisitor" resultMap="NocAccessRequestVisitorEntity" >
+    <select id="searchVisitor" resultMap="SdAccessRequestVisitorEntity" >
         # noinspection SqlResolve
         select v.*, r.VISIT_DATE_FROM, r.VISIT_LOCATION, h.HASHED_ID
         <include refid="searchVisitorSql"/>
@@ -91,7 +91,7 @@
         <include refid="searchVisitorSql"/>
     </select>
 
-    <insert id="insertVisitors" parameterType="com.hkt.btu.noc.core.dao.entity.NocAccessRequestVisitorEntity"
+    <insert id="insertVisitors" parameterType="com.hkt.btu.sd.core.dao.entity.SdAccessRequestVisitorEntity"
             useGeneratedKeys="true" keyProperty="visitorAccessId">
         insert into NOC_ACCESS_REQUEST_VISITOR
         (

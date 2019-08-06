@@ -2,8 +2,8 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hkt.btu.noc.core.dao.mapper.NocUserGroupPathCtrlMapper" >
-    <resultMap id="NocUserGroupPathCtrlEntity" type="com.hkt.btu.noc.core.dao.entity.NocUserGroupPathCtrlEntity" >
+<mapper namespace="SdUserGroupPathCtrlMapper" >
+    <resultMap id="SdUserGroupPathCtrlEntity" type="SdUserGroupPathCtrlEntity" >
         <result column="PATH_CTRL_ID" property="pathCtrlId" />
         <result column="ANT_PATH" property="antPath" />
         <result column="STATUS" property="status" />
@@ -16,7 +16,7 @@
         <result column="GROUP_ID" property="groupId" />
     </resultMap>
 
-    <select id="getByStatus" resultMap="NocUserGroupPathCtrlEntity" >
+    <select id="getByStatus" resultMap="SdUserGroupPathCtrlEntity" >
         select
                pc.PATH_CTRL_ID, pc.ANT_PATH, pc.STATUS, pc.CREATEDATE, pc.MODIFYDATE, pc.MODIFYBY, pc.REMARKS,
                ugpc.GROUP_ID

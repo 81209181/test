@@ -2,8 +2,8 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hkt.btu.noc.core.dao.mapper.NocCompanyMapper" >
-    <resultMap id="NocCompanyEntity" type="com.hkt.btu.noc.core.dao.entity.NocCompanyEntity" >
+<mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdCompanyMapper" >
+    <resultMap id="SdCompanyEntity" type="com.hkt.btu.sd.core.dao.entity.SdCompanyEntity" >
         <result column="COMPANY_ID" property="companyId" />
         <result column="NAME" property="name" />
         <result column="STATUS" property="status" />
@@ -16,13 +16,13 @@
     </resultMap>
 
 
-    <select id="getCompanyByCompanyId" resultMap="NocCompanyEntity" >
+    <select id="getCompanyByCompanyId" resultMap="SdCompanyEntity" >
         select *
         from NOC_COMPANY
         where COMPANY_ID = #{companyId}
     </select>
 
-    <select id="getCompany" resultMap="NocCompanyEntity" >
+    <select id="getCompany" resultMap="SdCompanyEntity" >
         select *
         from NOC_COMPANY
         <where>
@@ -32,7 +32,7 @@
         </where>
     </select>
 
-    <insert id="insertCompany" parameterType="com.hkt.btu.noc.core.dao.entity.NocCompanyEntity"
+    <insert id="insertCompany" parameterType="com.hkt.btu.sd.core.dao.entity.SdCompanyEntity"
             useGeneratedKeys="true" keyProperty="companyId">
         insert into NOC_COMPANY (COMPANY_ID, NAME, STATUS, CREATEBY, MODIFYBY, REMARKS)
         values (#{companyId}, #{name}, #{status}, #{createby}, #{createby}, #{remarks})
@@ -60,7 +60,7 @@
             </if>
         </where>
     </sql>
-    <select id="searchCompany" resultMap="NocCompanyEntity" >
+    <select id="searchCompany" resultMap="SdCompanyEntity" >
         # noinspection SqlResolve
         select *
         <include refid="searchCompanySql"/>

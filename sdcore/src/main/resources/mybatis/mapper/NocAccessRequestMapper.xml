@@ -2,8 +2,8 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hkt.btu.noc.core.dao.mapper.NocAccessRequestMapper" >
-    <resultMap id="NocAccessRequestEntity" type="com.hkt.btu.noc.core.dao.entity.NocAccessRequestEntity" >
+<mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdAccessRequestMapper" >
+    <resultMap id="SdAccessRequestEntity" type="com.hkt.btu.sd.core.dao.entity.SdAccessRequestEntity" >
         <result column="ACCESS_REQUEST_ID" property="accessRequestId" />
         <result column="HASHED_ID" property="hashedRequestId" />
         <result column="STATUS" property="status" />
@@ -30,7 +30,7 @@
     </resultMap>
 
 
-    <select id="getAccessRequest" resultMap="NocAccessRequestEntity">
+    <select id="getAccessRequest" resultMap="SdAccessRequestEntity">
         select r.*, count(v.ACCESS_REQUEST_ID) VISITOR_COUNT, h.HASHED_ID
         from NOC_ACCESS_REQUEST r
         left join NOC_ACCESS_REQUEST_HASH h
@@ -51,7 +51,7 @@
         group by v.ACCESS_REQUEST_ID
     </select>
 
-    <select id="getAccessRequestByVisitorAccessId" resultMap="NocAccessRequestEntity">
+    <select id="getAccessRequestByVisitorAccessId" resultMap="SdAccessRequestEntity">
         select r.*, h.HASHED_ID
         from NOC_ACCESS_REQUEST r
         left join NOC_ACCESS_REQUEST_HASH h
@@ -61,7 +61,7 @@
         where v.VISITOR_ACCESS_ID = #{visitorAccessId}
     </select>
 
-    <insert id="insertAccessRequest" parameterType="com.hkt.btu.noc.core.dao.entity.NocAccessRequestEntity"
+    <insert id="insertAccessRequest" parameterType="com.hkt.btu.sd.core.dao.entity.SdAccessRequestEntity"
             useGeneratedKeys="true" keyProperty="accessRequestId">
         insert into NOC_ACCESS_REQUEST (STATUS, REQUESTER_ID, REQUESTER_NAME, COMPANY_ID, COMPANY_NAME, MOBILE, EMAIL,
                                         VISIT_REASON, VISIT_LOCATION, VISIT_RACK_NUM, VISIT_DATE_FROM, VISIT_DATE_TO,
@@ -106,7 +106,7 @@
         </where>
         group by v.ACCESS_REQUEST_ID
     </sql>
-    <select id="searchAccessRequest" resultMap="NocAccessRequestEntity" >
+    <select id="searchAccessRequest" resultMap="SdAccessRequestEntity" >
         # noinspection SqlResolve
         select r.*, count(v.ACCESS_REQUEST_ID) VISITOR_COUNT, h.HASHED_ID
         <include refid="searchAccessRequestSql"/>
@@ -127,7 +127,7 @@
         where ACCESS_REQUEST_ID = #{accessRequestId}
     </update>
 
-    <select id="getExpiredAccessRequest" resultMap="NocAccessRequestEntity">
+    <select id="getExpiredAccessRequest" resultMap="SdAccessRequestEntity">
         select r.*, h.HASHED_ID
         from NOC_ACCESS_REQUEST r
         left join NOC_ACCESS_REQUEST_HASH h
