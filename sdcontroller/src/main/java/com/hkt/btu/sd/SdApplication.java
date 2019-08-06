@@ -5,13 +5,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-import org.springframework.context.annotation.ComponentScan;
 
 import java.io.FileNotFoundException;
 
 @MapperScan("com.hkt.btu.sd.core.dao.mapper")
-@ComponentScan("com.hkt.*")
-@SpringBootApplication//exclude = DataSourceAutoConfiguration.class)
+@SpringBootApplication(scanBasePackages = {"com.hkt.btu"})//exclude = DataSourceAutoConfiguration.class)
 public class SdApplication extends SpringBootServletInitializer {
 
     @Override

@@ -4,19 +4,10 @@ import com.hkt.btu.common.core.service.BtuPathCtrlService;
 import com.hkt.btu.common.core.service.bean.BtuUserGroupPathCtrlBean;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
 
-
-/**
- * Path Control Service Implementation for usage in Spring Security
- *
- * @deprecated This should be overridden and implemented by each application.
- * The following implementation is for demo or reference purpose only.
- */
-@Service
 public class BtuPathCtrlServiceImpl implements BtuPathCtrlService {
     private static final Logger LOG = LogManager.getLogger(BtuPathCtrlServiceImpl.class);
 

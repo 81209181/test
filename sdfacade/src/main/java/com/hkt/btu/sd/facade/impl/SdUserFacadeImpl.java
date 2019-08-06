@@ -22,7 +22,6 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import java.security.GeneralSecurityException;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -294,9 +293,6 @@ public class SdUserFacadeImpl implements SdUserFacade {
             userDataPopulator.populate(sdCompanyBean, userData);
         } catch (UserNotFoundException e){
             return null;
-        } catch (CompanyNotFoundException e){
-            LOG.warn("Company data corrupted of companyId=" + userData.getCompanyId() + ".");
-            return userData;
         }
 
         return userData;
@@ -317,9 +313,6 @@ public class SdUserFacadeImpl implements SdUserFacade {
         } catch (UserNotFoundException e){
             LOG.warn(e.getMessage());
             return null;
-        } catch (CompanyNotFoundException e){
-            LOG.warn("Company data corrupted of companyId=" + userData.getCompanyId() + ".");
-            return userData;
         }
 
         return userData;

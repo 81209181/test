@@ -1,6 +1,7 @@
 package com.hkt.btu.common.spring.security.web.authentication;
 
 import com.hkt.btu.common.core.service.BtuHttpService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
@@ -9,12 +10,21 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 // ref: https://stackoverflow.com/questions/23901950/spring-security-ajax-session-timeout-issue
 public class BtuLoginUrlAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
 
     public static final String LOGIN_URI = "/login";
     public static final String LOGIN_ERROR_PARA_URI = LOGIN_URI + "?error=";
+    public static final Map<String, String> ERROR_LIST = Collections
+            .unmodifiableMap(Arrays.stream(LOGIN_ERROR.values())
+                    .collect(Collectors.toMap
+                            (constant -> constant.name(), constant -> constant.msg)));
+
 
     public enum LOGIN_ERROR {
         LOCK("Account deactivated. Please contact admin."),
@@ -25,12 +35,14 @@ public class BtuLoginUrlAuthenticationEntryPoint extends LoginUrlAuthenticationE
         NO_AUTH("Please login. (Auth not found)"),
         INSUFFICIENT_AUTH("Insufficient Authority."),
         HELP("Please contact system support."),
-        UNKNOWN("Login error.")
-        ;
+        UNKNOWN("Login error."),
+        NOT_PERMITTED("Not permitted to logon at this time or this workstation. Please contact administrator."),
+        CHANGE_PWD("Please change your password."),
+        DISABLED("Your account is disabled/expired. Please contact administrator.");
 
         private String msg;
 
-        LOGIN_ERROR(String msg){
+        LOGIN_ERROR(String msg) {
             this.msg = msg;
         }
 
@@ -38,8 +50,12 @@ public class BtuLoginUrlAuthenticationEntryPoint extends LoginUrlAuthenticationE
             return msg;
         }
 
-        public String getUri(){
+        public String getUri() {
             return LOGIN_ERROR_PARA_URI + this.name();
+        }
+
+        public static String getValue(String name) {
+            return StringUtils.isEmpty(ERROR_LIST.get(name)) ? UNKNOWN.msg : ERROR_LIST.get(name);
         }
     }
 

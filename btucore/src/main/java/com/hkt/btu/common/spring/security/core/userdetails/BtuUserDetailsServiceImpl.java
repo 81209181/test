@@ -32,7 +32,6 @@ public class BtuUserDetailsServiceImpl implements UserDetailsService {
 
         // get user
         BtuUserBean userBean = userService.getUserBeanByUsername(username);
-
         if (userBean == null) {
             LOG.warn("User " + username + " not found");
             throw new UsernameNotFoundException("User " + username + " not found");

@@ -47,10 +47,6 @@ public class SdUserDataPopulator extends AbstractDataPopulator<SdUserData> {
         target.setUserGroupList(null);
     }
 
-    public void populate(SdCompanyBean source, SdUserData target) {
-        target.setCompanyName(source.getName());
-    }
-
     public void populateSensitiveData(SdUserBean source, SdUserData target){
         target.setStaffId(source.getStaffId());
         target.setMobile(source.getMobile());

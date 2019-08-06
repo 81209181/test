@@ -9,6 +9,7 @@ import com.hkt.btu.sd.facade.SdUserGroupFacade;
 import com.hkt.btu.sd.facade.data.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -37,12 +38,7 @@ public class ManageUserController {
     @GetMapping("/create-user")
     public String createUserForm (final Model model,
                                   @ModelAttribute("createUserFormData") CreateUserFormData createUserFormData,
-                                  @ModelAttribute("companyOptionList") LinkedList<SdCompanyData> companyOptionList,
                                   @ModelAttribute("userGroupOptionDataMap") HashMap<String, SdUserGroupData> userGroupOptionDataMap) {
-        companyOptionList = userFacade.getEligibleCompanyList();
-        if(!CollectionUtils.isEmpty(companyOptionList)){
-            model.addAttribute("companyOptionList", companyOptionList);
-        }
 
         // user group info
         List<SdUserGroupData> userGroupDataList = sdUserGroupFacade.getEligibleUserGroupList();

@@ -24,7 +24,7 @@ public class UserController {
 
     @GetMapping({"", "/", "/index"})
     public String userIndex() {
-        return "redirect:/user/access-request/pending";
+        return "redirect:/user/my-account";
     }
 
     @GetMapping("/my-account")

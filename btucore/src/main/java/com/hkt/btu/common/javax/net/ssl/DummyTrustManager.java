@@ -1,4 +1,4 @@
-package com.hkt.btu.common.spring.security.access;
+package com.hkt.btu.common.javax.net.ssl;
 
 import javax.net.ssl.X509TrustManager;
 import java.security.cert.CertificateException;

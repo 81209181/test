@@ -7,7 +7,16 @@ public class BtuUserGroupPathCtrlBean extends BaseBean {
 
     private String groupId;
 
+    private Integer pathCtrlId;
 
+
+    public Integer getPathCtrlId() {
+        return pathCtrlId;
+    }
+
+    public void setPathCtrlId(Integer pathCtrlId) {
+        this.pathCtrlId = pathCtrlId;
+    }
 
     public String getAntPath() {
         return antPath;

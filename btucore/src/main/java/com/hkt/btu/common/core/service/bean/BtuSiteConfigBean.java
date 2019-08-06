@@ -32,6 +32,118 @@ public class BtuSiteConfigBean extends BaseBean {
     private Integer mailPort;
     private String mailUsername;
 
+    private String configGroup;
+    private String configKey;
+    private String configValue;
+    private String configValueType;
+
+
+    public class SERVER_TYPE {
+        public static final String DEV = "DEV";
+        public static final String UAT = "UAT";
+        public static final String PROD = "PROD";
+        public static final String PROD_STANDBY = "PROD_SB";
+    }
+
+    private String contextPath;
+
+    private String serverType;
+    private String serverHostname;
+    private String serverAddress;
+
+    private String appHttpUrl;
+    private String appHttpsUrl;
+    private String appName;
+
+
+    public String getContextPath() {
+        return contextPath;
+    }
+
+    public void setContextPath(String contextPath) {
+        this.contextPath = contextPath;
+    }
+
+    public String getServerType() {
+        return serverType;
+    }
+
+    public void setServerType(String serverType) {
+        this.serverType = serverType;
+    }
+
+    public String getServerHostname() {
+        return serverHostname;
+    }
+
+    public void setServerHostname(String serverHostname) {
+        this.serverHostname = serverHostname;
+    }
+
+    public String getServerAddress() {
+        return serverAddress;
+    }
+
+    public void setServerAddress(String serverAddress) {
+        this.serverAddress = serverAddress;
+    }
+
+    public String getAppHttpUrl() {
+        return appHttpUrl;
+    }
+
+    public void setAppHttpUrl(String appHttpUrl) {
+        this.appHttpUrl = appHttpUrl;
+    }
+
+    public String getAppHttpsUrl() {
+        return appHttpsUrl;
+    }
+
+    public void setAppHttpsUrl(String appHttpsUrl) {
+        this.appHttpsUrl = appHttpsUrl;
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
+
+    public String getConfigGroup() {
+        return configGroup;
+    }
+
+    public void setConfigGroup(String configGroup) {
+        this.configGroup = configGroup;
+    }
+
+    public String getConfigKey() {
+        return configKey;
+    }
+
+    public void setConfigKey(String configKey) {
+        this.configKey = configKey;
+    }
+
+    public String getConfigValue() {
+        return configValue;
+    }
+
+    public void setConfigValue(String configValue) {
+        this.configValue = configValue;
+    }
+
+    public String getConfigValueType() {
+        return configValueType;
+    }
+
+    public void setConfigValueType(String configValueType) {
+        this.configValueType = configValueType;
+    }
 
 
     public String getGivenDomain() {

@@ -1,4 +1,6 @@
-package com.hkt.btu.common.spring.security.access;
+package com.hkt.btu.common.javax.net;
+
+import com.hkt.btu.common.javax.net.ssl.DummyTrustManager;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
