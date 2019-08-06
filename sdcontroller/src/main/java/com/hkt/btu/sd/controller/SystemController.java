@@ -10,10 +10,7 @@ import com.hkt.btu.sd.facade.data.SdCronJobProfileData;
 import com.hkt.btu.sd.facade.data.SdSiteConfigData;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -51,6 +48,17 @@ public class SystemController {
         } else {
             return ResponseEntity.ok(dataList);
         }
+    }
+    @GetMapping("config-param/create")
+    public String createConfigParam() {
+        return "system/configParam/createConfigParam";
+    }
+
+    @GetMapping("config-param/{configGroup}/{configKey}")
+    public String getConfigParam(@PathVariable String configGroup, @PathVariable String configKey) {
+        System.out.println(configGroup);
+        System.out.println(configKey);
+        return "system/configParam/editConfigParam";
     }
 
     @GetMapping({"/site-config", "/site-config/", "/site-config/index"})
