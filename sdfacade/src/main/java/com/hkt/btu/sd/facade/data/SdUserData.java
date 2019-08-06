@@ -11,6 +11,7 @@ public class SdUserData implements DataInterface {
     private String mobile;
     private String email;
 
+    private String ldapDomain;
     private String status;
     private String passwordModifyDate;
     private Integer loginTried;
@@ -107,5 +108,13 @@ public class SdUserData implements DataInterface {
 
     public void setUserGroupList(List<String> userGroupList) {
         this.userGroupList = userGroupList;
+    }
+
+    public String getLdapDomain() {
+        return ldapDomain;
+    }
+
+    public void setLdapDomain(String ldapDomain) {
+        this.ldapDomain = ldapDomain;
     }
 }
