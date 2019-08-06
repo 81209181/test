@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SdAuditTrailMapper {
 
-    void insertAuditTrail(@Param("userId") Integer userId, @Param("action") String action, @Param("detail") String detail);
+    void insertAuditTrail(@Param("userId") String userId, @Param("action") String action, @Param("detail") String detail);
 
 }
