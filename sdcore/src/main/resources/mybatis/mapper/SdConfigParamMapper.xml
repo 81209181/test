@@ -15,6 +15,13 @@
         <result column="REMARKS" property="remarks" />
     </resultMap>
 
+    <select id="getConfigGroupList" resultMap="ConfigParamEntity">
+        select  CONFIG_GROUP
+        from CONFIG_PARAM
+        group by CONFIG_GROUP
+        order by CONFIG_GROUP
+    </select>
+
     <select id="getAllConfigParam" resultMap="ConfigParamEntity" >
         select *
         from CONFIG_PARAM

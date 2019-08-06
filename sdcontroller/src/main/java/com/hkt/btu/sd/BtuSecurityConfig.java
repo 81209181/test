@@ -82,6 +82,7 @@ public class BtuSecurityConfig extends WebSecurityConfigurerAdapter {
                         BtuSecurityMetadataSource.RESERVED_ANT_PATH_IMG,
                         BtuSecurityMetadataSource.RESERVED_ANT_PATH_WEBJAR,
                         BtuSecurityMetadataSource.RESERVED_ANT_PATH_ERROR,
+                        "/system/**",
                         BtuSecurityMetadataSource.RESERVED_ANT_PATH_PUBLIC).permitAll()
                 .anyRequest().authenticated()
 
