@@ -1,17 +1,9 @@
 package com.hkt.btu.sd.core.dao.entity;
 
 
-import com.hkt.btu.common.core.dao.entity.BaseEntity;
+import com.hkt.btu.common.core.dao.entity.BtuConfigParamEntity;
 
-public class SdConfigParamEntity extends BaseEntity {
-
-    public static class TYPE {
-        public static final String STRING = "String";
-        public static final String INTEGER = "Integer";
-        public static final String DOUBLE = "Double";
-        public static final String BOOLEAN = "Boolean";
-        public static final String LOCAL_DATE_TIME = "LocalDateTime";
-    }
+public class SdConfigParamEntity extends BtuConfigParamEntity {
 
     // reserved config groups
     public static class SITE{
@@ -53,42 +45,5 @@ public class SdConfigParamEntity extends BaseEntity {
 
     public static class USER_GROUP_CREATE_MAPPING{
         public static final String CONFIG_GROUP = "USER_GROUP_CREATE_MAPPING";
-    }
-
-    private String configGroup;
-    private String configKey;
-    private String configValue;
-    private String configValueType;
-
-    public String getConfigGroup() {
-        return configGroup;
-    }
-
-    public void setConfigGroup(String configGroup) {
-        this.configGroup = configGroup;
-    }
-
-    public String getConfigKey() {
-        return configKey;
-    }
-
-    public void setConfigKey(String configKey) {
-        this.configKey = configKey;
-    }
-
-    public String getConfigValue() {
-        return configValue;
-    }
-
-    public void setConfigValue(String configValue) {
-        this.configValue = configValue;
-    }
-
-    public String getConfigValueType() {
-        return configValueType;
-    }
-
-    public void setConfigValueType(String configValueType) {
-        this.configValueType = configValueType;
     }
 }
