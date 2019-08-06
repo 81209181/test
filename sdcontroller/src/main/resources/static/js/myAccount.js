@@ -1,13 +1,13 @@
 $(document).ready(function () {
-    $("#update-pwd-form").submit(function (event) {
+    /*$("#update-pwd-form").submit(function (event) {
         event.preventDefault();
         ajaxUpdatePwd();
-    });
+    });*/
 
     ajaxGetCurrentUser();
 });
 
-function ajaxUpdatePwd() {
+/*function ajaxUpdatePwd() {
     let input = {};
     input["oldPassword"] = $("#oldPassword").val();
     input["newPassword"] = $("#newPassword").val();
@@ -41,7 +41,7 @@ function ajaxUpdatePwd() {
             $("#btn-update-pwd").prop("disabled", false);
         }
     });
-}
+}*/
 
 function ajaxGetCurrentUser(){
     $.ajax({
@@ -55,6 +55,7 @@ function ajaxGetCurrentUser(){
             $("#my-name").val(data.name);
             $("#my-mobile").val(data.mobile);
 
+            $("#my-ldap-domain").val(data.ldapDomain);
             $("#my-status").val(data.status);
             $("#my-login-tried").val(data.loginTried);
             $("#my-password-modify-date").val(data.passwordModifyDate);
