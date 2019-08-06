@@ -61,10 +61,9 @@ public class BtuUserServiceImpl implements BtuUserService {
     @Resource(name = "btuPasswordEncoder")
     BCryptPasswordEncoder btuPasswordEncoder;
 
-    @Override
     public BtuUser getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof BtuUser) {
+        if( authentication!=null && authentication.getPrincipal() instanceof BtuUser){
             return (BtuUser) authentication.getPrincipal();
         }
 
@@ -72,35 +71,44 @@ public class BtuUserServiceImpl implements BtuUserService {
         return null;
     }
 
-    @Override
-    public BtuUserBean getCurrentUserBean() throws UserNotFoundException {
+
+    public BtuUserBean getCurrentUserBean() {
         BtuUser btuUser = this.getCurrentUser();
-        if (ObjectUtils.isEmpty(btuUser) || ObjectUtils.isEmpty(btuUser.getUserBean())) {
-            throw new UserNotFoundException("No UserBean found in security context!");
+        if (btuUser==null || btuUser.getUserBean()==null){
+            return null;
         }
         return btuUser.getUserBean();
     }
 
 
     public BtuUserBean getUserBeanByUsername(String username) {
-        // make email lower case
-        String email = StringUtils.lowerCase(username);
+        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
 
-        // get user data
-        BtuUserEntity sdUserEntity = userMapper.getUserByEmail(email);
-        if (sdUserEntity == null) {
-            return null;
+        if (StringUtils.equals(username, "admin")){
+            BtuUserBean btuUserBean = new BtuUserBean();
+            btuUserBean.setUsername(username);
+            btuUserBean.setPassword( btuPasswordEncoder.encode("admin") );
+
+            Set<GrantedAuthority> grantedAuthSet = new HashSet<>();
+            grantedAuthSet.add(new SimpleGrantedAuthority("ADMIN"));
+            grantedAuthSet.add(new SimpleGrantedAuthority("USER"));
+            btuUserBean.setAuthorities(grantedAuthSet);
+
+            return btuUserBean;
+        } else if (StringUtils.equals(username, "user1")){
+
+            BtuUserBean btuUserBean = new BtuUserBean();
+            btuUserBean.setUsername(username);
+            btuUserBean.setPassword( btuPasswordEncoder.encode("user1") );
+
+            Set<GrantedAuthority> grantedAuthSet = new HashSet<>();
+            grantedAuthSet.add(new SimpleGrantedAuthority("USER"));
+            btuUserBean.setAuthorities(grantedAuthSet);
+
+            return btuUserBean;
         }
 
-        // get user group data
-        List<BtuUserGroupEntity> groupEntityList = userGroupMapper.getUserGroupByUserId(sdUserEntity.getUserId());
-
-        // construct bean
-        BtuUserBean userBean = new BtuUserBean();
-        userBeanPopulator.populate(sdUserEntity, userBean);
-        userBeanPopulator.populate(groupEntityList, userBean);
-
-        return userBean;
+        return null;
     }
 
     public void resetLoginTriedByUsername(String username) {
@@ -142,14 +150,14 @@ public class BtuUserServiceImpl implements BtuUserService {
     }
 
     @Override
-    public boolean hasAnyAuthority(String... targetAuthorities) {
+    public boolean hasAnyAuthority(String... targetAuthorities){
         // get security context
         SecurityContext context = SecurityContextHolder.getContext();
         if (context == null) {
             return false;
         }
         Authentication authentication = context.getAuthentication();
-        if (authentication == null) {
+        if (authentication == null){
             return false;
         }
 
@@ -543,14 +551,14 @@ public class BtuUserServiceImpl implements BtuUserService {
 
     protected boolean hasAnyAuthority(Collection<? extends GrantedAuthority> authorities, String... targetAuthorities) {
         // find matching auth
-        for (String targetAuth : targetAuthorities) {
-            for (GrantedAuthority grantedAuthority : authorities) {
-                if (!(grantedAuthority instanceof SimpleGrantedAuthority)) {
+        for(String targetAuth : targetAuthorities){
+            for(GrantedAuthority grantedAuthority : authorities){
+                if( ! (grantedAuthority instanceof SimpleGrantedAuthority) ){
                     continue;
                 }
 
                 SimpleGrantedAuthority existingAuth = (SimpleGrantedAuthority) grantedAuthority;
-                if (StringUtils.equals(targetAuth, existingAuth.getAuthority())) {
+                if(StringUtils.equals(targetAuth, existingAuth.getAuthority())){
                     return true;
                 }
             }
@@ -563,7 +571,7 @@ public class BtuUserServiceImpl implements BtuUserService {
         return btuPasswordEncoder.encode(plaintext);
     }
 
-    protected boolean matchPassword(String rawPassword, String encodedPassword) {
+    protected boolean matchPassword(String rawPassword, String encodedPassword){
         return btuPasswordEncoder.matches(rawPassword, encodedPassword);
     }
 

@@ -1,9 +1,6 @@
 package com.hkt.btu.common.core.service;
 
-import com.hkt.btu.common.core.service.bean.BtuConfigParamBean;
-
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 
 public interface BtuConfigParamService {
@@ -16,5 +13,4 @@ public interface BtuConfigParamService {
     Boolean getBoolean(String configGroup, String configKey);
     LocalDateTime getDateTime(String configGroup, String configKey);
 
-    List<BtuConfigParamBean> getAllConfigParam();
 }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdUserGroupMapper" >
+
+    <resultMap id="SdUserGroupEntity" type="com.hkt.btu.sd.core.dao.entity.SdUserGroupEntity" >
+        <result column="GROUP_ID" property="groupId" />
+        <result column="GROUP_NAME" property="groupName" />
+        <result column="DESCRIPTION" property="groupDesc" />
+        <result column="PARENT_GROUP" property="parentGroup" />
+        <result column="CREATEDATE" property="modifydate" />
+        <result column="CREATEBY" property="modifyby" />
+        <result column="REMARKS" property="remarks" />
+    </resultMap>
+
+    <select id="getAllUserGroup" resultMap="SdUserGroupEntity" >
+        select *
+        from NOC_USER_GROUP
+        order by GROUP_ID
+    </select>
+
+    <select id="getUserGroupByUserId" resultMap="SdUserGroupEntity" >
+        select ug.GROUP_ID, ug.GROUP_NAME, ug.DESCRIPTION, uug.CREATEDATE, uug.CREATEBY, uug.REMARKS
+        from NOC_USER u
+        inner join NOC_USER_USER_GROUP uug
+          on uug.USER_ID = u.USER_ID
+        inner join NOC_USER_GROUP ug
+            on ug.GROUP_ID = uug.GROUP_ID
+        where u.USER_ID = #{userId}
+    </select>
+
+    <insert id="insertUserUserGroup">
+        insert into NOC_USER_USER_GROUP (USER_ID, GROUP_ID, CREATEBY)
+        values (#{userId}, #{groupId}, #{createby})
+    </insert>
+
+    <delete id="deleteUserUserGroup">
+        delete from NOC_USER_USER_GROUP
+        where USER_ID = #{userId}
+        and GROUP_ID = #{groupId}
+    </delete>
+</mapper>

@@ -1,13 +1,13 @@
 package com.hkt.btu.sd.facade.populator;
 
 
-import com.hkt.btu.common.core.service.bean.BtuSiteConfigBean;
 import com.hkt.btu.common.facade.populator.AbstractDataPopulator;
+import com.hkt.btu.sd.core.service.bean.SdSiteConfigBean;
 import com.hkt.btu.sd.facade.data.SdSiteConfigData;
 
 public class SdSiteConfigDataPopulator extends AbstractDataPopulator<SdSiteConfigData> {
 
-    public void populate(BtuSiteConfigBean source, SdSiteConfigData target) {
+    public void populate(SdSiteConfigBean source, SdSiteConfigData target) {
         target.setGivenDomain(source.getGivenDomain());
 
         target.setAppName(source.getAppName());

@@ -44,13 +44,12 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
 
     private String domain;
 
+    private BtuUserBean btuUserBean;
+
     @Override
     public Authentication authenticate(Authentication auth) throws AuthenticationException {
         BtuUser userDetails = null;
         try {
-            BtuUserBean btuUserBean = new BtuUserBean();
-            btuUserBean.setUsername((String) auth.getPrincipal());
-            btuUserBean.setPassword((String) auth.getCredentials());
             Set<GrantedAuthority> grantedAuthSet = new HashSet<>();
             grantedAuthSet.add(new SimpleGrantedAuthority("ADMIN"));
             grantedAuthSet.add(new SimpleGrantedAuthority("USER"));
@@ -63,11 +62,10 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
                     true,
                     grantedAuthSet,
                     btuUserBean);
-
             //preAuthenticationChecks.check(userDetails);
             BtuLdapBean ldapInfo = new BtuLdapBean();
             ldapInfo.setLdapServerUrl(LdapEnum.PCCW.getHostUrl());
-            ldapInfo.setPrincipleName(LdapEnum.PCCW.getPrincipalName());
+            ldapInfo.setPrincipleName(domain);
 
             // login ldap
             btuLdapService.authenticationOnly(ldapInfo, auth);
@@ -76,7 +74,7 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
             //if success, record it
             auditTrailService.insertLoginAuditTrail(userDetails);
 
-            return createSuccessAuthentication(userDetails, auth, userDetails);
+            return createSuccessAuthentication(btuUserBean.getUsername(), auth, userDetails);
         } catch (javax.naming.AuthenticationException authEx) {
             String result = "";
             String code = "";
@@ -131,8 +129,9 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
         }
     }
 
-    public Authentication btuAuth(Authentication auth, String ldapName) throws AuthenticationException {
-        domain = ldapName;
+    public Authentication btuAuth(Authentication auth, BtuUserBean btuUserBean,String ldapName) throws AuthenticationException {
+        this.domain = ldapName;
+        this.btuUserBean = btuUserBean;
         return authenticate(auth);
     }
 
