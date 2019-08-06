@@ -65,4 +65,16 @@ public class BtuOtpServiceImpl implements BtuOtpService {
         otpBeanPopulator.populate(otpEntity, sdOtpBean);
         return sdOtpBean;
     }
+
+    @Override
+    public BtuOtpBean getValidResetPwdOtp(Integer userId) {
+        BtuOtpEntity otpEntity = otpMapper.getOtpByUserId(userId, BtuOtpEntity.ACTION.RESET_PWD);
+        if (otpEntity == null) {
+            return null;
+        }
+
+        BtuOtpBean sdOtpBean = new BtuOtpBean();
+        otpBeanPopulator.populate(otpEntity, sdOtpBean);
+        return sdOtpBean;
+    }
 }
