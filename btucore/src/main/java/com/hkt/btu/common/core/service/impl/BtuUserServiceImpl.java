@@ -78,7 +78,6 @@ public class BtuUserServiceImpl implements BtuUserService {
         if (ObjectUtils.isEmpty(btuUser) || ObjectUtils.isEmpty(btuUser.getUserBean())) {
             throw new UserNotFoundException("No UserBean found in security context!");
         }
-        btuUser.getUserBean().setUserId(30);
         return btuUser.getUserBean();
     }
 
@@ -508,7 +507,14 @@ public class BtuUserServiceImpl implements BtuUserService {
             throw new UserNotFoundException();
         }
 
+        // valid reset password otp
         Integer userId = useren.getUserId();
+        BtuOtpBean sdOtpBean = otpService.getValidResetPwdOtp(userId);
+        if (sdOtpBean != null) {
+            throw new InvalidInputException("within the OTP effective time.");
+        }
+
+        // generate reset password otp
         String otp = otpService.generatePwdResetOtp(userId);
         boolean isNewlyCreated = useren.getPasswordModifydate() == null;
         LOG.info("Generated password OTP successfully for user " + username + ".");
