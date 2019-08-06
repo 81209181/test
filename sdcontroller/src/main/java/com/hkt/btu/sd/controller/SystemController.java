@@ -8,7 +8,6 @@ import com.hkt.btu.sd.facade.data.SdConfigParamData;
 import com.hkt.btu.sd.facade.data.SdCronJobInstData;
 import com.hkt.btu.sd.facade.data.SdCronJobProfileData;
 import com.hkt.btu.sd.facade.data.SdSiteConfigData;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,11 +24,11 @@ import java.util.List;
 @RequestMapping(value = "/system")
 public class SystemController {
 
-    @Autowired
+    @Resource(name = "configParamFacade")
     SdConfigParamFacade sdConfigParamFacade;
-    @Autowired
+    @Resource(name = "siteConfigFacade")
     SdSiteConfigFacade sdSiteConfigFacade;
-    @Autowired
+    @Resource(name = "jobFacade")
     SdJobFacade sdJobFacade;
 
 

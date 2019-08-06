@@ -1,11 +1,11 @@
 package com.hkt.btu.sd.facade.impl;
 
 
-import com.hkt.btu.sd.core.exception.InvalidInputException;
-import com.hkt.btu.sd.core.service.SdCronJobProfileService;
-import com.hkt.btu.sd.core.service.SdSchedulerService;
-import com.hkt.btu.sd.core.service.bean.SdCronJobInstBean;
-import com.hkt.btu.sd.core.service.bean.SdCronJobProfileBean;
+import com.hkt.btu.common.core.exception.InvalidInputException;
+import com.hkt.btu.common.core.service.BtuConJobProfileService;
+import com.hkt.btu.common.core.service.BtuSchedulerService;
+import com.hkt.btu.common.core.service.bean.BtuCronJobInstBean;
+import com.hkt.btu.common.core.service.bean.BtuCronJobProfileBean;
 import com.hkt.btu.sd.facade.SdJobFacade;
 import com.hkt.btu.sd.facade.data.SdCronJobInstData;
 import com.hkt.btu.sd.facade.data.SdCronJobProfileData;
@@ -26,20 +26,20 @@ public class SdJobFacadeImpl implements SdJobFacade {
     private static final Logger LOG = LogManager.getLogger(SdJobFacadeImpl.class);
 
     @Resource(name = "schedulerService")
-    SdSchedulerService sdSchedulerService;
+    BtuSchedulerService schedulerService;
     @Resource(name = "cronJobProfileService")
-    SdCronJobProfileService sdCronJobProfileService;
+    BtuConJobProfileService conJobProfileService;
 
     @Resource(name = "cronJobInstDataPopulator")
-    SdCronJobInstDataPopulator sdCronJobInstDataPopulator;
+    SdCronJobInstDataPopulator cronJobInstDataPopulator;
     @Resource(name = "cronJobProfileDataPopulator")
-    SdCronJobProfileDataPopulator sdCronJobProfileDataPopulator;
+    SdCronJobProfileDataPopulator cronJobProfileDataPopulator;
 
     @Override
     public List<SdCronJobInstData> getAllJobInstance() {
-        List<SdCronJobInstBean> jobBeanInstList;
+        List<BtuCronJobInstBean> jobBeanInstList;
         try{
-            jobBeanInstList = sdSchedulerService.getAllCronJobInstance();
+            jobBeanInstList = schedulerService.getAllCronJobInstance();
             if(CollectionUtils.isEmpty(jobBeanInstList)){
                 return new ArrayList<>();
             }
@@ -50,9 +50,9 @@ public class SdJobFacadeImpl implements SdJobFacade {
 
         // populate
         List<SdCronJobInstData> jobDataList = new LinkedList<>();
-        for(SdCronJobInstBean cronJobInstBean : jobBeanInstList){
+        for(BtuCronJobInstBean cronJobInstBean : jobBeanInstList){
             SdCronJobInstData jobData = new SdCronJobInstData();
-            sdCronJobInstDataPopulator.populate(cronJobInstBean, jobData);
+            cronJobInstDataPopulator.populate(cronJobInstBean, jobData);
             jobDataList.add(jobData);
         }
         return jobDataList;
@@ -60,16 +60,16 @@ public class SdJobFacadeImpl implements SdJobFacade {
 
     @Override
     public List<SdCronJobProfileData> getAllJobProfile() {
-        List<SdCronJobProfileBean> jobProfileBeanList = sdCronJobProfileService.getAll();
+        List<BtuCronJobProfileBean> jobProfileBeanList = conJobProfileService.getAll();
         if(CollectionUtils.isEmpty(jobProfileBeanList)){
             return new LinkedList<>();
         }
 
         // populate
         List<SdCronJobProfileData> profileDataList = new LinkedList<>();
-        for(SdCronJobProfileBean bean : jobProfileBeanList){
+        for(BtuCronJobProfileBean bean : jobProfileBeanList){
             SdCronJobProfileData data = new SdCronJobProfileData();
-            sdCronJobProfileDataPopulator.populate(bean, data);
+            cronJobProfileDataPopulator.populate(bean, data);
             profileDataList.add(data);
         }
         return profileDataList;
@@ -84,7 +84,7 @@ public class SdJobFacadeImpl implements SdJobFacade {
         }
 
         try {
-            sdCronJobProfileService.activateJobProfile(keyGroup, keyName);
+            conJobProfileService.activateJobProfile(keyGroup, keyName);
         }catch (InvalidInputException e){
             LOG.error(e.getMessage(), e);
             return e.getMessage();
@@ -102,7 +102,7 @@ public class SdJobFacadeImpl implements SdJobFacade {
         }
 
         try {
-            sdCronJobProfileService.deactivateJobProfile(keyGroup, keyName);
+            conJobProfileService.deactivateJobProfile(keyGroup, keyName);
         }catch (InvalidInputException e){
             LOG.error(e.getMessage(), e);
             return e.getMessage();
@@ -120,8 +120,8 @@ public class SdJobFacadeImpl implements SdJobFacade {
         }
 
         try {
-            sdSchedulerService.destroyJob(keyGroup, keyName);
-            sdSchedulerService.scheduleJob(keyGroup, keyName);
+            schedulerService.destroyJob(keyGroup, keyName);
+            schedulerService.scheduleJob(keyGroup, keyName);
         }catch (SchedulerException | InvalidInputException | ClassNotFoundException e){
             LOG.error(e.getMessage(), e);
             return e.getMessage();
@@ -139,7 +139,7 @@ public class SdJobFacadeImpl implements SdJobFacade {
         }
 
         try {
-            sdSchedulerService.resumeJob(keyGroup, keyName);
+            schedulerService.resumeJob(keyGroup, keyName);
         } catch (SchedulerException e) {
             LOG.error(e.getMessage(), e);
             return e.getMessage();
@@ -160,7 +160,7 @@ public class SdJobFacadeImpl implements SdJobFacade {
         }
 
         try {
-            sdSchedulerService.pauseJob(keyGroup, keyName);
+            schedulerService.pauseJob(keyGroup, keyName);
         } catch (SchedulerException e) {
             LOG.error(e.getMessage(), e);
             return e.getMessage();
@@ -181,7 +181,7 @@ public class SdJobFacadeImpl implements SdJobFacade {
         }
 
         try {
-            sdSchedulerService.triggerJob(keyGroup, keyName);
+            schedulerService.triggerJob(keyGroup, keyName);
         } catch (SchedulerException e) {
             LOG.error(e.getMessage(), e);
             return e.getMessage();

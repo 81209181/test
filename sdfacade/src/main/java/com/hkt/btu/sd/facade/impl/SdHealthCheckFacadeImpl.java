@@ -1,7 +1,7 @@
 package com.hkt.btu.sd.facade.impl;
 
 
-import com.hkt.btu.sd.core.service.SdHealthCheckService;
+import com.hkt.btu.common.core.service.BtuHealthCheckService;
 import com.hkt.btu.sd.facade.SdHealthCheckFacade;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,12 +13,12 @@ public class SdHealthCheckFacadeImpl implements SdHealthCheckFacade {
     private static final Logger LOG = LogManager.getLogger(SdHealthCheckFacadeImpl.class);
 
     @Resource(name = "healthCheckService")
-    SdHealthCheckService sdHealthCheckService;
+    BtuHealthCheckService healthCheckService;
 
     @Override
     public String healthCheck() {
         try{
-            LocalDateTime databaseTime = sdHealthCheckService.getDatabaseTime();
+            LocalDateTime databaseTime = healthCheckService.getDatabaseTime();
             LOG.info("Database Time: " + databaseTime);
             return null;
         } catch (Exception e){

@@ -8,7 +8,6 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;
@@ -17,6 +16,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.util.*;
 
 
@@ -46,13 +46,12 @@ public class BtuSecurityMetadataSource implements FilterInvocationSecurityMetada
     public static final String RESERVED_ANT_PATH_PUBLIC = "/public/**";
 
 
-    //    @Resource (name = "pathCtrlService")
-    @Autowired  //use demo
-            BtuPathCtrlService pathCtrlService;
+    @Resource(name = "pathCtrlService")
+    BtuPathCtrlService pathCtrlService;
 
     @PostConstruct
     public void loadResourceDefine() {
-        //reloadResourceDefine();
+        reloadResourceDefine();
     }
 
     private void reloadResourceDefine() {
@@ -116,6 +115,7 @@ public class BtuSecurityMetadataSource implements FilterInvocationSecurityMetada
         newResourceMap.put(new AntPathRequestMatcher(RESERVED_ANT_PATH_WEBJAR), CONFIG_LIST_PERMIT_ALL);
         newResourceMap.put(new AntPathRequestMatcher(RESERVED_ANT_PATH_ERROR), CONFIG_LIST_PERMIT_ALL);
         newResourceMap.put(new AntPathRequestMatcher(RESERVED_ANT_PATH_PUBLIC), CONFIG_LIST_PERMIT_ALL);
+        newResourceMap.put(new AntPathRequestMatcher("/**"), CONFIG_LIST_PERMIT_ALL); // todo remove after RBAC implementation
 
         return newResourceMap;
     }

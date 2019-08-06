@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hkt.btu.common.core.dao.mapper.BtuOtpMapper" >
+
+    <resultMap id="BtuOtpEntity" type="com.hkt.btu.common.core.dao.entity.BtuOtpEntity" >
+        <result column="USER_ID" property="userId" />
+        <result column="ACTION" property="action" />
+        <result column="OTP" property="otp" />
+        <result column="EXPIRYDATE" property="expirydate" />
+
+        <result column="CREATEDATE" property="createdate" />
+        <result column="CREATEBY" property="createby" />
+    </resultMap>
+
+    <select id="getOtp" resultMap="BtuOtpEntity" >
+        select *
+        from NOC_OTP
+        where EXPIRYDATE >= CURRENT_TIMESTAMP
+        and OTP = #{otp}
+        and ACTION = #{action}
+    </select>
+
+
+
+    <insert id="insertOtp" >
+        insert into NOC_OTP (USER_ID, ACTION, OTP, EXPIRYDATE, CREATEBY)
+        values (#{userId}, #{action}, #{otp}, #{expirydate}, #{createby})
+    </insert>
+
+
+    <update id="expireOtp">
+        update NOC_OTP
+        set EXPIRYDATE = CURRENT_TIMESTAMP
+        where OTP = #{otp}
+    </update>
+
+
+</mapper>

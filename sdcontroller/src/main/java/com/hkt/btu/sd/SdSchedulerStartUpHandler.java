@@ -1,9 +1,8 @@
 package com.hkt.btu.sd;
 
-import com.hkt.btu.sd.core.service.SdSchedulerService;
+import com.hkt.btu.common.core.service.BtuSchedulerService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -15,8 +14,8 @@ public class SdSchedulerStartUpHandler implements ApplicationRunner {
     private static final Logger LOG = LogManager.getLogger(SdSchedulerStartUpHandler.class);
 
 
-    @Autowired
-    private SdSchedulerService sdSchedulerService;
+    @Resource(name = "schedulerService")
+    private BtuSchedulerService schedulerService;
 
 
     @SuppressWarnings("RedundantThrows")
@@ -24,7 +23,7 @@ public class SdSchedulerStartUpHandler implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         LOG.info("Scheduling jobs at startup.");
         try {
-            sdSchedulerService.rescheduleAllCronJobs();
+            schedulerService.rescheduleAllCronJobs();
             LOG.info("Complete scheduling jobs at startup.");
         } catch (Exception e) {
             LOG.error("Critical error occurred scheduling jobs at startup.");

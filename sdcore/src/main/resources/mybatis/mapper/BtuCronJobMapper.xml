@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hkt.btu.common.core.dao.mapper.BtuCronJobMapper" >
+    <resultMap id="BtuCronJobEntity" type="com.hkt.btu.common.core.dao.entity.BtuCronJobEntity" >
+        <result column="JOB_ID" property="jobId" />
+        <result column="JOB_GROUP" property="jobGroup" />
+        <result column="JOB_NAME" property="jobName" />
+        <result column="JOB_CLASS" property="jobClass" />
+        <result column="CRON_EXP" property="cronExp" />
+
+        <result column="STATUS" property="status" />
+        <result column="MANDATORY" property="mandatory" />
+
+        <result column="CREATEDATE" property="createdate" />
+        <result column="CREATEBY" property="createby" />
+        <result column="MODIFYDATE" property="modifydate" />
+        <result column="MODIFYBY" property="modifyby" />
+        <result column="REMARKS" property="remarks" />
+    </resultMap>
+
+    <select id="getAll" resultMap="BtuCronJobEntity" >
+        select *
+        from CRON_JOB
+    </select>
+
+    <select id="getJobByJobGrpJobName" resultMap="BtuCronJobEntity" >
+        select *
+        from CRON_JOB
+        where JOB_GROUP = #{jobGroup}
+        and JOB_NAME = #{jobName}
+    </select>
+
+    <update id="updateStatus">
+        update CRON_JOB
+        set STATUS = #{status}, MODIFYBY = #{modifyby}
+        where JOB_GROUP = #{jobGroup}
+        and JOB_NAME = #{jobName}
+    </update>
+
+
+</mapper>

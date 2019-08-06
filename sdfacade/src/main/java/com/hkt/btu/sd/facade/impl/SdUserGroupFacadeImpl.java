@@ -1,7 +1,7 @@
 package com.hkt.btu.sd.facade.impl;
 
-import com.hkt.btu.sd.core.service.SdUserGroupService;
-import com.hkt.btu.sd.core.service.bean.SdUserGroupBean;
+import com.hkt.btu.common.core.service.BtuUserGroupService;
+import com.hkt.btu.common.core.service.bean.BtuUserGroupBean;
 import com.hkt.btu.sd.facade.SdUserGroupFacade;
 import com.hkt.btu.sd.facade.data.SdUserGroupData;
 import com.hkt.btu.sd.facade.populator.SdUserGroupDataPopulator;
@@ -18,7 +18,7 @@ import java.util.List;
 public class SdUserGroupFacadeImpl implements SdUserGroupFacade {
 
     @Resource(name = "userGroupService")
-    SdUserGroupService sdUserGroupService;
+    BtuUserGroupService userGroupService;
 
     @Resource(name = "userGroupDataPopulator")
     SdUserGroupDataPopulator sdUserGroupDataPopulator;
@@ -27,12 +27,12 @@ public class SdUserGroupFacadeImpl implements SdUserGroupFacade {
     public List<SdUserGroupData> listAllUserGroup() {
         List<SdUserGroupData> result = new LinkedList<>();
 
-        List<SdUserGroupBean> sdUserGroupBeanList = sdUserGroupService.getAllUserGroup();
+        List<BtuUserGroupBean> sdUserGroupBeanList = userGroupService.getAllUserGroup();
         if(CollectionUtils.isEmpty(sdUserGroupBeanList)){
             return result;
         }
 
-        for(SdUserGroupBean bean : sdUserGroupBeanList){
+        for(BtuUserGroupBean bean : sdUserGroupBeanList){
             SdUserGroupData sdUserGroupData = new SdUserGroupData();
             sdUserGroupDataPopulator.populate(bean, sdUserGroupData);
             result.add(sdUserGroupData);
@@ -58,13 +58,13 @@ public class SdUserGroupFacadeImpl implements SdUserGroupFacade {
 
     @Override
     public LinkedList<SdUserGroupData> getEligibleUserGroupList() {
-        List<SdUserGroupBean> beanList = sdUserGroupService.getEligibleUserGroupGrantList();
+        List<BtuUserGroupBean> beanList = userGroupService.getEligibleUserGroupGrantList();
         if(CollectionUtils.isEmpty(beanList)){
             return null;
         }
 
         LinkedList<SdUserGroupData> dataList = new LinkedList<>();
-        for(SdUserGroupBean sdUserGroupBean : beanList){
+        for(BtuUserGroupBean sdUserGroupBean : beanList){
             SdUserGroupData sdUserGroupData = new SdUserGroupData();
             sdUserGroupDataPopulator.populate(sdUserGroupBean, sdUserGroupData);
             dataList.add(sdUserGroupData);

@@ -1,10 +1,10 @@
 package com.hkt.btu.sd.core;
 
-import com.hkt.btu.sd.core.dao.entity.SdConfigParamEntity;
-import com.hkt.btu.sd.core.service.SdConfigParamService;
-import com.hkt.btu.sd.core.service.SdCronJobLogService;
-import com.hkt.btu.sd.core.service.SdCronJobProfileService;
-import com.hkt.btu.sd.core.service.SdEmailService;
+import com.hkt.btu.common.core.dao.entity.BtuConfigParamEntity;
+import com.hkt.btu.common.core.service.BtuConJobProfileService;
+import com.hkt.btu.common.core.service.BtuConfigParamService;
+import com.hkt.btu.common.core.service.BtuCronJobLogService;
+import com.hkt.btu.common.core.service.BtuEmailService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,13 +28,13 @@ public class SdJobAspect {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Resource(name = "cronJobProfileService")
-    SdCronJobProfileService sdCronJobProfileService;
+    BtuConJobProfileService conJobProfileService;
     @Resource(name = "cronJobLogService")
-    SdCronJobLogService sdCronJobLogService;
+    BtuCronJobLogService cronJobLogService;
     @Resource(name = "emailService")
-    SdEmailService sdEmailService;
+    BtuEmailService emailService;
     @Resource(name = "configParamService")
-    SdConfigParamService sdConfigParamService;
+    BtuConfigParamService configParamService;
 
 
     private JobExecutionContext getJobExecutionContext(Object[] args) throws JobExecutionException {
@@ -75,10 +75,10 @@ public class SdJobAspect {
         if(isCronTrigger) {
             // check if job should be run
             try {
-                boolean isRunnable = sdCronJobProfileService.isRunnable(jobKey.getGroup(), jobKey.getName());
+                boolean isRunnable = conJobProfileService.isRunnable(jobKey.getGroup(), jobKey.getName());
                 if (!isRunnable) {
                     LOG.warn("Skipped non-runnable job: " + jobKey);
-                    sdCronJobLogService.logSkip(jobDetail);
+                    cronJobLogService.logSkip(jobDetail);
                     return null;
                 }
             } catch (Exception e) {
@@ -97,12 +97,12 @@ public class SdJobAspect {
             LOG.info("Firing time: "    + jobExecutionContext.getFireTime());
 
             Object returnObject = proceedingJoinPoint.proceed(); // executeInternal(..)
-            sdCronJobLogService.logComplete(jobDetail);
+            cronJobLogService.logComplete(jobDetail);
             return returnObject;
         } catch (Exception e){
             LOG.error("Cannot complete job: " + jobKey);
             LOG.error(e.getMessage(), e);
-            sdCronJobLogService.logError(jobDetail);
+            cronJobLogService.logError(jobDetail);
             emailJobError(e, jobKey.getName(), jobExecutionContext.getFireTime());
             throw new SchedulerException("Cannot complete job: " + jobKey);
         } finally {
@@ -113,8 +113,8 @@ public class SdJobAspect {
     private void emailJobError(Exception error, String jobName, Date jobFireTime){
         try{
             // find recipient
-            String recipient = sdConfigParamService.getString(
-                    SdConfigParamEntity.CRONJOB.CONFIG_GROUP, SdConfigParamEntity.CRONJOB.CONFIG_KEY_ERROR_EMAIL);
+            String recipient = configParamService.getString(
+                    BtuConfigParamEntity.CRONJOB.CONFIG_GROUP, BtuConfigParamEntity.CRONJOB.CONFIG_KEY_ERROR_EMAIL);
             if(StringUtils.isEmpty(recipient)){
                 LOG.warn("Not sending cronjob error email.");
                 return;
@@ -126,7 +126,7 @@ public class SdJobAspect {
             String fireTime = fireDateTime==null ? null : fireDateTime.format(DATE_TIME_FORMATTER);
             String subject = String.format("[Job Error][%s] %s", fireTime, jobName);
 
-            sdEmailService.sendErrorStackTrace(recipient, subject, error);
+            emailService.sendErrorStackTrace(recipient, subject, error);
             LOG.info("Sent job error email.");
         }catch (Exception e){
             LOG.error(e.getMessage(), e);

@@ -8,4 +8,11 @@ public interface BtuAuditTrailService {
     void insertLogoutAuditTrail(BtuUser btuUser);
 
     void insertLoginExceptionAuditTrail(BtuUser btuUser, String exception);
+
+    void insertAuditTrail(String action, String detail);
+    void insertAuditTrail(Integer userId, String action, String detail);
+
+    void insertViewUserAuditTrail(Integer userId);
+    void insertViewRequesterAuditTrail(Integer requestId);
+    void insertViewRequestVisitorAuditTrail(Integer visitorId);
 }
