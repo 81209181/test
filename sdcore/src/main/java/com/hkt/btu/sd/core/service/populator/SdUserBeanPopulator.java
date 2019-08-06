@@ -29,28 +29,29 @@ public class SdUserBeanPopulator extends AbstractBeanPopulator<SdUserBean> {
         target.setPassword(source.getPassword());
         target.setPasswordModifydate(source.getPasswordModifydate());
         target.setLoginTried(source.getLoginTried());
-
+        target.setLdapDomain(source.getLdapDomain());
         // SdUserBean
         target.setUserId(source.getUserId());
         target.setName(source.getName());
         target.setEmail(source.getEmail());
         target.setCompanyId(source.getCompanyId());
 
+        // TODO: Encryption function will be done later
         // encrypted data
-        String decryptedMobile = sdSensitiveDataService.decryptToStringSafe(source.getMobile());
+        /*String decryptedMobile = sdSensitiveDataService.decryptToStringSafe(source.getMobile());
         target.setMobile(decryptedMobile);
-
+        // TODO: Encryption function will be done later
         String decryptedStaffId = sdSensitiveDataService.decryptToStringSafe(source.getStaffId());
-        target.setStaffId(decryptedStaffId);
+        target.setStaffId(decryptedStaffId);*/
     }
 
     public void populate(List<SdUserGroupEntity> userGroupEntityList, SdUserBean target) {
-        if(CollectionUtils.isEmpty(userGroupEntityList)){
+        if (CollectionUtils.isEmpty(userGroupEntityList)) {
             return;
         }
 
         Set<GrantedAuthority> grantedAuthSet = new HashSet<>();
-        for (SdUserGroupEntity userGroupEntity : userGroupEntityList){
+        for (SdUserGroupEntity userGroupEntity : userGroupEntityList) {
             SimpleGrantedAuthority auth = new SimpleGrantedAuthority(userGroupEntity.getGroupId());
             grantedAuthSet.add(auth);
         }

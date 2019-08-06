@@ -53,11 +53,6 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     @Override
     public BtuUserBean getCurrentUserBean() throws UserNotFoundException {
         BtuUser btuUser = this.getCurrentUser();
-        BtuUserBean userBean = btuUser.getUserBean();
-        SdUserBean sdUserBean = new SdUserBean();
-        sdUserBean.setUserId(Integer.parseInt(userBean.getUsername()));
-        sdUserBean.setName(userBean.getUsername());
-        btuUser.setUserBean(sdUserBean);
         if (btuUser == null) {
             throw new UserNotFoundException("No UserBean found in security context!");
         } else if (btuUser.getUserBean() instanceof SdUserBean) {
@@ -73,18 +68,23 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         String email = StringUtils.lowerCase(username);
 
         // get user data
-        SdUserEntity sdUserEntity = sdUserMapper.getUserByEmail(email);
+        SdUserEntity sdUserEntity = null;
+        if (username.contains("@")) {
+            sdUserEntity = sdUserMapper.getUserByEmail(email);
+        } else {
+            sdUserEntity = sdUserMapper.getUserByLdapDomain("%"+username+"%");
+        }
         if (sdUserEntity == null) {
             return null;
         }
 
         // get user group data
-        List<SdUserGroupEntity> groupEntityList = sdUserGroupMapper.getUserGroupByUserId(sdUserEntity.getUserId());
+        //List<SdUserGroupEntity> groupEntityList = sdUserGroupMapper.getUserGroupByUserId(sdUserEntity.getUserId());
 
         // construct bean
         SdUserBean userBean = new SdUserBean();
         sdUserBeanPopulator.populate(sdUserEntity, userBean);
-        sdUserBeanPopulator.populate(groupEntityList, userBean);
+        //sdUserBeanPopulator.populate(groupEntityList, userBean);
 
         return userBean;
     }

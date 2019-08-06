@@ -135,7 +135,7 @@ public class ManageUserController {
     @GetMapping("/search-user")
     public String searchUser(final Model model,
                              @ModelAttribute("userGroupOptionList") LinkedList<SdUserGroupData> userGroupOptionList) {
-        userGroupOptionList = sdUserGroupFacade.getEligibleUserGroupList();
+        //userGroupOptionList = sdUserGroupFacade.getEligibleUserGroupList();
         if(!CollectionUtils.isEmpty(userGroupOptionList)){
             model.addAttribute("userGroupOptionList", userGroupOptionList);
         }

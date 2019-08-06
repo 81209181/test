@@ -16,7 +16,7 @@ import java.io.IOException;
 @Service
 public class BtuLoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
-    @Resource(name = "BtuAuditTrailService")
+    @Resource(name = "auditTrailService")
     BtuAuditTrailService auditTrailService;
 
     public BtuLoginSuccessHandler(){
@@ -30,6 +30,9 @@ public class BtuLoginSuccessHandler extends SavedRequestAwareAuthenticationSucce
         // log user login
         BtuUser user = (authentication==null || !(authentication.getPrincipal() instanceof BtuUser) ) ?
                 null : (BtuUser) authentication.getPrincipal();
+
+        // add audit trail
+        auditTrailService.insertLoginAuditTrail(user);
 
         // set timeout for inactive session
         HttpSession session = httpServletRequest.getSession(false);

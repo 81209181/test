@@ -23,13 +23,12 @@ public class BtuLdapServiceImpl implements BtuLdapService {
 
     @Override
     public void authenticationOnly(BtuLdapBean ldapInfo, Authentication auth) throws NamingException {
-        String username = auth.getPrincipal().toString();
         final String ldapURL = ldapInfo.getLdapServerUrl();
-        final String dn = username + ldapInfo.getPrincipleName();
+        final String dn = ldapInfo.getPrincipleName();
         final String pwd = auth.getCredentials().toString();
         DirContext ctx = null;
         try {
-            ctx = getContext(ldapURL,dn,pwd);
+            ctx = getContext(ldapURL, dn, pwd);
         } finally {
             if (ctx != null) ctx.close();
         }
@@ -41,7 +40,7 @@ public class BtuLdapServiceImpl implements BtuLdapService {
         final String dn = username + ldapInfo.getPrincipleName();
         DirContext ctx = null;
         try {
-            ctx = getContext(ldapURL,dn,password);
+            ctx = getContext(ldapURL, dn, password);
             String filter = "(&(objectclass=user)(!(userAccountControl:1.2.840.113556.1.4.803:=2))(|(userPrincipalName=" + staffId + ldapInfo.getPrincipleName() + ")" + "(mailNickname="
                     + staffId + ")" + "(extensionAttribute1=" + staffId + ")))";
             return getSearchResult(ldapInfo, ctx, filter);
@@ -88,8 +87,7 @@ public class BtuLdapServiceImpl implements BtuLdapService {
         return ldapAttrMap;
     }
 
-    private DirContext getContext(final String ldapURL, final String  dn, final String password) throws NamingException
-    {
+    private DirContext getContext(final String ldapURL, final String dn, final String password) throws NamingException {
         // Access the keystore, this is where the Root CA public key cert was installed
         // Could also do this via the command line option java -Djavax.net.ssl.trustStore....
         // No need to specifiy the keystore password for read operations
@@ -104,51 +102,38 @@ public class BtuLdapServiceImpl implements BtuLdapService {
         authEnv.put(Context.SECURITY_CREDENTIALS, password);
 
         // For LDAPS
-        if (ldapURL.startsWith("ldaps"))
-        {
+        if (ldapURL.startsWith("ldaps")) {
             authEnv.put(Context.SECURITY_PROTOCOL, "ssl");
             authEnv.put("java.naming.ldap.factory.socket", LdapSSLSocketFactory.class.getCanonicalName());
         }
 
-        try
-        {
+        try {
             return new InitialDirContext(authEnv);
 
-        }
-        catch (javax.naming.AuthenticationException authEx)
-        {
+        } catch (javax.naming.AuthenticationException authEx) {
             throw authEx;
-        }
-        catch (NamingException namEx)
-        {
+        } catch (NamingException namEx) {
             namEx.printStackTrace();
             throw namEx;
-        }
-        finally
-        {
+        } finally {
             //if (ctx != null) ctx.close();
         }
     }
 
-    protected BtuUserBean getSearchResult(BtuLdapBean ldapInfo, DirContext ctx, String filter) throws NamingException
-    {
-        try
-        {
+    protected BtuUserBean getSearchResult(BtuLdapBean ldapInfo, DirContext ctx, String filter) throws NamingException {
+        try {
             String ldapBase = ldapInfo.getLdapAttributeLoginName();
             SearchControls constraints = new SearchControls();
             constraints.setSearchScope(SearchControls.SUBTREE_SCOPE);
             NamingEnumeration<SearchResult> results = ctx.search(ldapBase, filter, constraints);
 
-            if (results != null && results.hasMore())
-            {
+            if (results != null && results.hasMore()) {
                 Map<String, String> ldapResponse = getLdapResponseAttrMap(results);
                 return null;
             } else {
                 throw new UserNotFoundException("User not found in LDAP domain");
             }
-        }
-        finally
-        {
+        } finally {
 
         }
     }

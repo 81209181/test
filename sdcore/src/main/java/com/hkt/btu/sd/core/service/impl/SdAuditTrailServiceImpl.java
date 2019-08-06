@@ -5,6 +5,7 @@ import com.hkt.btu.sd.core.dao.entity.SdAuditTrailEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdAuditTrailMapper;
 import com.hkt.btu.sd.core.service.SdAuditTrailService;
 import com.hkt.btu.sd.core.service.SdUserService;
+import com.hkt.btu.sd.core.service.bean.SdUserBean;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +22,11 @@ public class SdAuditTrailServiceImpl implements SdAuditTrailService {
 
 
     private void insertAuditTrail(BtuUser btuUser, String action, String detail) {
-        this.insertAuditTrail(btuUser.getUsername(), action, detail);
+        if (btuUser.getUserBean() instanceof SdUserBean) {
+            this.insertAuditTrail(((SdUserBean) btuUser.getUserBean()).getUserId() + "", action, detail);
+        } else {
+            this.insertAuditTrail(btuUser.getUsername(), action, detail);
+        }
     }
 
     public void insertAuditTrail(String action, String detail) {

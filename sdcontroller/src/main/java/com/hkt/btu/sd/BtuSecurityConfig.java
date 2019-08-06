@@ -1,7 +1,8 @@
 package com.hkt.btu.sd;
 
 import com.hkt.btu.common.spring.security.access.BtuAccessDeniedHandler;
-import com.hkt.btu.common.spring.security.access.BtuDaoAuthenticationProvider;
+import com.hkt.btu.common.spring.security.authentication.BtuDaoAuthenticationProvider;
+import com.hkt.btu.common.spring.security.authentication.DbDaoAuthenticationProvider;
 import com.hkt.btu.common.spring.security.access.intercept.BtuSecurityInterceptor;
 import com.hkt.btu.common.spring.security.access.intercept.BtuSecurityMetadataSource;
 import com.hkt.btu.common.spring.security.authentication.LdapAuthenticationProvider;
@@ -39,8 +40,8 @@ public class BtuSecurityConfig extends WebSecurityConfigurerAdapter {
     @Resource(name = "customBtuSecurityInterceptor")
     BtuSecurityInterceptor btuSecurityInterceptor;
 
-    @Resource(name = "customBtuDaoAuthenticationProvider")
-    BtuDaoAuthenticationProvider btuDaoAuthenticationProvider;
+    @Resource(name = "customDbDaoAuthenticationProvider")
+    DbDaoAuthenticationProvider dbDaoAuthenticationProvider;
 
     @Resource(name = "customAccessDeniedHandler")
     BtuAccessDeniedHandler btuAccessDeniedHandler;
@@ -51,16 +52,16 @@ public class BtuSecurityConfig extends WebSecurityConfigurerAdapter {
     @Resource(name = "btuPasswordEncoder")
     BCryptPasswordEncoder btuPasswordEncoder;
 
-    @Resource(name = "LdapAuthenticationProvider")
-    LdapAuthenticationProvider ldapAuth;
-
+    @Resource(name = "customBtuDaoAuthenticationProvider")
+    BtuDaoAuthenticationProvider btuDaoAuthenticationProvider;
 
     @SuppressWarnings("RedundantThrows")
     @Override
     protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
         btuDaoAuthenticationProvider.setPasswordEncoder(btuPasswordEncoder);
-        //auth.authenticationProvider(btuDaoAuthenticationProvider);
-        auth.authenticationProvider(ldapAuth);
+        // TODO: Encryption function will be done later
+        dbDaoAuthenticationProvider.setPasswordEncoder(btuPasswordEncoder);
+        auth.authenticationProvider(btuDaoAuthenticationProvider);
         // BCryptPasswordEncoder Online: https://www.dailycred.com/article/bcrypt-calculator
         // BCrypt round: 10 (spring security default)
     }

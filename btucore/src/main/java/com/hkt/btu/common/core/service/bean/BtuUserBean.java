@@ -10,12 +10,20 @@ public class BtuUserBean extends BaseBean {
     private String username;
     private String status;
 
+    private String ldapDomain;
     private String password;
     private LocalDateTime passwordModifydate;
     private Integer loginTried;
 
     private Set<GrantedAuthority> authorities;
 
+    public String getLdapDomain() {
+        return ldapDomain;
+    }
+
+    public void setLdapDomain(String ldapDomain) {
+        this.ldapDomain = ldapDomain;
+    }
 
     public String getUsername() {
         return username;
