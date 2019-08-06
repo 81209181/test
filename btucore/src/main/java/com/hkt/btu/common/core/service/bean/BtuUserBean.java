@@ -13,6 +13,7 @@ public class BtuUserBean extends BaseBean {
     private String password;
     private LocalDateTime passwordModifydate;
     private Integer loginTried;
+    private String ldapDomain;
 
     private Set<GrantedAuthority> authorities;
 
@@ -23,6 +24,7 @@ public class BtuUserBean extends BaseBean {
     private String staffId;
 
     private Integer companyId;
+    private String companyName;
 
     public Integer getUserId() {
         return userId;
@@ -118,5 +120,22 @@ public class BtuUserBean extends BaseBean {
 
     public void setLoginTried(Integer loginTried) {
         this.loginTried = loginTried;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+
+    public String getLdapDomain() {
+        return ldapDomain;
+    }
+
+    public void setLdapDomain(String ldapDomain) {
+        this.ldapDomain = ldapDomain;
     }
 }
