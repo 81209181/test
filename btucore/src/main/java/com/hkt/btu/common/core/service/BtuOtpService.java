@@ -9,4 +9,5 @@ public interface BtuOtpService {
 
     void expireOtp(String otp);
 
+    BtuOtpBean getValidResetPwdOtp(Integer userId);
 }
