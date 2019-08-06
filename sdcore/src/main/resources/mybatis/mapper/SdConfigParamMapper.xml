@@ -15,7 +15,7 @@
         <result column="REMARKS" property="remarks" />
     </resultMap>
 
-    <select id="getConfigGroupList" resultMap="ConfigParamEntity">
+    <select id="getConfigGroupList" resultType="String">
         select  CONFIG_GROUP
         from CONFIG_PARAM
         group by CONFIG_GROUP

@@ -1,6 +1,5 @@
 package com.hkt.btu.sd;
 
-import com.hkt.btu.sd.core.dao.entity.SdConfigParamEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdConfigParamMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,9 +17,9 @@ public class AppTest {
 
     @Test
     public void shouldAnswerWithTrue() {
-        List<SdConfigParamEntity> entities = configParamMapper.getConfigGroupList();
-        for (SdConfigParamEntity entity : entities) {
-            System.out.println(entity.getConfigGroup());
+        List<String> entities = configParamMapper.getConfigGroupList();
+        for (String entity : entities) {
+            System.out.println(entity);
         }
     }
 }
