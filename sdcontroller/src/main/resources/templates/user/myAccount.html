@@ -25,6 +25,9 @@
             </div>
 
             <div class="d-inline-block col-md-5 form-group">
+                <label>Ldap Domain</label>
+                <input th:id="my-ldap-domain" type="text" class="form-control" readonly>
+
                 <label>Status</label>
                 <input th:id="my-status" type="text" class="form-control" readonly>
 
@@ -51,7 +54,7 @@
         </div>
     </form>
 
-    <h1>Update Password</h1>
+    <!--<h1>Update Password</h1>
     <form class="row"  th:id="update-pwd-form" th:object="${updatePwdFormData}">
         <div class="col-md-12">
             <div class="d-inline-block col-md-5 form-group">
@@ -65,7 +68,7 @@
                 <button th:id="btn-update-pwd" type="submit" class="btn btn-lg btn-primary"><i class="far fa-save"></i> Update</button>
             </div>
         </div>
-    </form>
+    </form>-->
 
     <script type="text/javascript" th:src="@{/js/myAccount.js}"></script>
 </div>
