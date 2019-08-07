@@ -36,7 +36,7 @@
         where OTP = #{otp}
     </update>
 
-    <select id="getOtpByUserId" resultMap="BtuOtpEntity" >
+    <select id="getOtpByUserId" resultMap="SdOtpEntity" >
         select *
         from OTP
         where EXPIRYDATE >= CURRENT_TIMESTAMP

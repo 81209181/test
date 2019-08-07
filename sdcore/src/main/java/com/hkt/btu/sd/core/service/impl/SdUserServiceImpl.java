@@ -489,7 +489,14 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             throw new UserNotFoundException();
         }
 
+        // valid reset password otp
         Integer userId = sdUserEntity.getUserId();
+        SdOtpBean sdOtpBean = sdOtpService.getValidResetPwdOtp(userId);
+        if (sdOtpBean != null) {
+            throw new InvalidInputException("within the OTP effective time.");
+        }
+
+        // generate reset password otp
         String otp = sdOtpService.generatePwdResetOtp(userId);
         boolean isNewlyCreated = sdUserEntity.getPasswordModifydate() == null;
         LOG.info("Generated password OTP successfully for user " + username + ".");

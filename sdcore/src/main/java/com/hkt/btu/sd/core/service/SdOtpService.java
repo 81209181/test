@@ -9,4 +9,5 @@ public interface SdOtpService {
 
     void expireOtp(String otp);
 
+    SdOtpBean getValidResetPwdOtp(Integer userId);
 }
