@@ -1,5 +1,9 @@
 $(document).ready(function() {
     $('#userGroupTable').DataTable({
+        'paging':false,
+        'info':false,
+//        "scrollY": '500px',
+//        "scrollCollapse": true,
         ajax: {
             type: "GET",
             contentType: "application/json",
@@ -22,6 +26,11 @@ $(document).ready(function() {
                 data: "modifydate",
                 render: function (modifydate, type, row, meta) {
                     return modifydate==null ? null : modifydate.replace('T', ' ');
+                }
+            },{
+                targets: 5,
+                render:function(data, type, full, meta){
+                    return '<a class="btn btn-info" href="'+full.configGroup+'/'+full.configKey+'" role="button"><i class="fas fa-edit"></i> Edit</a>';
                 }
             }
         ]
