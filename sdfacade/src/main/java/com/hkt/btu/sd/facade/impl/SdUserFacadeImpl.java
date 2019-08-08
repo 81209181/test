@@ -263,7 +263,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
             SdUserBean sdUserBean = (SdUserBean) sdUserService.getCurrentUserBean();
             userDataPopulator.populate(sdUserBean, userData);
             // TODO: Encryption function will be done later
-            //userDataPopulator.populateSensitiveData(sdUserBean, userData);
+            userDataPopulator.populateSensitiveData(sdUserBean, userData);
 
         } catch (UserNotFoundException e){
             return null;
