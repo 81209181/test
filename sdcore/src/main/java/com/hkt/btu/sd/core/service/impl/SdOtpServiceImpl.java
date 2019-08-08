@@ -67,8 +67,8 @@ public class SdOtpServiceImpl implements SdOtpService {
     }
 
     @Override
-    public SdOtpBean getValidResetPwdOtp(Integer userId) {
-        SdOtpEntity sdOtpEntity = sdOtpMapper.getOtpByUserId(userId, SdOtpEntity.ACTION.RESET_PWD);
+    public SdOtpBean getValidPwdOtp(Integer userId, String action) {
+        SdOtpEntity sdOtpEntity = sdOtpMapper.getOtpByUserId(userId, action);
         if(sdOtpEntity==null){
             return null;
         }
@@ -78,4 +78,8 @@ public class SdOtpServiceImpl implements SdOtpService {
         return sdOtpBean;
     }
 
+    @Override
+    public String generatePwdOtp(Integer userId, String action) {
+        return generateOtp(userId, action, SdUserEntity.SYSTEM.USER_ID);
+    }
 }
