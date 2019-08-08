@@ -39,46 +39,54 @@ public class SdCronJobLogServiceImpl extends BtuCronJobLogServiceImpl implements
 
     @Override
     public void logUserActivateJob(String jobGroup, String jobName) {
+        super.logUserActivateJob(jobGroup, jobName);
         Integer userId = sdUserService.getCurrentUserUserId();
         logProfileChange(jobGroup, jobName, userId, SdCronJobLogEntity.ACTION.ACTIVATE);
     }
 
     @Override
     public void logUserDeactivateJob(String jobGroup, String jobName) {
+        super.logUserDeactivateJob(jobGroup, jobName);
         Integer userId = sdUserService.getCurrentUserUserId();
         logProfileChange(jobGroup, jobName, userId, SdCronJobLogEntity.ACTION.DEACTIVATE);
     }
 
     @Override
     public void logUserPauseJob(JobDetail jobDetail) {
+        super.logUserPauseJob(jobDetail);
         Integer userId = sdUserService.getCurrentUserUserId();
         logInstanceChange(jobDetail, userId, SdCronJobLogEntity.ACTION.PAUSE);
     }
 
     @Override
     public void logUserResumeJob(JobDetail jobDetail) {
+        super.logUserResumeJob(jobDetail);
         Integer userId = sdUserService.getCurrentUserUserId();
         logInstanceChange(jobDetail, userId, SdCronJobLogEntity.ACTION.RESUME);
     }
 
     @Override
     public void logUserTriggerJob(JobDetail jobDetail) {
+        super.logUserTriggerJob(jobDetail);
         Integer userId = sdUserService.getCurrentUserUserId();
         logInstanceChange(jobDetail, userId, SdCronJobLogEntity.ACTION.TRIGGER);
     }
 
     @Override
     public void logSkip(JobDetail jobDetail) {
+        super.logSkip(jobDetail);
         logInstanceChange(jobDetail, SdUserEntity.SYSTEM.USER_ID, SdCronJobLogEntity.ACTION.SKIP);
     }
 
     @Override
     public void logComplete(JobDetail jobDetail) {
+        super.logComplete(jobDetail);
         logInstanceChange(jobDetail, SdUserEntity.SYSTEM.USER_ID, SdCronJobLogEntity.ACTION.COMPLETE);
     }
 
     @Override
     public void logError(JobDetail jobDetail) {
+        super.logError(jobDetail);
         logInstanceChange(jobDetail, SdUserEntity.SYSTEM.USER_ID, SdCronJobLogEntity.ACTION.ERROR);
     }
 
