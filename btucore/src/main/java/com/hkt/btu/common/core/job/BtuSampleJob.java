@@ -6,11 +6,13 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
+import java.time.LocalDateTime;
+
 public class BtuSampleJob extends QuartzJobBean {
     private static final Logger LOG = LogManager.getLogger(BtuSampleJob.class);
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        LOG.info("BTU SAMPLE JOB START.");
+        LOG.info(LocalDateTime.now());
     }
 }

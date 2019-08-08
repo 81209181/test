@@ -21,9 +21,18 @@ public class BtuCronJobProfileServiceImpl implements BtuCronJobProfileService {
 
     @Override
     public List<BtuCronJobProfileBean> getAll() {
+        // create sample job
+        BtuCronJobProfileBean sampleJobBean = new BtuCronJobProfileBean();
+        sampleJobBean.setJobClass("com.hkt.btu.common.core.job.BtuSampleJob");
+        sampleJobBean.setKeyName("BtuSampleJob");
+        sampleJobBean.setKeyGroup("SYSTEM");
+        sampleJobBean.setCronExp("0 0/5 * * * ?");
+        sampleJobBean.setActive(true);
+        sampleJobBean.setMandatory(true);
+
+        // return job bean list
         List<BtuCronJobProfileBean> beanList = new ArrayList<>();
-        BtuCronJobProfileBean bean = BtuCronJobProfileBean.getSampleJob();
-        beanList.add(bean);
+        beanList.add(sampleJobBean);
         return beanList;
     }
 
