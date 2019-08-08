@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.core.service.impl;
 
 
+import com.hkt.btu.common.core.service.BtuSiteConfigService;
 import com.hkt.btu.common.core.service.bean.BtuCronJobProfileBean;
 import com.hkt.btu.common.core.service.impl.BtuCronJobProfileServiceImpl;
 import com.hkt.btu.sd.core.dao.entity.SdCronJobEntity;
@@ -8,13 +9,10 @@ import com.hkt.btu.sd.core.dao.mapper.SdCronJobMapper;
 import com.hkt.btu.sd.core.exception.InvalidInputException;
 import com.hkt.btu.sd.core.service.SdCronJobLogService;
 import com.hkt.btu.sd.core.service.SdCronJobProfileService;
-import com.hkt.btu.sd.core.service.SdSiteConfigService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdCronJobProfileBean;
-import com.hkt.btu.sd.core.service.bean.SdSiteConfigBean;
 import com.hkt.btu.sd.core.service.populator.SdCronJobProfileBeanPopulator;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +29,7 @@ public class SdCronJobProfileServiceImpl extends BtuCronJobProfileServiceImpl im
     SdCronJobMapper sdCronJobMapper;
 
     @Resource(name = "siteConfigService")
-    SdSiteConfigService sdSiteConfigService;
+    BtuSiteConfigService siteConfigService;
     @Resource(name = "userService")
     SdUserService sdUserService;
     @Resource(name = "cronJobLogService")

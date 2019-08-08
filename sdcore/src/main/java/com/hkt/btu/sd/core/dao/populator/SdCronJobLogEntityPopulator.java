@@ -1,9 +1,9 @@
 package com.hkt.btu.sd.core.dao.populator;
 
 import com.hkt.btu.common.core.dao.populator.EntityPopulator;
+import com.hkt.btu.common.core.service.bean.BtuSiteConfigBean;
 import com.hkt.btu.sd.core.dao.entity.SdCronJobLogEntity;
 import com.hkt.btu.sd.core.service.bean.SdCronJobProfileBean;
-import com.hkt.btu.sd.core.service.bean.SdSiteConfigBean;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 
@@ -35,7 +35,7 @@ public class SdCronJobLogEntityPopulator implements EntityPopulator<SdCronJobLog
         entity.setJobClass(profileBean.getJobClass());
     }
 
-    public void populate(SdSiteConfigBean sdSiteConfigBean, SdCronJobLogEntity entity) {
+    public void populate(BtuSiteConfigBean sdSiteConfigBean, SdCronJobLogEntity entity) {
         if (sdSiteConfigBean==null){
             return;
         }

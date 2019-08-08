@@ -17,7 +17,7 @@ public class BtuCronJobProfileServiceImpl implements BtuCronJobProfileService {
     private static final Logger LOG = LogManager.getLogger(BtuCronJobProfileServiceImpl.class);
 
     @Resource(name = "siteConfigService")
-    BtuSiteConfigService btuSiteConfigService;
+    BtuSiteConfigService siteConfigService;
 
     @Override
     public List<BtuCronJobProfileBean> getAll() {
@@ -42,7 +42,7 @@ public class BtuCronJobProfileServiceImpl implements BtuCronJobProfileService {
     }
 
     private boolean isWrongHostToRunJob(BtuCronJobProfileBean sdCronJobProfileBean) {
-        BtuSiteConfigBean sdSiteConfigBean = btuSiteConfigService.getSiteConfigBean();
+        BtuSiteConfigBean sdSiteConfigBean = siteConfigService.getSiteConfigBean();
         // get current server hostname
         String serverHostname = sdSiteConfigBean.getServerHostname();
         // get target cronjob server hostname

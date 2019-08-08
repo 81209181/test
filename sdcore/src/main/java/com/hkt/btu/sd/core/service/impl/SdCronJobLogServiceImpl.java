@@ -1,7 +1,9 @@
 package com.hkt.btu.sd.core.service.impl;
 
 
+import com.hkt.btu.common.core.service.BtuSiteConfigService;
 import com.hkt.btu.common.core.service.bean.BtuCronJobProfileBean;
+import com.hkt.btu.common.core.service.bean.BtuSiteConfigBean;
 import com.hkt.btu.common.core.service.impl.BtuCronJobLogServiceImpl;
 import com.hkt.btu.sd.core.dao.entity.SdCronJobLogEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserEntity;
@@ -9,10 +11,8 @@ import com.hkt.btu.sd.core.dao.mapper.SdCronJobLogMapper;
 import com.hkt.btu.sd.core.dao.populator.SdCronJobLogEntityPopulator;
 import com.hkt.btu.sd.core.service.SdCronJobLogService;
 import com.hkt.btu.sd.core.service.SdCronJobProfileService;
-import com.hkt.btu.sd.core.service.SdSiteConfigService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdCronJobProfileBean;
-import com.hkt.btu.sd.core.service.bean.SdSiteConfigBean;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.quartz.JobDetail;
@@ -32,7 +32,7 @@ public class SdCronJobLogServiceImpl extends BtuCronJobLogServiceImpl implements
     @Resource(name = "userService")
     SdUserService sdUserService;
     @Resource(name = "siteConfigService")
-    SdSiteConfigService sdSiteConfigService;
+    BtuSiteConfigService siteConfigService;
     @Resource(name = "cronJobProfileService")
     SdCronJobProfileService sdCronJobProfileService;
 
@@ -113,10 +113,10 @@ public class SdCronJobLogServiceImpl extends BtuCronJobLogServiceImpl implements
 
     private SdCronJobLogEntity buildNewSdCronJobLogEntity(Integer createby, String action){
         // get server info
-        SdSiteConfigBean sdSiteConfigBean = sdSiteConfigService.getSdSiteConfigBean();
+        BtuSiteConfigBean btuSiteConfigBean = siteConfigService.getSiteConfigBean();
 
         SdCronJobLogEntity sdCronJobLogEntity = new SdCronJobLogEntity();
-        sdCronJobLogEntityPopulator.populate(sdSiteConfigBean, sdCronJobLogEntity);
+        sdCronJobLogEntityPopulator.populate(btuSiteConfigBean, sdCronJobLogEntity);
         sdCronJobLogEntity.setAction(action);
         sdCronJobLogEntity.setCreateby(createby);
         return sdCronJobLogEntity;

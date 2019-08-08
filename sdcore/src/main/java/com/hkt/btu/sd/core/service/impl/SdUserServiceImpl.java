@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.core.service.impl;
 
 import com.hkt.btu.common.core.exception.UserNotFoundException;
+import com.hkt.btu.common.core.service.BtuSensitiveDataService;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.core.service.impl.BtuUserServiceImpl;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
@@ -49,7 +50,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     SdEmailService sdEmailService;
 
     @Resource(name = "sensitiveDataService")
-    SdSensitiveDataService sdSensitiveDataService;
+    BtuSensitiveDataService btuSensitiveDataService;
 
     @Override
     public BtuUserBean getCurrentUserBean() throws UserNotFoundException {
@@ -161,8 +162,8 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         String encodedPassword = encodePassword(password);
 
         // encrypt
-        byte[] encryptedMobile = StringUtils.isEmpty(mobile) ? null : sdSensitiveDataService.encryptFromString(mobile);
-        byte[] encryptedStaffId = StringUtils.isEmpty(staffId) ? null : sdSensitiveDataService.encryptFromString(staffId);
+        byte[] encryptedMobile = StringUtils.isEmpty(mobile) ? null : btuSensitiveDataService.encryptFromString(mobile);
+        byte[] encryptedStaffId = StringUtils.isEmpty(staffId) ? null : btuSensitiveDataService.encryptFromString(staffId);
 
         // prepare entity
         SdUserEntity sdUserEntity = new SdUserEntity();

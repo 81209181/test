@@ -61,12 +61,15 @@ public class BtuSiteConfigServiceImpl implements BtuSiteConfigService {
 
     @Override
     public boolean isProductionServer() {
-        return false;
+        BtuSiteConfigBean btuSiteConfigBean = getSiteConfigBean();
+        return StringUtils.equals(BtuSiteConfigBean.SERVER_TYPE.PROD, btuSiteConfigBean.getServerType()) ||
+                StringUtils.equals(BtuSiteConfigBean.SERVER_TYPE.PROD_STANDBY, btuSiteConfigBean.getServerType()) ;
     }
 
     @Override
     public boolean isDevelopmentServer() {
-        return false;
+        BtuSiteConfigBean btuSiteConfigBean = getSiteConfigBean();
+        return StringUtils.equals(BtuSiteConfigBean.SERVER_TYPE.DEV, btuSiteConfigBean.getServerType());
     }
 
     private void reloadSiteConfigBean() {

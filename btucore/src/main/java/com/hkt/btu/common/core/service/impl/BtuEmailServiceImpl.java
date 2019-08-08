@@ -32,7 +32,7 @@ public class BtuEmailServiceImpl implements BtuEmailService {
     private static final String EMAIL_TEMPLATE_BODY_SUFFIX = "_body";
 
     @Resource(name = "siteConfigService")
-    BtuSiteConfigService btuSiteConfigService;
+    BtuSiteConfigService siteConfigService;
     @Resource(name = "templateEngineService")
     BtuTemplateEngineService btuTemplateEngineService;
 
@@ -48,7 +48,7 @@ public class BtuEmailServiceImpl implements BtuEmailService {
 
     @Override
     public void reload() {
-        BtuSiteConfigBean sdSiteConfigBean = btuSiteConfigService.getSiteConfigBean();
+        BtuSiteConfigBean sdSiteConfigBean = siteConfigService.getSiteConfigBean();
 
         JavaMailSenderImpl newJavaMailSender = new JavaMailSenderImpl();
         newJavaMailSender.setHost(sdSiteConfigBean.getMailHost());
@@ -86,7 +86,7 @@ public class BtuEmailServiceImpl implements BtuEmailService {
     @Override
     public void send(String templateId, String recipient, Map<String, Object> dataMap) throws MessagingException {
         JavaMailSender mailSender = getJavaMailSender();
-        BtuSiteConfigBean sdSiteConfigBean = btuSiteConfigService.getSiteConfigBean();
+        BtuSiteConfigBean sdSiteConfigBean = siteConfigService.getSiteConfigBean();
 
         String subjectTemplate = EMAIL_TEMPLATE_DIR + templateId + EMAIL_TEMPLATE_SUBJECT_SUFFIX;
         String bodyTemplate = EMAIL_TEMPLATE_DIR + templateId + EMAIL_TEMPLATE_BODY_SUFFIX;
@@ -101,7 +101,7 @@ public class BtuEmailServiceImpl implements BtuEmailService {
         String htmlBodyString = btuTemplateEngineService.buildHtmlStringFromHtmlFile(bodyTemplate, dataMap);
 
         // add subject prefix to non-production email
-        if (!btuSiteConfigService.isProductionServer()) {
+        if (!siteConfigService.isProductionServer()) {
             subjectString = String.format("[%s] %s", sdSiteConfigBean.getServerType(), subjectString);
         }
 
@@ -122,7 +122,7 @@ public class BtuEmailServiceImpl implements BtuEmailService {
         messageHelper.addInline(EMAIL_GLOBAL_LOGO_PCCW_GRP_CID, EMAIL_GLOBAL_LOGO_PCCW_GRP_RESOURCE, CONTENT_TYPE_PNG);
 
         // send email
-        if (btuSiteConfigService.isDevelopmentServer()) {
+        if (siteConfigService.isDevelopmentServer()) {
             LOG.warn("Email Recipient: " + recipient);
             LOG.warn("Email Subject: " + subjectString);
             LOG.warn("Email Body: \n" + htmlBodyString);
