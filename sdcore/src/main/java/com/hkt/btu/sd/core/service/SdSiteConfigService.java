@@ -5,6 +5,6 @@ import com.hkt.btu.sd.core.service.bean.SdSiteConfigBean;
 
 public interface SdSiteConfigService extends BtuSiteConfigService {
 
-    SdSiteConfigBean getSdSiteConfigBean();
+//    SdSiteConfigBean getSdSiteConfigBean();
 
 }

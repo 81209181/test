@@ -2,6 +2,7 @@ package com.hkt.btu.sd.core.service.impl;
 
 
 import com.hkt.btu.common.core.service.bean.BtuCronJobProfileBean;
+import com.hkt.btu.common.core.service.bean.BtuSiteConfigBean;
 import com.hkt.btu.common.core.service.impl.BtuCronJobLogServiceImpl;
 import com.hkt.btu.sd.core.dao.entity.SdCronJobLogEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserEntity;
@@ -113,10 +114,10 @@ public class SdCronJobLogServiceImpl extends BtuCronJobLogServiceImpl implements
 
     private SdCronJobLogEntity buildNewSdCronJobLogEntity(Integer createby, String action){
         // get server info
-        SdSiteConfigBean sdSiteConfigBean = sdSiteConfigService.getSdSiteConfigBean();
+        BtuSiteConfigBean sdSiteConfigBean = sdSiteConfigService.getSiteConfigBean();
 
         SdCronJobLogEntity sdCronJobLogEntity = new SdCronJobLogEntity();
-        sdCronJobLogEntityPopulator.populate(sdSiteConfigBean, sdCronJobLogEntity);
+        sdCronJobLogEntityPopulator.populate((SdSiteConfigBean) sdSiteConfigBean, sdCronJobLogEntity);
         sdCronJobLogEntity.setAction(action);
         sdCronJobLogEntity.setCreateby(createby);
         return sdCronJobLogEntity;
