@@ -12,7 +12,6 @@ public class SdUserData implements DataInterface {
     private String email;
     private String ldapDomain;
 
-    private String ldapDomain;
     private String status;
     private String passwordModifyDate;
     private Integer loginTried;
