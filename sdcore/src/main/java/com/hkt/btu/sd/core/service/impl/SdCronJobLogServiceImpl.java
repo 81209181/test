@@ -82,16 +82,24 @@ public class SdCronJobLogServiceImpl extends BtuCronJobLogServiceImpl implements
         logInstanceChange(jobDetail, SdUserEntity.SYSTEM.USER_ID, SdCronJobLogEntity.ACTION.ERROR);
     }
 
-    private void logInstanceChange(JobDetail jobDetail, Integer createby, String action){
+    private void logInstanceChange(JobDetail jobDetail, Integer createby, String action) {
         // prepare insert param
         SdCronJobLogEntity sdCronJobLogEntity = buildNewSdCronJobLogEntity(createby, action);
         sdCronJobLogEntityPopulator.populate(jobDetail, sdCronJobLogEntity);
 
         // insert
+        LOG.info("LOG INSTANCE CHANGE :{},{},{},{},{},{}",
+                sdCronJobLogEntity.getServerIp(),
+                sdCronJobLogEntity.getJobGroup(),
+                sdCronJobLogEntity.getJobName(),
+                sdCronJobLogEntity.getJobClass(),
+                sdCronJobLogEntity.getAction(),
+                sdCronJobLogEntity.getCreateby()
+        );
         sdCronJobLogMapper.insertLog(sdCronJobLogEntity);
     }
 
-    private void logProfileChange(String jobGroup, String jobName, Integer createby, String action){
+    private void logProfileChange(String jobGroup, String jobName, Integer createby, String action) {
         // get profile info
         BtuCronJobProfileBean profileBean = sdCronJobProfileService.getProfileBeanByGrpAndName(jobGroup, jobName);
 
@@ -100,7 +108,7 @@ public class SdCronJobLogServiceImpl extends BtuCronJobLogServiceImpl implements
         sdCronJobLogEntityPopulator.populate((SdCronJobProfileBean) profileBean, sdCronJobLogEntity);
 
         // insert
-        LOG.info("log Profile Change :{},{},{},{},{},{}",
+        LOG.info("LOG PROFILE CHANGE :{},{},{},{},{},{}",
                 sdCronJobLogEntity.getServerIp(),
                 sdCronJobLogEntity.getJobGroup(),
                 sdCronJobLogEntity.getJobName(),

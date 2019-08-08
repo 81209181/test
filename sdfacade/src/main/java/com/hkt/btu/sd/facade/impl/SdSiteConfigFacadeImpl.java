@@ -27,10 +27,10 @@ public class SdSiteConfigFacadeImpl implements SdSiteConfigFacade {
 
     @Override
     public SdSiteConfigData getSiteInstance() {
-        BtuSiteConfigBean sdSiteConfigBean = siteConfigService.getSiteConfigBean();
+        BtuSiteConfigBean siteConfigBean = siteConfigService.getSiteConfigBean();
 
         SdSiteConfigData data = new SdSiteConfigData();
-        sdSiteInstanceDataPopulator.populate(sdSiteConfigBean, data);
+        sdSiteInstanceDataPopulator.populate(siteConfigBean, data);
         return data;
     }
 }
