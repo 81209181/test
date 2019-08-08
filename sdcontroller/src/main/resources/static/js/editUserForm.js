@@ -12,6 +12,7 @@ function ajaxGetUser(){
             $("#edit-status").val(data.status);
             $("#edit-login-tried").val(data.loginTried);
             $("#edit-password-modify-date").val(data.passwordModifyDate);
+            $("#edit-ldap-domain").val(data.ldapDomain);
 
             $("#edit-company-name").val(data.companyName);
             $("#edit-company-id").val(data.companyId);

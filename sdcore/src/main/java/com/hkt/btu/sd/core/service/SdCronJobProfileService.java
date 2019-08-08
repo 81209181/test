@@ -1,12 +1,13 @@
 package com.hkt.btu.sd.core.service;
 
 
+import com.hkt.btu.common.core.service.BtuCronJobProfileService;
 import com.hkt.btu.sd.core.exception.InvalidInputException;
 import com.hkt.btu.sd.core.service.bean.SdCronJobProfileBean;
 
 import java.util.List;
 
-public interface SdCronJobProfileService {
+public interface SdCronJobProfileService extends BtuCronJobProfileService {
 
     List<SdCronJobProfileBean> getAll();
     SdCronJobProfileBean getProfileBeanByGrpAndName(String jobGroup, String jobName);

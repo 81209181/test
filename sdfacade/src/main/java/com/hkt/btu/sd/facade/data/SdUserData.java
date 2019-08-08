@@ -10,6 +10,7 @@ public class SdUserData implements DataInterface {
     private String name;
     private String mobile;
     private String email;
+    private String ldapDomain;
 
     private String ldapDomain;
     private String status;

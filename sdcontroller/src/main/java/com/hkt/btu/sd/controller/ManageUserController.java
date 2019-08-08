@@ -41,11 +41,12 @@ public class ManageUserController {
                                   @ModelAttribute("userGroupOptionDataMap") HashMap<String, SdUserGroupData> userGroupOptionDataMap) {
 
         // user group info
-        List<SdUserGroupData> userGroupDataList = sdUserGroupFacade.getEligibleUserGroupList();
+        // TODO: Wait for UserGroup
+        /*List<SdUserGroupData> userGroupDataList = sdUserGroupFacade.getEligibleUserGroupList();
         userGroupOptionDataMap = sdUserGroupFacade.getUserGroupMap(userGroupDataList);
         if(! MapUtils.isEmpty(userGroupOptionDataMap)) {
             model.addAttribute("userGroupOptionDataMap", userGroupOptionDataMap);
-        }
+        }*/
 
         return "admin/manageUser/createUserForm";
     }
@@ -76,12 +77,13 @@ public class ManageUserController {
             model.addAttribute("editUserId", userId);
         }
 
+        // TODO: Wait for UserGroup
         // user group info
-        List<SdUserGroupData> userGroupDataList = sdUserGroupFacade.getEligibleUserGroupList();
+        /*List<SdUserGroupData> userGroupDataList = sdUserGroupFacade.getEligibleUserGroupList();
         userGroupDataMap = sdUserGroupFacade.getUserGroupMap(userGroupDataList);
         if(! MapUtils.isEmpty(userGroupDataMap)) {
             model.addAttribute("userGroupDataMap", userGroupDataMap);
-        }
+        }*/
 
         return "admin/manageUser/editUserForm";
     }

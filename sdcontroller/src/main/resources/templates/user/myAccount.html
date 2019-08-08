@@ -25,9 +25,6 @@
             </div>
 
             <div class="d-inline-block col-md-5 form-group">
-                <label>Ldap Domain</label>
-                <input th:id="my-ldap-domain" type="text" class="form-control" readonly>
-
                 <label>Status</label>
                 <input th:id="my-status" type="text" class="form-control" readonly>
 
@@ -36,6 +33,9 @@
 
                 <label>Password Modify Date</label>
                 <input th:id="my-password-modify-date" type="text" class="form-control" readonly>
+
+                <label>LDAP Domain</label>
+                <input th:id="my-ldap-domain" type="text" class="form-control" readonly/>
             </div>
 
             <div class="d-inline-block col-md-5 form-group">
@@ -53,22 +53,6 @@
 
         </div>
     </form>
-
-    <!--<h1>Update Password</h1>
-    <form class="row"  th:id="update-pwd-form" th:object="${updatePwdFormData}">
-        <div class="col-md-12">
-            <div class="d-inline-block col-md-5 form-group">
-                <input th:id="oldPassword" type="password" th:field="*{oldPassword}" class="form-control" placeholder="Old Password" required>
-                <input th:id="newPassword" type="password" th:field="*{newPassword}" class="form-control" placeholder="New Password" required>
-                <input th:id="newPasswordRe" type="password" th:field="*{newPasswordRe}" class="form-control" placeholder="New Password (re-enter)" required>
-            </div>
-        </div>
-        <div class="col-md-12">
-            <div class="d-inline-block col-md-5 form-group">
-                <button th:id="btn-update-pwd" type="submit" class="btn btn-lg btn-primary"><i class="far fa-save"></i> Update</button>
-            </div>
-        </div>
-    </form>-->
 
     <script type="text/javascript" th:src="@{/js/myAccount.js}"></script>
 </div>

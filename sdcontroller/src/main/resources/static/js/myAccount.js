@@ -59,10 +59,12 @@ function ajaxGetCurrentUser(){
             $("#my-status").val(data.status);
             $("#my-login-tried").val(data.loginTried);
             $("#my-password-modify-date").val(data.passwordModifyDate);
+            $("#my-ldap-domain").val(data.ldapDomain);
 
             $("#my-company-id").val(data.companyId);
             $("#my-company-name").val(data.companyName);
             $("#my-staff-id").val(data.staffId);
+
 
             populateSelectOptions($("#my-user-group"), data.userGroupList);
         },

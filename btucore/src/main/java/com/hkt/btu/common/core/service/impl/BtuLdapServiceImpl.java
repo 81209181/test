@@ -23,8 +23,9 @@ public class BtuLdapServiceImpl implements BtuLdapService {
 
     @Override
     public void authenticationOnly(BtuLdapBean ldapInfo, Authentication auth) throws NamingException {
+        String userName = auth.getName();
         final String ldapURL = ldapInfo.getLdapServerUrl();
-        final String dn = ldapInfo.getPrincipleName();
+        final String dn =  userName + "@" +ldapInfo.getPrincipleName();
         final String pwd = auth.getCredentials().toString();
         DirContext ctx = null;
         try {
