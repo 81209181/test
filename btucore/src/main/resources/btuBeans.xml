@@ -76,4 +76,9 @@
     <alias name="btuSensitiveDataService" alias="sensitiveDataService"/>
     <bean id="btuSensitiveDataService" class="com.hkt.btu.common.core.service.impl.BtuSensitiveDataServiceImpl"/>
 
+
+    <!--  Populator  -->
+    <alias name="btuSiteConfigBeanPopulator" alias="siteConfigBeanPopulator"/>
+    <bean id="btuSiteConfigBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuSiteConfigBeanPopulator"/>
+
 </beans>

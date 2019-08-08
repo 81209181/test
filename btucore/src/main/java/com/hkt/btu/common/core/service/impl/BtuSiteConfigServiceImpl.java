@@ -25,7 +25,7 @@ public class BtuSiteConfigServiceImpl implements BtuSiteConfigService {
     private static BtuSiteConfigBean btuSiteConfigBean;
 
     @Resource(name = "siteConfigBeanPopulator")
-    BtuSiteConfigBeanPopulator btuSiteConfigBeanPopulator;
+    BtuSiteConfigBeanPopulator siteConfigBeanPopulator;
 
     @Resource(name = "configParamService")
     BtuConfigParamService btuConfigParamService;
@@ -157,8 +157,8 @@ public class BtuSiteConfigServiceImpl implements BtuSiteConfigService {
 
     private void reloadServerInfo(BtuSiteConfigBean siteConfigBean) {
         InetAddress inetAddress = getServerInetAddress();
-        btuSiteConfigBeanPopulator.populate(inetAddress, siteConfigBean);
-        btuSiteConfigBeanPopulator.populate(servletContext, siteConfigBean);
+        siteConfigBeanPopulator.populate(inetAddress, siteConfigBean);
+        siteConfigBeanPopulator.populate(servletContext, siteConfigBean);
     }
 
     private InetAddress getServerInetAddress() {
