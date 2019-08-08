@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 
+
 public class SdHealthCheckFacadeImpl implements SdHealthCheckFacade {
     private static final Logger LOG = LogManager.getLogger(SdHealthCheckFacadeImpl.class);
 

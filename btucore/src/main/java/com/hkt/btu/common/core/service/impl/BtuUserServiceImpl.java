@@ -12,7 +12,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Collection;
@@ -22,7 +21,6 @@ import java.util.Set;
 /**
  * User Service Implementation for usage in Spring Security
  */
-@Service("BtuUserService")
 public class BtuUserServiceImpl implements BtuUserService {
     private static final Logger LOG = LogManager.getLogger(BtuUserService.class);
 

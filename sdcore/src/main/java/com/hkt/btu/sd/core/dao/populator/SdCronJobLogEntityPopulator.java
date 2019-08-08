@@ -7,7 +7,9 @@ import com.hkt.btu.sd.core.service.bean.SdSiteConfigBean;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 
+
 public class SdCronJobLogEntityPopulator implements EntityPopulator<SdCronJobLogEntity> {
+
 
     public void populate(JobDetail jobDetail, SdCronJobLogEntity entity) {
         if(jobDetail==null){

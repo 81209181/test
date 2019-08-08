@@ -28,12 +28,11 @@ import java.util.List;
 @RequestMapping(value = "/admin/manage-user")
 public class ManageUserController {
 
-//    @Resource(name = "userFacade")
-    @Autowired
+    @Resource(name = "userFacade")
     SdUserFacade userFacade;
-    @Autowired
+    @Resource(name = "userGroupFacade")
     SdUserGroupFacade sdUserGroupFacade;
-    @Autowired
+    @Resource(name = "auditTrailFacade")
     SdAuditTrailFacade sdAuditTrailFacade;
 
     @GetMapping("/create-user")

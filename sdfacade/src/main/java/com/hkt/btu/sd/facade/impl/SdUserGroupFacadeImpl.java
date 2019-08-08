@@ -5,7 +5,6 @@ import com.hkt.btu.sd.core.service.bean.SdUserGroupBean;
 import com.hkt.btu.sd.facade.SdUserGroupFacade;
 import com.hkt.btu.sd.facade.data.SdUserGroupData;
 import com.hkt.btu.sd.facade.populator.SdUserGroupDataPopulator;
-import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -14,7 +13,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-@Service
 public class SdUserGroupFacadeImpl implements SdUserGroupFacade {
 
     @Resource(name = "userGroupService")

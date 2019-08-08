@@ -33,7 +33,7 @@ public class SdUserGroupServiceImpl implements SdUserGroupService {
     @Resource(name = "userGroupBeanPopulator")
     SdUserGroupBeanPopulator sdUserGroupBeanPopulator;
 
-    @Resource(name = "configParamService")
+    @Resource(name = "sdConfigParamService")
     SdConfigParamService sdConfigParamService;
     @Resource(name = "userService")
     SdUserService sdUserService;

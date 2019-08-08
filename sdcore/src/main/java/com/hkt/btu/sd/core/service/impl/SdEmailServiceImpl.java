@@ -24,6 +24,7 @@ import java.util.Properties;
 
 import static com.hkt.btu.sd.core.service.bean.SdEmailBean.*;
 
+
 public class SdEmailServiceImpl implements SdEmailService {
     private static final Logger LOG = LogManager.getLogger(SdEmailServiceImpl.class);
 

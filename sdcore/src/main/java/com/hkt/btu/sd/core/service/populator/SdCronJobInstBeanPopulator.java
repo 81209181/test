@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
+
 public class SdCronJobInstBeanPopulator extends AbstractBeanPopulator<SdCronJobInstBean> {
 
     public void populate(JobDetail jobDetail, SdCronJobInstBean target) {

@@ -95,7 +95,7 @@ public class BtuLdapServiceImpl implements BtuLdapService {
         // String keystore = "C:\\Program Files\\Java\\jre6\\lib\\security\\cacerts";
         // System.setProperty("javax.net.ssl.trustStore", keystore);
 
-        Hashtable<String, String> authEnv = new Hashtable<String, String>(7);
+        Hashtable<String, String> authEnv = new Hashtable<>(7);
         authEnv.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
         authEnv.put(Context.PROVIDER_URL, ldapURL);
         authEnv.put(Context.SECURITY_AUTHENTICATION, "simple");
@@ -108,12 +108,17 @@ public class BtuLdapServiceImpl implements BtuLdapService {
             authEnv.put("java.naming.ldap.factory.socket", LdapSSLSocketFactory.class.getCanonicalName());
         }
 
-        try {
+        try
+        {
             return new InitialDirContext(authEnv);
 
-        } catch (javax.naming.AuthenticationException authEx) {
+        }
+        catch (javax.naming.AuthenticationException authEx)
+        {
             throw authEx;
-        } catch (NamingException namEx) {
+        }
+        catch (NamingException namEx)
+        {
             namEx.printStackTrace();
             throw namEx;
         } finally {

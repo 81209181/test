@@ -17,5 +17,4 @@ public class SdAuditTrailFacadeImpl implements SdAuditTrailFacade {
     public void insertViewUserAuditTrail(SdUserData sdUserData) {
         sdAuditTrailService.insertViewUserAuditTrail(sdUserData.getUserId());
     }
-
 }

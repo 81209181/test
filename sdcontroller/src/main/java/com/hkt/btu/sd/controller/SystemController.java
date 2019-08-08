@@ -8,13 +8,9 @@ import com.hkt.btu.sd.facade.data.SdConfigParamData;
 import com.hkt.btu.sd.facade.data.SdCronJobInstData;
 import com.hkt.btu.sd.facade.data.SdCronJobProfileData;
 import com.hkt.btu.sd.facade.data.SdSiteConfigData;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -25,11 +21,11 @@ import java.util.List;
 @RequestMapping(value = "/system")
 public class SystemController {
 
-    @Autowired
+    @Resource(name = "configParamFacade")
     SdConfigParamFacade sdConfigParamFacade;
-    @Autowired
+    @Resource(name = "siteConfigFacade")
     SdSiteConfigFacade sdSiteConfigFacade;
-    @Autowired
+    @Resource(name = "jobFacade")
     SdJobFacade sdJobFacade;
 
 
@@ -52,6 +48,17 @@ public class SystemController {
         } else {
             return ResponseEntity.ok(dataList);
         }
+    }
+    @GetMapping("config-param/create")
+    public String createConfigParam() {
+        return "system/configParam/createConfigParam";
+    }
+
+    @GetMapping("config-param/{configGroup}/{configKey}")
+    public String getConfigParam(@PathVariable String configGroup, @PathVariable String configKey) {
+        System.out.println(configGroup);
+        System.out.println(configKey);
+        return "system/configParam/editConfigParam";
     }
 
     @GetMapping({"/site-config", "/site-config/", "/site-config/index"})

@@ -27,6 +27,7 @@ public class SdJobAspect {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+
     @Resource(name = "cronJobProfileService")
     SdCronJobProfileService sdCronJobProfileService;
     @Resource(name = "cronJobLogService")

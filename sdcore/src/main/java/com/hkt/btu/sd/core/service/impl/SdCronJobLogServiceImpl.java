@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.core.service.impl;
 
 
+import com.hkt.btu.common.core.service.impl.BtuCronJobLogServiceImpl;
 import com.hkt.btu.sd.core.dao.entity.SdCronJobLogEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdCronJobLogMapper;
@@ -11,11 +12,15 @@ import com.hkt.btu.sd.core.service.SdSiteConfigService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdCronJobProfileBean;
 import com.hkt.btu.sd.core.service.bean.SdSiteConfigBean;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.quartz.JobDetail;
 
 import javax.annotation.Resource;
 
-public class SdCronJobLogServiceImpl implements SdCronJobLogService {
+public class SdCronJobLogServiceImpl extends BtuCronJobLogServiceImpl implements SdCronJobLogService {
+    private static final Logger LOG = LogManager.getLogger(SdCronJobLogServiceImpl.class);
+
 
     @Resource
     SdCronJobLogMapper sdCronJobLogMapper;
@@ -94,6 +99,14 @@ public class SdCronJobLogServiceImpl implements SdCronJobLogService {
         sdCronJobLogEntityPopulator.populate(profileBean, sdCronJobLogEntity);
 
         // insert
+        LOG.info("log Profile Change :{},{},{},{},{},{}",
+                sdCronJobLogEntity.getServerIp(),
+                sdCronJobLogEntity.getJobGroup(),
+                sdCronJobLogEntity.getJobName(),
+                sdCronJobLogEntity.getJobClass(),
+                sdCronJobLogEntity.getAction(),
+                sdCronJobLogEntity.getCreateby()
+        );
         sdCronJobLogMapper.insertLog(sdCronJobLogEntity);
     }
 

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Config Param</title>
+    <script>
+        function showNewGroupInput(box){
+            if($(box).is(':checked')){
+                $('#config_group_select').attr("disabled",true);
+                $('#config_group_input').attr("disabled",false);
+            }else{
+                $('#config_group_select').attr("disabled",false);
+                $('#config_group_input').attr("disabled",true);
+            }
+        }
+    </script>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <h1 style="padding-top:3%">Create Config Param</h1>
+    <form action="" class="" style="width:80%">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Config Group</label>
+                <select class="custom-select" name="configGroup" id="config_group_select">
+                    <option value="String">String</option>
+                    <option value="Integer">Integer</option>
+                    <option value="Integer">Double</option>
+                    <option value="Integer">Boolean</option>
+                    <option value="Integer">LocalDateTime</option>
+                </select>
+            </div>
+            <div class="form-group col-md-6">
+                <label><input type="checkbox" onclick="showNewGroupInput(this)"> New Group</label>
+                <input type="text" class="form-control" id="config_group_input" name="configGroup" disabled="disabled">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Config Key</label>
+                <input type="text" class="form-control">
+            </div>
+            <div class="form-group col-md-6">
+                <label>Config Value</label>
+                <input type="text" class="form-control">
+            </div>
+            <div class="form-group col-md-6">
+                <label>Config Type</label>
+                <select class="form-control custom-select">
+                    <option value="String">String</option>
+                    <option value="Integer">Integer</option>
+                    <option value="Integer">Double</option>
+                    <option value="Integer">Boolean</option>
+                    <option value="Integer">LocalDateTime</option>
+                </select>
+            </div>
+        </div>
+        <div class="mt-5 from-row">
+            <button type="reset" class="btn btn-secondary btn-lg"><i class="fas fa-redo"></i> Reset</button>
+            <button type="submit" class="btn btn-lg btn-primary float-right mr-sm-2"><i class="far fa-save"></i> Create
+            </button>
+        </div>
+    </form>
+
+
+</div>
+</body>
+</html>

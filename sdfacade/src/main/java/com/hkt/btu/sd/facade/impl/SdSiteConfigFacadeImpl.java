@@ -9,6 +9,7 @@ import com.hkt.btu.sd.facade.populator.SdSiteConfigDataPopulator;
 
 import javax.annotation.Resource;
 
+
 public class SdSiteConfigFacadeImpl implements SdSiteConfigFacade {
 
     @Resource(name = "siteConfigService")
@@ -16,7 +17,6 @@ public class SdSiteConfigFacadeImpl implements SdSiteConfigFacade {
 
     @Resource(name = "siteInstanceDataPopulator")
     SdSiteConfigDataPopulator sdSiteInstanceDataPopulator;
-
 
 
 

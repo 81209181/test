@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.core.service.impl;
 
 
+import com.hkt.btu.common.core.service.impl.BtuCronJobProfileServiceImpl;
 import com.hkt.btu.sd.core.dao.entity.SdCronJobEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdCronJobMapper;
 import com.hkt.btu.sd.core.exception.InvalidInputException;
@@ -21,7 +22,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SdCronJobProfileServiceImpl implements SdCronJobProfileService {
+public class SdCronJobProfileServiceImpl extends BtuCronJobProfileServiceImpl implements SdCronJobProfileService {
     private static final Logger LOG = LogManager.getLogger(SdCronJobProfileServiceImpl.class);
 
 
@@ -45,14 +46,12 @@ public class SdCronJobProfileServiceImpl implements SdCronJobProfileService {
         if(CollectionUtils.isEmpty(entityList)){
             return new ArrayList<>();
         }
-
         List<SdCronJobProfileBean> beanList = new ArrayList<>();
         for (SdCronJobEntity entity : entityList) {
             SdCronJobProfileBean bean = new SdCronJobProfileBean();
             sdCronJobProfileBeanPopulator.populate(entity, bean);
             beanList.add(bean);
         }
-
         return beanList;
     }
 

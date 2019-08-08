@@ -6,6 +6,7 @@ import com.hkt.btu.sd.core.dao.entity.SdCronJobEntity;
 import com.hkt.btu.sd.core.service.bean.SdCronJobProfileBean;
 import org.apache.commons.lang3.StringUtils;
 
+
 public class SdCronJobProfileBeanPopulator extends AbstractBeanPopulator<SdCronJobProfileBean> {
     public void populate(SdCronJobEntity source, SdCronJobProfileBean target) {
         super.populate(source, target);

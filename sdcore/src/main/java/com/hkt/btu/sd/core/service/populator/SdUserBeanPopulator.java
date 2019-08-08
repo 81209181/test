@@ -55,7 +55,7 @@ public class SdUserBeanPopulator extends AbstractBeanPopulator<SdUserBean> {
         }
 
         Set<GrantedAuthority> grantedAuthSet = new HashSet<>();
-        for (SdUserGroupEntity userGroupEntity : userGroupEntityList) {
+        for (SdUserGroupEntity userGroupEntity : userGroupEntityList){
             SimpleGrantedAuthority auth = new SimpleGrantedAuthority(userGroupEntity.getGroupId());
             grantedAuthSet.add(auth);
         }

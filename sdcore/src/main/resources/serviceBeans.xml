@@ -12,7 +12,12 @@
     <alias name="sdUserService" alias="btuUserService"/>
     <bean id="sdUserService" class="com.hkt.btu.sd.core.service.impl.SdUserServiceImpl"/>
 
+  <!--  <alias name="sdPathCtrlService" alias="pathCtrlService"/>
+    <alias name="sdPathCtrlService" alias="btuPathCtrlService"/>
+    <bean id="sdPathCtrlService" class="SdPathCtrlServiceImpl" />-->
+
     <alias name="sdAuditTrailService" alias="auditTrailService"/>
+    <alias name="sdAuditTrailService" alias="btuAuditTrailService"/>
     <bean id="sdAuditTrailService" class="com.hkt.btu.sd.core.service.impl.SdAuditTrailServiceImpl"/>
 
     <alias name="sdConfigParamService" alias="configParamService"/>
@@ -62,6 +67,9 @@
 
     <alias name="sdConfigParamBeanPopulator" alias="configParamBeanPopulator"/>
     <bean id="sdConfigParamBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdConfigParamBeanPopulator"/>
+
+    <alias name="sdOperationHistBeanPopulator" alias="operationHistBeanPopulator"/>
+    <bean id="sdOperationHistBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdOperationHistBeanPopulator"/>
 
     <alias name="sdCronJobProfileBeanPopulator" alias="cronJobProfileBeanPopulator"/>
     <bean id="sdCronJobProfileBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdCronJobProfileBeanPopulator"/>
