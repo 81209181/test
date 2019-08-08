@@ -38,6 +38,10 @@ public class SdUserBeanPopulator extends AbstractBeanPopulator<SdUserBean> {
 
         // TODO: Encryption function will be done later
         // encrypted data
+        target.setMobile(new String(source.getMobile()));
+        String[] ldapDomainStr = target.getLdapDomain().split("@");
+        target.setLdapDomain(ldapDomainStr[1]);
+        target.setStaffId(new String(source.getStaffId()));
         /*String decryptedMobile = sdSensitiveDataService.decryptToStringSafe(source.getMobile());
         target.setMobile(decryptedMobile);
         // TODO: Encryption function will be done later

@@ -24,6 +24,10 @@
         <result column="REMARKS" property="remarks"/>
     </resultMap>
 
+    <select id="getMaxId" resultType="java.lang.Integer" useCache="false" flushCache="true">
+        select SEQ_USER_PROFILE_USER_ID.NEXTVAL FROM DUAL
+    </select>
+
     <select id="getUserByEmail" resultMap="SdUserEntity">
         select *
         from USER_PROFILE
@@ -38,7 +42,7 @@
 
     <select id="getUserByUserId" resultMap="SdUserEntity">
         select *
-        from NOC_USER
+        from USER_PROFILE
         where USER_ID = #{userId}
         <if test="companyId != null">
             AND COMPANY_ID = #{companyId}
@@ -58,7 +62,7 @@
     </update>
 
     <update id="updateUserStatusByUsername">
-        update NOC_USER
+        update USER_PROFILE
         set STATUS = #{status}, MODIFYBY = #{modifyby}
         where EMAIL = #{username}
     </update>
@@ -76,7 +80,7 @@
     </insert>
 
     <update id="updateUser">
-        update NOC_USER
+        update USER_PROFILE
         <set>
             <if test="name != null">NAME=#{name},</if>
             <if test="mobile != null">MOBILE=#{mobile},</if>
@@ -104,7 +108,7 @@
     </select>
 
     <sql id="searchUserSql">
-        from NOC_USER u
+        from USER_PROFILE u
 
         <if test="userGroupId != null">
             inner join NOC_USER_USER_GROUP uug
@@ -128,11 +132,11 @@
         </where>
     </sql>
     <select id="searchUser" resultMap="SdUserEntity">
-        # noinspection SqlResolve
+        -- noinspection SqlResolve
         select u.*
         <include refid="searchUserSql"/>
         order by u.EMAIL
-        LIMIT #{offset}, #{pageSize}
+        OFFSET #{offset} ROWS FETCH NEXT #{pageSize} ROWS ONLY
     </select>
     <select id="countSearchUser" resultType="Integer">
         select count(1)

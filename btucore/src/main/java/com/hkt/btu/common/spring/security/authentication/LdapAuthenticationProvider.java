@@ -54,7 +54,7 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
             grantedAuthSet.add(new SimpleGrantedAuthority("ADMIN"));
             grantedAuthSet.add(new SimpleGrantedAuthority("USER"));
             btuUserBean.setAuthorities(grantedAuthSet);
-            userDetails = BtuUser.of((String) auth.getPrincipal(),
+            userDetails = BtuUser.of(btuUserBean.getUsername(),
                     (String) auth.getCredentials(),
                     true,
                     true,
@@ -74,7 +74,7 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
             //if success, record it
             auditTrailService.insertLoginAuditTrail(userDetails);
 
-            return createSuccessAuthentication(btuUserBean.getUsername(), auth, userDetails);
+            return createSuccessAuthentication(userDetails, auth, userDetails);
         } catch (javax.naming.AuthenticationException authEx) {
             String result = "";
             String code = "";
@@ -129,7 +129,7 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
         }
     }
 
-    public Authentication btuAuth(Authentication auth, BtuUserBean btuUserBean,String ldapName) throws AuthenticationException {
+    public Authentication btuAuth(Authentication auth, BtuUserBean btuUserBean, String ldapName) throws AuthenticationException {
         this.domain = ldapName;
         this.btuUserBean = btuUserBean;
         return authenticate(auth);

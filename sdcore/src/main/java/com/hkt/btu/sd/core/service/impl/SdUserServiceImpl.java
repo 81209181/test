@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
@@ -111,12 +112,14 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         }
 
         // get user group data
-        List<SdUserGroupEntity> groupEntityList = sdUserGroupMapper.getUserGroupByUserId(userId);
+        // TODO: Wait For UserGroup
+        //List<SdUserGroupEntity> groupEntityList = sdUserGroupMapper.getUserGroupByUserId(userId);
 
         // construct bean
         SdUserBean userBean = new SdUserBean();
         sdUserBeanPopulator.populate(sdUserEntity, userBean);
-        sdUserBeanPopulator.populate(groupEntityList, userBean);
+        // TODO: Wait For UserGroup
+        //sdUserBeanPopulator.populate(groupEntityList, userBean);
 
         return userBean;
     }
@@ -214,7 +217,9 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
         // get current data
         SdUserBean targetUserBean = getUserByUserId(userId);
-        Set<GrantedAuthority> authorities = targetUserBean.getAuthorities();
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        authorities.add(new SimpleGrantedAuthority("ADMIN"));
+        authorities.add(new SimpleGrantedAuthority("USER"));
         Boolean isTargetAdmin = hasAnyAuthority(authorities, SdUserGroupEntity.GROUP_ID.ADMIN);
         Boolean isTargetUser = hasAnyAuthority(authorities, SdUserGroupEntity.GROUP_ID.USER);
         Boolean isTargetCAdmin = hasAnyAuthority(authorities, SdUserGroupEntity.GROUP_ID.C_ADMIN);
@@ -231,14 +236,16 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         Boolean updateIsCUser = isTargetCUser == isNewCUser ? null : isNewCUser;
 
         // encrypt
-        byte[] encryptedMobile = StringUtils.isEmpty(mobile) ? null : sdSensitiveDataService.encryptFromString(mobile);
-        byte[] encryptedStaffId = StringUtils.isEmpty(staffId) ? null : sdSensitiveDataService.encryptFromString(staffId);
+        //byte[] encryptedMobile = StringUtils.isEmpty(mobile) ? null : sdSensitiveDataService.encryptFromString(mobile);
+        //byte[] encryptedStaffId = StringUtils.isEmpty(staffId) ? null : sdSensitiveDataService.encryptFromString(staffId);
+        byte[] encryptedMobile = StringUtils.isEmpty(mobile) ? null : mobile.getBytes();
+        byte[] encryptedStaffId = StringUtils.isEmpty(staffId) ? null :staffId.getBytes();
 
         // update user
         sdUserMapper.updateUser(userId, name, encryptedMobile, encryptedStaffId, modifier.getUserId());
 
         // update user group
-        sdUserGroupService.updateUserGroup(userId, updateIsAdmin, updateIsUser, updateIsCAdmin, updateIsCUser, modifier);
+        //sdUserGroupService.updateUserGroup(userId, updateIsAdmin, updateIsUser, updateIsCAdmin, updateIsCUser, modifier);
 
         LOG.info(String.format("Updated user. [name:%b, mobile:%b, staffId:%b]", name != null, mobile != null, staffId != null));
     }
