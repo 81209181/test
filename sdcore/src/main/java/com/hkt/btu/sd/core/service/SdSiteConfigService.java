@@ -5,9 +5,6 @@ import com.hkt.btu.sd.core.service.bean.SdSiteConfigBean;
 
 public interface SdSiteConfigService extends BtuSiteConfigService {
 
-    void reload();
     SdSiteConfigBean getSdSiteConfigBean();
 
-    boolean isProductionServer();
-    boolean isDevelopmentServer();
 }

@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.core.service.impl;
 
 
+import com.hkt.btu.common.core.service.bean.BtuCronJobProfileBean;
 import com.hkt.btu.common.core.service.impl.BtuCronJobLogServiceImpl;
 import com.hkt.btu.sd.core.dao.entity.SdCronJobLogEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserEntity;
@@ -92,11 +93,11 @@ public class SdCronJobLogServiceImpl extends BtuCronJobLogServiceImpl implements
 
     private void logProfileChange(String jobGroup, String jobName, Integer createby, String action){
         // get profile info
-        SdCronJobProfileBean profileBean = sdCronJobProfileService.getProfileBeanByGrpAndName(jobGroup, jobName);
+        BtuCronJobProfileBean profileBean = sdCronJobProfileService.getProfileBeanByGrpAndName(jobGroup, jobName);
 
         // prepare insert param
         SdCronJobLogEntity sdCronJobLogEntity = buildNewSdCronJobLogEntity(createby, action);
-        sdCronJobLogEntityPopulator.populate(profileBean, sdCronJobLogEntity);
+        sdCronJobLogEntityPopulator.populate((SdCronJobProfileBean) profileBean, sdCronJobLogEntity);
 
         // insert
         LOG.info("log Profile Change :{},{},{},{},{},{}",
