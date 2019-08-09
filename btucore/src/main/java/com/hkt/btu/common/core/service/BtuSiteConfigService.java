@@ -4,4 +4,10 @@ import com.hkt.btu.common.core.service.bean.BtuSiteConfigBean;
 
 public interface BtuSiteConfigService {
     BtuSiteConfigBean getSiteConfigBean();
+
+    void reload();
+
+    boolean isProductionServer();
+
+    boolean isDevelopmentServer();
 }

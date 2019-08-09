@@ -1,19 +1,18 @@
 package com.hkt.btu.sd.core.service.impl;
 
 
+import com.hkt.btu.common.core.service.BtuSiteConfigService;
+import com.hkt.btu.common.core.service.bean.BtuCronJobProfileBean;
 import com.hkt.btu.common.core.service.impl.BtuCronJobProfileServiceImpl;
 import com.hkt.btu.sd.core.dao.entity.SdCronJobEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdCronJobMapper;
 import com.hkt.btu.sd.core.exception.InvalidInputException;
 import com.hkt.btu.sd.core.service.SdCronJobLogService;
 import com.hkt.btu.sd.core.service.SdCronJobProfileService;
-import com.hkt.btu.sd.core.service.SdSiteConfigService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdCronJobProfileBean;
-import com.hkt.btu.sd.core.service.bean.SdSiteConfigBean;
 import com.hkt.btu.sd.core.service.populator.SdCronJobProfileBeanPopulator;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +29,7 @@ public class SdCronJobProfileServiceImpl extends BtuCronJobProfileServiceImpl im
     SdCronJobMapper sdCronJobMapper;
 
     @Resource(name = "siteConfigService")
-    SdSiteConfigService sdSiteConfigService;
+    BtuSiteConfigService siteConfigService;
     @Resource(name = "userService")
     SdUserService sdUserService;
     @Resource(name = "cronJobLogService")
@@ -41,12 +40,12 @@ public class SdCronJobProfileServiceImpl extends BtuCronJobProfileServiceImpl im
 
 
     @Override
-    public List<SdCronJobProfileBean> getAll() {
+    public List<BtuCronJobProfileBean> getAll() {
         List<SdCronJobEntity> entityList = sdCronJobMapper.getAll();
         if(CollectionUtils.isEmpty(entityList)){
             return new ArrayList<>();
         }
-        List<SdCronJobProfileBean> beanList = new ArrayList<>();
+        List<BtuCronJobProfileBean> beanList = new ArrayList<>();
         for (SdCronJobEntity entity : entityList) {
             SdCronJobProfileBean bean = new SdCronJobProfileBean();
             sdCronJobProfileBeanPopulator.populate(entity, bean);
@@ -56,7 +55,7 @@ public class SdCronJobProfileServiceImpl extends BtuCronJobProfileServiceImpl im
     }
 
     @Override
-    public SdCronJobProfileBean getProfileBeanByGrpAndName(String jobGroup, String jobName) {
+    public BtuCronJobProfileBean getProfileBeanByGrpAndName(String jobGroup, String jobName) {
         SdCronJobEntity entity = sdCronJobMapper.getJobByJobGrpJobName(jobGroup, jobName);
         if(entity==null){
             return null;
@@ -65,45 +64,6 @@ public class SdCronJobProfileServiceImpl extends BtuCronJobProfileServiceImpl im
         SdCronJobProfileBean bean = new SdCronJobProfileBean();
         sdCronJobProfileBeanPopulator.populate(entity, bean);
         return bean;
-    }
-
-    private boolean isWrongHostToRunJob(SdCronJobProfileBean sdCronJobProfileBean){
-        SdSiteConfigBean sdSiteConfigBean = sdSiteConfigService.getSdSiteConfigBean();
-        // get current server hostname
-        String serverHostname = sdSiteConfigBean.getServerHostname();
-        // get target cronjob server hostname
-        String targetHostname = sdSiteConfigBean.getCronjobHostname();
-
-        boolean isMandatory = sdCronJobProfileBean.isMandatory();
-        boolean isTargetHost = StringUtils.equals(serverHostname, targetHostname);
-
-        boolean isWrongHostToRunJob = !isMandatory && !isTargetHost;
-        if(isWrongHostToRunJob){
-            LOG.info("Not mandatory job. " +
-                    "Not cron job target host. (server: " + serverHostname + ", target: " + targetHostname + ")");
-        }
-
-        return isWrongHostToRunJob;
-    }
-
-
-    @Override
-    public boolean isRunnable(SdCronJobProfileBean sdCronJobProfileBean) {
-        boolean isWrongHostToRunJob = isWrongHostToRunJob(sdCronJobProfileBean);
-        boolean isActiveProfile = sdCronJobProfileBean.isActive();
-
-        return isActiveProfile && !isWrongHostToRunJob;
-    }
-
-    @Override
-    public boolean isRunnable(String jobGroup, String jobName) {
-        SdCronJobProfileBean sdCronJobProfileBean = getProfileBeanByGrpAndName(jobGroup, jobName);
-        if(sdCronJobProfileBean==null){
-            LOG.warn("Cron job profile not found - " + jobGroup + ", " + jobName + ".");
-            return false;
-        }
-
-        return isRunnable(sdCronJobProfileBean);
     }
 
     @Override

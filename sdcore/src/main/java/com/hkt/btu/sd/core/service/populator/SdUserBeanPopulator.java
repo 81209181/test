@@ -4,7 +4,6 @@ package com.hkt.btu.sd.core.service.populator;
 import com.hkt.btu.common.core.service.populator.AbstractBeanPopulator;
 import com.hkt.btu.sd.core.dao.entity.SdUserEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserGroupEntity;
-import com.hkt.btu.sd.core.service.SdSensitiveDataService;
 import com.hkt.btu.sd.core.service.bean.SdUserBean;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,9 +15,6 @@ import java.util.List;
 import java.util.Set;
 
 public class SdUserBeanPopulator extends AbstractBeanPopulator<SdUserBean> {
-
-    @Resource(name = "sensitiveDataService")
-    SdSensitiveDataService sdSensitiveDataService;
 
     public void populate(SdUserEntity source, SdUserBean target) {
         super.populate(source, target);

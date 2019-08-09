@@ -53,12 +53,11 @@
     <bean id="LdapService" class="com.hkt.btu.common.core.service.impl.BtuLdapServiceImpl"/>
 
     <!-- BTU Service -->
-    <!--!!! To be overridden and implemented by each application (with bean alias) !!!-->
-    <!--<alias name="btuSiteConfigService" alias="siteConfigService"/>
+    <alias name="btuSiteConfigService" alias="siteConfigService"/>
     <bean id="btuSiteConfigService" class="com.hkt.btu.common.core.service.impl.BtuSiteConfigServiceImpl" />
 
     <alias name="btuUserService" alias="userService"/>
-    <bean id="btuUserService" class="com.hkt.btu.common.core.service.impl.BtuUserServiceImpl" />-->
+    <bean id="btuUserService" class="com.hkt.btu.common.core.service.impl.BtuUserServiceImpl" />
 
     <alias name="btuPathCtrlService" alias="pathCtrlService"/>
     <bean id="btuPathCtrlService" class="com.hkt.btu.common.core.service.impl.BtuPathCtrlServiceImpl" />
@@ -70,10 +69,16 @@
     <alias name="DbDaoAuthenticationProvider" alias="customDbDaoAuthenticationProvider"/>
     <bean id="DbDaoAuthenticationProvider"
           class="com.hkt.btu.common.spring.security.authentication.DbDaoAuthenticationProvider"/>
-<!--    <alias name="btuAuditTrailServiceImpl" alias="auditTrailService"/>-->
-<!--    <bean id="btuAuditTrailServiceImpl" class="com.hkt.btu.common.core.service.impl.BtuAuditTrailServiceImpl" />-->
 
     <alias name="btuHttpService" alias="httpService"/>
     <bean id="btuHttpService" class="com.hkt.btu.common.core.service.impl.BtuHttpServiceImpl"/>
+
+    <alias name="btuSensitiveDataService" alias="sensitiveDataService"/>
+    <bean id="btuSensitiveDataService" class="com.hkt.btu.common.core.service.impl.BtuSensitiveDataServiceImpl"/>
+
+
+    <!--  Populator  -->
+    <alias name="btuSiteConfigBeanPopulator" alias="siteConfigBeanPopulator"/>
+    <bean id="btuSiteConfigBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuSiteConfigBeanPopulator"/>
 
 </beans>

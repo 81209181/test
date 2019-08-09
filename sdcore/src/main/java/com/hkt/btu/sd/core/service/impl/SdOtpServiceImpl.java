@@ -1,10 +1,10 @@
 package com.hkt.btu.sd.core.service.impl;
 
+import com.hkt.btu.common.core.service.BtuSiteConfigService;
 import com.hkt.btu.sd.core.dao.entity.SdOtpEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdOtpMapper;
 import com.hkt.btu.sd.core.service.SdOtpService;
-import com.hkt.btu.sd.core.service.SdSiteConfigService;
 import com.hkt.btu.sd.core.service.bean.SdOtpBean;
 import com.hkt.btu.sd.core.service.populator.SdOtpBeanPopulator;
 
@@ -20,7 +20,7 @@ public class SdOtpServiceImpl implements SdOtpService {
     SdOtpBeanPopulator sdOtpBeanPopulator;
 
     @Resource(name = "siteConfigService")
-    SdSiteConfigService sdSiteConfigService;
+    BtuSiteConfigService siteConfigService;
 
 
     @SuppressWarnings("SameParameterValue")
@@ -46,7 +46,7 @@ public class SdOtpServiceImpl implements SdOtpService {
         UUID uuid = UUID.randomUUID();
         String otp = uuid.toString();
 
-        Integer otpLifespanInMin = sdSiteConfigService.getSiteConfigBean().getPasswordResetOtpLifespanInMin();
+        Integer otpLifespanInMin = siteConfigService.getSiteConfigBean().getPasswordResetOtpLifespanInMin();
 
         LocalDateTime NOW = LocalDateTime.now();
         LocalDateTime expiryDate = NOW.plusMinutes(otpLifespanInMin);

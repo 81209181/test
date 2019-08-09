@@ -4,10 +4,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <!-- Service -->
-    <alias name="sdSiteConfigService" alias="siteConfigService"/>
-    <alias name="sdSiteConfigService" alias="btuSiteConfigService"/>
-    <bean id="sdSiteConfigService" class="com.hkt.btu.sd.core.service.impl.SdSiteConfigServiceImpl"/>
-
     <alias name="sdUserService" alias="userService"/>
     <alias name="sdUserService" alias="btuUserService"/>
     <bean id="sdUserService" class="com.hkt.btu.sd.core.service.impl.SdUserServiceImpl"/>
@@ -31,9 +27,6 @@
 
     <alias name="sdEmailService" alias="emailService"/>
     <bean id="sdEmailService" class="com.hkt.btu.sd.core.service.impl.SdEmailServiceImpl"/>
-
-    <alias name="sdSensitiveDataService" alias="sensitiveDataService"/>
-    <bean id="sdSensitiveDataService" class="com.hkt.btu.sd.core.service.impl.SdSensitiveDataServiceImpl"/>
 
     <alias name="sdSchedulerService" alias="schedulerService"/>
     <bean id="sdSchedulerService" class="com.hkt.btu.sd.core.service.impl.SdSchedulerServiceImpl"/>
@@ -76,9 +69,6 @@
 
     <alias name="sdCronJobInstBeanPopulator" alias="cronJobInstBeanPopulator"/>
     <bean id="sdCronJobInstBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdCronJobInstBeanPopulator"/>
-
-    <alias name="sdSiteConfigBeanPopulator" alias="siteConfigBeanPopulator"/>
-    <bean id="sdSiteConfigBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdSiteConfigBeanPopulator"/>
 
 
 </beans>
