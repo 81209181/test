@@ -74,7 +74,14 @@ public class SdInputCheckServiceImpl implements SdInputCheckService {
         } else if ( ! EmailValidator.getInstance().isValid(input) ) {
             throw new InvalidInputException("Please input a valid email.");
         }
+        return null;
+    }
 
+    @Override
+    public String checkLdapDomain(String input) throws InvalidInputException {
+        if (StringUtils.isEmpty(input)) {
+            throw new InvalidInputException("Empty input Ldap Domain.");
+        }
         return null;
     }
 }

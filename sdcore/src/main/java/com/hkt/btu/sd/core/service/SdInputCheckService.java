@@ -9,4 +9,5 @@ public interface SdInputCheckService {
     String checkMobile(String input) throws InvalidInputException;
     String checkStaffIdHkidPassport(String input) throws InvalidInputException;
     String checkEmail(String input) throws InvalidInputException;
+    String checkLdapDomain(String input) throws InvalidInputException;
 }

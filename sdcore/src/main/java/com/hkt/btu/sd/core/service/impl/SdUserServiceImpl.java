@@ -73,7 +73,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         if (username.contains("@")) {
             sdUserEntity = sdUserMapper.getUserByEmail(email);
         } else {
-            sdUserEntity = sdUserMapper.getUserByLdapDomain("%"+username+"%");
+            sdUserEntity = sdUserMapper.getUserByLdapDomain("%" + username + "%");
         }
         if (sdUserEntity == null) {
             return null;
@@ -239,7 +239,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         //byte[] encryptedMobile = StringUtils.isEmpty(mobile) ? null : sdSensitiveDataService.encryptFromString(mobile);
         //byte[] encryptedStaffId = StringUtils.isEmpty(staffId) ? null : sdSensitiveDataService.encryptFromString(staffId);
         byte[] encryptedMobile = StringUtils.isEmpty(mobile) ? null : mobile.getBytes();
-        byte[] encryptedStaffId = StringUtils.isEmpty(staffId) ? null :staffId.getBytes();
+        byte[] encryptedStaffId = StringUtils.isEmpty(staffId) ? null : staffId.getBytes();
 
         // update user
         sdUserMapper.updateUser(userId, name, encryptedMobile, encryptedStaffId, modifier.getUserId());

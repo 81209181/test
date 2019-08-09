@@ -14,7 +14,7 @@
             <div class="col-md-12">
                 <div class="d-inline-block col-md-5 form-group align-top">
                     <label>Email (Login ID)</label>
-                    <input type="email" th:field="*{email}" class="form-control" placeholder="your-email@pccw.com" maxlength="50" required>
+                    <input type="email" th:field="*{email}" class="form-control" placeholder="your-email@pccw.com" maxlength="50" >
 
                     <label>Name</label>
                     <input type="text" th:field="*{name}" class="form-control" placeholder="Your Name" maxlength="100" required>
@@ -24,6 +24,17 @@
 
                     <label>Staff ID / HKID / Passport Number (first 4 digits)</label>
                     <input type="text" th:field="*{staffId}" class="form-control" placeholder="1234" maxlength="4" required>
+
+                    <label>EMPLOYEE NUMBER</label>
+                    <input type="text" th:field="*{userId}" class="form-control">
+
+                    <label>LDAP Domain</label>
+                    <!--<input type="text" th:field="*{ldapDomain}" class="form-control">-->
+                    <select th:field="*{ldapDomain}" class="form-control">
+                        <option value="@corphq.hk.pccw.com">CORPHQ-HK-PCCW</option>
+                        <option value="@oa.hkcsl.net">OA-HKCSL-NET</option>
+                        <option value="@corp.root">CORP</option>
+                    </select>
                 </div>
 
                 <div class="d-inline-block col-md-5 form-group align-top">

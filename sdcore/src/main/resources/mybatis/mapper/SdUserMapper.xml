@@ -24,10 +24,6 @@
         <result column="REMARKS" property="remarks"/>
     </resultMap>
 
-    <select id="getMaxId" resultType="java.lang.Integer" useCache="false" flushCache="true">
-        select SEQ_USER_PROFILE_USER_ID.NEXTVAL FROM DUAL
-    </select>
-
     <select id="getUserByEmail" resultMap="SdUserEntity">
         select *
         from USER_PROFILE
@@ -68,7 +64,7 @@
     </update>
 
     <select id="getNewUserId" resultType="Integer">
-        select 1 from dual
+        select SEQ_USER_PROFILE_USER_ID.NEXTVAL FROM DUAL
     </select>
 
     <insert id="insertUser" parameterType="com.hkt.btu.sd.core.dao.entity.SdUserEntity"
