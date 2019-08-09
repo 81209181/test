@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.facade.impl;
 
 
+import com.hkt.btu.common.core.service.bean.BtuCronJobProfileBean;
 import com.hkt.btu.sd.core.exception.InvalidInputException;
 import com.hkt.btu.sd.core.service.SdCronJobProfileService;
 import com.hkt.btu.sd.core.service.SdSchedulerService;
@@ -61,16 +62,16 @@ public class SdJobFacadeImpl implements SdJobFacade {
 
     @Override
     public List<SdCronJobProfileData> getAllJobProfile() {
-        List<SdCronJobProfileBean> jobProfileBeanList = sdCronJobProfileService.getAll();
+        List<BtuCronJobProfileBean> jobProfileBeanList = sdCronJobProfileService.getAll();
         if(CollectionUtils.isEmpty(jobProfileBeanList)){
             return new LinkedList<>();
         }
 
         // populate
         List<SdCronJobProfileData> profileDataList = new LinkedList<>();
-        for(SdCronJobProfileBean bean : jobProfileBeanList){
+        for(BtuCronJobProfileBean bean : jobProfileBeanList){
             SdCronJobProfileData data = new SdCronJobProfileData();
-            sdCronJobProfileDataPopulator.populate(bean, data);
+            sdCronJobProfileDataPopulator.populate((SdCronJobProfileBean) bean, data);
             profileDataList.add(data);
         }
         return profileDataList;

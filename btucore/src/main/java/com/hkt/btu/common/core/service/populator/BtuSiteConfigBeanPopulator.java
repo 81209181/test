@@ -1,17 +1,16 @@
-package com.hkt.btu.sd.core.service.populator;
+package com.hkt.btu.common.core.service.populator;
 
 
-import com.hkt.btu.common.core.service.populator.AbstractBeanPopulator;
-import com.hkt.btu.sd.core.service.bean.SdSiteConfigBean;
+import com.hkt.btu.common.core.service.bean.BtuSiteConfigBean;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.ServletContext;
 import java.net.InetAddress;
 
-public class SdSiteConfigBeanPopulator extends AbstractBeanPopulator<SdSiteConfigBean> {
+public class BtuSiteConfigBeanPopulator extends AbstractBeanPopulator<BtuSiteConfigBean> {
 
 
-    public void populate(InetAddress inetAddress, SdSiteConfigBean target) {
+    public void populate(InetAddress inetAddress, BtuSiteConfigBean target) {
         if(inetAddress==null){
             return;
         }
@@ -19,7 +18,7 @@ public class SdSiteConfigBeanPopulator extends AbstractBeanPopulator<SdSiteConfi
         target.setServerAddress(inetAddress.getHostAddress());
     }
 
-    public void populate(ServletContext servletContext, SdSiteConfigBean target) {
+    public void populate(ServletContext servletContext, BtuSiteConfigBean target) {
         if(servletContext==null){
             return;
         }
