@@ -9,9 +9,10 @@ public interface SdOtpMapper {
     SdOtpEntity getOtp(String otp, String action);
 
 
-    void insertOtp(Integer userId, String action, String otp, LocalDateTime expirydate, Integer createby);
+    void insertOtp(String userId, String action, String otp, LocalDateTime expirydate, String createby);
 
 
     void expireOtp(String otp);
 
+    SdOtpEntity getOtpByUserId(String userId, String action);
 }

@@ -25,7 +25,7 @@ public class BtuSiteConfigServiceImpl implements BtuSiteConfigService {
     private static BtuSiteConfigBean btuSiteConfigBean;
 
     @Resource(name = "siteConfigBeanPopulator")
-    BtuSiteConfigBeanPopulator btuSiteConfigBeanPopulator;
+    BtuSiteConfigBeanPopulator siteConfigBeanPopulator;
 
     @Resource(name = "configParamService")
     BtuConfigParamService btuConfigParamService;
@@ -61,18 +61,15 @@ public class BtuSiteConfigServiceImpl implements BtuSiteConfigService {
 
     @Override
     public boolean isProductionServer() {
-        BtuSiteConfigBean sdSiteConfigBean = getSiteConfigBean();
-        return isProductionServer(sdSiteConfigBean);
-    }
-    private boolean isProductionServer(BtuSiteConfigBean sdSiteConfigBean){
-        return StringUtils.equals(BtuSiteConfigBean.SERVER_TYPE.PROD, sdSiteConfigBean.getServerType()) ||
-                StringUtils.equals(BtuSiteConfigBean.SERVER_TYPE.PROD_STANDBY, sdSiteConfigBean.getServerType()) ;
+        BtuSiteConfigBean btuSiteConfigBean = getSiteConfigBean();
+        return StringUtils.equals(BtuSiteConfigBean.SERVER_TYPE.PROD, btuSiteConfigBean.getServerType()) ||
+                StringUtils.equals(BtuSiteConfigBean.SERVER_TYPE.PROD_STANDBY, btuSiteConfigBean.getServerType()) ;
     }
 
     @Override
     public boolean isDevelopmentServer() {
-        BtuSiteConfigBean sdSiteConfigBean = getSiteConfigBean();
-        return isDevelopmentServer(sdSiteConfigBean);
+        BtuSiteConfigBean btuSiteConfigBean = getSiteConfigBean();
+        return StringUtils.equals(BtuSiteConfigBean.SERVER_TYPE.DEV, btuSiteConfigBean.getServerType());
     }
 
     private void reloadSiteConfigBean() {
@@ -160,8 +157,8 @@ public class BtuSiteConfigServiceImpl implements BtuSiteConfigService {
 
     private void reloadServerInfo(BtuSiteConfigBean siteConfigBean) {
         InetAddress inetAddress = getServerInetAddress();
-        btuSiteConfigBeanPopulator.populate(inetAddress, siteConfigBean);
-        btuSiteConfigBeanPopulator.populate(servletContext, siteConfigBean);
+        siteConfigBeanPopulator.populate(inetAddress, siteConfigBean);
+        siteConfigBeanPopulator.populate(servletContext, siteConfigBean);
     }
 
     private InetAddress getServerInetAddress() {

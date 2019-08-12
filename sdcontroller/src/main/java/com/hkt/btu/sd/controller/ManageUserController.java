@@ -89,7 +89,7 @@ public class ManageUserController {
     }
 
     @GetMapping("/edit-user/get-user")
-    public ResponseEntity<?> getUserById (@RequestParam Integer userId) {
+    public ResponseEntity<?> getUserById (@RequestParam String userId) {
         if(userId==null){
             return ResponseEntity.badRequest().body("Empty user id!");
         }
@@ -114,7 +114,7 @@ public class ManageUserController {
     }
 
     @PostMapping("/edit-user/activate")
-    public ResponseEntity<?> activateUser (@RequestParam Integer userId) {
+    public ResponseEntity<?> activateUser (@RequestParam String userId) {
         String errorMsg = userFacade.activateUser(userId);
         if(errorMsg==null){
             return ResponseEntity.ok(SimpleAjaxResponse.of());
@@ -124,7 +124,7 @@ public class ManageUserController {
     }
 
     @PostMapping("/edit-user/deactivate")
-    public ResponseEntity<?> deactivateUser (@RequestParam Integer userId) {
+    public ResponseEntity<?> deactivateUser (@RequestParam String userId) {
         String errorMsg = userFacade.deactivateUser(userId);
         if(errorMsg==null){
             return ResponseEntity.ok(SimpleAjaxResponse.of());
@@ -149,7 +149,7 @@ public class ManageUserController {
             @RequestParam(defaultValue = "0") int draw,
             @RequestParam(defaultValue = "0") int start,
             @RequestParam(defaultValue = "10") int length,
-            @RequestParam(required= false) Integer userId,
+            @RequestParam(required= false) String userId,
             @RequestParam(required= false) String name,
             @RequestParam(required= false) String email,
             @RequestParam(required= false) String userGroupId) {

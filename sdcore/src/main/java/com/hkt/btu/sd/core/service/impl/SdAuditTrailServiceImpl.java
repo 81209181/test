@@ -46,7 +46,7 @@ public class SdAuditTrailServiceImpl extends BtuAuditTrailServiceImpl implements
     }
 
     @Override
-    public void insertViewUserAuditTrail(Integer userId) {
+    public void insertViewUserAuditTrail(String userId) {
         String detail = String.format("%s", userId);
         insertAuditTrail(SdAuditTrailEntity.ACTION.VIEW_USER, detail);
     }

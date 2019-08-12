@@ -38,52 +38,58 @@ public class SdUserFacadeImpl implements SdUserFacade {
 
     @Override
     public CreateResultData createUser(CreateUserFormData createUserFormData) {
-        if(createUserFormData==null){
+        if (createUserFormData == null) {
             LOG.warn("Null sdUserData.");
             return null;
         }
 
-        String name = StringUtils.trim( createUserFormData.getName() );
-        String mobile = StringUtils.trim( createUserFormData.getMobile() );
-        String staffId = StringUtils.trim(  createUserFormData.getStaffId() );
-        String email = StringUtils.trim(  createUserFormData.getEmail() );
+        String userId = StringUtils.trim(createUserFormData.getUserId());
+        String name = StringUtils.trim(createUserFormData.getName());
+        String mobile = StringUtils.trim(createUserFormData.getMobile());
+        String staffId = StringUtils.trim(createUserFormData.getStaffId());
+        String email = StringUtils.trim(createUserFormData.getEmail());
+        String ldapDomain = StringUtils.trim(createUserFormData.getLdapDomain());
         Integer companyId = createUserFormData.getCompanyId();
-        List<String> userGroupIdList = createUserFormData.getUserGroupIdList();
+
+        // TODO: Wait for UserGroup
+        //List<String> userGroupIdList = createUserFormData.getUserGroupIdList();
 
         // check input
+        // create new user
+        String newUserId;
         try {
+            // If name empty, that's LDAP user
+            // If not, that's Email user
             sdInputCheckService.checkName(name);
             sdInputCheckService.checkMobile(mobile);
             sdInputCheckService.checkStaffIdHkidPassport(staffId);
-            sdInputCheckService.checkEmail(email);
-        }catch (InvalidInputException e){
-            return CreateResultData.of(e.getMessage());
-        }
-
-        // create new user
-        Integer newUserId;
-        try {
-            newUserId = sdUserService.createUser(name, mobile, email, staffId, companyId, userGroupIdList);
-        } catch (InvalidInputException | UserNotFoundException | DuplicateUserEmailException | GeneralSecurityException e){
+            if (StringUtils.isEmpty(email)) {
+                sdInputCheckService.checkEmployeeNumber(userId);
+                sdInputCheckService.checkLdapDomain(ldapDomain);
+                newUserId = sdUserService.createLdapUser(name, mobile, userId, staffId, ldapDomain);
+            } else {
+                sdInputCheckService.checkEmail(email);
+                newUserId = sdUserService.createUser(name, mobile, email, staffId, companyId, null);
+            }
+        } catch (InvalidInputException | UserNotFoundException | DuplicateUserEmailException | GeneralSecurityException e) {
             LOG.warn(e.getMessage());
             return CreateResultData.of(e.getMessage());
         }
-
         return CreateResultData.of(newUserId);
     }
 
     @Override
     public String updateUser(UpdateUserFormData updateUserFormData) {
-        if(updateUserFormData==null){
+        if (updateUserFormData == null) {
             return "Null input.";
-        } else if(updateUserFormData.getUserId()==null){
+        } else if (updateUserFormData.getUserId() == null) {
             return "Empty user ID.";
         }
 
-        Integer userId = updateUserFormData.getUserId();
-        String name = StringUtils.trim( updateUserFormData.getName() );
-        String mobile = StringUtils.trim( updateUserFormData.getMobile() );
-        String staffId = StringUtils.trim( updateUserFormData.getStaffId() );
+        String userId = updateUserFormData.getUserId();
+        String name = StringUtils.trim(updateUserFormData.getName());
+        String mobile = StringUtils.trim(updateUserFormData.getMobile());
+        String staffId = StringUtils.trim(updateUserFormData.getStaffId());
 
         Boolean isAdmin = updateUserFormData.isUserGroupAdmin();
         Boolean isUser = updateUserFormData.isUserGroupUser();
@@ -95,7 +101,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
             sdInputCheckService.checkName(name);
             sdInputCheckService.checkMobile(mobile);
             sdInputCheckService.checkStaffIdHkidPassport(staffId);
-        } catch (InvalidInputException e){
+        } catch (InvalidInputException e) {
             return e.getMessage();
         }
 
@@ -113,7 +119,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
     }
 
 
-    public String activateUser(Integer userId) {
+    public String activateUser(String userId) {
         try {
             // check access to user
             SdUserBean userBean = sdUserService.getUserByUserId(userId);
@@ -122,14 +128,14 @@ public class SdUserFacadeImpl implements SdUserFacade {
             // activate user
             sdUserService.activateUserByUsername(username);
             return null;
-        } catch (UserNotFoundException | InvalidInputException e){
+        } catch (UserNotFoundException | InvalidInputException e) {
             LOG.warn(e.getMessage());
             return e.getMessage();
         }
     }
 
     @Override
-    public String deactivateUser(Integer userId) {
+    public String deactivateUser(String userId) {
         try {
             // check access to user
             SdUserBean userBean = sdUserService.getUserByUserId(userId);
@@ -138,7 +144,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
             // deactivate user
             sdUserService.disableUserByUsername(username);
             return null;
-        } catch (UserNotFoundException | InvalidInputException e){
+        } catch (UserNotFoundException | InvalidInputException e) {
             LOG.warn(e.getMessage());
             return e.getMessage();
         }
@@ -151,26 +157,26 @@ public class SdUserFacadeImpl implements SdUserFacade {
         String newPassword = updatePwdFormData.getNewPassword();
         String newPasswordRe = updatePwdFormData.getNewPasswordRe();
 
-        if(sdUserData==null){
+        if (sdUserData == null) {
             return "Current user not found.";
-        } else if(StringUtils.isEmpty(oldPassword)){
+        } else if (StringUtils.isEmpty(oldPassword)) {
             return "Empty old password.";
-        } else if(StringUtils.isEmpty(newPassword)){
+        } else if (StringUtils.isEmpty(newPassword)) {
             return "Empty new password.";
-        } else if(StringUtils.equals(oldPassword, newPasswordRe)){
+        } else if (StringUtils.equals(oldPassword, newPasswordRe)) {
             return "Old and new password cannot be the same.";
-        } else if(! StringUtils.equals(newPassword, newPasswordRe)){
+        } else if (!StringUtils.equals(newPassword, newPasswordRe)) {
             return "Re-enter new password not match.";
         }
 
         // update password
         try {
             sdUserService.updateUserPwd(sdUserData.getUserId(), oldPassword, newPassword);
-        } catch (UserNotFoundException e){
+        } catch (UserNotFoundException e) {
             LOG.warn("Data rollback.");
             LOG.warn(e.getMessage(), e);
             return e.getMessage();
-        } catch (InvalidPasswordException e){
+        } catch (InvalidPasswordException e) {
             LOG.warn("Data rollback.");
             LOG.warn(e.getMessage());
             return e.getMessage();
@@ -184,22 +190,22 @@ public class SdUserFacadeImpl implements SdUserFacade {
         String otp = resetPwdFormData.getResetOtp();
         String newPassword = resetPwdFormData.getNewPassword();
         String newPasswordRe = resetPwdFormData.getNewPasswordRe();
-        if(StringUtils.isEmpty(otp)){
+        if (StringUtils.isEmpty(otp)) {
             return "Empty reset otp.";
-        } else if(StringUtils.isEmpty(newPassword)){
+        } else if (StringUtils.isEmpty(newPassword)) {
             return "Empty new password.";
-        } else if(! StringUtils.equals(newPassword, newPasswordRe)){
+        } else if (!StringUtils.equals(newPassword, newPasswordRe)) {
             return "Re-enter new password not match.";
         }
 
         // reset password
         try {
             sdUserService.resetPwd(otp, newPassword);
-        } catch (UserNotFoundException e){
+        } catch (UserNotFoundException e) {
             LOG.warn("Data rollback.");
             LOG.warn(e.getMessage(), e);
             return e.getMessage();
-        } catch (InvalidPasswordException | InvalidInputException e){
+        } catch (InvalidPasswordException | InvalidInputException e) {
             LOG.warn("Data rollback.");
             LOG.warn(e.getMessage());
             return e.getMessage();
@@ -210,41 +216,44 @@ public class SdUserFacadeImpl implements SdUserFacade {
 
     @Override
     public String requestResetPassword(String email) {
-        if( StringUtils.isEmpty(email) ){
+        if (StringUtils.isEmpty(email)) {
             return "Empty email input.";
         }
 
         try {
             sdUserService.requestResetPassword(email);
-        } catch (UserNotFoundException e){
+        } catch (UserNotFoundException e) {
             LOG.warn("User not found (" + email + ").");
             return e.getMessage();
-        } catch (MessagingException e){
+        } catch (MessagingException e) {
             LOG.error(e.getMessage(), e);
             return "Failed to send email.";
+        } catch (InvalidInputException e) {
+            return "Please do not submit duplicate.";
         }
 
         return null;
     }
 
     @Override
-    public PageData<SdUserData> searchUser(Pageable pageable, Integer userId, String email, String name, String userGroupId) {
+    public PageData<SdUserData> searchUser(Pageable pageable, String userId, String email, String name, String userGroupId) {
         email = StringUtils.trimToNull(email);
         name = StringUtils.trimToNull(name);
+        userId = StringUtils.trimToNull(userId);
         userGroupId = StringUtils.trimToNull(userGroupId);
 
         Page<SdUserBean> pageBean;
         try {
             pageBean = sdUserService.searchUser(pageable, userId, email, name, userGroupId);
-        }catch (AuthorityNotFoundException e){
+        } catch (AuthorityNotFoundException e) {
             return new PageData<>(e.getMessage());
         }
 
         // populate content
         List<SdUserBean> beanList = pageBean.getContent();
         List<SdUserData> dataList = new LinkedList<>();
-        if(!CollectionUtils.isEmpty(beanList)){
-            for(SdUserBean bean : beanList){
+        if (!CollectionUtils.isEmpty(beanList)) {
+            for (SdUserBean bean : beanList) {
                 SdUserData data = new SdUserData();
                 userDataPopulator.populate(bean, data);
                 dataList.add(data);
@@ -265,14 +274,14 @@ public class SdUserFacadeImpl implements SdUserFacade {
             // TODO: Encryption function will be done later
             userDataPopulator.populateSensitiveData(sdUserBean, userData);
 
-        } catch (UserNotFoundException e){
+        } catch (UserNotFoundException e) {
             return null;
         }
 
         return userData;
     }
 
-    public SdUserData getUserByUserId(Integer userId){
+    public SdUserData getUserByUserId(String userId) {
         SdUserData userData = new SdUserData();
 
         try {
@@ -281,7 +290,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
             userDataPopulator.populate(sdUserBean, userData);
             userDataPopulator.populateSensitiveData(sdUserBean, userData);
 
-        } catch (UserNotFoundException e){
+        } catch (UserNotFoundException e) {
             LOG.warn(e.getMessage());
             return null;
         }

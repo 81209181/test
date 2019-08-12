@@ -12,17 +12,6 @@ public class BtuCronJobProfileBean extends BaseBean{
     private boolean isMandatory;
     private String cronExp;
 
-    public static BtuCronJobProfileBean getSampleJob() {
-        BtuCronJobProfileBean bean = new BtuCronJobProfileBean();
-        bean.setJobClass("com.hkt.btu.common.core.job.BtuSampleJob");
-        bean.setKeyName("BtuSampleJob");
-        bean.setKeyGroup("SYSTEM");
-        bean.setCronExp("0 0/5 * * * ?");
-        bean.setActive(true);
-        bean.setMandatory(true);
-        return bean;
-    }
-
     public String getKeyGroup() {
         return keyGroup;
     }

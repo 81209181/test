@@ -16,7 +16,7 @@ public interface SdCronJobMapper {
 
 
     // update
-    int updateStatus(String jobGroup, String jobName, String status, Integer modifyby);
+    int updateStatus(String jobGroup, String jobName, String status, String modifyby);
 
     // insert
 

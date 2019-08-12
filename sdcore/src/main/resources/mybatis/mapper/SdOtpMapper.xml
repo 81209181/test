@@ -16,7 +16,7 @@
 
     <select id="getOtp" resultMap="SdOtpEntity" >
         select *
-        from NOC_OTP
+        from OTP
         where EXPIRYDATE >= CURRENT_TIMESTAMP
         and OTP = #{otp}
         and ACTION = #{action}
@@ -25,16 +25,22 @@
 
 
     <insert id="insertOtp" >
-        insert into NOC_OTP (USER_ID, ACTION, OTP, EXPIRYDATE, CREATEBY)
+        insert into OTP (USER_ID, ACTION, OTP, EXPIRYDATE, CREATEBY)
         values (#{userId}, #{action}, #{otp}, #{expirydate}, #{createby})
     </insert>
 
 
     <update id="expireOtp">
-        update NOC_OTP
+        update OTP
         set EXPIRYDATE = CURRENT_TIMESTAMP
         where OTP = #{otp}
     </update>
 
-
+    <select id="getOtpByUserId" resultMap="SdOtpEntity" >
+        select *
+        from OTP
+        where EXPIRYDATE >= CURRENT_TIMESTAMP
+        and USER_ID = #{userId}
+        and ACTION = #{action}
+    </select>
 </mapper>

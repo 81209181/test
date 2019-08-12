@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.core.service.impl;
 
 
+import com.hkt.btu.common.core.service.BtuSiteConfigService;
 import com.hkt.btu.common.core.service.bean.BtuCronJobProfileBean;
 import com.hkt.btu.common.core.service.impl.BtuCronJobProfileServiceImpl;
 import com.hkt.btu.sd.core.dao.entity.SdCronJobEntity;
@@ -12,6 +13,8 @@ import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdCronJobProfileBean;
 import com.hkt.btu.sd.core.service.populator.SdCronJobProfileBeanPopulator;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -19,10 +22,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SdCronJobProfileServiceImpl extends BtuCronJobProfileServiceImpl implements SdCronJobProfileService {
+    private static final Logger LOG = LogManager.getLogger(SdCronJobProfileServiceImpl.class);
+
 
     @Resource
     SdCronJobMapper sdCronJobMapper;
 
+    @Resource(name = "siteConfigService")
+    BtuSiteConfigService siteConfigService;
     @Resource(name = "userService")
     SdUserService sdUserService;
     @Resource(name = "cronJobLogService")
@@ -86,7 +93,7 @@ public class SdCronJobProfileServiceImpl extends BtuCronJobProfileServiceImpl im
     }
 
     private int updateJobProfileStatus(String jobGroup, String jobName, String status){
-        Integer modifyby = sdUserService.getCurrentUserUserId();
+        String modifyby = sdUserService.getCurrentUserUserId();
         return sdCronJobMapper.updateStatus(jobGroup, jobName, status, modifyby);
     }
 

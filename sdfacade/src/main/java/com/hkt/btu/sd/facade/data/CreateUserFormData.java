@@ -10,12 +10,29 @@ public class CreateUserFormData implements DataInterface {
     private String status;
     private String mobile;
     private String email;
+    private String ldapDomain;
+    private String userId;
 
     private String staffId;
 
     private Integer companyId;
     private List<String> userGroupIdList;
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getLdapDomain() {
+        return ldapDomain;
+    }
+
+    public void setLdapDomain(String ldapDomain) {
+        this.ldapDomain = ldapDomain;
+    }
 
     public String getName() {
         return name;

@@ -7,21 +7,21 @@ import java.time.LocalDateTime;
 public class SdOtpEntity extends BaseEntity {
     public static class ACTION{
         public static final String RESET_PWD = "RESET_PWD";
+        public static final String INIT_PWD = "INIT_PWD";
     }
 
 
-    private Integer userId;
+    private String userId;
     private String action;
     private String otp;
     private LocalDateTime expirydate;
 
 
-
-    public Integer getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

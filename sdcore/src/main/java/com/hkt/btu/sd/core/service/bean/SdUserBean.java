@@ -4,7 +4,7 @@ import com.hkt.btu.common.core.service.bean.BtuUserBean;
 
 public class SdUserBean extends BtuUserBean {
 
-    private Integer userId;
+    private String userId;
     private String name;
     private String email;
     private String mobile;
@@ -13,11 +13,11 @@ public class SdUserBean extends BtuUserBean {
 
     private Integer companyId;
 
-    public Integer getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

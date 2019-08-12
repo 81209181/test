@@ -74,7 +74,25 @@ public class SdInputCheckServiceImpl implements SdInputCheckService {
         } else if ( ! EmailValidator.getInstance().isValid(input) ) {
             throw new InvalidInputException("Please input a valid email.");
         }
-
         return null;
     }
+
+    @Override
+    public String checkEmployeeNumber(String input) throws InvalidInputException {
+        if (StringUtils.isEmpty(input)) {
+            throw new InvalidInputException("Empty input EmployeeNumber.");
+        } else if (input.length() != 8) {
+            throw new InvalidInputException("Please input correct employeeNumber");
+        }
+        return null;
+    }
+
+    @Override
+    public String checkLdapDomain(String input) throws InvalidInputException {
+        if (StringUtils.isEmpty(input)) {
+            throw new InvalidInputException("Empty input LdapDomain.");
+        }
+        return null;
+    }
+
 }

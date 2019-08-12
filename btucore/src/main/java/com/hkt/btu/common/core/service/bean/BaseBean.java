@@ -5,9 +5,9 @@ import java.time.LocalDateTime;
 public class BaseBean {
 
     private LocalDateTime createdate;
-    private Integer createby;
+    private String createby;
     private LocalDateTime modifydate;
-    private Integer modifyby;
+    private String modifyby;
     private String remarks;
 
 
@@ -19,13 +19,6 @@ public class BaseBean {
         this.createdate = createdate;
     }
 
-    public Integer getCreateby() {
-        return createby;
-    }
-
-    public void setCreateby(Integer createby) {
-        this.createby = createby;
-    }
 
     public LocalDateTime getModifydate() {
         return modifydate;
@@ -35,11 +28,19 @@ public class BaseBean {
         this.modifydate = modifydate;
     }
 
-    public Integer getModifyby() {
+    public String getCreateby() {
+        return createby;
+    }
+
+    public void setCreateby(String createby) {
+        this.createby = createby;
+    }
+
+    public String getModifyby() {
         return modifyby;
     }
 
-    public void setModifyby(Integer modifyby) {
+    public void setModifyby(String modifyby) {
         this.modifyby = modifyby;
     }
 

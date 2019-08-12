@@ -1,10 +1,10 @@
 package com.hkt.btu.sd.core.service.impl;
 
+import com.hkt.btu.common.core.service.BtuSiteConfigService;
 import com.hkt.btu.sd.core.dao.entity.SdOtpEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdOtpMapper;
 import com.hkt.btu.sd.core.service.SdOtpService;
-import com.hkt.btu.sd.core.service.SdSiteConfigService;
 import com.hkt.btu.sd.core.service.bean.SdOtpBean;
 import com.hkt.btu.sd.core.service.populator.SdOtpBeanPopulator;
 
@@ -20,7 +20,7 @@ public class SdOtpServiceImpl implements SdOtpService {
     SdOtpBeanPopulator sdOtpBeanPopulator;
 
     @Resource(name = "siteConfigService")
-    SdSiteConfigService sdSiteConfigService;
+    BtuSiteConfigService siteConfigService;
 
 
     @SuppressWarnings("SameParameterValue")
@@ -42,11 +42,11 @@ public class SdOtpServiceImpl implements SdOtpService {
 
 
     @SuppressWarnings("SameParameterValue")
-    private String generateOtp(Integer userId, String action, Integer createby) {
+    private String generateOtp(String userId, String action, String createby) {
         UUID uuid = UUID.randomUUID();
         String otp = uuid.toString();
 
-        Integer otpLifespanInMin = sdSiteConfigService.getSiteConfigBean().getPasswordResetOtpLifespanInMin();
+        Integer otpLifespanInMin = siteConfigService.getSiteConfigBean().getPasswordResetOtpLifespanInMin();
 
         LocalDateTime NOW = LocalDateTime.now();
         LocalDateTime expiryDate = NOW.plusMinutes(otpLifespanInMin);
@@ -57,7 +57,7 @@ public class SdOtpServiceImpl implements SdOtpService {
     }
 
     @Override
-    public String generatePwdResetOtp(Integer userId) {
+    public String generatePwdResetOtp(String userId) {
         return generateOtp(userId, SdOtpEntity.ACTION.RESET_PWD, SdUserEntity.SYSTEM.USER_ID);
     }
 
@@ -66,4 +66,20 @@ public class SdOtpServiceImpl implements SdOtpService {
         sdOtpMapper.expireOtp(otp);
     }
 
+    @Override
+    public SdOtpBean getValidPwdOtp(String userId, String action) {
+        SdOtpEntity sdOtpEntity = sdOtpMapper.getOtpByUserId(userId, action);
+        if(sdOtpEntity==null){
+            return null;
+        }
+
+        SdOtpBean sdOtpBean = new SdOtpBean();
+        sdOtpBeanPopulator.populate(sdOtpEntity, sdOtpBean);
+        return sdOtpBean;
+    }
+
+    @Override
+    public String generatePwdOtp(String userId, String action) {
+        return generateOtp(userId, action, SdUserEntity.SYSTEM.USER_ID);
+    }
 }

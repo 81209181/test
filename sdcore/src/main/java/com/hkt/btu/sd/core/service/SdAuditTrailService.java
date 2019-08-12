@@ -6,7 +6,7 @@ public interface SdAuditTrailService extends BtuAuditTrailService {
     void insertAuditTrail(String action, String detail);
     void insertAuditTrail(String userId, String action, String detail);
 
-    void insertViewUserAuditTrail(Integer userId);
+    void insertViewUserAuditTrail(String userId);
     void insertViewRequesterAuditTrail(Integer requestId);
     void insertViewRequestVisitorAuditTrail(Integer visitorId);
 }

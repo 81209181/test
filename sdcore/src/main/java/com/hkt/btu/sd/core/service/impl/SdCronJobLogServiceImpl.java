@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.core.service.impl;
 
 
+import com.hkt.btu.common.core.service.BtuSiteConfigService;
 import com.hkt.btu.common.core.service.bean.BtuCronJobProfileBean;
 import com.hkt.btu.common.core.service.bean.BtuSiteConfigBean;
 import com.hkt.btu.common.core.service.impl.BtuCronJobLogServiceImpl;
@@ -10,15 +11,17 @@ import com.hkt.btu.sd.core.dao.mapper.SdCronJobLogMapper;
 import com.hkt.btu.sd.core.dao.populator.SdCronJobLogEntityPopulator;
 import com.hkt.btu.sd.core.service.SdCronJobLogService;
 import com.hkt.btu.sd.core.service.SdCronJobProfileService;
-import com.hkt.btu.sd.core.service.SdSiteConfigService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdCronJobProfileBean;
-import com.hkt.btu.sd.core.service.bean.SdSiteConfigBean;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.quartz.JobDetail;
 
 import javax.annotation.Resource;
 
 public class SdCronJobLogServiceImpl extends BtuCronJobLogServiceImpl implements SdCronJobLogService {
+    private static final Logger LOG = LogManager.getLogger(SdCronJobLogServiceImpl.class);
+
 
     @Resource
     SdCronJobLogMapper sdCronJobLogMapper;
@@ -29,57 +32,65 @@ public class SdCronJobLogServiceImpl extends BtuCronJobLogServiceImpl implements
     @Resource(name = "userService")
     SdUserService sdUserService;
     @Resource(name = "siteConfigService")
-    SdSiteConfigService sdSiteConfigService;
+    BtuSiteConfigService siteConfigService;
     @Resource(name = "cronJobProfileService")
     SdCronJobProfileService sdCronJobProfileService;
 
 
     @Override
     public void logUserActivateJob(String jobGroup, String jobName) {
-        Integer userId = sdUserService.getCurrentUserUserId();
+        super.logUserActivateJob(jobGroup, jobName);
+        String userId = sdUserService.getCurrentUserUserId();
         logProfileChange(jobGroup, jobName, userId, SdCronJobLogEntity.ACTION.ACTIVATE);
     }
 
     @Override
     public void logUserDeactivateJob(String jobGroup, String jobName) {
-        Integer userId = sdUserService.getCurrentUserUserId();
+        super.logUserDeactivateJob(jobGroup, jobName);
+        String userId = sdUserService.getCurrentUserUserId();
         logProfileChange(jobGroup, jobName, userId, SdCronJobLogEntity.ACTION.DEACTIVATE);
     }
 
     @Override
     public void logUserPauseJob(JobDetail jobDetail) {
-        Integer userId = sdUserService.getCurrentUserUserId();
+        super.logUserPauseJob(jobDetail);
+        String userId = sdUserService.getCurrentUserUserId();
         logInstanceChange(jobDetail, userId, SdCronJobLogEntity.ACTION.PAUSE);
     }
 
     @Override
     public void logUserResumeJob(JobDetail jobDetail) {
-        Integer userId = sdUserService.getCurrentUserUserId();
+        super.logUserResumeJob(jobDetail);
+        String userId = sdUserService.getCurrentUserUserId();
         logInstanceChange(jobDetail, userId, SdCronJobLogEntity.ACTION.RESUME);
     }
 
     @Override
     public void logUserTriggerJob(JobDetail jobDetail) {
-        Integer userId = sdUserService.getCurrentUserUserId();
+        super.logUserTriggerJob(jobDetail);
+        String userId = sdUserService.getCurrentUserUserId();
         logInstanceChange(jobDetail, userId, SdCronJobLogEntity.ACTION.TRIGGER);
     }
 
     @Override
     public void logSkip(JobDetail jobDetail) {
+        super.logSkip(jobDetail);
         logInstanceChange(jobDetail, SdUserEntity.SYSTEM.USER_ID, SdCronJobLogEntity.ACTION.SKIP);
     }
 
     @Override
     public void logComplete(JobDetail jobDetail) {
+        super.logComplete(jobDetail);
         logInstanceChange(jobDetail, SdUserEntity.SYSTEM.USER_ID, SdCronJobLogEntity.ACTION.COMPLETE);
     }
 
     @Override
     public void logError(JobDetail jobDetail) {
+        super.logError(jobDetail);
         logInstanceChange(jobDetail, SdUserEntity.SYSTEM.USER_ID, SdCronJobLogEntity.ACTION.ERROR);
     }
 
-    private void logInstanceChange(JobDetail jobDetail, Integer createby, String action) {
+    private void logInstanceChange(JobDetail jobDetail, String createby, String action) {
         // prepare insert param
         SdCronJobLogEntity sdCronJobLogEntity = buildNewSdCronJobLogEntity(createby, action);
         sdCronJobLogEntityPopulator.populate(jobDetail, sdCronJobLogEntity);
@@ -96,7 +107,7 @@ public class SdCronJobLogServiceImpl extends BtuCronJobLogServiceImpl implements
         sdCronJobLogMapper.insertLog(sdCronJobLogEntity);
     }
 
-    private void logProfileChange(String jobGroup, String jobName, Integer createby, String action) {
+    private void logProfileChange(String jobGroup, String jobName, String createby, String action) {
         // get profile info
         BtuCronJobProfileBean profileBean = sdCronJobProfileService.getProfileBeanByGrpAndName(jobGroup, jobName);
 
@@ -116,12 +127,12 @@ public class SdCronJobLogServiceImpl extends BtuCronJobLogServiceImpl implements
         sdCronJobLogMapper.insertLog(sdCronJobLogEntity);
     }
 
-    private SdCronJobLogEntity buildNewSdCronJobLogEntity(Integer createby, String action) {
+    private SdCronJobLogEntity buildNewSdCronJobLogEntity(String createby, String action){
         // get server info
-        BtuSiteConfigBean sdSiteConfigBean = sdSiteConfigService.getSiteConfigBean();
+        BtuSiteConfigBean btuSiteConfigBean = siteConfigService.getSiteConfigBean();
 
         SdCronJobLogEntity sdCronJobLogEntity = new SdCronJobLogEntity();
-        sdCronJobLogEntityPopulator.populate((SdSiteConfigBean) sdSiteConfigBean, sdCronJobLogEntity);
+        sdCronJobLogEntityPopulator.populate(btuSiteConfigBean, sdCronJobLogEntity);
         sdCronJobLogEntity.setAction(action);
         sdCronJobLogEntity.setCreateby(createby);
         return sdCronJobLogEntity;

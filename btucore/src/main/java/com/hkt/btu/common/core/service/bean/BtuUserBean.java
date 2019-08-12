@@ -10,19 +10,68 @@ public class BtuUserBean extends BaseBean {
     private String username;
     private String status;
 
-    private String ldapDomain;
     private String password;
     private LocalDateTime passwordModifydate;
     private Integer loginTried;
+    private String ldapDomain;
 
     private Set<GrantedAuthority> authorities;
 
-    public String getLdapDomain() {
-        return ldapDomain;
+    private String userId;
+    private String name;
+    private String email;
+    private String mobile;
+    private String staffId;
+
+    private Integer companyId;
+    private String companyName;
+
+    public String getUserId() {
+        return userId;
     }
 
-    public void setLdapDomain(String ldapDomain) {
-        this.ldapDomain = ldapDomain;
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(String staffId) {
+        this.staffId = staffId;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public Integer getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
     }
 
     public String getUsername() {
@@ -71,5 +120,22 @@ public class BtuUserBean extends BaseBean {
 
     public void setLoginTried(Integer loginTried) {
         this.loginTried = loginTried;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+
+    public String getLdapDomain() {
+        return ldapDomain;
+    }
+
+    public void setLdapDomain(String ldapDomain) {
+        this.ldapDomain = ldapDomain;
     }
 }

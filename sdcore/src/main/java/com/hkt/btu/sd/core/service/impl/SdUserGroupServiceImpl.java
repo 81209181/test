@@ -144,7 +144,7 @@ public class SdUserGroupServiceImpl implements SdUserGroupService {
             }
         }
 
-        Integer modifierUserId = modifier.getUserId();
+        String modifierUserId = modifier.getUserId();
 
         if(updateIsAdmin!=null){
             sdUserGroupMapper.deleteUserUserGroup(userId, SdUserGroupEntity.GROUP_ID.ADMIN);
