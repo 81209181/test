@@ -10,6 +10,7 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.Resource;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 
 public class SdConfigParamFacadeImpl implements SdConfigParamFacade {
@@ -23,17 +24,38 @@ public class SdConfigParamFacadeImpl implements SdConfigParamFacade {
     @Override
     public List<SdConfigParamData> getAllConfigParam() {
         List<SdConfigParamBean> beanList = sdConfigParamService.getAllConfigParam();
-        if(CollectionUtils.isEmpty(beanList)){
+        if (CollectionUtils.isEmpty(beanList)) {
             return null;
         }
 
         List<SdConfigParamData> dataList = new LinkedList<>();
-        for(SdConfigParamBean bean : beanList){
+        for (SdConfigParamBean bean : beanList) {
             SdConfigParamData data = new SdConfigParamData();
             sdConfigParamDataPopulator.populate(bean, data);
             dataList.add(data);
         }
 
         return dataList;
+    }
+
+    @Override
+    public Optional<SdConfigParamData> getConfigParamByGroupAndKey(String configGroup, String configKey) {
+        Optional<SdConfigParamBean> bean = sdConfigParamService.getConfigParamByGroupAndKey(configGroup, configKey);
+        if (bean.isEmpty()) {
+            return Optional.empty();
+        }
+        SdConfigParamData data = new SdConfigParamData();
+        sdConfigParamDataPopulator.populate(bean.get(), data);
+        return Optional.of(data);
+    }
+
+    @Override
+    public List<String> getConfigTypeList() {
+        return sdConfigParamService.getConfigTypeList();
+    }
+
+    @Override
+    public boolean updateConfigParam(String configGroup, String configKey, String configValue, String configValueType) {
+        return sdConfigParamService.updateConfigParam(configGroup,configKey,configValue,configValueType);
     }
 }

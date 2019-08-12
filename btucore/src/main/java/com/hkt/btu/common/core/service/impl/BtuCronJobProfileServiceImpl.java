@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BtuCronJobProfileServiceImpl implements BtuCronJobProfileService {
-    private static final Logger LOG = LogManager.getLogger(BtuCronJobProfileServiceImpl.class);
+    public static final Logger LOG = LogManager.getLogger(BtuCronJobProfileServiceImpl.class);
 
     @Resource(name = "siteConfigService")
     BtuSiteConfigService btuSiteConfigService;
@@ -29,7 +29,7 @@ public class BtuCronJobProfileServiceImpl implements BtuCronJobProfileService {
 
     @Override
     public BtuCronJobProfileBean getProfileBeanByGrpAndName(String jobGroup, String jobName) {
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        LOG.warn("get profile bean by group and name:{},{}",jobGroup,jobName);
         return null;
     }
 
@@ -73,11 +73,11 @@ public class BtuCronJobProfileServiceImpl implements BtuCronJobProfileService {
 
     @Override
     public void activateJobProfile(String jobGroup, String jobName) throws InvalidInputException {
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        LOG.warn("activate job profile :{},{}",jobGroup,jobName);
     }
 
     @Override
     public void deactivateJobProfile(String jobGroup, String jobName) throws InvalidInputException {
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        LOG.warn("deactivate job profile:{},{}",jobGroup,jobName);
     }
 }

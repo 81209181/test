@@ -8,10 +8,16 @@ import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.Map;
 
 public class BtuConfigParamServiceImpl implements BtuConfigParamService {
     private static final Logger LOG = LogManager.getLogger(BtuConfigParamServiceImpl.class);
+
+    @Override
+    public List<String> getConfigTypeList() {
+        return BtuConfigParamEntity.getConfigTypeList();
+    }
 
     @Override
     public Map<String, Object> getConfigParamByConfigGroup(String configGroup) {
@@ -24,7 +30,7 @@ public class BtuConfigParamServiceImpl implements BtuConfigParamService {
         return null;
     }
 
-    protected Object getValue(BtuConfigParamEntity sdConfigParamEntity){
+    protected Object getValue(BtuConfigParamEntity sdConfigParamEntity) {
         if (sdConfigParamEntity == null) {
             return null;
         }
@@ -44,7 +50,7 @@ public class BtuConfigParamServiceImpl implements BtuConfigParamService {
             } else if (BtuConfigParamEntity.TYPE.DOUBLE.equals(type)) {
                 return Double.parseDouble(value);
             }
-        } catch (DateTimeParseException | NullPointerException | NumberFormatException e){
+        } catch (DateTimeParseException | NullPointerException | NumberFormatException e) {
             LOG.warn(e.getMessage());
         }
 
@@ -81,6 +87,4 @@ public class BtuConfigParamServiceImpl implements BtuConfigParamService {
         BtuConfigParamEntity sdConfigParamEntity = getConfigParamEntity(configGroup, configKey, BtuConfigParamEntity.TYPE.LOCAL_DATE_TIME);
         return (LocalDateTime) getValue(sdConfigParamEntity);
     }
-
-
 }

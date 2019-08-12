@@ -8,13 +8,10 @@ import com.hkt.btu.sd.core.dao.mapper.SdCronJobMapper;
 import com.hkt.btu.sd.core.exception.InvalidInputException;
 import com.hkt.btu.sd.core.service.SdCronJobLogService;
 import com.hkt.btu.sd.core.service.SdCronJobProfileService;
-import com.hkt.btu.sd.core.service.SdSiteConfigService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdCronJobProfileBean;
 import com.hkt.btu.sd.core.service.populator.SdCronJobProfileBeanPopulator;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -22,14 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SdCronJobProfileServiceImpl extends BtuCronJobProfileServiceImpl implements SdCronJobProfileService {
-    private static final Logger LOG = LogManager.getLogger(SdCronJobProfileServiceImpl.class);
-
 
     @Resource
     SdCronJobMapper sdCronJobMapper;
 
-    @Resource(name = "siteConfigService")
-    SdSiteConfigService sdSiteConfigService;
     @Resource(name = "userService")
     SdUserService sdUserService;
     @Resource(name = "cronJobLogService")
@@ -75,6 +68,7 @@ public class SdCronJobProfileServiceImpl extends BtuCronJobProfileServiceImpl im
         }
 
         // log
+        LOG.info("activate job profile:{},{}",jobGroup,jobName);
         sdCronJobLogService.logUserActivateJob(jobGroup, jobName);
     }
 
@@ -87,6 +81,7 @@ public class SdCronJobProfileServiceImpl extends BtuCronJobProfileServiceImpl im
         }
 
         // log
+        LOG.info("deactivate job profile:{},{}",jobGroup,jobName);
         sdCronJobLogService.logUserDeactivateJob(jobGroup, jobName);
     }
 
