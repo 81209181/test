@@ -9,56 +9,52 @@
 <div layout:fragment="content" th:remove="tag">
 
     <h1 style="padding-top:3%">Edit Config Param</h1>
-    <form action="" class="" style="width:80%">
+    <form id="editConfigParamForm" style="width:80%">
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label >Config Group</label>
-                <input type="text"  class="form-control" readonly>
+                <input type="text"  class="form-control" readonly id="configGroup" th:value="${configGroup}">
             </div>
             <div class="form-group col-md-6">
                 <label >Config Key</label>
-                <input type="text"  class="form-control" readonly>
+                <input type="text"  class="form-control" readonly id="configKey" th:value="${configKey}">
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label >Config Value</label>
-                <input type="text" class="form-control">
+                <input type="text" class="form-control" id="configValue">
             </div>
             <div class="form-group col-md-6">
                 <label>Config Type</label>
-                <select class="form-control custom-select">
-                    <option value="String">String</option>
-                    <option value="Integer">Integer</option>
-                    <option value="Integer">Double</option>
-                    <option value="Integer">Boolean</option>
-                    <option value="Integer">LocalDateTime</option>
+                <select class="form-control custom-select" id="configValueType">
+                    <option th:each="type : ${configTypeList}" th:text="${type}" th:value="${type}"></option>
                 </select>
             </div>
         </div>
+<!--        <div class="form-row">-->
+<!--            <div class="form-group col-md-6">-->
+<!--                <label >Create By</label>-->
+<!--                <input type="text" class="form-control" readonly>-->
+<!--            </div>-->
+<!--            <div class="form-group col-md-6">-->
+<!--                <label >Create Date</label>-->
+<!--                <input type="text" class="form-control" readonly>-->
+<!--            </div>-->
+<!--        </div>-->
         <div class="form-row">
-            <div class="form-group col-md-6">
-                <label >Create By</label>
-                <input type="text" class="form-control" readonly>
-            </div>
-            <div class="form-group col-md-6">
-                <label >Create Date</label>
-                <input type="text" class="form-control" readonly>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label >Modify By</label>
-                <input type="text" class="form-control" readonly>
-            </div>
+<!--            <div class="form-group col-md-6">-->
+<!--                <label >Modify By</label>-->
+<!--                <input type="text" class="form-control" readonly >-->
+<!--            </div>-->
             <div class="form-group col-md-6">
                 <label >Modify Date</label>
-                <input type="text" class="form-control" readonly>
+                <input type="text" class="form-control" readonly id="modifydate">
             </div>
         </div>
-        <button type="reset" class="btn btn-secondary btn-lg"><i class="fas fa-redo"></i> Reset</button>
-        <button type="submit" class="btn btn-lg btn-primary float-right mr-sm-2"><i class="far fa-save"></i> Save</button>
+        <button type="button" class="btn btn-lg btn-primary float-right mr-sm-2" id="btnUpdateConfigParam"><i class="far fa-save"></i> Save</button>
     </form>
+    <script type="text/javascript" th:src="@{/js/editConfigParam.js}"></script>
 </div>
 </body>
 </html>

@@ -12,11 +12,12 @@ public interface SdConfigParamMapper {
     List<SdConfigParamEntity> getAllConfigParam();
 
     SdConfigParamEntity getValue(@Param("configGroup") String configGroup, @Param("configKey") String configKey);
+
     List<SdConfigParamEntity> getValuesByConfigGroup(@Param("configGroup") String configGroup);
 
-    void updateValue(@Param("configGroup") String configGroup, @Param("configKey") String configKey,
+    int updateValue(@Param("configGroup") String configGroup, @Param("configKey") String configKey,
                      @Param("configValue") String configValue, @Param("configValueType") String configValueType,
-                     @Param("modifyBy") Integer modifyBy);
+                     @Param("modifyBy") String modifyBy);
 
     void deleteConfig(@Param("configGroup") String configGroup, @Param("configKey") String configKey);
 
