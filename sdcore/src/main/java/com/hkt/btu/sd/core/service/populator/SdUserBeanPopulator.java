@@ -5,6 +5,7 @@ import com.hkt.btu.common.core.service.populator.AbstractBeanPopulator;
 import com.hkt.btu.sd.core.dao.entity.SdUserEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserGroupEntity;
 import com.hkt.btu.sd.core.service.bean.SdUserBean;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.util.CollectionUtils;
@@ -35,8 +36,10 @@ public class SdUserBeanPopulator extends AbstractBeanPopulator<SdUserBean> {
         // TODO: Encryption function will be done later
         // encrypted data
         target.setMobile(new String(source.getMobile()));
-        String[] ldapDomainStr = target.getLdapDomain().split("@");
-        target.setLdapDomain(ldapDomainStr[1]);
+        if (StringUtils.isNotEmpty(target.getLdapDomain())) {
+            String[] ldapDomainStr = target.getLdapDomain().split("@");
+            target.setLdapDomain(ldapDomainStr[1]);
+        }
         target.setStaffId(new String(source.getStaffId()));
         /*String decryptedMobile = sdSensitiveDataService.decryptToStringSafe(source.getMobile());
         target.setMobile(decryptedMobile);

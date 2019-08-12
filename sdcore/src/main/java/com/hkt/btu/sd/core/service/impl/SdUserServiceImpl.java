@@ -153,15 +153,14 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             throw new InvalidInputException("Invalid user group.");
         }*/
 
+        // make email lower case (**assume email are all lower case)
+        email = StringUtils.lowerCase(email);
 
         // check email duplicated
         SdUserEntity userEntity = sdUserMapper.getUserByEmail(email);
         if (userEntity != null) {
             throw new DuplicateUserEmailException();
         }
-
-        // make email lower case (**assume email are all lower case)
-        email = StringUtils.lowerCase(email);
 
         // generate dummy password
         UUID uuid = UUID.randomUUID();
@@ -222,7 +221,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         // 2. get current userId for CreateBy
         // 3. get current ldapUser's account & password
         // 4. go to Ldap Server search this create user.
-        return null;
+        return "";
     }
 
     @Override
@@ -452,6 +451,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         if (!CollectionUtils.isEmpty(sdUserEntityList)) {
             for (SdUserEntity sdUserEntity : sdUserEntityList) {
                 SdUserBean sdUserBean = new SdUserBean();
+                sdUserBeanPopulator.populate(sdUserEntity, sdUserBean);
                 sdUserBeanPopulator.populate(sdUserEntity, sdUserBean);
                 sdUserBeanList.add(sdUserBean);
             }

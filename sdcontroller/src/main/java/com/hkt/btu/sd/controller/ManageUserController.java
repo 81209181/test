@@ -36,9 +36,9 @@ public class ManageUserController {
     SdAuditTrailFacade sdAuditTrailFacade;
 
     @GetMapping("/create-user")
-    public String createUserForm (final Model model,
-                                  @ModelAttribute("createUserFormData") CreateUserFormData createUserFormData,
-                                  @ModelAttribute("userGroupOptionDataMap") HashMap<String, SdUserGroupData> userGroupOptionDataMap) {
+    public String createUserForm(final Model model,
+                                 @ModelAttribute("createUserFormData") CreateUserFormData createUserFormData,
+                                 @ModelAttribute("userGroupOptionDataMap") HashMap<String, SdUserGroupData> userGroupOptionDataMap) {
 
         // user group info
         // TODO: Wait for UserGroup
@@ -51,29 +51,34 @@ public class ManageUserController {
         return "admin/manageUser/createUserForm";
     }
 
-    @PostMapping("/create-user")
-    public String createUserForm (final RedirectAttributes redirectAttributes,
-                                  @ModelAttribute("inputUserData") CreateUserFormData createUserFormData) {
-        CreateResultData createResultData = userFacade.createUser(createUserFormData);
-        Integer newUserId = createResultData==null ? null : createResultData.getNewId();
-        String errorMsg = createResultData==null ? "No create result." : createResultData.getErrorMsg();
+    @GetMapping("/create-ldap-user")
+    public String createLdapUserForm(@ModelAttribute("createUserFormData") CreateUserFormData createUserFormData) {
+        return "admin/manageUser/createLdapUserForm";
+    }
 
-        if(newUserId==null){
+    @PostMapping("/create-user")
+    public String createUserForm(final RedirectAttributes redirectAttributes,
+                                 @ModelAttribute("inputUserData") CreateUserFormData createUserFormData) {
+        CreateResultData createResultData = userFacade.createUser(createUserFormData);
+        String newUserId = createResultData == null ? null : createResultData.getNewId();
+        String errorMsg = createResultData == null ? "No create result." : createResultData.getErrorMsg();
+
+        if (newUserId == null) {
             redirectAttributes.addFlashAttribute(PageMsgController.ERROR_MSG, errorMsg);
             redirectAttributes.addFlashAttribute("createUserFormData", createUserFormData);
             return "redirect:create-user";
         } else {
             redirectAttributes.addFlashAttribute(PageMsgController.INFO_MSG, "Created user.");
-            return "redirect:edit-user?userId="+newUserId;
+            return "redirect:edit-user?userId=" + newUserId;
         }
     }
 
     @GetMapping("/edit-user")
-    public String editUserForm (final Model model,
-                                @RequestParam Integer userId,
-                                @ModelAttribute("editUserId") String editUserId,
-                                @ModelAttribute("userGroupDataMap") HashMap<String, SdUserGroupData> userGroupDataMap) {
-        if(userId!=null){
+    public String editUserForm(final Model model,
+                               @RequestParam String userId,
+                               @ModelAttribute("editUserId") String editUserId,
+                               @ModelAttribute("userGroupDataMap") HashMap<String, SdUserGroupData> userGroupDataMap) {
+        if (userId != null) {
             model.addAttribute("editUserId", userId);
         }
 
@@ -89,13 +94,13 @@ public class ManageUserController {
     }
 
     @GetMapping("/edit-user/get-user")
-    public ResponseEntity<?> getUserById (@RequestParam String userId) {
-        if(userId==null){
+    public ResponseEntity<?> getUserById(@RequestParam String userId) {
+        if (userId == null) {
             return ResponseEntity.badRequest().body("Empty user id!");
         }
 
         SdUserData sdUserData = userFacade.getUserByUserId(userId);
-        if(sdUserData==null) {
+        if (sdUserData == null) {
             return ResponseEntity.badRequest().body("User not found.");
         } else {
             sdAuditTrailFacade.insertViewUserAuditTrail(sdUserData);
@@ -104,31 +109,31 @@ public class ManageUserController {
     }
 
     @PostMapping("/edit-user")
-    public ResponseEntity<?> editUserForm (@RequestBody UpdateUserFormData updateUserFormData) {
+    public ResponseEntity<?> editUserForm(@RequestBody UpdateUserFormData updateUserFormData) {
         String errorMsg = userFacade.updateUser(updateUserFormData);
-        if(errorMsg==null){
+        if (errorMsg == null) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
-        }else {
+        } else {
             return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
         }
     }
 
     @PostMapping("/edit-user/activate")
-    public ResponseEntity<?> activateUser (@RequestParam String userId) {
+    public ResponseEntity<?> activateUser(@RequestParam String userId) {
         String errorMsg = userFacade.activateUser(userId);
-        if(errorMsg==null){
+        if (errorMsg == null) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
-        }else {
+        } else {
             return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
         }
     }
 
     @PostMapping("/edit-user/deactivate")
-    public ResponseEntity<?> deactivateUser (@RequestParam String userId) {
+    public ResponseEntity<?> deactivateUser(@RequestParam String userId) {
         String errorMsg = userFacade.deactivateUser(userId);
-        if(errorMsg==null){
+        if (errorMsg == null) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
-        }else {
+        } else {
             return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
         }
     }
@@ -137,7 +142,7 @@ public class ManageUserController {
     public String searchUser(final Model model,
                              @ModelAttribute("userGroupOptionList") LinkedList<SdUserGroupData> userGroupOptionList) {
         //userGroupOptionList = sdUserGroupFacade.getEligibleUserGroupList();
-        if(!CollectionUtils.isEmpty(userGroupOptionList)){
+        if (!CollectionUtils.isEmpty(userGroupOptionList)) {
             model.addAttribute("userGroupOptionList", userGroupOptionList);
         }
 
@@ -149,17 +154,16 @@ public class ManageUserController {
             @RequestParam(defaultValue = "0") int draw,
             @RequestParam(defaultValue = "0") int start,
             @RequestParam(defaultValue = "10") int length,
-            @RequestParam(required= false) String userId,
-            @RequestParam(required= false) String name,
-            @RequestParam(required= false) String email,
-            @RequestParam(required= false) String userGroupId) {
-        int page = start/length;
+            @RequestParam(required = false) String userId,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String userGroupId) {
+        int page = start / length;
         Pageable pageable = PageRequest.of(page, length);
 
         PageData<SdUserData> pageData = userFacade.searchUser(pageable, userId, email, name, userGroupId);
         return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
     }
-
 
 
 }

@@ -15,6 +15,7 @@ public interface SdUserFacade {
 
 
     CreateResultData createUser(CreateUserFormData createUserFormData);
+    CreateResultData createLdapUser(CreateUserFormData createUserFormData);
 
     String updateUser(UpdateUserFormData updateUserFormData);
 
