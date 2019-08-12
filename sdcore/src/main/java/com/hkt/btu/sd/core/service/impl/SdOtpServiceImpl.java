@@ -23,9 +23,9 @@ public class SdOtpServiceImpl implements SdOtpService {
     BtuSiteConfigService siteConfigService;
 
 
-    @SuppressWarnings("SameParameterValue")
-    private SdOtpBean getValidOtp(String otp, String action) {
-        SdOtpEntity sdOtpEntity = sdOtpMapper.getOtp(otp, action);
+    @Override
+    public SdOtpBean getValidOtp(String otp) {
+        SdOtpEntity sdOtpEntity = sdOtpMapper.getOtp(otp);
         if(sdOtpEntity==null){
             return null;
         }
@@ -34,12 +34,6 @@ public class SdOtpServiceImpl implements SdOtpService {
         sdOtpBeanPopulator.populate(sdOtpEntity, sdOtpBean);
         return sdOtpBean;
     }
-
-    @Override
-    public SdOtpBean getValidResetPwdOtp(String otp) {
-        return getValidOtp(otp, SdOtpEntity.ACTION.RESET_PWD);
-    }
-
 
     @SuppressWarnings("SameParameterValue")
     private String generateOtp(String userId, String action, String createby) {
@@ -57,17 +51,12 @@ public class SdOtpServiceImpl implements SdOtpService {
     }
 
     @Override
-    public String generatePwdResetOtp(String userId) {
-        return generateOtp(userId, SdOtpEntity.ACTION.RESET_PWD, SdUserEntity.SYSTEM.USER_ID);
-    }
-
-    @Override
     public void expireOtp(String otp) {
         sdOtpMapper.expireOtp(otp);
     }
 
     @Override
-    public SdOtpBean getValidPwdOtp(String userId, String action) {
+    public SdOtpBean getValidOtp(String userId, String action) {
         SdOtpEntity sdOtpEntity = sdOtpMapper.getOtpByUserId(userId, action);
         if(sdOtpEntity==null){
             return null;
@@ -79,7 +68,7 @@ public class SdOtpServiceImpl implements SdOtpService {
     }
 
     @Override
-    public String generatePwdOtp(String userId, String action) {
+    public String generateOtp(String userId, String action) {
         return generateOtp(userId, action, SdUserEntity.SYSTEM.USER_ID);
     }
 }

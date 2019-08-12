@@ -291,17 +291,19 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         }
         String encodedOldPwd = sdUserEntity.getPassword();
 
-        // record old password
-        LOG.info("Inserting current password to history...");
-        sdUserMapper.insertPasswordHist(userId, encodedOldPwd);
+        if (encodedOldPwd != null) {
+            // record old password
+            LOG.info("Inserting current password to history...");
+            sdUserMapper.insertPasswordHist(userId, encodedOldPwd);
 
-        // check password history
-        LOG.info("Checking conflict with password history...");
-        List<String> passwordHistoryList = sdUserMapper.getPasswordHistByUserId(userId);
-        if (!CollectionUtils.isEmpty(passwordHistoryList)) {
-            for (String encodedPastPassword : passwordHistoryList) {
-                if (matchPassword(rawNewPassword, encodedPastPassword)) {
-                    throw new InvalidPasswordException("Conflict with password history.");
+            // check password history
+            LOG.info("Checking conflict with password history...");
+            List<String> passwordHistoryList = sdUserMapper.getPasswordHistByUserId(userId);
+            if (!CollectionUtils.isEmpty(passwordHistoryList)) {
+                for (String encodedPastPassword : passwordHistoryList) {
+                    if (matchPassword(rawNewPassword, encodedPastPassword)) {
+                        throw new InvalidPasswordException("Conflict with password history.");
+                    }
                 }
             }
         }
@@ -339,7 +341,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     public void resetPwd(String otp, String rawNewPassword)
             throws UserNotFoundException, InvalidPasswordException, InvalidInputException {
         // check otp
-        SdOtpBean sdOtpBean = sdOtpService.getValidResetPwdOtp(otp);
+        SdOtpBean sdOtpBean = sdOtpService.getValidOtp(otp);
         if (sdOtpBean == null) {
             throw new InvalidInputException("Invalid OTP.");
         }
@@ -531,13 +533,13 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
         if (isNewlyCreated) {
             // valid init password otp
-            SdOtpBean sdOtpBean = sdOtpService.getValidPwdOtp(userId, SdOtpEntity.ACTION.INIT_PWD);
+            SdOtpBean sdOtpBean = sdOtpService.getValidOtp(userId, SdOtpEntity.ACTION.INIT_PWD);
             if (sdOtpBean != null) {
                 throw new InvalidInputException("within the OTP effective time.");
             }
 
             // generate init password otp
-            String otp = sdOtpService.generatePwdOtp(userId, SdOtpEntity.ACTION.INIT_PWD);
+            String otp = sdOtpService.generateOtp(userId, SdOtpEntity.ACTION.INIT_PWD);
             LOG.info("Generated password OTP successfully for user " + username + ".");
             String recipient = sdUserEntity.getEmail();
 
@@ -549,13 +551,13 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             sdEmailService.send(SdEmailBean.INIT_PW_EMAIL.TEMPLATE_ID, recipient, dataMap);
         } else {
             // valid reset password otp
-            SdOtpBean sdOtpBean = sdOtpService.getValidPwdOtp(userId, SdOtpEntity.ACTION.RESET_PWD);
+            SdOtpBean sdOtpBean = sdOtpService.getValidOtp(userId, SdOtpEntity.ACTION.RESET_PWD);
             if (sdOtpBean != null) {
                 throw new InvalidInputException("within the OTP effective time.");
             }
 
             // generate reset password otp
-            String otp = sdOtpService.generatePwdOtp(userId, SdOtpEntity.ACTION.RESET_PWD);
+            String otp = sdOtpService.generateOtp(userId, SdOtpEntity.ACTION.RESET_PWD);
             LOG.info("Generated password OTP successfully for user " + username + ".");
             String recipient = sdUserEntity.getEmail();
 

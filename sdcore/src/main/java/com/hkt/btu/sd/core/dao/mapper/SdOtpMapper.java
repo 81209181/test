@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public interface SdOtpMapper {
 
-    SdOtpEntity getOtp(String otp, String action);
+    SdOtpEntity getOtp(String otp);
 
 
     void insertOtp(String userId, String action, String otp, LocalDateTime expirydate, String createby);

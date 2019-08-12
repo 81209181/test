@@ -3,13 +3,11 @@ package com.hkt.btu.sd.core.service;
 import com.hkt.btu.sd.core.service.bean.SdOtpBean;
 
 public interface SdOtpService {
-    SdOtpBean getValidResetPwdOtp(String otp);
-
-    String generatePwdResetOtp(String userId);
+    SdOtpBean getValidOtp(String otp);
 
     void expireOtp(String otp);
 
-    SdOtpBean getValidPwdOtp(String userId, String action);
+    SdOtpBean getValidOtp(String userId, String action);
 
-    String generatePwdOtp(String userId, String action);
+    String generateOtp(String userId, String action);
 }
