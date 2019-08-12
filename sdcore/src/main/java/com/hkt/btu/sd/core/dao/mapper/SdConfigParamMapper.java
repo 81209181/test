@@ -17,7 +17,7 @@ public interface SdConfigParamMapper {
 
     int updateValue(@Param("configGroup") String configGroup, @Param("configKey") String configKey,
                      @Param("configValue") String configValue, @Param("configValueType") String configValueType,
-                     @Param("modifyBy") Integer modifyBy);
+                     @Param("modifyBy") String modifyBy);
 
     void deleteConfig(@Param("configGroup") String configGroup, @Param("configKey") String configKey);
 
