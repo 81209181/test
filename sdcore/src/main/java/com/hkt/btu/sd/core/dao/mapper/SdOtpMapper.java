@@ -14,4 +14,5 @@ public interface SdOtpMapper {
 
     void expireOtp(String otp);
 
+    SdOtpEntity getOtpByUserId(Integer userId, String action);
 }

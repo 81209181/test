@@ -66,4 +66,20 @@ public class SdOtpServiceImpl implements SdOtpService {
         sdOtpMapper.expireOtp(otp);
     }
 
+    @Override
+    public SdOtpBean getValidPwdOtp(Integer userId, String action) {
+        SdOtpEntity sdOtpEntity = sdOtpMapper.getOtpByUserId(userId, action);
+        if(sdOtpEntity==null){
+            return null;
+        }
+
+        SdOtpBean sdOtpBean = new SdOtpBean();
+        sdOtpBeanPopulator.populate(sdOtpEntity, sdOtpBean);
+        return sdOtpBean;
+    }
+
+    @Override
+    public String generatePwdOtp(Integer userId, String action) {
+        return generateOtp(userId, action, SdUserEntity.SYSTEM.USER_ID);
+    }
 }

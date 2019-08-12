@@ -9,21 +9,17 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.annotation.Resource;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * User Service Implementation for usage in Spring Security
  */
 public class BtuUserServiceImpl implements BtuUserService {
     private static final Logger LOG = LogManager.getLogger(BtuUserService.class);
-
 
     @Resource(name = "btuPasswordEncoder")
     BCryptPasswordEncoder btuPasswordEncoder;
@@ -79,44 +75,28 @@ public class BtuUserServiceImpl implements BtuUserService {
     }
 
     public void resetLoginTriedByUsername(String username) {
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
     }
 
     public void addLoginTriedByUsername(String username) {
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
     }
 
     public void lockUserByUsername(String username) {
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
     }
 
     public void activateUserByUsername(String username) {
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
     }
 
     public boolean isEnabled(BtuUserBean btuUserBean) {
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
-        return false;
+        return true;
     }
 
     public boolean isNonLocked(BtuUserBean btuUserBean) {
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
         return true;
     }
 
     @Override
     public boolean hasAnyAuthority(String... targetAuthorities){
-        // get security context
-        SecurityContext context = SecurityContextHolder.getContext();
-        if (context == null) {
-            return false;
-        }
-        Authentication authentication = context.getAuthentication();
-        if (authentication == null){
-            return false;
-        }
-
-        return hasAnyAuthority(authentication.getAuthorities(), targetAuthorities);
+        return true;
     }
 
     protected boolean hasAnyAuthority(Collection<? extends GrantedAuthority> authorities, String... targetAuthorities) {

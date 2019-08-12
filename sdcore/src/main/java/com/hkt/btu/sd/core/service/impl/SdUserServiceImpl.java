@@ -5,6 +5,7 @@ import com.hkt.btu.common.core.service.BtuSensitiveDataService;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.core.service.impl.BtuUserServiceImpl;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
+import com.hkt.btu.sd.core.dao.entity.SdOtpEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserGroupEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdUserGroupMapper;
@@ -492,33 +493,56 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
 
     public void requestResetPassword(String username) throws UserNotFoundException, MessagingException {
-        SdUserEntity sdUserEntity = sdUserMapper.getUserByEmail(username);
+        // make email lower case
+        String email = StringUtils.lowerCase(username);
+
+        // get user data
+        SdUserEntity sdUserEntity = null;
+        if (username.contains("@")) {
+            sdUserEntity = sdUserMapper.getUserByEmail(email);
+        }
         if (sdUserEntity == null) {
             throw new UserNotFoundException();
         }
 
         Integer userId = sdUserEntity.getUserId();
-        String otp = sdOtpService.generatePwdResetOtp(userId);
         boolean isNewlyCreated = sdUserEntity.getPasswordModifydate() == null;
-        LOG.info("Generated password OTP successfully for user " + username + ".");
 
-
-        // send otp email
         if (isNewlyCreated) {
+            // valid init password otp
+            SdOtpBean sdOtpBean = sdOtpService.getValidPwdOtp(userId, SdOtpEntity.ACTION.INIT_PWD);
+            if (sdOtpBean != null) {
+                throw new InvalidInputException("within the OTP effective time.");
+            }
+
+            // generate init password otp
+            String otp = sdOtpService.generatePwdOtp(userId, SdOtpEntity.ACTION.INIT_PWD);
+            LOG.info("Generated password OTP successfully for user " + username + ".");
             String recipient = sdUserEntity.getEmail();
 
             Map<String, Object> dataMap = new HashMap<>();
             dataMap.put(SdEmailBean.EMAIL_BASIC_RECIPIENT_NAME, sdUserEntity.getName());
             dataMap.put(SdEmailBean.INIT_PW_EMAIL.OTP, otp);
 
+            // send otp email
             sdEmailService.send(SdEmailBean.INIT_PW_EMAIL.TEMPLATE_ID, recipient, dataMap);
         } else {
+            // valid reset password otp
+            SdOtpBean sdOtpBean = sdOtpService.getValidPwdOtp(userId, SdOtpEntity.ACTION.RESET_PWD);
+            if (sdOtpBean != null) {
+                throw new InvalidInputException("within the OTP effective time.");
+            }
+
+            // generate reset password otp
+            String otp = sdOtpService.generatePwdOtp(userId, SdOtpEntity.ACTION.RESET_PWD);
+            LOG.info("Generated password OTP successfully for user " + username + ".");
             String recipient = sdUserEntity.getEmail();
 
             Map<String, Object> dataMap = new HashMap<>();
             dataMap.put(SdEmailBean.EMAIL_BASIC_RECIPIENT_NAME, sdUserEntity.getName());
             dataMap.put(SdEmailBean.RESET_PW_EMAIL.OTP, otp);
 
+            // send otp email
             sdEmailService.send(SdEmailBean.RESET_PW_EMAIL.TEMPLATE_ID, recipient, dataMap);
         }
     }

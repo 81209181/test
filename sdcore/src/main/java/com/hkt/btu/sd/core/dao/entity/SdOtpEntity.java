@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 public class SdOtpEntity extends BaseEntity {
     public static class ACTION{
         public static final String RESET_PWD = "RESET_PWD";
+        public static final String INIT_PWD = "INIT_PWD";
     }
 
 
