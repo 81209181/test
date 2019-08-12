@@ -1,5 +1,8 @@
 package com.hkt.btu.common.core.dao.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BtuConfigParamEntity extends BaseEntity {
 
     // reserved config groups
@@ -24,33 +27,22 @@ public class BtuConfigParamEntity extends BaseEntity {
         public static final String CONFIG_KEY_MAIL_USERNAME = "mailUsername";
     }
 
-    public static class CRONJOB{
-        public static final String CONFIG_GROUP = "CRONJOB";
-
-        public static final String CONFIG_KEY_ERROR_EMAIL = "errorEmail";
-    }
-
-    public static class NFM{
-        public static final String CONFIG_GROUP = "NFM";
-
-        public static final String CONFIG_KEY_EMAIL = "email";
-    }
-
-    public static class VISIT_LOC_EMAIL{
-        public static final String CONFIG_GROUP = "VISIT_LOC_EMAIL";
-    }
-
-    public static class USER_GROUP_CREATE_MAPPING{
-        public static final String CONFIG_GROUP = "USER_GROUP_CREATE_MAPPING";
-    }
-
-
     public static class TYPE {
         public static final String STRING = "String";
         public static final String INTEGER = "Integer";
         public static final String DOUBLE = "Double";
         public static final String BOOLEAN = "Boolean";
         public static final String LOCAL_DATE_TIME = "LocalDateTime";
+    }
+
+    public static List<String> getConfigTypeList() {
+        List<String> list = new ArrayList<>();
+        list.add(TYPE.STRING);
+        list.add(TYPE.INTEGER);
+        list.add(TYPE.DOUBLE);
+        list.add(TYPE.BOOLEAN);
+        list.add(TYPE.LOCAL_DATE_TIME);
+        return list;
     }
 
     private String configGroup;

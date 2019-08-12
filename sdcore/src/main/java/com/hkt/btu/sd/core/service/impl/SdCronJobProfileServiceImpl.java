@@ -75,6 +75,7 @@ public class SdCronJobProfileServiceImpl extends BtuCronJobProfileServiceImpl im
         }
 
         // log
+        LOG.info("activate job profile:{},{}",jobGroup,jobName);
         sdCronJobLogService.logUserActivateJob(jobGroup, jobName);
     }
 
@@ -87,6 +88,7 @@ public class SdCronJobProfileServiceImpl extends BtuCronJobProfileServiceImpl im
         }
 
         // log
+        LOG.info("deactivate job profile:{},{}",jobGroup,jobName);
         sdCronJobLogService.logUserDeactivateJob(jobGroup, jobName);
     }
 
