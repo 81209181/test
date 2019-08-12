@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 public class SdUserEntity extends BaseEntity {
 
     public static class SYSTEM{
-        public static final Integer USER_ID = 0;
+        public static final String USER_ID = "0";
     }
 
     public static class STATUS{
@@ -16,7 +16,7 @@ public class SdUserEntity extends BaseEntity {
         public static final String DISABLE = "D";
     }
 
-    private Integer userId;
+    private String userId;
     private String name;
     private String status;
     private byte[] mobile;
@@ -30,13 +30,11 @@ public class SdUserEntity extends BaseEntity {
     private Integer loginTried;
 
 
-
-
-    public Integer getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

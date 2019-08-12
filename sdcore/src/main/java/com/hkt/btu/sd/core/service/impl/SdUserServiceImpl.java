@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.core.service.impl;
 
 import com.hkt.btu.common.core.exception.UserNotFoundException;
+import com.hkt.btu.common.core.service.BtuLdapService;
 import com.hkt.btu.common.core.service.BtuSensitiveDataService;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.core.service.impl.BtuUserServiceImpl;
@@ -29,6 +30,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
+import java.rmi.MarshalledObject;
 import java.security.GeneralSecurityException;
 import java.util.*;
 
@@ -52,6 +54,9 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
     @Resource(name = "sensitiveDataService")
     BtuSensitiveDataService btuSensitiveDataService;
+
+    @Resource(name = "ldapService")
+    BtuLdapService btuLdapService;
 
     @Override
     public BtuUserBean getCurrentUserBean() throws UserNotFoundException {
@@ -93,13 +98,13 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     }
 
     @Override
-    public Integer getCurrentUserUserId() {
+    public String getCurrentUserUserId() {
         SdUserBean sdUserBean = (SdUserBean) getCurrentUserBean();
         return sdUserBean.getUserId();
     }
 
     @Override
-    public SdUserBean getUserByUserId(Integer userId) throws UserNotFoundException {
+    public SdUserBean getUserByUserId(String userId) throws UserNotFoundException {
         if (userId == null) {
             throw new UserNotFoundException("Empty user id input.");
         }
@@ -128,7 +133,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
 
     @Transactional
-    public Integer createUser(String name, String mobile, String email, String staffId,
+    public String createUser(String name, String mobile, String email, String staffId,
                               Integer companyId, List<String> groupIdList)
             throws DuplicateUserEmailException, UserNotFoundException, GeneralSecurityException {
         if (StringUtils.isEmpty(name)) {
@@ -138,14 +143,15 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         }
 
         // get current user user id
-        Integer createby = getCurrentUserUserId();
+        String createby = getCurrentUserUserId();
 
         // check current user has right to create user of user group
-        boolean isEligibleUserGroup = sdUserGroupService.isEligibleToGrantUserGroup(groupIdList);
+        // TODO: Wait for UserGroup
+       /* boolean isEligibleUserGroup = sdUserGroupService.isEligibleToGrantUserGroup(groupIdList);
         if (!isEligibleUserGroup) {
             LOG.warn("Ineligible to create user of selected user group (" + groupIdList + ") by user (" + createby + ").");
             throw new InvalidInputException("Invalid user group.");
-        }
+        }*/
 
 
         // check email duplicated
@@ -162,18 +168,23 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         String password = uuid.toString();
         String encodedPassword = encodePassword(password);
 
-        // encrypt
-        byte[] encryptedMobile = StringUtils.isEmpty(mobile) ? null : btuSensitiveDataService.encryptFromString(mobile);
-        byte[] encryptedStaffId = StringUtils.isEmpty(staffId) ? null : btuSensitiveDataService.encryptFromString(staffId);
+        // get New UserId
+        String newUserId = "E" + sdUserMapper.getNewUserId().toString();
+
+        // TODO: encrypt
+        //byte[] encryptedMobile = StringUtils.isEmpty(mobile) ? null : btuSensitiveDataService.encryptFromString(mobile);
+        //byte[] encryptedStaffId = StringUtils.isEmpty(staffId) ? null : btuSensitiveDataService.encryptFromString(staffId);
 
         // prepare entity
         SdUserEntity sdUserEntity = new SdUserEntity();
+
+        sdUserEntity.setUserId(newUserId);
         sdUserEntity.setName(name);
         sdUserEntity.setStatus(SdUserEntity.STATUS.ACTIVE);
-        sdUserEntity.setMobile(encryptedMobile);
+        sdUserEntity.setMobile(mobile.getBytes());
         sdUserEntity.setEmail(email);
         sdUserEntity.setCompanyId(companyId);
-        sdUserEntity.setStaffId(encryptedStaffId);
+        sdUserEntity.setStaffId(staffId.getBytes());
         sdUserEntity.setPassword(encodedPassword);
         sdUserEntity.setCreateby(createby);
 
@@ -181,14 +192,14 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         sdUserMapper.insertUser(sdUserEntity);
 
         // get new user id
-        Integer newUserId = sdUserEntity.getUserId();
+        //Integer newUserId = sdUserEntity.getUserId();
 
         // create user group relation in db
-        if (!CollectionUtils.isEmpty(groupIdList)) {
+        /*if (!CollectionUtils.isEmpty(groupIdList)) {
             for (String groupId : groupIdList) {
                 sdUserGroupMapper.insertUserUserGroup(newUserId, groupId, createby);
             }
-        }
+        }*/
 
         LOG.info("User (id: " + newUserId + ") " + email + " created.");
 
@@ -204,9 +215,19 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         return newUserId;
     }
 
+    @Transactional
+    public String createLdapUser(String name, String mobile, String employeeNumber, String staffId, String ldapDomain)
+            throws DuplicateUserEmailException, UserNotFoundException {
+        // 1. check employeeNumber and ldapDomain
+        // 2. get current userId for CreateBy
+        // 3. get current ldapUser's account & password
+        // 4. go to Ldap Server search this create user.
+        return null;
+    }
+
     @Override
     @Transactional
-    public void updateUser(Integer userId, String newName, String newMobile, String newStaffId,
+    public void updateUser(String userId, String newName, String newMobile, String newStaffId,
                            Boolean isNewAdmin, Boolean isNewUser, Boolean isNewCAdmin, Boolean isNewCUser)
             throws UserNotFoundException, InsufficientAuthorityException, InvalidInputException, GeneralSecurityException {
         SdUserBean currentUser = (SdUserBean) this.getCurrentUserBean();
@@ -258,7 +279,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
      * Transactional is not marked here, because it takes the invoke of another bean via Spring AOP to trigger rollback.
      * https://stackoverflow.com/questions/4396284/does-spring-transactional-attribute-work-on-a-private-method
      */
-    private void updatePassword(Integer userId, String rawNewPassword)
+    private void updatePassword(String userId, String rawNewPassword)
             throws UserNotFoundException, InvalidPasswordException {
         LOG.info("Trying to update password for user (" + userId + ")...");
         checkValidPassword(rawNewPassword);
@@ -293,7 +314,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
     @Override
     @Transactional
-    public void updateUserPwd(Integer userId, String rawOldPassword, String rawNewPassword)
+    public void updateUserPwd(String userId, String rawOldPassword, String rawNewPassword)
             throws UserNotFoundException, InvalidPasswordException {
         SdUserEntity sdUserEntity = sdUserMapper.getUserByUserId(userId, null);
         if (sdUserEntity == null) {
@@ -323,7 +344,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             throw new InvalidInputException("Invalid OTP.");
         }
 
-        Integer userId = sdOtpBean.getUserId();
+        String userId = sdOtpBean.getUserId();
         LOG.info("Checked password reset OTP for user (" + userId + ").");
 
         // update new password
@@ -341,7 +362,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             throw new InvalidInputException("Cannot activate your own account!");
         }
 
-        Integer modifyby = getCurrentUserUserId();
+        String modifyby = getCurrentUserUserId();
         sdUserMapper.resetLoginTriedByUsername(username);
         sdUserMapper.updateUserStatusByUsername(username, SdUserEntity.STATUS.ACTIVE, modifyby);
     }
@@ -355,7 +376,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     }
 
     public void lockUserByUsername(String username) {
-        Integer modifyby = SdUserEntity.SYSTEM.USER_ID;
+        String modifyby = SdUserEntity.SYSTEM.USER_ID;
         sdUserMapper.updateUserStatusByUsername(username, SdUserEntity.STATUS.LOCKED, modifyby);
     }
 
@@ -365,7 +386,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             throw new InvalidInputException("Cannot deactivate your own account!");
         }
 
-        Integer modifyby = getCurrentUserUserId();
+        String modifyby = getCurrentUserUserId();
         sdUserMapper.updateUserStatusByUsername(username, SdUserEntity.STATUS.DISABLE, modifyby);
     }
 
@@ -407,7 +428,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         }
     }
 
-    public Page<SdUserBean> searchUser(Pageable pageable, Integer userId, String email, String name, String userGroupId)
+    public Page<SdUserBean> searchUser(Pageable pageable, String userId, String email, String name, String userGroupId)
             throws AuthorityNotFoundException {
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
@@ -464,7 +485,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
      * Return user id that the current user has access to,
      * return null if there is no limitation.
      */
-    public Integer getUserIdRestriction() throws AuthorityNotFoundException {
+    public String getUserIdRestriction() throws AuthorityNotFoundException {
         SdUserBean currentUser;
         try {
             currentUser = (SdUserBean) getCurrentUserBean();
@@ -472,7 +493,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             throw new AuthorityNotFoundException(e.getMessage());
         }
 
-        Integer userIdRestriction = currentUser.getUserId();
+        String userIdRestriction = currentUser.getUserId();
         if (isAdminUser()) {
             // admin user has no restriction over user id (independent of company id)
             return null;
@@ -505,7 +526,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             throw new UserNotFoundException();
         }
 
-        Integer userId = sdUserEntity.getUserId();
+        String userId = sdUserEntity.getUserId();
         boolean isNewlyCreated = sdUserEntity.getPasswordModifydate() == null;
 
         if (isNewlyCreated) {

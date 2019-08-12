@@ -17,7 +17,7 @@ public class BtuUserBean extends BaseBean {
 
     private Set<GrantedAuthority> authorities;
 
-    private Integer userId;
+    private String userId;
     private String name;
     private String email;
     private String mobile;
@@ -26,11 +26,11 @@ public class BtuUserBean extends BaseBean {
     private Integer companyId;
     private String companyName;
 
-    public Integer getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

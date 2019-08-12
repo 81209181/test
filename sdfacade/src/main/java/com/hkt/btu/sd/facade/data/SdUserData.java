@@ -6,7 +6,7 @@ import java.util.List;
 
 public class SdUserData implements DataInterface {
 
-    private Integer userId;
+    private String userId;
     private String name;
     private String mobile;
     private String email;
@@ -22,11 +22,11 @@ public class SdUserData implements DataInterface {
 
     private List<String> userGroupList;
 
-    public Integer getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

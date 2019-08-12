@@ -14,18 +14,18 @@ import java.util.List;
 
 public interface SdUserService extends BtuUserService {
 
-    Integer getCurrentUserUserId() throws UserNotFoundException;
+    String getCurrentUserUserId() throws UserNotFoundException;
 
     Integer getCompanyIdRestriction() throws AuthorityNotFoundException;
-    Integer getUserIdRestriction() throws AuthorityNotFoundException;
+    String getUserIdRestriction() throws AuthorityNotFoundException;
     boolean isInternalUser();
     boolean isAdminUser();
 
-    SdUserBean getUserByUserId(Integer userId) throws UserNotFoundException;
+    SdUserBean getUserByUserId(String userId) throws UserNotFoundException;
 
-    Page<SdUserBean> searchUser(Pageable pageable, Integer userId, String email, String name, String userGroupId);
+    Page<SdUserBean> searchUser(Pageable pageable, String userId, String email, String name, String userGroupId);
 
-    void updateUserPwd(Integer userId, String rawOldPassword, String rawNewPassword)
+    void updateUserPwd(String userId, String rawOldPassword, String rawNewPassword)
             throws UserNotFoundException, InvalidPasswordException;
     void resetPwd(String otp, String rawNewPassword)
             throws UserNotFoundException, InvalidPasswordException, InvalidInputException;
@@ -33,10 +33,15 @@ public interface SdUserService extends BtuUserService {
     void disableUserByUsername(String username) throws UserNotFoundException, InvalidInputException;
 
 
-    Integer createUser(String name, String mobile, String email, String staffId,
+    String createUser(String name, String mobile, String email, String staffId,
                        Integer companyId, List<String> groupIdList)
             throws DuplicateUserEmailException, UserNotFoundException, GeneralSecurityException;
-    void updateUser(Integer userId, String newName, String newMobile, String newStaffId,
+
+    String createLdapUser(String name, String mobile, String employeeNumber, String staffId,
+                           String ldapDomain)
+            throws DuplicateUserEmailException, UserNotFoundException;
+
+    void updateUser(String userId, String newName, String newMobile, String newStaffId,
                     Boolean isNewAdmin, Boolean isNewUser, Boolean isNewCAdmin, Boolean isNewCUser)
             throws UserNotFoundException, InsufficientAuthorityException, GeneralSecurityException;
 

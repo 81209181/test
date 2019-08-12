@@ -13,35 +13,35 @@ public interface SdUserMapper {
 
     SdUserEntity getUserByEmail(@Param("email") String email);
 
-    SdUserEntity getUserByUserId(Integer userId, Integer companyId);
+    SdUserEntity getUserByUserId(String userId, Integer companyId);
 
     SdUserEntity getUserByLdapDomain(@Param("ldapDomain") String ldapDomain);
 
-    List<String> getPasswordHistByUserId(@Param("userId") Integer userId);
+    List<String> getPasswordHistByUserId(@Param("userId") String userId);
 
 
     List<SdUserEntity> searchUser(@Param("offset") long offset, @Param("pageSize") int pageSize,
-                                  Integer companyId, Integer userId, String email, String name, String userGroupId);
+                                  Integer companyId, String userId, String email, String name, String userGroupId);
 
-    Integer countSearchUser(Integer companyId, Integer userId, String email, String name, String userGroupId);
+    Integer countSearchUser(Integer companyId, String userId, String email, String name, String userGroupId);
 
 
     void insertUser(SdUserEntity sdUserEntity);
 
-    void updateUser(@Param("userId") Integer userId,
+    void updateUser(@Param("userId") String userId,
                     @Param("name") String name, @Param("mobile") byte[] mobile, @Param("staffId") byte[] staffId,
-                    @Param("modifyby") Integer modifyby);
+                    @Param("modifyby") String modifyby);
 
 
-    void updateUserPassword(@Param("userId") Integer userId, @Param("password") String password);
+    void updateUserPassword(@Param("userId") String userId, @Param("password") String password);
 
     void addLoginTriedByUsername(@Param("username") String username);
 
     void resetLoginTriedByUsername(@Param("username") String username);
 
-    void updateUserStatusByUsername(@Param("username") String username, @Param("status") String status, @Param("modifyby") Integer modifyby);
+    void updateUserStatusByUsername(@Param("username") String username, @Param("status") String status, @Param("modifyby") String modifyby);
 
-    void insertPasswordHist(@Param("userId") Integer userId, @Param("password") String password);
+    void insertPasswordHist(@Param("userId") String userId, @Param("password") String password);
 
 
 }

@@ -4,7 +4,7 @@ import com.hkt.btu.common.facade.data.DataInterface;
 
 
 public class UpdateUserFormData implements DataInterface {
-    private Integer userId;
+    private String userId;
     private String name;
     private String mobile;
     private String staffId;
@@ -15,13 +15,11 @@ public class UpdateUserFormData implements DataInterface {
     private Boolean userGroupCUser;
 
 
-
-
-    public Integer getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

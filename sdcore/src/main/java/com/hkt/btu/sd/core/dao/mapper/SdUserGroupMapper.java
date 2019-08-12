@@ -11,6 +11,6 @@ public interface SdUserGroupMapper {
     List<SdUserGroupEntity> getAllUserGroup();
     List<SdUserGroupEntity> getUserGroupByUserId(@Param("userId") Integer userId);
 
-    void insertUserUserGroup(@Param("userId") Integer userId, @Param("groupId") String groupId, @Param("createby") Integer createby);
+    void insertUserUserGroup(@Param("userId") Integer userId, @Param("groupId") String groupId, @Param("createby") String createby);
     void deleteUserUserGroup(@Param("userId") Integer userId, @Param("groupId") String groupId);
 }

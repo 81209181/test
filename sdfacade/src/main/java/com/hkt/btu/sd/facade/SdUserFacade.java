@@ -9,7 +9,7 @@ import java.util.LinkedList;
 
 public interface SdUserFacade {
     SdUserData getCurrentUser();
-    SdUserData getUserByUserId(Integer userId);
+    SdUserData getUserByUserId(String userId);
 
     boolean isInternalUser();
 
@@ -18,12 +18,12 @@ public interface SdUserFacade {
 
     String updateUser(UpdateUserFormData updateUserFormData);
 
-    String activateUser(Integer userId);
-    String deactivateUser(Integer userId);
+    String activateUser(String userId);
+    String deactivateUser(String userId);
 
     String updateCurrentUserPwd(UpdatePwdFormData updatePwdFormData);
     String resetPassword(ResetPwdFormData resetPwdFormData);
     String requestResetPassword(String email);
 
-    PageData<SdUserData> searchUser(Pageable pageable, Integer userId, String email, String name, String userGroupId);
+    PageData<SdUserData> searchUser(Pageable pageable, String userId, String email, String name, String userGroupId);
 }

@@ -67,11 +67,10 @@
         select SEQ_USER_PROFILE_USER_ID.NEXTVAL FROM DUAL
     </select>
 
-    <insert id="insertUser" parameterType="com.hkt.btu.sd.core.dao.entity.SdUserEntity"
-            useGeneratedKeys="true" keyProperty="userId">
-        insert into NOC_USER (NAME, STATUS, MOBILE, EMAIL, COMPANY_ID, STAFF_ID, PASSWORD, PASSWORD_MODIFYDATE,
+    <insert id="insertUser" parameterType="com.hkt.btu.sd.core.dao.entity.SdUserEntity">
+        insert into USER_PROFILE (USER_ID,NAME, STATUS, MOBILE, EMAIL, STAFF_ID, PASSWORD, PASSWORD_MODIFYDATE,
         CREATEBY, MODIFYBY)
-        values (#{name}, #{status}, #{mobile}, #{email}, #{companyId}, #{staffId}, #{password}, null, #{createby},
+        values (#{userId}, #{name}, #{status}, #{mobile}, #{email}, #{staffId}, #{password}, null, #{createby},
         #{createby})
     </insert>
 

@@ -78,10 +78,21 @@ public class SdInputCheckServiceImpl implements SdInputCheckService {
     }
 
     @Override
-    public String checkLdapDomain(String input) throws InvalidInputException {
+    public String checkEmployeeNumber(String input) throws InvalidInputException {
         if (StringUtils.isEmpty(input)) {
-            throw new InvalidInputException("Empty input Ldap Domain.");
+            throw new InvalidInputException("Empty input EmployeeNumber.");
+        } else if (input.length() != 8) {
+            throw new InvalidInputException("Please input correct employeeNumber");
         }
         return null;
     }
+
+    @Override
+    public String checkLdapDomain(String input) throws InvalidInputException {
+        if (StringUtils.isEmpty(input)) {
+            throw new InvalidInputException("Empty input LdapDomain.");
+        }
+        return null;
+    }
+
 }

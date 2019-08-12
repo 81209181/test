@@ -91,7 +91,7 @@ public class SdCronJobProfileServiceImpl extends BtuCronJobProfileServiceImpl im
     }
 
     private int updateJobProfileStatus(String jobGroup, String jobName, String status){
-        Integer modifyby = sdUserService.getCurrentUserUserId();
+        String modifyby = sdUserService.getCurrentUserUserId();
         return sdCronJobMapper.updateStatus(jobGroup, jobName, status, modifyby);
     }
 

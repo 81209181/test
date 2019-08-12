@@ -42,7 +42,7 @@ public class SdOtpServiceImpl implements SdOtpService {
 
 
     @SuppressWarnings("SameParameterValue")
-    private String generateOtp(Integer userId, String action, Integer createby) {
+    private String generateOtp(String userId, String action, String createby) {
         UUID uuid = UUID.randomUUID();
         String otp = uuid.toString();
 
@@ -57,7 +57,7 @@ public class SdOtpServiceImpl implements SdOtpService {
     }
 
     @Override
-    public String generatePwdResetOtp(Integer userId) {
+    public String generatePwdResetOtp(String userId) {
         return generateOtp(userId, SdOtpEntity.ACTION.RESET_PWD, SdUserEntity.SYSTEM.USER_ID);
     }
 
@@ -67,7 +67,7 @@ public class SdOtpServiceImpl implements SdOtpService {
     }
 
     @Override
-    public SdOtpBean getValidPwdOtp(Integer userId, String action) {
+    public SdOtpBean getValidPwdOtp(String userId, String action) {
         SdOtpEntity sdOtpEntity = sdOtpMapper.getOtpByUserId(userId, action);
         if(sdOtpEntity==null){
             return null;
@@ -79,7 +79,7 @@ public class SdOtpServiceImpl implements SdOtpService {
     }
 
     @Override
-    public String generatePwdOtp(Integer userId, String action) {
+    public String generatePwdOtp(String userId, String action) {
         return generateOtp(userId, action, SdUserEntity.SYSTEM.USER_ID);
     }
 }
