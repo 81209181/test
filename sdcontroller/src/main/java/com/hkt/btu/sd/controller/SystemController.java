@@ -8,6 +8,7 @@ import com.hkt.btu.sd.facade.data.SdConfigParamData;
 import com.hkt.btu.sd.facade.data.SdCronJobInstData;
 import com.hkt.btu.sd.facade.data.SdCronJobProfileData;
 import com.hkt.btu.sd.facade.data.SdSiteConfigData;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -61,6 +62,10 @@ public class SystemController {
 
     @PostMapping("config-param/createConfigParam")
     public ResponseEntity<?> createConfigParam(String configGroup, String configKey,String configValue,String configValueType){
+        String msg=sdConfigParamFacade.checkConfigParam(configGroup, configKey, configValue, configValueType);
+        if (StringUtils.isNotEmpty(msg)) {
+            return ResponseEntity.badRequest().body(msg);
+        }
         if (sdConfigParamFacade.checkConfigKey(configGroup, configKey)) {
             return ResponseEntity.badRequest().body(configKey+ " already exists.");
         }
@@ -73,6 +78,7 @@ public class SystemController {
 
     @GetMapping("config-param/{configGroup}/{configKey}")
     public String showEditConfigParam(@PathVariable String configGroup, @PathVariable String configKey, Model model) {
+        model.addAttribute("configGroupList", sdConfigParamFacade.getConfigGroupList());
         model.addAttribute("configTypeList", sdConfigParamFacade.getConfigTypeList());
         return "system/configParam/editConfigParam";
     }
@@ -93,6 +99,10 @@ public class SystemController {
 
     @PostMapping("config-param/updateConfigParam")
     public ResponseEntity<?> updateConfigParam(String configGroup, String configKey,String configValue,String configValueType) {
+        String msg=sdConfigParamFacade.checkConfigParam(configGroup, configKey, configValue, configValueType);
+        if (StringUtils.isNotEmpty(msg)) {
+            return ResponseEntity.badRequest().body(msg);
+        }
         if (sdConfigParamFacade.updateConfigParam(configGroup, configKey, configValue, configValueType)) {
             return ResponseEntity.ok().body("Config param update success.");
         }

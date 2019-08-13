@@ -26,23 +26,12 @@ $().ready(function(){
     })
 
     $('#btnUpdateConfigParam').on("click",function(){
-        let configValue =$('#configValue').val().trim();
-        let configValueType =$('#configValueType').val().trim();
-//        console.log(configValue);
-//        console.log(configValueType);
         clearAllMsg();
-        if(configValue.length < 1){
-            showErrorMsg("Please input Config Value.");
-            return;
-        }
-        if(!checkConfigValue(configValue,configValueType)){
-            return;
-        }
         $.post('/system/config-param/updateConfigParam',{
                 configGroup:configGroup,
                 configKey:configKey,
-                configValue:configValue,
-                configValueType:configValueType
+                configValue:$('#configValue').val().trim(),
+                configValueType:$('#configValueType').val().trim()
         },function(res){
             showInfoMsg(res);
         }).fail(function(e){

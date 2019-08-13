@@ -30,14 +30,6 @@ $().ready(function(){
 
     $('#btnCreateConfigParam').on('click',function(){
         clearAllMsg();
-        let configValue = $('#configValue').val();
-        if(configValue.length < 1){
-            showErrorMsg("Please input Config Value.");
-            return;
-        }
-        if(!checkConfigValue(configValue,$('#configValueType').val())){
-            return;
-        }
         $.post('/system/config-param/createConfigParam',$('form').serialize(),function(res){
             showInfoMsg(res);
         }).fail(function(e){
