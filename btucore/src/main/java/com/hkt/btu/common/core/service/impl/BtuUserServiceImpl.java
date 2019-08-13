@@ -86,6 +86,11 @@ public class BtuUserServiceImpl implements BtuUserService {
     public void activateUserByUsername(String username) {
     }
 
+    @Override
+    public void verifyLdapUser(BtuUserBean userDetailBean) {
+
+    }
+
     public boolean isEnabled(BtuUserBean btuUserBean) {
         return true;
     }

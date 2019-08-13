@@ -30,6 +30,12 @@
         where email = #{email}
     </select>
 
+    <select id="getLdapUserByUserId" parameterType="java.lang.String" resultMap="SdUserEntity">
+        select *
+        from USER_PROFILE
+        where user_id = #{userId}
+    </select>
+
     <select id="getUserByLdapDomain" resultMap="SdUserEntity">
         select *
         from USER_PROFILE

@@ -42,16 +42,14 @@ public class SdUserFacadeImpl implements SdUserFacade {
             LOG.warn("Null sdUserData.");
             return null;
         }
-        if (StringUtils.isEmpty(createUserFormData.getEmail())) {
-            CreateResultData createResultData = createLdapUser(createUserFormData);
-            return createResultData;
-        }
 
+        Integer companyId = createUserFormData.getCompanyId();
         String name = StringUtils.trim(createUserFormData.getName());
+        String email = StringUtils.trim(createUserFormData.getEmail());
         String mobile = StringUtils.trim(createUserFormData.getMobile());
         String staffId = StringUtils.trim(createUserFormData.getStaffId());
-        String email = StringUtils.trim(createUserFormData.getEmail());
-        Integer companyId = createUserFormData.getCompanyId();
+        String ldapDomain = StringUtils.trim(createUserFormData.getLdapDomain());
+        String employeeNumber = StringUtils.trim(createUserFormData.getUserId());
 
         // TODO: Wait for UserGroup
         //List<String> userGroupIdList = createUserFormData.getUserGroupIdList();
@@ -63,37 +61,15 @@ public class SdUserFacadeImpl implements SdUserFacade {
             sdInputCheckService.checkName(name);
             sdInputCheckService.checkMobile(mobile);
             sdInputCheckService.checkStaffIdHkidPassport(staffId);
-            sdInputCheckService.checkEmail(email);
-            newUserId = sdUserService.createUser(name, mobile, email, staffId, companyId, null);
+            if (StringUtils.isNotEmpty(email)) {
+                sdInputCheckService.checkEmail(email);
+                newUserId = sdUserService.createUser(name, mobile, email, staffId, companyId, null);
+            } else {
+                sdInputCheckService.checkLdapDomain(ldapDomain);
+                sdInputCheckService.checkEmployeeNumber(employeeNumber);
+                newUserId = sdUserService.createLdapUser(name, mobile, employeeNumber, staffId, ldapDomain);
+            }
         } catch (InvalidInputException | UserNotFoundException | DuplicateUserEmailException | GeneralSecurityException e) {
-            LOG.warn(e.getMessage());
-            return CreateResultData.of(e.getMessage());
-        }
-        return new CreateResultData(newUserId, null);
-    }
-
-    @Override
-    public CreateResultData createLdapUser(CreateUserFormData createUserFormData) {
-        if (createUserFormData == null) {
-            LOG.warn("Null sdUserData");
-            return null;
-        }
-
-        String name = StringUtils.trim(createUserFormData.getName());
-        String mobile = StringUtils.trim(createUserFormData.getMobile());
-        String staffId = StringUtils.trim(createUserFormData.getStaffId());
-        String userId = StringUtils.trim(createUserFormData.getUserId());
-        String ldpaDomain = StringUtils.trim(createUserFormData.getLdapDomain());
-
-        String newUserId;
-        try {
-            sdInputCheckService.checkName(name);
-            sdInputCheckService.checkMobile(mobile);
-            sdInputCheckService.checkLdapDomain(ldpaDomain);
-            sdInputCheckService.checkEmployeeNumber(userId);
-            sdInputCheckService.checkStaffIdHkidPassport(staffId);
-            newUserId = sdUserService.createLdapUser(name, mobile, userId, staffId, ldpaDomain);
-        } catch (Exception e) {
             LOG.warn(e.getMessage());
             return CreateResultData.of(e.getMessage());
         }

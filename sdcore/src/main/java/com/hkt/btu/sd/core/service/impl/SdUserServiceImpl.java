@@ -217,11 +217,29 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     @Transactional
     public String createLdapUser(String name, String mobile, String employeeNumber, String staffId, String ldapDomain)
             throws DuplicateUserEmailException, UserNotFoundException {
-        // 1. check employeeNumber and ldapDomain
-        // 2. get current userId for CreateBy
-        // 3. get current ldapUser's account & password
-        // 4. go to Ldap Server search this create user.
-        return "";
+        // 1. get current userId for CreateBy
+        String createBy = getCurrentUserUserId();
+        // 2. Check if there is a duplicate name
+        SdUserEntity sdUserEntity = sdUserMapper.getLdapUserByUserId(name);
+        if (sdUserEntity != null) {
+            throw new DuplicateUserEmailException("User already exist.");
+        }
+        // 3. Data input
+        SdUserEntity userEntity = new SdUserEntity();
+        userEntity.setName(name);
+        userEntity.setCreateby(createBy);
+        userEntity.setUserId(employeeNumber);
+        userEntity.setMobile(mobile.getBytes());
+        userEntity.setStaffId(staffId.getBytes());
+        userEntity.setStatus(SdUserEntity.STATUS.ACTIVE);
+        userEntity.setLdapDomain(employeeNumber + ldapDomain);
+
+        // 4. create user in db
+        sdUserMapper.insertUser(userEntity);
+
+        LOG.info("User (id: " + employeeNumber + ") created.");
+
+        return employeeNumber;
     }
 
     @Override
@@ -364,6 +382,14 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         String modifyby = getCurrentUserUserId();
         sdUserMapper.resetLoginTriedByUsername(username);
         sdUserMapper.updateUserStatusByUsername(username, SdUserEntity.STATUS.ACTIVE, modifyby);
+    }
+
+    @Override
+    @Transactional
+    public void verifyLdapUser(BtuUserBean userDetailBean) {
+        if (StringUtils.isNotEmpty(userDetailBean.getEmail())) {
+
+        }
     }
 
     public void resetLoginTriedByUsername(String username) {

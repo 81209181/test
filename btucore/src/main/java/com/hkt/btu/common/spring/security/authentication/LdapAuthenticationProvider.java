@@ -70,7 +70,6 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
             // login ldap
             btuLdapService.authenticationOnly(ldapInfo, auth);
 
-
             //if success, record it
             auditTrailService.insertLoginAuditTrail(userDetails);
 

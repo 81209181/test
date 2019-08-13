@@ -13,7 +13,10 @@ public interface SdUserMapper {
 
     SdUserEntity getUserByEmail(@Param("email") String email);
 
+    SdUserEntity getLdapUserByUserId(String userId);
+
     SdUserEntity getUserByUserId(String userId, Integer companyId);
+
 
     SdUserEntity getUserByLdapDomain(@Param("ldapDomain") String ldapDomain);
 

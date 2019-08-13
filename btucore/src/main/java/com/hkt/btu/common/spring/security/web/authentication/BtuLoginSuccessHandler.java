@@ -1,6 +1,8 @@
 package com.hkt.btu.common.spring.security.web.authentication;
 
 import com.hkt.btu.common.core.service.BtuAuditTrailService;
+import com.hkt.btu.common.core.service.BtuUserService;
+import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
@@ -16,6 +18,9 @@ import java.io.IOException;
 @Service
 public class BtuLoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
+    @Resource(name = "userService")
+    BtuUserService btuUserService;
+
     @Resource(name = "auditTrailService")
     BtuAuditTrailService auditTrailService;
 
@@ -30,6 +35,11 @@ public class BtuLoginSuccessHandler extends SavedRequestAwareAuthenticationSucce
         // log user login
         BtuUser user = (authentication==null || !(authentication.getPrincipal() instanceof BtuUser) ) ?
                 null : (BtuUser) authentication.getPrincipal();
+
+        System.out.println(user.getUsername());
+        System.out.println(user.getPassword());
+        //BtuUserBean userBean = user.getUserBean();
+        //btuUserService.verifyLdapUser(userBean);
 
         // set timeout for inactive session
         HttpSession session = httpServletRequest.getSession(false);
