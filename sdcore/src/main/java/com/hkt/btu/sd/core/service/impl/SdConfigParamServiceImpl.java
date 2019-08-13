@@ -98,4 +98,23 @@ public class SdConfigParamServiceImpl extends BtuConfigParamServiceImpl implemen
     public boolean updateConfigParam(String configGroup, String configKey, String configValue, String configValueType) {
         return sdConfigParamMapper.updateValue(configGroup, configKey, configValue, configValueType, sdUserService.getCurrentUserUserId()) > 0;
     }
+
+    @Override
+    public List<String> getConfigGroupList() {
+        return sdConfigParamMapper.getConfigGroupList();
+    }
+
+    @Override
+    public boolean createConfigParam(String configGroup, String configKey, String configValue, String configValueType) {
+        return sdConfigParamMapper.insertConfig(configGroup, configKey, configValue, configValueType, sdUserService.getCurrentUserUserId());
+    }
+
+    @Override
+    public boolean checkConfigKey(String configGroup, String configKey) {
+        Optional<SdConfigParamEntity> entity=Optional.ofNullable(sdConfigParamMapper.getValue(configGroup, configKey));
+        if (entity.isPresent()) {
+            return true;
+        }
+        return false;
+    }
 }

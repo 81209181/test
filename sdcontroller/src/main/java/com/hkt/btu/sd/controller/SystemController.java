@@ -53,8 +53,22 @@ public class SystemController {
     }
 
     @GetMapping("config-param/create")
-    public String createConfigParam() {
+    public String showCreateConfigParam(Model model) {
+        model.addAttribute("configTypeList", sdConfigParamFacade.getConfigTypeList());
+        model.addAttribute("configGroupList", sdConfigParamFacade.getConfigGroupList());
         return "system/configParam/createConfigParam";
+    }
+
+    @PostMapping("config-param/createConfigParam")
+    public ResponseEntity<?> createConfigParam(String configGroup, String configKey,String configValue,String configValueType){
+        if (sdConfigParamFacade.checkConfigKey(configGroup, configKey)) {
+            return ResponseEntity.badRequest().body(configKey+ " already exists.");
+        }
+        if (sdConfigParamFacade.createConfigParam(configGroup,configKey,configValue,configValueType)) {
+            return ResponseEntity.ok().body("Config param create success.");
+        }
+        return ResponseEntity.badRequest().body("Cannot create config param.");
+
     }
 
     @GetMapping("config-param/{configGroup}/{configKey}")

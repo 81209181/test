@@ -57,4 +57,9 @@
         and CONFIG_KEY = #{configKey}
     </delete>
 
+    <insert id="insertConfig" >
+        insert into CONFIG_PARAM(CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEBY,MODIFYBY)
+        values(#{configGroup},#{configKey},#{configValue},#{configValueType},#{modifyBy},#{modifyBy})
+    </insert>
+
 </mapper>

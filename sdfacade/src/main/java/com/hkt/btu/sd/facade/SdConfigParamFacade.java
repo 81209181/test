@@ -14,4 +14,10 @@ public interface SdConfigParamFacade {
     List<String> getConfigTypeList();
 
     boolean updateConfigParam(String configGroup, String configKey, String configValue, String configValueType);
+
+    List<String> getConfigGroupList();
+
+    boolean createConfigParam(String configGroup, String configKey, String configValue, String configValueType);
+
+    boolean checkConfigKey(String configGroup, String configKey);
 }
