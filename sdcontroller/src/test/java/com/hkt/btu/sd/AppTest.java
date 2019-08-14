@@ -22,4 +22,9 @@ public class AppTest {
             System.out.println(entity);
         }
     }
+
+    @Test
+    public void testStringUtils() {
+        System.out.println(StringUtils.join("config key"," already exists."));;
+    }
 }

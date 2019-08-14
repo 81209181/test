@@ -75,7 +75,7 @@ public class SdConfigParamFacadeImpl implements SdConfigParamFacade {
     }
 
     @Override
-    public String checkConfigParam(String configGroup, String configKey, String configValue, String configValueType) {
+    public boolean checkConfigParam(String configGroup, String configKey, String configValue, String configValueType) {
         return sdConfigParamService.checkConfigParam(configGroup,configKey,configValue,configValueType);
     }
 }

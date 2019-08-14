@@ -62,12 +62,17 @@ public class SystemController {
 
     @PostMapping("config-param/createConfigParam")
     public ResponseEntity<?> createConfigParam(String configGroup, String configKey,String configValue,String configValueType){
-        String msg=sdConfigParamFacade.checkConfigParam(configGroup, configKey, configValue, configValueType);
-        if (StringUtils.isNotEmpty(msg)) {
-            return ResponseEntity.badRequest().body(msg);
+        if (StringUtils.isEmpty(configKey)) {
+            return ResponseEntity.badRequest().body("Please input config key.");
+        }
+        if (StringUtils.isEmpty(configValue)) {
+            return ResponseEntity.badRequest().body("Please input config value.");
+        }
+        if (!sdConfigParamFacade.checkConfigParam(configGroup, configKey, configValue, configValueType)) {
+            return ResponseEntity.badRequest().body("config value not match config value type!");
         }
         if (sdConfigParamFacade.checkConfigKey(configGroup, configKey)) {
-            return ResponseEntity.badRequest().body(configKey+ " already exists.");
+            return ResponseEntity.badRequest().body(StringUtils.join("Config Group : ",configGroup,", Config Key : ",configKey," already exists."));
         }
         if (sdConfigParamFacade.createConfigParam(configGroup,configKey,configValue,configValueType)) {
             return ResponseEntity.ok().body("Config param create success.");
@@ -99,9 +104,11 @@ public class SystemController {
 
     @PostMapping("config-param/updateConfigParam")
     public ResponseEntity<?> updateConfigParam(String configGroup, String configKey,String configValue,String configValueType) {
-        String msg=sdConfigParamFacade.checkConfigParam(configGroup, configKey, configValue, configValueType);
-        if (StringUtils.isNotEmpty(msg)) {
-            return ResponseEntity.badRequest().body(msg);
+        if (StringUtils.isEmpty(configValue)) {
+            return ResponseEntity.badRequest().body("Please input config value.");
+        }
+        if (sdConfigParamFacade.checkConfigParam(configGroup, configKey, configValue, configValueType)) {
+            return ResponseEntity.badRequest().body("config value not match config value type!");
         }
         if (sdConfigParamFacade.updateConfigParam(configGroup, configKey, configValue, configValueType)) {
             return ResponseEntity.ok().body("Config param update success.");

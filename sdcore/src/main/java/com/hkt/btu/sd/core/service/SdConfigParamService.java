@@ -19,5 +19,5 @@ public interface SdConfigParamService extends BtuConfigParamService {
 
     boolean checkConfigKey(String configGroup, String configKey);
 
-    String checkConfigParam(String configGroup, String configKey, String configValue, String configValueType);
+    boolean checkConfigParam(String configGroup, String configKey, String configValue, String configValueType);
 }

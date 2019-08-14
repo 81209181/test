@@ -122,38 +122,24 @@ public class SdConfigParamServiceImpl extends BtuConfigParamServiceImpl implemen
     }
 
     @Override
-    public String checkConfigParam(String configGroup, String configKey, String configValue, String configValueType) {
-        LOG.info("check config param:{},{},{},{}", configGroup, configKey, configValue, configValueType);
-        String message = "config value not match config value type!";
-        if (StringUtils.isEmpty(configKey)) {
-            return "Please input config key.";
-        }
-        if (StringUtils.isEmpty(configValue)) {
-            return "Please input config value.";
-        }
+    public boolean checkConfigParam(String configGroup, String configKey, String configValue, String configValueType) {
         if (BtuConfigParamEntity.TYPE.BOOLEAN.equals(configValueType)) {
-            if (!configValue.equalsIgnoreCase("true") && !configValue.equalsIgnoreCase("false")) {
-                return message;
-            }
+            return configValue.equalsIgnoreCase("true") || configValue.equalsIgnoreCase("false");
         } else if (BtuConfigParamEntity.TYPE.LOCAL_DATE_TIME.equals(configValueType)) {
             try {
                 LocalDateTime.parse(configValue);
             } catch (DateTimeParseException e) {
-                return message;
+                return false;
             }
         } else if (BtuConfigParamEntity.TYPE.INTEGER.equals(configValueType)) {
-            if (!NumberUtils.isDigits(configValue)) {
-                return message;
-            }
+            return NumberUtils.isDigits(configValue);
         } else if (BtuConfigParamEntity.TYPE.DOUBLE.equals(configValueType)) {
             if (!NumberUtils.isNumber(configValue)) {
-                return message;
+                return false;
             }
-            if (!configValue.contains(".")) {
-                return message;
-            }
+            return configValue.contains(".");
 
         }
-        return "";
+        return true;
     }
 }
