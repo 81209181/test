@@ -7,7 +7,7 @@ public class BtuSiteConfigBean extends BaseBean {
 
     public static final Integer DEFAULT_LOGIN_TRIED_LIMIT = 5;
     public static final Integer DEFAULT_PASSWORD_LIFESPAN_IN_DAY = 90;
-    public static final Integer DEFAULT_PASSWORD_RESET_OTP_LIFESPAN_IN_MIN = 30;
+    public static final Integer DEFAULT_PASSWORD_RESET_OTP_LIFESPAN_IN_MIN = 15;
 
     public static final String DEFAULT_CRONJOB_HOSTNAME = "null.cronjob.hostname";
 

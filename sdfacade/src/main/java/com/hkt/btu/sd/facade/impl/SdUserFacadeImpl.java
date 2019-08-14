@@ -205,7 +205,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
             LOG.warn("Data rollback.");
             LOG.warn(e.getMessage(), e);
             return e.getMessage();
-        } catch (InvalidPasswordException | InvalidInputException e) {
+        } catch (InvalidPasswordException | InvalidOtpException e) {
             LOG.warn("Data rollback.");
             LOG.warn(e.getMessage());
             return e.getMessage();
@@ -228,8 +228,8 @@ public class SdUserFacadeImpl implements SdUserFacade {
         } catch (MessagingException e) {
             LOG.error(e.getMessage(), e);
             return "Failed to send email.";
-        } catch (InvalidInputException e) {
-            return "Please do not submit duplicate.";
+        } catch (InvalidUserTypeException | InvalidOtpException e) {
+            return e.getMessage();
         }
 
         return null;

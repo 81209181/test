@@ -86,19 +86,19 @@
     </update>
 
     <update id="updateUserPassword">
-        update NOC_USER
+        update USER_PROFILE
         set PASSWORD = #{password}, PASSWORD_MODIFYDATE = CURRENT_TIMESTAMP
         where USER_ID = #{userId}
     </update>
 
     <insert id="insertPasswordHist">
-        insert into NOC_USER_PWD_HIST (USER_ID, PASSWORD)
+        insert into USER_PWD_HIST (USER_ID, PASSWORD)
         values(#{userId}, #{password})
     </insert>
 
     <select id="getPasswordHistByUserId" resultType="String">
         select PASSWORD
-        from NOC_USER_PWD_HIST
+        from USER_PWD_HIST
         where USER_ID = #{userId}
     </select>
 

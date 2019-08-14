@@ -339,11 +339,11 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     @Override
     @Transactional
     public void resetPwd(String otp, String rawNewPassword)
-            throws UserNotFoundException, InvalidPasswordException, InvalidInputException {
+            throws UserNotFoundException, InvalidPasswordException, InvalidOtpException {
         // check otp
         SdOtpBean sdOtpBean = sdOtpService.getValidOtp(otp);
         if (sdOtpBean == null) {
-            throw new InvalidInputException("Invalid OTP.");
+            throw new InvalidOtpException("Invalid OTP.");
         }
 
         String userId = sdOtpBean.getUserId();
@@ -520,22 +520,22 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         String email = StringUtils.lowerCase(username);
 
         // get user data
-        SdUserEntity sdUserEntity = null;
-        if (username.contains("@")) {
-            sdUserEntity = sdUserMapper.getUserByEmail(email);
-        }
+        SdUserEntity sdUserEntity = sdUserMapper.getUserByEmail(email);
         if (sdUserEntity == null) {
             throw new UserNotFoundException();
         }
 
         String userId = sdUserEntity.getUserId();
-        boolean isNewlyCreated = sdUserEntity.getPasswordModifydate() == null;
+        if (!userId.contains("E")) {
+            throw new InvalidUserTypeException("LDAP users are not allowed to reset passwords.");
+        }
 
+        boolean isNewlyCreated = sdUserEntity.getPasswordModifydate() == null;
         if (isNewlyCreated) {
             // valid init password otp
             SdOtpBean sdOtpBean = sdOtpService.getValidOtp(userId, SdOtpEntity.ACTION.INIT_PWD);
             if (sdOtpBean != null) {
-                throw new InvalidInputException("within the OTP effective time.");
+                throw new InvalidOtpException("The OTP is valid, please check your email.");
             }
 
             // generate init password otp
@@ -553,7 +553,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             // valid reset password otp
             SdOtpBean sdOtpBean = sdOtpService.getValidOtp(userId, SdOtpEntity.ACTION.RESET_PWD);
             if (sdOtpBean != null) {
-                throw new InvalidInputException("within the OTP effective time.");
+                throw new InvalidOtpException("The OTP is valid, please check your email.");
             }
 
             // generate reset password otp
