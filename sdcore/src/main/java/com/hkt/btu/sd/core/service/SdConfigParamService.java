@@ -12,4 +12,12 @@ public interface SdConfigParamService extends BtuConfigParamService {
     Optional<SdConfigParamBean> getConfigParamByGroupAndKey(String configGroup, String configKey);
 
     boolean updateConfigParam(String configGroup, String configKey, String configValue, String configValueType);
+
+    List<String> getConfigGroupList();
+
+    boolean createConfigParam(String configGroup, String configKey, String configValue, String configValueType);
+
+    boolean checkConfigKey(String configGroup, String configKey);
+
+    boolean checkConfigParam(String configGroup, String configKey, String configValue, String configValueType);
 }

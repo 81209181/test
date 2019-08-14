@@ -1,9 +1,5 @@
 $(document).ready(function() {
     $('#userGroupTable').DataTable({
-        'paging':false,
-        'info':false,
-//        "scrollY": '500px',
-//        "scrollCollapse": true,
         ajax: {
             type: "GET",
             contentType: "application/json",

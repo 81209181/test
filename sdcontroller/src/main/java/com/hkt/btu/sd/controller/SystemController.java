@@ -8,6 +8,7 @@ import com.hkt.btu.sd.facade.data.SdConfigParamData;
 import com.hkt.btu.sd.facade.data.SdCronJobInstData;
 import com.hkt.btu.sd.facade.data.SdCronJobProfileData;
 import com.hkt.btu.sd.facade.data.SdSiteConfigData;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -53,12 +54,36 @@ public class SystemController {
     }
 
     @GetMapping("config-param/create")
-    public String createConfigParam() {
+    public String showCreateConfigParam(Model model) {
+        model.addAttribute("configTypeList", sdConfigParamFacade.getConfigTypeList());
+        model.addAttribute("configGroupList", sdConfigParamFacade.getConfigGroupList());
         return "system/configParam/createConfigParam";
+    }
+
+    @PostMapping("config-param/createConfigParam")
+    public ResponseEntity<?> createConfigParam(String configGroup, String configKey,String configValue,String configValueType){
+        if (StringUtils.isEmpty(configKey)) {
+            return ResponseEntity.badRequest().body("Please input config key.");
+        }
+        if (StringUtils.isEmpty(configValue)) {
+            return ResponseEntity.badRequest().body("Please input config value.");
+        }
+        if (!sdConfigParamFacade.checkConfigParam(configGroup, configKey, configValue, configValueType)) {
+            return ResponseEntity.badRequest().body("config value not match config value type!");
+        }
+        if (sdConfigParamFacade.checkConfigKey(configGroup, configKey)) {
+            return ResponseEntity.badRequest().body(StringUtils.join("Config Group : ",configGroup,", Config Key : ",configKey," already exists."));
+        }
+        if (sdConfigParamFacade.createConfigParam(configGroup,configKey,configValue,configValueType)) {
+            return ResponseEntity.ok().body("Config param create success.");
+        }
+        return ResponseEntity.badRequest().body("Cannot create config param.");
+
     }
 
     @GetMapping("config-param/{configGroup}/{configKey}")
     public String showEditConfigParam(@PathVariable String configGroup, @PathVariable String configKey, Model model) {
+        model.addAttribute("configGroupList", sdConfigParamFacade.getConfigGroupList());
         model.addAttribute("configTypeList", sdConfigParamFacade.getConfigTypeList());
         return "system/configParam/editConfigParam";
     }
@@ -79,6 +104,12 @@ public class SystemController {
 
     @PostMapping("config-param/updateConfigParam")
     public ResponseEntity<?> updateConfigParam(String configGroup, String configKey,String configValue,String configValueType) {
+        if (StringUtils.isEmpty(configValue)) {
+            return ResponseEntity.badRequest().body("Please input config value.");
+        }
+        if (sdConfigParamFacade.checkConfigParam(configGroup, configKey, configValue, configValueType)) {
+            return ResponseEntity.badRequest().body("config value not match config value type!");
+        }
         if (sdConfigParamFacade.updateConfigParam(configGroup, configKey, configValue, configValueType)) {
             return ResponseEntity.ok().body("Config param update success.");
         }

@@ -59,33 +59,3 @@ function safeParseJson(input){
         return null;
     }
 }
-
-function checkConfigValue(configValue,configValueType){
-    if(configValueType == 'Boolean'){
-        if(configValue!='true' && configValue!='false'){
-            showErrorMsg("config value not match config value type!");
-            return false;
-        }
-    }else if(configValueType == 'Integer'){
-        if(!configValue.match(/^[1-9]\d*$/)){
-            showErrorMsg("config value not match config value type!");
-            return false;
-        }
-    }else if(configValueType == 'Double'){
-        if(!configValue.match(/^[1-9]\d*\.\d*|0\.\d*[1-9]\d*$/)){
-            showErrorMsg("config value not match config value type!");
-            return false;
-        }
-    }else if(configValueType == 'LocalDateTime'){
-        if(!configValue.match(/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}/)){
-            showErrorMsg("config value not match config value type!");
-            return false;
-        }
-    }else {
-//        if(!configValue.match(/^[\u4E00-\u9FA5A-Za-z0-9_]+$/)){
-//            showErrorMsg("config value not match config value type!");
-//            return false;
-//        }
-    }
-    return true;
-}

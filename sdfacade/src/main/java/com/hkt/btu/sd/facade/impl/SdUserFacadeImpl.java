@@ -43,13 +43,13 @@ public class SdUserFacadeImpl implements SdUserFacade {
             return null;
         }
 
-        String userId = StringUtils.trim(createUserFormData.getUserId());
+        Integer companyId = createUserFormData.getCompanyId();
         String name = StringUtils.trim(createUserFormData.getName());
+        String email = StringUtils.trim(createUserFormData.getEmail());
         String mobile = StringUtils.trim(createUserFormData.getMobile());
         String staffId = StringUtils.trim(createUserFormData.getStaffId());
-        String email = StringUtils.trim(createUserFormData.getEmail());
         String ldapDomain = StringUtils.trim(createUserFormData.getLdapDomain());
-        Integer companyId = createUserFormData.getCompanyId();
+        String employeeNumber = StringUtils.trim(createUserFormData.getUserId());
 
         // TODO: Wait for UserGroup
         //List<String> userGroupIdList = createUserFormData.getUserGroupIdList();
@@ -58,24 +58,22 @@ public class SdUserFacadeImpl implements SdUserFacade {
         // create new user
         String newUserId;
         try {
-            // If name empty, that's LDAP user
-            // If not, that's Email user
             sdInputCheckService.checkName(name);
             sdInputCheckService.checkMobile(mobile);
             sdInputCheckService.checkStaffIdHkidPassport(staffId);
-            if (StringUtils.isEmpty(email)) {
-                sdInputCheckService.checkEmployeeNumber(userId);
-                sdInputCheckService.checkLdapDomain(ldapDomain);
-                newUserId = sdUserService.createLdapUser(name, mobile, userId, staffId, ldapDomain);
-            } else {
+            if (StringUtils.isNotEmpty(email)) {
                 sdInputCheckService.checkEmail(email);
                 newUserId = sdUserService.createUser(name, mobile, email, staffId, companyId, null);
+            } else {
+                sdInputCheckService.checkLdapDomain(ldapDomain);
+                sdInputCheckService.checkEmployeeNumber(employeeNumber);
+                newUserId = sdUserService.createLdapUser(name, mobile, employeeNumber, staffId, ldapDomain);
             }
         } catch (InvalidInputException | UserNotFoundException | DuplicateUserEmailException | GeneralSecurityException e) {
             LOG.warn(e.getMessage());
             return CreateResultData.of(e.getMessage());
         }
-        return CreateResultData.of(newUserId);
+        return new CreateResultData(newUserId, null);
     }
 
     @Override

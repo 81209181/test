@@ -54,7 +54,7 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
             grantedAuthSet.add(new SimpleGrantedAuthority("ADMIN"));
             grantedAuthSet.add(new SimpleGrantedAuthority("USER"));
             btuUserBean.setAuthorities(grantedAuthSet);
-            userDetails = BtuUser.of(btuUserBean.getUsername(),
+            userDetails = BtuUser.of(btuUserBean.getUserId(),
                     (String) auth.getCredentials(),
                     true,
                     true,
@@ -62,14 +62,14 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
                     true,
                     grantedAuthSet,
                     btuUserBean);
+            userDetails.setLdapPassword((String) auth.getCredentials());
             //preAuthenticationChecks.check(userDetails);
             BtuLdapBean ldapInfo = new BtuLdapBean();
             ldapInfo.setLdapServerUrl(LdapEnum.PCCW.getHostUrl());
-            ldapInfo.setPrincipleName(domain);
+            ldapInfo.setPrincipleName(userDetails.getUserBean().getLdapDomain());
 
             // login ldap
             btuLdapService.authenticationOnly(ldapInfo, auth);
-
 
             //if success, record it
             auditTrailService.insertLoginAuditTrail(userDetails);

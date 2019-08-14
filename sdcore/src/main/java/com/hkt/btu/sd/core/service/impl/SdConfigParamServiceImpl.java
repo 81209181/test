@@ -9,11 +9,14 @@ import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdConfigParamBean;
 import com.hkt.btu.sd.core.service.populator.SdConfigParamBeanPopulator;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 public class SdConfigParamServiceImpl extends BtuConfigParamServiceImpl implements SdConfigParamService {
@@ -97,5 +100,46 @@ public class SdConfigParamServiceImpl extends BtuConfigParamServiceImpl implemen
     @Override
     public boolean updateConfigParam(String configGroup, String configKey, String configValue, String configValueType) {
         return sdConfigParamMapper.updateValue(configGroup, configKey, configValue, configValueType, sdUserService.getCurrentUserUserId()) > 0;
+    }
+
+    @Override
+    public List<String> getConfigGroupList() {
+        return sdConfigParamMapper.getConfigGroupList();
+    }
+
+    @Override
+    public boolean createConfigParam(String configGroup, String configKey, String configValue, String configValueType) {
+        return sdConfigParamMapper.insertConfig(configGroup, configKey, configValue, configValueType, sdUserService.getCurrentUserUserId());
+    }
+
+    @Override
+    public boolean checkConfigKey(String configGroup, String configKey) {
+        Optional<SdConfigParamEntity> entity = Optional.ofNullable(sdConfigParamMapper.getValue(configGroup, configKey));
+        if (entity.isPresent()) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean checkConfigParam(String configGroup, String configKey, String configValue, String configValueType) {
+        if (BtuConfigParamEntity.TYPE.BOOLEAN.equals(configValueType)) {
+            return configValue.equalsIgnoreCase("true") || configValue.equalsIgnoreCase("false");
+        } else if (BtuConfigParamEntity.TYPE.LOCAL_DATE_TIME.equals(configValueType)) {
+            try {
+                LocalDateTime.parse(configValue);
+            } catch (DateTimeParseException e) {
+                return false;
+            }
+        } else if (BtuConfigParamEntity.TYPE.INTEGER.equals(configValueType)) {
+            return NumberUtils.isDigits(configValue);
+        } else if (BtuConfigParamEntity.TYPE.DOUBLE.equals(configValueType)) {
+            if (!NumberUtils.isNumber(configValue)) {
+                return false;
+            }
+            return configValue.contains(".");
+
+        }
+        return true;
     }
 }

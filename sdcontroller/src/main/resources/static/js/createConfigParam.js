@@ -1,14 +1,17 @@
 $().ready(function(){
-    let configGroup =$('#configGroup').val(),
-        configKey = $('#configKey').val();
-    $.get('/system/config-param/getConfigParam',{configGroup:configGroup,configKey:configKey},function(r){
-        $.each(r,function(key,value){
-            $('#'+key).val(value);
-        })
-    }).fail(function(e){
-        var responseError = e.responseText ? e.responseText : "Get failed.";
-        console.log("ERROR : ", responseError);
-        showErrorMsg(responseError);
+
+    $('#new_group').on('click',function(){
+        if($(this).is(':checked')){
+            $('#config_group_select').attr("disabled",true);
+            $('#config_group_select').attr("hidden",true);
+            $('#config_group_input').attr("disabled",false);
+            $('#config_group_input').attr("hidden",false);
+        }else{
+            $('#config_group_select').attr("disabled",false);
+            $('#config_group_select').attr("hidden",false);
+            $('#config_group_input').attr("disabled",true);
+            $('#config_group_input').attr("hidden",true);
+        }
     })
 
     $('#configValueType').change(function(){
@@ -25,14 +28,9 @@ $().ready(function(){
         }
     })
 
-    $('#btnUpdateConfigParam').on("click",function(){
+    $('#btnCreateConfigParam').on('click',function(){
         clearAllMsg();
-        $.post('/system/config-param/updateConfigParam',{
-                configGroup:configGroup,
-                configKey:configKey,
-                configValue:$('#configValue').val().trim(),
-                configValueType:$('#configValueType').val().trim()
-        },function(res){
+        $.post('/system/config-param/createConfigParam',$('form').serialize(),function(res){
             showInfoMsg(res);
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";
