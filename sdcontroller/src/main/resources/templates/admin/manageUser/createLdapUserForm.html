@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create LDAP User</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <h1>Create LDAP User Form</h1>
+
+    <form class="row" th:action="@{/admin/manage-user/create-user}" th:object="${createUserFormData}" method="post">
+        <div class="col-md-12">
+            <div class="d-inline-block col-md-5 form-group align-top">
+                <label>Name</label>
+                <input type="text" th:field="*{name}" class="form-control" placeholder="Your Name" maxlength="100" required>
+
+                <label>Mobile</label>
+                <input type="tel" th:field="*{mobile}" class="form-control" placeholder="28832299" maxlength="15" required>
+
+                <label>Staff ID / HKID / Passport Number (first 4 digits)</label>
+                <input type="text" th:field="*{staffId}" class="form-control" placeholder="1234" maxlength="4" required>
+
+                <label>EMPLOYEE NUMBER</label>
+                <input type="text" th:field="*{userId}" class="form-control" required>
+
+                <label>LDAP Domain</label>
+                <!--<input type="text" th:field="*{ldapDomain}" class="form-control">-->
+                <select th:field="*{ldapDomain}" class="form-control" required>
+                    <option value="" selected>==Please Select==</option>
+                    <option value="@corphq.hk.pccw.com">CORPHQ-HK-PCCW</option>
+                    <option value="@oa.hkcsl.net">OA-HKCSL-NET</option>
+                    <option value="@corp.root">CORP</option>
+                </select>
+            </div>
+
+        </div>
+
+        <div class="col-md-12">
+            <div class="d-inline-block col-md-10 form-group">
+                <button type="submit" class="btn btn-lg btn-primary float-right"><i class="fab fa-telegram-plane"></i> Submit</button>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+                <span class="row">
+                    <p>
+                        <i>* User Group:</i> <br/>
+                        <small style="padding-left: 4em;" th:if="${userGroupOptionDataMap?.get('C_ADMIN')}">
+                            <i>C_ADMIN: <span th:text="${userGroupOptionDataMap?.get('C_ADMIN')?.groupDesc}" th:remove="tag"></span></i>
+                            <br/>
+                        </small>
+                        <small style="padding-left: 4em;" th:if="${userGroupOptionDataMap?.get('C_USER')}">
+                            <i>C_USER: <span th:text="${userGroupOptionDataMap?.get('C_USER')?.groupDesc}" th:remove="tag"></span></i>
+                        </small>
+                    </p>
+                </span>
+        </div>
+    </form>
+</div>
+</body>
+</html>

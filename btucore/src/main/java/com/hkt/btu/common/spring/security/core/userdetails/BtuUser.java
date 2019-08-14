@@ -8,6 +8,7 @@ import java.util.Collection;
 
 public class BtuUser extends User {
 
+    private String ldapPassword;
     private BtuUserBean userBean;
 
     private BtuUser(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired,
@@ -29,5 +30,13 @@ public class BtuUser extends User {
 
     public void setUserBean(BtuUserBean userBean) {
         this.userBean = userBean;
+    }
+
+    public String getLdapPassword() {
+        return ldapPassword;
+    }
+
+    public void setLdapPassword(String ldapPassword) {
+        this.ldapPassword = ldapPassword;
     }
 }

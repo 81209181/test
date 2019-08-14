@@ -3,7 +3,9 @@ package com.hkt.btu.sd.core.service.impl;
 import com.hkt.btu.common.core.exception.UserNotFoundException;
 import com.hkt.btu.common.core.service.BtuLdapService;
 import com.hkt.btu.common.core.service.BtuSensitiveDataService;
+import com.hkt.btu.common.core.service.bean.BtuLdapBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
+import com.hkt.btu.common.core.service.constant.LdapEnum;
 import com.hkt.btu.common.core.service.impl.BtuUserServiceImpl;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
 import com.hkt.btu.sd.core.dao.entity.SdOtpEntity;
@@ -30,6 +32,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
+import javax.naming.NamingException;
 import java.rmi.MarshalledObject;
 import java.security.GeneralSecurityException;
 import java.util.*;
@@ -134,7 +137,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
     @Transactional
     public String createUser(String name, String mobile, String email, String staffId,
-                              Integer companyId, List<String> groupIdList)
+                             Integer companyId, List<String> groupIdList)
             throws DuplicateUserEmailException, UserNotFoundException, GeneralSecurityException {
         if (StringUtils.isEmpty(name)) {
             throw new InvalidInputException("Empty user name.");
@@ -153,15 +156,14 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             throw new InvalidInputException("Invalid user group.");
         }*/
 
+        // make email lower case (**assume email are all lower case)
+        email = StringUtils.lowerCase(email);
 
         // check email duplicated
         SdUserEntity userEntity = sdUserMapper.getUserByEmail(email);
         if (userEntity != null) {
             throw new DuplicateUserEmailException();
         }
-
-        // make email lower case (**assume email are all lower case)
-        email = StringUtils.lowerCase(email);
 
         // generate dummy password
         UUID uuid = UUID.randomUUID();
@@ -218,11 +220,34 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     @Transactional
     public String createLdapUser(String name, String mobile, String employeeNumber, String staffId, String ldapDomain)
             throws DuplicateUserEmailException, UserNotFoundException {
-        // 1. check employeeNumber and ldapDomain
-        // 2. get current userId for CreateBy
-        // 3. get current ldapUser's account & password
-        // 4. go to Ldap Server search this create user.
-        return null;
+        try {
+            // 1. get current userId for CreateBy
+            String createBy = getCurrentUserUserId();
+            // 2. Check if there is a duplicate name
+            SdUserEntity sdUserEntity = sdUserMapper.getLdapUserByUserId(name);
+            if (sdUserEntity != null) {
+                throw new DuplicateUserEmailException("User already exist.");
+            }
+            // 3. Data input
+            SdUserEntity userEntity = new SdUserEntity();
+            userEntity.setName(name);
+            userEntity.setCreateby(createBy);
+            userEntity.setUserId(employeeNumber);
+            userEntity.setMobile(mobile.getBytes());
+            userEntity.setStaffId(staffId.getBytes());
+            userEntity.setStatus(SdUserEntity.STATUS.ACTIVE);
+            userEntity.setLdapDomain(employeeNumber + ldapDomain);
+
+            // 4. create user in db
+            sdUserMapper.insertUser(userEntity);
+
+            LOG.info("User (id: " + employeeNumber + ") created.");
+
+            return employeeNumber;
+        } catch (Exception e) {
+            LOG.warn(e.getMessage());
+            throw new DuplicateUserEmailException("User already exists.");
+        }
     }
 
     @Override
@@ -367,6 +392,26 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         sdUserMapper.updateUserStatusByUsername(username, SdUserEntity.STATUS.ACTIVE, modifyby);
     }
 
+    @Override
+    @Transactional
+    public void verifyLdapUser(String password, BtuUserBean userDetailBean) {
+        if (StringUtils.isEmpty(userDetailBean.getEmail())) {
+            BtuLdapBean ldapInfo = new BtuLdapBean();
+            ldapInfo.setLdapServerUrl(LdapEnum.PCCW.getHostUrl());
+            ldapInfo.setPrincipleName(userDetailBean.getLdapDomain());
+            ldapInfo.setLdapAttributeLoginName(LdapEnum.PCCW.getBase());
+            try {
+                BtuUserBean btuUserBean = btuLdapService.searchUser(ldapInfo, userDetailBean.getUserId(), password, userDetailBean.getUserId());
+                if (btuUserBean != null) {
+                    sdUserMapper.updateLdapUser(userDetailBean.getUserId(), btuUserBean.getUsername(), btuUserBean.getEmail().toLowerCase());
+                }
+            } catch (NamingException e) {
+                LOG.warn("User" + userDetailBean.getUserId() + "not found");
+                throw new UserNotFoundException();
+            }
+        }
+    }
+
     public void resetLoginTriedByUsername(String username) {
         sdUserMapper.resetLoginTriedByUsername(username);
     }
@@ -452,6 +497,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         if (!CollectionUtils.isEmpty(sdUserEntityList)) {
             for (SdUserEntity sdUserEntity : sdUserEntityList) {
                 SdUserBean sdUserBean = new SdUserBean();
+                sdUserBeanPopulator.populate(sdUserEntity, sdUserBean);
                 sdUserBeanPopulator.populate(sdUserEntity, sdUserBean);
                 sdUserBeanList.add(sdUserBean);
             }

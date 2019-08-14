@@ -1,29 +1,23 @@
 package com.hkt.btu.sd.facade.data;
 
 public class CreateResultData {
-    private Integer newId;
+    private String newId;
     private String errorMsg;
-
-
-    public static CreateResultData of(Integer newId){
-        return new CreateResultData(newId, null);
-    }
 
     public static CreateResultData of(String errorMsg){
         return new CreateResultData(null, errorMsg);
     }
 
-
-    private CreateResultData(Integer newId, String errorMsg) {
+    public CreateResultData(String newId, String errorMsg) {
         this.newId = newId;
         this.errorMsg = errorMsg;
     }
 
-    public Integer getNewId() {
+    public String getNewId() {
         return newId;
     }
 
-    public void setNewId(Integer newId) {
+    public void setNewId(String newId) {
         this.newId = newId;
     }
 
