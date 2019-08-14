@@ -36,10 +36,11 @@ public class BtuLoginSuccessHandler extends SavedRequestAwareAuthenticationSucce
         BtuUser user = (authentication==null || !(authentication.getPrincipal() instanceof BtuUser) ) ?
                 null : (BtuUser) authentication.getPrincipal();
 
-        System.out.println(user.getUsername());
-        System.out.println(user.getPassword());
-        //BtuUserBean userBean = user.getUserBean();
-        //btuUserService.verifyLdapUser(userBean);
+        BtuUserBean userBean = user.getUserBean();
+
+        btuUserService.verifyLdapUser(user.getLdapPassword(),userBean);
+
+
 
         // set timeout for inactive session
         HttpSession session = httpServletRequest.getSession(false);

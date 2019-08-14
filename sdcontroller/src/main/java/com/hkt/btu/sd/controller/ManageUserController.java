@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -58,14 +59,17 @@ public class ManageUserController {
 
     @PostMapping("/create-user")
     public String createUserForm(final RedirectAttributes redirectAttributes,
-                                 @ModelAttribute("inputUserData") CreateUserFormData createUserFormData) {
+                                 @ModelAttribute("inputUserData") CreateUserFormData createUserFormData,
+                                 HttpServletRequest request) {
         CreateResultData createResultData = userFacade.createUser(createUserFormData);
         String newUserId = createResultData == null ? null : createResultData.getNewId();
         String errorMsg = createResultData == null ? "No create result." : createResultData.getErrorMsg();
-
         if (newUserId == null) {
             redirectAttributes.addFlashAttribute(PageMsgController.ERROR_MSG, errorMsg);
             redirectAttributes.addFlashAttribute("createUserFormData", createUserFormData);
+            if (request.getHeader("Referer").contains("ldap")) {
+                return "redirect:create-ldap-user";
+            }
             return "redirect:create-user";
         } else {
             redirectAttributes.addFlashAttribute(PageMsgController.INFO_MSG, "Created user.");

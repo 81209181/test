@@ -4,7 +4,9 @@ import com.hkt.btu.common.core.exception.UserNotFoundException;
 import com.hkt.btu.common.core.service.BtuLdapService;
 import com.hkt.btu.common.core.service.bean.BtuLdapBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
+import com.hkt.btu.common.core.service.constant.LdapEnum;
 import com.hkt.btu.common.javax.net.LdapSSLSocketFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -23,9 +25,8 @@ public class BtuLdapServiceImpl implements BtuLdapService {
 
     @Override
     public void authenticationOnly(BtuLdapBean ldapInfo, Authentication auth) throws NamingException {
-        String userName = auth.getName();
         final String ldapURL = ldapInfo.getLdapServerUrl();
-        final String dn =  userName + "@" +ldapInfo.getPrincipleName();
+        final String dn =  ldapInfo.getPrincipleName();
         final String pwd = auth.getCredentials().toString();
         DirContext ctx = null;
         try {
@@ -38,7 +39,7 @@ public class BtuLdapServiceImpl implements BtuLdapService {
     @Override
     public BtuUserBean searchUser(BtuLdapBean ldapInfo, String username, String password, String staffId) throws NamingException {
         final String ldapURL = ldapInfo.getLdapServerUrl();
-        final String dn = username + ldapInfo.getPrincipleName();
+        final String dn = ldapInfo.getPrincipleName();
         DirContext ctx = null;
         try {
             ctx = getContext(ldapURL, dn, password);
@@ -135,7 +136,14 @@ public class BtuLdapServiceImpl implements BtuLdapService {
 
             if (results != null && results.hasMore()) {
                 Map<String, String> ldapResponse = getLdapResponseAttrMap(results);
-                return null;
+                BtuUserBean btuUserBean = new BtuUserBean();
+                if (StringUtils.isNotEmpty(ldapResponse.get("cn"))) {
+                    btuUserBean.setUsername(ldapResponse.get("cn"));
+                }
+                if (StringUtils.isNotEmpty(ldapResponse.get("mail"))) {
+                    btuUserBean.setEmail(ldapResponse.get("mail"));
+                }
+                return btuUserBean;
             } else {
                 throw new UserNotFoundException("User not found in LDAP domain");
             }

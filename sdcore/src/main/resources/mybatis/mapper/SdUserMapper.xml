@@ -74,9 +74,9 @@
     </select>
 
     <insert id="insertUser" parameterType="com.hkt.btu.sd.core.dao.entity.SdUserEntity">
-        insert into USER_PROFILE (USER_ID,NAME, STATUS, MOBILE, EMAIL, STAFF_ID, PASSWORD, PASSWORD_MODIFYDATE,
+        insert into USER_PROFILE (USER_ID,NAME, STATUS, MOBILE, LDAP_DOMAIN, EMAIL, STAFF_ID, PASSWORD, PASSWORD_MODIFYDATE,
         CREATEBY, MODIFYBY)
-        values (#{userId}, #{name}, #{status}, #{mobile}, #{email}, #{staffId}, #{password}, null, #{createby},
+        values (#{userId}, #{name}, #{status}, #{mobile}, #{ldapDomain},#{email}, #{staffId}, #{password}, null, #{createby},
         #{createby})
     </insert>
 
@@ -87,6 +87,16 @@
             <if test="mobile != null">MOBILE=#{mobile},</if>
             <if test="staffId != null">STAFF_ID=#{staffId},</if>
             MODIFYDATE = CURRENT_TIMESTAMP, MODIFYBY = #{modifyby}
+        </set>
+        where USER_ID = #{userId}
+    </update>
+
+    <update id="updateLdapUser">
+        update USER_PROFILE
+        <set>
+            <if test="name != null">NAME=#{name},</if>
+            <if test="email !=  null">EMAIL=#{email},</if>
+            MODIFYDATE = CURRENT_TIMESTAMP
         </set>
         where USER_ID = #{userId}
     </update>

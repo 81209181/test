@@ -13,7 +13,7 @@ public interface BtuUserService {
     void addLoginTriedByUsername(String username);
     void lockUserByUsername(String username);
     void activateUserByUsername(String username);
-    void verifyLdapUser(BtuUserBean userDetailBean);
+    void verifyLdapUser(String password,BtuUserBean userDetailBean);
     boolean isEnabled(BtuUserBean userDetailBean);
     boolean isNonLocked(BtuUserBean userDetailBean);
 
