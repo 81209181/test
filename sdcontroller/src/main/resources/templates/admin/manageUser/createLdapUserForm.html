@@ -14,7 +14,7 @@
         <div class="col-md-12">
             <div class="d-inline-block col-md-5 form-group align-top">
                 <label>Employee Number</label>
-                <input type="text" th:field="*{userId}" class="form-control" required>
+                <input type="text" th:field="*{userId}" class="form-control" placeholder="Your StaffId" required>
 
                 <label>Name</label>
                 <input type="text" th:field="*{name}" class="form-control" placeholder="Your Name" maxlength="100" required>
@@ -23,7 +23,6 @@
                 <input type="tel" th:field="*{mobile}" class="form-control" placeholder="28832299" maxlength="15" required>
 
                 <label>LDAP Domain</label>
-                <!--<input type="text" th:field="*{ldapDomain}" class="form-control">-->
                 <select th:field="*{ldapDomain}" class="form-control" required>
                     <option value="" selected>==Please Select==</option>
                     <option value="@corphq.hk.pccw.com">CORPHQ-HK-PCCW</option>
