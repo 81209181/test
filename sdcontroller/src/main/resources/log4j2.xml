@@ -2,7 +2,7 @@
 <Configuration>
     <Properties>
         <Property name="baseDir">${sys:catalina.home}/logs</Property>
-        <Property name="fileName">servicedesk</Property>
+        <Property name="fileName">skyexchange</Property>
 
         <Property name="LOG_EXCEPTION_CONVERSION_WORD">%xEx</Property>
         <Property name="LOG_LEVEL_PATTERN">%5p</Property>
