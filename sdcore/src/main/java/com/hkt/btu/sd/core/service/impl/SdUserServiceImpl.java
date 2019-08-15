@@ -475,7 +475,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         }
     }
 
-    public Page<SdUserBean> searchUser(Pageable pageable, String userId, String email, String name, String userGroupId)
+    public Page<SdUserBean> searchUser(Pageable pageable, String userId, String email, String name)
             throws AuthorityNotFoundException {
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
@@ -487,14 +487,14 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         Integer companyId = getCompanyIdRestriction();
 
         LOG.info(String.format(
-                "Searching user with {userId: %s, email: %s, name: %s, companyId: %s, userGroupId: %s}",
-                userId, email, name, companyId, userGroupId));
+                "Searching user with {userId: %s, email: %s, name: %s, companyId: %s}",
+                userId, email, name, companyId));
 
         // get total count
-        Integer totalCount = sdUserMapper.countSearchUser(companyId, userId, email, name, userGroupId);
+        Integer totalCount = sdUserMapper.countSearchUser(companyId, userId, email, name);
 
         // get content
-        List<SdUserEntity> sdUserEntityList = sdUserMapper.searchUser(offset, pageSize, companyId, userId, email, name, userGroupId);
+        List<SdUserEntity> sdUserEntityList = sdUserMapper.searchUser(offset, pageSize, companyId, userId, email, name);
         List<SdUserBean> sdUserBeanList = new LinkedList<>();
         if (!CollectionUtils.isEmpty(sdUserEntityList)) {
             for (SdUserEntity sdUserEntity : sdUserEntityList) {

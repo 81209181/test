@@ -22,7 +22,6 @@ $(document).ready(function() {
                 d.userId = $("#user-search-user-id").val();
                 d.name = $("#user-search-name").val();
                 d.email = $("#user-search-email").val();
-                d.userGroupId = $("#user-search-user-group").val();
             },
             error: function (e) {
                 if(e.responseText){
@@ -33,13 +32,14 @@ $(document).ready(function() {
             }
         },
         columns: [
+            { data: 'userId' },
             { data: 'email' },
             { data: 'name' },
             { data: 'status' },
             { data: 'userId' }
         ],
         columnDefs: [ {
-            targets: 3,
+            targets: 4,
             data: "userId",
             render: function ( userId, type, row, meta ) {
                 var ctx = $("meta[name='_ctx']").attr("content");

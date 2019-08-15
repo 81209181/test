@@ -234,15 +234,14 @@ public class SdUserFacadeImpl implements SdUserFacade {
     }
 
     @Override
-    public PageData<SdUserData> searchUser(Pageable pageable, String userId, String email, String name, String userGroupId) {
+    public PageData<SdUserData> searchUser(Pageable pageable, String userId, String email, String name) {
         email = StringUtils.trimToNull(email);
         name = StringUtils.trimToNull(name);
         userId = StringUtils.trimToNull(userId);
-        userGroupId = StringUtils.trimToNull(userGroupId);
 
         Page<SdUserBean> pageBean;
         try {
-            pageBean = sdUserService.searchUser(pageable, userId, email, name, userGroupId);
+            pageBean = sdUserService.searchUser(pageable, userId, email, name);
         } catch (AuthorityNotFoundException e) {
             return new PageData<>(e.getMessage());
         }

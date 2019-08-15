@@ -120,13 +120,6 @@
 
     <sql id="searchUserSql">
         from USER_PROFILE u
-
-        <if test="userGroupId != null">
-            inner join NOC_USER_USER_GROUP uug
-            on uug.USER_ID = u.USER_ID
-            and uug.GROUP_ID = #{userGroupId}
-        </if>
-
         <where>
             <if test="companyId != null">COMPANY_ID = #{companyId}</if>
             <if test="userId != null">
@@ -146,7 +139,7 @@
         -- noinspection SqlResolve
         select u.*
         <include refid="searchUserSql"/>
-        order by u.EMAIL
+        order by u.USER_ID
         OFFSET #{offset} ROWS FETCH NEXT #{pageSize} ROWS ONLY
     </select>
     <select id="countSearchUser" resultType="Integer">
