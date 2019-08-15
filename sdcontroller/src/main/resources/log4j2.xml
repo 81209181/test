@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
     <Properties>
-        <Property name="baseDir">D:\IdeaProjects\logs</Property>
+        <Property name="baseDir">${sys:catalina.home}/logs</Property>
         <Property name="fileName">servicedesk</Property>
 
         <Property name="LOG_EXCEPTION_CONVERSION_WORD">%xEx</Property>
