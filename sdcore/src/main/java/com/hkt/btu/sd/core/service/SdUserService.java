@@ -33,12 +33,10 @@ public interface SdUserService extends BtuUserService {
     void disableUserByUsername(String username) throws UserNotFoundException, InvalidInputException;
 
 
-    String createUser(String name, String mobile, String email, String staffId,
-                       Integer companyId, List<String> groupIdList)
+    String createUser(String name, String mobile, String email, List<String> groupIdList)
             throws DuplicateUserEmailException, UserNotFoundException, GeneralSecurityException;
 
-    String createLdapUser(String name, String mobile, String employeeNumber, String staffId,
-                           String ldapDomain)
+    String createLdapUser(String name, String mobile, String employeeNumber, String ldapDomain)
             throws DuplicateUserEmailException, UserNotFoundException;
 
     void updateUser(String userId, String newName, String newMobile, String newStaffId,

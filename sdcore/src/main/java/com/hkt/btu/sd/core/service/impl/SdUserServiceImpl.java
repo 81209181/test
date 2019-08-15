@@ -137,8 +137,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
 
     @Transactional
-    public String createUser(String name, String mobile, String email, String staffId,
-                             Integer companyId, List<String> groupIdList)
+    public String createUser(String name, String mobile, String email, List<String> groupIdList)
             throws DuplicateUserEmailException, UserNotFoundException, GeneralSecurityException {
         if (StringUtils.isEmpty(name)) {
             throw new InvalidInputException("Empty user name.");
@@ -218,7 +217,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     }
 
     @Transactional
-    public String createLdapUser(String name, String mobile, String employeeNumber, String staffId, String ldapDomain)
+    public String createLdapUser(String name, String mobile, String employeeNumber, String ldapDomain)
             throws DuplicateUserEmailException, UserNotFoundException {
         try {
             // 1. get current userId for CreateBy
@@ -398,7 +397,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         if (StringUtils.isEmpty(userDetailBean.getEmail())) {
             BtuLdapBean ldapInfo = new BtuLdapBean();
             ldapInfo.setLdapServerUrl(LdapEnum.PCCW.getHostUrl());
-            ldapInfo.setPrincipleName(userDetailBean.getUserId()+userDetailBean.getLdapDomain());
+            ldapInfo.setPrincipleName(userDetailBean.getUserId() + userDetailBean.getLdapDomain());
             ldapInfo.setLdapAttributeLoginName(LdapEnum.PCCW.getBase());
             try {
                 BtuUserBean btuUserBean = btuLdapService.searchUser(ldapInfo, userDetailBean.getUserId(), password, userDetailBean.getUserId());

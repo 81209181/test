@@ -60,11 +60,11 @@ public class SdUserFacadeImpl implements SdUserFacade {
             sdInputCheckService.checkMobile(mobile);
             if (StringUtils.isNotEmpty(email)) {
                 sdInputCheckService.checkEmail(email);
-                newUserId = sdUserService.createUser(name, mobile, email, null, null, null);
+                newUserId = sdUserService.createUser(name, mobile, email, null);
             } else {
                 sdInputCheckService.checkLdapDomain(ldapDomain);
                 sdInputCheckService.checkEmployeeNumber(employeeNumber);
-                newUserId = sdUserService.createLdapUser(name, mobile, employeeNumber, null, ldapDomain);
+                newUserId = sdUserService.createLdapUser(name, mobile, employeeNumber, ldapDomain);
             }
         } catch (InvalidInputException | UserNotFoundException | DuplicateUserEmailException | GeneralSecurityException e) {
             LOG.warn(e.getMessage());
