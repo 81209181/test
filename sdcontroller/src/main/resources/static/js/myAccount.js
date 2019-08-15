@@ -3,8 +3,13 @@ $(document).ready(function () {
         event.preventDefault();
         ajaxUpdatePwd();
     });*/
-
     ajaxGetCurrentUser();
+    $("#my-login-tried").hide();
+    $("#my-password-modify-date").hide();
+    $("label.emailUserInfo").hide();
+    $("label.ldapUserInfo").show();
+    $("#my-ldap-domain").show();
+
 });
 
 /*function ajaxUpdatePwd() {
@@ -64,8 +69,13 @@ function ajaxGetCurrentUser(){
             $("#my-company-id").val(data.companyId);
             $("#my-company-name").val(data.companyName);
             $("#my-staff-id").val(data.staffId);
-
-
+            if (data.ldapDomain == null) {
+                $("#my-login-tried").show();
+                $("#my-password-modify-date").show();
+                $("label.emailUserInfo").show();
+                $("label.ldapUserInfo").hide();
+                $("#my-ldap-domain").hide();
+            }
             populateSelectOptions($("#my-user-group"), data.userGroupList);
         },
         error: function (e) {

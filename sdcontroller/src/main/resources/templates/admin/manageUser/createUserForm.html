@@ -3,7 +3,7 @@
           layout:decorate="~{fragments/layout}"
           xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>Create User</title>
+        <title>Create Email User</title>
     </head>
     <body>
         <div layout:fragment="content" th:remove="tag">
@@ -22,24 +22,6 @@
                         <label>Mobile</label>
                         <input type="tel" th:field="*{mobile}" class="form-control" placeholder="28832299" maxlength="15" required>
 
-                        <label>Staff ID / HKID / Passport Number (first 4 digits)</label>
-                        <input type="text" th:field="*{staffId}" class="form-control" placeholder="1234" maxlength="4" required>
-                    </div>
-
-                    <div class="d-inline-block col-md-5 form-group align-top">
-                        <label>Company</label>
-                        <select class="form-control" th:field="*{companyId}">
-                            <option th:each="companyData : ${companyOptionList}" th:value="${{companyData.companyId}}" th:text="${companyData.name}"></option>
-                        </select>
-
-                        <label>User Group</label>
-                        <div class="d-block">
-                            <div class="form-check form-check-inline" th:each="userGroup : ${userGroupOptionDataMap}" >
-                                <input class="form-check-input" th:field="*{userGroupIdList}" type="checkbox" th:value="${userGroup.key}">
-                                <label class="form-check-label" th:text="${userGroup.key}"></label>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
 
@@ -47,21 +29,6 @@
                     <div class="d-inline-block col-md-10 form-group">
                         <button type="submit" class="btn btn-lg btn-primary float-right"><i class="fab fa-telegram-plane"></i> Submit</button>
                     </div>
-                </div>
-
-                <div class="col-md-12">
-                    <span class="row">
-                        <p>
-                            <i>* User Group:</i> <br/>
-                            <small style="padding-left: 4em;" th:if="${userGroupOptionDataMap?.get('C_ADMIN')}">
-                                <i>C_ADMIN: <span th:text="${userGroupOptionDataMap?.get('C_ADMIN')?.groupDesc}" th:remove="tag"></span></i>
-                                <br/>
-                            </small>
-                            <small style="padding-left: 4em;" th:if="${userGroupOptionDataMap?.get('C_USER')}">
-                                <i>C_USER: <span th:text="${userGroupOptionDataMap?.get('C_USER')?.groupDesc}" th:remove="tag"></span></i>
-                            </small>
-                        </p>
-                    </span>
                 </div>
             </form>
         </div>

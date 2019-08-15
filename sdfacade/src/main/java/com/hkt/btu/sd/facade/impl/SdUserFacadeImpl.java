@@ -43,11 +43,9 @@ public class SdUserFacadeImpl implements SdUserFacade {
             return null;
         }
 
-        Integer companyId = createUserFormData.getCompanyId();
         String name = StringUtils.trim(createUserFormData.getName());
         String email = StringUtils.trim(createUserFormData.getEmail());
         String mobile = StringUtils.trim(createUserFormData.getMobile());
-        String staffId = StringUtils.trim(createUserFormData.getStaffId());
         String ldapDomain = StringUtils.trim(createUserFormData.getLdapDomain());
         String employeeNumber = StringUtils.trim(createUserFormData.getUserId());
 
@@ -60,14 +58,13 @@ public class SdUserFacadeImpl implements SdUserFacade {
         try {
             sdInputCheckService.checkName(name);
             sdInputCheckService.checkMobile(mobile);
-            sdInputCheckService.checkStaffIdHkidPassport(staffId);
             if (StringUtils.isNotEmpty(email)) {
                 sdInputCheckService.checkEmail(email);
-                newUserId = sdUserService.createUser(name, mobile, email, staffId, companyId, null);
+                newUserId = sdUserService.createUser(name, mobile, email, null, null, null);
             } else {
                 sdInputCheckService.checkLdapDomain(ldapDomain);
                 sdInputCheckService.checkEmployeeNumber(employeeNumber);
-                newUserId = sdUserService.createLdapUser(name, mobile, employeeNumber, staffId, ldapDomain);
+                newUserId = sdUserService.createLdapUser(name, mobile, employeeNumber, null, ldapDomain);
             }
         } catch (InvalidInputException | UserNotFoundException | DuplicateUserEmailException | GeneralSecurityException e) {
             LOG.warn(e.getMessage());
@@ -98,7 +95,6 @@ public class SdUserFacadeImpl implements SdUserFacade {
         try {
             sdInputCheckService.checkName(name);
             sdInputCheckService.checkMobile(mobile);
-            sdInputCheckService.checkStaffIdHkidPassport(staffId);
         } catch (InvalidInputException e) {
             return e.getMessage();
         }

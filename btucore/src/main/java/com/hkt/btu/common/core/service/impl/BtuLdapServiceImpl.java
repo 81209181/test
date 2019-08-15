@@ -25,8 +25,9 @@ public class BtuLdapServiceImpl implements BtuLdapService {
 
     @Override
     public void authenticationOnly(BtuLdapBean ldapInfo, Authentication auth) throws NamingException {
+        String username = auth.getName();
         final String ldapURL = ldapInfo.getLdapServerUrl();
-        final String dn =  ldapInfo.getPrincipleName();
+        final String dn =  username + ldapInfo.getPrincipleName();
         final String pwd = auth.getCredentials().toString();
         DirContext ctx = null;
         try {
@@ -39,7 +40,7 @@ public class BtuLdapServiceImpl implements BtuLdapService {
     @Override
     public BtuUserBean searchUser(BtuLdapBean ldapInfo, String username, String password, String staffId) throws NamingException {
         final String ldapURL = ldapInfo.getLdapServerUrl();
-        final String dn = ldapInfo.getPrincipleName();
+        final String dn = username + ldapInfo.getPrincipleName();
         DirContext ctx = null;
         try {
             ctx = getContext(ldapURL, dn, password);

@@ -10,6 +10,7 @@ import com.hkt.btu.common.core.service.constant.LdapEnum;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
 import com.hkt.btu.common.spring.security.exception.ChangePasswordException;
 import com.hkt.btu.common.spring.security.exception.NotPermittedLogonException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.*;
@@ -63,10 +64,8 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
                     grantedAuthSet,
                     btuUserBean);
             userDetails.setLdapPassword((String) auth.getCredentials());
-            //preAuthenticationChecks.check(userDetails);
-            BtuLdapBean ldapInfo = new BtuLdapBean();
-            ldapInfo.setLdapServerUrl(LdapEnum.PCCW.getHostUrl());
-            ldapInfo.setPrincipleName(userDetails.getUserBean().getLdapDomain());
+            // Prepare ldap data
+            BtuLdapBean ldapInfo = getBtuLdapBean(userDetails.getUserBean().getLdapDomain());
 
             // login ldap
             btuLdapService.authenticationOnly(ldapInfo, auth);
@@ -148,6 +147,29 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
         //return userDetailService.loadUserByUsername(username);
         return null;
     }
+
+    public BtuLdapBean getBtuLdapBean(String domain) {
+        BtuLdapBean ldapInfo = new BtuLdapBean();
+        switch (domain) {
+            case "@corphq.hk.pccw.com":
+                ldapInfo.setLdapServerUrl(LdapEnum.PCCW.getHostUrl());
+                ldapInfo.setLdapAttributeLoginName(LdapEnum.PCCW.getBase());
+                break;
+            case "@corp.root":
+                ldapInfo.setLdapServerUrl(LdapEnum.PCCWS.getHostUrl());
+                ldapInfo.setLdapAttributeLoginName(LdapEnum.PCCWS.getBase());
+                break;
+            case "@oa.hkcsl.net":
+                ldapInfo.setLdapServerUrl(LdapEnum.CSL.getHostUrl());
+                ldapInfo.setLdapAttributeLoginName(LdapEnum.CSL.getBase());
+                break;
+            default:
+                return null;
+        }
+        ldapInfo.setPrincipleName(domain);
+        return ldapInfo;
+    }
+
 
     // copy from AbstractUserDetailsAuthenticationProvider
     private class DefaultPreAuthenticationChecks implements UserDetailsChecker {

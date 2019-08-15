@@ -32,8 +32,9 @@ public interface SdUserMapper {
 
     void insertUser(SdUserEntity sdUserEntity);
 
+    // TODO: byte[] mobile, byte[] staffId
     void updateUser(@Param("userId") String userId,
-                    @Param("name") String name, @Param("mobile") byte[] mobile, @Param("staffId") byte[] staffId,
+                    @Param("name") String name, @Param("mobile") String mobile, @Param("staffId") String staffId,
                     @Param("modifyby") String modifyby);
 
     void updateLdapUser(@Param("userId") String userId,

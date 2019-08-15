@@ -11,6 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,9 +36,9 @@ public class SdUserBeanPopulator extends AbstractBeanPopulator<SdUserBean> {
 
         // TODO: Encryption function will be done later
         // encrypted data
-        target.setMobile(new String(source.getMobile()));
         target.setLdapDomain(source.getLdapDomain());
-        target.setStaffId(new String(source.getStaffId()));
+        target.setMobile(source.getMobile());
+        target.setStaffId(source.getStaffId());
         /*String decryptedMobile = sdSensitiveDataService.decryptToStringSafe(source.getMobile());
         target.setMobile(decryptedMobile);
         // TODO: Encryption function will be done later

@@ -33,6 +33,7 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import javax.naming.NamingException;
+import java.io.UnsupportedEncodingException;
 import java.rmi.MarshalledObject;
 import java.security.GeneralSecurityException;
 import java.util.*;
@@ -83,7 +84,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         if (username.contains("@")) {
             sdUserEntity = sdUserMapper.getUserByEmail(email);
         } else {
-            sdUserEntity = sdUserMapper.getUserByLdapDomain("%" + username + "%");
+            sdUserEntity = sdUserMapper.getLdapUserByUserId(username);
         }
         if (sdUserEntity == null) {
             return null;
@@ -183,10 +184,9 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         sdUserEntity.setUserId(newUserId);
         sdUserEntity.setName(name);
         sdUserEntity.setStatus(SdUserEntity.STATUS.ACTIVE);
-        sdUserEntity.setMobile(mobile.getBytes());
+
+        sdUserEntity.setMobile(mobile);
         sdUserEntity.setEmail(email);
-        sdUserEntity.setCompanyId(companyId);
-        sdUserEntity.setStaffId(staffId.getBytes());
         sdUserEntity.setPassword(encodedPassword);
         sdUserEntity.setCreateby(createby);
 
@@ -233,10 +233,9 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             userEntity.setName(name);
             userEntity.setCreateby(createBy);
             userEntity.setUserId(employeeNumber);
-            userEntity.setMobile(mobile.getBytes());
-            userEntity.setStaffId(staffId.getBytes());
+            userEntity.setMobile(mobile);
             userEntity.setStatus(SdUserEntity.STATUS.ACTIVE);
-            userEntity.setLdapDomain(employeeNumber + ldapDomain);
+            userEntity.setLdapDomain(ldapDomain);
 
             // 4. create user in db
             sdUserMapper.insertUser(userEntity);
@@ -286,9 +285,8 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         // encrypt
         //byte[] encryptedMobile = StringUtils.isEmpty(mobile) ? null : sdSensitiveDataService.encryptFromString(mobile);
         //byte[] encryptedStaffId = StringUtils.isEmpty(staffId) ? null : sdSensitiveDataService.encryptFromString(staffId);
-        byte[] encryptedMobile = StringUtils.isEmpty(mobile) ? null : mobile.getBytes();
-        byte[] encryptedStaffId = StringUtils.isEmpty(staffId) ? null : staffId.getBytes();
-
+        String encryptedMobile = StringUtils.isEmpty(mobile) ? null : mobile;
+        String encryptedStaffId = StringUtils.isEmpty(staffId) ? null : staffId;
         // update user
         sdUserMapper.updateUser(userId, name, encryptedMobile, encryptedStaffId, modifier.getUserId());
 
@@ -400,7 +398,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         if (StringUtils.isEmpty(userDetailBean.getEmail())) {
             BtuLdapBean ldapInfo = new BtuLdapBean();
             ldapInfo.setLdapServerUrl(LdapEnum.PCCW.getHostUrl());
-            ldapInfo.setPrincipleName(userDetailBean.getLdapDomain());
+            ldapInfo.setPrincipleName(userDetailBean.getUserId()+userDetailBean.getLdapDomain());
             ldapInfo.setLdapAttributeLoginName(LdapEnum.PCCW.getBase());
             try {
                 BtuUserBean btuUserBean = btuLdapService.searchUser(ldapInfo, userDetailBean.getUserId(), password, userDetailBean.getUserId());

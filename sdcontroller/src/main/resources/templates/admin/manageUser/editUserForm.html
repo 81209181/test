@@ -30,47 +30,16 @@
                 <label>Status</label>
                 <input th:id="edit-status" type="text" class="form-control" readonly>
 
-                <label>Login Tried</label>
+                <label class="emailUserInfo">Login Tried</label>
                 <input th:id="edit-login-tried" type="number" class="form-control" readonly>
 
-                <label>Password Modify Date</label>
+                <label class="emailUserInfo">Password Modify Date</label>
                 <input th:id="edit-password-modify-date" type="text" class="form-control" readonly>
 
-                <label>LDAP Domain</label>
+                <label class="ldapUserInfo">LDAP Domain</label>
                 <input th:id="edit-ldap-domain" type="text" class="form-control" readonly>
             </div>
 
-            <div class="d-inline-block col-md-5 form-group">
-                <label>Company ID</label>
-                <input th:id="edit-company-id" type="text" class="form-control" readonly>
-
-                <label>Company Name</label>
-                <input th:id="edit-company-name" type="text" class="form-control" readonly>
-
-                <label>Staff ID / HKID / Passport Number (first 4 digits)</label>
-                <input th:id="edit-staff-id" type="text" class="form-control" maxlength="4" required>
-
-                <label>User Group</label>
-                <div class="d-block">
-                    <div class="form-check form-check-inline" th:if="${userGroupDataMap?.get('ADMIN')}" >
-                        <input class="form-check-input" type="checkbox" th:id="edit-user-group-admin" value="ADMIN">
-                        <label class="form-check-label">ADMIN</label>
-                    </div>
-                    <div class="form-check form-check-inline" th:if="${userGroupDataMap?.get('USER')}" >
-                        <input class="form-check-input" type="checkbox" th:id="edit-user-group-user" value="USER">
-                        <label class="form-check-label">USER</label>
-                    </div>
-                    <div class="form-check form-check-inline" th:if="${userGroupDataMap?.get('C_ADMIN')}" >
-                        <input class="form-check-input" type="checkbox" th:id="edit-user-group-cadmin"  value="C_ADMIN" >
-                        <label class="form-check-label">C_ADMIN</label>
-                    </div>
-                    <div class="form-check form-check-inline" th:if="${userGroupDataMap?.get('C_USER')}" >
-                        <input class="form-check-input" type="checkbox" th:id="edit-user-group-cuser" value="C_USER" >
-                        <label class="form-check-label">C_USER</label>
-                    </div>
-                </div>
-
-            </div>
         </div>
 
         <div class="col-md-12">
@@ -81,22 +50,6 @@
             </div>
         </div>
 
-        <div class="col-md-12">
-            <span class="row">
-                <p>
-                    <i>* User Group:</i> <br/>
-                    <small style="padding-left: 4em;" th:if="${userGroupDataMap?.get('C_ADMIN')}">
-                        <i>C_ADMIN: <span th:text="${userGroupDataMap?.get('C_ADMIN')?.groupDesc}" th:remove="tag"></span></i>
-                        <br/>
-                    </small>
-                    <small style="padding-left: 4em;" th:if="${userGroupDataMap?.get('C_USER')}">
-                        <i>C_USER: <span th:text="${userGroupDataMap?.get('C_USER')?.groupDesc}" th:remove="tag"></span></i>
-                    </small>
-                </p>
-            </span>
-            <span class="row"><i>* Activate: Activate user account.</i></span>
-            <span class="row"><i>* Deactivate: Suspend/delete user account.</i></span>
-        </div>
     </form>
 
     <script type="text/javascript" th:src="@{/js/editUserForm.js}"></script>

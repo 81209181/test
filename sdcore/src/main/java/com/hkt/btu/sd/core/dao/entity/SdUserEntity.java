@@ -19,10 +19,12 @@ public class SdUserEntity extends BaseEntity {
     private String userId;
     private String name;
     private String status;
-    private byte[] mobile;
     private String email;
     private Integer companyId;
-    private byte[] staffId;
+    private String mobile;
+    private String staffId;
+    //private byte[] mobile;
+    //private byte[] staffId;
 
     private String ldapDomain;
     private String password;
@@ -94,19 +96,19 @@ public class SdUserEntity extends BaseEntity {
         this.companyId = companyId;
     }
 
-    public byte[] getMobile() {
+    public String getMobile() {
         return mobile;
     }
 
-    public void setMobile(byte[] mobile) {
+    public void setMobile(String mobile) {
         this.mobile = mobile;
     }
 
-    public byte[] getStaffId() {
+    public String getStaffId() {
         return staffId;
     }
 
-    public void setStaffId(byte[] staffId) {
+    public void setStaffId(String staffId) {
         this.staffId = staffId;
     }
 

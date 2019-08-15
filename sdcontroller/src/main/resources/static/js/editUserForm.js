@@ -18,6 +18,16 @@ function ajaxGetUser(){
             $("#edit-company-id").val(data.companyId);
             $("#edit-staff-id").val(data.staffId);
 
+            if (data.ldapDomain == null) {
+                $("#btnActivateUser").show();
+                $("#btnDeactivateUser").show();
+                $("#edit-login-tried").show();
+                $("#edit-password-modify-date").show();
+                $("label.emailUserInfo").show();
+                $("label.ldapUserInfo").hide();
+                $("#edit-ldap-domain").hide();
+            }
+
             if($("#edit-user-group-admin").val() && $.inArray("ADMIN", data.userGroupList)>=0){
                 $("#edit-user-group-admin").prop('checked', true);
             }
@@ -140,6 +150,16 @@ $(document).ready(function() {
     $("#btnUpdateUser").on("click", function (){
         ajaxUpdateUser();
     });
+
+
+    $("#btnActivateUser").hide();
+    $("#btnDeactivateUser").hide();
+    $("#edit-login-tried").hide();
+    $("#edit-password-modify-date").hide();
+    $("label.emailUserInfo").hide();
+    $("label.ldapUserInfo").show();
+    $("#edit-ldap-domain").show();
+
 
     // load user
     ajaxGetUser();
