@@ -23,7 +23,7 @@ public interface SdUserService extends BtuUserService {
 
     SdUserBean getUserByUserId(String userId) throws UserNotFoundException;
 
-    Page<SdUserBean> searchUser(Pageable pageable, String userId, String email, String name, String userGroupId);
+    Page<SdUserBean> searchUser(Pageable pageable, String userId, String email, String name);
 
     void updateUserPwd(String userId, String rawOldPassword, String rawNewPassword)
             throws UserNotFoundException, InvalidPasswordException;

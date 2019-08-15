@@ -25,5 +25,5 @@ public interface SdUserFacade {
     String resetPassword(ResetPwdFormData resetPwdFormData);
     String requestResetPassword(String email);
 
-    PageData<SdUserData> searchUser(Pageable pageable, String userId, String email, String name, String userGroupId);
+    PageData<SdUserData> searchUser(Pageable pageable, String userId, String email, String name);
 }

@@ -160,12 +160,11 @@ public class ManageUserController {
             @RequestParam(defaultValue = "10") int length,
             @RequestParam(required = false) String userId,
             @RequestParam(required = false) String name,
-            @RequestParam(required = false) String email,
-            @RequestParam(required = false) String userGroupId) {
+            @RequestParam(required = false) String email) {
         int page = start / length;
         Pageable pageable = PageRequest.of(page, length);
 
-        PageData<SdUserData> pageData = userFacade.searchUser(pageable, userId, email, name, userGroupId);
+        PageData<SdUserData> pageData = userFacade.searchUser(pageable, userId, email, name);
         return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
     }
 

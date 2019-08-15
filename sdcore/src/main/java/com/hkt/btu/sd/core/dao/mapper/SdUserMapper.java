@@ -25,9 +25,9 @@ public interface SdUserMapper {
 
 
     List<SdUserEntity> searchUser(@Param("offset") long offset, @Param("pageSize") int pageSize,
-                                  Integer companyId, String userId, String email, String name, String userGroupId);
+                                  Integer companyId, String userId, String email, String name);
 
-    Integer countSearchUser(Integer companyId, String userId, String email, String name, String userGroupId);
+    Integer countSearchUser(Integer companyId, String userId, String email, String name);
 
 
     void insertUser(SdUserEntity sdUserEntity);
