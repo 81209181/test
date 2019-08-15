@@ -395,10 +395,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     @Transactional
     public void verifyLdapUser(String password, BtuUserBean userDetailBean) {
         if (StringUtils.isEmpty(userDetailBean.getEmail())) {
-            BtuLdapBean ldapInfo = new BtuLdapBean();
-            ldapInfo.setLdapServerUrl(LdapEnum.PCCW.getHostUrl());
-            ldapInfo.setPrincipleName(userDetailBean.getUserId() + userDetailBean.getLdapDomain());
-            ldapInfo.setLdapAttributeLoginName(LdapEnum.PCCW.getBase());
+            BtuLdapBean ldapInfo = btuLdapService.getBtuLdapBean(userDetailBean.getLdapDomain());
             try {
                 BtuUserBean btuUserBean = btuLdapService.searchUser(ldapInfo, userDetailBean.getUserId(), password, userDetailBean.getUserId());
                 if (btuUserBean != null) {

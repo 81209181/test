@@ -15,4 +15,6 @@ public interface BtuLdapService {
     BtuUserBean searchUser(BtuLdapBean ldapInfo, String username, final String password, String staffId) throws NamingException;
 
     Map<String, String> getLdapResponseAttrMap(NamingEnumeration response) throws NamingException;
+
+    BtuLdapBean getBtuLdapBean(String domain);
 }

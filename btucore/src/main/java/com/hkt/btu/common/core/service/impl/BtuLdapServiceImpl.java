@@ -128,6 +128,30 @@ public class BtuLdapServiceImpl implements BtuLdapService {
         }
     }
 
+    @Override
+    public BtuLdapBean getBtuLdapBean(String domain) {
+        BtuLdapBean ldapInfo = new BtuLdapBean();
+        switch (domain) {
+            case "@corphq.hk.pccw.com":
+                ldapInfo.setLdapServerUrl(LdapEnum.PCCW.getHostUrl());
+                ldapInfo.setLdapAttributeLoginName(LdapEnum.PCCW.getBase());
+                break;
+            case "@corp.root":
+                ldapInfo.setLdapServerUrl(LdapEnum.PCCWS.getHostUrl());
+                ldapInfo.setLdapAttributeLoginName(LdapEnum.PCCWS.getBase());
+                break;
+            case "@oa.hkcsl.net":
+                ldapInfo.setLdapServerUrl(LdapEnum.CSL.getHostUrl());
+                ldapInfo.setLdapAttributeLoginName(LdapEnum.CSL.getBase());
+                break;
+            default:
+                return null;
+        }
+        ldapInfo.setPrincipleName(domain);
+        return ldapInfo;
+    }
+
+
     protected BtuUserBean getSearchResult(BtuLdapBean ldapInfo, DirContext ctx, String filter) throws NamingException {
         try {
             String ldapBase = ldapInfo.getLdapAttributeLoginName();
