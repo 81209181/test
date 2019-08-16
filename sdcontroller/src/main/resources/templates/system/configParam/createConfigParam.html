@@ -29,7 +29,11 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label>Config Value</label>
-                <input type="text" class="form-control" id="configValue" name="configValue">
+                <input type="text" class="form-control" id="config_value_input" name="configValue">
+                <select name="configValue" id="config_value_select" class="form-control" hidden="hidden" disabled="disabled">
+                    <option value="true">true</option>
+                    <option value="false">false</option>
+                </select>
             </div>
             <div class="form-group col-md-6">
                 <label>Config Type</label>

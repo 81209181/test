@@ -16,22 +16,44 @@ $().ready(function(){
 
     $('#configValueType').change(function(){
         let selected = $(this).children('option:selected').val();
-        $('#configValue').val('');
+        $('#config_value_input').val('');
         if(selected =='LocalDateTime'){
-            $('#configValue').attr('type','datetime-local');
-            $('#configValue').attr('pattern','[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}');
-            $('#configValue').attr('placeholder','1900-01-01T01:00');
+            $('#config_value_input').attr('type','datetime-local');
+            $('#config_value_input').attr('pattern','[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}');
+            $('#config_value_input').attr('placeholder','1900-01-01T01:00');
         }else{
-            $('#configValue').attr('type','text');
-            $('#configValue').removeAttr('pattern');
-            $('#configValue').removeAttr('placeholder');
+            $('#config_value_input').attr('type','text');
+            $('#config_value_input').removeAttr('pattern');
+            $('#config_value_input').removeAttr('placeholder');
+        }
+        if(selected == 'Boolean'){
+            $('#config_value_select').attr("disabled",false);
+            $('#config_value_select').attr("hidden",false);
+            $('#config_value_input').attr("disabled",true);
+            $('#config_value_input').attr("hidden",true);
+        }else{
+            $('#config_value_select').attr("disabled",true);
+            $('#config_value_select').attr("hidden",true);
+            $('#config_value_input').attr("disabled",false);
+            $('#config_value_input').attr("hidden",false);
         }
     })
 
     $('#btnCreateConfigParam').on('click',function(){
         clearAllMsg();
+        var form = $('form').serializeArray();
+        var group_key;
+        $.each(form,function(i,val){
+            if(val.name =='configGroup'){
+                group_key = val.value + '/';
+            }
+            if(val.name =='configKey'){
+                group_key += val.value;
+            }
+        })
         $.post('/system/config-param/createConfigParam',$('form').serialize(),function(res){
-            showInfoMsg(res);
+//            showInfoMsg(res);
+            $(location).attr('href','/system/config-param/'+group_key);
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";
             console.log("ERROR : ", responseError);
