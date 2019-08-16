@@ -51,7 +51,7 @@ public class SdJobAspect {
         throw new JobExecutionException("Null jobExecutionContext.");
     }
 
-    @Around("execution(* com.hkt.btu.sd.core.job.*.executeInternal(..))")
+    @Around("execution(* com.hkt.btu.*.*.job.*.executeInternal(..))")
     public Object aroundExecuteInternal(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         JobExecutionContext jobExecutionContext;
         JobDetail jobDetail;
