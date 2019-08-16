@@ -398,7 +398,8 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             BtuLdapBean ldapInfo = btuLdapService.getBtuLdapBean(userDetailBean.getLdapDomain());
             try {
                 BtuUserBean btuUserBean = btuLdapService.searchUser(ldapInfo, userDetailBean.getUserId(), password, userDetailBean.getUserId());
-                if (btuUserBean != null) {
+                if (StringUtils.isNotBlank(btuUserBean.getEmail())
+                        && StringUtils.isNotBlank(btuUserBean.getUsername())) {
                     sdUserMapper.updateLdapUser(userDetailBean.getUserId(), btuUserBean.getUsername(), btuUserBean.getEmail().toLowerCase());
                 }
             } catch (NamingException e) {
