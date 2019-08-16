@@ -107,7 +107,7 @@ public class SystemController {
         if (StringUtils.isEmpty(configValue)) {
             return ResponseEntity.badRequest().body("Please input config value.");
         }
-        if (sdConfigParamFacade.checkConfigParam(configGroup, configKey, configValue, configValueType)) {
+        if (!sdConfigParamFacade.checkConfigParam(configGroup, configKey, configValue, configValueType)) {
             return ResponseEntity.badRequest().body("config value not match config value type!");
         }
         if (sdConfigParamFacade.updateConfigParam(configGroup, configKey, configValue, configValueType)) {
