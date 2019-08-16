@@ -10,12 +10,12 @@ public class BtuCronJobLogServiceImpl implements BtuCronJobLogService {
 
     @Override
     public void logUserActivateJob(String jobGroup, String jobName) {
-        LOG.warn("log user active job:{},{}",jobGroup,jobName);
+        LOG.info("log user active job:{},{}",jobGroup,jobName);
     }
 
     @Override
     public void logUserDeactivateJob(String jobGroup, String jobName) {
-        LOG.warn("log user deactivate job :{},{}",jobGroup,jobName);
+        LOG.info("log user deactivate job :{},{}",jobGroup,jobName);
     }
 
     @Override
@@ -25,26 +25,26 @@ public class BtuCronJobLogServiceImpl implements BtuCronJobLogService {
 
     @Override
     public void logUserResumeJob(JobDetail jobDetail) {
-        LOG.warn("log user resume job :{}",jobDetail.getDescription());
+        LOG.info("log user resume job :{}",jobDetail.getDescription());
     }
 
     @Override
     public void logUserTriggerJob(JobDetail jobDetail) {
-        LOG.warn("log user trigger job:{}",jobDetail.getDescription());
+        LOG.info("log user trigger job:{}",jobDetail.getDescription());
     }
 
     @Override
     public void logSkip(JobDetail jobDetail) {
-        LOG.warn("log skip:{}",jobDetail.getDescription());
+        LOG.info("log skip:{}",jobDetail.getDescription());
     }
 
     @Override
     public void logComplete(JobDetail jobDetail) {
-        LOG.warn("log complete :{}",jobDetail.getDescription());
+        LOG.info("log complete :{}",jobDetail.getDescription());
     }
 
     @Override
     public void logError(JobDetail jobDetail) {
-        LOG.warn("log error:{}",jobDetail.getDescription());
+        LOG.info("log error:{}",jobDetail.getDescription());
     }
 }
