@@ -65,7 +65,12 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
                     btuUserBean);
             userDetails.setLdapPassword((String) auth.getCredentials());
             // Prepare ldap data
-            BtuLdapBean ldapInfo = btuLdapService.getBtuLdapBean(userDetails.getUserBean().getLdapDomain());
+
+            String domain = Optional
+                             .ofNullable(userDetails.getUserBean().getLdapDomain())
+                               .orElseThrow(() -> new NotPermittedLogonException("Invalid LDAP Domain"));
+
+            BtuLdapBean ldapInfo = btuLdapService.getBtuLdapBean(domain);
 
             // login ldap
             btuLdapService.authenticationOnly(ldapInfo, auth);

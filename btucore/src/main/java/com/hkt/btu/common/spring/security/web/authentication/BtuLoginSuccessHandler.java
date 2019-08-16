@@ -40,8 +40,6 @@ public class BtuLoginSuccessHandler extends SavedRequestAwareAuthenticationSucce
 
         btuUserService.verifyLdapUser(user.getLdapPassword(),userBean);
 
-
-
         // set timeout for inactive session
         HttpSession session = httpServletRequest.getSession(false);
         if( session!=null ){

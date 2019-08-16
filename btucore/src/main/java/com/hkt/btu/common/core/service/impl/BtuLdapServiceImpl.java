@@ -6,6 +6,8 @@ import com.hkt.btu.common.core.service.bean.BtuLdapBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.core.service.constant.LdapEnum;
 import com.hkt.btu.common.javax.net.LdapSSLSocketFactory;
+import com.hkt.btu.common.spring.security.authentication.LdapAuthenticationProvider;
+import com.hkt.btu.common.spring.security.exception.NotPermittedLogonException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,6 +20,8 @@ import javax.naming.directory.*;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+
+import static com.hkt.btu.common.core.service.constant.LdapEnum.PCCW;
 
 public class BtuLdapServiceImpl implements BtuLdapService {
 
@@ -131,21 +135,22 @@ public class BtuLdapServiceImpl implements BtuLdapService {
     @Override
     public BtuLdapBean getBtuLdapBean(String domain) {
         BtuLdapBean ldapInfo = new BtuLdapBean();
-        switch (domain) {
-            case "@corphq.hk.pccw.com":
-                ldapInfo.setLdapServerUrl(LdapEnum.PCCW.getHostUrl());
-                ldapInfo.setLdapAttributeLoginName(LdapEnum.PCCW.getBase());
+        LdapEnum domainEnum = LdapEnum.getValue(domain);
+        switch (domainEnum) {
+            case PCCW:
+                ldapInfo.setLdapServerUrl(PCCW.getHostUrl());
+                ldapInfo.setLdapAttributeLoginName(PCCW.getBase());
                 break;
-            case "@corp.root":
+            case PCCWS:
                 ldapInfo.setLdapServerUrl(LdapEnum.PCCWS.getHostUrl());
                 ldapInfo.setLdapAttributeLoginName(LdapEnum.PCCWS.getBase());
                 break;
-            case "@oa.hkcsl.net":
+            case CSL:
                 ldapInfo.setLdapServerUrl(LdapEnum.CSL.getHostUrl());
                 ldapInfo.setLdapAttributeLoginName(LdapEnum.CSL.getBase());
                 break;
             default:
-                return null;
+                throw new NotPermittedLogonException("");
         }
         ldapInfo.setPrincipleName(domain);
         return ldapInfo;
