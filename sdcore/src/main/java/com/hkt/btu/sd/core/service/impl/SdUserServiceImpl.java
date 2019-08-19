@@ -398,10 +398,11 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             BtuLdapBean ldapInfo = btuLdapService.getBtuLdapBean(userDetailBean.getLdapDomain());
             try {
                 BtuUserBean btuUserBean = btuLdapService.searchUser(ldapInfo, userDetailBean.getUserId(), password, userDetailBean.getUserId());
-                if (StringUtils.isEmpty(btuUserBean.getEmail()) || StringUtils.isEmpty(btuUserBean.getUsername())) {
-                    throw new UserNotFoundException("Cannot get user information from Ldap");
-                } else {
+                if (StringUtils.isNotEmpty(btuUserBean.getEmail())
+                        && StringUtils.isNotEmpty(btuUserBean.getUsername())) {
                     sdUserMapper.updateLdapUser(userDetailBean.getUserId(), btuUserBean.getUsername(), btuUserBean.getEmail().toLowerCase());
+                } else {
+                    LOG.info("No email/name from LDAP:" + userDetailBean.getUserId());
                 }
             } catch (NamingException e) {
                 LOG.warn("User" + userDetailBean.getUserId() + "not found");
