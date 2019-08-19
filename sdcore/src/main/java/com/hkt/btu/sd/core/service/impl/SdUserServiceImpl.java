@@ -171,7 +171,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         String encodedPassword = encodePassword(password);
 
         // get New UserId
-        String newUserId = "E" + sdUserMapper.getNewUserId().toString();
+        String newUserId = SdUserBean.EMAIL_USER_ID_PREFIX + sdUserMapper.getNewUserId().toString();
 
         // TODO: encrypt
         //byte[] encryptedMobile = StringUtils.isEmpty(mobile) ? null : btuSensitiveDataService.encryptFromString(mobile);
@@ -567,9 +567,11 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         if (sdUserEntity == null) {
             throw new UserNotFoundException();
         }
-
         String userId = sdUserEntity.getUserId();
-        if (!userId.contains("E")) {
+
+        // reject LDAP user to reset password
+        String ldapDomain = sdUserEntity.getLdapDomain();
+        if ( StringUtils.isNotEmpty(ldapDomain) ) {
             throw new InvalidUserTypeException("LDAP users are not allowed to reset passwords.");
         }
 
