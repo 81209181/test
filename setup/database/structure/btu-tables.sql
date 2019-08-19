@@ -13,10 +13,11 @@
 -- .M$IIIIIIIIIIIIIIIIIIM .MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM .
 -- Config
 CREATE TABLE CONFIG_PARAM(
-    CONFIG_GROUP        varchar2(40)             not null,
-    CONFIG_KEY          varchar2(40)             not null,
+    CONFIG_GROUP        varchar2(40)            not null,
+    CONFIG_KEY          varchar2(40)            not null,
     CONFIG_VALUE        varchar2(400),
-    CONFIG_VALUE_TYPE   varchar2(20)             default 'String',
+    CONFIG_VALUE_TYPE   varchar2(20)            default 'String',
+    ENCRYPT             varchar2(1)             default 'N',
 
     CREATEDATE          date                    default SYSDATE not null,
     CREATEBY            varchar2(10)            not null,
