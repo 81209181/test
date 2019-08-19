@@ -101,6 +101,18 @@
         where USER_ID = #{userId}
     </update>
 
+    <update id="updateUserEmail">
+        update USER_PROFILE
+        set EMAIL = #{email}
+        where USER_ID = #{userId}
+    </update>
+
+    <update id="updateUserName">
+        update USER_PROFILE
+        set NAME = #{username}
+        where USER_ID = #{userId}
+    </update>
+
     <update id="updateUserPassword">
         update USER_PROFILE
         set PASSWORD = #{password}, PASSWORD_MODIFYDATE = CURRENT_TIMESTAMP

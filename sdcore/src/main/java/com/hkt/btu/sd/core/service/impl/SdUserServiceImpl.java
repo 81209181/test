@@ -398,11 +398,19 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             BtuLdapBean ldapInfo = btuLdapService.getBtuLdapBean(userDetailBean.getLdapDomain());
             try {
                 BtuUserBean btuUserBean = btuLdapService.searchUser(ldapInfo, userDetailBean.getUserId(), password, userDetailBean.getUserId());
-                if (StringUtils.isNotEmpty(btuUserBean.getEmail())
-                        && StringUtils.isNotEmpty(btuUserBean.getUsername())) {
-                    sdUserMapper.updateLdapUser(userDetailBean.getUserId(), btuUserBean.getUsername(), btuUserBean.getEmail().toLowerCase());
+                String userId = userDetailBean.getUserId();
+                String email = btuUserBean.getEmail();
+                String username = btuUserBean.getUsername();
+                if (StringUtils.isNotEmpty(email) && StringUtils.isNotEmpty(username)) {
+                    sdUserMapper.updateLdapUser(userId, username, email);
+                } else if (StringUtils.isNotEmpty(email)) {
+                    sdUserMapper.updateUserEmail(email, userId);
+                    LOG.info("No username from LDAP: " + userId);
+                } else if (StringUtils.isNotEmpty(username)) {
+                    sdUserMapper.updateUserName(username, userId);
+                    LOG.info("No email from LDAP: " + userId);
                 } else {
-                    LOG.info("No email/name from LDAP:" + userDetailBean.getUserId());
+                    LOG.info("No email/username from LDAP: " + userId);
                 }
             } catch (NamingException e) {
                 LOG.warn("User" + userDetailBean.getUserId() + "not found");
@@ -571,7 +579,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
         // reject LDAP user to reset password
         String ldapDomain = sdUserEntity.getLdapDomain();
-        if ( StringUtils.isNotEmpty(ldapDomain) ) {
+        if (StringUtils.isNotEmpty(ldapDomain)) {
             throw new InvalidUserTypeException("LDAP users are not allowed to reset passwords.");
         }
 
