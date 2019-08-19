@@ -250,7 +250,7 @@ END;
 
 CREATE TABLE USER_USER_ROLE(
     USER_ID               varchar2(10)                not null,
-    ROLE_ID               varchar2(10)                not null
+    ROLE_ID               varchar2(20)                not null
 );
 
 CREATE INDEX IDX_USER_USER_ROLE_1 ON USER_USER_ROLE (USER_ID);
@@ -296,9 +296,9 @@ END;
 
 -- User Role
 CREATE TABLE USER_ROLE(
-  ROLE_ID               varchar2(10),
+  ROLE_ID               varchar2(20),
   ROLE_DESC             varchar2(50)                    not null,
-  PARENT_ROLE_ID        varchar2(10),
+  PARENT_ROLE_ID        varchar2(20),
   STATUS                varchar2(2),
 
   CREATEDATE            date     default SYSDATE        not null,
@@ -330,7 +330,7 @@ END;
 
 
 CREATE TABLE USER_ROLE_PATH_CTRL(
-    ROLE_ID         varchar2(10)                            not null,
+    ROLE_ID         varchar2(20)                            not null,
     PATH_CTRL_ID    number                                  not null,
     CREATEDATE      date           default SYSDATE          not null,
     CREATEBY        varchar2(10)                            not null,
