@@ -4,6 +4,8 @@ import com.hkt.btu.common.core.service.bean.BtuUserBean;
 
 public class SdUserBean extends BtuUserBean {
 
+    public static String EMAIL_USER_ID_PREFIX = "E";
+
     private String userId;
     private String name;
     private String email;

@@ -13,15 +13,16 @@
 -- .M$IIIIIIIIIIIIIIIIIIM .MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM .
 -- Config
 CREATE TABLE CONFIG_PARAM(
-                             CONFIG_GROUP        varchar2(40)             not null,
-                             CONFIG_KEY          varchar2(40)             not null,
-                             CONFIG_VALUE        varchar2(400),
-                             CONFIG_VALUE_TYPE   varchar2(20)             default 'String',
+    CONFIG_GROUP        varchar2(40)            not null,
+    CONFIG_KEY          varchar2(40)            not null,
+    CONFIG_VALUE        varchar2(400),
+    CONFIG_VALUE_TYPE   varchar2(20)            default 'String',
+    ENCRYPT             varchar2(1)             default 'N',
 
-                             CREATEDATE          date                    default SYSDATE not null,
-                             CREATEBY            varchar2(10)            not null,
-                             MODIFYDATE          date                    default SYSDATE not null,
-                             MODIFYBY            varchar2(10)            not null
+    CREATEDATE          date                    default SYSDATE not null,
+    CREATEBY            varchar2(10)            not null,
+    MODIFYDATE          date                    default SYSDATE not null,
+    MODIFYBY            varchar2(10)            not null
 );
 CREATE UNIQUE INDEX IDX_CONFIG_PARAM_1 ON CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY);
 CREATE INDEX IDX_CONFIG_PARAM_2 ON CONFIG_PARAM (CONFIG_GROUP);
@@ -61,21 +62,21 @@ END;
 -- Cronjob
 CREATE SEQUENCE SEQ_CRON_JOB_ID START WITH 1;
 CREATE TABLE CRON_JOB(
-                         JOB_ID              number                               default SEQ_CRON_JOB_ID.nextval,
-                         JOB_GROUP           varchar2(20)                         not null,
-                         JOB_NAME            varchar2(80)                         not null,
-                         JOB_CLASS           varchar2(100)                        not null,
-                         CRON_EXP            varchar2(100)                        not null,
+    JOB_ID              number                               default SEQ_CRON_JOB_ID.nextval,
+    JOB_GROUP           varchar2(20)                         not null,
+    JOB_NAME            varchar2(80)                         not null,
+    JOB_CLASS           varchar2(100)                        not null,
+    CRON_EXP            varchar2(100)                        not null,
 
-                         STATUS	             varchar2(2)                          not null,
-                         MANDATORY           varchar2(1)                          not null,
+    STATUS	             varchar2(2)                          not null,
+    MANDATORY           varchar2(1)                          not null,
 
-                         CREATEDATE          date default SYSDATE not null,
-                         CREATEBY            varchar2(10)                         not null,
-                         MODIFYDATE          date default SYSDATE not null,
-                         MODIFYBY            varchar2(10)                         not null,
-                         REMARKS             varchar2(250),
-                         CONSTRAINT PK_CRON_JOB PRIMARY KEY (JOB_ID)
+    CREATEDATE          date default SYSDATE not null,
+    CREATEBY            varchar2(10)                         not null,
+    MODIFYDATE          date default SYSDATE not null,
+    MODIFYBY            varchar2(10)                         not null,
+    REMARKS             varchar2(250),
+    CONSTRAINT PK_CRON_JOB PRIMARY KEY (JOB_ID)
 );
 CREATE UNIQUE INDEX IDX_CRON_JOB_1 ON CRON_JOB (JOB_GROUP, JOB_NAME);
 
@@ -96,18 +97,18 @@ BEGIN
 END;
 
 CREATE TABLE CRON_JOB_LOG(
-                             SERVER_HOSTNAME     varchar2(50),
+    SERVER_HOSTNAME     varchar2(50),
 
-                             JOB_GROUP           varchar2(20)                         not null,
-                             JOB_NAME            varchar2(80)                         not null,
-                             JOB_CLASS           varchar2(100)                        not null,
+    JOB_GROUP           varchar2(20)                         not null,
+    JOB_NAME            varchar2(80)                         not null,
+    JOB_CLASS           varchar2(100)                        not null,
 
-                             ACTION              varchar2(10),
-                             SERVER_IP           varchar2(50),
+    ACTION              varchar2(10),
+    SERVER_IP           varchar2(50),
 
-                             CREATEDATE          date default SYSDATE not null,
-                             CREATEBY            number                                 not null,
-                             MODIFYDATE          date default SYSDATE not null
+    CREATEDATE          date default SYSDATE not null,
+    CREATEBY            number                                 not null,
+    MODIFYDATE          date default SYSDATE not null
 );
 CREATE INDEX IDX_CRON_JOB_LOG_1 ON CRON_JOB_LOG (SERVER_IP);
 CREATE INDEX IDX_CRON_JOB_LOG_2 ON CRON_JOB_LOG (JOB_CLASS);
@@ -155,13 +156,13 @@ END;
 -- Audit
 CREATE SEQUENCE SEQ_AUDIT_TRAIL_ID START WITH 1;
 CREATE TABLE AUDIT_TRAIL(
-                          AUDIT_ID        number                default SEQ_AUDIT_TRAIL_ID.nextval,
-                          USER_ID         number                not null,
-                          ACTION          varchar2(20)          not null,
-                          DETAIL          varchar2(200),
-                          CREATEDATE      date                  default SYSDATE not null,
-                          MODIFYDATE      date                  default SYSDATE not null,
-                          CONSTRAINT PK_AUDIT_TRAIL PRIMARY KEY (AUDIT_ID)
+    AUDIT_ID        number                default SEQ_AUDIT_TRAIL_ID.nextval,
+    USER_ID         varchar2(10)          not null,
+    ACTION          varchar2(20)          not null,
+    DETAIL          varchar2(200),
+    CREATEDATE      date                  default SYSDATE not null,
+    MODIFYDATE      date                  default SYSDATE not null,
+    CONSTRAINT PK_AUDIT_TRAIL PRIMARY KEY (AUDIT_ID)
 );
 CREATE INDEX IDX_AUDIT_TRAIL_1 ON AUDIT_TRAIL (USER_ID);
 CREATE INDEX IDX_AUDIT_TRAIL_2 ON AUDIT_TRAIL (ACTION);
@@ -228,6 +229,7 @@ CREATE TABLE USER_PROFILE (
   CONSTRAINT PK_USER_PROFILE PRIMARY KEY (USER_ID)
 );
 CREATE UNIQUE INDEX IDX_USER_PROFILE_1 ON USER_PROFILE (EMAIL);
+CREATE SEQUENCE SEQ_USER_PROFILE_USER_ID START WITH 1;
 
 CREATE OR REPLACE TRIGGER TRIGGER_USER_PROFILE_1
     BEFORE INSERT ON USER_PROFILE
@@ -246,6 +248,14 @@ BEGIN
 END;
 
 
+CREATE TABLE USER_USER_ROLE(
+    USER_ID               varchar2(10)                not null,
+    ROLE_ID               varchar2(20)                not null
+);
+
+CREATE INDEX IDX_USER_USER_ROLE_1 ON USER_USER_ROLE (USER_ID);
+CREATE INDEX IDX_USER_USER_ROLE_2 ON USER_USER_ROLE (ROLE_ID);
+CREATE UNIQUE INDEX IDX_USER_USER_ROLE_3 ON USER_USER_ROLE (USER_ID,ROLE_ID);
 
 CREATE TABLE USER_PWD_HIST(
   USER_ID               varchar2(10)                not null,
@@ -253,17 +263,16 @@ CREATE TABLE USER_PWD_HIST(
   CREATEDATE            date    default SYSDATE     not null
 );
 
-
 -- otp
 CREATE TABLE OTP(
-                        USER_ID             varchar2(10)                not null,
-                        ACTION              varchar2(20)                not null,
-                        OTP                 varchar2(40)                not null,
-                        EXPIRYDATE          date                        not null,
+    USER_ID             varchar2(10)                not null,
+    ACTION              varchar2(20)                not null,
+    OTP                 varchar2(40)                not null,
+    EXPIRYDATE          date                        not null,
 
-                        CREATEDATE          date    default SYSDATE     not null,
-                        CREATEBY            varchar2(10)                not null,
-                        MODIFYDATE          date    default SYSDATE     not null
+    CREATEDATE          date    default SYSDATE     not null,
+    CREATEBY            varchar2(10)                not null,
+    MODIFYDATE          date    default SYSDATE     not null
 );
 CREATE INDEX IDX_OTP_1 ON OTP (USER_ID);
 CREATE INDEX IDX_OTP_2 ON OTP (ACTION);
@@ -285,73 +294,51 @@ BEGIN
 END;
 
 
+-- User Role
+CREATE TABLE USER_ROLE(
+  ROLE_ID               varchar2(20),
+  ROLE_DESC             varchar2(50)                    not null,
+  PARENT_ROLE_ID        varchar2(20),
+  STATUS                varchar2(2),
 
--- 7MMMMMMMMMMMMMMMMMI .....................................MMMMMMMMMMMMMMMMMM.........................
--- +M ..... .. .....NI .. . .. ..... .............. ........M..... .........,M........ .......... .....
--- +M   .MM.  MM    NI . 8MMMM8 ....?MMMMMI ...MMMMMN.......M....MMMMMMMN ..,M....MMMMMO.....MMMMMD....
--- +M ...MM. .MM .. NI ..MM. ~......?MM .......MM..DM+ .....M..,MMI ...ON...,M....MM..MM.....MM .MM,...
--- +M ...MM...MM ...NI ..ZMM,.....  ?MMMMMI   .MM.~MM,.    .M. MM    . .  . ,M....MM +MM ... MM ~MM... 
--- +M ...MM...MM ...NI ... $MMI ..  ?MMMMM7    MMMMM .      M. MM    MMMMM. ,M.   MMMMM      MMMMM. .  
--- +M ...MM ..MM ...NI .... .MM ....?MM  ......MM.MM     ...M..MMN .    MM..,M... MM,MM......MM  .  .  
--- +M ...MM8:DMM....NI ..MM=+MM...  ?MM8DD?.   MM..MM       M. .MMMO::8MM . ,M.   MM =MM.    MM.       
--- +M ....OMMMO.....NI .. MMMN....  ?MMMMMI.   MM. ~MM.     M.    DMMMM$.   ,M.   MM  OMN    MM        
--- +M ..............NI. ................................ ...M...............,M........................ 
--- +MMMMMMMMMMMMMMMMMI.MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM ...MMMMMMMMMMMMMMMMMM.MMMMMMMMMMMMMMMMMMMMMMM
--- User Group
--- CREATE TABLE USER_GROUP(
---   GROUP_ID              varchar2(10),
---   GROUP_NAME            varchar2(50)                    not null,
---   PARENT_GROUP          varchar2(10),
---   STATUS                varchar2(2),
---
---   CREATEDATE            date     default SYSDATE        not null,
---   CREATEBY              varchar2(10)                    not null,
---   MODIFYDATE            date     default SYSDATE        not null,
---   MODIFYBY              varchar2(10)                    not null,
---   REMARKS               varchar2(250),
---
---   CONSTRAINT PK_USER_GROUP PRIMARY KEY (GROUP_ID)
--- );
---
--- CREATE OR REPLACE TRIGGER TRIGGER_USER_GROUP_1
---     BEFORE INSERT ON USER_GROUP
---     FOR EACH ROW
--- BEGIN
---     :NEW.CREATEDATE := SYSDATE;
--- END;
---
--- CREATE OR REPLACE TRIGGER TRIGGER_USER_GROUP_2
---     BEFORE UPDATE ON USER_GROUP
---     FOR EACH ROW
--- BEGIN
---     :NEW.CREATEDATE := :OLD.CREATEDATE;
---     :NEW.CREATEBY := :OLD.CREATEBY;
---     :NEW.MODIFYDATE := SYSDATE;
--- END;
+  CREATEDATE            date     default SYSDATE        not null,
+  CREATEBY              varchar2(10)                    not null,
+  MODIFYDATE            date     default SYSDATE        not null,
+  MODIFYBY              varchar2(10)                    not null,
+  REMARKS               varchar2(250),
+
+  CONSTRAINT PK_USER_ROLE PRIMARY KEY (ROLE_ID)
+);
+
+CREATE OR REPLACE TRIGGER TRIGGER_USER_ROLE_1
+    BEFORE INSERT ON USER_ROLE
+    FOR EACH ROW
+BEGIN
+    :NEW.CREATEDATE := SYSDATE;
+END;
+
+CREATE OR REPLACE TRIGGER TRIGGER_USER_ROLE_2
+    BEFORE UPDATE ON USER_ROLE
+    FOR EACH ROW
+BEGIN
+    :NEW.CREATEDATE := :OLD.CREATEDATE;
+    :NEW.CREATEBY := :OLD.CREATEBY;
+    :NEW.MODIFYDATE := SYSDATE;
+END;
 
 
--- CREATE TABLE USER_GROUP_USER(
---   USER_ID               varchar2(10)                not null,
---   GROUP_ID              varchar2(10)                not null,
---   CREATEDATE            date    default SYSDATE     not null,
---   CREATEBY              varchar2(10)                not null
--- );
---
--- CREATE INDEX IDX_USER_USER_GROUP_1 ON USER_GROUP_USER (USER_ID);
--- CREATE INDEX IDX_USER_USER_GROUP_2 ON USER_GROUP_USER (GROUP_ID);
--- CREATE UNIQUE INDEX IDX_USER_USER_GROUP_3 ON USER_GROUP_USER (USER_ID,GROUP_ID);
---
---
--- CREATE TABLE USER_GROUP_PATH_CTRL(
---                                      GROUP_ID        varchar2(10)                           not null,
---                                      PATH_CTRL_ID    number                                 not null,
---                                      CREATEDATE      date           default SYSDATE         not null,
---                                      CREATEBY        varchar2(10)                           not null,
---                                      REMARKS         varchar2(250)
--- );
--- CREATE UNIQUE INDEX IDX_USER_GROUP_PATH_CTRL_1 ON USER_GROUP_PATH_CTRL (GROUP_ID,PATH_CTRL_ID);
--- CREATE INDEX IDX_USER_GROUP_PATH_CTRL_2 ON USER_GROUP_PATH_CTRL (GROUP_ID);
--- CREATE INDEX IDX_USER_GROUP_PATH_CTRL_3 ON USER_GROUP_PATH_CTRL (PATH_CTRL_ID);
+
+
+CREATE TABLE USER_ROLE_PATH_CTRL(
+    ROLE_ID         varchar2(20)                            not null,
+    PATH_CTRL_ID    number                                  not null,
+    CREATEDATE      date           default SYSDATE          not null,
+    CREATEBY        varchar2(10)                            not null,
+    REMARKS         varchar2(250)
+);
+CREATE UNIQUE INDEX IDX_USER_ROLE_PATH_CTRL_1 ON USER_ROLE_PATH_CTRL (ROLE_ID, PATH_CTRL_ID);
+CREATE INDEX IDX_USER_ROLE_PATH_CTRL_2 ON USER_ROLE_PATH_CTRL (ROLE_ID);
+CREATE INDEX IDX_USER_ROLE_PATH_CTRL_3 ON USER_ROLE_PATH_CTRL (PATH_CTRL_ID);
 
 
 

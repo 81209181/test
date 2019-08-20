@@ -171,7 +171,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         String encodedPassword = encodePassword(password);
 
         // get New UserId
-        String newUserId = "E" + sdUserMapper.getNewUserId().toString();
+        String newUserId = SdUserBean.EMAIL_USER_ID_PREFIX + sdUserMapper.getNewUserId().toString();
 
         // TODO: encrypt
         //byte[] encryptedMobile = StringUtils.isEmpty(mobile) ? null : btuSensitiveDataService.encryptFromString(mobile);
@@ -398,10 +398,19 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             BtuLdapBean ldapInfo = btuLdapService.getBtuLdapBean(userDetailBean.getLdapDomain());
             try {
                 BtuUserBean btuUserBean = btuLdapService.searchUser(ldapInfo, userDetailBean.getUserId(), password, userDetailBean.getUserId());
-                if (StringUtils.isEmpty(btuUserBean.getEmail()) || StringUtils.isEmpty(btuUserBean.getUsername())) {
-                    throw new UserNotFoundException("Cannot get user information from Ldap");
+                String userId = userDetailBean.getUserId();
+                String email = btuUserBean.getEmail();
+                String username = btuUserBean.getUsername();
+                if (StringUtils.isNotEmpty(email) && StringUtils.isNotEmpty(username)) {
+                    sdUserMapper.updateLdapUser(userId, username, email);
+                } else if (StringUtils.isNotEmpty(email)) {
+                    sdUserMapper.updateUserEmail(email, userId);
+                    LOG.info("No username from LDAP: " + userId);
+                } else if (StringUtils.isNotEmpty(username)) {
+                    sdUserMapper.updateUserName(username, userId);
+                    LOG.info("No email from LDAP: " + userId);
                 } else {
-                    sdUserMapper.updateLdapUser(userDetailBean.getUserId(), btuUserBean.getUsername(), btuUserBean.getEmail().toLowerCase());
+                    LOG.info("No email/username from LDAP: " + userId);
                 }
             } catch (NamingException e) {
                 LOG.warn("User" + userDetailBean.getUserId() + "not found");
@@ -566,9 +575,11 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         if (sdUserEntity == null) {
             throw new UserNotFoundException();
         }
-
         String userId = sdUserEntity.getUserId();
-        if (!userId.contains("E")) {
+
+        // reject LDAP user to reset password
+        String ldapDomain = sdUserEntity.getLdapDomain();
+        if (StringUtils.isNotEmpty(ldapDomain)) {
             throw new InvalidUserTypeException("LDAP users are not allowed to reset passwords.");
         }
 

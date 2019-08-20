@@ -6,7 +6,7 @@ Database Connection
     - servicedesk.db.password
 
 Keystore
-1. copy /setup/keystore/uat/aes-keystore.jck to /opt/keystore/aes-keystore.jck
+1. copy /setup/keystore/dev/aes-keystore.jck to /opt/keystore/aes-keystore.jck
 2. concat setup/server/tomcat/conf/local_catalina.properties to conf/catalina.properties
     - servicedesk.aesKeystore.storePass
 
