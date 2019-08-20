@@ -583,7 +583,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             // valid init password otp
             SdOtpBean sdOtpBean = sdOtpService.getValidOtp(userId, SdOtpEntity.ACTION.INIT_PWD);
             if (sdOtpBean != null) {
-                throw new InvalidOtpException("The OTP is valid, please check your email.");
+                throw new InvalidOtpException("Please check your email. OTP is already sent within 15 min.");
             }
 
             // generate init password otp
@@ -601,7 +601,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             // valid reset password otp
             SdOtpBean sdOtpBean = sdOtpService.getValidOtp(userId, SdOtpEntity.ACTION.RESET_PWD);
             if (sdOtpBean != null) {
-                throw new InvalidOtpException("The OTP is valid, please check your email.");
+                throw new InvalidOtpException("Please check your email. OTP is already sent within 15 min.");
             }
 
             // generate reset password otp
