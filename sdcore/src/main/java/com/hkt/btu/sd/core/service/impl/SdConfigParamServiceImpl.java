@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.core.service.impl;
 
 import com.hkt.btu.common.core.dao.entity.BtuConfigParamEntity;
+import com.hkt.btu.common.core.service.BtuSensitiveDataService;
 import com.hkt.btu.common.core.service.impl.BtuConfigParamServiceImpl;
 import com.hkt.btu.sd.core.dao.entity.SdConfigParamEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdConfigParamMapper;
@@ -12,9 +13,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.util.Base64Utils;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.*;
@@ -29,6 +32,8 @@ public class SdConfigParamServiceImpl extends BtuConfigParamServiceImpl implemen
     SdConfigParamBeanPopulator sdConfigParamBeanPopulator;
     @Resource(name = "userService")
     SdUserService sdUserService;
+    @Resource(name = "btuSensitiveDataService")
+    BtuSensitiveDataService btuSensitiveDataService;
 
     public Map<String, Object> getConfigParamByConfigGroup(String configGroup) {
         if (StringUtils.isEmpty(configGroup)) {
@@ -78,6 +83,10 @@ public class SdConfigParamServiceImpl extends BtuConfigParamServiceImpl implemen
 
         List<SdConfigParamBean> beanList = new LinkedList<>();
         for (SdConfigParamEntity entity : entityList) {
+            if (StringUtils.isNotEmpty(entity.getEncrypt()) && entity.getEncrypt().equals("Y")) {
+                String decryptStr = btuSensitiveDataService.decryptToStringSafe(Base64Utils.decodeFromString(entity.getConfigValue()));
+                entity.setConfigValue(decryptStr);
+            }
             SdConfigParamBean bean = new SdConfigParamBean();
             sdConfigParamBeanPopulator.populate(entity, bean);
             beanList.add(bean);
@@ -92,14 +101,25 @@ public class SdConfigParamServiceImpl extends BtuConfigParamServiceImpl implemen
         if (entity == null) {
             return Optional.empty();
         }
+        if (StringUtils.isNotEmpty(entity.getEncrypt()) && entity.getEncrypt().equals("Y")) {
+            String decryptStr = btuSensitiveDataService.decryptToStringSafe(Base64Utils.decodeFromString(entity.getConfigValue()));
+            entity.setConfigValue(decryptStr);
+        }
         SdConfigParamBean bean = new SdConfigParamBean();
         sdConfigParamBeanPopulator.populate(entity, bean);
         return Optional.of(bean);
     }
 
     @Override
-    public boolean updateConfigParam(String configGroup, String configKey, String configValue, String configValueType) {
-        return sdConfigParamMapper.updateValue(configGroup, configKey, configValue, configValueType, sdUserService.getCurrentUserUserId()) > 0;
+    public boolean updateConfigParam(String configGroup, String configKey, String configValue, String configValueType, String encrypt) throws GeneralSecurityException {
+        if (StringUtils.isEmpty(encrypt)) {
+            encrypt = "N";
+        } else {
+            byte[] encryptBytes = btuSensitiveDataService.encryptFromString(configValue);
+            configValue = Base64Utils.encodeToString(encryptBytes);
+            encrypt = "Y";
+        }
+        return sdConfigParamMapper.updateValue(configGroup, configKey, configValue, configValueType, sdUserService.getCurrentUserUserId(), encrypt) > 0;
     }
 
     @Override
@@ -108,8 +128,15 @@ public class SdConfigParamServiceImpl extends BtuConfigParamServiceImpl implemen
     }
 
     @Override
-    public boolean createConfigParam(String configGroup, String configKey, String configValue, String configValueType) {
-        return sdConfigParamMapper.insertConfig(configGroup, configKey, configValue, configValueType, sdUserService.getCurrentUserUserId());
+    public boolean createConfigParam(String configGroup, String configKey, String configValue, String configValueType, String encrypt) throws GeneralSecurityException {
+        if (StringUtils.isEmpty(encrypt)) {
+            encrypt = "N";
+        } else {
+            byte[] encryptBytes = btuSensitiveDataService.encryptFromString(configValue);
+            configValue = Base64Utils.encodeToString(encryptBytes);
+            encrypt = "Y";
+        }
+        return sdConfigParamMapper.insertConfig(configGroup, configKey, configValue, configValueType, sdUserService.getCurrentUserUserId(), encrypt);
     }
 
     @Override

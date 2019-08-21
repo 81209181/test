@@ -49,6 +49,7 @@ public class BtuConfigParamEntity extends BaseEntity {
     private String configKey;
     private String configValue;
     private String configValueType;
+    private String encrypt;
 
     public String getConfigGroup() {
         return configGroup;
@@ -80,5 +81,13 @@ public class BtuConfigParamEntity extends BaseEntity {
 
     public void setConfigValueType(String configValueType) {
         this.configValueType = configValueType;
+    }
+
+    public String getEncrypt() {
+        return encrypt;
+    }
+
+    public void setEncrypt(String encrypt) {
+        this.encrypt = encrypt;
     }
 }
