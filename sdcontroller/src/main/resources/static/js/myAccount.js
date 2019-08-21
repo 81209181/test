@@ -1,18 +1,19 @@
 $(document).ready(function () {
-    /*$("#update-pwd-form").submit(function (event) {
+    $("#update-pwd-form").submit(function (event) {
         event.preventDefault();
         ajaxUpdatePwd();
-    });*/
+    });
     ajaxGetCurrentUser();
     $("#my-login-tried").hide();
     $("#my-password-modify-date").hide();
     $("label.emailUserInfo").hide();
     $("label.ldapUserInfo").show();
     $("#my-ldap-domain").show();
-
+    $("#update-pwd-h1").hide();
+    $("#update-pwd-form").hide();
 });
 
-/*function ajaxUpdatePwd() {
+function ajaxUpdatePwd() {
     let input = {};
     input["oldPassword"] = $("#oldPassword").val();
     input["newPassword"] = $("#newPassword").val();
@@ -46,7 +47,7 @@ $(document).ready(function () {
             $("#btn-update-pwd").prop("disabled", false);
         }
     });
-}*/
+}
 
 function ajaxGetCurrentUser(){
     $.ajax({
@@ -75,6 +76,8 @@ function ajaxGetCurrentUser(){
                 $("label.emailUserInfo").show();
                 $("label.ldapUserInfo").hide();
                 $("#my-ldap-domain").hide();
+                $("#update-pwd-h1").show();
+                $("#update-pwd-form").show();
             }
             populateSelectOptions($("#my-user-group"), data.userGroupList);
         },
