@@ -41,10 +41,6 @@ public interface SdUserMapper {
                         @Param("name") String name,
                         @Param("email") String email);
 
-    void updateUserEmail(@Param("email") String email, @Param("userId") String userId);
-
-    void updateUserName(@Param("username") String name, @Param("userId") String userId);
-
     void updateUserPassword(@Param("userId") String userId, @Param("password") String password);
 
     void addLoginTriedByUsername(@Param("username") String username);

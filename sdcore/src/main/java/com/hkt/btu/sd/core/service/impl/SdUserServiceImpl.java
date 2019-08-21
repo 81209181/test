@@ -401,16 +401,11 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
                 String userId = userDetailBean.getUserId();
                 String email = btuUserBean.getEmail();
                 String username = btuUserBean.getUsername();
-                if (StringUtils.isNotEmpty(email) && StringUtils.isNotEmpty(username)) {
-                    sdUserMapper.updateLdapUser(userId, username, email);
-                } else if (StringUtils.isNotEmpty(email)) {
-                    sdUserMapper.updateUserEmail(email, userId);
-                    LOG.info("No username from LDAP: " + userId);
-                } else if (StringUtils.isNotEmpty(username)) {
-                    sdUserMapper.updateUserName(username, userId);
-                    LOG.info("No email from LDAP: " + userId);
-                } else {
-                    LOG.info("No email/username from LDAP: " + userId);
+                if (StringUtils.isNotEmpty(email)) {
+                    sdUserMapper.updateLdapUser(userId, null, email);
+                }
+                if (StringUtils.isNotEmpty(username)) {
+                    sdUserMapper.updateLdapUser(userId, username, null);
                 }
             } catch (NamingException e) {
                 LOG.warn("User" + userDetailBean.getUserId() + "not found");
