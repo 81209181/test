@@ -3,6 +3,7 @@ package com.hkt.btu.sd.facade;
 
 import com.hkt.btu.sd.facade.data.SdConfigParamData;
 
+import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,11 +14,11 @@ public interface SdConfigParamFacade {
 
     List<String> getConfigTypeList();
 
-    boolean updateConfigParam(String configGroup, String configKey, String configValue, String configValueType);
+    boolean updateConfigParam(String configGroup, String configKey, String configValue, String configValueType, String encrypt) throws GeneralSecurityException;
 
     List<String> getConfigGroupList();
 
-    boolean createConfigParam(String configGroup, String configKey, String configValue, String configValueType);
+    boolean createConfigParam(String configGroup, String configKey, String configValue, String configValueType, String encrypt) throws GeneralSecurityException;
 
     boolean checkConfigKey(String configGroup, String configKey);
 

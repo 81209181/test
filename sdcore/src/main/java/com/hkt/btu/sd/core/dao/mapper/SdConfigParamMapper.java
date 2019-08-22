@@ -17,7 +17,7 @@ public interface SdConfigParamMapper {
 
     int updateValue(@Param("configGroup") String configGroup, @Param("configKey") String configKey,
                      @Param("configValue") String configValue, @Param("configValueType") String configValueType,
-                     @Param("modifyBy") String modifyBy);
+                     @Param("modifyBy") String modifyBy, @Param("encrypt") String encrypt);
 
     void deleteConfig(@Param("configGroup") String configGroup, @Param("configKey") String configKey);
 
@@ -25,5 +25,5 @@ public interface SdConfigParamMapper {
 
     boolean insertConfig(@Param("configGroup") String configGroup, @Param("configKey") String configKey,
                          @Param("configValue") String configValue, @Param("configValueType") String configValueType,
-                         @Param("modifyBy") String modifyBy);
+                         @Param("modifyBy") String modifyBy, @Param("encrypt") String encrypt);
 }
