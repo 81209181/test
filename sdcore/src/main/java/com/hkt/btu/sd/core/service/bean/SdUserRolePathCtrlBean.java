@@ -1,11 +1,10 @@
 package com.hkt.btu.sd.core.service.bean;
 
-import com.hkt.btu.common.core.service.bean.BtuUserGroupPathCtrlBean;
+import com.hkt.btu.common.core.service.bean.BtuUserRolePathCtrlBean;
 
-public class SdUserGroupPathCtrlBean extends BtuUserGroupPathCtrlBean {
+public class SdUserRolePathCtrlBean extends BtuUserRolePathCtrlBean {
 
     private Integer pathCtrlId;
-
 
     public Integer getPathCtrlId() {
         return pathCtrlId;

@@ -1,14 +1,13 @@
 package com.hkt.btu.common.core.service.bean;
 
-public class BtuUserGroupPathCtrlBean extends BaseBean {
+public class BtuUserRolePathCtrlBean extends BaseBean {
 
-    private String antPath;
+    private String path;
     private String status;
 
-    private String groupId;
+    private String roleId;
 
     private Integer pathCtrlId;
-
 
     public Integer getPathCtrlId() {
         return pathCtrlId;
@@ -16,14 +15,6 @@ public class BtuUserGroupPathCtrlBean extends BaseBean {
 
     public void setPathCtrlId(Integer pathCtrlId) {
         this.pathCtrlId = pathCtrlId;
-    }
-
-    public String getAntPath() {
-        return antPath;
-    }
-
-    public void setAntPath(String antPath) {
-        this.antPath = antPath;
     }
 
     public String getStatus() {
@@ -34,11 +25,19 @@ public class BtuUserGroupPathCtrlBean extends BaseBean {
         this.status = status;
     }
 
-    public String getGroupId() {
-        return groupId;
+    public String getPath() {
+        return path;
     }
 
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(String roleId) {
+        this.roleId = roleId;
     }
 }

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdUserRolePathCtrlMapper" >
+    <resultMap id="SdUserRolePathCtrlEntity" type="com.hkt.btu.sd.core.dao.entity.SdUserRolePathCtrlEntity" >
+        <result column="PATH_CTRL_ID" property="pathCtrlId" />
+        <result column="PATH" property="path" />
+        <result column="STATUS" property="status" />
+
+        <result column="CREATEDATE" property="createdate" />
+        <result column="MODIFYDATE" property="modifydate" />
+        <result column="MODIFYBY" property="modifyby" />
+        <result column="REMARKS" property="remarks" />
+
+        <result column="ROLE_ID" property="roleId" />
+        <result column="ROLE_DESC" property="roleDesc"/>
+    </resultMap>
+
+    <select id="getByStatus" resultMap="SdUserRolePathCtrlEntity">
+        SELECT
+        pc.PATH_CTRL_ID,
+        pc.PATH,
+        pc.STATUS,
+        pc.CREATEDATE,
+        pc.MODIFYDATE,
+        pc.MODIFYBY,
+        pc.REMARKS,
+        urpc.ROLE_ID
+        FROM PATH_CTRL pc
+        inner join  USER_ROLE_PATH_CTRL urpc
+        on urpc.PATH_CTRL_ID = pc.PATH_CTRL_ID
+        inner join  USER_ROLE ur
+        on ur.ROLE_ID = urpc.ROLE_ID
+        where pc.STATUS = #{status}
+        order by urpc.ROLE_ID, pc.PATH
+    </select>
+
+</mapper>

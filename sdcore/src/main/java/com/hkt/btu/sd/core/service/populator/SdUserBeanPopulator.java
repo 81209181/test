@@ -4,6 +4,7 @@ package com.hkt.btu.sd.core.service.populator;
 import com.hkt.btu.common.core.service.populator.AbstractBeanPopulator;
 import com.hkt.btu.sd.core.dao.entity.SdUserEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserGroupEntity;
+import com.hkt.btu.sd.core.dao.entity.SdUserRoleEntity;
 import com.hkt.btu.sd.core.service.bean.SdUserBean;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
@@ -46,14 +47,14 @@ public class SdUserBeanPopulator extends AbstractBeanPopulator<SdUserBean> {
         target.setStaffId(decryptedStaffId);*/
     }
 
-    public void populate(List<SdUserGroupEntity> userGroupEntityList, SdUserBean target) {
-        if (CollectionUtils.isEmpty(userGroupEntityList)) {
+    public void populate(List<SdUserRoleEntity> userRoleEntityList, SdUserBean target) {
+        if (CollectionUtils.isEmpty(userRoleEntityList)) {
             return;
         }
 
         Set<GrantedAuthority> grantedAuthSet = new HashSet<>();
-        for (SdUserGroupEntity userGroupEntity : userGroupEntityList){
-            SimpleGrantedAuthority auth = new SimpleGrantedAuthority(userGroupEntity.getGroupId());
+        for (SdUserRoleEntity userRoleEntity : userRoleEntityList){
+            SimpleGrantedAuthority auth = new SimpleGrantedAuthority(userRoleEntity.getRoleId());
             grantedAuthSet.add(auth);
         }
 

@@ -11,8 +11,10 @@ import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
 import com.hkt.btu.sd.core.dao.entity.SdOtpEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserGroupEntity;
+import com.hkt.btu.sd.core.dao.entity.SdUserRoleEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdUserGroupMapper;
 import com.hkt.btu.sd.core.dao.mapper.SdUserMapper;
+import com.hkt.btu.sd.core.dao.mapper.SdUserRoleMapper;
 import com.hkt.btu.sd.core.exception.*;
 import com.hkt.btu.sd.core.service.*;
 import com.hkt.btu.sd.core.service.bean.SdEmailBean;
@@ -62,6 +64,9 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     @Resource(name = "ldapService")
     BtuLdapService btuLdapService;
 
+    @Resource
+    SdUserRoleMapper sdUserRoleMapper;
+
     @Override
     public BtuUserBean getCurrentUserBean() throws UserNotFoundException {
         BtuUser btuUser = this.getCurrentUser();
@@ -90,13 +95,12 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             return null;
         }
 
-        // get user group data
-        //List<SdUserGroupEntity> groupEntityList = sdUserGroupMapper.getUserGroupByUserId(sdUserEntity.getUserId());
-
+        // get user role data
+        List<SdUserRoleEntity> roleEntityList = sdUserRoleMapper.getUserRoleByUserId(sdUserEntity.getUserId());
         // construct bean
         SdUserBean userBean = new SdUserBean();
         sdUserBeanPopulator.populate(sdUserEntity, userBean);
-        //sdUserBeanPopulator.populate(groupEntityList, userBean);
+        sdUserBeanPopulator.populate(roleEntityList, userBean);
 
         return userBean;
     }
