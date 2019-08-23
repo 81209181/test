@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout-fluid}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Fault Create</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <div class="card" style="height:700px">
+        <div class="card-header bg-primary text-white">Create</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="form-group">
+                    <select id="searchKey" class="custom-select" required>
+                        <option value="" hidden>Please select</option>
+                        <option value="bes_custCode">[BES] Customer Code</option>
+                        <option value="bes_serviceId">[BES] Service No.</option>
+                        <option value="bes_brNo">[BES] Business Reg</option>
+                        <option value="bes_passport">[BES] Passport</option>
+                        <option value="bes_idCard">[BES] ID Card</option>
+                        <option value="bes_schoolCert">[BES] School Cert.</option>
+                        <option value="bes_certIncorp">[BES] Cert. Incorporation</option>
+                        <option value="itsm_custName">[ITSM] Customer Name</option>
+                        <option value="itsm_custId">[ITSM] Customer ID</option>
+                        <option value="itsm_serviceNo">[ITSM] Service No.</option>
+                        <option value="itsm_tenantId">[ITSM] Tenant ID</option>
+                        <option value="itsm_domainName">[ITSM] Domain Name</option>
+                        <option value="norars_dn">[NORARS] DN</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-2">
+                    <input type="text" id="searchValue" placeholder="ID" class="form-control">
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-info" id="btnSearchInfo">Search</button>
+                    <button type="button" class="btn btn-secondary" id="btnSearchReset">Reset</button>
+                </div>
+            </div>
+
+            <div class="row col-md-10" style="margin-left:200px">
+                <form class="col-md-12">
+                    <p class="pb-2" style="border-bottom:1px solid #949494">Contact Info</p>
+                    <div class="form-row">
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Customer ID:</label>
+                            <input type="text" class="form-control col-md-9" name="custId">
+                        </div>
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Contact Name:</label>
+                            <input type="text" class="form-control col-md-9" name="contactName">
+                        </div>
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Customer Code:</label>
+                            <input type="text" class="form-control col-md-9" name="custCode">
+                        </div>
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Email Address:</label>
+                            <input type="text" class="form-control col-md-9" name="email">
+                        </div>
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Customer Name:</label>
+                            <input type="text" class="form-control col-md-9" name="custName">
+                        </div>
+                        <div class="col-md-6 form-inline pt-2">
+                            <div class="col-md-6 form-inline">
+                                <label class="col-form-label col-md-6 justify-content-end">Contact No. :</label>
+                                <input type="text" class="form-control col-md-6" name="contactNumber">
+                            </div>
+                            <div class="col-md-6 form-inline" style="padding-right:0">
+                                <label class="col-form-label col-md-6 justify-content-end">Mobile No. :</label>
+                                <input type="text" class="form-control col-md-6">
+                            </div>
+                        </div>
+                        <div class="col-md-6 offset-md-6 form-inline pt-2">
+                            <div class="col-md-6 form-inline">
+                                <label class="col-form-label col-md-6 justify-content-end">Office No. :</label>
+                                <input type="text" class="form-control col-md-6">
+                            </div>
+                            <div class="col-md-6 form-inline" style="padding-right:0">
+                                <label class="col-form-label col-md-6 justify-content-end">Fax:</label>
+                                <input type="text" class="form-control col-md-6">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade">
+        <div class="modal-dialog" style="max-width:1140px">
+            <div class="modal-content">
+                <div class="modal-header text-white bg-primary h-80">
+                    <h6 class="modal-title">Products</h6>
+                    <button type="button" class="close text-white" data-dismiss="modal">x</button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-hover table-bordered table-sm">
+                        <thead class="thead-light">
+                        <tr class="text-center">
+                            <th></th>
+                            <th>Tenant ID</th>
+                            <th>Service ID</th>
+                            <th>Customer</th>
+                            <th>Offer</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <button type="button" class="btn btn-info" id="btnApplyProduct">Apply</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" th:src="@{/js/createFault.js}"></script>
+
+</div>
+</body>
+</html>

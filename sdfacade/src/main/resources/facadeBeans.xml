@@ -24,6 +24,12 @@
     <alias name="sdAuditTrailFacade" alias="auditTrailFacade"/>
     <bean id="sdAuditTrailFacade" class="com.hkt.btu.sd.facade.impl.SdAuditTrailFacadeImpl" />
 
+    <alias name="sdRequestCreateFacade" alias="requestCreateFacade"/>
+    <bean id="sdRequestCreateFacade" class="com.hkt.btu.sd.facade.impl.SdRequestCreateFacadeImpl"/>
+
+    <bean name="besApiFacade" class="com.hkt.btu.sd.facade.impl.BesApiFacadeImpl"/>
+    <bean name="itsmApiFacade" class="com.hkt.btu.sd.facade.impl.ItsmApiFacadeImpl"/>
+    <bean name="norarsApiFacade" class="com.hkt.btu.sd.facade.impl.NorarsApiFacadeImpl"/>
 
     <!-- Populator -->
     <alias name="sdUserDataPopulator" alias="userDataPopulator"/>
@@ -43,5 +49,7 @@
 
     <alias name="sdCronJobInstDataPopulator" alias="cronJobInstDataPopulator"/>
     <bean id="sdCronJobInstDataPopulator" class="com.hkt.btu.sd.facade.populator.SdCronJobInstDataPopulator"/>
+
+    <bean id="requestCreateSearchResultDataPopulator" class="com.hkt.btu.sd.facade.populator.RequestCreateSearchResultDataPopulator"/>
 
 </beans>

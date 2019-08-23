@@ -43,7 +43,12 @@
     <alias name="sdHealthCheckService" alias="healthCheckService"/>
     <bean id="sdHealthCheckService" class="com.hkt.btu.sd.core.service.impl.SdHealthCheckServiceImpl"/>
 
+    <bean id="besApiService" class="com.hkt.btu.sd.core.service.impl.BesApiServiceImpl"/>
+    <bean id="itsmApiService" class="com.hkt.btu.sd.core.service.impl.ItsmApiServiceImpl"/>
+    <bean id="norarsApiService" class="com.hkt.btu.sd.core.service.impl.NorarsApiServiceImpl"/>
 
+    <alias name="sdSiteService" alias="siteService"/>
+    <bean id="sdSiteService" class="com.hkt.btu.sd.core.service.impl.SdSiteServiceImpl"/>
 
     <!-- Populator -->
     <alias name="sdUserBeanPopulator" alias="userBeanPopulator"/>
