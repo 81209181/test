@@ -11,8 +11,10 @@ import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
 import com.hkt.btu.sd.core.dao.entity.SdOtpEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserGroupEntity;
+import com.hkt.btu.sd.core.dao.entity.SdUserRoleEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdUserGroupMapper;
 import com.hkt.btu.sd.core.dao.mapper.SdUserMapper;
+import com.hkt.btu.sd.core.dao.mapper.SdUserRoleMapper;
 import com.hkt.btu.sd.core.exception.*;
 import com.hkt.btu.sd.core.service.*;
 import com.hkt.btu.sd.core.service.bean.SdEmailBean;
@@ -62,6 +64,9 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     @Resource(name = "ldapService")
     BtuLdapService btuLdapService;
 
+    @Resource
+    SdUserRoleMapper sdUserRoleMapper;
+
     @Override
     public BtuUserBean getCurrentUserBean() throws UserNotFoundException {
         BtuUser btuUser = this.getCurrentUser();
@@ -90,13 +95,12 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             return null;
         }
 
-        // get user group data
-        //List<SdUserGroupEntity> groupEntityList = sdUserGroupMapper.getUserGroupByUserId(sdUserEntity.getUserId());
-
+        // get user role data
+        List<SdUserRoleEntity> roleEntityList = sdUserRoleMapper.getUserRoleByUserId(sdUserEntity.getUserId());
         // construct bean
         SdUserBean userBean = new SdUserBean();
         sdUserBeanPopulator.populate(sdUserEntity, userBean);
-        //sdUserBeanPopulator.populate(groupEntityList, userBean);
+        sdUserBeanPopulator.populate(roleEntityList, userBean);
 
         return userBean;
     }
@@ -401,16 +405,11 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
                 String userId = userDetailBean.getUserId();
                 String email = btuUserBean.getEmail();
                 String username = btuUserBean.getUsername();
-                if (StringUtils.isNotEmpty(email) && StringUtils.isNotEmpty(username)) {
-                    sdUserMapper.updateLdapUser(userId, username, email);
-                } else if (StringUtils.isNotEmpty(email)) {
-                    sdUserMapper.updateUserEmail(email, userId);
-                    LOG.info("No username from LDAP: " + userId);
-                } else if (StringUtils.isNotEmpty(username)) {
-                    sdUserMapper.updateUserName(username, userId);
-                    LOG.info("No email from LDAP: " + userId);
-                } else {
-                    LOG.info("No email/username from LDAP: " + userId);
+                if (StringUtils.isNotEmpty(email)) {
+                    sdUserMapper.updateLdapUser(userId, null, email);
+                }
+                if (StringUtils.isNotEmpty(username)) {
+                    sdUserMapper.updateLdapUser(userId, username, null);
                 }
             } catch (NamingException e) {
                 LOG.warn("User" + userDetailBean.getUserId() + "not found");
@@ -588,7 +587,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             // valid init password otp
             SdOtpBean sdOtpBean = sdOtpService.getValidOtp(userId, SdOtpEntity.ACTION.INIT_PWD);
             if (sdOtpBean != null) {
-                throw new InvalidOtpException("The OTP is valid, please check your email.");
+                throw new InvalidOtpException("Please check your email. OTP is already sent within 15 min.");
             }
 
             // generate init password otp
@@ -606,7 +605,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             // valid reset password otp
             SdOtpBean sdOtpBean = sdOtpService.getValidOtp(userId, SdOtpEntity.ACTION.RESET_PWD);
             if (sdOtpBean != null) {
-                throw new InvalidOtpException("The OTP is valid, please check your email.");
+                throw new InvalidOtpException("Please check your email. OTP is already sent within 15 min.");
             }
 
             // generate reset password otp

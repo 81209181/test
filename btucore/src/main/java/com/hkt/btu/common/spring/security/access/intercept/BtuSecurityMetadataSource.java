@@ -2,7 +2,7 @@ package com.hkt.btu.common.spring.security.access.intercept;
 
 
 import com.hkt.btu.common.core.service.BtuPathCtrlService;
-import com.hkt.btu.common.core.service.bean.BtuUserGroupPathCtrlBean;
+import com.hkt.btu.common.core.service.bean.BtuUserRolePathCtrlBean;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -17,6 +17,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 
@@ -73,22 +74,22 @@ public class BtuSecurityMetadataSource implements FilterInvocationSecurityMetada
         Map<String, RequestMatcher> uriMatcherIndexRefMap = new HashMap<>();
 
         // get Secured URLs config from db
-        List<BtuUserGroupPathCtrlBean> userGroupPathCtrlBeanList = pathCtrlService.getActiveCtrlBeanList();
+        List<BtuUserRolePathCtrlBean> userGroupPathCtrlBeanList = pathCtrlService.getActiveCtrlBeanList();
 
 
         // add config form db data
         if (!CollectionUtils.isEmpty(userGroupPathCtrlBeanList)) {
-            for (BtuUserGroupPathCtrlBean ctrlBean : userGroupPathCtrlBeanList) {
+            for (BtuUserRolePathCtrlBean ctrlBean : userGroupPathCtrlBeanList) {
                 if (ctrlBean == null) {
                     continue;
-                } else if (StringUtils.isEmpty(ctrlBean.getAntPath())) {
+                } else if (StringUtils.isEmpty(ctrlBean.getPath())) {
                     continue;
-                } else if (StringUtils.isEmpty(ctrlBean.getGroupId())) {
+                } else if (StringUtils.isEmpty(ctrlBean.getRoleId())) {
                     continue;
                 }
 
                 // find existing / create new request matcher
-                String menuUri = ctrlBean.getAntPath();
+                String menuUri = ctrlBean.getPath();
                 RequestMatcher requestMatcher = uriMatcherIndexRefMap.get(menuUri);
                 if (requestMatcher == null) {
                     requestMatcher = new AntPathRequestMatcher(menuUri);
@@ -98,7 +99,7 @@ public class BtuSecurityMetadataSource implements FilterInvocationSecurityMetada
 
                 // add new required user group config
                 Collection<ConfigAttribute> configAttributes = newResourceMap.get(requestMatcher);
-                ConfigAttribute configAttribute = new SecurityConfig(ctrlBean.getGroupId());
+                ConfigAttribute configAttribute = new SecurityConfig(ctrlBean.getRoleId());
                 configAttributes.add(configAttribute);
             }
         }
@@ -115,14 +116,13 @@ public class BtuSecurityMetadataSource implements FilterInvocationSecurityMetada
         newResourceMap.put(new AntPathRequestMatcher(RESERVED_ANT_PATH_WEBJAR), CONFIG_LIST_PERMIT_ALL);
         newResourceMap.put(new AntPathRequestMatcher(RESERVED_ANT_PATH_ERROR), CONFIG_LIST_PERMIT_ALL);
         newResourceMap.put(new AntPathRequestMatcher(RESERVED_ANT_PATH_PUBLIC), CONFIG_LIST_PERMIT_ALL);
-        newResourceMap.put(new AntPathRequestMatcher("/**"), CONFIG_LIST_PERMIT_ALL); // todo remove after RBAC implementation
 
         return newResourceMap;
     }
 
     @Override
     public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
-       /* final HttpServletRequest request = ((FilterInvocation) object).getRequest();
+        final HttpServletRequest request = ((FilterInvocation) object).getRequest();
 
         List<ConfigAttribute> results = new ArrayList<>();
 
@@ -137,20 +137,18 @@ public class BtuSecurityMetadataSource implements FilterInvocationSecurityMetada
             return CONFIG_LIST_DENY_ALL;
         } else {
             return results;
-        }*/
-        return null;
+        }
     }
 
     @Override
     public Collection<ConfigAttribute> getAllConfigAttributes() {
-       /* Set<ConfigAttribute> allAttributes = new HashSet<>();
+        Set<ConfigAttribute> allAttributes = new HashSet<>();
         for (Map.Entry<RequestMatcher, Collection<ConfigAttribute>> entry : resourceMap
                 .entrySet()) {
             allAttributes.addAll(entry.getValue());
         }
 
-        return allAttributes;*/
-        return null;
+        return allAttributes;
     }
 
     @Override

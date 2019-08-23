@@ -8,9 +8,9 @@
     <alias name="sdUserService" alias="btuUserService"/>
     <bean id="sdUserService" class="com.hkt.btu.sd.core.service.impl.SdUserServiceImpl"/>
 
-  <!--  <alias name="sdPathCtrlService" alias="pathCtrlService"/>
+    <alias name="sdPathCtrlService" alias="pathCtrlService"/>
     <alias name="sdPathCtrlService" alias="btuPathCtrlService"/>
-    <bean id="sdPathCtrlService" class="SdPathCtrlServiceImpl" />-->
+    <bean id="sdPathCtrlService" class="com.hkt.btu.sd.core.service.impl.SdPathCtrlServiceImpl" />
 
     <alias name="sdAuditTrailService" alias="auditTrailService"/>
     <alias name="sdAuditTrailService" alias="btuAuditTrailService"/>
@@ -54,8 +54,8 @@
     <alias name="sdUserBeanPopulator" alias="userBeanPopulator"/>
     <bean id="sdUserBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserBeanPopulator"/>
 
-    <alias name="sdUserGroupPathCtrlBeanPopulator" alias="pathCtrlBeanPopulator"/>
-    <bean id="sdUserGroupPathCtrlBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserGroupPathCtrlBeanPopulator"/>
+    <alias name="sdUserRolePathCtrlBeanPopulator" alias="pathCtrlBeanPopulator"/>
+    <bean id="sdUserRolePathCtrlBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserRolePathCtrlBeanPopulator"/>
 
     <alias name="sdUserGroupBeanPopulator" alias="userGroupBeanPopulator"/>
     <bean id="sdUserGroupBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserGroupBeanPopulator"/>

@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,7 +62,7 @@ public class SystemController {
     }
 
     @PostMapping("config-param/createConfigParam")
-    public ResponseEntity<?> createConfigParam(String configGroup, String configKey,String configValue,String configValueType){
+    public ResponseEntity<?> createConfigParam(String configGroup, String configKey,String configValue,String configValueType,String encrypt) throws GeneralSecurityException {
         if (StringUtils.isEmpty(configKey)) {
             return ResponseEntity.badRequest().body("Please input config key.");
         }
@@ -74,7 +75,7 @@ public class SystemController {
         if (sdConfigParamFacade.checkConfigKey(configGroup, configKey)) {
             return ResponseEntity.badRequest().body(StringUtils.join("Config Group : ",configGroup,", Config Key : ",configKey," already exists."));
         }
-        if (sdConfigParamFacade.createConfigParam(configGroup,configKey,configValue,configValueType)) {
+        if (sdConfigParamFacade.createConfigParam(configGroup,configKey,configValue,configValueType,encrypt)) {
             return ResponseEntity.ok().body("Config param create success.");
         }
         return ResponseEntity.badRequest().body("Cannot create config param.");
@@ -103,14 +104,14 @@ public class SystemController {
     }
 
     @PostMapping("config-param/updateConfigParam")
-    public ResponseEntity<?> updateConfigParam(String configGroup, String configKey,String configValue,String configValueType) {
+    public ResponseEntity<?> updateConfigParam(String configGroup, String configKey,String configValue,String configValueType,String encrypt) throws GeneralSecurityException {
         if (StringUtils.isEmpty(configValue)) {
             return ResponseEntity.badRequest().body("Please input config value.");
         }
         if (!sdConfigParamFacade.checkConfigParam(configGroup, configKey, configValue, configValueType)) {
             return ResponseEntity.badRequest().body("config value not match config value type!");
         }
-        if (sdConfigParamFacade.updateConfigParam(configGroup, configKey, configValue, configValueType)) {
+        if (sdConfigParamFacade.updateConfigParam(configGroup, configKey, configValue, configValueType, encrypt)) {
             return ResponseEntity.ok().body("Config param update success.");
         }
         return ResponseEntity.badRequest().body("Cannot update config param.");

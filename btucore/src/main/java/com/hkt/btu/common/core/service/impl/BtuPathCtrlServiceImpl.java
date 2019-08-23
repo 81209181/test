@@ -1,7 +1,7 @@
 package com.hkt.btu.common.core.service.impl;
 
 import com.hkt.btu.common.core.service.BtuPathCtrlService;
-import com.hkt.btu.common.core.service.bean.BtuUserGroupPathCtrlBean;
+import com.hkt.btu.common.core.service.bean.BtuUserRolePathCtrlBean;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,17 +12,17 @@ public class BtuPathCtrlServiceImpl implements BtuPathCtrlService {
     private static final Logger LOG = LogManager.getLogger(BtuPathCtrlServiceImpl.class);
 
     @Override
-    public List<BtuUserGroupPathCtrlBean> getActiveCtrlBeanList() {
+    public List<BtuUserRolePathCtrlBean> getActiveCtrlBeanList() {
         LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
-        List<BtuUserGroupPathCtrlBean> result = new LinkedList<>();
+        List<BtuUserRolePathCtrlBean> result = new LinkedList<>();
 
-        BtuUserGroupPathCtrlBean userCtrlBean = new BtuUserGroupPathCtrlBean();
-        userCtrlBean.setGroupId("USER");
-        userCtrlBean.setAntPath("/user/**");
+        BtuUserRolePathCtrlBean userCtrlBean = new BtuUserRolePathCtrlBean();
+        userCtrlBean.setRoleId("1");
+        userCtrlBean.setPath("/user/**");
 
-        BtuUserGroupPathCtrlBean adminCtrlBean = new BtuUserGroupPathCtrlBean();
-        adminCtrlBean.setGroupId("ADMIN");
-        adminCtrlBean.setAntPath("/admin/**");
+        BtuUserRolePathCtrlBean adminCtrlBean = new BtuUserRolePathCtrlBean();
+        adminCtrlBean.setRoleId("2");
+        adminCtrlBean.setPath("/admin/**");
 
         return result;
     }

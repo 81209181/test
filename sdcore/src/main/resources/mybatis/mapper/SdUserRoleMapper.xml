@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdUserRoleMapper">
+    <resultMap id="SdUserRoleEntity" type="com.hkt.btu.sd.core.dao.entity.SdUserRoleEntity">
+        <result column="ROLE_ID" property="roleId"/>
+        <result column="ROLE_DESC" property="roleDesc"/>
+        <result column="PARENT_ROLE_ID" property="parentRoleId"/>
+        <result column="STATUS" property="status"/>
+        <result column="CREATEDATE" property="modifydate"/>
+        <result column="CREATEBY" property="modifyby"/>
+        <result column="REMARKS" property="remarks"/>
+    </resultMap>
+
+    <select id="getUserRoleByUserId" resultMap="SdUserRoleEntity">
+        SELECT ur.ROLE_ID,
+               ur.ROLE_DESC
+        FROM USER_ROLE ur
+        start with ur.ROLE_ID =
+                   (SELECT ur.ROLE_ID
+                    FROM USER_PROFILE up
+                             LEFT JOIN USER_USER_ROLE uur
+                                       ON up.USER_ID = uur.USER_ID
+                             LEFT JOIN USER_ROLE ur
+                                       ON ur.ROLE_ID = uur.ROLE_ID
+                    WHERE up.USER_ID = #{userId})
+        connect by ur.ROLE_ID = PRIOR ur.PARENT_ROLE_ID
+    </select>
+</mapper>

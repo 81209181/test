@@ -54,11 +54,6 @@ public class BtuUserDetailsServiceImpl implements UserDetailsService {
         // check account locked
         boolean accountNonLocked = userService.isNonLocked(userBean);
 
-        // TODO: GrantedAuthority
-        Set<GrantedAuthority> grantedAuthSet = new HashSet<>();
-        grantedAuthSet.add(new SimpleGrantedAuthority("ADMIN"));
-        grantedAuthSet.add(new SimpleGrantedAuthority("USER"));
-
         // create spring security user
         return BtuUser.of(
                 userBean.getUsername(),
@@ -67,7 +62,7 @@ public class BtuUserDetailsServiceImpl implements UserDetailsService {
                 true,
                 credentialsNonExpired,
                 accountNonLocked,
-                grantedAuthSet,
+                userBean.getAuthorities(),
                 userBean);
     }
 

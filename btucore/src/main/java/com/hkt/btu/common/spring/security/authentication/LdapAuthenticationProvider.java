@@ -51,17 +51,13 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
     public Authentication authenticate(Authentication auth) throws AuthenticationException {
         BtuUser userDetails = null;
         try {
-            Set<GrantedAuthority> grantedAuthSet = new HashSet<>();
-            grantedAuthSet.add(new SimpleGrantedAuthority("ADMIN"));
-            grantedAuthSet.add(new SimpleGrantedAuthority("USER"));
-            btuUserBean.setAuthorities(grantedAuthSet);
             userDetails = BtuUser.of(btuUserBean.getUserId(),
                     (String) auth.getCredentials(),
                     true,
                     true,
                     true,
                     true,
-                    grantedAuthSet,
+                    btuUserBean.getAuthorities(),
                     btuUserBean);
             userDetails.setLdapPassword((String) auth.getCredentials());
             // Prepare ldap data

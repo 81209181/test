@@ -8,6 +8,7 @@ import com.hkt.btu.sd.facade.populator.SdConfigParamDataPopulator;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.security.GeneralSecurityException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -55,8 +56,8 @@ public class SdConfigParamFacadeImpl implements SdConfigParamFacade {
     }
 
     @Override
-    public boolean updateConfigParam(String configGroup, String configKey, String configValue, String configValueType) {
-        return sdConfigParamService.updateConfigParam(configGroup,configKey,configValue,configValueType);
+    public boolean updateConfigParam(String configGroup, String configKey, String configValue, String configValueType, String encrypt) throws GeneralSecurityException {
+        return sdConfigParamService.updateConfigParam(configGroup,configKey,configValue,configValueType,encrypt);
     }
 
     @Override
@@ -65,8 +66,8 @@ public class SdConfigParamFacadeImpl implements SdConfigParamFacade {
     }
 
     @Override
-    public boolean createConfigParam(String configGroup, String configKey, String configValue, String configValueType) {
-        return sdConfigParamService.createConfigParam(configGroup,configKey,configValue,configValueType);
+    public boolean createConfigParam(String configGroup, String configKey, String configValue, String configValueType, String encrypt) throws GeneralSecurityException {
+        return sdConfigParamService.createConfigParam(configGroup,configKey,configValue,configValueType,encrypt);
     }
 
     @Override
