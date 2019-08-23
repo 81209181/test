@@ -21,6 +21,7 @@ import com.hkt.btu.sd.core.service.bean.SdEmailBean;
 import com.hkt.btu.sd.core.service.bean.SdOtpBean;
 import com.hkt.btu.sd.core.service.bean.SdUserBean;
 import com.hkt.btu.sd.core.service.populator.SdUserBeanPopulator;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +31,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
@@ -96,9 +96,15 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         }
 
         // get user role data
-        List<SdUserRoleEntity> roleEntityList = sdUserRoleMapper.getUserRoleByUserId(sdUserEntity.getUserId());
+        List<String> userRole = sdUserRoleMapper.getUserRoleByUserId(sdUserEntity.getUserId());
+        if (CollectionUtils.isEmpty(userRole)) {
+            return null;
+        }
+        String userRoleId = userRole.get(0);
+        List<SdUserRoleEntity> roleEntityList = sdUserRoleMapper.getParentRoleByRoleId(userRoleId);
         // construct bean
         SdUserBean userBean = new SdUserBean();
+        userBean.setRoleId(userRoleId);
         sdUserBeanPopulator.populate(sdUserEntity, userBean);
         sdUserBeanPopulator.populate(roleEntityList, userBean);
 
@@ -487,18 +493,19 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         // make email lower case (**assume email are all lower case)
         email = StringUtils.lowerCase(email);
 
-        // determine company id restriction
-        Integer companyId = getCompanyIdRestriction();
+        // get Current User Role
+        SdUserBean currentUserBean = (SdUserBean) getCurrentUserBean();
+        String currentUserRoleId = currentUserBean.getRoleId();
 
         LOG.info(String.format(
-                "Searching user with {userId: %s, email: %s, name: %s, companyId: %s}",
-                userId, email, name, companyId));
+                "Searching user with {userId: %s, email: %s, name: %s}",
+                userId, email, name));
 
         // get total count
-        Integer totalCount = sdUserMapper.countSearchUser(companyId, userId, email, name);
+        Integer totalCount = sdUserMapper.countSearchUser(currentUserRoleId, userId, email, name);
 
         // get content
-        List<SdUserEntity> sdUserEntityList = sdUserMapper.searchUser(offset, pageSize, companyId, userId, email, name);
+        List<SdUserEntity> sdUserEntityList = sdUserMapper.searchUser(offset, pageSize, currentUserRoleId, userId, email, name);
         List<SdUserBean> sdUserBeanList = new LinkedList<>();
         if (!CollectionUtils.isEmpty(sdUserEntityList)) {
             for (SdUserEntity sdUserEntity : sdUserEntityList) {

@@ -120,23 +120,35 @@
 
     <sql id="searchUserSql">
         from USER_PROFILE u
+        <if test="roleId != 'SYS_ADMIN'.toString()">
+            INNER JOIN
+            USER_USER_ROLE uur
+            ON u.USER_ID = uur.USER_ID
+            AND uur.ROLE_ID =
+            (
+            SELECT SUBSTR(#{roleId}, (
+            SELECT INSTR(#{roleId}, '__') + 2
+            FROM DUAL
+            )
+            ) FROM DUAL
+            )
+        </if>
+
         <where>
-            <if test="companyId != null">COMPANY_ID = #{companyId}</if>
             <if test="userId != null">
-                AND USER_ID = #{userId}
+                AND u.USER_ID = #{userId}
             </if>
             <if test="email != null">
                 <bind name="like_email" value="'%' + email + '%'"/>
-                AND EMAIL like #{like_email}
+                AND u.EMAIL like #{like_email}
             </if>
             <if test="name != null">
                 <bind name="like_name" value="'%' + name + '%'"/>
-                AND NAME like #{like_name}
+                AND u.NAME like #{like_name}
             </if>
         </where>
     </sql>
     <select id="searchUser" resultMap="SdUserEntity">
-        -- noinspection SqlResolve
         select u.*
         <include refid="searchUserSql"/>
         order by u.USER_ID
