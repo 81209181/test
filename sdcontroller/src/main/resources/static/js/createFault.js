@@ -33,14 +33,14 @@ $().ready(function(){
             $.each(res,function(i,val){
                 let tr ='<tr class="text-center"></tr>';
                 $('tbody').append(tr);
-                $('tbody>tr:last').data('info',val);
-                $('tbody>tr:last').append('<th><input type="radio" name="product"></th>')
-                    .append('<th>'+val.tenantId+'</th>')
-                    .append('<th>'+val.serviceNo+'</th>')
-                    .append('<th>'+val.custName+'</th>')
-                    .append('<th>'+val.offerName+'</th>')
-                    .append('<th>'+val.statusDesc+'</th>')
-                    .append('<th><a class="text-secondary goNewWin" style="cursor:pointer"><i class="fa fa-table" aria-hidden="true"></i></a></th>');
+                $('tbody tr:last').data('info',val);
+                $('tbody tr:last').append('<td><input type="checkbox" name="product"></td>')
+                    .append('<td>'+val.tenantId+'</td>')
+                    .append('<td>'+val.serviceNo+'</td>')
+                    .append('<td>'+val.custName+'</td>')
+                    .append('<td>'+val.offerName+'</td>')
+                    .append('<td>'+val.statusDesc+'</td>')
+                    .append('<td><a class="text-secondary goNewWin" style="cursor:pointer"><i class="fa fa-table" aria-hidden="true"></i></a></td>');
             });
             $('.modal').modal('show');
         }).fail(function(e){

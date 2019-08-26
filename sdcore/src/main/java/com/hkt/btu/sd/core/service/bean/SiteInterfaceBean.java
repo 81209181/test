@@ -27,7 +27,9 @@ public class SiteInterfaceBean {
     public static class WFM {
         public static final String SYSTEM_NAME = "WFM";
     }
-
+    public static class NORARS{
+        public static final String SYSTEM_NAME = "NORARS";
+    }
 
     private String systemName = "";
     private String url = "";
