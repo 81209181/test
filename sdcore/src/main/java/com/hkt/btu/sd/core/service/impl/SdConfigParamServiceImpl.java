@@ -84,8 +84,7 @@ public class SdConfigParamServiceImpl extends BtuConfigParamServiceImpl implemen
         List<SdConfigParamBean> beanList = new LinkedList<>();
         for (SdConfigParamEntity entity : entityList) {
             if (StringUtils.isNotEmpty(entity.getEncrypt()) && entity.getEncrypt().equals("Y")) {
-                String decryptStr = btuSensitiveDataService.decryptToStringSafe(Base64Utils.decodeFromString(entity.getConfigValue()));
-                entity.setConfigValue(decryptStr);
+                entity.setConfigValue("ENCRYPTED");
             }
             SdConfigParamBean bean = new SdConfigParamBean();
             sdConfigParamBeanPopulator.populate(entity, bean);

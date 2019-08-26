@@ -12,8 +12,16 @@ public class SdUserBean extends BtuUserBean {
     private String mobile;
     private String staffId;
     private String ldapDomain;
+    private String roleId;
 
-    private Integer companyId;
+
+    public String getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(String roleId) {
+        this.roleId = roleId;
+    }
 
     public String getUserId() {
         return userId;
@@ -63,11 +71,4 @@ public class SdUserBean extends BtuUserBean {
         this.ldapDomain = ldapDomain;
     }
 
-    public Integer getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(Integer companyId) {
-        this.companyId = companyId;
-    }
 }

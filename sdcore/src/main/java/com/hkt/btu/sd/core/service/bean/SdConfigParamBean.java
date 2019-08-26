@@ -8,6 +8,7 @@ public class SdConfigParamBean extends BaseBean {
     private String configKey;
     private String configValue;
     private String configValueType;
+    private String encrypt;
 
 
     public String getConfigGroup() {
@@ -40,5 +41,13 @@ public class SdConfigParamBean extends BaseBean {
 
     public void setConfigValueType(String configValueType) {
         this.configValueType = configValueType;
+    }
+
+    public String getEncrypt() {
+        return encrypt;
+    }
+
+    public void setEncrypt(String encrypt) {
+        this.encrypt = encrypt;
     }
 }
