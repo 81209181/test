@@ -21,6 +21,13 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
     SdUserRoleDataPopulator sdUserRoleDataPopulator;
 
     @Override
+    public List<SdUserRoleData> listAllUserRole() {
+        List<SdUserRoleData> results = new LinkedList<>();
+        List<SdUserRoleBean> allUserRole = sdUserRoleService.getAllUserRole();
+        return getSdUserRoleData(results, allUserRole);
+    }
+
+    @Override
     public List<String> getUserRoleByUserId(String userId) {
         LinkedList<String> results = new LinkedList<>();
         List<SdUserRoleBean> userRoleByUserId = sdUserRoleService.getUserRoleByUserId(userId);
@@ -36,7 +43,7 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
         return results;
     }
 
-    private List<SdUserRoleData> getSdUserRoleData(LinkedList<SdUserRoleData> results, List<SdUserRoleBean> userRoleByUserId) {
+    private List<SdUserRoleData> getSdUserRoleData(List<SdUserRoleData> results, List<SdUserRoleBean> userRoleByUserId) {
         if (CollectionUtils.isEmpty(userRoleByUserId)) {
             return null;
         }

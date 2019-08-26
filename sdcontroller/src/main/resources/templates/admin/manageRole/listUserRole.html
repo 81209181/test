@@ -8,29 +8,27 @@
 <body>
 <div layout:fragment="content" th:remove="tag">
 
-    <h1>User Group List</h1>
+    <h1>User Role List</h1>
     <table id="userGroupTable" class="display">
         <thead>
             <tr>
-                <th>Group ID</th>
-                <th>Group Name</th>
-                <th>Group Desc</th>
-                <th>Parent Group ID</th>
+                <th>Role ID</th>
+                <th>Role Desc</th>
+                <th>Parent Role ID</th>
             </tr>
         </thead>
         <tbody>
         </tbody>
         <tfoot>
             <tr>
-                <th>Group ID</th>
-                <th>Group Name</th>
-                <th>Group Desc</th>
-                <th>Parent Group ID</th>
+                <th>Role ID</th>
+                <th>Role Desc</th>
+                <th>Parent Role ID</th>
             </tr>
         </tfoot>
     </table>
 
-    <script type="text/javascript" th:src="@{/js/listUserGrp.js}"></script>
+    <script type="text/javascript" th:src="@{/js/listUserRole.js}"></script>
 </div>
 </body>
 </html>

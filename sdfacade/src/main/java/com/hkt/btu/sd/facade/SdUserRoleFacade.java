@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface SdUserRoleFacade {
 
+    List<SdUserRoleData> listAllUserRole();
+
     List<String> getUserRoleByUserId (String userId);
 
     LinkedList<SdUserRoleData> getEligibleUserRoleList();
