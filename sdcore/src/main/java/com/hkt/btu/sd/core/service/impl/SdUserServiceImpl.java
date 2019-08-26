@@ -39,6 +39,7 @@ import java.io.UnsupportedEncodingException;
 import java.rmi.MarshalledObject;
 import java.security.GeneralSecurityException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserService {
@@ -114,10 +115,11 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             }
         }
 
-        String userRoleId = userRole.get(0).getRoleId();
         // construct bean
         SdUserBean userBean = new SdUserBean();
-        userBean.setRoleId(userRoleId);
+        userBean.setRoleId(userRole.stream()
+                .map(SdUserRoleEntity::getRoleId)
+                .collect(Collectors.toList()));
         sdUserBeanPopulator.populate(sdUserEntity, userBean);
         sdUserBeanPopulator.populate(results, userBean);
 
@@ -493,17 +495,27 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
         // get Current User Role
         SdUserBean currentUserBean = (SdUserBean) getCurrentUserBean();
-        String currentUserRoleId = currentUserBean.getRoleId();
+        String currentUserRoleId = currentUserBean.getRoleId().get(0);
 
         LOG.info(String.format(
                 "Searching user with {userId: %s, email: %s, name: %s}",
                 userId, email, name));
 
-        // get total count
-        Integer totalCount = sdUserMapper.countSearchUser(currentUserRoleId, userId, email, name);
+        List<String> currentUserBeanRoleId = currentUserBean.getRoleId();
+        List<SdUserEntity> sdUserEntityList = new LinkedList<>();
 
-        // get content
-        List<SdUserEntity> sdUserEntityList = sdUserMapper.searchUser(offset, pageSize, currentUserRoleId, userId, email, name);
+        Integer totalCount = 0;
+        for (String roleId : currentUserBeanRoleId) {
+            if (roleId.contains("__")) {
+                totalCount += sdUserMapper.countSearchUser(roleId, userId, email, name);
+                sdUserEntityList.addAll(sdUserMapper.searchUser(offset, pageSize, roleId, userId, email, name));
+            }
+            if (roleId.equals(SdUserRoleEntity.SYS_ADMIN)) {
+                totalCount += sdUserMapper.countSearchUser(roleId, userId, email, name);
+                sdUserEntityList.addAll(sdUserMapper.searchUser(offset, pageSize, roleId, userId, email, name));
+            }
+        }
+
         List<SdUserBean> sdUserBeanList = new LinkedList<>();
         if (!CollectionUtils.isEmpty(sdUserEntityList)) {
             for (SdUserEntity sdUserEntity : sdUserEntityList) {

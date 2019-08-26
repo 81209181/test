@@ -4,6 +4,8 @@ import com.hkt.btu.common.core.dao.entity.BaseEntity;
 
 public class SdUserRoleEntity extends BaseEntity {
 
+    public final static String SYS_ADMIN = "SYS_ADMIN";
+
     private String roleId;
     private String roleDesc;
     private String parentRoleId;
