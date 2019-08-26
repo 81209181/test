@@ -12,6 +12,9 @@
     <alias name="sdConfigParamFacade" alias="configParamFacade"/>
     <bean id="sdConfigParamFacade" class="com.hkt.btu.sd.facade.impl.SdConfigParamFacadeImpl" />
 
+    <alias name="sdUserRoleFacade" alias="userRoleFacade"/>
+    <bean id="sdUserRoleFacade" class="com.hkt.btu.sd.facade.impl.SdUserRoleFacadeImpl"/>
+
     <alias name="sdSiteConfigFacade" alias="siteConfigFacade"/>
     <bean id="sdSiteConfigFacade" class="com.hkt.btu.sd.facade.impl.SdSiteConfigFacadeImpl" />
 
@@ -52,4 +55,6 @@
 
     <bean id="requestCreateSearchResultDataPopulator" class="com.hkt.btu.sd.facade.populator.RequestCreateSearchResultDataPopulator"/>
 
+    <alias name="sdUserRoleDataPopulator" alias="userRoleDataPopulator"/>
+    <bean id="sdUserRoleDataPopulator" class="com.hkt.btu.sd.facade.populator.SdUserRoleDataPopulator"/>
 </beans>

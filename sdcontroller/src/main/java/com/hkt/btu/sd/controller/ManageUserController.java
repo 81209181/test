@@ -6,6 +6,7 @@ import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
 import com.hkt.btu.sd.facade.SdAuditTrailFacade;
 import com.hkt.btu.sd.facade.SdUserFacade;
 import com.hkt.btu.sd.facade.SdUserGroupFacade;
+import com.hkt.btu.sd.facade.SdUserRoleFacade;
 import com.hkt.btu.sd.facade.data.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -31,29 +32,35 @@ public class ManageUserController {
 
     @Resource(name = "userFacade")
     SdUserFacade userFacade;
-    @Resource(name = "userGroupFacade")
-    SdUserGroupFacade sdUserGroupFacade;
+    @Resource(name = "userRoleFacade")
+    SdUserRoleFacade userRoleFacade;
     @Resource(name = "auditTrailFacade")
     SdAuditTrailFacade sdAuditTrailFacade;
 
     @GetMapping("/create-user")
     public String createUserForm(final Model model,
                                  @ModelAttribute("createUserFormData") CreateUserFormData createUserFormData,
-                                 @ModelAttribute("userGroupOptionDataMap") HashMap<String, SdUserGroupData> userGroupOptionDataMap) {
+                                 @ModelAttribute("userRoleOptionDataMap") HashMap<String, SdUserRoleData> userRoleOptionDataMap) {
 
-        // user group info
-        // TODO: Wait for UserGroup
-        /*List<SdUserGroupData> userGroupDataList = sdUserGroupFacade.getEligibleUserGroupList();
-        userGroupOptionDataMap = sdUserGroupFacade.getUserGroupMap(userGroupDataList);
-        if(! MapUtils.isEmpty(userGroupOptionDataMap)) {
-            model.addAttribute("userGroupOptionDataMap", userGroupOptionDataMap);
-        }*/
-
+        // user role info
+        List<SdUserRoleData> userRoleDataList = userRoleFacade.getEligibleUserRoleList();
+        userRoleOptionDataMap = userRoleFacade.getUserRoleMap(userRoleDataList);
+        if (!MapUtils.isEmpty(userRoleOptionDataMap)) {
+            model.addAttribute("userRoleOptionDataMap", userRoleOptionDataMap);
+        }
         return "admin/manageUser/createUserForm";
     }
 
     @GetMapping("/create-ldap-user")
-    public String createLdapUserForm(@ModelAttribute("createUserFormData") CreateUserFormData createUserFormData) {
+    public String createLdapUserForm(final Model model,
+                                     @ModelAttribute("createUserFormData") CreateUserFormData createUserFormData,
+                                     @ModelAttribute("userRoleOptionDataMap") HashMap<String, SdUserRoleData> userRoleOptionDataMap) {
+        // user role info
+        List<SdUserRoleData> userRoleDataList = userRoleFacade.getEligibleUserRoleList();
+        userRoleOptionDataMap = userRoleFacade.getUserRoleMap(userRoleDataList);
+        if (!MapUtils.isEmpty(userRoleOptionDataMap)) {
+            model.addAttribute("userRoleOptionDataMap", userRoleOptionDataMap);
+        }
         return "admin/manageUser/createLdapUserForm";
     }
 
@@ -81,18 +88,21 @@ public class ManageUserController {
     public String editUserForm(final Model model,
                                @RequestParam String userId,
                                @ModelAttribute("editUserId") String editUserId,
-                               @ModelAttribute("userGroupDataMap") HashMap<String, SdUserGroupData> userGroupDataMap) {
+                               @ModelAttribute("userRoleDataMap") HashMap<String, SdUserRoleData> userRoleDataMap) {
         if (userId != null) {
             model.addAttribute("editUserId", userId);
+            List<String> userRole = userRoleFacade.getUserRoleByUserId(userId);
+            if (CollectionUtils.isNotEmpty(userRole)) {
+                model.addAttribute("userRoleList", userRole);
+            }
         }
 
-        // TODO: Wait for UserGroup
         // user group info
-        /*List<SdUserGroupData> userGroupDataList = sdUserGroupFacade.getEligibleUserGroupList();
-        userGroupDataMap = sdUserGroupFacade.getUserGroupMap(userGroupDataList);
-        if(! MapUtils.isEmpty(userGroupDataMap)) {
-            model.addAttribute("userGroupDataMap", userGroupDataMap);
-        }*/
+        List<SdUserRoleData> userRoleDataList = userRoleFacade.getEligibleUserRoleList();
+        userRoleDataMap = userRoleFacade.getUserRoleMap(userRoleDataList);
+        if (!MapUtils.isEmpty(userRoleDataMap)) {
+            model.addAttribute("userRoleOptionDataMap", userRoleDataMap);
+        }
 
         return "admin/manageUser/editUserForm";
     }

@@ -13,8 +13,8 @@
         <result column="REMARKS" property="remarks"/>
     </resultMap>
 
-    <select id="getUserRoleByUserId" resultType="string">
-        SELECT ur.ROLE_ID
+    <select id="getUserRoleByUserId" resultMap="SdUserRoleEntity">
+        SELECT ur.*
         FROM USER_PROFILE up
                  LEFT JOIN USER_USER_ROLE uur
                            ON up.USER_ID = uur.USER_ID
@@ -30,10 +30,20 @@
         connect by ur.ROLE_ID = PRIOR ur.PARENT_ROLE_ID
     </select>
 
-    <select id="getBasicRole" resultMap="SdUserRoleEntity">
+    <select id="getAllUserRole" resultMap="SdUserRoleEntity">
         SELECT *
         FROM USER_ROLE
-        WHERE
-        PARENT_ROLE_ID IS NULL
+        ORDER BY ROLE_ID
     </select>
+
+    <insert id="insertUserUserRole">
+        INSERT INTO USER_USER_ROLE (USER_ID, ROLE_ID)
+        VALUES (#{userId}, #{roleId})
+    </insert>
+
+    <delete id="deleteUserRoleByUserId">
+        DELETE
+        FROM USER_USER_ROLE
+        WHERE USER_ID = #{userId}
+    </delete>
 </mapper>

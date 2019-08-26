@@ -29,6 +29,14 @@
                     <option value="@oa.hkcsl.net">OA-HKCSL-NET</option>
                     <option value="@corp.root">CORP</option>
                 </select>
+
+                <label>User Role</label>
+                <div class="d-block">
+                    <div class="form-check form-check-inline" th:each="userRole : ${userRoleOptionDataMap}" >
+                        <input class="form-check-input" th:field="*{userRoleIdList}" type="checkbox" th:value="${userRole.key}">
+                        <label class="form-check-label" th:text="${userRole.key}"></label>
+                    </div>
+                </div>
             </div>
 
         </div>

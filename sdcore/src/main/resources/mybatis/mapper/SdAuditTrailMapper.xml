@@ -5,8 +5,8 @@
 <mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdAuditTrailMapper" >
 
     <insert id="insertAuditTrail" useGeneratedKeys="true" >
-        insert into AUDIT_TRAIL (USER_ID, ACTION, DETAIL)
-        values (#{userId}, #{action}, #{detail})
+        insert into AUDIT_TRAIL (AUDIT_ID,USER_ID, ACTION, DETAIL)
+        values (SEQ_AUDIT_TRAIL_ID.nextval,#{userId}, #{action}, #{detail})
     </insert>
 
 </mapper>

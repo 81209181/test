@@ -40,13 +40,30 @@
                 <input th:id="edit-ldap-domain" type="text" class="form-control" readonly>
             </div>
 
+            <div class="d-inline-block col-md-5 form-group">
+                <label>User Role</label>
+                <div class="d-block">
+                    <div class="form-check form-check-inline" th:each="userRole : ${userRoleOptionDataMap}">
+                        <input class="form-check-input"  type="checkbox" name="userRoleId"
+                               th:value="${userRole.value.getRoleId()}"
+                               th:attr="checked=${userRoleList.contains(userRole.value.getRoleId())?true:false}">
+                        <label class="form-check-label" th:text="${userRole.key}"></label>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="col-md-12">
             <div class="d-inline-block col-md-10 form-group">
-                <button th:id="btnActivateUser" class="btn btn-lg btn-success float-left mr-sm-2" type="button"><i class="fas fa-check-circle"></i> Activate</button>
-                <button th:id="btnDeactivateUser" class="btn btn-lg btn-danger float-left mr-sm-2" type="button"><i class="fas fa-times-circle"></i> Deactivate</button>
-                <button th:id="btnUpdateUser" class="btn btn-lg btn-primary float-right mr-sm-2" type="button"><i class="far fa-save"></i> Save</button>
+                <button th:id="btnActivateUser" class="btn btn-lg btn-success float-left mr-sm-2" type="button"><i
+                        class="fas fa-check-circle"></i> Activate
+                </button>
+                <button th:id="btnDeactivateUser" class="btn btn-lg btn-danger float-left mr-sm-2" type="button"><i
+                        class="fas fa-times-circle"></i> Deactivate
+                </button>
+                <button th:id="btnUpdateUser" class="btn btn-lg btn-primary float-right mr-sm-2" type="button"><i
+                        class="far fa-save"></i> Save
+                </button>
             </div>
         </div>
 

@@ -49,8 +49,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
         String ldapDomain = StringUtils.trim(createUserFormData.getLdapDomain());
         String employeeNumber = StringUtils.trim(createUserFormData.getUserId());
 
-        // TODO: Wait for UserGroup
-        //List<String> userGroupIdList = createUserFormData.getUserGroupIdList();
+        List<String> userRoleIdList = createUserFormData.getUserRoleIdList();
 
         // check input
         // create new user
@@ -58,13 +57,15 @@ public class SdUserFacadeImpl implements SdUserFacade {
         try {
             sdInputCheckService.checkName(name);
             sdInputCheckService.checkMobile(mobile);
+            // if email not empty, will create email user
             if (StringUtils.isNotEmpty(email)) {
                 sdInputCheckService.checkEmail(email);
-                newUserId = sdUserService.createUser(name, mobile, email, null);
+                newUserId = sdUserService.createUser(name, mobile, email, userRoleIdList);
+                // else will create LDAP user
             } else {
                 sdInputCheckService.checkLdapDomain(ldapDomain);
                 sdInputCheckService.checkEmployeeNumber(employeeNumber);
-                newUserId = sdUserService.createLdapUser(name, mobile, employeeNumber, ldapDomain);
+                newUserId = sdUserService.createLdapUser(name, mobile, employeeNumber, ldapDomain, userRoleIdList);
             }
         } catch (InvalidInputException | UserNotFoundException | DuplicateUserEmailException | GeneralSecurityException e) {
             LOG.warn(e.getMessage());
@@ -79,12 +80,15 @@ public class SdUserFacadeImpl implements SdUserFacade {
             return "Null input.";
         } else if (updateUserFormData.getUserId() == null) {
             return "Empty user ID.";
+        } else if (CollectionUtils.isEmpty(updateUserFormData.getUserRoleIdList())) {
+            return "Empty authority";
         }
 
         String userId = updateUserFormData.getUserId();
         String name = StringUtils.trim(updateUserFormData.getName());
         String mobile = StringUtils.trim(updateUserFormData.getMobile());
         String staffId = StringUtils.trim(updateUserFormData.getStaffId());
+        List<String> userRoleIdList = updateUserFormData.getUserRoleIdList();
 
         Boolean isAdmin = updateUserFormData.isUserGroupAdmin();
         Boolean isUser = updateUserFormData.isUserGroupUser();
@@ -100,7 +104,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
         }
 
         try {
-            sdUserService.updateUser(userId, name, mobile, staffId, isAdmin, isUser, isCAdmin, isCUser);
+            sdUserService.updateUser(userId, name, mobile, userRoleIdList);
         } catch (UserNotFoundException | InsufficientAuthorityException | InvalidInputException e) {
             LOG.warn(e.getMessage());
             return e.getMessage();

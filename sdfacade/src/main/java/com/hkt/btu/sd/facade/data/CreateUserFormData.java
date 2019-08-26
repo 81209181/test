@@ -16,7 +16,7 @@ public class CreateUserFormData implements DataInterface {
     private String staffId;
 
     private Integer companyId;
-    private List<String> userGroupIdList;
+    private List<String> userRoleIdList;
 
     public String getUserId() {
         return userId;
@@ -82,11 +82,11 @@ public class CreateUserFormData implements DataInterface {
         this.staffId = staffId;
     }
 
-    public List<String> getUserGroupIdList() {
-        return userGroupIdList;
+    public List<String> getUserRoleIdList() {
+        return userRoleIdList;
     }
 
-    public void setUserGroupIdList(List<String> userGroupIdList) {
-        this.userGroupIdList = userGroupIdList;
+    public void setUserRoleIdList(List<String> userRoleIdList) {
+        this.userRoleIdList = userRoleIdList;
     }
 }
