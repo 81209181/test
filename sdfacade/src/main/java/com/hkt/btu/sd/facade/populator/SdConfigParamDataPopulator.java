@@ -12,7 +12,7 @@ public class SdConfigParamDataPopulator extends AbstractDataPopulator<SdConfigPa
         target.setConfigKey(source.getConfigKey());
         target.setConfigValueType(source.getConfigValueType());
         target.setConfigValue(source.getConfigValue());
-
+        target.setEncrypt(source.getEncrypt());
         target.setModifydate(source.getModifydate());
     }
 }
