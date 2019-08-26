@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.GCMParameterSpec;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,9 +38,10 @@ public class BtuSensitiveDataServiceImpl implements BtuSensitiveDataService {
     private static final int IV_BYTE_LENGTH = IV_BIT_LENGTH / 8;
 
     // keystore
-    private static final String KEYSTORE_PATH = File.separator + "opt" + File.separator + "keystore" + File.separator + "aes-keystore.jck";
+    @Value("${servicedesk.aesKeystore.path}")
+    private String KEYSTORE_PATH;
     @Value("${servicedesk.aesKeystore.storePass}")
-    private String storePass;
+    private String STORE_PASS;
 
     // key
     private static final int LATEST_KEY_ALIAS = 1; // [INPUT] alias of latest key
@@ -162,7 +162,7 @@ public class BtuSensitiveDataServiceImpl implements BtuSensitiveDataService {
 
         try {
             // check StorePass
-            if (StringUtils.isEmpty(storePass)) {
+            if (StringUtils.isEmpty(STORE_PASS)) {
                 LOG.error("StorePass is empty.");
                 return null;
             }
@@ -170,7 +170,7 @@ public class BtuSensitiveDataServiceImpl implements BtuSensitiveDataService {
             // get keystore
             InputStream keystoreStream = new FileInputStream(KEYSTORE_PATH);
             KeyStore keystore = KeyStore.getInstance("JCEKS");
-            keystore.load(keystoreStream, storePass.toCharArray());
+            keystore.load(keystoreStream, STORE_PASS.toCharArray());
 
             // check key exist in keystore
             if (!keystore.containsAlias(aliasString)) {
