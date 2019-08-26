@@ -505,14 +505,11 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         List<SdUserEntity> sdUserEntityList = new LinkedList<>();
 
         Integer totalCount = 0;
+
         for (String roleId : currentUserBeanRoleId) {
-            if (roleId.contains("__")) {
-                totalCount += sdUserMapper.countSearchUser(roleId, userId, email, name);
-                sdUserEntityList.addAll(sdUserMapper.searchUser(offset, pageSize, roleId, userId, email, name));
-            }
-            if (roleId.equals(SdUserRoleEntity.SYS_ADMIN)) {
-                totalCount += sdUserMapper.countSearchUser(roleId, userId, email, name);
-                sdUserEntityList.addAll(sdUserMapper.searchUser(offset, pageSize, roleId, userId, email, name));
+            if (roleId.contains("__") || roleId.equals(SdUserRoleEntity.SYS_ADMIN)) {
+                totalCount = sdUserMapper.countSearchUser(roleId, userId, email, name);
+                sdUserEntityList = sdUserMapper.searchUser(offset, pageSize, roleId, userId, email, name);
             }
         }
 
