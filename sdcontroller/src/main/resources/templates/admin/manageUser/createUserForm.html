@@ -22,6 +22,9 @@
                         <label>Mobile</label>
                         <input type="tel" th:field="*{mobile}" class="form-control" placeholder="28832299" maxlength="15" required>
 
+                        <label>User Role</label>
+                        <div id="container" class="d-block">
+                        </div>
                     </div>
                 </div>
 
@@ -31,6 +34,7 @@
                     </div>
                 </div>
             </form>
+            <script type="text/javascript" th:src="@{/js/createUser.js}"></script>
         </div>
     </body>
     </html>

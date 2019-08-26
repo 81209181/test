@@ -40,7 +40,7 @@ public class BtuSecurityMetadataSource implements FilterInvocationSecurityMetada
     public static final String RESERVED_ANT_PATH_RESET_PWD_OTP = "/reset-password-otp*";
     public static final String RESERVED_ANT_PATH_JS = "/js/**";
     public static final String RESERVED_ANT_PATH_CSS = "/css/**";
-    public static final String RESERVED_ANT_PATH_LIB = "/DataTables/**";
+    public static final String RESERVED_ANT_PATH_LIB = "/lib/**";
     public static final String RESERVED_ANT_PATH_IMG = "/img/**";
     public static final String RESERVED_ANT_PATH_WEBJAR = "/webjars/**";
     public static final String RESERVED_ANT_PATH_ERROR = "/error/**";

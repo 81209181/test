@@ -13,18 +13,27 @@
         <result column="REMARKS" property="remarks"/>
     </resultMap>
 
-    <select id="getUserRoleByUserId" resultMap="SdUserRoleEntity">
-        SELECT ur.ROLE_ID,
-               ur.ROLE_DESC
+    <select id="getUserRoleByUserId" resultType="string">
+        SELECT ur.ROLE_ID
+        FROM USER_PROFILE up
+                 LEFT JOIN USER_USER_ROLE uur
+                           ON up.USER_ID = uur.USER_ID
+                 LEFT JOIN USER_ROLE ur
+                           ON ur.ROLE_ID = uur.ROLE_ID
+        WHERE up.USER_ID = #{userId}
+    </select>
+
+    <select id="getParentRoleByRoleId" resultMap="SdUserRoleEntity">
+        SELECT ur.*
         FROM USER_ROLE ur
-        start with ur.ROLE_ID =
-                   (SELECT ur.ROLE_ID
-                    FROM USER_PROFILE up
-                             LEFT JOIN USER_USER_ROLE uur
-                                       ON up.USER_ID = uur.USER_ID
-                             LEFT JOIN USER_ROLE ur
-                                       ON ur.ROLE_ID = uur.ROLE_ID
-                    WHERE up.USER_ID = #{userId})
+        start with ur.ROLE_ID = #{roleId}
         connect by ur.ROLE_ID = PRIOR ur.PARENT_ROLE_ID
+    </select>
+
+    <select id="getBasicRole" resultMap="SdUserRoleEntity">
+        SELECT *
+        FROM USER_ROLE
+        WHERE
+        PARENT_ROLE_ID IS NULL
     </select>
 </mapper>

@@ -10,7 +10,7 @@
 
     <alias name="sdPathCtrlService" alias="pathCtrlService"/>
     <alias name="sdPathCtrlService" alias="btuPathCtrlService"/>
-    <bean id="sdPathCtrlService" class="com.hkt.btu.sd.core.service.impl.SdPathCtrlServiceImpl" />
+    <bean id="sdPathCtrlService" class="com.hkt.btu.sd.core.service.impl.SdPathCtrlServiceImpl"/>
 
     <alias name="sdAuditTrailService" alias="auditTrailService"/>
     <alias name="sdAuditTrailService" alias="btuAuditTrailService"/>
@@ -43,6 +43,8 @@
     <alias name="sdHealthCheckService" alias="healthCheckService"/>
     <bean id="sdHealthCheckService" class="com.hkt.btu.sd.core.service.impl.SdHealthCheckServiceImpl"/>
 
+    <alias name="sdUserRoleService" alias="roleService"/>
+    <bean id="sdUserRoleService" class="com.hkt.btu.sd.core.service.impl.SdUserRoleServiceImpl"/>
     <bean id="besApiService" class="com.hkt.btu.sd.core.service.impl.BesApiServiceImpl"/>
     <bean id="itsmApiService" class="com.hkt.btu.sd.core.service.impl.ItsmApiServiceImpl"/>
     <bean id="norarsApiService" class="com.hkt.btu.sd.core.service.impl.NorarsApiServiceImpl"/>
@@ -55,7 +57,8 @@
     <bean id="sdUserBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserBeanPopulator"/>
 
     <alias name="sdUserRolePathCtrlBeanPopulator" alias="pathCtrlBeanPopulator"/>
-    <bean id="sdUserRolePathCtrlBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserRolePathCtrlBeanPopulator"/>
+    <bean id="sdUserRolePathCtrlBeanPopulator"
+          class="com.hkt.btu.sd.core.service.populator.SdUserRolePathCtrlBeanPopulator"/>
 
     <alias name="sdUserGroupBeanPopulator" alias="userGroupBeanPopulator"/>
     <bean id="sdUserGroupBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserGroupBeanPopulator"/>
@@ -70,10 +73,12 @@
     <bean id="sdOperationHistBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdOperationHistBeanPopulator"/>
 
     <alias name="sdCronJobProfileBeanPopulator" alias="cronJobProfileBeanPopulator"/>
-    <bean id="sdCronJobProfileBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdCronJobProfileBeanPopulator"/>
+    <bean id="sdCronJobProfileBeanPopulator"
+          class="com.hkt.btu.sd.core.service.populator.SdCronJobProfileBeanPopulator"/>
 
     <alias name="sdCronJobInstBeanPopulator" alias="cronJobInstBeanPopulator"/>
     <bean id="sdCronJobInstBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdCronJobInstBeanPopulator"/>
 
-
+    <alias name="sdUserRolePopulator" alias="userRolePopulator"/>
+    <bean id="sdUserRolePopulator" class="com.hkt.btu.sd.core.service.populator.SdUserRoleBeanPopulator"/>
 </beans>
