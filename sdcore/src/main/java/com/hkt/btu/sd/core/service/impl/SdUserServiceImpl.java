@@ -146,14 +146,13 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         }
 
         // get user group data
-        // TODO: Wait For UserGroup
-        //List<SdUserGroupEntity> groupEntityList = sdUserGroupMapper.getUserGroupByUserId(userId);
+        List<SdUserRoleEntity> roleEntityList = sdUserRoleMapper.getUserRoleByUserId(userId);
 
         // construct bean
         SdUserBean userBean = new SdUserBean();
         sdUserBeanPopulator.populate(sdUserEntity, userBean);
-        // TODO: Wait For UserGroup
-        //sdUserBeanPopulator.populate(groupEntityList, userBean);
+
+        sdUserBeanPopulator.populate(roleEntityList, userBean);
 
         return userBean;
     }
