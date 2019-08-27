@@ -15,7 +15,7 @@ public class SdConfigParamBeanPopulator extends AbstractBeanPopulator<SdConfigPa
         target.setConfigGroup(source.getConfigGroup());
         target.setConfigKey(source.getConfigKey());
         target.setConfigValueType(source.getConfigValueType());
-        if (StringUtils.isNotEmpty(source.getEncrypt()) && source.getEncrypt().equalsIgnoreCase(SdConfigParamEntity.ENCRYPT.Y)) {
+        if (StringUtils.equals(source.getEncrypt(), SdConfigParamEntity.ENCRYPT.YES)) {
             target.setEncrypt(true);
             target.setConfigValue(BtuConfigParamBean.CONFIG_VALUE.ENCRYPTED);
         } else {

@@ -36,8 +36,8 @@ public class BtuConfigParamEntity extends BaseEntity {
     }
 
     public static class ENCRYPT{
-        public static final String Y = "Y";
-        public static final String N = "N";
+        public static final String YES = "Y";
+        public static final String NO = "N";
     }
 
     public static class CRONJOB{

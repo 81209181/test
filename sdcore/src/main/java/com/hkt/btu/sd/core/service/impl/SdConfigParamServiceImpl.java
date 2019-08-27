@@ -2,7 +2,6 @@ package com.hkt.btu.sd.core.service.impl;
 
 import com.hkt.btu.common.core.dao.entity.BtuConfigParamEntity;
 import com.hkt.btu.common.core.service.BtuSensitiveDataService;
-import com.hkt.btu.common.core.service.bean.BtuConfigParamBean;
 import com.hkt.btu.common.core.service.impl.BtuConfigParamServiceImpl;
 import com.hkt.btu.sd.core.dao.entity.SdConfigParamEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdConfigParamMapper;
@@ -99,7 +98,7 @@ public class SdConfigParamServiceImpl extends BtuConfigParamServiceImpl implemen
         }
         SdConfigParamBean bean = new SdConfigParamBean();
         sdConfigParamBeanPopulator.populate(entity, bean);
-        if (StringUtils.isNotEmpty(entity.getEncrypt()) && entity.getEncrypt().equals(BtuConfigParamEntity.ENCRYPT.Y)) {
+        if (bean.isEncrypt()) {
             String decryptStr = sensitiveDataService.decryptToStringSafe(Base64Utils.decodeFromString(entity.getConfigValue()));
             bean.setConfigValue(decryptStr);
         }
@@ -109,11 +108,11 @@ public class SdConfigParamServiceImpl extends BtuConfigParamServiceImpl implemen
     @Override
     public boolean updateConfigParam(String configGroup, String configKey, String configValue, String configValueType, String encrypt) throws GeneralSecurityException {
         if (StringUtils.isEmpty(encrypt)) {
-            encrypt = BtuConfigParamEntity.ENCRYPT.N;
+            encrypt = BtuConfigParamEntity.ENCRYPT.NO;
         } else {
             byte[] encryptBytes = sensitiveDataService.encryptFromString(configValue);
             configValue = Base64Utils.encodeToString(encryptBytes);
-            encrypt = BtuConfigParamEntity.ENCRYPT.Y;
+            encrypt = BtuConfigParamEntity.ENCRYPT.YES;
         }
         return sdConfigParamMapper.updateValue(configGroup, configKey, configValue, configValueType, sdUserService.getCurrentUserUserId(), encrypt) > 0;
     }
@@ -126,11 +125,11 @@ public class SdConfigParamServiceImpl extends BtuConfigParamServiceImpl implemen
     @Override
     public boolean createConfigParam(String configGroup, String configKey, String configValue, String configValueType, String encrypt) throws GeneralSecurityException {
         if (StringUtils.isEmpty(encrypt)) {
-            encrypt = BtuConfigParamEntity.ENCRYPT.N;
+            encrypt = BtuConfigParamEntity.ENCRYPT.NO;
         } else {
             byte[] encryptBytes = sensitiveDataService.encryptFromString(configValue);
             configValue = Base64Utils.encodeToString(encryptBytes);
-            encrypt = BtuConfigParamEntity.ENCRYPT.Y;
+            encrypt = BtuConfigParamEntity.ENCRYPT.YES;
         }
         return sdConfigParamMapper.insertConfig(configGroup, configKey, configValue, configValueType, sdUserService.getCurrentUserUserId(), encrypt);
     }
