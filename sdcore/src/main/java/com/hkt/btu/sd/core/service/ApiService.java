@@ -14,7 +14,7 @@ public class ApiService {
     @Resource(name = "sensitiveDataService")
     BtuSensitiveDataService sensitiveDataService;
 
-    public SiteInterfaceBean getSiteInterfaceBean(List<SdConfigParamEntity> entities){
+    protected SiteInterfaceBean getSiteInterfaceBean(List<SdConfigParamEntity> entities){
         SiteInterfaceBean bean =new SiteInterfaceBean();
         for (SdConfigParamEntity entity : entities) {
             String value = entity.getConfigValue();

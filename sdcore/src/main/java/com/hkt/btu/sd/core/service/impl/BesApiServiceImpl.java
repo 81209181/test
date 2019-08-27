@@ -17,6 +17,6 @@ public class BesApiServiceImpl extends ApiService implements BesApiService {
     @Override
     public SiteInterfaceBean getBesApiBean() {
         List<SdConfigParamEntity> entities = sdConfigParamMapper.getValuesByConfigGroup(SiteInterfaceBean.BES.SYSTEM_NAME);
-        return this.getSiteInterfaceBean(entities);
+        return getSiteInterfaceBean(entities);
     }
 }
