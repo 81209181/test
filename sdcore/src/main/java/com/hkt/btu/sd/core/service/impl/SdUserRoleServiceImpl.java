@@ -1,7 +1,6 @@
 package com.hkt.btu.sd.core.service.impl;
 
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
-import com.hkt.btu.sd.core.dao.entity.SdConfigParamEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserRoleEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdUserRoleMapper;
 import com.hkt.btu.sd.core.exception.InvalidInputException;
@@ -10,13 +9,15 @@ import com.hkt.btu.sd.core.service.SdUserRoleService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
 import com.hkt.btu.sd.core.service.populator.SdUserRoleBeanPopulator;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.util.CollectionUtils;
+
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SdUserRoleServiceImpl implements SdUserRoleService {
 
@@ -35,7 +36,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     @Override
     public List<SdUserRoleBean> getAllUserRole() {
         List<SdUserRoleBean> results = new LinkedList<>();
-        List<SdUserRoleEntity> allUserRole = sdUserRoleMapper.getAllUserRole();
+        List<SdUserRoleEntity> allUserRole = sdUserRoleMapper.getAllUserRole(SdUserRoleEntity.ACTIVE_ROLE_STATUS);
         return getSdUserRoleBeans(results, allUserRole);
     }
 
@@ -68,38 +69,33 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
             return null;
         }
 
-        // get All User Role
-        List<SdUserRoleBean> allUserRoles = getAllUserRole();
-        if (CollectionUtils.isEmpty(allUserRoles)) {
-            return null;
-        }
-
         // extract eligible roles of current user role
-        List<String> eligibleUserRoleIdList = new LinkedList<>();
+        List<SdUserRoleEntity> userRoleEntityList = new LinkedList<>();
         for (GrantedAuthority grantedAuthority : authorities) {
             if (grantedAuthority instanceof SimpleGrantedAuthority) {
                 String userRoleId = grantedAuthority.getAuthority();
-                String mappedRoleIds = configParamService.getString(SdConfigParamEntity.USER_ROLE_CREATE_MAPPING.CONFIG_ROLE, userRoleId);
-                if (StringUtils.isEmpty(mappedRoleIds)) {
-                    continue;
+                if (userRoleId.contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR)) {
+                    List<SdUserRoleEntity> eligibleRolesByCurrentUserRole =
+                            sdUserRoleMapper.getEligibleRolesByCurrentUserRole(userRoleId, SdUserRoleEntity.ACTIVE_ROLE_STATUS);
+                    userRoleEntityList.addAll(eligibleRolesByCurrentUserRole);
+                } else if (userRoleId.equals(SdUserRoleEntity.SYS_ADMIN)) {
+                    userRoleEntityList = sdUserRoleMapper.getAllUserRole(SdUserRoleEntity.ACTIVE_ROLE_STATUS);
                 }
-
-                String[] splitGroupIds = mappedRoleIds.split(",");
-                List<String> splitGroupIdList = Arrays.asList(splitGroupIds);
-                eligibleUserRoleIdList.addAll(splitGroupIdList);
             }
         }
 
-        // add eligible bean to result
-        List<SdUserRoleBean> result = new LinkedList<>();
-        for (SdUserRoleBean sdUserRoleBean : allUserRoles) {
-            String userRoleId = sdUserRoleBean.getRoleId();
-            if (eligibleUserRoleIdList.contains(userRoleId)) {
-                result.add(sdUserRoleBean);
-            }
+
+        if (CollectionUtils.isNotEmpty(userRoleEntityList)) {
+            List<SdUserRoleBean> eligibleUserRoleList = userRoleEntityList.stream().map(entity -> {
+                SdUserRoleBean bean = new SdUserRoleBean();
+                sdUserRoleBeanPopulator.populate(entity, bean);
+                return bean;
+            }).distinct().collect(Collectors.toList());
+
+            return eligibleUserRoleList;
         }
 
-        return result;
+        return null;
     }
 
     @Override

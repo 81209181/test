@@ -5,6 +5,8 @@ import com.hkt.btu.common.core.dao.entity.BaseEntity;
 public class SdUserRoleEntity extends BaseEntity {
 
     public final static String SYS_ADMIN = "SYS_ADMIN";
+    public final static String TEAM_HEAD_INDICATOR = "__";
+    public final static String ACTIVE_ROLE_STATUS = "A";
 
     private String roleId;
     private String roleDesc;
