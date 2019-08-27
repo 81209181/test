@@ -1,16 +1,22 @@
 package com.hkt.btu.sd.core.service.impl;
 
+import com.hkt.btu.sd.core.dao.entity.SdConfigParamEntity;
+import com.hkt.btu.sd.core.dao.mapper.SdConfigParamMapper;
+import com.hkt.btu.sd.core.service.ApiService;
 import com.hkt.btu.sd.core.service.NorarsApiService;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 
-public class NorarsApiServiceImpl implements NorarsApiService {
+import javax.annotation.Resource;
+import java.util.List;
+
+public class NorarsApiServiceImpl extends ApiService implements NorarsApiService {
+
+    @Resource
+    private SdConfigParamMapper sdConfigParamMapper;
+
     @Override
     public SiteInterfaceBean getNorarsRestfulApiBean() {
-        SiteInterfaceBean bean =new SiteInterfaceBean();
-        bean.setSystemName("NORARS");
-        bean.setUrl("https://10.252.15.139");
-        bean.setUserName("sd");
-        bean.setPassword("g$Hw0#MG-3");
-        return bean;
+        List<SdConfigParamEntity> entities = sdConfigParamMapper.getValuesByConfigGroup(SiteInterfaceBean.NORARS.SYSTEM_NAME);
+        return getSiteInterfaceBean(entities);
     }
 }

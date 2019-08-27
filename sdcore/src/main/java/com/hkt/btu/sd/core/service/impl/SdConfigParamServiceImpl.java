@@ -32,8 +32,8 @@ public class SdConfigParamServiceImpl extends BtuConfigParamServiceImpl implemen
     SdConfigParamBeanPopulator sdConfigParamBeanPopulator;
     @Resource(name = "userService")
     SdUserService sdUserService;
-    @Resource(name = "btuSensitiveDataService")
-    BtuSensitiveDataService btuSensitiveDataService;
+    @Resource(name = "sensitiveDataService")
+    BtuSensitiveDataService sensitiveDataService;
 
     public Map<String, Object> getConfigParamByConfigGroup(String configGroup) {
         if (StringUtils.isEmpty(configGroup)) {
@@ -80,12 +80,8 @@ public class SdConfigParamServiceImpl extends BtuConfigParamServiceImpl implemen
         if (CollectionUtils.isEmpty(entityList)) {
             return null;
         }
-
         List<SdConfigParamBean> beanList = new LinkedList<>();
         for (SdConfigParamEntity entity : entityList) {
-            if (StringUtils.isNotEmpty(entity.getEncrypt()) && entity.getEncrypt().equals("Y")) {
-                entity.setConfigValue("ENCRYPTED");
-            }
             SdConfigParamBean bean = new SdConfigParamBean();
             sdConfigParamBeanPopulator.populate(entity, bean);
             beanList.add(bean);
@@ -100,23 +96,23 @@ public class SdConfigParamServiceImpl extends BtuConfigParamServiceImpl implemen
         if (entity == null) {
             return Optional.empty();
         }
-        if (StringUtils.isNotEmpty(entity.getEncrypt()) && entity.getEncrypt().equals("Y")) {
-            String decryptStr = btuSensitiveDataService.decryptToStringSafe(Base64Utils.decodeFromString(entity.getConfigValue()));
-            entity.setConfigValue(decryptStr);
-        }
         SdConfigParamBean bean = new SdConfigParamBean();
         sdConfigParamBeanPopulator.populate(entity, bean);
+        if (bean.isEncrypt()) {
+            String decryptStr = sensitiveDataService.decryptToStringSafe(Base64Utils.decodeFromString(entity.getConfigValue()));
+            bean.setConfigValue(decryptStr);
+        }
         return Optional.of(bean);
     }
 
     @Override
     public boolean updateConfigParam(String configGroup, String configKey, String configValue, String configValueType, String encrypt) throws GeneralSecurityException {
         if (StringUtils.isEmpty(encrypt)) {
-            encrypt = "N";
+            encrypt = BtuConfigParamEntity.ENCRYPT.NO;
         } else {
-            byte[] encryptBytes = btuSensitiveDataService.encryptFromString(configValue);
+            byte[] encryptBytes = sensitiveDataService.encryptFromString(configValue);
             configValue = Base64Utils.encodeToString(encryptBytes);
-            encrypt = "Y";
+            encrypt = BtuConfigParamEntity.ENCRYPT.YES;
         }
         return sdConfigParamMapper.updateValue(configGroup, configKey, configValue, configValueType, sdUserService.getCurrentUserUserId(), encrypt) > 0;
     }
@@ -129,11 +125,11 @@ public class SdConfigParamServiceImpl extends BtuConfigParamServiceImpl implemen
     @Override
     public boolean createConfigParam(String configGroup, String configKey, String configValue, String configValueType, String encrypt) throws GeneralSecurityException {
         if (StringUtils.isEmpty(encrypt)) {
-            encrypt = "N";
+            encrypt = BtuConfigParamEntity.ENCRYPT.NO;
         } else {
-            byte[] encryptBytes = btuSensitiveDataService.encryptFromString(configValue);
+            byte[] encryptBytes = sensitiveDataService.encryptFromString(configValue);
             configValue = Base64Utils.encodeToString(encryptBytes);
-            encrypt = "Y";
+            encrypt = BtuConfigParamEntity.ENCRYPT.YES;
         }
         return sdConfigParamMapper.insertConfig(configGroup, configKey, configValue, configValueType, sdUserService.getCurrentUserUserId(), encrypt);
     }
@@ -141,10 +137,7 @@ public class SdConfigParamServiceImpl extends BtuConfigParamServiceImpl implemen
     @Override
     public boolean checkConfigKey(String configGroup, String configKey) {
         Optional<SdConfigParamEntity> entity = Optional.ofNullable(sdConfigParamMapper.getValue(configGroup, configKey));
-        if (entity.isPresent()) {
-            return true;
-        }
-        return false;
+        return entity.isPresent();
     }
 
     @Override

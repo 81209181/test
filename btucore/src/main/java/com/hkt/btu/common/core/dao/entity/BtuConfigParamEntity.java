@@ -35,6 +35,34 @@ public class BtuConfigParamEntity extends BaseEntity {
         public static final String LOCAL_DATE_TIME = "LocalDateTime";
     }
 
+    public static class ENCRYPT{
+        public static final String YES = "Y";
+        public static final String NO = "N";
+    }
+
+    public static class CRONJOB{
+        public static final String CONFIG_GROUP = "CRONJOB";
+
+        public static final String CONFIG_KEY_ERROR_EMAIL = "errorEmail";
+    }
+
+    public static class NFM{
+        public static final String CONFIG_GROUP = "NFM";
+
+        public static final String CONFIG_KEY_EMAIL = "email";
+    }
+
+    public static class VISIT_LOC_EMAIL{
+        public static final String CONFIG_GROUP = "VISIT_LOC_EMAIL";
+    }
+
+    public static class USER_GROUP_CREATE_MAPPING{
+        public static final String CONFIG_GROUP = "USER_GROUP_CREATE_MAPPING";
+    }
+    public static class USER_ROLE_CREATE_MAPPING{
+        public static final String CONFIG_ROLE = "USER_ROLE_CREATE_MAPPING";
+    }
+
     public static List<String> getConfigTypeList() {
         List<String> list = new ArrayList<>();
         list.add(TYPE.STRING);

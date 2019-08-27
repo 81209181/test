@@ -1,21 +1,17 @@
-package com.hkt.btu.sd.facade.data;
+package com.hkt.btu.common.core.service.bean;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.hkt.btu.common.facade.data.DataInterface;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDateTime;
+public class BtuConfigParamBean extends BaseBean {
 
-public class SdConfigParamData implements DataInterface {
+    public static class CONFIG_VALUE {
+        public static final String ENCRYPTED = "ENCRYPTED";
+    }
+
     private String configGroup;
     private String configKey;
     private String configValue;
     private String configValueType;
     private boolean encrypt;
-
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
-    private LocalDateTime modifydate;
 
 
     public String getConfigGroup() {
@@ -48,14 +44,6 @@ public class SdConfigParamData implements DataInterface {
 
     public void setConfigValueType(String configValueType) {
         this.configValueType = configValueType;
-    }
-
-    public LocalDateTime getModifydate() {
-        return modifydate;
-    }
-
-    public void setModifydate(LocalDateTime modifydate) {
-        this.modifydate = modifydate;
     }
 
     public boolean isEncrypt() {

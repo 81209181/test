@@ -5,13 +5,7 @@ $().ready(function(){
         $.each(r,function(key,value){
             $('input[name='+key+']').val(value);
             $('select[name='+key+']').val(value);
-            if(key == 'encrypt'){
-                if(value == 'Y'){
-                    $('#encrypt').attr("checked",true);
-                }else{
-                    $('#encrypt').attr("checked",false);
-                }
-            }
+            $('input[type=checkbox][name='+key+']').prop("checked",value);
             if(value == 'Boolean'){
                 $('#config_value_select').attr("disabled",false);
                 $('#config_value_select').attr("hidden",false);

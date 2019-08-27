@@ -6,6 +6,4 @@
     <!-- Populator -->
     <alias name="sdCronJobLogEntityPopulator" alias="cronJobLogEntityPopulator"/>
     <bean id="sdCronJobLogEntityPopulator" class="com.hkt.btu.sd.core.dao.populator.SdCronJobLogEntityPopulator"/>
-
-
 </beans>
