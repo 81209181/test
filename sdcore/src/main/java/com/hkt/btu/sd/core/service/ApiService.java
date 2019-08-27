@@ -1,4 +1,4 @@
-package com.hkt.btu.sd.core.service.populator;
+package com.hkt.btu.sd.core.service;
 
 import com.hkt.btu.common.core.dao.entity.BtuConfigParamEntity;
 import com.hkt.btu.common.core.service.BtuSensitiveDataService;
@@ -9,12 +9,13 @@ import org.springframework.util.Base64Utils;
 import javax.annotation.Resource;
 import java.util.List;
 
-public class SdSiteInterfaceBeanPopulator {
+public class ApiService {
 
     @Resource(name = "sensitiveDataService")
     BtuSensitiveDataService sensitiveDataService;
 
-    public void populate(List<SdConfigParamEntity> entities, SiteInterfaceBean bean) {
+    public SiteInterfaceBean getSiteInterfaceBean(List<SdConfigParamEntity> entities){
+        SiteInterfaceBean bean =new SiteInterfaceBean();
         for (SdConfigParamEntity entity : entities) {
             String value = entity.getConfigValue();
             if (entity.getEncrypt().equalsIgnoreCase(BtuConfigParamEntity.ENCRYPT.Y)) {
@@ -36,5 +37,6 @@ public class SdSiteInterfaceBeanPopulator {
                 bean.setChannelType(value);
             }
         }
+        return bean;
     }
 }

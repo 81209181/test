@@ -1,9 +1,6 @@
 package com.hkt.btu.sd.core.service.bean;
 
-import java.sql.Timestamp;
-
 public class SiteInterfaceBean {
-
 
     public static class BES {
         public static final String SYSTEM_NAME = "BES";
@@ -31,12 +28,10 @@ public class SiteInterfaceBean {
         public static final String SYSTEM_NAME = "NORARS";
     }
 
-    private String systemName = "";
-    private String url = "";
-    private String userName = "";
-    private String password = "";
-    private Timestamp lastUpdatedDate;
-    private String lastUpdatedBy = "";
+    private String systemName;
+    private String url;
+    private String userName;
+    private String password;
     private String xAppkey;
     private String beId;
     private String channelType;
@@ -71,22 +66,6 @@ public class SiteInterfaceBean {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Timestamp getLastUpdatedDate() {
-        return lastUpdatedDate;
-    }
-
-    public void setLastUpdatedDate(Timestamp lastUpdatedDate) {
-        this.lastUpdatedDate = lastUpdatedDate;
-    }
-
-    public String getLastUpdatedBy() {
-        return lastUpdatedBy;
-    }
-
-    public void setLastUpdatedBy(String lastUpdatedBy) {
-        this.lastUpdatedBy = lastUpdatedBy;
     }
 
     public String getxAppkey() {
