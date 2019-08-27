@@ -67,7 +67,16 @@ function ajaxUpdateUser() {
     input["userGroupCAdmin"] = $("#edit-user-group-cadmin").val() ? ($("#edit-user-group-cadmin").prop("checked") ? true : false) : null;
     input["userGroupCUser"] = $("#edit-user-group-cuser").val() ? ($("#edit-user-group-cuser").prop("checked") ? true : false) : null;
 
-    $.ajax({
+    let userRoleIds = new Array();
+    $("input[name='userRoleId']:checked").each(function (j) {
+        if (j >= 0) {
+            userRoleIds.push($(this).val());
+        }
+    });
+
+    input["userRoleIdList"] = userRoleIds;
+
+        $.ajax({
         type: "POST",
         contentType: "application/json",
         url: "/admin/manage-user/edit-user",

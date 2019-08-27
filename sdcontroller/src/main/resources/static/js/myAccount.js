@@ -79,7 +79,7 @@ function ajaxGetCurrentUser(){
                 $("#update-pwd-h1").show();
                 $("#update-pwd-form").show();
             }
-            populateSelectOptions($("#my-user-group"), data.userGroupList);
+            populateSelectOptions($("#my-user-role"), data.userRoleList);
         },
         error: function (e) {
             let responseError = e.responseText ? e.responseText : "Get failed.";

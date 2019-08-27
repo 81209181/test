@@ -2,6 +2,8 @@ package com.hkt.btu.sd.facade.data;
 
 import com.hkt.btu.common.facade.data.DataInterface;
 
+import java.util.List;
+
 
 public class UpdateUserFormData implements DataInterface {
     private String userId;
@@ -13,6 +15,8 @@ public class UpdateUserFormData implements DataInterface {
     private Boolean userGroupUser;
     private Boolean userGroupCAdmin;
     private Boolean userGroupCUser;
+
+    private List<String> userRoleIdList;
 
 
     public String getUserId() {
@@ -77,5 +81,13 @@ public class UpdateUserFormData implements DataInterface {
 
     public void setUserGroupCUser(Boolean userGroupCUser) {
         this.userGroupCUser = userGroupCUser;
+    }
+
+    public List<String> getUserRoleIdList() {
+        return userRoleIdList;
+    }
+
+    public void setUserRoleIdList(List<String> userRoleIdList) {
+        this.userRoleIdList = userRoleIdList;
     }
 }

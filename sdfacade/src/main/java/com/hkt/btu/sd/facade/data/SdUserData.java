@@ -20,7 +20,7 @@ public class SdUserData implements DataInterface {
     private String companyName;
     private String staffId;
 
-    private List<String> userGroupList;
+    private List<String> userRoleList;
 
     public String getUserId() {
         return userId;
@@ -102,12 +102,12 @@ public class SdUserData implements DataInterface {
         this.loginTried = loginTried;
     }
 
-    public List<String> getUserGroupList() {
-        return userGroupList;
+    public List<String> getUserRoleList() {
+        return userRoleList;
     }
 
-    public void setUserGroupList(List<String> userGroupList) {
-        this.userGroupList = userGroupList;
+    public void setUserRoleList(List<String> userRoleList) {
+        this.userRoleList = userRoleList;
     }
 
     public String getLdapDomain() {

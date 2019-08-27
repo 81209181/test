@@ -1,8 +1,20 @@
 package com.hkt.btu.sd.facade;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
+
+import com.hkt.btu.sd.facade.data.SdUserRoleData;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public interface SdUserRoleFacade {
 
+    List<SdUserRoleData> listAllUserRole();
+
+    List<String> getUserRoleByUserId (String userId);
+
+    LinkedList<SdUserRoleData> getEligibleUserRoleList();
+
+    HashMap<String, SdUserRoleData> getUserRoleMap(List<SdUserRoleData> userGroupDataList);
 
 }

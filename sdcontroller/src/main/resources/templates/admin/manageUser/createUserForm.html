@@ -23,7 +23,11 @@
                         <input type="tel" th:field="*{mobile}" class="form-control" placeholder="28832299" maxlength="15" required>
 
                         <label>User Role</label>
-                        <div id="container" class="d-block">
+                        <div class="d-block">
+                            <div class="form-check form-check-inline" th:each="userRole : ${userRoleOptionDataMap}" >
+                                <input class="form-check-input" th:field="*{userRoleIdList}" type="checkbox" th:value="${userRole.value.getRoleId()}">
+                                <label class="form-check-label" th:text="${userRole.key}"></label>
+                            </div>
                         </div>
                     </div>
                 </div>

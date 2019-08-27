@@ -120,7 +120,7 @@
 
     <sql id="searchUserSql">
         from USER_PROFILE u
-        <if test="roleId != 'SYS_ADMIN'.toString()">
+        <if test="roleId != null and roleId.indexOf('__') >= 0">
             INNER JOIN
             USER_USER_ROLE uur
             ON u.USER_ID = uur.USER_ID
@@ -136,7 +136,7 @@
 
         <where>
             <if test="userId != null">
-                AND u.USER_ID = #{userId}
+                u.USER_ID = #{userId}
             </if>
             <if test="email != null">
                 <bind name="like_email" value="'%' + email + '%'"/>

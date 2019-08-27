@@ -1,10 +1,8 @@
-package com.hkt.btu.sd.core.dao.entity;
+package com.hkt.btu.sd.facade.data;
 
-import com.hkt.btu.common.core.dao.entity.BaseEntity;
+import com.hkt.btu.common.facade.data.DataInterface;
 
-public class SdUserRoleEntity extends BaseEntity {
-
-    public final static String SYS_ADMIN = "SYS_ADMIN";
+public class SdUserRoleData implements DataInterface {
 
     private String roleId;
     private String roleDesc;

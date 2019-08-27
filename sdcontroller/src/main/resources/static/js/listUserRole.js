@@ -3,7 +3,7 @@ $(document).ready(function() {
         ajax: {
             type: "GET",
             contentType: "application/json",
-            url: "/admin/manage-group/ajax-list-user-grp",
+            url: "/admin/manage-role/ajax-list-user-role",
             dataSrc: '',
             error: function (e) {
                 if(e.responseText){
@@ -14,10 +14,9 @@ $(document).ready(function() {
             }
         },
         columns: [
-            { data: 'groupId' },
-            { data: 'groupName' },
-            { data: 'groupDesc' },
-            { data: 'parentGroup' }
+            { data: 'roleId' },
+            { data: 'roleDesc' },
+            { data: 'parentRoleId' }
         ]
     });
 });

@@ -21,7 +21,6 @@ import com.hkt.btu.sd.core.service.bean.SdEmailBean;
 import com.hkt.btu.sd.core.service.bean.SdOtpBean;
 import com.hkt.btu.sd.core.service.bean.SdUserBean;
 import com.hkt.btu.sd.core.service.populator.SdUserBeanPopulator;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,6 +30,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
@@ -39,6 +39,8 @@ import java.io.UnsupportedEncodingException;
 import java.rmi.MarshalledObject;
 import java.security.GeneralSecurityException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserService {
     private static final Logger LOG = LogManager.getLogger(SdUserServiceImpl.class);
@@ -63,6 +65,9 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
     @Resource(name = "ldapService")
     BtuLdapService btuLdapService;
+
+    @Resource(name = "roleService")
+    SdUserRoleService userRoleService;
 
     @Resource
     SdUserRoleMapper sdUserRoleMapper;
@@ -96,17 +101,27 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         }
 
         // get user role data
-        List<String> userRole = sdUserRoleMapper.getUserRoleByUserId(sdUserEntity.getUserId());
+        List<SdUserRoleEntity> userRole = sdUserRoleMapper.getUserRoleByUserId(sdUserEntity.getUserId());
         if (CollectionUtils.isEmpty(userRole)) {
             return null;
         }
-        String userRoleId = userRole.get(0);
-        List<SdUserRoleEntity> roleEntityList = sdUserRoleMapper.getParentRoleByRoleId(userRoleId);
+
+        List<SdUserRoleEntity> results = new LinkedList<>();
+
+        for (SdUserRoleEntity roleEntity : userRole) {
+            List<SdUserRoleEntity> parentRoleByRoleId = sdUserRoleMapper.getParentRoleByRoleId(roleEntity.getRoleId());
+            if (!CollectionUtils.isEmpty(parentRoleByRoleId)) {
+                results.addAll(parentRoleByRoleId);
+            }
+        }
+
         // construct bean
         SdUserBean userBean = new SdUserBean();
-        userBean.setRoleId(userRoleId);
+        userBean.setRoleId(userRole.stream()
+                .map(SdUserRoleEntity::getRoleId)
+                .collect(Collectors.toList()));
         sdUserBeanPopulator.populate(sdUserEntity, userBean);
-        sdUserBeanPopulator.populate(roleEntityList, userBean);
+        sdUserBeanPopulator.populate(results, userBean);
 
         return userBean;
     }
@@ -133,21 +148,20 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         }
 
         // get user group data
-        // TODO: Wait For UserGroup
-        //List<SdUserGroupEntity> groupEntityList = sdUserGroupMapper.getUserGroupByUserId(userId);
+        List<SdUserRoleEntity> roleEntityList = sdUserRoleMapper.getUserRoleByUserId(userId);
 
         // construct bean
         SdUserBean userBean = new SdUserBean();
         sdUserBeanPopulator.populate(sdUserEntity, userBean);
-        // TODO: Wait For UserGroup
-        //sdUserBeanPopulator.populate(groupEntityList, userBean);
+
+        sdUserBeanPopulator.populate(roleEntityList, userBean);
 
         return userBean;
     }
 
 
     @Transactional
-    public String createUser(String name, String mobile, String email, List<String> groupIdList)
+    public String createUser(String name, String mobile, String email, List<String> roleIdList)
             throws DuplicateUserEmailException, UserNotFoundException, GeneralSecurityException {
         if (StringUtils.isEmpty(name)) {
             throw new InvalidInputException("Empty user name.");
@@ -158,13 +172,12 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         // get current user user id
         String createby = getCurrentUserUserId();
 
-        // check current user has right to create user of user group
-        // TODO: Wait for UserGroup
-       /* boolean isEligibleUserGroup = sdUserGroupService.isEligibleToGrantUserGroup(groupIdList);
+        // check current user has right to create user of user role
+        boolean isEligibleUserGroup = userRoleService.isEligibleToGrantUserRole(roleIdList);
         if (!isEligibleUserGroup) {
-            LOG.warn("Ineligible to create user of selected user group (" + groupIdList + ") by user (" + createby + ").");
-            throw new InvalidInputException("Invalid user group.");
-        }*/
+            LOG.warn("Ineligible to create user of selected user role (" + roleIdList + ") by user (" + createby + ").");
+            throw new InvalidInputException("Invalid user role.");
+        }
 
         // make email lower case (**assume email are all lower case)
         email = StringUtils.lowerCase(email);
@@ -202,15 +215,12 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         // create user in db
         sdUserMapper.insertUser(sdUserEntity);
 
-        // get new user id
-        //Integer newUserId = sdUserEntity.getUserId();
-
         // create user group relation in db
-        /*if (!CollectionUtils.isEmpty(groupIdList)) {
-            for (String groupId : groupIdList) {
-                sdUserGroupMapper.insertUserUserGroup(newUserId, groupId, createby);
+        if (!CollectionUtils.isEmpty(roleIdList)) {
+            for (String groupId : roleIdList) {
+                sdUserRoleMapper.insertUserUserRole(newUserId, groupId);
             }
-        }*/
+        }
 
         LOG.info("User (id: " + newUserId + ") " + email + " created.");
 
@@ -227,17 +237,25 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     }
 
     @Transactional
-    public String createLdapUser(String name, String mobile, String employeeNumber, String ldapDomain)
+    public String createLdapUser(String name, String mobile, String employeeNumber,
+                                 String ldapDomain, List<String> roleIdList)
             throws DuplicateUserEmailException, UserNotFoundException {
         try {
-            // 1. get current userId for CreateBy
+            // get current userId for CreateBy
             String createBy = getCurrentUserUserId();
-            // 2. Check if there is a duplicate name
+            // Check if there is a duplicate name
             SdUserEntity sdUserEntity = sdUserMapper.getLdapUserByUserId(name);
             if (sdUserEntity != null) {
                 throw new DuplicateUserEmailException("User already exist.");
             }
-            // 3. Data input
+            // check current user has right to create user of user role
+            boolean isEligibleUserGroup = userRoleService.isEligibleToGrantUserRole(roleIdList);
+            if (!isEligibleUserGroup) {
+                LOG.warn("Ineligible to create user of selected user role (" + roleIdList + ") by user (" + createBy + ").");
+                throw new InvalidInputException("Invalid user role.");
+            }
+
+            // Data input
             SdUserEntity userEntity = new SdUserEntity();
             userEntity.setName(name);
             userEntity.setCreateby(createBy);
@@ -246,8 +264,15 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             userEntity.setStatus(SdUserEntity.STATUS.ACTIVE);
             userEntity.setLdapDomain(ldapDomain);
 
-            // 4. create user in db
+            // create user in db
             sdUserMapper.insertUser(userEntity);
+
+            // create user role relation in db
+            if (!CollectionUtils.isEmpty(roleIdList)) {
+                for (String groupId : roleIdList) {
+                    sdUserRoleMapper.insertUserUserRole(employeeNumber, groupId);
+                }
+            }
 
             LOG.info("User (id: " + employeeNumber + ") created.");
 
@@ -260,9 +285,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
     @Override
     @Transactional
-    public void updateUser(String userId, String newName, String newMobile, String newStaffId,
-                           Boolean isNewAdmin, Boolean isNewUser, Boolean isNewCAdmin, Boolean isNewCUser)
-            throws UserNotFoundException, InsufficientAuthorityException, InvalidInputException, GeneralSecurityException {
+    public void updateUser(String userId, String newName, String newMobile, List<String> userRoleIdList) throws UserNotFoundException, InsufficientAuthorityException, GeneralSecurityException {
         SdUserBean currentUser = (SdUserBean) this.getCurrentUserBean();
         if (currentUser.getUserId().equals(userId)) {
             throw new InvalidInputException("Cannot update your own account!");
@@ -270,39 +293,16 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
         // get modifier
         SdUserBean modifier = (SdUserBean) getCurrentUserBean();
-
-        // get current data
         SdUserBean targetUserBean = getUserByUserId(userId);
-        Set<GrantedAuthority> authorities = new HashSet<>();
-        authorities.add(new SimpleGrantedAuthority("ADMIN"));
-        authorities.add(new SimpleGrantedAuthority("USER"));
-        Boolean isTargetAdmin = hasAnyAuthority(authorities, SdUserGroupEntity.GROUP_ID.ADMIN);
-        Boolean isTargetUser = hasAnyAuthority(authorities, SdUserGroupEntity.GROUP_ID.USER);
-        Boolean isTargetCAdmin = hasAnyAuthority(authorities, SdUserGroupEntity.GROUP_ID.C_ADMIN);
-        Boolean isTargetCUser = hasAnyAuthority(authorities, SdUserGroupEntity.GROUP_ID.C_USER);
-
-        // list to-be-update data
         String name = StringUtils.equals(newName, targetUserBean.getName()) ? null : newName;
         String mobile = StringUtils.equals(newMobile, targetUserBean.getMobile()) ? null : newMobile;
-        String staffId = StringUtils.equals(newStaffId, targetUserBean.getStaffId()) ? null : newStaffId;
-
-        Boolean updateIsAdmin = isTargetAdmin == isNewAdmin ? null : isNewAdmin;
-        Boolean updateIsUser = isTargetUser == isNewUser ? null : isNewUser;
-        Boolean updateIsCAdmin = isTargetCAdmin == isNewCAdmin ? null : isNewCAdmin;
-        Boolean updateIsCUser = isTargetCUser == isNewCUser ? null : isNewCUser;
-
-        // encrypt
-        //byte[] encryptedMobile = StringUtils.isEmpty(mobile) ? null : sdSensitiveDataService.encryptFromString(mobile);
-        //byte[] encryptedStaffId = StringUtils.isEmpty(staffId) ? null : sdSensitiveDataService.encryptFromString(staffId);
         String encryptedMobile = StringUtils.isEmpty(mobile) ? null : mobile;
-        String encryptedStaffId = StringUtils.isEmpty(staffId) ? null : staffId;
-        // update user
-        sdUserMapper.updateUser(userId, name, encryptedMobile, encryptedStaffId, modifier.getUserId());
+        sdUserMapper.updateUser(userId, name, encryptedMobile, null, modifier.getUserId());
 
-        // update user group
-        //sdUserGroupService.updateUserGroup(userId, updateIsAdmin, updateIsUser, updateIsCAdmin, updateIsCUser, modifier);
+        // update user role
+        userRoleService.updateUserRole(userId, userRoleIdList);
 
-        LOG.info(String.format("Updated user. [name:%b, mobile:%b, staffId:%b]", name != null, mobile != null, staffId != null));
+        LOG.info(String.format("Updated user. [name:%b, mobile:%b]", name != null, mobile != null));
     }
 
 
@@ -495,17 +495,24 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
         // get Current User Role
         SdUserBean currentUserBean = (SdUserBean) getCurrentUserBean();
-        String currentUserRoleId = currentUserBean.getRoleId();
+        String currentUserRoleId = currentUserBean.getRoleId().get(0);
 
         LOG.info(String.format(
                 "Searching user with {userId: %s, email: %s, name: %s}",
                 userId, email, name));
 
-        // get total count
-        Integer totalCount = sdUserMapper.countSearchUser(currentUserRoleId, userId, email, name);
+        List<String> currentUserBeanRoleId = currentUserBean.getRoleId();
+        List<SdUserEntity> sdUserEntityList = new LinkedList<>();
 
-        // get content
-        List<SdUserEntity> sdUserEntityList = sdUserMapper.searchUser(offset, pageSize, currentUserRoleId, userId, email, name);
+        Integer totalCount = 0;
+
+        for (String roleId : currentUserBeanRoleId) {
+            if (roleId.contains("__") || roleId.equals(SdUserRoleEntity.SYS_ADMIN)) {
+                totalCount = sdUserMapper.countSearchUser(roleId, userId, email, name);
+                sdUserEntityList = sdUserMapper.searchUser(offset, pageSize, roleId, userId, email, name);
+            }
+        }
+
         List<SdUserBean> sdUserBeanList = new LinkedList<>();
         if (!CollectionUtils.isEmpty(sdUserEntityList)) {
             for (SdUserEntity sdUserEntity : sdUserEntityList) {

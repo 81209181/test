@@ -45,7 +45,7 @@ public class SdUserDataPopulator extends AbstractDataPopulator<SdUserData> {
         target.setMobile(null);
         target.setLoginTried(null);
         target.setPasswordModifyDate(null);
-        target.setUserGroupList(null);
+        target.setUserRoleList(null);
     }
 
     public void populateSensitiveData(SdUserBean source, SdUserData target){
@@ -58,12 +58,12 @@ public class SdUserDataPopulator extends AbstractDataPopulator<SdUserData> {
         target.setPasswordModifyDate(formatPwdModifydate);
 
         Set<GrantedAuthority> authoritySet = source.getAuthorities();
-        List<String> userGroupList = new LinkedList<>();
+        List<String> userRoleList = new LinkedList<>();
         if( ! CollectionUtils.isEmpty(authoritySet) ) {
             for(GrantedAuthority authority : authoritySet) {
-                userGroupList.add(authority.toString());
+                userRoleList.add(authority.toString());
             }
         }
-        target.setUserGroupList(userGroupList);
+        target.setUserRoleList(userRoleList);
     }
 }
