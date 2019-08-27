@@ -1,6 +1,6 @@
 -- User Role
 insert into user_role (ROLE_ID, ROLE_DESC, PARENT_ROLE_ID, STATUS, CREATEBY, MODIFYBY, REMARKS)
-values ('BASIC', 'BASIC', NULL, 'A', '81149189', '81149189', 'BASIC ROLE');
+values ('BASIC', 'Basic', NULL, 'A', '81149189', '81149189', 'BASIC ROLE');
 
 insert into user_role (ROLE_ID, ROLE_DESC, PARENT_ROLE_ID, STATUS, CREATEBY, MODIFYBY, REMARKS)
 values ('SYS_ADMIN', 'System Admin', NULL, 'A', '81149189', '81149189', 'System Admin');

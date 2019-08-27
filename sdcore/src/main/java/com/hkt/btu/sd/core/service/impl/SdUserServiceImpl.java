@@ -269,8 +269,8 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
             // create user role relation in db
             if (!CollectionUtils.isEmpty(roleIdList)) {
-                for (String groupId : roleIdList) {
-                    sdUserRoleMapper.insertUserUserRole(employeeNumber, groupId);
+                for (String roleId : roleIdList) {
+                    sdUserRoleMapper.insertUserUserRole(employeeNumber, roleId);
                 }
             }
 
@@ -495,7 +495,6 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
         // get Current User Role
         SdUserBean currentUserBean = (SdUserBean) getCurrentUserBean();
-        String currentUserRoleId = currentUserBean.getRoleId().get(0);
 
         LOG.info(String.format(
                 "Searching user with {userId: %s, email: %s, name: %s}",

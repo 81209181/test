@@ -16,10 +16,10 @@
     <select id="getUserRoleByUserId" resultMap="SdUserRoleEntity">
         SELECT ur.*
         FROM USER_PROFILE up
-                 LEFT JOIN USER_USER_ROLE uur
-                           ON up.USER_ID = uur.USER_ID
-                 LEFT JOIN USER_ROLE ur
-                           ON ur.ROLE_ID = uur.ROLE_ID
+                 INNER JOIN USER_USER_ROLE uur
+                            ON up.USER_ID = uur.USER_ID
+                 INNER JOIN USER_ROLE ur
+                            ON ur.ROLE_ID = uur.ROLE_ID
         WHERE up.USER_ID = #{userId}
     </select>
 
@@ -33,6 +33,16 @@
     <select id="getAllUserRole" resultMap="SdUserRoleEntity">
         SELECT *
         FROM USER_ROLE
+        WHERE STATUS = #{status}
+        ORDER BY ROLE_ID
+    </select>
+
+    <select id="getEligibleRolesByCurrentUserRole" resultMap="SdUserRoleEntity">
+        SELECT *
+        FROM USER_ROLE
+        WHERE ROLE_ID =
+              (SELECT SUBSTR(#{roleId}, (SELECT INSTR(#{roleId}, '__') + 2 FROM DUAL)) FROM DUAL)
+          AND STATUS = #{status}
         ORDER BY ROLE_ID
     </select>
 

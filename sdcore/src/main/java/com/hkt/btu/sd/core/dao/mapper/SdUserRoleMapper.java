@@ -9,11 +9,13 @@ import java.util.List;
 @Repository
 public interface SdUserRoleMapper {
 
-    List<SdUserRoleEntity> getAllUserRole();
+    List<SdUserRoleEntity> getAllUserRole(@Param("status") String status);
 
     List<SdUserRoleEntity> getUserRoleByUserId(@Param("userId") String userId);
 
     List<SdUserRoleEntity> getParentRoleByRoleId(@Param("roleId") String roleId);
+
+    List<SdUserRoleEntity> getEligibleRolesByCurrentUserRole(@Param("roleId") String roleId, @Param("status") String status);
 
     void insertUserUserRole(@Param("userId") String userId, @Param("roleId") String roleId);
 
