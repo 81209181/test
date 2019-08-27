@@ -62,6 +62,9 @@ public class BtuConfigParamEntity extends BaseEntity {
     public static class USER_GROUP_CREATE_MAPPING{
         public static final String CONFIG_GROUP = "USER_GROUP_CREATE_MAPPING";
     }
+    public static class USER_ROLE_CREATE_MAPPING{
+        public static final String CONFIG_ROLE = "USER_ROLE_CREATE_MAPPING";
+    }
 
     public static List<String> getConfigTypeList() {
         List<String> list = new ArrayList<>();
