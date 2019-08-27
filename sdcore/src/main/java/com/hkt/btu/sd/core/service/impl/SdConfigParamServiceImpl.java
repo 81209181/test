@@ -2,6 +2,7 @@ package com.hkt.btu.sd.core.service.impl;
 
 import com.hkt.btu.common.core.dao.entity.BtuConfigParamEntity;
 import com.hkt.btu.common.core.service.BtuSensitiveDataService;
+import com.hkt.btu.common.core.service.bean.BtuConfigParamBean;
 import com.hkt.btu.common.core.service.impl.BtuConfigParamServiceImpl;
 import com.hkt.btu.sd.core.dao.entity.SdConfigParamEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdConfigParamMapper;
@@ -97,7 +98,11 @@ public class SdConfigParamServiceImpl extends BtuConfigParamServiceImpl implemen
             return Optional.empty();
         }
         SdConfigParamBean bean = new SdConfigParamBean();
-        sdConfigParamBeanPopulator.populate4EditConfigParam(entity, bean);
+        sdConfigParamBeanPopulator.populate(entity, bean);
+        if (StringUtils.isNotEmpty(entity.getEncrypt()) && entity.getEncrypt().equals(BtuConfigParamEntity.ENCRYPT.Y)) {
+            String decryptStr = sensitiveDataService.decryptToStringSafe(Base64Utils.decodeFromString(entity.getConfigValue()));
+            bean.setConfigValue(decryptStr);
+        }
         return Optional.of(bean);
     }
 
