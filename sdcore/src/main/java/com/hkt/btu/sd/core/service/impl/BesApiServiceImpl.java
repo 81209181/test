@@ -14,13 +14,13 @@ public class BesApiServiceImpl implements BesApiService {
     @Resource
     private SdConfigParamMapper sdConfigParamMapper;
     @Resource(name = "siteInterfaceBeanPopulator")
-    SdSiteInterfaceBeanPopulator sdSiteInterfaceBeanPopulator;
+    SdSiteInterfaceBeanPopulator siteInterfaceBeanPopulator;
 
     @Override
     public SiteInterfaceBean getBesApiBean() {
         SiteInterfaceBean bean =new SiteInterfaceBean();
         List<SdConfigParamEntity> entities = sdConfigParamMapper.getValuesByConfigGroup(SiteInterfaceBean.BES.SYSTEM_NAME);
-        sdSiteInterfaceBeanPopulator.populate(entities,bean);
+        siteInterfaceBeanPopulator.populate(entities,bean);
         return bean;
     }
 }

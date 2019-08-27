@@ -11,7 +11,7 @@ public class SdConfigParamData implements DataInterface {
     private String configKey;
     private String configValue;
     private String configValueType;
-    private String encrypt;
+    private boolean encrypt;
 
     @JsonFormat(pattern="yyyy-MM-dd HH:mm")
     @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
@@ -58,11 +58,11 @@ public class SdConfigParamData implements DataInterface {
         this.modifydate = modifydate;
     }
 
-    public String getEncrypt() {
+    public boolean isEncrypt() {
         return encrypt;
     }
 
-    public void setEncrypt(String encrypt) {
+    public void setEncrypt(boolean encrypt) {
         this.encrypt = encrypt;
     }
 }

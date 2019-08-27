@@ -14,13 +14,13 @@ public class ItsmApiServiceImpl implements ItsmApiService {
     @Resource
     private SdConfigParamMapper sdConfigParamMapper;
     @Resource(name = "siteInterfaceBeanPopulator")
-    SdSiteInterfaceBeanPopulator sdSiteInterfaceBeanPopulator;
+    SdSiteInterfaceBeanPopulator siteInterfaceBeanPopulator;
 
     @Override
     public SiteInterfaceBean getItsmRestfulApiBean() {
         SiteInterfaceBean bean =new SiteInterfaceBean();
         List<SdConfigParamEntity> entities = sdConfigParamMapper.getValuesByConfigGroup(SiteInterfaceBean.ITSM_RESTFUL.SYSTEM_NAME);
-        sdSiteInterfaceBeanPopulator.populate(entities,bean);
+        siteInterfaceBeanPopulator.populate(entities,bean);
         return bean;
     }
 
@@ -28,7 +28,7 @@ public class ItsmApiServiceImpl implements ItsmApiService {
     public SiteInterfaceBean getItsmSiteBean() {
         SiteInterfaceBean bean =new SiteInterfaceBean();
         List<SdConfigParamEntity> entities = sdConfigParamMapper.getValuesByConfigGroup(SiteInterfaceBean.ITSM.SYSTEM_NAME);
-        sdSiteInterfaceBeanPopulator.populate(entities,bean);
+        siteInterfaceBeanPopulator.populate(entities,bean);
         return bean;
     }
 }

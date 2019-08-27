@@ -14,13 +14,13 @@ public class NorarsApiServiceImpl implements NorarsApiService {
     @Resource
     private SdConfigParamMapper sdConfigParamMapper;
     @Resource(name = "siteInterfaceBeanPopulator")
-    SdSiteInterfaceBeanPopulator sdSiteInterfaceBeanPopulator;
+    SdSiteInterfaceBeanPopulator siteInterfaceBeanPopulator;
 
     @Override
     public SiteInterfaceBean getNorarsRestfulApiBean() {
         SiteInterfaceBean bean =new SiteInterfaceBean();
         List<SdConfigParamEntity> entities = sdConfigParamMapper.getValuesByConfigGroup(SiteInterfaceBean.NORARS.SYSTEM_NAME);
-        sdSiteInterfaceBeanPopulator.populate(entities,bean);
+        siteInterfaceBeanPopulator.populate(entities,bean);
         return bean;
     }
 }

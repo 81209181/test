@@ -34,7 +34,7 @@ $().ready(function(){
                 let tr ='<tr class="text-center"></tr>';
                 $('tbody').append(tr);
                 $('tbody tr:last').data('info',val);
-                $('tbody tr:last').append('<td><input type="checkbox" name="product"></td>')
+                $('tbody tr:last').append('<td><input type="checkbox"></td>')
                     .append('<td>'+val.tenantId+'</td>')
                     .append('<td>'+val.serviceNo+'</td>')
                     .append('<td>'+val.custName+'</td>')

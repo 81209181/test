@@ -1,28 +1,39 @@
 package com.hkt.btu.sd.core.service.populator;
 
+import com.hkt.btu.common.core.dao.entity.BtuConfigParamEntity;
+import com.hkt.btu.common.core.service.BtuSensitiveDataService;
 import com.hkt.btu.sd.core.dao.entity.SdConfigParamEntity;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
+import org.springframework.util.Base64Utils;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 public class SdSiteInterfaceBeanPopulator {
 
+    @Resource(name = "sensitiveDataService")
+    BtuSensitiveDataService sensitiveDataService;
+
     public void populate(List<SdConfigParamEntity> entities, SiteInterfaceBean bean) {
         for (SdConfigParamEntity entity : entities) {
+            String value = entity.getConfigValue();
+            if (entity.getEncrypt().equalsIgnoreCase(BtuConfigParamEntity.ENCRYPT.Y)) {
+                value = sensitiveDataService.decryptToStringSafe(Base64Utils.decodeFromString(entity.getConfigValue()));
+            }
             if (entity.getConfigKey().equalsIgnoreCase("systemName")) {
-                bean.setSystemName(entity.getConfigValue());
+                bean.setSystemName(value);
             }else if (entity.getConfigKey().equalsIgnoreCase("url")){
-                bean.setUrl(entity.getConfigValue());
+                bean.setUrl(value);
             } else if (entity.getConfigKey().equalsIgnoreCase("userName")) {
-                bean.setUserName(entity.getConfigValue());
+                bean.setUserName(value);
             } else if (entity.getConfigKey().equalsIgnoreCase("password")) {
-                bean.setPassword(entity.getConfigValue());
+                bean.setPassword(value);
             } else if (entity.getConfigKey().equalsIgnoreCase("xAppKey")) {
-                bean.setxAppkey(entity.getConfigValue());
+                bean.setxAppkey(value);
             } else if (entity.getConfigKey().equalsIgnoreCase("beId")) {
-                bean.setBeId(entity.getConfigValue());
+                bean.setBeId(value);
             } else if (entity.getConfigKey().equalsIgnoreCase("channelType")) {
-                bean.setChannelType(entity.getConfigValue());
+                bean.setChannelType(value);
             }
         }
     }
