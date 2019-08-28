@@ -15,11 +15,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class SdUserRoleServiceImpl implements SdUserRoleService {
+
+    public static final Map<String, Object> ROLE_MAP = new HashMap<>();
 
     @Resource
     SdUserRoleMapper sdUserRoleMapper;
@@ -32,6 +35,21 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
 
     @Resource(name = "userRolePopulator")
     SdUserRoleBeanPopulator sdUserRoleBeanPopulator;
+
+    @Override
+    @PostConstruct
+    public void getTeamHeadList() {
+        List<String> teamHeadRoleIdList = sdUserRoleMapper
+                .getTeamHeadList(SdUserRoleEntity.TEAM_HEAD_INDICATOR)
+                .stream()
+                .map(SdUserRoleEntity::getRoleId)
+                .collect(Collectors.toList());
+        teamHeadRoleIdList.forEach(roleId -> {
+            List<SdUserRoleEntity> eligibleRoles = sdUserRoleMapper
+                    .getEligibleRolesByCurrentUserRole(roleId, SdUserRoleEntity.ACTIVE_ROLE_STATUS);
+            ROLE_MAP.put(roleId, eligibleRoles);
+        });
+    }
 
     @Override
     public List<SdUserRoleBean> getAllUserRole() {
@@ -75,15 +93,12 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
             if (grantedAuthority instanceof SimpleGrantedAuthority) {
                 String userRoleId = grantedAuthority.getAuthority();
                 if (userRoleId.contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR)) {
-                    List<SdUserRoleEntity> eligibleRolesByCurrentUserRole =
-                            sdUserRoleMapper.getEligibleRolesByCurrentUserRole(userRoleId, SdUserRoleEntity.ACTIVE_ROLE_STATUS);
-                    userRoleEntityList.addAll(eligibleRolesByCurrentUserRole);
+                    userRoleEntityList = (List<SdUserRoleEntity>) ROLE_MAP.get(userRoleId);
                 } else if (userRoleId.equals(SdUserRoleEntity.SYS_ADMIN)) {
                     userRoleEntityList = sdUserRoleMapper.getAllUserRole(SdUserRoleEntity.ACTIVE_ROLE_STATUS);
                 }
             }
         }
-
 
         if (CollectionUtils.isNotEmpty(userRoleEntityList)) {
             List<SdUserRoleBean> eligibleUserRoleList = userRoleEntityList.stream().map(entity -> {
@@ -123,7 +138,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     }
 
     @Override
-    public void updateUserRole(String userId, List<String> roleIdList) {
+    public void updateUserRoleByUserId(String userId, List<String> roleIdList) {
         if (StringUtils.isEmpty(userId)) {
             throw new InvalidInputException("Target user not found.");
         }

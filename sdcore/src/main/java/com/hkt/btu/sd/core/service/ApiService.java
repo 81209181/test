@@ -18,7 +18,7 @@ public class ApiService {
         SiteInterfaceBean bean =new SiteInterfaceBean();
         for (SdConfigParamEntity entity : entities) {
             String value = entity.getConfigValue();
-            if (entity.getEncrypt().equalsIgnoreCase(BtuConfigParamEntity.ENCRYPT.Y)) {
+            if (entity.getEncrypt().equalsIgnoreCase(BtuConfigParamEntity.ENCRYPT.YES)) {
                 value = sensitiveDataService.decryptToStringSafe(Base64Utils.decodeFromString(entity.getConfigValue()));
             }
             if (entity.getConfigKey().equalsIgnoreCase("systemName")) {

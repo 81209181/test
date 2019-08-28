@@ -300,7 +300,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         sdUserMapper.updateUser(userId, name, encryptedMobile, null, modifier.getUserId());
 
         // update user role
-        userRoleService.updateUserRole(userId, userRoleIdList);
+        userRoleService.updateUserRoleByUserId(userId, userRoleIdList);
 
         LOG.info(String.format("Updated user. [name:%b, mobile:%b]", name != null, mobile != null));
     }

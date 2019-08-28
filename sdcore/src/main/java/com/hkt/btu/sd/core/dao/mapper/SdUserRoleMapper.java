@@ -9,6 +9,8 @@ import java.util.List;
 @Repository
 public interface SdUserRoleMapper {
 
+    List<SdUserRoleEntity> getTeamHeadList(@Param("indicator") String indicator);
+
     List<SdUserRoleEntity> getAllUserRole(@Param("status") String status);
 
     List<SdUserRoleEntity> getUserRoleByUserId(@Param("userId") String userId);

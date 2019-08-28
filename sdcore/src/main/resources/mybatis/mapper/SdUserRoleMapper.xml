@@ -13,6 +13,13 @@
         <result column="REMARKS" property="remarks"/>
     </resultMap>
 
+    <select id="getTeamHeadList" resultMap="SdUserRoleEntity">
+        select *
+        from USER_ROLE
+        WHERE
+              INSTR(ROLE_ID, #{indicator}) &gt; 0
+    </select>
+
     <select id="getUserRoleByUserId" resultMap="SdUserRoleEntity">
         SELECT ur.*
         FROM USER_PROFILE up
