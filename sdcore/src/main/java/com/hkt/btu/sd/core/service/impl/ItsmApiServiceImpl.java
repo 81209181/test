@@ -16,13 +16,13 @@ public class ItsmApiServiceImpl extends ApiService implements ItsmApiService {
 
     @Override
     public SiteInterfaceBean getItsmRestfulApiBean() {
-        List<SdConfigParamEntity> entities = sdConfigParamMapper.getValuesByConfigGroup(SiteInterfaceBean.ITSM_RESTFUL.SYSTEM_NAME);
+        List<SdConfigParamEntity> entities = sdConfigParamMapper.getValuesByConfigGroup(SiteInterfaceBean.ITSM_RESTFUL.API_NAME);
         return getSiteInterfaceBean(entities);
     }
 
     @Override
     public SiteInterfaceBean getItsmSiteBean() {
-        List<SdConfigParamEntity> entities = sdConfigParamMapper.getValuesByConfigGroup(SiteInterfaceBean.ITSM.SYSTEM_NAME);
+        List<SdConfigParamEntity> entities = sdConfigParamMapper.getValuesByConfigGroup(SiteInterfaceBean.ITSM.API_NAME);
         return getSiteInterfaceBean(entities);
     }
 }

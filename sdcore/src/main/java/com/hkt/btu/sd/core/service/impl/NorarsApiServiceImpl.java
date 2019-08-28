@@ -16,7 +16,7 @@ public class NorarsApiServiceImpl extends ApiService implements NorarsApiService
 
     @Override
     public SiteInterfaceBean getNorarsRestfulApiBean() {
-        List<SdConfigParamEntity> entities = sdConfigParamMapper.getValuesByConfigGroup(SiteInterfaceBean.NORARS.SYSTEM_NAME);
+        List<SdConfigParamEntity> entities = sdConfigParamMapper.getValuesByConfigGroup(SiteInterfaceBean.NORARS.API_NAME);
         return getSiteInterfaceBean(entities);
     }
 }
