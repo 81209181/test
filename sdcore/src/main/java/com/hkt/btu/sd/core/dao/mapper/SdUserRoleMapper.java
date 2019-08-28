@@ -2,6 +2,7 @@ package com.hkt.btu.sd.core.dao.mapper;
 
 import com.hkt.btu.sd.core.dao.entity.SdUserRoleEntity;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,9 +12,9 @@ public interface SdUserRoleMapper {
 
     List<SdUserRoleEntity> getTeamHeadList(@Param("indicator") String indicator);
 
-    List<SdUserRoleEntity> getAllUserRole(@Param("status") String status);
+    List<SdUserRoleEntity> getAllUserRole();
 
-    List<SdUserRoleEntity> getUserRoleByUserId(@Param("userId") String userId);
+    List<SdUserRoleEntity> getUserRoleByUserId(@Param("userId") String userId, @Param("status") String status);
 
     List<SdUserRoleEntity> getParentRoleByRoleId(@Param("roleId") String roleId);
 

@@ -2,7 +2,7 @@ package com.hkt.btu.sd.core.service.bean;
 
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 
-import java.util.List;
+
 
 public class SdUserBean extends BtuUserBean {
 
@@ -14,16 +14,6 @@ public class SdUserBean extends BtuUserBean {
     private String mobile;
     private String staffId;
     private String ldapDomain;
-    private List<String> roleId;
-
-
-    public List<String> getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(List<String> roleId) {
-        this.roleId = roleId;
-    }
 
     public String getUserId() {
         return userId;
