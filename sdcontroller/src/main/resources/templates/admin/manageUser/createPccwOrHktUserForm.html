@@ -3,12 +3,12 @@
           layout:decorate="~{fragments/layout}"
           xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>Create Email User</title>
+        <title>Create PCCW/HKT User</title>
     </head>
     <body>
         <div layout:fragment="content" th:remove="tag">
 
-            <h1>Create Email User Form</h1>
+            <h1>Create PCCW/HKT User</h1>
 
             <form class="row" th:action="@{/admin/manage-user/create-user}" th:object="${createUserFormData}" method="post">
                 <div class="col-md-12">
