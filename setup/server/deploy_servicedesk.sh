@@ -25,7 +25,7 @@ export JOBERR=${LOG_DIR}/${JOBNAME}_${TIMESTAMP}.err
 
 # deploy var
 export SYSOP_HOME_DIR=/home/sysop
-export APP_NAME=skyexchange
+export APP_NAME=servicedesk
 export APP_FILENAME=${APP_NAME}.war
 
 # when error is found, terminate the program
@@ -69,7 +69,6 @@ f_checkpoint
 # Start Tomcat Server
 echo ""
 echo_log "Starting Tomcat Server (with deployment)..."
-export JAVA_OPTS="-DstorePass=39e0db64-7344-406f-836e-9741a986ff0b" # [INPUT keystore storepass]
 /etc/init.d/tomcat start 1>>${JOBLOG} 2>>${JOBERR}
 f_checkpoint
 
