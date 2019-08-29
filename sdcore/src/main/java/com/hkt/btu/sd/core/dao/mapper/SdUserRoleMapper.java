@@ -13,7 +13,7 @@ public interface SdUserRoleMapper {
 
     List<SdUserRoleEntity> getAllUserRole();
 
-    SdUserRoleEntity getUserRoleByRoleId(@Param("userId") String roleId);
+    SdUserRoleEntity getUserRoleByRoleId(@Param("roleId") String roleId);
 
     List<SdUserRoleEntity> getUserRoleByUserId(@Param("userId") String userId, @Param("status") String status);
 
