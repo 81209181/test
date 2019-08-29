@@ -13,7 +13,9 @@ public interface SdUserRoleMapper {
 
     List<SdUserRoleEntity> getAllUserRole();
 
-    List<SdUserRoleEntity> getUserRoleByUserId(@Param("userId") String userId);
+    SdUserRoleEntity getUserRoleByRoleId(@Param("userId") String roleId);
+
+    List<SdUserRoleEntity> getUserRoleByUserId(@Param("userId") String userId, @Param("status") String status);
 
     List<SdUserRoleEntity> getParentRoleByRoleId(@Param("roleId") String roleId);
 
