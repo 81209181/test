@@ -1,6 +1,6 @@
 package com.hkt.btu.sd.facade.impl;
 
-import com.hkt.btu.sd.core.service.ItsmApiService;
+import com.hkt.btu.sd.core.service.ApiService;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.ItsmApiFacade;
@@ -18,12 +18,12 @@ import java.util.List;
 
 public class ItsmApiFacadeImpl extends AbstractRestfulApiFacade implements ItsmApiFacade {
 
-    @Resource(name = "itsmApiService")
-    ItsmApiService itsmApiService;
+    @Resource(name = "apiService")
+    ApiService apiService;
 
     @Override
     protected SiteInterfaceBean getTargetApiSiteInterfaceBean() {
-        return itsmApiService.getItsmRestfulApiBean();
+        return apiService.getSiteInterfaceBean(SiteInterfaceBean.API_ITSM_RESTFUL.API_NAME);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class ItsmApiFacadeImpl extends AbstractRestfulApiFacade implements ItsmA
         }
 
         // fill-in itsm linking url
-        SiteInterfaceBean itsmSiteBean = itsmApiService.getItsmSiteBean();
+        SiteInterfaceBean itsmSiteBean = apiService.getSiteInterfaceBean(SiteInterfaceBean.API_ITSM.API_NAME);
         String itsmUrl = itsmSiteBean.getUrl();
         String resourcePoolApiPath = "/info/ResourcePoolTab.action?resourceId=";
         for( ItsmProfileData itsmProfileData : itsmProfileDataList ){

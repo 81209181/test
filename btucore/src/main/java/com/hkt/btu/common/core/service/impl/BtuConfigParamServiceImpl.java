@@ -20,7 +20,7 @@ public class BtuConfigParamServiceImpl implements BtuConfigParamService {
     }
 
     @Override
-    public Map<String, Object> getConfigParamByConfigGroup(String configGroup) {
+    public Map<String, Object> getConfigParamByConfigGroup(String configGroup, boolean decrypt) {
         LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
         return null;
     }

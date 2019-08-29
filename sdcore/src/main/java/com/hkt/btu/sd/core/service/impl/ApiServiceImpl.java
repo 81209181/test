@@ -1,18 +1,17 @@
 package com.hkt.btu.sd.core.service.impl;
 
 import com.hkt.btu.common.core.service.BtuSensitiveDataService;
-import com.hkt.btu.sd.core.service.ApiService2;
+import com.hkt.btu.sd.core.service.ApiService;
 import com.hkt.btu.sd.core.service.SdConfigParamService;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.util.Base64Utils;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ApiServiceImpl implements ApiService2 {
+public class ApiServiceImpl implements ApiService {
     private static final Logger LOG = LogManager.getLogger(ApiServiceImpl.class);
 
     @Resource(name = "sensitiveDataService")
@@ -39,41 +38,40 @@ public class ApiServiceImpl implements ApiService2 {
 
     @Override
     public void reloadAllCached() {
-        reloadCached(SiteInterfaceBean.BES.API_NAME);
-        reloadCached(SiteInterfaceBean.ITSM.API_NAME);
-        reloadCached(SiteInterfaceBean.ITSM_RESTFUL.API_NAME);
-        reloadCached(SiteInterfaceBean.NORARS.API_NAME);
-        reloadCached(SiteInterfaceBean.WFM.API_NAME);
+        reloadCached(SiteInterfaceBean.API_BES.API_NAME);
+        reloadCached(SiteInterfaceBean.API_ITSM.API_NAME);
+        reloadCached(SiteInterfaceBean.API_ITSM_RESTFUL.API_NAME);
+        reloadCached(SiteInterfaceBean.API_NORARS.API_NAME);
+        reloadCached(SiteInterfaceBean.API_WFM.API_NAME);
     }
 
     @Override
     public synchronized void reloadCached(String apiName) {
         // reload all cached for input systemName
-        sdConfigParamService.getConfigParamByConfigGroup(apiName);
+        Map<String, Object> configParamByConfigGroup = sdConfigParamService.getConfigParamByConfigGroup(apiName, true);
 
         // populate bean
         SiteInterfaceBean bean = new SiteInterfaceBean();
-//        for (SdConfigParamEntity entity : entities) {
-//            String value = entity.getConfigValue();
-//            if (entity.getEncrypt().equalsIgnoreCase(BtuConfigParamEntity.ENCRYPT.YES)) {
-//                value = sensitiveDataService.decryptToStringSafe(Base64Utils.decodeFromString(entity.getConfigValue()));
-//            }
-//            if (entity.getConfigKey().equalsIgnoreCase("systemName")) {
-//                bean.setSystemName(value);
-//            }else if (entity.getConfigKey().equalsIgnoreCase("url")){
-//                bean.setUrl(value);
-//            } else if (entity.getConfigKey().equalsIgnoreCase("userName")) {
-//                bean.setUserName(value);
-//            } else if (entity.getConfigKey().equalsIgnoreCase("password")) {
-//                bean.setPassword(value);
-//            } else if (entity.getConfigKey().equalsIgnoreCase("xAppKey")) {
-//                bean.setxAppkey(value);
-//            } else if (entity.getConfigKey().equalsIgnoreCase("beId")) {
-//                bean.setBeId(value);
-//            } else if (entity.getConfigKey().equalsIgnoreCase("channelType")) {
-//                bean.setChannelType(value);
-//            }
-//        }
+
+        for(String key : configParamByConfigGroup.keySet()){
+            String value = (String) configParamByConfigGroup.get(key);
+
+            if (key.equalsIgnoreCase("systemName")) {
+                bean.setSystemName(value);
+            }else if (key.equalsIgnoreCase("url")){
+                bean.setUrl(value);
+            } else if (key.equalsIgnoreCase("userName")) {
+                bean.setUserName(value);
+            } else if (key.equalsIgnoreCase("password")) {
+                bean.setPassword(value);
+            } else if (key.equalsIgnoreCase("xAppKey")) {
+                bean.setxAppkey(value);
+            } else if (key.equalsIgnoreCase("beId")) {
+                bean.setBeId(value);
+            } else if (key.equalsIgnoreCase("channelType")) {
+                bean.setChannelType(value);
+            }
+        }
 
         // cache bean
         LOG.info("Reloaded cached api bean: " + apiName);

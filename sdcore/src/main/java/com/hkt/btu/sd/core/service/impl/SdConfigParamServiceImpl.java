@@ -35,7 +35,7 @@ public class SdConfigParamServiceImpl extends BtuConfigParamServiceImpl implemen
     @Resource(name = "sensitiveDataService")
     BtuSensitiveDataService sensitiveDataService;
 
-    public Map<String, Object> getConfigParamByConfigGroup(String configGroup) {
+    public Map<String, Object> getConfigParamByConfigGroup(String configGroup, boolean decrypt) {
         if (StringUtils.isEmpty(configGroup)) {
             LOG.warn("Empty config group input.");
             return null;
@@ -45,6 +45,9 @@ public class SdConfigParamServiceImpl extends BtuConfigParamServiceImpl implemen
 
         List<SdConfigParamEntity> configEntityList = sdConfigParamMapper.getValuesByConfigGroup(configGroup);
         for (SdConfigParamEntity e : configEntityList) {
+            if (decrypt && e.getEncrypt().equals(BtuConfigParamEntity.ENCRYPT.YES)) {
+                e.setConfigValue(sensitiveDataService.decryptToStringSafe(Base64Utils.decodeFromString(e.getConfigValue())));
+            }
             Object obj = getValue(e);
             map.put(e.getConfigKey(), obj);
         }
