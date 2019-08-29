@@ -6,19 +6,15 @@ import com.hkt.btu.common.core.service.BtuLdapService;
 import com.hkt.btu.common.core.service.bean.BtuLdapBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.core.service.constant.LdapError;
-import com.hkt.btu.common.core.service.constant.LdapEnum;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
 import com.hkt.btu.common.spring.security.exception.ChangePasswordException;
 import com.hkt.btu.common.spring.security.exception.NotPermittedLogonException;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.*;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsChecker;
 
@@ -37,8 +33,8 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
             (Arrays.stream(LdapError.values()).
                     collect(Collectors.toMap(constant -> constant.getCode(), constant -> constant.getMsg())));
 
-    @Resource
-    BtuLdapService btuLdapService;
+    @Resource (name = "ldapService")
+    BtuLdapService ldapService;
 
     @Resource(name = "auditTrailService")
     BtuAuditTrailService auditTrailService;
@@ -66,10 +62,10 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
                              .ofNullable(userDetails.getUserBean().getLdapDomain())
                                .orElseThrow(() -> new NotPermittedLogonException("Invalid LDAP Domain"));
 
-            BtuLdapBean ldapInfo = btuLdapService.getBtuLdapBean(domain);
+            BtuLdapBean ldapInfo = ldapService.getBtuLdapBean(domain);
 
             // login ldap
-            btuLdapService.authenticationOnly(ldapInfo, auth);
+            ldapService.authenticationOnly(ldapInfo, auth);
 
             //if success, record it
             auditTrailService.insertLoginAuditTrail(userDetails);
@@ -153,7 +149,7 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
     private class DefaultPreAuthenticationChecks implements UserDetailsChecker {
         public void check(UserDetails user) {
             if (!user.isAccountNonLocked()) {
-                logger.debug("User account is locked");
+                LOG.debug("User account is locked");
 
                 throw new LockedException(messages.getMessage(
                         "AbstractUserDetailsAuthenticationProvider.locked",
@@ -161,7 +157,7 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
             }
 
             if (!user.isEnabled()) {
-                logger.debug("User account is disabled");
+                LOG.debug("User account is disabled");
 
                 throw new DisabledException(messages.getMessage(
                         "AbstractUserDetailsAuthenticationProvider.disabled",
@@ -169,7 +165,7 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
             }
 
             if (!user.isAccountNonExpired()) {
-                logger.debug("User account is expired");
+                LOG.debug("User account is expired");
 
                 throw new AccountExpiredException(messages.getMessage(
                         "AbstractUserDetailsAuthenticationProvider.expired",
