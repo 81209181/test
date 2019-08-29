@@ -40,11 +40,12 @@
                         User Management
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" th:href="@{/admin/manage-user/create-user}">Create Email User</a>
+                        <a class="dropdown-item" th:href="@{/admin/manage-user/create-user}">Create PCCW/HKT User</a>
+                        <a class="dropdown-item" th:href="@{/admin/manage-user/create-non-user}">Create Non PCCW/HKT User</a>
                         <a class="dropdown-item" th:href="@{/admin/manage-user/create-ldap-user}">Create LDAP User</a>
                         <a class="dropdown-item" th:href="@{/admin/manage-user/search-user}">Search User</a>
 
-                        <div sec:authorize="hasAnyAuthority('SYS_ADMIN')" th:remove="tag" >
+                        <div sec:authorize="hasAnyAuthority('SYS_ADMIN')" th:remove="tag">
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" th:href="@{/admin/manage-role/list-user-role}">List User Role</a>
                         </div>

@@ -49,8 +49,8 @@
     <bean id="LdapAuthenticationProvider"
           class="com.hkt.btu.common.spring.security.authentication.LdapAuthenticationProvider"/>
 
-    <alias name="LdapService" alias="ldapService"/>
-    <bean id="LdapService" class="com.hkt.btu.common.core.service.impl.BtuLdapServiceImpl"/>
+    <alias name="btuLdapService" alias="ldapService"/>
+    <bean id="btuLdapService" class="com.hkt.btu.common.core.service.impl.BtuLdapServiceImpl"/>
 
     <!-- BTU Service -->
     <alias name="btuSiteConfigService" alias="siteConfigService"/>

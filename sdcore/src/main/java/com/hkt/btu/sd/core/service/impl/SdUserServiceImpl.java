@@ -5,14 +5,12 @@ import com.hkt.btu.common.core.service.BtuLdapService;
 import com.hkt.btu.common.core.service.BtuSensitiveDataService;
 import com.hkt.btu.common.core.service.bean.BtuLdapBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
-import com.hkt.btu.common.core.service.constant.LdapEnum;
 import com.hkt.btu.common.core.service.impl.BtuUserServiceImpl;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
 import com.hkt.btu.sd.core.dao.entity.SdOtpEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserGroupEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserRoleEntity;
-import com.hkt.btu.sd.core.dao.mapper.SdUserGroupMapper;
 import com.hkt.btu.sd.core.dao.mapper.SdUserMapper;
 import com.hkt.btu.sd.core.dao.mapper.SdUserRoleMapper;
 import com.hkt.btu.sd.core.exception.*;
@@ -30,31 +28,23 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import javax.naming.NamingException;
-import java.io.UnsupportedEncodingException;
-import java.rmi.MarshalledObject;
 import java.security.GeneralSecurityException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserService {
     private static final Logger LOG = LogManager.getLogger(SdUserServiceImpl.class);
 
     @Resource
     SdUserMapper sdUserMapper;
-    @Resource
-    SdUserGroupMapper sdUserGroupMapper;
 
     @Resource(name = "userBeanPopulator")
     SdUserBeanPopulator sdUserBeanPopulator;
 
-    @Resource(name = "userGroupService")
-    SdUserGroupService sdUserGroupService;
     @Resource(name = "otpService")
     SdOtpService sdOtpService;
     @Resource(name = "emailService")
@@ -101,7 +91,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         }
 
         // get user role data
-        List<SdUserRoleEntity> userRole = sdUserRoleMapper.getUserRoleByUserId(sdUserEntity.getUserId());
+        List<SdUserRoleEntity> userRole = sdUserRoleMapper.getUserRoleByUserId(sdUserEntity.getUserId(), SdUserRoleEntity.ACTIVE_ROLE_STATUS);
         if (CollectionUtils.isEmpty(userRole)) {
             return null;
         }
@@ -109,17 +99,17 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         List<SdUserRoleEntity> results = new LinkedList<>();
 
         for (SdUserRoleEntity roleEntity : userRole) {
-            List<SdUserRoleEntity> parentRoleByRoleId = sdUserRoleMapper.getParentRoleByRoleId(roleEntity.getRoleId());
-            if (!CollectionUtils.isEmpty(parentRoleByRoleId)) {
-                results.addAll(parentRoleByRoleId);
+            results.add(roleEntity);
+            if (StringUtils.isNotEmpty(roleEntity.getParentRoleId())) {
+                List<SdUserRoleEntity> parentRoleByRoleId = userRoleService.getParentRoleByRoleId(roleEntity.getParentRoleId());
+                if (CollectionUtils.isNotEmpty(parentRoleByRoleId)) {
+                    results.addAll(parentRoleByRoleId);
+                }
             }
         }
 
         // construct bean
         SdUserBean userBean = new SdUserBean();
-        userBean.setRoleId(userRole.stream()
-                .map(SdUserRoleEntity::getRoleId)
-                .collect(Collectors.toList()));
         sdUserBeanPopulator.populate(sdUserEntity, userBean);
         sdUserBeanPopulator.populate(results, userBean);
 
@@ -148,7 +138,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         }
 
         // get user group data
-        List<SdUserRoleEntity> roleEntityList = sdUserRoleMapper.getUserRoleByUserId(userId);
+        List<SdUserRoleEntity> roleEntityList = sdUserRoleMapper.getUserRoleByUserId(userId, SdUserRoleEntity.ACTIVE_ROLE_STATUS);
 
         // construct bean
         SdUserBean userBean = new SdUserBean();
@@ -403,25 +393,20 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
     @Override
     @Transactional
-    public void verifyLdapUser(String password, BtuUserBean userDetailBean) {
+    public BtuUserBean verifyLdapUser(BtuUser user, BtuUserBean userDetailBean) {
         if (StringUtils.isEmpty(userDetailBean.getEmail())) {
-            BtuLdapBean ldapInfo = btuLdapService.getBtuLdapBean(userDetailBean.getLdapDomain());
-            try {
-                BtuUserBean btuUserBean = btuLdapService.searchUser(ldapInfo, userDetailBean.getUserId(), password, userDetailBean.getUserId());
-                String userId = userDetailBean.getUserId();
-                String email = btuUserBean.getEmail();
-                String username = btuUserBean.getUsername();
-                if (StringUtils.isNotEmpty(email)) {
-                    sdUserMapper.updateLdapUser(userId, null, email);
-                }
-                if (StringUtils.isNotEmpty(username)) {
-                    sdUserMapper.updateLdapUser(userId, username, null);
-                }
-            } catch (NamingException e) {
-                LOG.warn("User" + userDetailBean.getUserId() + "not found");
-                throw new UserNotFoundException();
+            BtuUserBean btuUserBean = super.verifyLdapUser(user, userDetailBean);
+            String userId = userDetailBean.getUserId();
+            String email = btuUserBean.getEmail();
+            String username = btuUserBean.getUsername();
+            if (StringUtils.isNotEmpty(email)) {
+                sdUserMapper.updateLdapUser(userId, null, email);
+            }
+            if (StringUtils.isNotEmpty(username)) {
+                sdUserMapper.updateLdapUser(userId, username, null);
             }
         }
+        return null;
     }
 
     public void resetLoginTriedByUsername(String username) {
@@ -500,15 +485,18 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
                 "Searching user with {userId: %s, email: %s, name: %s}",
                 userId, email, name));
 
-        List<String> currentUserBeanRoleId = currentUserBean.getRoleId();
+        Set<GrantedAuthority> authorities = currentUserBean.getAuthorities();
         List<SdUserEntity> sdUserEntityList = new LinkedList<>();
 
         Integer totalCount = 0;
 
-        for (String roleId : currentUserBeanRoleId) {
-            if (roleId.contains("__") || roleId.equals(SdUserRoleEntity.SYS_ADMIN)) {
-                totalCount = sdUserMapper.countSearchUser(roleId, userId, email, name);
-                sdUserEntityList = sdUserMapper.searchUser(offset, pageSize, roleId, userId, email, name);
+        for (GrantedAuthority authority : authorities) {
+            if (authority instanceof SimpleGrantedAuthority) {
+                String roleId = authority.getAuthority();
+                if (roleId.contains("__") || roleId.equals(SdUserRoleEntity.SYS_ADMIN)) {
+                    totalCount = sdUserMapper.countSearchUser(roleId, userId, email, name);
+                    sdUserEntityList = sdUserMapper.searchUser(offset, pageSize, roleId, userId, email, name);
+                }
             }
         }
 

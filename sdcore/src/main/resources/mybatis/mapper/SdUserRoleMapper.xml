@@ -16,40 +16,50 @@
     <select id="getTeamHeadList" resultMap="SdUserRoleEntity">
         select *
         from USER_ROLE
-        WHERE
-              INSTR(ROLE_ID, #{indicator}) &gt; 0
+        WHERE INSTR(ROLE_ID, #{indicator}) &gt; 0
     </select>
 
     <select id="getUserRoleByUserId" resultMap="SdUserRoleEntity">
         SELECT ur.*
         FROM USER_PROFILE up
-        INNER JOIN USER_USER_ROLE uur
-            ON up.USER_ID = uur.USER_ID
-        INNER JOIN USER_ROLE ur
-            ON ur.ROLE_ID = uur.ROLE_ID
-        WHERE up.USER_ID = #{userId}
+                 INNER JOIN USER_USER_ROLE uur
+                            ON up.USER_ID = uur.USER_ID
+                 INNER JOIN USER_ROLE ur
+                            ON ur.ROLE_ID = uur.ROLE_ID
+        <where>
+            <if test="userId != null">
+                up.USER_ID = #{userId}
+            </if>
+            <if test="status != null">
+                AND ur.status = #{status}
+            </if>
+        </where>
     </select>
 
     <select id="getParentRoleByRoleId" resultMap="SdUserRoleEntity">
-        SELECT ur.*
-        FROM USER_ROLE ur
-        start with ur.ROLE_ID = #{roleId}
-        connect by ur.ROLE_ID = PRIOR ur.PARENT_ROLE_ID
+        SELECT *
+        FROM USER_ROLE
+        WHERE ROLE_ID = #{roleId}
     </select>
 
     <select id="getAllUserRole" resultMap="SdUserRoleEntity">
         SELECT *
         FROM USER_ROLE
-        WHERE STATUS = #{status}
         ORDER BY ROLE_ID
     </select>
 
     <select id="getEligibleRolesByCurrentUserRole" resultMap="SdUserRoleEntity">
         SELECT *
         FROM USER_ROLE
-        WHERE ROLE_ID =
-              (SELECT SUBSTR(#{roleId}, (SELECT INSTR(#{roleId}, '__') + 2 FROM DUAL)) FROM DUAL)
-          AND STATUS = #{status}
+        <where>
+            <if test="roleId != null">
+                ROLE_ID =
+                (SELECT SUBSTR(#{roleId}, (SELECT INSTR(#{roleId}, '__') + 2 FROM DUAL)) FROM DUAL)
+            </if>
+            <if test="status != null">
+                AND STATUS = #{status}
+            </if>
+        </where>
         ORDER BY ROLE_ID
     </select>
 
@@ -63,4 +73,19 @@
         FROM USER_USER_ROLE
         WHERE USER_ID = #{userId}
     </delete>
+
+    <select id="getUserRoleByRoleId" resultMap="SdUserRoleEntity">
+        SELECT *
+        FROM USER_ROLE
+        WHERE ROLE_ID = #{roleId}
+    </select>
+
+    <update id="updateUserRole">
+        UPDATE USER_ROLE
+        SET ROLE_DESC = #{roleDesc},
+        STATUS = #{status},
+        MODIFYBY = #{modifyby},
+        MODIFYDATE = CURRENT_TIMESTAMP
+        WHERE ROLE_ID = #{roleId}
+    </update>
 </mapper>

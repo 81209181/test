@@ -3,6 +3,8 @@ package com.hkt.btu.common.core.service;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
 
+import javax.naming.NamingException;
+
 public interface BtuUserService {
 
     BtuUser getCurrentUser();
@@ -13,7 +15,7 @@ public interface BtuUserService {
     void addLoginTriedByUsername(String username);
     void lockUserByUsername(String username);
     void activateUserByUsername(String username);
-    void verifyLdapUser(String password,BtuUserBean userDetailBean);
+    BtuUserBean verifyLdapUser(BtuUser user,BtuUserBean userDetailBean);
     boolean isEnabled(BtuUserBean userDetailBean);
     boolean isNonLocked(BtuUserBean userDetailBean);
 
