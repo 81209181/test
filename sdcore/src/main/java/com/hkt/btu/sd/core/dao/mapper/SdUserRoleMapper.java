@@ -11,9 +11,7 @@ public interface SdUserRoleMapper {
 
     List<SdUserRoleEntity> getTeamHeadList(@Param("indicator") String indicator);
 
-    List<SdUserRoleEntity> getAllUserRole(@Param("status") String status);
-
-    SdUserRoleEntity getUserRoleByRoleId(@Param("roleId") String roleId);
+    List<SdUserRoleEntity> getAllUserRole();
 
     List<SdUserRoleEntity> getUserRoleByUserId(@Param("userId") String userId);
 

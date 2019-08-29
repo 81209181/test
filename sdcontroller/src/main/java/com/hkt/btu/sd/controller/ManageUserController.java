@@ -1,16 +1,15 @@
 package com.hkt.btu.sd.controller;
 
 import com.hkt.btu.common.facade.data.PageData;
+import com.hkt.btu.sd.controller.constant.CreateUserPathEnum;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
 import com.hkt.btu.sd.facade.SdAuditTrailFacade;
 import com.hkt.btu.sd.facade.SdUserFacade;
-import com.hkt.btu.sd.facade.SdUserGroupFacade;
 import com.hkt.btu.sd.facade.SdUserRoleFacade;
 import com.hkt.btu.sd.facade.data.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -37,32 +36,22 @@ public class ManageUserController {
     @Resource(name = "auditTrailFacade")
     SdAuditTrailFacade sdAuditTrailFacade;
 
-    @GetMapping("/create-user")
-    public String createUserForm(final Model model,
+    @GetMapping({"create-ldap-user", "create-user", "create-non-user"})
+    public String createUser1Form(final Model model,
+                                 final HttpServletRequest request,
                                  @ModelAttribute("createUserFormData") CreateUserFormData createUserFormData,
                                  @ModelAttribute("userRoleOptionDataMap") HashMap<String, SdUserRoleData> userRoleOptionDataMap) {
-
         // user role info
         List<SdUserRoleData> userRoleDataList = userRoleFacade.getEligibleUserRoleList();
         userRoleOptionDataMap = userRoleFacade.getUserRoleMap(userRoleDataList);
         if (!MapUtils.isEmpty(userRoleOptionDataMap)) {
             model.addAttribute("userRoleOptionDataMap", userRoleOptionDataMap);
         }
-        return "admin/manageUser/createUserForm";
+
+        String servletPath = request.getServletPath();
+        return CreateUserPathEnum.getValue(servletPath);
     }
 
-    @GetMapping("/create-ldap-user")
-    public String createLdapUserForm(final Model model,
-                                     @ModelAttribute("createUserFormData") CreateUserFormData createUserFormData,
-                                     @ModelAttribute("userRoleOptionDataMap") HashMap<String, SdUserRoleData> userRoleOptionDataMap) {
-        // user role info
-        List<SdUserRoleData> userRoleDataList = userRoleFacade.getEligibleUserRoleList();
-        userRoleOptionDataMap = userRoleFacade.getUserRoleMap(userRoleDataList);
-        if (!MapUtils.isEmpty(userRoleOptionDataMap)) {
-            model.addAttribute("userRoleOptionDataMap", userRoleOptionDataMap);
-        }
-        return "admin/manageUser/createLdapUserForm";
-    }
 
     @PostMapping("/create-user")
     public String createUserForm(final RedirectAttributes redirectAttributes,

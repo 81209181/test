@@ -1,6 +1,9 @@
 package com.hkt.btu.common.core.service.impl;
 
+import com.hkt.btu.common.core.exception.UserNotFoundException;
+import com.hkt.btu.common.core.service.BtuLdapService;
 import com.hkt.btu.common.core.service.BtuUserService;
+import com.hkt.btu.common.core.service.bean.BtuLdapBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.annotation.Resource;
+import javax.naming.NamingException;
 import java.util.*;
 
 /**
@@ -23,6 +27,10 @@ public class BtuUserServiceImpl implements BtuUserService {
 
     @Resource(name = "btuPasswordEncoder")
     BCryptPasswordEncoder btuPasswordEncoder;
+
+    @Resource(name = "ldapService")
+    BtuLdapService ldapService;
+
 
     public BtuUser getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -87,8 +95,15 @@ public class BtuUserServiceImpl implements BtuUserService {
     }
 
     @Override
-    public void verifyLdapUser(String password, BtuUserBean userDetailBean) {
-
+    public BtuUserBean verifyLdapUser(BtuUser user, BtuUserBean userDetailBean){
+        try {
+            BtuLdapBean ldapInfo = ldapService.getBtuLdapBean(userDetailBean.getLdapDomain());
+            BtuUserBean btuUserBean = ldapService.searchUser(ldapInfo, userDetailBean.getUserId(), user.getLdapPassword(), userDetailBean.getUserId());
+            return btuUserBean;
+        } catch (NamingException e) {
+            LOG.warn("User" + userDetailBean.getUserId() + "not found");
+            throw new UserNotFoundException();
+        }
     }
 
 

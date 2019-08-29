@@ -24,7 +24,7 @@ public class BtuLoginSuccessHandler extends SavedRequestAwareAuthenticationSucce
     @Resource(name = "auditTrailService")
     BtuAuditTrailService auditTrailService;
 
-    public BtuLoginSuccessHandler(){
+    public BtuLoginSuccessHandler() {
         super();
         this.setDefaultTargetUrl("/user/");
         this.setAlwaysUseDefaultTargetUrl(true);
@@ -33,16 +33,19 @@ public class BtuLoginSuccessHandler extends SavedRequestAwareAuthenticationSucce
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
         // log user login
-        BtuUser user = (authentication==null || !(authentication.getPrincipal() instanceof BtuUser) ) ?
+        BtuUser user = (authentication == null || !(authentication.getPrincipal() instanceof BtuUser)) ?
                 null : (BtuUser) authentication.getPrincipal();
 
         BtuUserBean userBean = user.getUserBean();
 
-        btuUserService.verifyLdapUser(user.getLdapPassword(),userBean);
+        btuUserService.verifyLdapUser(user, userBean);
+
+        // erase user ldapPassword
+        user.setLdapPassword(null);
 
         // set timeout for inactive session
         HttpSession session = httpServletRequest.getSession(false);
-        if( session!=null ){
+        if (session != null) {
             session.setMaxInactiveInterval(900); // 15 min
         }
         clearAuthenticationAttributes(httpServletRequest);

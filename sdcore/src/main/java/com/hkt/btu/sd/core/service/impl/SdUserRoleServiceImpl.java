@@ -52,9 +52,25 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     }
 
     @Override
+    public List<SdUserRoleEntity> getParentRoleByRoleId(String roleId) {
+        List<SdUserRoleEntity> roleEntityList = new LinkedList<>();
+        List<SdUserRoleEntity> parentRoleByRoleId = sdUserRoleMapper.getParentRoleByRoleId(roleId);
+        for (SdUserRoleEntity role : parentRoleByRoleId) {
+            if (role.getStatus().equals(SdUserRoleEntity.ACTIVE_ROLE_STATUS)) {
+                if (StringUtils.isNotEmpty(role.getParentRoleId())) {
+                    List<SdUserRoleEntity> parentRoleList = getParentRoleByRoleId(role.getParentRoleId());
+                    roleEntityList.addAll(parentRoleList);
+                }
+                roleEntityList.add(role);
+            }
+        }
+        return roleEntityList;
+    }
+
+    @Override
     public List<SdUserRoleBean> getAllUserRole() {
         List<SdUserRoleBean> results = new LinkedList<>();
-        List<SdUserRoleEntity> allUserRole = sdUserRoleMapper.getAllUserRole(SdUserRoleEntity.ACTIVE_ROLE_STATUS);
+        List<SdUserRoleEntity> allUserRole = sdUserRoleMapper.getAllUserRole();
         return getSdUserRoleBeans(results, allUserRole);
     }
 
@@ -80,7 +96,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     @Override
     public List<SdUserRoleBean> getUserRoleByUserId(String userId) {
         List<SdUserRoleBean> results = new LinkedList<>();
-        List<SdUserRoleEntity> userRole = sdUserRoleMapper.getUserRoleByUserId(userId);
+        List<SdUserRoleEntity> userRole = sdUserRoleMapper.getUserRoleByUserId(userId, SdUserRoleEntity.ACTIVE_ROLE_STATUS);
         return getSdUserRoleBeans(results, userRole);
     }
 
@@ -114,7 +130,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
                 if (userRoleId.contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR)) {
                     userRoleEntityList = (List<SdUserRoleEntity>) ROLE_MAP.get(userRoleId);
                 } else if (userRoleId.equals(SdUserRoleEntity.SYS_ADMIN)) {
-                    userRoleEntityList = sdUserRoleMapper.getAllUserRole(SdUserRoleEntity.ACTIVE_ROLE_STATUS);
+                    userRoleEntityList = sdUserRoleMapper.getAllUserRole();
                 }
             }
         }
