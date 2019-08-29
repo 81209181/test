@@ -28,6 +28,22 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
     }
 
     @Override
+    public SdUserRoleData getUserRoleByRoleId(String roleId) {
+        SdUserRoleData userRoleData = new SdUserRoleData();
+
+        // get user role info
+        SdUserRoleBean sdUserRoleBean = sdUserRoleService.getUserRoleByRoleId(roleId);
+
+        if (sdUserRoleBean == null) {
+            return null;
+        }
+
+        sdUserRoleDataPopulator.populate(sdUserRoleBean, userRoleData);
+
+        return userRoleData;
+    }
+
+    @Override
     public List<String> getUserRoleByUserId(String userId) {
         LinkedList<String> results = new LinkedList<>();
         List<SdUserRoleBean> userRoleByUserId = sdUserRoleService.getUserRoleByUserId(userId);
@@ -79,5 +95,10 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
         }
 
         return result;
+    }
+
+    @Override
+    public Boolean updateUserRole(String roleId, String roleDesc, String status) {
+        return sdUserRoleService.updateUserRole(roleId, roleDesc, status);
     }
 }
