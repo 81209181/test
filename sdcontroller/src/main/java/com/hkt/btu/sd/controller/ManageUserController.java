@@ -36,8 +36,8 @@ public class ManageUserController {
     @Resource(name = "auditTrailFacade")
     SdAuditTrailFacade sdAuditTrailFacade;
 
-    @GetMapping({"create-ldap-user", "create-user", "create-non-user"})
-    public String createUser1Form(final Model model,
+    @GetMapping({"create-ldap-user", "create-user", "create-non-pccw-hkt-user"})
+    public String createUserForm(final Model model,
                                  final HttpServletRequest request,
                                  @ModelAttribute("createUserFormData") CreateUserFormData createUserFormData,
                                  @ModelAttribute("userRoleOptionDataMap") HashMap<String, SdUserRoleData> userRoleOptionDataMap) {
@@ -53,20 +53,50 @@ public class ManageUserController {
     }
 
 
-    @PostMapping("/create-user")
+    @PostMapping("/create-pccw-hkt-user")
     public String createUserForm(final RedirectAttributes redirectAttributes,
-                                 @ModelAttribute("inputUserData") CreateUserFormData createUserFormData,
-                                 HttpServletRequest request) {
+                                 @ModelAttribute("inputUserData") CreateUserFormData createUserFormData) {
         CreateResultData createResultData = userFacade.createUser(createUserFormData);
         String newUserId = createResultData == null ? null : createResultData.getNewId();
         String errorMsg = createResultData == null ? "No create result." : createResultData.getErrorMsg();
         if (newUserId == null) {
             redirectAttributes.addFlashAttribute(PageMsgController.ERROR_MSG, errorMsg);
             redirectAttributes.addFlashAttribute("createUserFormData", createUserFormData);
-            if (request.getHeader("Referer").contains("ldap")) {
-                return "redirect:create-ldap-user";
-            }
             return "redirect:create-user";
+        } else {
+            String passwordMsg = createResultData == null ? "Created user" : "Created user, OTP is" + createResultData.getPasswordMsg();
+            redirectAttributes.addFlashAttribute(PageMsgController.INFO_MSG, passwordMsg);
+            return "redirect:edit-user?userId=" + newUserId;
+        }
+    }
+
+    @PostMapping("/create-non-pccw-hkt-user")
+    public String createNonPccwOrHktUser(final RedirectAttributes redirectAttributes,
+                                         @ModelAttribute("inputUserData") CreateUserFormData createUserFormData) {
+        CreateResultData createResultData = userFacade.createNonPccwHktUser(createUserFormData);
+        String newUserId = createResultData == null ? null : createResultData.getNewId();
+        String errorMsg = createResultData == null ? "No create result." : createResultData.getErrorMsg();
+        if (newUserId == null) {
+            redirectAttributes.addFlashAttribute(PageMsgController.ERROR_MSG, errorMsg);
+            redirectAttributes.addFlashAttribute("createUserFormData", createUserFormData);
+            return "redirect:create-non-pccw-hkt-user";
+        } else {
+            String passwordMsg = createResultData == null ? "Created user" : "Created user, OTP is" + createResultData.getPasswordMsg();
+            redirectAttributes.addFlashAttribute(PageMsgController.INFO_MSG, passwordMsg);
+            return "redirect:edit-user?userId=" + newUserId;
+        }
+    }
+
+    @PostMapping("/create-ldap-user")
+    public String createLdapUser(final RedirectAttributes redirectAttributes,
+                                 @ModelAttribute("inputUserData") CreateUserFormData createUserFormData) {
+        CreateResultData createResultData = userFacade.createLdapUser(createUserFormData);
+        String newUserId = createResultData == null ? null : createResultData.getNewId();
+        String errorMsg = createResultData == null ? "No create result." : createResultData.getErrorMsg();
+        if (newUserId == null) {
+            redirectAttributes.addFlashAttribute(PageMsgController.ERROR_MSG, errorMsg);
+            redirectAttributes.addFlashAttribute("createUserFormData", createUserFormData);
+            return "redirect:create-ldap-user";
         } else {
             redirectAttributes.addFlashAttribute(PageMsgController.INFO_MSG, "Created user.");
             return "redirect:edit-user?userId=" + newUserId;

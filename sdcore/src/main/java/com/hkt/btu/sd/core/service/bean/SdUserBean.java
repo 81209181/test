@@ -3,10 +3,12 @@ package com.hkt.btu.sd.core.service.bean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 
 
-
 public class SdUserBean extends BtuUserBean {
 
-    public static String EMAIL_USER_ID_PREFIX = "E";
+    public static class CREATE_USER_PREFIX {
+        public static final String PCCW_HKT_USER = "T";
+        public static final String NON_PCCW_HKT_USER = "X";
+    }
 
     private String userId;
     private String name;

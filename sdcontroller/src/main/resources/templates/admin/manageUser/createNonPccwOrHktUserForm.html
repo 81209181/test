@@ -10,11 +10,11 @@
 
     <h1>Create Non PCCW/HKT User</h1>
 
-    <form class="row" th:action="@{/admin/manage-user/create-user}" th:object="${createUserFormData}" method="post">
+    <form class="row" th:action="@{/admin/manage-user/create-non-pccw-hkt-user}" th:object="${createUserFormData}" method="post">
         <div class="col-md-12">
             <div class="d-inline-block col-md-5 form-group align-top">
-                <label>Email (Login ID)</label>
-                <input type="email" th:field="*{email}" class="form-control" placeholder="your-email@pccw.com" maxlength="50" required>
+                <label>Email (If you have)</label>
+                <input type="email" th:field="*{email}" class="form-control" placeholder="your-email@pccw.com" maxlength="50">
 
                 <label>Name</label>
                 <input type="text" th:field="*{name}" class="form-control" placeholder="Your Name" maxlength="100" required>

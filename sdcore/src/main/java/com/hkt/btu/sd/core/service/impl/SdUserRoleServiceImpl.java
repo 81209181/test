@@ -44,11 +44,11 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
                 .stream()
                 .map(SdUserRoleEntity::getRoleId)
                 .collect(Collectors.toList());
-        teamHeadRoleIdList.forEach(roleId -> {
+        for (String roleId : teamHeadRoleIdList) {
             List<SdUserRoleEntity> eligibleRoles = sdUserRoleMapper
                     .getEligibleRolesByCurrentUserRole(roleId, SdUserRoleEntity.ACTIVE_ROLE_STATUS);
             ROLE_MAP.put(roleId, eligibleRoles);
-        });
+        }
     }
 
     @Override

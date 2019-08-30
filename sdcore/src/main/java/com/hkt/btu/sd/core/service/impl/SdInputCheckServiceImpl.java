@@ -26,7 +26,6 @@ public class SdInputCheckServiceImpl implements SdInputCheckService {
                 throw new InvalidInputException("Input name too long.");
             }
         }
-
         return null;
     }
 

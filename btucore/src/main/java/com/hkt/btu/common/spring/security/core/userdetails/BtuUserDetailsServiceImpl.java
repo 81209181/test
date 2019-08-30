@@ -5,6 +5,7 @@ import com.hkt.btu.common.core.service.BtuSiteConfigService;
 import com.hkt.btu.common.core.service.BtuUserService;
 import com.hkt.btu.common.core.service.bean.BtuSiteConfigBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.core.GrantedAuthority;
@@ -45,12 +46,15 @@ public class BtuUserDetailsServiceImpl implements UserDetailsService {
         boolean enabled = userService.isEnabled(userBean);
 
         // check account password expired
-        BtuSiteConfigBean btuSiteConfigBean = siteConfigService.getSiteConfigBean();
-        Integer passwordLifespanInDay = btuSiteConfigBean.getPasswordLifespanInDay();
-        LocalDateTime passwordModifydate = userBean.getPasswordModifydate();
-        LocalDateTime passwordExpiryDate = passwordModifydate == null ? null : passwordModifydate.plusDays(passwordLifespanInDay);
-        boolean credentialsNonExpired = passwordExpiryDate != null && NOW.isBefore(passwordExpiryDate);
-
+        // User maybe not have email.
+        boolean credentialsNonExpired = true;
+        if (StringUtils.isNotEmpty(userBean.getEmail())) {
+            BtuSiteConfigBean btuSiteConfigBean = siteConfigService.getSiteConfigBean();
+            Integer passwordLifespanInDay = btuSiteConfigBean.getPasswordLifespanInDay();
+            LocalDateTime passwordModifydate = userBean.getPasswordModifydate();
+            LocalDateTime passwordExpiryDate = passwordModifydate == null ? null : passwordModifydate.plusDays(passwordLifespanInDay);
+            credentialsNonExpired = passwordExpiryDate != null && NOW.isBefore(passwordExpiryDate);
+        }
         // check account locked
         boolean accountNonLocked = userService.isNonLocked(userBean);
 

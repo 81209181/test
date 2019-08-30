@@ -5,7 +5,9 @@ import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.core.exception.*;
 import com.hkt.btu.sd.core.service.SdInputCheckService;
 import com.hkt.btu.sd.core.service.SdUserService;
+import com.hkt.btu.sd.core.service.bean.SdCreateResultBean;
 import com.hkt.btu.sd.core.service.bean.SdUserBean;
+import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
 import com.hkt.btu.sd.facade.SdUserFacade;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.populator.SdUserDataPopulator;
@@ -21,6 +23,7 @@ import javax.mail.MessagingException;
 import java.security.GeneralSecurityException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 public class SdUserFacadeImpl implements SdUserFacade {
     private static final Logger LOG = LogManager.getLogger(SdUserFacadeImpl.class);
@@ -36,6 +39,13 @@ public class SdUserFacadeImpl implements SdUserFacade {
     SdUserDataPopulator userDataPopulator;
 
 
+    /**
+     * Create PCCW / HKT user
+     * userId Prefix T
+     *
+     * @param createUserFormData
+     * @return userId
+     */
     @Override
     public CreateResultData createUser(CreateUserFormData createUserFormData) {
         if (createUserFormData == null) {
@@ -43,34 +53,113 @@ public class SdUserFacadeImpl implements SdUserFacade {
             return null;
         }
 
+        // Prepare User Data
+        String name = StringUtils.trim(createUserFormData.getName());
+        String email = StringUtils.trim(createUserFormData.getEmail());
+        String mobile = StringUtils.trim(createUserFormData.getMobile());
+        String employeeNumber = StringUtils.trim(createUserFormData.getUserId());
+
+        List<String> userRoleIdList = createUserFormData.getUserRoleIdList();
+
+        SdCreateResultBean resultBean;
+        try {
+            // check input
+            sdInputCheckService.checkName(name);
+            sdInputCheckService.checkMobile(mobile);
+            sdInputCheckService.checkEmployeeNumber(employeeNumber);
+            // User maybe not have email,If have email check it.
+            if (StringUtils.isNotEmpty(email)) {
+                sdInputCheckService.checkEmail(email);
+            }
+            // PCCW / HKT user will use T prefix
+            String userId = SdUserBean.CREATE_USER_PREFIX.PCCW_HKT_USER + employeeNumber;
+            // create new user
+            resultBean = sdUserService.createUser(userId, name, mobile, email, userRoleIdList);
+        } catch (InvalidInputException | UserNotFoundException | DuplicateUserEmailException e) {
+            LOG.warn(e.getMessage());
+            return CreateResultData.of(e.getMessage());
+        }
+        return new CreateResultData(resultBean.getUserId(), null, resultBean.getPassword());
+    }
+
+    /**
+     * Create Non PCCW / HKT user
+     * userId prefix X
+     *
+     * @param createUserFormData
+     * @return userId
+     */
+    @Override
+    public CreateResultData createNonPccwHktUser(CreateUserFormData createUserFormData) {
+        if (createUserFormData == null) {
+            LOG.warn("Null sdUserData.");
+            return null;
+        }
+
+        // Prepare User Data
         String name = StringUtils.trim(createUserFormData.getName());
         String email = StringUtils.trim(createUserFormData.getEmail());
         String mobile = StringUtils.trim(createUserFormData.getMobile());
         String ldapDomain = StringUtils.trim(createUserFormData.getLdapDomain());
         String employeeNumber = StringUtils.trim(createUserFormData.getUserId());
-
         List<String> userRoleIdList = createUserFormData.getUserRoleIdList();
 
-        // check input
-        // create new user
         String newUserId;
+
+        SdCreateResultBean resultBean;
         try {
+            // check input
             sdInputCheckService.checkName(name);
             sdInputCheckService.checkMobile(mobile);
-            // if email not empty, will create email user
+            sdInputCheckService.checkEmployeeNumber(employeeNumber);
+            // User maybe not have email,If have email check it.
             if (StringUtils.isNotEmpty(email)) {
                 sdInputCheckService.checkEmail(email);
-                newUserId = sdUserService.createUser(name, mobile, email, userRoleIdList);
-                // else will create LDAP user
-            } else {
-                sdInputCheckService.checkLdapDomain(ldapDomain);
-                sdInputCheckService.checkEmployeeNumber(employeeNumber);
-                newUserId = sdUserService.createLdapUser(name, mobile, employeeNumber, ldapDomain, userRoleIdList);
             }
-        } catch (InvalidInputException | UserNotFoundException | DuplicateUserEmailException | GeneralSecurityException e) {
+            // if user not have userId, wiil use X prefix.
+            // create new user.
+            resultBean = sdUserService.createUser(null, name, mobile, email, userRoleIdList);
+        } catch (InvalidInputException | UserNotFoundException | DuplicateUserEmailException e) {
             LOG.warn(e.getMessage());
             return CreateResultData.of(e.getMessage());
         }
+
+        return new CreateResultData(resultBean.getUserId(), null, resultBean.getPassword());
+    }
+
+    /**
+     * Create LDAP user
+     *
+     * @param createUserFormData
+     * @return userId
+     */
+    @Override
+    public CreateResultData createLdapUser(CreateUserFormData createUserFormData) {
+        if (createUserFormData == null) {
+            LOG.warn("Null sdUserData.");
+            return null;
+        }
+
+        // Prepare User Data
+        String name = StringUtils.trim(createUserFormData.getName());
+        String mobile = StringUtils.trim(createUserFormData.getMobile());
+        String ldapDomain = StringUtils.trim(createUserFormData.getLdapDomain());
+        String employeeNumber = StringUtils.trim(createUserFormData.getUserId());
+        List<String> userRoleIdList = createUserFormData.getUserRoleIdList();
+
+        String newUserId;
+        try {
+            // check input
+            sdInputCheckService.checkName(name);
+            sdInputCheckService.checkMobile(mobile);
+            sdInputCheckService.checkEmployeeNumber(employeeNumber);
+            // create new LDAP user.
+            newUserId = sdUserService.createLdapUser(name, mobile, employeeNumber, ldapDomain, userRoleIdList);
+        } catch (DuplicateUserEmailException | UserNotFoundException e) {
+            LOG.warn(e.getMessage());
+            return CreateResultData.of(e.getMessage());
+        }
+
         return new CreateResultData(newUserId, null);
     }
 

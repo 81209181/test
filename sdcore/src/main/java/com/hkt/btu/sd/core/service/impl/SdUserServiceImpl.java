@@ -15,6 +15,7 @@ import com.hkt.btu.sd.core.dao.mapper.SdUserMapper;
 import com.hkt.btu.sd.core.dao.mapper.SdUserRoleMapper;
 import com.hkt.btu.sd.core.exception.*;
 import com.hkt.btu.sd.core.service.*;
+import com.hkt.btu.sd.core.service.bean.SdCreateResultBean;
 import com.hkt.btu.sd.core.service.bean.SdEmailBean;
 import com.hkt.btu.sd.core.service.bean.SdOtpBean;
 import com.hkt.btu.sd.core.service.bean.SdUserBean;
@@ -76,13 +77,14 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
     @Override
     public BtuUserBean getUserBeanByUsername(String username) {
-        // make email lower case
-        String email = StringUtils.lowerCase(username);
 
         // get user data
         SdUserEntity sdUserEntity = null;
-        if (username.contains("@")) {
-            sdUserEntity = sdUserMapper.getUserByEmail(email);
+        if (username.contains(SdUserBean.CREATE_USER_PREFIX.PCCW_HKT_USER) ||
+                username.contains(SdUserBean.CREATE_USER_PREFIX.NON_PCCW_HKT_USER)) {
+            sdUserEntity = sdUserMapper.getLdapUserByUserId(username);
+        } else if (username.contains("@")) {
+            sdUserEntity = sdUserMapper.getUserByEmail(username);
         } else {
             sdUserEntity = sdUserMapper.getLdapUserByUserId(username);
         }
@@ -149,83 +151,6 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         return userBean;
     }
 
-
-    @Transactional
-    public String createUser(String name, String mobile, String email, List<String> roleIdList)
-            throws DuplicateUserEmailException, UserNotFoundException, GeneralSecurityException {
-        if (StringUtils.isEmpty(name)) {
-            throw new InvalidInputException("Empty user name.");
-        } else if (StringUtils.isEmpty(email)) {
-            throw new InvalidInputException("Empty email.");
-        }
-
-        // get current user user id
-        String createby = getCurrentUserUserId();
-
-        // check current user has right to create user of user role
-        boolean isEligibleUserGroup = userRoleService.isEligibleToGrantUserRole(roleIdList);
-        if (!isEligibleUserGroup) {
-            LOG.warn("Ineligible to create user of selected user role (" + roleIdList + ") by user (" + createby + ").");
-            throw new InvalidInputException("Invalid user role.");
-        }
-
-        // make email lower case (**assume email are all lower case)
-        email = StringUtils.lowerCase(email);
-
-        // check email duplicated
-        SdUserEntity userEntity = sdUserMapper.getUserByEmail(email);
-        if (userEntity != null) {
-            throw new DuplicateUserEmailException();
-        }
-
-        // generate dummy password
-        UUID uuid = UUID.randomUUID();
-        String password = uuid.toString();
-        String encodedPassword = encodePassword(password);
-
-        // get New UserId
-        String newUserId = SdUserBean.EMAIL_USER_ID_PREFIX + sdUserMapper.getNewUserId().toString();
-
-        // TODO: encrypt
-        //byte[] encryptedMobile = StringUtils.isEmpty(mobile) ? null : btuSensitiveDataService.encryptFromString(mobile);
-        //byte[] encryptedStaffId = StringUtils.isEmpty(staffId) ? null : btuSensitiveDataService.encryptFromString(staffId);
-
-        // prepare entity
-        SdUserEntity sdUserEntity = new SdUserEntity();
-
-        sdUserEntity.setUserId(newUserId);
-        sdUserEntity.setName(name);
-        sdUserEntity.setStatus(SdUserEntity.STATUS.ACTIVE);
-
-        sdUserEntity.setMobile(mobile);
-        sdUserEntity.setEmail(email);
-        sdUserEntity.setPassword(encodedPassword);
-        sdUserEntity.setCreateby(createby);
-
-        // create user in db
-        sdUserMapper.insertUser(sdUserEntity);
-
-        // create user group relation in db
-        if (!CollectionUtils.isEmpty(roleIdList)) {
-            for (String groupId : roleIdList) {
-                sdUserRoleMapper.insertUserUserRole(newUserId, groupId);
-            }
-        }
-
-        LOG.info("User (id: " + newUserId + ") " + email + " created.");
-
-        // send init password email
-        try {
-            requestResetPassword(email);
-        } catch (UserNotFoundException e) {
-            LOG.warn("User not found (" + email + ").");
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-        }
-
-        return newUserId;
-    }
-
     @Transactional
     public String createLdapUser(String name, String mobile, String employeeNumber,
                                  String ldapDomain, List<String> roleIdList)
@@ -272,6 +197,79 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             throw new DuplicateUserEmailException("User already exists.");
         }
     }
+
+    @Override
+    public SdCreateResultBean createUser(String userId, String name, String mobile, String email, List<String> roleIdList)
+            throws DuplicateUserEmailException, UserNotFoundException {
+        if (StringUtils.isEmpty(name)) {
+            throw new InvalidInputException("Empty user name.");
+        }
+
+        // get current user user id
+        String createby = getCurrentUserUserId();
+
+        // check current user has right to create user of user role
+        boolean isEligibleUserGroup = userRoleService.isEligibleToGrantUserRole(roleIdList);
+        if (!isEligibleUserGroup) {
+            LOG.warn("Ineligible to create user of selected user role (" + roleIdList + ") by user (" + createby + ").");
+            throw new InvalidInputException("Invalid user role.");
+        }
+
+        // check email duplicated
+        SdUserEntity userEntity = sdUserMapper.getUserByEmail(email);
+        if (userEntity != null) {
+            throw new DuplicateUserEmailException();
+        }
+
+        // generate dummy password
+        UUID uuid = UUID.randomUUID();
+        String password = uuid.toString();
+        String encodedPassword = encodePassword(password);
+
+
+        if (StringUtils.isEmpty(userId)) {
+            userId = SdUserBean.CREATE_USER_PREFIX.NON_PCCW_HKT_USER + sdUserMapper.getNewUserId().toString();
+        }
+
+        // prepare entity
+        SdUserEntity sdUserEntity = new SdUserEntity();
+
+        sdUserEntity.setUserId(userId);
+        sdUserEntity.setName(name);
+        sdUserEntity.setStatus(SdUserEntity.STATUS.ACTIVE);
+
+        sdUserEntity.setMobile(mobile);
+        sdUserEntity.setEmail(email);
+        sdUserEntity.setPassword(encodedPassword);
+        sdUserEntity.setCreateby(createby);
+
+        // create user in db
+        sdUserMapper.insertUser(sdUserEntity);
+
+        // create user group relation in db
+        if (!CollectionUtils.isEmpty(roleIdList)) {
+            for (String groupId : roleIdList) {
+                sdUserRoleMapper.insertUserUserRole(userId, groupId);
+            }
+        }
+
+        LOG.info("User (id: " + userId + ") " + email + " created.");
+
+
+        // send init password email
+        try {
+            if (StringUtils.isNotEmpty(email)) {
+                requestResetPassword(email);
+            }
+        } catch (UserNotFoundException e) {
+            LOG.warn("User not found (" + email + ").");
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+        }
+
+        return SdCreateResultBean.of(userId, password);
+    }
+
 
     @Override
     @Transactional
@@ -394,7 +392,8 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     @Override
     @Transactional
     public BtuUserBean verifyLdapUser(BtuUser user, BtuUserBean userDetailBean) {
-        if (StringUtils.isEmpty(userDetailBean.getEmail())) {
+        if (StringUtils.isEmpty(userDetailBean.getEmail()) &&
+                StringUtils.isNotEmpty(userDetailBean.getLdapDomain())) {
             BtuUserBean btuUserBean = super.verifyLdapUser(user, userDetailBean);
             String userId = userDetailBean.getUserId();
             String email = btuUserBean.getEmail();

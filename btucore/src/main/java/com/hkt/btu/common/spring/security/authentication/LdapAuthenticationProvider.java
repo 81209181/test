@@ -3,7 +3,10 @@ package com.hkt.btu.common.spring.security.authentication;
 
 import com.hkt.btu.common.core.service.BtuAuditTrailService;
 import com.hkt.btu.common.core.service.BtuLdapService;
+import com.hkt.btu.common.core.service.BtuSiteConfigService;
+import com.hkt.btu.common.core.service.BtuUserService;
 import com.hkt.btu.common.core.service.bean.BtuLdapBean;
+import com.hkt.btu.common.core.service.bean.BtuSiteConfigBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.core.service.constant.LdapError;
 import com.hkt.btu.common.core.service.constant.LdapEnum;
@@ -24,6 +27,7 @@ import org.springframework.security.core.userdetails.UserDetailsChecker;
 
 import javax.annotation.Resource;
 import javax.naming.NamingException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -43,20 +47,40 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
     @Resource(name = "auditTrailService")
     BtuAuditTrailService auditTrailService;
 
+    @Resource(name = "userService")
+    BtuUserService userService;
+
+    @Resource
+    BtuSiteConfigService siteConfigService;
+
     private String domain;
 
     private BtuUserBean btuUserBean;
 
     @Override
     public Authentication authenticate(Authentication auth) throws AuthenticationException {
+        final LocalDateTime NOW = LocalDateTime.now();
         BtuUser userDetails = null;
         try {
+            // check account enable
+            boolean enabled = userService.isEnabled(btuUserBean);
+
+            // check account password expired
+            BtuSiteConfigBean btuSiteConfigBean = siteConfigService.getSiteConfigBean();
+            Integer passwordLifespanInDay = btuSiteConfigBean.getPasswordLifespanInDay();
+            LocalDateTime passwordModifydate = btuUserBean.getPasswordModifydate();
+            LocalDateTime passwordExpiryDate = passwordModifydate == null ? null : passwordModifydate.plusDays(passwordLifespanInDay);
+            boolean credentialsNonExpired = passwordExpiryDate != null && NOW.isBefore(passwordExpiryDate);
+
+            // check account locked
+            boolean accountNonLocked = userService.isNonLocked(btuUserBean);
+
             userDetails = BtuUser.of(btuUserBean.getUserId(),
                     (String) auth.getCredentials(),
+                    enabled,
                     true,
-                    true,
-                    true,
-                    true,
+                    credentialsNonExpired,
+                    accountNonLocked,
                     btuUserBean.getAuthorities(),
                     btuUserBean);
             userDetails.setLdapPassword((String) auth.getCredentials());

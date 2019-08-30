@@ -2,6 +2,7 @@ package com.hkt.btu.common.spring.security.authentication;
 
 import com.hkt.btu.common.core.service.BtuUserService;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -46,7 +47,7 @@ public class BtuDaoAuthenticationProvider extends DaoAuthenticationProvider {
         if (userBean == null) {
             throw new BadCredentialsException("User Not Found!");
         } else {
-            if (loginName.contains("@")) {
+            if (StringUtils.isEmpty(userBean.getLdapDomain())) {
                 return dbDaoAuthenticationProvider.authenticate(authentication);
             } else {
                 return ldapAuthenticationProvider.btuAuth(authentication, userBean, userBean.getLdapDomain());

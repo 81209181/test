@@ -15,7 +15,6 @@ public class CreateUserFormData implements DataInterface {
 
     private String staffId;
 
-    private Integer companyId;
     private List<String> userRoleIdList;
 
     public String getUserId() {
@@ -65,15 +64,7 @@ public class CreateUserFormData implements DataInterface {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    public Integer getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(Integer companyId) {
-        this.companyId = companyId;
-    }
-
+    
     public String getStaffId() {
         return staffId;
     }
