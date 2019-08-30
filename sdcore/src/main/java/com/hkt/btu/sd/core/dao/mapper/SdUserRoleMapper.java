@@ -13,6 +13,8 @@ public interface SdUserRoleMapper {
 
     List<SdUserRoleEntity> getAllUserRole();
 
+    SdUserRoleEntity getUserRoleByRoleId(@Param("roleId") String roleId);
+
     List<SdUserRoleEntity> getUserRoleByUserId(@Param("userId") String userId, @Param("status") String status);
 
     List<SdUserRoleEntity> getParentRoleByRoleId(@Param("roleId") String roleId);
@@ -22,4 +24,6 @@ public interface SdUserRoleMapper {
     void insertUserUserRole(@Param("userId") String userId, @Param("roleId") String roleId);
 
     void deleteUserRoleByUserId(@Param("userId") String userId);
+
+    int updateUserRole(@Param("roleId") String roleId, @Param("roleDesc") String roleDesc, @Param("status") String status, @Param("modifyby") String modifyby);
 }

@@ -73,4 +73,19 @@
         FROM USER_USER_ROLE
         WHERE USER_ID = #{userId}
     </delete>
+
+    <select id="getUserRoleByRoleId" resultMap="SdUserRoleEntity">
+        SELECT *
+        FROM USER_ROLE
+        WHERE ROLE_ID = #{roleId}
+    </select>
+
+    <update id="updateUserRole">
+        UPDATE USER_ROLE
+        SET ROLE_DESC = #{roleDesc},
+        STATUS = #{status},
+        MODIFYBY = #{modifyby},
+        MODIFYDATE = CURRENT_TIMESTAMP
+        WHERE ROLE_ID = #{roleId}
+    </update>
 </mapper>

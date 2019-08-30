@@ -1,15 +1,13 @@
 package com.hkt.btu.sd.controller;
 
 
-import com.hkt.btu.sd.core.service.SdUserRoleService;
-import com.hkt.btu.sd.facade.SdUserGroupFacade;
 import com.hkt.btu.sd.facade.SdUserRoleFacade;
-import com.hkt.btu.sd.facade.data.SdUserGroupData;
 import com.hkt.btu.sd.facade.data.SdUserRoleData;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -33,4 +31,43 @@ public class ManageRoleController {
         return ResponseEntity.ok(sdUserRoleDataList);
     }
 
+    @GetMapping("/edit-user-role")
+    public String editUserRole(@RequestParam String roleId, Model model) {
+        if (StringUtils.isNotEmpty(roleId)) {
+            model.addAttribute("roleId", roleId);
+        }
+        return "admin/manageRole/editUserRole";
+    }
+
+    @GetMapping("/edit-user-role/getUserRole")
+    public ResponseEntity<?> getUserRole(@RequestParam String roleId) {
+        if (StringUtils.isEmpty(roleId)) {
+            return ResponseEntity.badRequest().body("Empty role id!");
+        }
+
+        SdUserRoleData userRoleData = userRoleFacade.getUserRoleByRoleId(roleId);
+
+        if (userRoleData == null) {
+            return ResponseEntity.badRequest().body("Cannot load User Role.");
+        } else {
+            return ResponseEntity.ok(userRoleData);
+        }
+    }
+
+    @PostMapping("/edit-user-role")
+    public ResponseEntity<?> editUserForm(@RequestParam String roleId, @RequestParam String roleDesc, @RequestParam String status) {
+        if (StringUtils.isEmpty(roleId)) {
+            return ResponseEntity.badRequest().body("Empty role id!");
+        }
+        if (StringUtils.isEmpty(roleDesc)) {
+            return ResponseEntity.badRequest().body("Empty role desc!");
+        }
+        if (StringUtils.isEmpty(status)) {
+            return ResponseEntity.badRequest().body("Empty status!");
+        }
+        if (userRoleFacade.updateUserRole(roleId, roleDesc, status)) {
+            return ResponseEntity.ok().body("User Role update success.");
+        }
+        return ResponseEntity.badRequest().body("Cannot update User Role.");
+    }
 }

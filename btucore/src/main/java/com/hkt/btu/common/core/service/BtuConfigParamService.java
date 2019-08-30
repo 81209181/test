@@ -8,7 +8,7 @@ public interface BtuConfigParamService {
 
     List<String> getConfigTypeList();
 
-    Map<String, Object> getConfigParamByConfigGroup(String configGroup);
+    Map<String, Object> getConfigParamByConfigGroup(String configGroup, boolean decrypt);
 
     String getString(String configGroup, String configKey);
     Integer getInteger(String configGroup, String configKey);

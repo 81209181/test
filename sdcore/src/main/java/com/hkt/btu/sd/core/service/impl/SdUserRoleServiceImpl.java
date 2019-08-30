@@ -75,6 +75,25 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     }
 
     @Override
+    public SdUserRoleBean getUserRoleByRoleId(String roleId) {
+        if (roleId == null) {
+            return null;
+        }
+
+        // get user data
+        SdUserRoleEntity sdUserRoleEntity = sdUserRoleMapper.getUserRoleByRoleId(roleId);
+        if (sdUserRoleEntity == null) {
+            return null;
+        }
+
+        // construct bean
+        SdUserRoleBean userBean = new SdUserRoleBean();
+        sdUserRoleBeanPopulator.populate(sdUserRoleEntity, userBean);
+
+        return userBean;
+    }
+
+    @Override
     public List<SdUserRoleBean> getUserRoleByUserId(String userId) {
         List<SdUserRoleBean> results = new LinkedList<>();
         List<SdUserRoleEntity> userRole = sdUserRoleMapper.getUserRoleByUserId(userId, SdUserRoleEntity.ACTIVE_ROLE_STATUS);
@@ -165,5 +184,10 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
                 sdUserRoleMapper.insertUserUserRole(userId, roleId);
             }
         }
+    }
+
+    @Override
+    public boolean updateUserRole(String roleId, String roleDesc, String status) {
+        return sdUserRoleMapper.updateUserRole(roleId, roleDesc, status, userService.getCurrentUserUserId()) > 0;
     }
 }

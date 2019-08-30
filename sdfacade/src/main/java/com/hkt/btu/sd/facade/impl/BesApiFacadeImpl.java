@@ -1,6 +1,6 @@
 package com.hkt.btu.sd.facade.impl;
 
-import com.hkt.btu.sd.core.service.BesApiService;
+import com.hkt.btu.sd.core.service.ApiService;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.BesApiFacade;
@@ -22,12 +22,12 @@ public class BesApiFacadeImpl extends AbstractRestfulApiFacade implements BesApi
     private static final long PAGE_SIZE = 100;
     private static final long PAGE_RECORD_TOTAL_LIMIT = 2000;
 
-    @Resource(name = "besApiService")
-    BesApiService besApiService;
+    @Resource(name = "apiService")
+    ApiService apiService;
 
     @Override
     protected SiteInterfaceBean getTargetApiSiteInterfaceBean() {
-        return besApiService.getBesApiBean();
+        return apiService.getSiteInterfaceBean(SiteInterfaceBean.API_BES.API_NAME);
     }
 
     @Override
@@ -35,10 +35,10 @@ public class BesApiFacadeImpl extends AbstractRestfulApiFacade implements BesApi
         SiteInterfaceBean siteInterfaceBean = getTargetApiSiteInterfaceBean();
         return webTarget.request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, siteInterfaceBean.getPassword())
-                .header(SiteInterfaceBean.BES.API_HEADER.OPERATOR_ID, siteInterfaceBean.getUserName())
-                .header(SiteInterfaceBean.BES.API_HEADER.CHANNEL_TYPE, siteInterfaceBean.getChannelType())
-                .header(SiteInterfaceBean.BES.API_HEADER.BE_ID, siteInterfaceBean.getBeId())
-                .header(SiteInterfaceBean.BES.API_HEADER.X_APP_KEY, siteInterfaceBean.getxAppkey());
+                .header(SiteInterfaceBean.API_BES.API_HEADER.OPERATOR_ID, siteInterfaceBean.getUserName())
+                .header(SiteInterfaceBean.API_BES.API_HEADER.CHANNEL_TYPE, siteInterfaceBean.getChannelType())
+                .header(SiteInterfaceBean.API_BES.API_HEADER.BE_ID, siteInterfaceBean.getBeId())
+                .header(SiteInterfaceBean.API_BES.API_HEADER.X_APP_KEY, siteInterfaceBean.getxAppkey());
     }
 
 

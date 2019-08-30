@@ -88,7 +88,7 @@ public class BtuSiteConfigServiceImpl implements BtuSiteConfigService {
 
     private void reloadConfigFromDb(BtuSiteConfigBean siteConfigBean) {
         // load config from db
-        Map<String, Object> map = btuConfigParamService.getConfigParamByConfigGroup(BtuConfigParamEntity.SITE.CONFIG_GROUP);
+        Map<String, Object> map = btuConfigParamService.getConfigParamByConfigGroup(BtuConfigParamEntity.SITE.CONFIG_GROUP, false);
 
         String appName = MapUtils.getString(map, BtuConfigParamEntity.SITE.CONFIG_KEY_APP_NAME);
 

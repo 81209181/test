@@ -2,8 +2,8 @@ package com.hkt.btu.sd.core.service.bean;
 
 public class SiteInterfaceBean {
 
-    public static class BES {
-        public static final String API_NAME = "BES";
+    public static class API_BES {
+        public static final String API_NAME = "API_BES";
 
         public static class API_HEADER {
             public static final String OPERATOR_ID = "OperatorId";
@@ -13,19 +13,19 @@ public class SiteInterfaceBean {
         }
     }
 
-    public static class ITSM_RESTFUL {
-        public static final String API_NAME = "ITSM_RESTFUL";
+    public static class API_ITSM_RESTFUL {
+        public static final String API_NAME = "API_ITSM_RESTFUL";
     }
 
-    public static class ITSM {
-        public static final String API_NAME = "ITSM";
+    public static class API_ITSM {
+        public static final String API_NAME = "API_ITSM";
     }
 
-    public static class WFM {
-        public static final String API_NAME = "WFM";
+    public static class API_WFM {
+        public static final String API_NAME = "API_WFM";
     }
-    public static class NORARS{
-        public static final String API_NAME = "NORARS";
+    public static class API_NORARS{
+        public static final String API_NAME = "API_NORARS";
     }
 
     private String systemName;

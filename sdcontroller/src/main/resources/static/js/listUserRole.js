@@ -17,6 +17,15 @@ $(document).ready(function() {
             { data: 'roleId' },
             { data: 'roleDesc' },
             { data: 'parentRoleId' }
-        ]
+        ],
+        columnDefs: [ {
+            targets: 3,
+            data: "roleId",
+            render: function ( roleId, type, row, meta ) {
+                var ctx = $("meta[name='_ctx']").attr("content");
+                var link = ctx + "/admin/manage-role/edit-user-role?roleId=" + roleId;
+                return '<a class="btn btn-info" href=' + link + ' role="button"><i class="fas fa-edit"></i> Edit</a>';
+            }
+        } ]
     });
 });
