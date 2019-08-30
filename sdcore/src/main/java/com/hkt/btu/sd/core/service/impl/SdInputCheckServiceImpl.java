@@ -95,4 +95,14 @@ public class SdInputCheckServiceImpl implements SdInputCheckService {
         return null;
     }
 
+    @Override
+    public String checkUserName(String input) throws InvalidInputException {
+        input = Optional.ofNullable(input)
+                .orElseThrow(() -> new InvalidInputException("Empty input UserName."));
+        if (input.length() > 8) {
+            throw new InvalidInputException("Please input a username of no less than 8 characters");
+        }
+        return null;
+    }
+
 }

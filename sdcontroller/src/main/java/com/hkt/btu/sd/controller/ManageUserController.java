@@ -10,6 +10,7 @@ import com.hkt.btu.sd.facade.SdUserRoleFacade;
 import com.hkt.btu.sd.facade.data.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -64,7 +65,11 @@ public class ManageUserController {
             redirectAttributes.addFlashAttribute("createUserFormData", createUserFormData);
             return "redirect:create-user";
         } else {
-            String passwordMsg = createResultData == null ? "Created user" : "Created user, OTP is" + createResultData.getPasswordMsg();
+            String passwordMsg = null;
+            if (createResultData != null) {
+                passwordMsg = StringUtils.isNotEmpty(createResultData.getPasswordMsg()) ?
+                        "Create User.OTP is " + createResultData.getPasswordMsg() : "Create User.";
+            }
             redirectAttributes.addFlashAttribute(PageMsgController.INFO_MSG, passwordMsg);
             return "redirect:edit-user?userId=" + newUserId;
         }
@@ -81,7 +86,11 @@ public class ManageUserController {
             redirectAttributes.addFlashAttribute("createUserFormData", createUserFormData);
             return "redirect:create-non-pccw-hkt-user";
         } else {
-            String passwordMsg = createResultData == null ? "Created user" : "Created user, OTP is" + createResultData.getPasswordMsg();
+            String passwordMsg = null;
+            if (createResultData != null) {
+                passwordMsg = StringUtils.isNotEmpty(createResultData.getPasswordMsg()) ?
+                        "Create User.OTP is " + createResultData.getPasswordMsg() : "Create User.";
+            }
             redirectAttributes.addFlashAttribute(PageMsgController.INFO_MSG, passwordMsg);
             return "redirect:edit-user?userId=" + newUserId;
         }
@@ -124,6 +133,22 @@ public class ManageUserController {
         }
 
         return "admin/manageUser/editUserForm";
+    }
+
+    @GetMapping("/edit-user/changeUserType/{userType}")
+    public String changeUserType(final Model model,
+                                 String userId,
+                                 @PathVariable("userType") String userType,
+                                 @ModelAttribute("changeUserTypeFormData") ChangeUserTypeFormData changeUserTypeFormData) {
+        model.addAttribute("oldUserId", userId);
+        if (userType.equals(ChangeUserTypeFormData.PCCW_HKT_USER)) {
+            return "/admin/manageUser/changeUserType/updateUserTypeToPccwOrHktUser";
+        } else if (userType.equals(ChangeUserTypeFormData.NON_PCCW_HKT_USER)) {
+
+        } else if (userType.equals(ChangeUserTypeFormData.LDAP_USER)) {
+
+        }
+        return null;
     }
 
     @GetMapping("/edit-user/get-user")

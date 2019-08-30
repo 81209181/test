@@ -226,11 +226,6 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         String password = uuid.toString();
         String encodedPassword = encodePassword(password);
 
-
-        if (StringUtils.isEmpty(userId)) {
-            userId = SdUserBean.CREATE_USER_PREFIX.NON_PCCW_HKT_USER + sdUserMapper.getNewUserId().toString();
-        }
-
         // prepare entity
         SdUserEntity sdUserEntity = new SdUserEntity();
 
@@ -259,6 +254,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         // send init password email
         try {
             if (StringUtils.isNotEmpty(email)) {
+                password = null;
                 requestResetPassword(email);
             }
         } catch (UserNotFoundException e) {

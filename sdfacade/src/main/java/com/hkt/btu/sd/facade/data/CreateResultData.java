@@ -1,11 +1,12 @@
 package com.hkt.btu.sd.facade.data;
 
 public class CreateResultData {
+
     private String newId;
     private String errorMsg;
     private String passwordMsg;
 
-    public static CreateResultData of(String errorMsg){
+    public static CreateResultData of(String errorMsg) {
         return new CreateResultData(null, errorMsg);
     }
 
@@ -14,7 +15,7 @@ public class CreateResultData {
         this.errorMsg = errorMsg;
     }
 
-    public CreateResultData(String newId, String errorMsg, String passwordMsg) {
+    public CreateResultData(String newId, String errorMsg, String passwordMsg, String redirectPath) {
         this.newId = newId;
         this.errorMsg = errorMsg;
         this.passwordMsg = passwordMsg;

@@ -67,10 +67,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
             sdInputCheckService.checkName(name);
             sdInputCheckService.checkMobile(mobile);
             sdInputCheckService.checkEmployeeNumber(employeeNumber);
-            // User maybe not have email,If have email check it.
-            if (StringUtils.isNotEmpty(email)) {
-                sdInputCheckService.checkEmail(email);
-            }
+            sdInputCheckService.checkEmail(email);
             // PCCW / HKT user will use T prefix
             String userId = SdUserBean.CREATE_USER_PREFIX.PCCW_HKT_USER + employeeNumber;
             // create new user
@@ -79,7 +76,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
             LOG.warn(e.getMessage());
             return CreateResultData.of(e.getMessage());
         }
-        return new CreateResultData(resultBean.getUserId(), null, resultBean.getPassword());
+        return new CreateResultData(resultBean.getUserId(), null, resultBean.getPassword(), null);
     }
 
     /**
@@ -111,20 +108,22 @@ public class SdUserFacadeImpl implements SdUserFacade {
             // check input
             sdInputCheckService.checkName(name);
             sdInputCheckService.checkMobile(mobile);
-            sdInputCheckService.checkEmployeeNumber(employeeNumber);
+            sdInputCheckService.checkUserName(employeeNumber);
             // User maybe not have email,If have email check it.
             if (StringUtils.isNotEmpty(email)) {
                 sdInputCheckService.checkEmail(email);
             }
             // if user not have userId, wiil use X prefix.
             // create new user.
-            resultBean = sdUserService.createUser(null, name, mobile, email, userRoleIdList);
+            // Non PCCW / HKT user will use X prefix
+            String userId = SdUserBean.CREATE_USER_PREFIX.NON_PCCW_HKT_USER + employeeNumber;
+            resultBean = sdUserService.createUser(userId, name, mobile, email, userRoleIdList);
         } catch (InvalidInputException | UserNotFoundException | DuplicateUserEmailException e) {
             LOG.warn(e.getMessage());
             return CreateResultData.of(e.getMessage());
         }
 
-        return new CreateResultData(resultBean.getUserId(), null, resultBean.getPassword());
+        return new CreateResultData(resultBean.getUserId(), null, resultBean.getPassword(), null);
     }
 
     /**

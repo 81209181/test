@@ -41,10 +41,32 @@
             </div>
 
             <div class="d-inline-block col-md-5 form-group">
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1"
+                            data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="true">
+                        Change User Type
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        <li><a class="dropdown-item"
+                               th:href="@{/admin/manage-user/edit-user/changeUserType/pccw-hkt-user(userId=${editUserId})}">PCCW/HKT
+                            User</a></li>
+                        <li><a class="dropdown-item"
+                               th:href="@{/admin/manage-user/edit-user/changeUserType/non-pccw-hkt-user(userId=${editUserId})}">Non
+                            PCCW/HKT User</a></li>
+                        <li><a class="dropdown-item"
+                               th:href="@{/admin/manage-user/edit-user/changeUserType/ldap-user(userId=${editUserId})}">LDAP
+                            User</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="d-inline-block col-md-5 form-group">
                 <label>User Role</label>
                 <div class="d-block">
                     <div class="form-check form-check-inline" th:each="userRole : ${userRoleOptionDataMap}">
-                        <input class="form-check-input"  type="checkbox" name="userRoleId"
+                        <input class="form-check-input" type="checkbox" name="userRoleId"
                                th:value="${userRole.value.getRoleId()}"
                                th:attr="checked=${userRoleList.contains(userRole.value.getRoleId())?true:false}">
                         <label class="form-check-label" th:text="${userRole.key}"></label>
@@ -66,7 +88,6 @@
                 </button>
             </div>
         </div>
-
     </form>
 
     <script type="text/javascript" th:src="@{/js/editUserForm.js}"></script>
