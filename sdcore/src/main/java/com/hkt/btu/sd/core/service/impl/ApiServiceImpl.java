@@ -59,7 +59,7 @@ public class ApiServiceImpl implements ApiService {
 
         for(String key : configParamByConfigGroup.keySet()){
             String value = (String) configParamByConfigGroup.get(key);
-            if (key.equalsIgnoreCase("systemName")) {
+            if (key.equalsIgnoreCase(SiteInterfaceBean.API_CONFIG_KEY_SYSTEM_NAME)) {
                 bean.setSystemName(value);
             }else if (key.equalsIgnoreCase("url")){
                 bean.setUrl(value);

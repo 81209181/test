@@ -28,6 +28,8 @@ public class SiteInterfaceBean {
         public static final String API_NAME = "API_NORARS";
     }
 
+    public static final String API_CONFIG_KEY_SYSTEM_NAME = "systemName";
+
     private String systemName;
     private String url;
     private String userName;
