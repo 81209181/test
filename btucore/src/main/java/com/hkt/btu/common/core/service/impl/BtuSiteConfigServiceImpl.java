@@ -7,6 +7,7 @@ import com.hkt.btu.common.core.service.BtuSensitiveDataService;
 import com.hkt.btu.common.core.service.BtuSiteConfigService;
 import com.hkt.btu.common.core.service.bean.BtuSiteConfigBean;
 import com.hkt.btu.common.core.service.populator.BtuSiteConfigBeanPopulator;
+import com.hkt.btu.common.spring.security.access.intercept.BtuSecurityMetadataSource;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -36,6 +37,9 @@ public class BtuSiteConfigServiceImpl implements BtuSiteConfigService {
     @Resource(name = "sensitiveDataService")
     BtuSensitiveDataService btuSensitiveDataService;
 
+    @Resource(name = "customBtuSecurityMetadataSource")
+    BtuSecurityMetadataSource customBtuSecurityMetadataSource;
+
     @Resource
     private ServletContext servletContext;
 
@@ -51,6 +55,9 @@ public class BtuSiteConfigServiceImpl implements BtuSiteConfigService {
     public void reload() {
         // reload site config bean
         reloadSiteConfigBean();
+
+        // reload path control map
+        customBtuSecurityMetadataSource.reloadResourceDefine();
 
         // reload related service setting
         btuEmailService.reload();

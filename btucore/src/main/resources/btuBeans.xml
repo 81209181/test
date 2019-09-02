@@ -79,6 +79,12 @@
     <alias name="btuAuditTrailService" alias="auditTrailService"/>
     <bean id="btuAuditTrailService" class="com.hkt.btu.common.core.service.impl.BtuAuditTrailServiceImpl"/>
 
+    <alias name="btuConfigParamService" alias="configParamService"/>
+    <bean id="btuConfigParamService" class="com.hkt.btu.common.core.service.impl.BtuConfigParamServiceImpl"/>
+
+    <alias name="btuEmailService" alias="emailService"/>
+    <bean id="btuEmailService" class="com.hkt.btu.common.core.service.impl.BtuEmailServiceImpl"/>
+
 
     <!--  Populator  -->
     <alias name="btuSiteConfigBeanPopulator" alias="siteConfigBeanPopulator"/>
