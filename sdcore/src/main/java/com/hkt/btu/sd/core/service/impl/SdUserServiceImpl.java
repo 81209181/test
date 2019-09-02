@@ -35,6 +35,7 @@ import javax.mail.MessagingException;
 import javax.naming.NamingException;
 import java.security.GeneralSecurityException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserService {
     private static final Logger LOG = LogManager.getLogger(SdUserServiceImpl.class);
@@ -480,20 +481,30 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
                 userId, email, name));
 
         Set<GrantedAuthority> authorities = currentUserBean.getAuthorities();
+        List<String> roleIdList = authorities.stream().map(auth -> {
+            String roleId = null;
+            if (auth instanceof SimpleGrantedAuthority) {
+                roleId = auth.getAuthority();
+            }
+            return roleId;
+        }).collect(Collectors.toList());
+
+        boolean flag = userRoleService.isFlag(roleIdList);
+
         List<SdUserEntity> sdUserEntityList = new LinkedList<>();
 
         Integer totalCount = 0;
 
-        for (GrantedAuthority authority : authorities) {
-            if (authority instanceof SimpleGrantedAuthority) {
-                String roleId = authority.getAuthority();
-                // todo: SYS_ADMIN should find everyone
-                // todo: for user with role TH__TEAM_A and TH__TEAM_B, should see both TEAM_A and TEAM_B users
-                // todo: use final String for TH__
+        for (String roleId : roleIdList) {
+            if (flag) {
+                if (roleId.contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR)) {
+                    totalCount += sdUserMapper.countSearchUser(roleId, userId, email, name);
+                    sdUserEntityList.addAll(sdUserMapper.searchUser(offset, pageSize, roleId, userId, email, name));
+                }
+            } else {
                 if (SdUserRoleEntity.SYS_ADMIN.equals(roleId)) {
                     totalCount += sdUserMapper.countSearchUser(roleId, userId, email, name);
                     sdUserEntityList = sdUserMapper.searchUser(offset, pageSize, roleId, userId, email, name);
-                    break;
                 }
                 if (roleId.contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR)) {
                     totalCount += sdUserMapper.countSearchUser(roleId, userId, email, name);
@@ -514,6 +525,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
         return new PageImpl<>(sdUserBeanList, pageable, totalCount);
     }
+
 
     /**
      * Return company id that the current user belongs and has access to,
