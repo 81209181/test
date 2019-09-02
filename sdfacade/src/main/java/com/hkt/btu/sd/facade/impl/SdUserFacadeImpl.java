@@ -204,6 +204,16 @@ public class SdUserFacadeImpl implements SdUserFacade {
         return null;
     }
 
+    @Override
+    public ChangeUserTypeResultData changeUserTypeToPccwOrHktUser(ChangeUserTypeFormData changeUserTypeFormData) {
+        return null;
+    }
+
+    @Override
+    public ChangeUserTypeResultData changeUserTypeToLdapUser(ChangeUserTypeFormData changeUserTypeFormData) {
+        return null;
+    }
+
 
     public String activateUser(String userId) {
         try {

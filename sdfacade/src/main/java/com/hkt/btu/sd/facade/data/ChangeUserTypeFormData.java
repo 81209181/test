@@ -5,7 +5,6 @@ import com.hkt.btu.common.facade.data.DataInterface;
 public class ChangeUserTypeFormData implements DataInterface {
 
     public static final String PCCW_HKT_USER = "pccw-hkt-user";
-    public static final String NON_PCCW_HKT_USER = "non-pccw-hkt-user";
     public static final String LDAP_USER = "ldap-user";
 
     private String name;

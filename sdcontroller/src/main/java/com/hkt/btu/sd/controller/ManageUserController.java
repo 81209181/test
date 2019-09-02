@@ -141,15 +141,29 @@ public class ManageUserController {
                                  @PathVariable("userType") String userType,
                                  @ModelAttribute("changeUserTypeFormData") ChangeUserTypeFormData changeUserTypeFormData) {
         model.addAttribute("oldUserId", userId);
-        if (userType.equals(ChangeUserTypeFormData.PCCW_HKT_USER)) {
+        if (ChangeUserTypeFormData.PCCW_HKT_USER.equals(userType)) {
             return "/admin/manageUser/changeUserType/updateUserTypeToPccwOrHktUser";
-        } else if (userType.equals(ChangeUserTypeFormData.NON_PCCW_HKT_USER)) {
-
-        } else if (userType.equals(ChangeUserTypeFormData.LDAP_USER)) {
-
+        } else if (ChangeUserTypeFormData.LDAP_USER.equals(userType)) {
+            return "/admin/manageUser/changeUserType/updateUserTypeToLdapUser";
         }
         return null;
     }
+
+
+    @PostMapping("/edit-user/changeUserType/{userType}")
+    public String changeUserType(final RedirectAttributes redirectAttributes,
+                                 String userId,
+                                 @PathVariable("userType") String userType,
+                                 @ModelAttribute("changeUserTypeFormData")ChangeUserTypeFormData changeUserTypeFormData){
+        if (ChangeUserTypeFormData.PCCW_HKT_USER.equals(userType)) {
+            // Change User to  PCCW_HKT_USER
+        }
+        if (ChangeUserTypeFormData.LDAP_USER.equals(userType)) {
+            // Change User to LDAP_USER
+        }
+        return null;
+    }
+
 
     @GetMapping("/edit-user/get-user")
     public ResponseEntity<?> getUserById(@RequestParam String userId) {
