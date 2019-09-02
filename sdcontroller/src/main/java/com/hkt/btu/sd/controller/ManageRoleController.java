@@ -56,18 +56,20 @@ public class ManageRoleController {
 
     @PostMapping("/edit-user-role")
     public ResponseEntity<?> editUserForm(@RequestParam String roleId, @RequestParam String roleDesc, @RequestParam String status) {
+        // check input // todo: move input checking to facade layer
         if (StringUtils.isEmpty(roleId)) {
             return ResponseEntity.badRequest().body("Empty role id!");
-        }
-        if (StringUtils.isEmpty(roleDesc)) {
+        } else if (StringUtils.isEmpty(roleDesc)) {
             return ResponseEntity.badRequest().body("Empty role desc!");
-        }
-        if (StringUtils.isEmpty(status)) {
+        } else if (StringUtils.isEmpty(status)) {
             return ResponseEntity.badRequest().body("Empty status!");
         }
+
+        // update role
         if (userRoleFacade.updateUserRole(roleId, roleDesc, status)) {
             return ResponseEntity.ok().body("User Role update success.");
+        } else {
+            return ResponseEntity.badRequest().body("Cannot update User Role.");
         }
-        return ResponseEntity.badRequest().body("Cannot update User Role.");
     }
 }

@@ -37,7 +37,7 @@ public class ApiServiceImpl implements ApiService {
     }
 
     @Override
-    public void reloadAllCached() {
+    public void reloadAllCached() {  // todo: call this in SdSiteConfigFacadeImpl.reload()
         reloadCached(SiteInterfaceBean.API_BES.API_NAME);
         reloadCached(SiteInterfaceBean.API_ITSM.API_NAME);
         reloadCached(SiteInterfaceBean.API_ITSM_RESTFUL.API_NAME);
@@ -49,14 +49,17 @@ public class ApiServiceImpl implements ApiService {
     public synchronized void reloadCached(String apiName) {
         // reload all cached for input systemName
         Map<String, Object> configParamByConfigGroup = sdConfigParamService.getConfigParamByConfigGroup(apiName, true);
+        // todo: what if apiName data not found?
 
         // populate bean
         SiteInterfaceBean bean = new SiteInterfaceBean();
+        // todo: directly set the bean, no need for loop
+        // bean.setSystemName( (String) configParamByConfigGroup.get("systemName") );
+        // todo: add final String in SiteInterfaceBean for systemName, url...
 
         for(String key : configParamByConfigGroup.keySet()){
             String value = (String) configParamByConfigGroup.get(key);
-
-            if (key.equalsIgnoreCase("systemName")) {
+            if (key.equalsIgnoreCase(SiteInterfaceBean.API_CONFIG_KEY_SYSTEM_NAME)) {
                 bean.setSystemName(value);
             }else if (key.equalsIgnoreCase("url")){
                 bean.setUrl(value);
