@@ -3,18 +3,19 @@
       layout:decorate="~{fragments/layout}"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Create LDAP User</title>
+    <title>Change User Type To LDAP User</title>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
 
-    <h1>Create LDAP User Form</h1>
+    <h1>Change User Type To LDAP User</h1>
 
-    <form class="row" th:action="@{/admin/manage-user/create-ldap-user}" th:object="${changeUserTypeFormData}" method="post">
+    <form class="row" id="userTypeForm" th:action="@{/admin/manage-user/changeUserType/ldap-user}" th:object="${changeUserTypeFormData}" method="post">
         <div class="col-md-12">
             <div class="d-inline-block col-md-5 form-group align-top">
+                <input type="hidden" th:value="${oldUserId}" name="userId">
                 <label>Employee Number</label>
-                <input type="text" th:field="*{newUserId}" class="form-control" placeholder="Your StaffId" required>
+                <input type="text" th:field="*{newUserId}" class="form-control" placeholder="Your StaffId" maxlength="8" required>
 
                 <label>Name</label>
                 <input type="text" th:field="*{name}" class="form-control" placeholder="Your Name" maxlength="100" required>
@@ -36,10 +37,10 @@
 
         <div class="col-md-12">
             <div class="d-inline-block col-md-10 form-group">
-                <button type="submit" class="btn btn-lg btn-primary float-right"><i class="fab fa-telegram-plane"></i> Submit</button>
+                <button type="submit" class="btn btn-lg btn-primary float-right">
+                    <i class="fab fa-telegram-plane"></i> Submit</button>
             </div>
         </div>
-
     </form>
 </div>
 </body>

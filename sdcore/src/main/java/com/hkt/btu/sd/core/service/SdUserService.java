@@ -25,6 +25,13 @@ public interface SdUserService extends BtuUserService {
 
     boolean isAdminUser();
 
+
+    String changeUserTypeToPCCWOrHktUser(String oldUserId, String name, String mobile, String employeeNumber, String email)
+            throws InvalidInputException, UserNotFoundException;
+
+    String changeUserTypeToLdapUser(String oldUserId, String name, String mobile, String employeeNumber, String ldapDomain)
+            throws InvalidInputException, UserNotFoundException;
+
     SdUserBean getUserByUserId(String userId) throws UserNotFoundException;
 
     Page<SdUserBean> searchUser(Pageable pageable, String userId, String email, String name);

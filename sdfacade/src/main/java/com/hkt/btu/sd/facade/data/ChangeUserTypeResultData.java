@@ -7,9 +7,14 @@ public class ChangeUserTypeResultData implements DataInterface {
     private String userId;
     private String errorMsg;
 
-    public ChangeUserTypeResultData of(String userId, String errorMsg) {
-        return new ChangeUserTypeResultData(userId, errorMsg);
+    public static ChangeUserTypeResultData ofMsg(String errorMsg) {
+        return new ChangeUserTypeResultData(null,errorMsg);
     }
+
+    public static ChangeUserTypeResultData ofUser(String userId) {
+        return new ChangeUserTypeResultData(userId, null);
+    }
+
 
     private ChangeUserTypeResultData(String userId, String errorMsg) {
         this.userId = userId;

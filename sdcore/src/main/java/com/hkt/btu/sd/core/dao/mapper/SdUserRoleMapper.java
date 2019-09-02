@@ -15,11 +15,13 @@ public interface SdUserRoleMapper {
 
     SdUserRoleEntity getUserRoleByRoleId(@Param("roleId") String roleId);
 
-    List<SdUserRoleEntity> getUserRoleByUserId(@Param("userId") String userId, @Param("status") String status);
+    List<SdUserRoleEntity> getUserRoleByUserIdAndStatus(@Param("userId") String userId, @Param("status") String status);
 
     List<SdUserRoleEntity> getParentRoleByRoleId(@Param("roleId") String roleId);
 
     List<SdUserRoleEntity> getEligibleRolesByCurrentUserRole(@Param("roleId") String roleId, @Param("status") String status);
+
+    List<SdUserRoleEntity> getUserRoleByUserId(@Param("userId") String userId);
 
     void insertUserUserRole(@Param("userId") String userId, @Param("roleId") String roleId);
 

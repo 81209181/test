@@ -150,20 +150,39 @@ public class ManageUserController {
     }
 
 
-    @PostMapping("/edit-user/changeUserType/{userType}")
+    @PostMapping("/changeUserType/pccw-hkt-user")
     public String changeUserType(final RedirectAttributes redirectAttributes,
-                                 String userId,
-                                 @PathVariable("userType") String userType,
-                                 @ModelAttribute("changeUserTypeFormData")ChangeUserTypeFormData changeUserTypeFormData){
-        if (ChangeUserTypeFormData.PCCW_HKT_USER.equals(userType)) {
-            // Change User to  PCCW_HKT_USER
+                                 @ModelAttribute("changeUserTypeFormData") ChangeUserTypeFormData changeUserTypeFormData) {
+        // Change User to  PCCW_HKT_USER
+        ChangeUserTypeResultData changeUserTypeResultData = userFacade.changeUserTypeToPccwOrHktUser(changeUserTypeFormData);
+        String newUserId = changeUserTypeResultData == null ? null : changeUserTypeResultData.getUserId();
+        String errorMsg = changeUserTypeResultData == null ? "No create result." : changeUserTypeResultData.getErrorMsg();
+        if (newUserId == null) {
+            redirectAttributes.addFlashAttribute(PageMsgController.ERROR_MSG, errorMsg);
+            redirectAttributes.addFlashAttribute("createUserFormData", changeUserTypeResultData);
+            return "redirect:/admin/manage-user/edit-user/changeUserType/pccw-hkt-user?userId=" + changeUserTypeFormData.getUserId();
+        } else {
+            redirectAttributes.addFlashAttribute(PageMsgController.INFO_MSG, "Change user.");
+            return "redirect:/admin/manage-user/edit-user?userId=" + newUserId;
         }
-        if (ChangeUserTypeFormData.LDAP_USER.equals(userType)) {
-            // Change User to LDAP_USER
-        }
-        return null;
     }
 
+    @PostMapping("/changeUserType/ldap-user")
+    public String changeLdapUserType(final RedirectAttributes redirectAttributes,
+                                     @ModelAttribute("changeUserTypeFormData") ChangeUserTypeFormData changeUserTypeFormData) {
+        // Change User to LDAP_USER
+        ChangeUserTypeResultData changeUserTypeResultData = userFacade.changeUserTypeToLdapUser(changeUserTypeFormData);
+        String newUserId = changeUserTypeResultData == null ? null : changeUserTypeResultData.getUserId();
+        String errorMsg = changeUserTypeResultData == null ? "No create result." : changeUserTypeResultData.getErrorMsg();
+        if (newUserId == null) {
+            redirectAttributes.addFlashAttribute(PageMsgController.ERROR_MSG, errorMsg);
+            redirectAttributes.addFlashAttribute("createUserFormData", changeUserTypeResultData);
+            return "redirect:/admin/manage-user/edit-user/changeUserType/ldap-user?userId=" + changeUserTypeFormData.getUserId();
+        } else {
+            redirectAttributes.addFlashAttribute(PageMsgController.INFO_MSG, "Change user.");
+            return "redirect:/admin/manage-user/edit-user?userId=" + newUserId;
+        }
+    }
 
     @GetMapping("/edit-user/get-user")
     public ResponseEntity<?> getUserById(@RequestParam String userId) {
@@ -213,7 +232,6 @@ public class ManageUserController {
     @GetMapping("/search-user")
     public String searchUser(final Model model,
                              @ModelAttribute("userGroupOptionList") LinkedList<SdUserGroupData> userGroupOptionList) {
-        //userGroupOptionList = sdUserGroupFacade.getEligibleUserGroupList();
         if (!CollectionUtils.isEmpty(userGroupOptionList)) {
             model.addAttribute("userGroupOptionList", userGroupOptionList);
         }

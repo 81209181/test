@@ -37,7 +37,9 @@ public class BtuLdapServiceImpl implements BtuLdapService {
         try {
             ctx = getContext(ldapURL, dn, pwd);
         } finally {
-            if (ctx != null) ctx.close();
+            if (ctx != null) {
+                ctx.close();
+            }
         }
     }
 
@@ -55,7 +57,9 @@ public class BtuLdapServiceImpl implements BtuLdapService {
             LOG.error("User not found: " + staffId + "\nLDAPURL: " + ldapURL);
             throw e;
         } finally {
-            if (ctx != null) ctx.close();
+            if (ctx != null) {
+                ctx.close();
+            }
         }
     }
 

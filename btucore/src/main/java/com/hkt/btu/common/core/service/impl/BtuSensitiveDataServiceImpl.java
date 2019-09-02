@@ -50,7 +50,9 @@ public class BtuSensitiveDataServiceImpl implements BtuSensitiveDataService {
 
     @Override
     public String decryptToStringSafe(byte[] cipherMessage) {
-        if (cipherMessage == null) return null;
+        if (cipherMessage == null) {
+            return null;
+        }
 
         try {
             byte[] bytePlaintext = decrypt(cipherMessage);
@@ -99,7 +101,9 @@ public class BtuSensitiveDataServiceImpl implements BtuSensitiveDataService {
 
     @Override
     public byte[] encryptFromStringSafe(String plaintext) {
-        if (StringUtils.isEmpty(plaintext)) return null;
+        if (StringUtils.isEmpty(plaintext)) {
+            return null;
+        }
 
         try {
             byte[] bytePlaintext = plaintext.getBytes();

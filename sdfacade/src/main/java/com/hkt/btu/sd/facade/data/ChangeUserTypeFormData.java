@@ -12,7 +12,16 @@ public class ChangeUserTypeFormData implements DataInterface {
     private String mobile;
     private String email;
     private String ldapDomain;
+    private String userId;
     private String newUserId;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public String getName() {
         return name;

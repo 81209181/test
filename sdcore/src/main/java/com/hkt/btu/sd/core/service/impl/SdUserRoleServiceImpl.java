@@ -96,7 +96,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     @Override
     public List<SdUserRoleBean> getUserRoleByUserId(String userId) {
         List<SdUserRoleBean> results = new LinkedList<>();
-        List<SdUserRoleEntity> userRole = sdUserRoleMapper.getUserRoleByUserId(userId, SdUserRoleEntity.ACTIVE_ROLE_STATUS);
+        List<SdUserRoleEntity> userRole = sdUserRoleMapper.getUserRoleByUserIdAndStatus(userId, SdUserRoleEntity.ACTIVE_ROLE_STATUS);
         return getSdUserRoleBeans(results, userRole);
     }
 
