@@ -490,9 +490,14 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
                 // todo: SYS_ADMIN should find everyone
                 // todo: for user with role TH__TEAM_A and TH__TEAM_B, should see both TEAM_A and TEAM_B users
                 // todo: use final String for TH__
-                if (roleId.contains("__") || roleId.equals(SdUserRoleEntity.SYS_ADMIN)) {
-                    totalCount = sdUserMapper.countSearchUser(roleId, userId, email, name);
+                if (SdUserRoleEntity.SYS_ADMIN.equals(roleId)) {
+                    totalCount += sdUserMapper.countSearchUser(roleId, userId, email, name);
                     sdUserEntityList = sdUserMapper.searchUser(offset, pageSize, roleId, userId, email, name);
+                    break;
+                }
+                if (roleId.contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR)) {
+                    totalCount += sdUserMapper.countSearchUser(roleId, userId, email, name);
+                    sdUserEntityList.addAll(sdUserMapper.searchUser(offset, pageSize, roleId, userId, email, name));
                 }
             }
         }

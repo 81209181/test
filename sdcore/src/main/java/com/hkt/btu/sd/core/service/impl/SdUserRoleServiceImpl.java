@@ -70,7 +70,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     @Override
     public List<SdUserRoleBean> getAllUserRole() {
         List<SdUserRoleBean> results = new LinkedList<>();
-        List<SdUserRoleEntity> allUserRole = sdUserRoleMapper.getAllUserRole();
+        List<SdUserRoleEntity> allUserRole = sdUserRoleMapper.getAllUserRole(null);
         return getSdUserRoleBeans(results, allUserRole);
     }
 
@@ -127,10 +127,12 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
         for (GrantedAuthority grantedAuthority : authorities) {
             if (grantedAuthority instanceof SimpleGrantedAuthority) {
                 String userRoleId = grantedAuthority.getAuthority();
+                if (userRoleId.equals(SdUserRoleEntity.SYS_ADMIN)) {
+                    userRoleEntityList = sdUserRoleMapper.getAllUserRole(SdUserRoleEntity.ACTIVE_ROLE_STATUS);
+                    break;
+                }
                 if (userRoleId.contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR)) {
-                    userRoleEntityList = (List<SdUserRoleEntity>) ROLE_MAP.get(userRoleId);
-                } else if (userRoleId.equals(SdUserRoleEntity.SYS_ADMIN)) {
-                    userRoleEntityList = sdUserRoleMapper.getAllUserRole();
+                    userRoleEntityList.addAll((List<SdUserRoleEntity>) ROLE_MAP.get(userRoleId));
                 }
             }
         }
