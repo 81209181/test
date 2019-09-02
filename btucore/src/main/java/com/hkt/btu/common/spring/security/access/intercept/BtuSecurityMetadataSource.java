@@ -55,7 +55,7 @@ public class BtuSecurityMetadataSource implements FilterInvocationSecurityMetada
         reloadResourceDefine();
     }
 
-    public void reloadResourceDefine() {
+    public synchronized void reloadResourceDefine() {
         Map<RequestMatcher, Collection<ConfigAttribute>> newResourceMap = buildResourceMapFromDb();
 
         if (MapUtils.isEmpty(newResourceMap)) {
