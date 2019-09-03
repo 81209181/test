@@ -5,7 +5,6 @@ import com.hkt.btu.common.facade.data.DataInterface;
 public class ChangeUserTypeFormData implements DataInterface {
 
     public static final String PCCW_HKT_USER = "pccw-hkt-user";
-    public static final String NON_PCCW_HKT_USER = "non-pccw-hkt-user";
     public static final String LDAP_USER = "ldap-user";
 
     private String name;
@@ -13,7 +12,16 @@ public class ChangeUserTypeFormData implements DataInterface {
     private String mobile;
     private String email;
     private String ldapDomain;
+    private String userId;
     private String newUserId;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public String getName() {
         return name;

@@ -41,6 +41,12 @@ public interface SdUserMapper {
                         @Param("name") String name,
                         @Param("email") String email);
 
+
+    void changeUserType(@Param("userId") String userId,
+                        @Param("name") String name, @Param("mobile") String mobile, @Param("employeeNumber") String employeeNumber,
+                        @Param("ldapDomain") String ldapDomain,
+                        @Param("email") String email, @Param("modifyby") String modifyby);
+
     void updateUserPassword(@Param("userId") String userId, @Param("password") String password);
 
     void addLoginTriedByUsername(@Param("username") String username);
@@ -50,6 +56,5 @@ public interface SdUserMapper {
     void updateUserStatusByUsername(@Param("username") String username, @Param("status") String status, @Param("modifyby") String modifyby);
 
     void insertPasswordHist(@Param("userId") String userId, @Param("password") String password);
-
 
 }

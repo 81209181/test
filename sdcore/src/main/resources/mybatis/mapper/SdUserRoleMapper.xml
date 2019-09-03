@@ -19,13 +19,13 @@
         WHERE INSTR(ROLE_ID, #{indicator}) &gt; 0
     </select>
 
-    <select id="getUserRoleByUserId" resultMap="SdUserRoleEntity">
+    <select id="getUserRoleByUserIdAndStatus" resultMap="SdUserRoleEntity">
         SELECT ur.*
         FROM USER_PROFILE up
-                 INNER JOIN USER_USER_ROLE uur
-                            ON up.USER_ID = uur.USER_ID
-                 INNER JOIN USER_ROLE ur
-                            ON ur.ROLE_ID = uur.ROLE_ID
+        INNER JOIN USER_USER_ROLE uur
+        ON up.USER_ID = uur.USER_ID
+        INNER JOIN USER_ROLE ur
+        ON ur.ROLE_ID = uur.ROLE_ID
         <where>
             <if test="userId != null">
                 up.USER_ID = #{userId}
@@ -45,6 +45,11 @@
     <select id="getAllUserRole" resultMap="SdUserRoleEntity">
         SELECT *
         FROM USER_ROLE
+        <where>
+            <if test="status != null">
+                STATUS = #{status}
+            </if>
+        </where>
         ORDER BY ROLE_ID
     </select>
 
@@ -80,12 +85,22 @@
         WHERE ROLE_ID = #{roleId}
     </select>
 
+    <select id="getUserRoleByUserId" resultMap="SdUserRoleEntity">
+        SELECT ur.*
+        FROM USER_ROLE ur
+                 inner join
+             USER_USER_ROLE uur
+             on
+                 ur.ROLE_ID = uur.ROLE_ID
+        where uur.USER_ID = #{userId}
+    </select>
+
     <update id="updateUserRole">
         UPDATE USER_ROLE
-        SET ROLE_DESC = #{roleDesc},
-        STATUS = #{status},
-        MODIFYBY = #{modifyby},
-        MODIFYDATE = CURRENT_TIMESTAMP
+        SET ROLE_DESC  = #{roleDesc},
+            STATUS     = #{status},
+            MODIFYBY   = #{modifyby},
+            MODIFYDATE = CURRENT_TIMESTAMP
         WHERE ROLE_ID = #{roleId}
     </update>
 </mapper>

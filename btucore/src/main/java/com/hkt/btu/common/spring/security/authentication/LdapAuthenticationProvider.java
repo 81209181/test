@@ -101,38 +101,43 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
             int startIndex = authEx.getExplanation().indexOf("data ");
             int endIndex = 0;
 
-            if (startIndex > 0) endIndex = authEx.getExplanation().indexOf(",", startIndex + 5);
-            if (startIndex > 0 && endIndex > startIndex)
+            if (startIndex > 0) {
+                endIndex = authEx.getExplanation().indexOf(",", startIndex + 5);
+            }
+            if (startIndex > 0 && endIndex > startIndex) {
                 code = authEx.getExplanation().substring(startIndex + 5, endIndex);
+            }
 
             // log exception
             auditTrailService.insertLoginExceptionAuditTrail(userDetails, LDAP_ERROR_CODE.get(code));
-            if (code.equals("525")) {
+            if ("525".equals(code)) {
                 result = LdapError.USER_NOT_FOUND.getMsg();
-            } else if (code.equals("52e")) {
+            } else if ("52e".equals(code)) {
                 result = LdapError.INVALID_LOGIN.getMsg();
-            } else if (code.equals("530")) {
+            } else if ("530".equals(code)) {
                 result = LdapError.NOT_PERMITTED_LOGIN_TIME.getMsg();
                 throw new NotPermittedLogonException(result);
-            } else if (code.equals("531")) {
+            } else if ("531".equals(code)) {
                 result = LdapError.NOT_PERMITTED_LOGIN_WORKSTATION.getMsg();
                 throw new NotPermittedLogonException(result);
-            } else if (code.equals("532")) {
+            } else if ("532".equals(code)) {
                 result = LdapError.PWD_EXPIRED.getMsg();
                 throw new CredentialsExpiredException(result);
-            } else if (code.equals("533")) {
+            } else if ("533".equals(code)) {
                 result = LdapError.ACCOUNT_DISABLED.getMsg();
                 throw new DisabledException(result);
-            } else if (code.equals("701")) {
+            } else if ("701".equals(code)) {
                 result = LdapError.ACCOUNT_EXPIRED.getMsg();
                 throw new DisabledException(result);
-            } else if (code.equals("773")) {
+            } else if ("773".equals(code)) {
                 result = LdapError.CHANGE_PWD.getMsg();
                 throw new ChangePasswordException(result);
-            } else if (code.equals("775")) {
+            } else if ("775".equals(code)) {
                 result = LdapError.LOCK.getMsg();
                 throw new LockedException(result);
-            } else result = authEx.getExplanation();
+            } else {
+                result = authEx.getExplanation();
+            }
             LOG.debug(result);
 
             throw new BadCredentialsException(result);
