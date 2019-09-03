@@ -89,8 +89,6 @@
         <set>
             <if test="name != null">NAME=#{name},</if>
             <if test="mobile != null">MOBILE=#{mobile},</if>
-            <if test="staffId != null">STAFF_ID=#{staffId},</if>
-            <if test="ldapDomain != null">LDAP_DOMAIN=#{ldapDomain}</if>
             MODIFYDATE = CURRENT_TIMESTAMP, MODIFYBY = #{modifyby}
         </set>
         where USER_ID = #{userId}

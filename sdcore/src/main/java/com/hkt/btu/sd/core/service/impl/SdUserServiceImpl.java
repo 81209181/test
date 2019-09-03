@@ -280,7 +280,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         String name = StringUtils.equals(newName, targetUserBean.getName()) ? null : newName;
         String mobile = StringUtils.equals(newMobile, targetUserBean.getMobile()) ? null : newMobile;
         String encryptedMobile = StringUtils.isEmpty(mobile) ? null : mobile;
-        sdUserMapper.updateUser(userId, name, encryptedMobile, null, modifier.getUserId());
+        sdUserMapper.updateUser(userId, name, encryptedMobile, modifier.getUserId());
 
         // update user role
         userRoleService.updateUserRoleByUserId(userId, userRoleIdList);
@@ -480,7 +480,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
                 userId, email, name));
 
         Set<GrantedAuthority> authorities = currentUserBean.getAuthorities();
-        List<SdUserEntity> sdUserEntityList = new LinkedList<>();
+        Set<SdUserEntity> sdUserEntitySet = new HashSet<>();
 
         Integer totalCount = 0;
 
@@ -492,19 +492,20 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
                 // todo: use final String for TH__
                 if (SdUserRoleEntity.SYS_ADMIN.equals(roleId)) {
                     totalCount += sdUserMapper.countSearchUser(roleId, userId, email, name);
-                    sdUserEntityList = sdUserMapper.searchUser(offset, pageSize, roleId, userId, email, name);
+                    sdUserEntitySet.addAll(sdUserMapper.searchUser(offset, pageSize, roleId, userId, email, name));
                     break;
                 }
                 if (roleId.contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR)) {
                     totalCount += sdUserMapper.countSearchUser(roleId, userId, email, name);
-                    sdUserEntityList.addAll(sdUserMapper.searchUser(offset, pageSize, roleId, userId, email, name));
+                    sdUserEntitySet.addAll(sdUserMapper.searchUser(offset, pageSize, roleId, userId, email, name));
                 }
             }
         }
 
+
         List<SdUserBean> sdUserBeanList = new LinkedList<>();
-        if (!CollectionUtils.isEmpty(sdUserEntityList)) {
-            for (SdUserEntity sdUserEntity : sdUserEntityList) {
+        if (!CollectionUtils.isEmpty(sdUserEntitySet)) {
+            for (SdUserEntity sdUserEntity : sdUserEntitySet) {
                 SdUserBean sdUserBean = new SdUserBean();
                 sdUserBeanPopulator.populate(sdUserEntity, sdUserBean);
                 sdUserBeanPopulator.populate(sdUserEntity, sdUserBean);

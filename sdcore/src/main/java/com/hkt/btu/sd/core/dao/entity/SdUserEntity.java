@@ -3,6 +3,7 @@ package com.hkt.btu.sd.core.dao.entity;
 import com.hkt.btu.common.core.dao.entity.BaseEntity;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class SdUserEntity extends BaseEntity {
 
@@ -118,5 +119,23 @@ public class SdUserEntity extends BaseEntity {
 
     public void setLdapDomain(String ldapDomain) {
         this.ldapDomain = ldapDomain;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SdUserEntity that = (SdUserEntity) o;
+        return Objects.equals(userId, that.userId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

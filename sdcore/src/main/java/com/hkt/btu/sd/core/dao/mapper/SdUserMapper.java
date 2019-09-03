@@ -34,8 +34,7 @@ public interface SdUserMapper {
 
     // TODO: byte[] mobile, byte[] staffId
     void updateUser(@Param("userId") String userId,
-                    @Param("name") String name, @Param("mobile") String mobile, @Param("staffId") String staffId,
-                    @Param("modifyby") String modifyby);
+                    @Param("name") String name, @Param("mobile") String mobile, @Param("modifyby") String modifyby);
 
     void updateLdapUser(@Param("userId") String userId,
                         @Param("name") String name,
