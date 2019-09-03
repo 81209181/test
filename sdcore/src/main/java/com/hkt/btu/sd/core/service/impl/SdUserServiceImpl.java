@@ -487,9 +487,6 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         for (GrantedAuthority authority : authorities) {
             if (authority instanceof SimpleGrantedAuthority) {
                 String roleId = authority.getAuthority();
-                // todo: SYS_ADMIN should find everyone
-                // todo: for user with role TH__TEAM_A and TH__TEAM_B, should see both TEAM_A and TEAM_B users
-                // todo: use final String for TH__
                 if (SdUserRoleEntity.SYS_ADMIN.equals(roleId)) {
                     totalCount += sdUserMapper.countSearchUser(roleId, userId, email, name);
                     sdUserEntitySet.addAll(sdUserMapper.searchUser(offset, pageSize, roleId, userId, email, name));
