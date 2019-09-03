@@ -1,6 +1,6 @@
 package com.hkt.btu.sd.facade.impl;
 
-import com.hkt.btu.sd.core.service.ApiService;
+import com.hkt.btu.sd.core.service.SdApiService;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.ItsmApiFacade;
@@ -19,7 +19,7 @@ import java.util.List;
 public class ItsmApiFacadeImpl extends AbstractRestfulApiFacade implements ItsmApiFacade {
 
     @Resource(name = "apiService")
-    ApiService apiService;
+    SdApiService apiService;
 
     @Override
     protected SiteInterfaceBean getTargetApiSiteInterfaceBean() {

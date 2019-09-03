@@ -15,5 +15,6 @@ public interface SdUserRoleService {
     List<SdUserRoleBean> getEligibleUserRoleGrantList();
     boolean isEligibleToGrantUserRole(List<String> roleIdList);
     void updateUserRoleByUserId(String userId, List<String> roleIdList);
-    boolean updateUserRole(String roleId, String roleDesc, String status);
+    void updateUserRole(String roleId, String roleDesc, String status);
+    boolean isFlag(List<String> roleIdList);
 }

@@ -516,6 +516,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         return new PageImpl<>(sdUserBeanList, pageable, totalCount);
     }
 
+
     /**
      * Return company id that the current user belongs and has access to,
      * return null if there is no limitation.
