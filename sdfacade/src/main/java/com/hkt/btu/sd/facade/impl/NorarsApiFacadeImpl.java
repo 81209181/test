@@ -1,6 +1,6 @@
 package com.hkt.btu.sd.facade.impl;
 
-import com.hkt.btu.sd.core.service.ApiService;
+import com.hkt.btu.sd.core.service.SdApiService;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.NorarsApiFacade;
@@ -15,7 +15,7 @@ import javax.ws.rs.core.MediaType;
 public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements NorarsApiFacade {
 
     @Resource(name = "apiService")
-    ApiService apiService;
+    SdApiService apiService;
 
     @Override
     public NorarsBsnData getBsnByDn(String dn) {

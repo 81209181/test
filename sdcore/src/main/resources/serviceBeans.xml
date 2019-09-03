@@ -45,10 +45,13 @@
 
     <alias name="sdUserRoleService" alias="roleService"/>
     <bean id="sdUserRoleService" class="com.hkt.btu.sd.core.service.impl.SdUserRoleServiceImpl"/>
-    <bean id="apiService" class="com.hkt.btu.sd.core.service.impl.ApiServiceImpl"/>
+    <bean id="apiService" class="com.hkt.btu.sd.core.service.impl.SdApiServiceImpl"/>
 
     <alias name="sdSiteService" alias="siteService"/>
     <bean id="sdSiteService" class="com.hkt.btu.sd.core.service.impl.SdSiteServiceImpl"/>
+
+    <alias name="sdSiteConfigService" alias="siteConfigService"/>
+    <bean id="sdSiteConfigService" class="com.hkt.btu.sd.core.service.impl.SdSiteConfigServiceImpl"/>
 
     <!-- Populator -->
     <alias name="sdUserBeanPopulator" alias="userBeanPopulator"/>
