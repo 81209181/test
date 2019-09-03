@@ -5,6 +5,7 @@ import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
 import com.hkt.btu.sd.facade.SdUserRoleFacade;
 import com.hkt.btu.sd.facade.data.SdUserRoleData;
 import com.hkt.btu.sd.facade.populator.SdUserRoleDataPopulator;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -98,7 +99,16 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
     }
 
     @Override
-    public Boolean updateUserRole(String roleId, String roleDesc, String status) {
-        return sdUserRoleService.updateUserRole(roleId, roleDesc, status);
+    public String updateUserRole(String roleId, String roleDesc, String status) {
+        if (StringUtils.isEmpty(roleId)) {
+            return "Empty role id.";
+        } else if (StringUtils.isEmpty(roleDesc)) {
+            return "Empty role desc.";
+        } else if (StringUtils.isEmpty(status)) {
+            return "Empty status.";
+        }
+
+        sdUserRoleService.updateUserRole(roleId, roleDesc, status);
+        return null;
     }
 }

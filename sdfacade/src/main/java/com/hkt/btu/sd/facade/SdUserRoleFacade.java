@@ -19,5 +19,5 @@ public interface SdUserRoleFacade {
 
     HashMap<String, SdUserRoleData> getUserRoleMap(List<SdUserRoleData> userGroupDataList);
 
-    Boolean updateUserRole(String roleId, String roleDesc, String status);
+    String updateUserRole(String roleId, String roleDesc, String status);
 }

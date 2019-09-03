@@ -5,8 +5,12 @@ $(document).ready(function() {
     // click event
     $('#btnUpdateUserRole').on("click",function(){
         clearAllMsg();
-        $.post('/admin/manage-role/edit-user-role',$('form').serialize(),function(res){
-            showInfoMsg(res);
+        $.post('/admin/manage-role/edit-user-role',$('form').serialize(),function(data){
+            if(data.success){
+                showInfoMsg("Updated user role.");
+            }else{
+                showErrorMsg(data.feedback);
+            }
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";
             console.log("ERROR : ", responseError);

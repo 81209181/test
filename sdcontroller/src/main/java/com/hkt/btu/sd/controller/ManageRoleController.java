@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.controller;
 
 
+import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.facade.SdUserRoleFacade;
 import com.hkt.btu.sd.facade.data.SdUserRoleData;
 import org.apache.commons.lang3.StringUtils;
@@ -56,20 +57,11 @@ public class ManageRoleController {
 
     @PostMapping("/edit-user-role")
     public ResponseEntity<?> editUserForm(@RequestParam String roleId, @RequestParam String roleDesc, @RequestParam String status) {
-        // check input // todo: move input checking to facade layer
-        if (StringUtils.isEmpty(roleId)) {
-            return ResponseEntity.badRequest().body("Empty role id!");
-        } else if (StringUtils.isEmpty(roleDesc)) {
-            return ResponseEntity.badRequest().body("Empty role desc!");
-        } else if (StringUtils.isEmpty(status)) {
-            return ResponseEntity.badRequest().body("Empty status!");
-        }
-
-        // update role
-        if (userRoleFacade.updateUserRole(roleId, roleDesc, status)) {
-            return ResponseEntity.ok().body("User Role update success.");
-        } else {
-            return ResponseEntity.badRequest().body("Cannot update User Role.");
+        String errorMsg = userRoleFacade.updateUserRole(roleId, roleDesc, status);
+        if(errorMsg==null){
+            return ResponseEntity.ok(SimpleAjaxResponse.of());
+        }else {
+            return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
         }
     }
 }

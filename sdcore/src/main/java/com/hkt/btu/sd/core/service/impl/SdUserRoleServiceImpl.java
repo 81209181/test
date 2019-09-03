@@ -187,7 +187,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     }
 
     @Override
-    public boolean updateUserRole(String roleId, String roleDesc, String status) {
-        return sdUserRoleMapper.updateUserRole(roleId, roleDesc, status, userService.getCurrentUserUserId()) > 0;
+    public void updateUserRole(String roleId, String roleDesc, String status) {
+        sdUserRoleMapper.updateUserRole(roleId, roleDesc, status, userService.getCurrentUserUserId());
     }
 }
