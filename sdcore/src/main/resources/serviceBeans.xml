@@ -45,7 +45,9 @@
 
     <alias name="sdUserRoleService" alias="roleService"/>
     <bean id="sdUserRoleService" class="com.hkt.btu.sd.core.service.impl.SdUserRoleServiceImpl"/>
-    <bean id="apiService" class="com.hkt.btu.sd.core.service.impl.SdApiServiceImpl"/>
+
+    <alias name="sdApiService" alias="apiService"/>
+    <bean id="sdApiService" class="com.hkt.btu.sd.core.service.impl.SdApiServiceImpl"/>
 
     <alias name="sdSiteService" alias="siteService"/>
     <bean id="sdSiteService" class="com.hkt.btu.sd.core.service.impl.SdSiteServiceImpl"/>

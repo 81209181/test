@@ -29,13 +29,13 @@ public class SiteInterfaceBean {
     }
 
     public static class API_CONFIG_KEY {
-        public static final String API_CONFIG_KEY_SYSTEM_NAME = "systemName";
-        public static final String API_CONFIG_KEY_URL = "url";
-        public static final String API_CONFIG_KEY_USER_NAME = "userName";
-        public static final String API_CONFIG_KEY_PASSWORD = "password";
-        public static final String API_CONFIG_KEY_X_APPKEY = "xAppkey";
-        public static final String API_CONFIG_KEY_BE_ID = "beId";
-        public static final String API_CONFIG_KEY_CHANNEL_TYPE = "channelType";
+        public static final String SYSTEM_NAME = "systemName";
+        public static final String KEY_URL = "url";
+        public static final String USER_NAME = "userName";
+        public static final String PASSWORD = "password";
+        public static final String X_APPKEY = "xAppkey";
+        public static final String BE_ID = "beId";
+        public static final String CHANNEL_TYPE = "channelType";
     }
 
     private String systemName;
