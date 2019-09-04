@@ -128,7 +128,8 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
         if (authorities.contains(new SimpleGrantedAuthority(SdUserRoleEntity.SYS_ADMIN))) {
             return;
         }
-        // TEAM_A
+
+        // find matching team head authority
         for (GrantedAuthority authority : authorities) {
             if (authority instanceof SimpleGrantedAuthority) {
                 String roleId = authority.getAuthority();
@@ -137,12 +138,12 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
                     boolean flag = roleEntityList.stream().anyMatch(role -> role.equals(th_roleId));
                     if (flag) {
                         return;
-                    } else {
-                        throw new InsufficientAuthorityException("You are no permission.");
                     }
                 }
             }
         }
+
+        throw new InsufficientAuthorityException("You are no permission.");
     }
 
 
