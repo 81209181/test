@@ -9,4 +9,8 @@
         values (SEQ_AUDIT_TRAIL_ID.nextval,#{userId}, #{action}, #{detail})
     </insert>
 
+    <delete id="houseKeep" >
+        delete AUDIT_TRAIL where CREATEDATE &lt; sysdate - interval '13' month
+    </delete>
+
 </mapper>
