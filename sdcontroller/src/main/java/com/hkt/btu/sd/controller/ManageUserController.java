@@ -11,16 +11,22 @@ import com.hkt.btu.sd.facade.data.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.session.SessionInformation;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,6 +42,9 @@ public class ManageUserController {
     SdUserRoleFacade userRoleFacade;
     @Resource(name = "auditTrailFacade")
     SdAuditTrailFacade sdAuditTrailFacade;
+
+    @Autowired
+    SessionRegistry sessionRegistry;
 
     @GetMapping({"create-ldap-user", "create-user", "create-non-pccw-hkt-user"})
     public String createUserForm(final Model model,
@@ -261,5 +270,18 @@ public class ManageUserController {
         return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
     }
 
+    @GetMapping("expireUserSession/{userId}")
+    public ResponseEntity<?> expireUserSession(@PathVariable String userId) {
+        SdUserData user = userFacade.getUserByUserId(userId);
+        if (ObjectUtils.isEmpty(user)) {
+            ResponseEntity.badRequest().body("User not found.");
+        }
+        sessionRegistry.getAllPrincipals().stream()
+                .filter(principal -> user.getUserId().equals(((User) principal).getUsername()))
+                .map(principal -> sessionRegistry.getAllSessions(principal, false))
+                .filter(allSessions -> !ObjectUtils.isEmpty(allSessions))
+                .flatMap(Collection::stream).forEach(SessionInformation::expireNow);
+        return ResponseEntity.ok("Expire user session successfully.");
 
+    }
 }
