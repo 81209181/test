@@ -1,17 +1,20 @@
 package com.hkt.btu.sd.facade.impl;
 
+import com.hkt.btu.sd.core.exception.InsufficientAuthorityException;
 import com.hkt.btu.sd.core.service.SdUserRoleService;
 import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
 import com.hkt.btu.sd.facade.SdUserRoleFacade;
+import com.hkt.btu.sd.facade.data.ChangeUserTypeResultData;
+import com.hkt.btu.sd.facade.data.EditResultData;
 import com.hkt.btu.sd.facade.data.SdUserRoleData;
 import com.hkt.btu.sd.facade.populator.SdUserRoleDataPopulator;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
 
@@ -45,19 +48,26 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
     }
 
     @Override
-    public List<String> getUserRoleByUserId(String userId) {
-        LinkedList<String> results = new LinkedList<>();
-        List<SdUserRoleBean> userRoleByUserId = sdUserRoleService.getUserRoleByUserId(userId);
-
-        if (CollectionUtils.isEmpty(userRoleByUserId)) {
-            return null;
+    public EditResultData getUserRoleByUserId(String userId) {
+        List<String> results = new ArrayList<>();
+        try {
+            List<SdUserRoleBean> userRoleBeanList = sdUserRoleService.getUserRoleByUserId(userId);
+            if (CollectionUtils.isEmpty(userRoleBeanList)) {
+                return EditResultData.error("This user no role.");
+            }
+            results = userRoleBeanList.stream().map(bean -> {
+                SdUserRoleData data = new SdUserRoleData();
+                sdUserRoleDataPopulator.populate(bean, data);
+                return data;
+            }).collect(Collectors.toList())
+                    .stream()
+                    .map(SdUserRoleData::getRoleId)
+                    .collect(Collectors.toList());
+        } catch (InsufficientAuthorityException e) {
+            return EditResultData.error(e.getMessage());
         }
 
-        for (SdUserRoleBean bean : userRoleByUserId) {
-            results.add(bean.getRoleId());
-        }
-
-        return results;
+        return EditResultData.dataList(results);
     }
 
     private List<SdUserRoleData> getSdUserRoleData(List<SdUserRoleData> results, List<SdUserRoleBean> userRoleByUserId) {
@@ -85,7 +95,7 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
 
     @Override
     public HashMap<String, SdUserRoleData> getUserRoleMap(List<SdUserRoleData> userGroupDataList) {
-        HashMap<String, SdUserRoleData> result = new HashMap<>();
+        HashMap<String, SdUserRoleData> result = new HashMap<>(16);
 
         if (CollectionUtils.isEmpty(userGroupDataList)) {
             return result;

@@ -46,9 +46,6 @@
         select *
         from USER_PROFILE
         where USER_ID = #{userId}
-        <if test="companyId != null">
-            AND COMPANY_ID = #{companyId}
-        </if>
     </select>
 
     <update id="addLoginTriedByUsername">
@@ -176,5 +173,12 @@
         <include refid="searchUserSql"/>
     </select>
 
+    <select id="queryColumnName" resultType="string">
+        select t.column_name from user_col_comments t
+        where t.table_name = #{tableName}
+    </select>
 
+    <select id="querySQL" parameterType="String" resultType="java.util.LinkedHashMap">
+        ${value}
+    </select>
 </mapper>

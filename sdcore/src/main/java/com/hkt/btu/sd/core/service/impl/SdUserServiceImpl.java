@@ -35,6 +35,7 @@ import javax.mail.MessagingException;
 import javax.naming.NamingException;
 import java.security.GeneralSecurityException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserService {
     private static final Logger LOG = LogManager.getLogger(SdUserServiceImpl.class);
@@ -124,22 +125,28 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     }
 
     @Override
-    public SdUserBean getUserByUserId(String userId) throws UserNotFoundException {
+    public SdUserBean getUserByUserId(String userId) throws UserNotFoundException,InsufficientAuthorityException {
         if (userId == null) {
             throw new UserNotFoundException("Empty user id input.");
         }
 
-        // determine company id restriction
-        Integer companyId = getCompanyIdRestriction();
+
+        // TH__TEAM_B
+        Set<GrantedAuthority> authorities = getCurrentUserBean().getAuthorities();
 
         // get user data
-        SdUserEntity sdUserEntity = sdUserMapper.getUserByUserId(userId, companyId);
+        SdUserEntity sdUserEntity = sdUserMapper.getUserByUserId(userId);
         if (sdUserEntity == null) {
             throw new UserNotFoundException("Cannot find user with id " + userId + ".");
         }
 
         // get user group data
         List<SdUserRoleEntity> roleEntityList = sdUserRoleMapper.getUserRoleByUserIdAndStatus(userId, SdUserRoleEntity.ACTIVE_ROLE_STATUS);
+
+        // get roleId
+        List<String> roleIdList = roleEntityList.stream().map(SdUserRoleEntity::getRoleId).collect(Collectors.toList());
+
+        userRoleService.checkUserRole(authorities,roleIdList);
 
         // construct bean
         SdUserBean userBean = new SdUserBean();
@@ -149,6 +156,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
         return userBean;
     }
+
 
     @Transactional
     public String createLdapUser(String name, String mobile, String employeeNumber,
@@ -280,6 +288,9 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         String name = StringUtils.equals(newName, targetUserBean.getName()) ? null : newName;
         String mobile = StringUtils.equals(newMobile, targetUserBean.getMobile()) ? null : newMobile;
         String encryptedMobile = StringUtils.isEmpty(mobile) ? null : mobile;
+
+        userRoleService.checkUserRole(modifier.getAuthorities(), userRoleIdList);
+
         sdUserMapper.updateUser(userId, name, encryptedMobile, modifier.getUserId());
 
         // update user role
@@ -300,7 +311,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         checkValidPassword(rawNewPassword);
 
         // find current user in db
-        SdUserEntity sdUserEntity = sdUserMapper.getUserByUserId(userId, null);
+        SdUserEntity sdUserEntity = sdUserMapper.getUserByUserId(userId);
         if (sdUserEntity == null) {
             throw new UserNotFoundException("User not found in database (" + userId + ").");
         }
@@ -333,7 +344,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     @Transactional
     public void updateUserPwd(String userId, String rawOldPassword, String rawNewPassword)
             throws UserNotFoundException, InvalidPasswordException {
-        SdUserEntity sdUserEntity = sdUserMapper.getUserByUserId(userId, null);
+        SdUserEntity sdUserEntity = sdUserMapper.getUserByUserId(userId);
         if (sdUserEntity == null) {
             throw new UserNotFoundException("User not found in database (" + userId + ").");
         }

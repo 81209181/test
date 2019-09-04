@@ -3,6 +3,7 @@ package com.hkt.btu.sd.core.service.impl;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
 import com.hkt.btu.sd.core.dao.entity.SdUserRoleEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdUserRoleMapper;
+import com.hkt.btu.sd.core.exception.InsufficientAuthorityException;
 import com.hkt.btu.sd.core.exception.InvalidInputException;
 import com.hkt.btu.sd.core.service.SdConfigParamService;
 import com.hkt.btu.sd.core.service.SdUserRoleService;
@@ -94,9 +95,19 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     }
 
     @Override
-    public List<SdUserRoleBean> getUserRoleByUserId(String userId) {
+    public List<SdUserRoleBean> getUserRoleByUserId(String userId) throws InsufficientAuthorityException {
         List<SdUserRoleBean> results = new LinkedList<>();
+
+        // Get Current User Role
+        Set<GrantedAuthority> authorities = userService.getCurrentUserBean().getAuthorities();
+        // Get User Role By UserID
         List<SdUserRoleEntity> userRole = sdUserRoleMapper.getUserRoleByUserIdAndStatus(userId, SdUserRoleEntity.ACTIVE_ROLE_STATUS);
+        // Get RoleId
+        List<String> roleIdList = userRole.stream().map(SdUserRoleEntity::getRoleId).collect(Collectors.toList());
+
+        // Check Current User Role
+        checkUserRole(authorities, roleIdList);
+
         return getSdUserRoleBeans(results, userRole);
     }
 
@@ -109,9 +120,31 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
             sdUserRoleBeanPopulator.populate(entity, bean);
             results.add(bean);
         }
-
         return results;
     }
+
+    @Override
+    public void checkUserRole(Set<GrantedAuthority> authorities, List<String> roleEntityList) throws InsufficientAuthorityException {
+        if (authorities.contains(new SimpleGrantedAuthority(SdUserRoleEntity.SYS_ADMIN))) {
+            return;
+        }
+        // TEAM_A
+        for (GrantedAuthority authority : authorities) {
+            if (authority instanceof SimpleGrantedAuthority) {
+                String roleId = authority.getAuthority();
+                if (roleId.contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR)) {
+                    String th_roleId = StringUtils.substringAfter(roleId, SdUserRoleEntity.TEAM_HEAD_INDICATOR);
+                    boolean flag = roleEntityList.stream().anyMatch(role -> role.equals(th_roleId));
+                    if (flag) {
+                        return;
+                    } else {
+                        throw new InsufficientAuthorityException("You are no permission.");
+                    }
+                }
+            }
+        }
+    }
+
 
     @Override
     public List<SdUserRoleBean> getEligibleUserRoleGrantList() {
@@ -125,17 +158,19 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
         // extract eligible roles of current user role
         List<SdUserRoleEntity> userRoleEntityList = new LinkedList<>();
 
-        List<String> roleIdList = authorities.stream().map(auth -> {
-            String roleId = null;
-            if (auth instanceof SimpleGrantedAuthority) {
-                roleId = auth.getAuthority();
+
+        for (GrantedAuthority authority : authorities) {
+            if (authority instanceof SimpleGrantedAuthority) {
+                String roleId = authority.getAuthority();
+                if (roleId.equals(SdUserRoleEntity.SYS_ADMIN)) {
+                    userRoleEntityList = sdUserRoleMapper.getAllUserRole(SdUserRoleEntity.ACTIVE_ROLE_STATUS);
+                    break;
+                }
+                if (roleId.contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR)) {
+                    userRoleEntityList.addAll((List<SdUserRoleEntity>) ROLE_MAP.get(roleId));
+                }
             }
-            return roleId;
-        }).collect(Collectors.toList());
-
-        boolean flag = isFlag(roleIdList);
-
-        userRoleEntityList = getSdUserRoleEntities(userRoleEntityList, roleIdList, flag);
+        }
 
         if (CollectionUtils.isNotEmpty(userRoleEntityList)) {
             List<SdUserRoleBean> eligibleUserRoleList = userRoleEntityList.stream().map(entity -> {
@@ -192,46 +227,5 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     @Override
     public void updateUserRole(String roleId, String roleDesc, String status) {
         sdUserRoleMapper.updateUserRole(roleId, roleDesc, status, userService.getCurrentUserUserId());
-    }
-
-
-    /**
-     * If User have Admin and TH__ Role return true
-     *
-     * @param roleIdList
-     * @return
-     */
-    @Override
-    public boolean isFlag(List<String> roleIdList) {
-        boolean flagA = roleIdList.stream().anyMatch(role -> SdUserRoleEntity.SYS_ADMIN.equals(role));
-        boolean flagB = roleIdList.stream().anyMatch(role -> role.contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR));
-        return flagA && flagB;
-    }
-
-    /**
-     * Get users by role
-     * If user have Admin and TH__, end up only seeing TH__'s user.
-     *
-     * @param userRoleEntityList
-     * @param roleIdList
-     * @param flag
-     * @return
-     */
-    private List<SdUserRoleEntity> getSdUserRoleEntities(List<SdUserRoleEntity> userRoleEntityList, List<String> roleIdList, boolean flag) {
-        for (String userRoleId : roleIdList) {
-            if (flag) {
-                if (userRoleId.contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR)) {
-                    userRoleEntityList.addAll((List<SdUserRoleEntity>) ROLE_MAP.get(userRoleId));
-                }
-            } else {
-                if (userRoleId.equals(SdUserRoleEntity.SYS_ADMIN)) {
-                    userRoleEntityList = sdUserRoleMapper.getAllUserRole(SdUserRoleEntity.ACTIVE_ROLE_STATUS);
-                }
-                if (userRoleId.contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR)) {
-                    userRoleEntityList.addAll((List<SdUserRoleEntity>) ROLE_MAP.get(userRoleId));
-                }
-            }
-        }
-        return userRoleEntityList;
     }
 }

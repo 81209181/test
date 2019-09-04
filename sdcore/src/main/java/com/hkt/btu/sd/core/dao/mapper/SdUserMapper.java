@@ -6,6 +6,7 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface SdUserMapper {
@@ -16,7 +17,7 @@ public interface SdUserMapper {
 
     SdUserEntity getLdapUserByUserId(String userId);
 
-    SdUserEntity getUserByUserId(String userId, Integer companyId);
+    SdUserEntity getUserByUserId(String userId);
 
 
     SdUserEntity getUserByLdapDomain(@Param("ldapDomain") String ldapDomain);
@@ -56,4 +57,7 @@ public interface SdUserMapper {
 
     void insertPasswordHist(@Param("userId") String userId, @Param("password") String password);
 
+    List<String> queryColumnName(@Param("tableName") String tableName);
+
+    List<Map<String, Object>> querySQL(String value);
 }

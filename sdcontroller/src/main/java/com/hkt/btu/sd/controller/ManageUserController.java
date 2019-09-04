@@ -115,13 +115,19 @@ public class ManageUserController {
     @GetMapping("/edit-user")
     public String editUserForm(final Model model,
                                @RequestParam String userId,
+                               final RedirectAttributes redirectAttributes,
                                @ModelAttribute("editUserId") String editUserId,
                                @ModelAttribute("userRoleDataMap") HashMap<String, SdUserRoleData> userRoleDataMap) {
         if (userId != null) {
             model.addAttribute("editUserId", userId);
-            List<String> userRole = userRoleFacade.getUserRoleByUserId(userId);
+            EditResultData result = userRoleFacade.getUserRoleByUserId(userId);
+            String errorMsg = result == null ? "" : result.getErrorMsg();
+            List<String> userRole = result == null ? null : (List<String>) result.getList();
             if (CollectionUtils.isNotEmpty(userRole)) {
                 model.addAttribute("userRoleList", userRole);
+            } else {
+                redirectAttributes.addFlashAttribute(PageMsgController.ERROR_MSG, errorMsg);
+                return "redirect:search-user";
             }
         }
 
@@ -191,6 +197,7 @@ public class ManageUserController {
         }
 
         SdUserData sdUserData = userFacade.getUserByUserId(userId);
+
         if (sdUserData == null) {
             return ResponseEntity.badRequest().body("User not found.");
         } else {

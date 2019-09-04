@@ -17,6 +17,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -25,6 +27,7 @@ import java.security.GeneralSecurityException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class SdUserFacadeImpl implements SdUserFacade {
     private static final Logger LOG = LogManager.getLogger(SdUserFacadeImpl.class);
@@ -178,11 +181,6 @@ public class SdUserFacadeImpl implements SdUserFacade {
         String mobile = StringUtils.trim(updateUserFormData.getMobile());
         String staffId = StringUtils.trim(updateUserFormData.getStaffId());
         List<String> userRoleIdList = updateUserFormData.getUserRoleIdList();
-
-        Boolean isAdmin = updateUserFormData.isUserGroupAdmin();
-        Boolean isUser = updateUserFormData.isUserGroupUser();
-        Boolean isCAdmin = updateUserFormData.isUserGroupCAdmin();
-        Boolean isCUser = updateUserFormData.isUserGroupCUser();
 
         // check input
         try {
@@ -433,10 +431,11 @@ public class SdUserFacadeImpl implements SdUserFacade {
         try {
             // get user info
             SdUserBean sdUserBean = sdUserService.getUserByUserId(userId);
+
             userDataPopulator.populate(sdUserBean, userData);
             userDataPopulator.populateSensitiveData(sdUserBean, userData);
 
-        } catch (UserNotFoundException e) {
+        } catch (UserNotFoundException | InsufficientAuthorityException e) {
             LOG.warn(e.getMessage());
             return null;
         }

@@ -65,7 +65,7 @@
                     <div class="form-check form-check-inline" th:each="userRole : ${userRoleOptionDataMap}">
                         <input class="form-check-input" type="checkbox" name="userRoleId"
                                th:value="${userRole.value.getRoleId()}"
-                               th:attr="checked=${userRoleList.contains(userRole.value.getRoleId())?true:false}">
+                               th:attr="checked=${userRoleList!=null?(userRoleList.contains(userRole.value.getRoleId())?true:false): false}">
                         <label class="form-check-label" th:text="${userRole.key}"></label>
                     </div>
                 </div>
