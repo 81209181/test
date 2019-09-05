@@ -593,10 +593,6 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         if (user == null) {
             throw new UserNotFoundException("User not Exist.");
         }
-        SdUserEntity userByEmail = sdUserMapper.getUserByEmail(email);
-        if (userByEmail != null) {
-            throw new InvalidInputException("The email already exists.");
-        }
 
         String userId = SdUserBean.CREATE_USER_PREFIX.PCCW_HKT_USER + employeeNumber;
         List<SdUserRoleEntity> userRoleByUserId = sdUserRoleMapper.getUserRoleByUserId(oldUserId);
