@@ -104,6 +104,7 @@
     <update id="changeUserType">
         update USER_PROFILE
         <set>
+            LDAP_DOMAIN = #{ldapDomain},
             <if test="name != null">NAME=#{name},</if>
             <if test="employeeNumber != null">USER_ID=#{employeeNumber},</if>
             <if test="mobile != null">MOBILE=#{mobile},</if>
@@ -173,12 +174,4 @@
         <include refid="searchUserSql"/>
     </select>
 
-    <select id="queryColumnName" resultType="string">
-        select t.column_name from user_col_comments t
-        where t.table_name = #{tableName}
-    </select>
-
-    <select id="querySQL" parameterType="String" resultType="java.util.LinkedHashMap">
-        ${value}
-    </select>
 </mapper>

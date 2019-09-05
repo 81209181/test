@@ -57,7 +57,4 @@ public interface SdUserMapper {
 
     void insertPasswordHist(@Param("userId") String userId, @Param("password") String password);
 
-    List<String> queryColumnName(@Param("tableName") String tableName);
-
-    List<Map<String, Object>> querySQL(String value);
 }
