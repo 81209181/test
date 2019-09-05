@@ -160,6 +160,8 @@ public class ManageUserController {
             return "/admin/manageUser/changeUserType/updateUserTypeToPccwOrHktUser";
         } else if (ChangeUserTypeFormData.LDAP_USER.equals(userType)) {
             return "/admin/manageUser/changeUserType/updateUserTypeToLdapUser";
+        } else if (ChangeUserTypeFormData.NON_PCCW_HKT_USER.equals(userType)) {
+            return "/admin/manageUser/changeUserType/updateUserTypeToNonPccwOrHktUser";
         }
         return null;
     }
@@ -181,6 +183,24 @@ public class ManageUserController {
             return "redirect:/admin/manage-user/edit-user?userId=" + newUserId;
         }
     }
+
+    @PostMapping("/changeUserType/non-pccw-hkt-user")
+    public String changeNonPCCWOrUserType(final RedirectAttributes redirectAttributes,
+                                          @ModelAttribute("changeUserTypeFormData") ChangeUserTypeFormData changeUserTypeFormData) {
+        // Change User to  PCCW_HKT_USER
+        ChangeUserTypeResultData changeUserTypeResultData = userFacade.changeUserTypeToNonPccwOrHktUser(changeUserTypeFormData);
+        String newUserId = changeUserTypeResultData == null ? null : changeUserTypeResultData.getUserId();
+        String errorMsg = changeUserTypeResultData == null ? "No create result." : changeUserTypeResultData.getErrorMsg();
+        if (newUserId == null) {
+            redirectAttributes.addFlashAttribute(PageMsgController.ERROR_MSG, errorMsg);
+            redirectAttributes.addFlashAttribute("createUserFormData", changeUserTypeResultData);
+            return "redirect:/admin/manage-user/edit-user/changeUserType/non-pccw-hkt-user?userId=" + changeUserTypeFormData.getUserId();
+        } else {
+            redirectAttributes.addFlashAttribute(PageMsgController.INFO_MSG, "Change user.");
+            return "redirect:/admin/manage-user/edit-user?userId=" + newUserId;
+        }
+    }
+
 
     @PostMapping("/changeUserType/ldap-user")
     public String changeLdapUserType(final RedirectAttributes redirectAttributes,

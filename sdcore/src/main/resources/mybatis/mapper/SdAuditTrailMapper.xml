@@ -10,7 +10,8 @@
     </insert>
 
     <delete id="houseKeep" >
-        delete AUDIT_TRAIL where CREATEDATE &lt; last_day(sysdate - interval '13' month)
+        delete AUDIT_TRAIL
+        where trunc(CREATEDATE) &lt;= trunc(last_day(ADD_MONTHS(sysdate, -13)))
     </delete>
 
 </mapper>

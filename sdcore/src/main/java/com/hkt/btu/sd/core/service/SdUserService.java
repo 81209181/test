@@ -29,6 +29,9 @@ public interface SdUserService extends BtuUserService {
     String changeUserTypeToPCCWOrHktUser(String oldUserId, String name, String mobile, String employeeNumber, String email)
             throws InvalidInputException, UserNotFoundException;
 
+    String changeUserTypeToNonPCCWOrHktUser(String oldUserId, String name, String mobile, String employeeNumber, String email)
+            throws InvalidInputException, UserNotFoundException;
+
     String changeUserTypeToLdapUser(String oldUserId, String name, String mobile, String employeeNumber, String ldapDomain)
             throws InvalidInputException, UserNotFoundException;
 
