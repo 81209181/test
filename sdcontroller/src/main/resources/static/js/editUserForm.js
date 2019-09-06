@@ -18,6 +18,10 @@ function ajaxGetUser(){
             $("#edit-company-id").val(data.companyId);
             $("#edit-staff-id").val(data.staffId);
 
+            let userId = data.userId;
+
+            checkUserType(userId);
+
             if (data.ldapDomain == null) {
                 $("#btnActivateUser").show();
                 $("#btnDeactivateUser").show();
@@ -41,10 +45,6 @@ function ajaxGetUser(){
                 $("#edit-user-group-cuser").prop('checked', true);
             }
 
-            // populateSelectOptions($("#my-user-group"), data.userGroupList);
-            // $("input[name='userGroupId']:checked").each(function (){
-            //    data['userGroupId'].push($(this).val());
-            // });
 
         },
         error: function (e) {
@@ -146,6 +146,19 @@ function ajaxDeactivateUser() {
             }
         }
     });
+}
+
+function checkUserType(userId) {
+    if (userId.indexOf('T') > -1) {
+        document.getElementById("non-type").removeAttribute("hidden");
+        document.getElementById("ldap-type").removeAttribute("hidden");
+    } else if (userId.indexOf('X') > -1) {
+        document.getElementById("pccw-hkt-type").removeAttribute("hidden");
+        document.getElementById("ldap-type").removeAttribute("hidden");
+    } else {
+        document.getElementById("non-type").removeAttribute("hidden");
+        document.getElementById("pccw-hkt-type").removeAttribute("hidden");
+    }
 }
 
 $(document).ready(function() {

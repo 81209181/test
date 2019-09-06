@@ -49,11 +49,14 @@
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                        <li><a class="dropdown-item"
+                        <li id="pccw-hkt-type" hidden="hidden"><a class="dropdown-item"
                                th:href="@{/admin/manage-user/edit-user/changeUserType/pccw-hkt-user(userId=${editUserId})}">PCCW/HKT
                             User</a></li>
-                        <li><a class="dropdown-item"
+                        <li id="ldap-type" hidden="hidden"><a class="dropdown-item"
                                th:href="@{/admin/manage-user/edit-user/changeUserType/ldap-user(userId=${editUserId})}">LDAP
+                            User</a></li>
+                        <li id="non-type" hidden="hidden"><a class="dropdown-item"
+                               th:href="@{/admin/manage-user/edit-user/changeUserType/non-pccw-hkt-user(userId=${editUserId})}">Non PCCW/HKT
                             User</a></li>
                     </ul>
                 </div>

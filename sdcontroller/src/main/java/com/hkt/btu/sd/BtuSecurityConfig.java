@@ -26,7 +26,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import javax.annotation.Resource;
 
 import static com.hkt.btu.common.spring.security.web.authentication.BtuLoginUrlAuthenticationEntryPoint.LOGIN_URI;
-
+import static com.hkt.btu.common.spring.security.web.authentication.BtuLoginUrlAuthenticationEntryPoint.LOGIN_ERROR;
+import static com.hkt.btu.common.spring.security.web.authentication.BtuLoginUrlAuthenticationEntryPoint.LOGIN_ERROR_PARA_URI;
 
 @Configuration
 @EnableWebSecurity
@@ -109,8 +110,10 @@ public class BtuSecurityConfig extends WebSecurityConfigurerAdapter {
                 // session management
                 .and()
                 .sessionManagement()
+                .invalidSessionUrl(LOGIN_ERROR_PARA_URI + LOGIN_ERROR.FORBIDDEN.name())
                 .maximumSessions(1)
                 .sessionRegistry(sessionRegistry())
+                .expiredUrl(LOGIN_ERROR_PARA_URI + LOGIN_ERROR.FORBIDDEN.name())
                 .and()
 
                 // User group control over incoming uri

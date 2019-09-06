@@ -125,7 +125,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     }
 
     @Override
-    public SdUserBean getUserByUserId(String userId) throws UserNotFoundException,InsufficientAuthorityException {
+    public SdUserBean getUserByUserId(String userId) throws UserNotFoundException, InsufficientAuthorityException {
         if (userId == null) {
             throw new UserNotFoundException("Empty user id input.");
         }
@@ -146,7 +146,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         // get roleId
         List<String> roleIdList = roleEntityList.stream().map(SdUserRoleEntity::getRoleId).collect(Collectors.toList());
 
-        userRoleService.checkUserRole(authorities,roleIdList);
+        userRoleService.checkUserRole(authorities, roleIdList);
 
         // construct bean
         SdUserBean userBean = new SdUserBean();
@@ -586,28 +586,50 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             throw new InvalidInputException("You are already PCCW/HKT user.");
         }
         SdUserBean currentUserBean = (SdUserBean) getCurrentUserBean();
-        if (currentUserBean.getUserId().equals(oldUserId)) {
-            throw new InvalidInputException("Cannot change you own account.");
-        }
+
         SdUserEntity user = sdUserMapper.getLdapUserByUserId(oldUserId);
-        if (user == null) {
-            throw new UserNotFoundException("User not Exist.");
-        }
+
+        checkDuplicateUser(oldUserId, currentUserBean, user);
+
         SdUserEntity userByEmail = sdUserMapper.getUserByEmail(email);
-        if (userByEmail != null) {
-            throw new InvalidInputException("The email already exists.");
-        }
+
+        // Check User Email
+        checkUserEmailDuplicate(user.getEmail(), userByEmail.getEmail());
 
         String userId = SdUserBean.CREATE_USER_PREFIX.PCCW_HKT_USER + employeeNumber;
         List<SdUserRoleEntity> userRoleByUserId = sdUserRoleMapper.getUserRoleByUserId(oldUserId);
 
         sdUserMapper.changeUserType(oldUserId, name, mobile, userId, null, email, currentUserBean.getUserId());
+        changeUserIdInUserUserRole(oldUserId, userId, userRoleByUserId);
+
+        return userId;
+    }
+
+    @Override
+    public String changeUserTypeToNonPCCWOrHktUser(String oldUserId, String name, String mobile, String employeeNumber, String email) throws InvalidInputException, UserNotFoundException {
+        // Determine if it is already a PCCW/HKT user. UserId starts with T
+        if (oldUserId.contains(SdUserBean.CREATE_USER_PREFIX.NON_PCCW_HKT_USER)) {
+            throw new InvalidInputException("You are already PCCW/HKT user.");
+        }
+        SdUserBean currentUserBean = (SdUserBean) getCurrentUserBean();
+        SdUserEntity user = sdUserMapper.getLdapUserByUserId(oldUserId);
+
+        checkDuplicateUser(oldUserId, currentUserBean, user);
+
+        SdUserEntity userByEmail = sdUserMapper.getUserByEmail(email);
+
+        // Check User Email
+        if (StringUtils.isNotEmpty(email)) {
+            checkUserEmailDuplicate(user.getEmail(), userByEmail.getEmail());
+        }
+
+        String userId = SdUserBean.CREATE_USER_PREFIX.NON_PCCW_HKT_USER + employeeNumber;
+        List<SdUserRoleEntity> userRoleByUserId = sdUserRoleMapper.getUserRoleByUserId(oldUserId);
+
+        sdUserMapper.changeUserType(oldUserId, name, mobile, userId, null, email, currentUserBean.getUserId());
 
         // Change USER_ID IN USER_USER_ROLE
-        sdUserRoleMapper.deleteUserRoleByUserId(oldUserId);
-        for (SdUserRoleEntity entity : userRoleByUserId) {
-            sdUserRoleMapper.insertUserUserRole(userId, entity.getRoleId());
-        }
+        changeUserIdInUserUserRole(oldUserId, userId, userRoleByUserId);
 
         return userId;
     }
@@ -633,10 +655,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         sdUserMapper.changeUserType(oldUserId, name, mobile, employeeNumber, ldapDomain, null, currentUserBean.getUserId());
 
         // Change USER_ID IN USER_USER_ROLE
-        sdUserRoleMapper.deleteUserRoleByUserId(oldUserId);
-        for (SdUserRoleEntity userEntity : userRoleByUserId) {
-            sdUserRoleMapper.insertUserUserRole(employeeNumber, userEntity.getRoleId());
-        }
+        changeUserIdInUserUserRole(oldUserId, employeeNumber, userRoleByUserId);
 
         return employeeNumber;
     }
@@ -695,6 +714,32 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
             // send otp email
             sdEmailService.send(SdEmailBean.RESET_PW_EMAIL.TEMPLATE_ID, recipient, dataMap);
+        }
+    }
+
+    private void checkUserEmailDuplicate(String oldUserEmail, String queryEmail) {
+        if (StringUtils.isNotEmpty(oldUserEmail) && StringUtils.isNotEmpty(queryEmail)) {
+            if (!queryEmail.equals(oldUserEmail)) {
+                throw new InvalidInputException("Email Already Exists.");
+            }
+        }
+    }
+
+    private void checkDuplicateUser(String oldUserId, SdUserBean currentUserBean, SdUserEntity user) {
+        if (currentUserBean.getUserId().equals(oldUserId)) {
+            throw new InvalidInputException("Cannot change you own account.");
+        }
+
+        if (user == null) {
+            throw new UserNotFoundException("User not Exist.");
+        }
+    }
+
+    private void changeUserIdInUserUserRole(String oldUserId, String userId, List<SdUserRoleEntity> userRoleByUserId) {
+        // Change USER_ID IN USER_USER_ROLE
+        sdUserRoleMapper.deleteUserRoleByUserId(oldUserId);
+        for (SdUserRoleEntity entity : userRoleByUserId) {
+            sdUserRoleMapper.insertUserUserRole(userId, entity.getRoleId());
         }
     }
 }

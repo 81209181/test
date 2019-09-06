@@ -25,6 +25,8 @@ public interface SdUserFacade {
 
     ChangeUserTypeResultData changeUserTypeToPccwOrHktUser(ChangeUserTypeFormData changeUserTypeFormData);
 
+    ChangeUserTypeResultData changeUserTypeToNonPccwOrHktUser(ChangeUserTypeFormData changeUserTypeFormData);
+
     ChangeUserTypeResultData changeUserTypeToLdapUser(ChangeUserTypeFormData changeUserTypeFormData);
 
     String activateUser(String userId);

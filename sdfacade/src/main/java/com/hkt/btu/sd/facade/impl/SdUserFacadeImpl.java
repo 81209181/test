@@ -234,11 +234,43 @@ public class SdUserFacadeImpl implements SdUserFacade {
     }
 
     @Override
+    public ChangeUserTypeResultData changeUserTypeToNonPccwOrHktUser(ChangeUserTypeFormData changeUserTypeFormData) {
+        if (changeUserTypeFormData == null) {
+            return ChangeUserTypeResultData.ofMsg("Null input.");
+        }
+        // Check UserId
+        if (StringUtils.isEmpty(changeUserTypeFormData.getUserId()) || StringUtils.isEmpty(changeUserTypeFormData.getNewUserId())) {
+            return ChangeUserTypeResultData.ofMsg("Empty User Id");
+        }
+        String oldUserId = changeUserTypeFormData.getUserId();
+        String name = StringUtils.trim(changeUserTypeFormData.getName());
+        String email = StringUtils.trim(changeUserTypeFormData.getEmail());
+        String mobile = StringUtils.trim(changeUserTypeFormData.getMobile());
+        String employeeNumber = StringUtils.trim(changeUserTypeFormData.getNewUserId());
+        String userId = null;
+        try {
+            // check input
+            sdInputCheckService.checkName(name);
+            sdInputCheckService.checkMobile(mobile);
+            sdInputCheckService.checkUserName(employeeNumber);
+            if (StringUtils.isNotEmpty(email)) {
+                sdInputCheckService.checkEmail(email);
+            }
+            // change user type
+            userId = sdUserService.changeUserTypeToNonPCCWOrHktUser(oldUserId, name, mobile, employeeNumber, email);
+        } catch (InvalidInputException | UserNotFoundException e) {
+            LOG.warn(e.getMessage());
+            return ChangeUserTypeResultData.ofMsg(e.getMessage());
+        }
+        return ChangeUserTypeResultData.ofUser(userId);
+    }
+
+    @Override
     public ChangeUserTypeResultData changeUserTypeToLdapUser(ChangeUserTypeFormData changeUserTypeFormData) {
         if (changeUserTypeFormData == null) {
             return ChangeUserTypeResultData.ofMsg("Null input.");
         }
-        // 判断新旧ID 是否为空
+
         if (StringUtils.isEmpty(changeUserTypeFormData.getUserId()) || StringUtils.isEmpty(changeUserTypeFormData.getNewUserId())) {
             return ChangeUserTypeResultData.ofMsg("Empty User Id");
         }
