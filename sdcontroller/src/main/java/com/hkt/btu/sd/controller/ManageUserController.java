@@ -26,6 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -291,7 +292,7 @@ public class ManageUserController {
     }
 
     @GetMapping("expireUserSession/{userId}")
-    public ResponseEntity<?> expireUserSession(@PathVariable String userId) {
+    public ResponseEntity<?> expireUserSession(@PathVariable String userId, Principal p) {
         SdUserData user = userFacade.getUserByUserId(userId);
         if (ObjectUtils.isEmpty(user)) {
             ResponseEntity.badRequest().body("User not found.");
@@ -301,6 +302,7 @@ public class ManageUserController {
                 .map(principal -> sessionRegistry.getAllSessions(principal, false))
                 .filter(allSessions -> !ObjectUtils.isEmpty(allSessions))
                 .flatMap(Collection::stream).forEach(SessionInformation::expireNow);
+        sdAuditTrailFacade.insertClickAuditTrail(userId,p.getName());
         return ResponseEntity.ok("Expire user session successfully.");
 
     }
