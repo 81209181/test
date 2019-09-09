@@ -65,7 +65,7 @@ public class SdAuditTrailServiceImpl extends BtuAuditTrailServiceImpl implements
 
     @Override
     public void insertClickAuditTrail(String user,String clickBy) {
-        insertAuditTrail(user,SdAuditTrailEntity.ACTION.CLICK,String.format("By %s",clickBy));
+        insertAuditTrail(user,SdAuditTrailEntity.ACTION.KICK,String.format("By %s",clickBy));
     }
 
     @Override
