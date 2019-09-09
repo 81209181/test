@@ -20,6 +20,6 @@ public class SdAuditTrailFacadeImpl implements SdAuditTrailFacade {
 
     @Override
     public void insertClickAuditTrail(String user, String name) {
-        sdAuditTrailService.insertClickAuditTrail(user,name);
+        sdAuditTrailService.insertKickAuditTrail(user,name);
     }
 }
