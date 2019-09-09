@@ -1,15 +1,17 @@
 package com.hkt.btu.sd.facade.impl;
 
 import com.hkt.btu.sd.core.exception.InsufficientAuthorityException;
+import com.hkt.btu.sd.core.service.SdPathCtrlService;
 import com.hkt.btu.sd.core.service.SdUserRoleService;
 import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
+import com.hkt.btu.sd.core.service.bean.SdUserRolePathCtrlBean;
 import com.hkt.btu.sd.facade.SdUserRoleFacade;
-import com.hkt.btu.sd.facade.data.ChangeUserTypeResultData;
 import com.hkt.btu.sd.facade.data.EditResultData;
+import com.hkt.btu.sd.facade.data.SdUserPathCtrlData;
 import com.hkt.btu.sd.facade.data.SdUserRoleData;
 import com.hkt.btu.sd.facade.populator.SdUserRoleDataPopulator;
+import com.hkt.btu.sd.facade.populator.SdUserRolePathCtrlPopulator;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -21,8 +23,14 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
     @Resource(name = "roleService")
     SdUserRoleService sdUserRoleService;
 
+    @Resource(name = "pathCtrlService")
+    SdPathCtrlService sdPathCtrlService;
+
     @Resource(name = "userRoleDataPopulator")
     SdUserRoleDataPopulator sdUserRoleDataPopulator;
+
+    @Resource(name = "userRolePathCtrlDataPopulator")
+    SdUserRolePathCtrlPopulator sdUserRolePathCtrlPopulator;
 
     @Override
     public List<SdUserRoleData> listAllUserRole() {
@@ -121,4 +129,22 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
         sdUserRoleService.updateUserRole(roleId, roleDesc, status);
         return null;
     }
+
+    @Override
+    public List<SdUserPathCtrlData> getParentRolePathByRoleId(String roleId) {
+        List<SdUserPathCtrlData> results = new LinkedList<>();
+        List<SdUserRolePathCtrlBean> userRolePath = sdPathCtrlService.getParentRolePathByRoleId(roleId);
+        if (CollectionUtils.isEmpty(userRolePath)) {
+            return null;
+        }
+
+        for (SdUserRolePathCtrlBean bean : userRolePath) {
+            SdUserPathCtrlData data = new SdUserPathCtrlData();
+            sdUserRolePathCtrlPopulator.populate(bean, data);
+            results.add(data);
+        }
+
+        return results;
+    }
+
 }

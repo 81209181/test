@@ -40,4 +40,26 @@ public class SdPathCtrlServiceImpl implements SdPathCtrlService {
             return result;
         }
     }
+
+    @Override
+    public List<SdUserRolePathCtrlBean> getParentRolePathByRoleId(String roleId) {
+
+        List<SdUserRolePathCtrlEntity> userRolePathCtrlEntityList =
+                sdUserRolePathCtrlMapper.getParentRolePathByRoleId(roleId, SdUserGroupPathCtrlEntity.STATUS_ACTIVE);
+
+        if (CollectionUtils.isEmpty(userRolePathCtrlEntityList)){
+            return null;
+        } else {
+            List<SdUserRolePathCtrlBean> result = new LinkedList<>();
+
+            for(SdUserRolePathCtrlEntity pathCtrlEntity : userRolePathCtrlEntityList){
+                SdUserRolePathCtrlBean pathCtrlBean = new SdUserRolePathCtrlBean();
+                pathCtrlBeanPopulator.populate(pathCtrlEntity, pathCtrlBean);
+                result.add(pathCtrlBean);
+            }
+
+            return result;
+        }
+    }
+
 }

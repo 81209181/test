@@ -14,7 +14,13 @@ public class SdUserRolePathCtrlBeanPopulator extends AbstractBeanPopulator<SdUse
         target.setPathCtrlId(source.getPathCtrlId());
         target.setPath(source.getPath());
         target.setRoleId(source.getRoleId());
+        target.setStatus(source.getStatus());
         // SdUserRolePathCtrlBean
-        target.setPathCtrlId(source.getPathCtrlId());
+        target.setDescription(source.getDescription());
+        // BaseBean
+        target.setCreatedate(source.getCreatedate());
+        target.setCreateby(source.getCreateby());
+        target.setModifydate(source.getModifydate());
+        target.setModifyby(source.getModifyby());
     }
 }

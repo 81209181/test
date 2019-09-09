@@ -57,4 +57,7 @@
 
     <alias name="sdUserRoleDataPopulator" alias="userRoleDataPopulator"/>
     <bean id="sdUserRoleDataPopulator" class="com.hkt.btu.sd.facade.populator.SdUserRoleDataPopulator"/>
+
+    <alias name="sdUserRolePathCtrlPopulator" alias="userRolePathCtrlDataPopulator"/>
+    <bean id="sdUserRolePathCtrlPopulator" class="com.hkt.btu.sd.facade.populator.SdUserRolePathCtrlPopulator"/>
 </beans>
