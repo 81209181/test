@@ -34,7 +34,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     @Resource(name = "configParamService")
     SdConfigParamService configParamService;
 
-    @Resource(name = "userRolePopulator")
+    @Resource(name = "userRoleBeanPopulator")
     SdUserRoleBeanPopulator sdUserRoleBeanPopulator;
 
     @Override

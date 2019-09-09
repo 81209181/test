@@ -173,5 +173,4 @@
         select count(1)
         <include refid="searchUserSql"/>
     </select>
-
 </mapper>
