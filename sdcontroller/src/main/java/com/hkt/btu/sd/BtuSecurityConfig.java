@@ -1,10 +1,11 @@
 package com.hkt.btu.sd;
 
 import com.hkt.btu.common.spring.security.access.BtuAccessDeniedHandler;
-import com.hkt.btu.common.spring.security.authentication.BtuDaoAuthenticationProvider;
-import com.hkt.btu.common.spring.security.authentication.DbDaoAuthenticationProvider;
 import com.hkt.btu.common.spring.security.access.intercept.BtuSecurityInterceptor;
 import com.hkt.btu.common.spring.security.access.intercept.BtuSecurityMetadataSource;
+import com.hkt.btu.common.spring.security.authentication.BtuDaoAuthenticationProvider;
+import com.hkt.btu.common.spring.security.authentication.DbDaoAuthenticationProvider;
+import com.hkt.btu.common.spring.security.filter.TokenAuthenticationFilter;
 import com.hkt.btu.common.spring.security.web.authentication.BtuExceptionMappingAuthenticationFailureHandler;
 import com.hkt.btu.common.spring.security.web.authentication.BtuLoginSuccessHandler;
 import com.hkt.btu.common.spring.security.web.authentication.BtuLoginUrlAuthenticationEntryPoint;
@@ -12,6 +13,7 @@ import com.hkt.btu.common.spring.security.web.authentication.logout.BtuLogoutSuc
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,14 +22,13 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.annotation.Resource;
 
-import static com.hkt.btu.common.spring.security.web.authentication.BtuLoginUrlAuthenticationEntryPoint.LOGIN_URI;
-import static com.hkt.btu.common.spring.security.web.authentication.BtuLoginUrlAuthenticationEntryPoint.LOGIN_ERROR;
-import static com.hkt.btu.common.spring.security.web.authentication.BtuLoginUrlAuthenticationEntryPoint.LOGIN_ERROR_PARA_URI;
+import static com.hkt.btu.common.spring.security.web.authentication.BtuLoginUrlAuthenticationEntryPoint.*;
 
 @Configuration
 @EnableWebSecurity
@@ -119,6 +120,7 @@ public class BtuSecurityConfig extends WebSecurityConfigurerAdapter {
                 // User group control over incoming uri
                 .and()
                 .addFilterAfter(btuSecurityInterceptor, FilterSecurityInterceptor.class)
+                .addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
 
                 .exceptionHandling()
                 .authenticationEntryPoint(btuLoginUrlAuthenticationEntryPoint)
@@ -130,6 +132,17 @@ public class BtuSecurityConfig extends WebSecurityConfigurerAdapter {
          */
 //                .requiresChannel()
 //                .antMatchers("/**").requiresSecure() // always require https
+    }
+    @Bean
+    public AuthenticationManager authenticationManager() throws Exception {
+        return super.authenticationManager();
+    }
+
+    @Bean
+    public TokenAuthenticationFilter tokenAuthenticationFilter() throws Exception {
+        TokenAuthenticationFilter filter = new TokenAuthenticationFilter();
+        filter.setAuthenticationManager(authenticationManager());
+        return filter;
     }
 
     @Bean
