@@ -40,15 +40,9 @@
 
     <select id="getParentRolePathByRoleId" resultMap="SdUserRolePathCtrlEntity">
         SELECT
-        pc.PATH_CTRL_ID,
         pc.PATH,
         pc.STATUS,
         pc.DESCRIPTION,
-        pc.CREATEDATE,
-        pc.CREATEBY,
-        pc.MODIFYDATE,
-        pc.MODIFYBY,
-        pc.REMARKS,
         urpc.ROLE_ID
         FROM PATH_CTRL pc
         INNER JOIN USER_ROLE_PATH_CTRL urpc

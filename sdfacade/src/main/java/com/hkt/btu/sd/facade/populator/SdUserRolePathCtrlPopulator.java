@@ -7,6 +7,7 @@ import com.hkt.btu.sd.facade.data.SdUserPathCtrlData;
 public class SdUserRolePathCtrlPopulator extends AbstractDataPopulator<SdUserPathCtrlData> {
 
     public void populate(SdUserRolePathCtrlBean source, SdUserPathCtrlData target) {
+        target.setRoleId(source.getRoleId());
         target.setPathCtrlId(source.getPathCtrlId());
         target.setPath(source.getPath());
         target.setDescription(source.getDescription());

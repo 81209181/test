@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 public class SdUserPathCtrlData implements DataInterface {
 
+    private String roleId;
     private Integer pathCtrlId;
     private String path;
     private String status;
@@ -16,6 +17,14 @@ public class SdUserPathCtrlData implements DataInterface {
     private String modifyby;
     private String remarks;
 
+
+    public String getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(String roleId) {
+        this.roleId = roleId;
+    }
 
     public Integer getPathCtrlId() {
         return pathCtrlId;

@@ -43,14 +43,9 @@ function ajaxGetRolePath(){
             }
         },
         columns: [
-            { data: 'pathCtrlId' },
+            { data: 'roleId' },
             { data: 'path' },
-            { data: 'status' },
-            { data: 'description' },
-            { data: 'createdate' },
-            { data: 'createby' },
-            { data: 'modifydate' },
-            { data: 'modifyby' }
+            { data: 'description' }
         ]
     });
 }
