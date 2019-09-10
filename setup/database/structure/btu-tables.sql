@@ -376,18 +376,17 @@ END;
 CREATE SEQUENCE  SEQ_SQL_REPORT_REPORT_ID START WITH 1;
 CREATE TABLE SQL_REPORT
 (
-    REPORT_ID   NUMBER  default  SEQ_SQL_REPORT_REPORT_ID.nextval  not null,
-    REPORT_NAME VARCHAR2(20)         not null,
-    CRON_EXP    VARCHAR2(20)         not null,
-    STATUS      VARCHAR2(2)          not null,
-    SQL         VARCHAR2(100)        not null,
+    REPORT_ID   NUMBER              default  SEQ_SQL_REPORT_REPORT_ID.nextval,
+    REPORT_NAME VARCHAR2(20)        not null,
+    CRON_EXP    VARCHAR2(20)        not null,
+    STATUS      VARCHAR2(2)         not null,
+    SQL         VARCHAR2(100)       not null,
     EXPORT_TO   VARCHAR2(50),
     EMAIL_TO    VARCHAR2(20),
-    CREATEDATE  DATE default SYSDATE not null,
-    CREATEBY    VARCHAR2(10)         not null,
-    MODIFYDATE  DATE default SYSDATE not null,
-    MODIFYBY    VARCHAR2(10)         not null,
+    CREATEDATE  DATE                default SYSDATE not null,
+    CREATEBY    VARCHAR2(10)        not null,
+    MODIFYDATE  DATE                default SYSDATE not null,
+    MODIFYBY    VARCHAR2(10)        not null,
     REMARKS     VARCHAR2(250),
     constraint SQL_REPORT_PK primary key (REPORT_ID)
 );
-CREATE INDEX IDX_SQL_REPORT ON SQL_REPORT (REPORT_ID);
