@@ -51,7 +51,6 @@
             SELECT ROLE_ID
             FROM USER_ROLE
             WHERE STATUS = #{status}
-            AND ROLE_ID <![CDATA[ <> ]]> #{roleId}
             START WITH ROLE_ID = #{roleId}
             CONNECT BY PRIOR PARENT_ROLE_ID = ROLE_ID
         ) ur
