@@ -24,7 +24,7 @@ public class SdAuditTrailServiceImpl extends BtuAuditTrailServiceImpl implements
 
     private void insertAuditTrail(BtuUser btuUser, String action, String detail) {
         if (btuUser.getUserBean() instanceof SdUserBean) {
-            this.insertAuditTrail(((SdUserBean) btuUser.getUserBean()).getUserId() + "", action, detail);
+            this.insertAuditTrail( btuUser.getUserBean().getUserId() + "", action, detail);
         } else {
             this.insertAuditTrail(btuUser.getUsername(), action, detail);
         }
@@ -64,8 +64,8 @@ public class SdAuditTrailServiceImpl extends BtuAuditTrailServiceImpl implements
     }
 
     @Override
-    public void insertClickAuditTrail(String user,String clickBy) {
-        insertAuditTrail(user,SdAuditTrailEntity.ACTION.CLICK,String.format("By %s",clickBy));
+    public void insertKickAuditTrail(String user, String kickBy) {
+        insertAuditTrail(user,SdAuditTrailEntity.ACTION.KICK,String.format("By %s",kickBy));
     }
 
     @Override
