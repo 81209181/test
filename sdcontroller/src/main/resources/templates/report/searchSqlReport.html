@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>System Job List</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <h1>Job Instance</h1>
+    <a th:href="@{/report/create}" class="btn btn-success btn-lg mb-1"><i class="fas fa-plus-square"></i> Create</a>
+    <table id="sqlReportTable" class="display">
+        <thead>
+            <tr>
+                <th>Report Name</th>
+                <th>Cron Exp</th>
+                <th>SQL</th>
+                <th>Export To</th>
+                <th>Email To</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+            <tr>
+                <th>Report Name</th>
+                <th>Cron Exp</th>
+                <th>SQL</th>
+                <th>Export To</th>
+                <th>Email To</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </tfoot>
+    </table>
+
+    <script type="text/javascript" th:src="@{/js/sqlReport.js}"></script>
+</div>
+</body>
+</html>
