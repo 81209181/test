@@ -15,7 +15,6 @@ import org.quartz.SchedulerException;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
@@ -92,22 +91,63 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
 
     @Override
     public String createReport(RequestReportData data) {
-
+        try {
+            checkReportData(data);
+            reportService.createReport(data.getReportName(), data.getCronExpression(), data.getStatus(),
+                    data.getSql(), data.getExportTo(), data.getEmailTo(), data.getRemarks());
+            sdSchedulerService.scheduleReportJob(data.getReportName());
+        } catch (InvalidInputException | SchedulerException | ClassNotFoundException e) {
+            LOG.warn(e.getMessage());
+            return e.getMessage();
+        }
         return null;
     }
 
     @Override
     public String deleteReport(String reportId) {
+        try {
+            if (StringUtils.isEmpty(reportId)) {
+                throw new InvalidInputException("Empty reportId.");
+            }
+            String reportName = reportService.deleteReport(reportId);
+            sdSchedulerService.destroyJob(SdSqlReportBean.KEY_GROUP, reportName);
+        } catch (Exception e) {
+            LOG.warn(e.getMessage());
+        }
         return null;
     }
 
     @Override
     public String updateReport(RequestReportData data) {
+        try {
+            checkReportData(data);
+            String reportName = reportService.updateReport(data.getReportId(), data.getReportName(), data.getCronExpression(), data.getStatus(),
+                    data.getSql(), data.getExportTo(), data.getEmailTo(), data.getRemarks());
+            sdSchedulerService.pauseJob(SdSqlReportBean.KEY_GROUP, reportName);
+            sdSchedulerService.destroyJob(SdSqlReportBean.KEY_GROUP, reportName);
+            sdSchedulerService.scheduleReportJob(reportName);
+        } catch (InvalidInputException | SchedulerException | ClassNotFoundException e) {
+            LOG.warn(e.getMessage());
+        }
         return null;
     }
 
 
-    private void checkReportData(RequestReportData data) {
-        Optional.ofNullable(data.getReportName()).orElseThrow(() -> new InvalidInputException("Report Name can't not be null."));
+    private void checkReportData(RequestReportData data) throws InvalidInputException {
+        if (StringUtils.isEmpty(data.getReportName())) {
+            throw new InvalidInputException("Empty input report name.");
+        }
+        if (StringUtils.isEmpty(data.getSql())) {
+            throw new InvalidInputException("Empty input SQL statement.");
+        }
+        if (StringUtils.isEmpty(data.getExportTo())) {
+            throw new InvalidInputException("Empty input export place.");
+        }
+        if (StringUtils.isEmpty(data.getEmailTo())) {
+            throw new InvalidInputException("Empty input email.");
+        }
+        if (StringUtils.isEmpty(data.getCronExpression())) {
+            throw new InvalidInputException("Empty int cron expression.");
+        }
     }
 }

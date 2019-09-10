@@ -12,4 +12,11 @@ public interface SdSqlReportProfileService extends BtuSqlReportProfileService {
 
     List<Map<String, Object>> executeSql(String sql);
 
+    void createReport(String reportName, String cronExpression, String status,
+                      String sql, String exportTo, String emailTo, String remarks);
+
+    String deleteReport(String reportId);
+
+    String updateReport(String reportId,String reportName, String cronExpression, String status,
+                      String sql, String exportTo, String emailTo, String remarks);
 }

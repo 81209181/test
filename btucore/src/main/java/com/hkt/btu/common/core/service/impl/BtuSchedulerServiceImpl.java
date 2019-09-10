@@ -92,6 +92,12 @@ public class BtuSchedulerServiceImpl implements BtuSchedulerService {
         scheduleJob(jobProfileBean);
     }
 
+    @Override
+    public void scheduleReportJob(String reportName) throws SchedulerException, InvalidInputException, ClassNotFoundException {
+        BtuCronJobProfileBean reportProfileBean = sqlReportProfileService.getProfileBeanByGrpAndName(BtuSqlReportBean.KEY_GROUP, reportName);
+        scheduleJob(reportProfileBean);
+    }
+
     private void scheduleJob(BtuCronJobProfileBean jobProfileBean) throws ClassNotFoundException, SchedulerException {
         Scheduler scheduler = schedulerFactoryBean.getScheduler();
 

@@ -4,10 +4,22 @@ import com.hkt.btu.common.facade.data.DataInterface;
 
 public class RequestReportData implements DataInterface {
 
+    private String reportId;
     private String reportName;
+    private String cronExpression;
+    private String status;
     private String exportTo;
     private String emailTo;
     private String sql;
+    private String remarks;
+
+    public String getReportId() {
+        return reportId;
+    }
+
+    public void setReportId(String reportId) {
+        this.reportId = reportId;
+    }
 
     public String getReportName() {
         return reportName;
@@ -15,6 +27,14 @@ public class RequestReportData implements DataInterface {
 
     public void setReportName(String reportName) {
         this.reportName = reportName;
+    }
+
+    public String getCronExpression() {
+        return cronExpression;
+    }
+
+    public void setCronExpression(String cronExpression) {
+        this.cronExpression = cronExpression;
     }
 
     public String getExportTo() {
@@ -39,5 +59,21 @@ public class RequestReportData implements DataInterface {
 
     public void setSql(String sql) {
         this.sql = sql;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 }

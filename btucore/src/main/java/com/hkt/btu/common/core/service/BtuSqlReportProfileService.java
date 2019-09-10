@@ -7,4 +7,6 @@ import java.util.List;
 public interface BtuSqlReportProfileService {
 
     List<BtuCronJobProfileBean> getAllReportData(String status);
+
+    BtuCronJobProfileBean getProfileBeanByGrpAndName(String keyGroup, String reportId);
 }

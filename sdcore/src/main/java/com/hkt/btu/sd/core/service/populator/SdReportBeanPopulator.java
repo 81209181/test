@@ -24,7 +24,17 @@ public class SdReportBeanPopulator extends AbstractBeanPopulator<SdSqlReportBean
     }
 
     public void poluate(SdSqlReportBean source, SdCronJobProfileBean target) {
-        target.setKeyGroup(BtuSqlReportBean.KEY_GROUP);
+        target.setKeyGroup(SdSqlReportBean.KEY_GROUP);
+        target.setKeyName(source.getReportName());
+        target.setJobClass("com.hkt.btu.sd.core.job.SdSqlReportJob");
+
+        target.setStatus(source.getStatus());
+        target.setActive(StringUtils.equals(source.getStatus(), SdCronJobEntity.STATUS.ACTIVE));
+        target.setCronExp(source.getCronExp());
+    }
+
+    public void poluate(SdSqlReportEntity source, SdCronJobProfileBean target) {
+        target.setKeyGroup(SdSqlReportBean.KEY_GROUP);
         target.setKeyName(source.getReportName());
         target.setJobClass("com.hkt.btu.sd.core.job.SdSqlReportJob");
 
