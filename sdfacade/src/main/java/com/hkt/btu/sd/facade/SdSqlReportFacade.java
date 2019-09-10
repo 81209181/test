@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.facade;
 
+import com.hkt.btu.sd.facade.data.RequestReportData;
 import com.hkt.btu.sd.facade.data.SdSqlReportData;
 
 import java.util.List;
@@ -10,7 +11,7 @@ public interface SdSqlReportFacade {
     String resumeReport(String reportName);
     String pauseReport(String reportName);
     String triggerReport(String reportName);
-    String createReport();
-    String deleteReport();
-    String updateReport();
+    String createReport(RequestReportData data);
+    String deleteReport(String reportId);
+    String updateReport(RequestReportData data);
 }

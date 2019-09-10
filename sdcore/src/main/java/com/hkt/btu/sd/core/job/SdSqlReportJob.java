@@ -56,7 +56,7 @@ public class SdSqlReportJob extends BtuSampleJob {
         String filePath = getFilePath(bean.getExportTo(), bean.getReportName());
         String sql = getSql(bean.getSql());
         List<Map<String, Object>> results = sqlReportProfileService.executeSql(sql);
-        return csvGenrator.generateCSV(filePath, null, results);
+        return csvGenrator.generateCSV(filePath, null, results, null);
     }
 
     private String getSql(String sql) {

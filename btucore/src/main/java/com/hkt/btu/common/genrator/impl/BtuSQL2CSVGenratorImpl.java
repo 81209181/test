@@ -3,8 +3,6 @@ package com.hkt.btu.common.genrator.impl;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.hkt.btu.common.genrator.BtuCSVGenrator;
 import com.hkt.btu.common.genrator.BtuDateConverter;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,7 +20,7 @@ public class BtuSQL2CSVGenratorImpl implements BtuCSVGenrator {
     BtuDateConverter dateConverter;
 
     @Override
-    public File generateCSV(String filePath, Character separator, List<Map<String, Object>> content) {
+    public File generateCSV(String filePath, Character separator, List<Map<String, Object>> content, String dateFormat) {
         separator = Optional.ofNullable(separator).orElse(DEFAULT_SEPARATOR);
         try (CSVWriter csvWriter = prepareCSVWriter(filePath, separator)) {
             LOG.info("Generating CSV......");
@@ -31,7 +29,7 @@ public class BtuSQL2CSVGenratorImpl implements BtuCSVGenrator {
             csvWriter.writeNext(header);
 
             // Writer Content
-            List<String[]> csvContent = getCsvContent(content);
+            List<String[]> csvContent = getCsvContent(content, dateFormat);
             csvWriter.writeAll(csvContent);
 
             LOG.info("Generated CSV successfully!");
@@ -59,7 +57,7 @@ public class BtuSQL2CSVGenratorImpl implements BtuCSVGenrator {
         return column_name.toArray(new String[column_name.size()]);
     }
 
-    private List<String[]> getCsvContent(List<Map<String, Object>> maps) {
+    private List<String[]> getCsvContent(List<Map<String, Object>> maps, String dateFormat) {
         List<String[]> contentResult = new ArrayList<>();
         List<String> content = new ArrayList<>();
         for (Map<String, Object> map : maps) {
@@ -72,7 +70,7 @@ public class BtuSQL2CSVGenratorImpl implements BtuCSVGenrator {
                     content.add((String) value);
                 }
                 if (value instanceof Date) {
-                    content.add(dateConverter.convert(value, null));
+                    content.add(dateConverter.convert(value, dateFormat));
                 }
             }
             contentResult.add(content.toArray(new String[content.size()]));

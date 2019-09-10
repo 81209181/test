@@ -5,6 +5,7 @@ import com.hkt.btu.sd.core.service.SdSchedulerService;
 import com.hkt.btu.sd.core.service.SdSqlReportProfileService;
 import com.hkt.btu.sd.core.service.bean.SdSqlReportBean;
 import com.hkt.btu.sd.facade.SdSqlReportFacade;
+import com.hkt.btu.sd.facade.data.RequestReportData;
 import com.hkt.btu.sd.facade.data.SdSqlReportData;
 import com.hkt.btu.sd.facade.populator.SdSqlReportDataPopulator;
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +15,7 @@ import org.quartz.SchedulerException;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
@@ -89,17 +91,23 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
     }
 
     @Override
-    public String createReport() {
+    public String createReport(RequestReportData data) {
+
         return null;
     }
 
     @Override
-    public String deleteReport() {
+    public String deleteReport(String reportId) {
         return null;
     }
 
     @Override
-    public String updateReport() {
+    public String updateReport(RequestReportData data) {
         return null;
+    }
+
+
+    private void checkReportData(RequestReportData data) {
+        Optional.ofNullable(data.getReportName()).orElseThrow(() -> new InvalidInputException("Report Name can't not be null."));
     }
 }

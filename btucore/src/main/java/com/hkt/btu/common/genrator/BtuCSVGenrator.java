@@ -6,6 +6,6 @@ import java.util.Map;
 
 public interface BtuCSVGenrator {
 
-    File generateCSV(String filePath, Character separator, List<Map<String, Object>> content);
+    File generateCSV(String filePath, Character separator, List<Map<String, Object>> content, String dateFormat);
 
 }
