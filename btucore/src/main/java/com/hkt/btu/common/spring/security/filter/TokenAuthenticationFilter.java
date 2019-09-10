@@ -39,10 +39,6 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
 
     public TokenAuthenticationFilter() {
         super("/**");
-        this.setAuthenticationSuccessHandler((httpServletRequest, httpServletResponse, authentication) -> {
-            sessionRegistry.registerNewSession(httpServletRequest.getSession().getId(),authentication.getPrincipal());
-//            httpServletResponse.sendRedirect(httpServletRequest.getRequestURI());
-        });
     }
 
     @Override
@@ -78,7 +74,6 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(authResult);
         SecurityContextHolder.setContext(context);
-        super.successfulAuthentication(request,response,chain,authResult);
         chain.doFilter(request,response);
     }
 

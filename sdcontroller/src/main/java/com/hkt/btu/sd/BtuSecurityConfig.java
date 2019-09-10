@@ -13,6 +13,7 @@ import com.hkt.btu.common.spring.security.web.authentication.logout.BtuLogoutSuc
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,8 +26,12 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
+import java.util.HashSet;
 
 import static com.hkt.btu.common.spring.security.web.authentication.BtuLoginUrlAuthenticationEntryPoint.*;
 
@@ -108,6 +113,10 @@ public class BtuSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessHandler(btuLogoutSuccessHandler)
                 .permitAll()
 
+                // csrf config
+                .and()
+                .csrf().requireCsrfProtectionMatcher(csrfRequestMatcher())
+
                 // session management
                 .and()
                 .sessionManagement()
@@ -133,6 +142,19 @@ public class BtuSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .requiresChannel()
 //                .antMatchers("/**").requiresSecure() // always require https
     }
+    private RequestMatcher csrfRequestMatcher(){
+        final HashSet<String> allowedMethods = new HashSet<>(Arrays.asList("GET", "HEAD", "TRACE", "OPTIONS"));
+        return httpServletRequest -> {
+            if (!ObjectUtils.isEmpty(httpServletRequest.getContentType())){
+                if (MediaType.APPLICATION_JSON_VALUE.equals(httpServletRequest.getContentType())) {
+                    return false;
+                }
+            }
+            return !allowedMethods.contains(httpServletRequest.getMethod());
+        };
+    }
+
+
     @Bean
     public AuthenticationManager authenticationManager() throws Exception {
         return super.authenticationManager();
