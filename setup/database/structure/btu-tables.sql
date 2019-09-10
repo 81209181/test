@@ -44,35 +44,6 @@ BEGIN
     :NEW.MODIFYDATE := SYSDATE;
 END;
 
-CREATE OR REPLACE TRIGGER TRIGGER_CONFIG_PARAM_3
-    BEFORE UPDATE OR DELETE ON CONFIG_PARAM
-    FOR EACH ROW
-DECLARE
-    l_operation varchar2(1) :=
-        case when updating then 'U'
-             when deleting then 'D'
-             end;
-BEGIN
-    if updating or deleting then
-        insert into CONFIG_PARAM_HIST(
-            CONFIG_GROUP,
-            CONFIG_KEY,
-            CONFIG_VALUE,
-            CONFIG_VALUE_TYPE,
-            ENCRYPT,
-            ACTION,
-            CREATEDATE
-        )values(
-            :OLD.CONFIG_GROUP,
-            :OLD.CONFIG_KEY,
-            :OLD.CONFIG_VALUE,
-            :OLD.CONFIG_VALUE_TYPE,
-            :OLD.ENCRYPT,
-            l_operation,
-            sysdate
-        );
-    end if;
-END;
 
 
 
@@ -123,40 +94,6 @@ BEGIN
     :NEW.CREATEDATE := :OLD.CREATEDATE;
     :NEW.CREATEBY := :OLD.CREATEBY;
     :NEW.MODIFYDATE := SYSDATE;
-END;
-
-CREATE OR REPLACE TRIGGER TRIGGER_CRON_JOB_3
-    BEFORE UPDATE OR DELETE ON CRON_JOB
-    FOR EACH ROW
-DECLARE
-    l_operation varchar2(1) :=
-        case when updating then 'U'
-             when deleting then 'D'
-             end;
-BEGIN
-    if updating or deleting then
-        insert into CRON_JOB_HIST(
-            JOB_ID,
-            JOB_GROUP,
-            JOB_NAME,
-            JOB_CLASS,
-            CRON_EXP,
-            STATUS,
-            MANDATORY,
-            ACTION,
-            CREATEDATE
-        )values(
-            :OLD.JOB_ID,
-            :OLD.JOB_GROUP,
-            :OLD.JOB_NAME,
-            :OLD.JOB_CLASS,
-            :OLD.CRON_EXP,
-            :OLD.STATUS,
-            :OLD.MANDATORY,
-            l_operation,
-            sysdate
-        );
-    end if;
 END;
 
 CREATE TABLE CRON_JOB_LOG(
@@ -264,7 +201,7 @@ END;
 -- ..MM...    $MMM .    MMMM   ....IMO. . .. ....  DMMM= .. ...  MMMM   .. .......  OMMM 8MMMI.. . .  .
 --  .MM... .. =MMM7.    MMMM     ..IMO. . ..$MM.  .~MMM=  .  ..  MMMM   .. . . . .  OMMM .NMMM$  . .
 -- ..MM...     MMMM$,.,NMMM7   ....IMO......MMMM..,MMMM ...  ....MMMM7777777........OMMM . MMMM=....
--- ..MM... .    MMMMMMMMMMM.    ...IMO... ..ZMMMMMMMMMO.. .  ..  MMMMMMMMMMM..   .  OMMM . .MMMM . .   
+-- ..MM... .    MMMMMMMMMMM.    ...IMO... ..ZMMMMMMMMMO.. .  ..  MMMMMMMMMMM..   .  OMMM . .MMMM . .
 -- ..MM... .    .=NMMMMM$.      ...IMO. . .. :8MMMMM$...  .  ... MMMMMMMMMMM.. ...  OMMM ....MMMM  .
 --  .MM...           .          ...IMO. . ..  .. . . ...  .  ..  . ...  .. . . . .  ..  ..... .. . .
 --  .MM...      .               . .IMO. . ..   .  ..  ..  .  ..  . ...  .. . . . .  ..  ..... .... .
@@ -319,30 +256,6 @@ CREATE TABLE USER_USER_ROLE(
 CREATE INDEX IDX_USER_USER_ROLE_1 ON USER_USER_ROLE (USER_ID);
 CREATE INDEX IDX_USER_USER_ROLE_2 ON USER_USER_ROLE (ROLE_ID);
 CREATE UNIQUE INDEX IDX_USER_USER_ROLE_3 ON USER_USER_ROLE (USER_ID,ROLE_ID);
-
-CREATE OR REPLACE TRIGGER TRIGGER_USER_USER_ROLE_1
-    BEFORE UPDATE OR DELETE ON USER_USER_ROLE
-    FOR EACH ROW
-DECLARE
-    l_operation varchar2(1) :=
-        case when updating then 'U'
-             when deleting then 'D'
-             end;
-BEGIN
-    if updating or deleting then
-        insert into USER_USER_ROLE_HIST(
-            USER_ID,
-            ROLE_ID,
-            ACTION,
-            CREATEDATE
-        )values(
-            :OLD.USER_ID,
-            :OLD.ROLE_ID,
-            l_operation,
-            sysdate
-        );
-    end if;
-END;
 
 CREATE TABLE USER_PWD_HIST(
   USER_ID               varchar2(10)                not null,
@@ -413,33 +326,7 @@ BEGIN
     :NEW.MODIFYDATE := SYSDATE;
 END;
 
-CREATE OR REPLACE TRIGGER TRIGGER_USER_ROLE_3
-    BEFORE UPDATE OR DELETE ON USER_ROLE
-    FOR EACH ROW
-DECLARE
-    l_operation varchar2(1) :=
-        case when updating then 'U'
-             when deleting then 'D'
-             end;
-BEGIN
-    if updating or deleting then
-        insert into USER_ROLE_HIST(
-            ROLE_ID,
-            ROLE_DESC,
-            PARENT_ROLE_ID,
-            STATUS,
-            ACTION,
-            CREATEDATE
-        )values(
-            :OLD.ROLE_ID,
-            :OLD.ROLE_DESC,
-            :OLD.PARENT_ROLE_ID,
-            :OLD.STATUS,
-            l_operation,
-            sysdate
-        );
-    end if;
-END;
+
 
 
 CREATE TABLE USER_ROLE_PATH_CTRL(
@@ -453,29 +340,6 @@ CREATE UNIQUE INDEX IDX_USER_ROLE_PATH_CTRL_1 ON USER_ROLE_PATH_CTRL (ROLE_ID, P
 CREATE INDEX IDX_USER_ROLE_PATH_CTRL_2 ON USER_ROLE_PATH_CTRL (ROLE_ID);
 CREATE INDEX IDX_USER_ROLE_PATH_CTRL_3 ON USER_ROLE_PATH_CTRL (PATH_CTRL_ID);
 
-CREATE OR REPLACE TRIGGER TRIGGER_USER_ROLE_PATH_CTRL_1
-    BEFORE UPDATE OR DELETE ON USER_ROLE_PATH_CTRL
-    FOR EACH ROW
-DECLARE
-    l_operation varchar2(1) :=
-        case when updating then 'U'
-             when deleting then 'D'
-             end;
-BEGIN
-    if updating or deleting then
-        insert into USER_ROLE_PATH_CTRL_HIST(
-            ROLE_ID,
-            PATH_CTRL_ID,
-            ACTION,
-            CREATEDATE
-        )values(
-            :OLD.ROLE_ID,
-            :OLD.PATH_CTRL_ID,
-            l_operation,
-            sysdate
-        );
-    end if;
-END;
 
 
 -- url path control
@@ -505,34 +369,6 @@ BEGIN
     :NEW.CREATEDATE := :OLD.CREATEDATE;
     :NEW.CREATEBY := :OLD.CREATEBY;
     :NEW.MODIFYDATE := SYSDATE;
-END;
-
-CREATE OR REPLACE TRIGGER TRIGGER_PATH_CTRL_3
-    BEFORE UPDATE OR DELETE ON PATH_CTRL
-    FOR EACH ROW
-DECLARE
-    l_operation varchar2(1) :=
-        case when updating then 'U'
-             when deleting then 'D'
-             end;
-BEGIN
-    if updating or deleting then
-        insert into PATH_CTRL_HIST(
-            PATH_CTRL_ID,
-            PATH,
-            STATUS,
-            DESCRIPTION,
-            ACTION,
-            CREATEDATE
-        )values(
-            :OLD.PATH_CTRL_ID,
-            :OLD.PATH,
-            :OLD.STATUS,
-            :OLD.DESCRIPTION,
-            l_operation,
-            sysdate
-        );
-    end if;
 END;
 
 

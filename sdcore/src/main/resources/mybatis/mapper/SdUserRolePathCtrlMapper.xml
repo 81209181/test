@@ -7,8 +7,10 @@
         <result column="PATH_CTRL_ID" property="pathCtrlId" />
         <result column="PATH" property="path" />
         <result column="STATUS" property="status" />
+        <result column="DESCRIPTION" property="description" />
 
         <result column="CREATEDATE" property="createdate" />
+        <result column="CREATEBY" property="createby"/>
         <result column="MODIFYDATE" property="modifydate" />
         <result column="MODIFYBY" property="modifyby" />
         <result column="REMARKS" property="remarks" />
@@ -36,4 +38,24 @@
         order by urpc.ROLE_ID, pc.PATH
     </select>
 
+    <select id="getParentRolePathByRoleId" resultMap="SdUserRolePathCtrlEntity">
+        SELECT
+        pc.PATH,
+        pc.STATUS,
+        pc.DESCRIPTION,
+        urpc.ROLE_ID
+        FROM PATH_CTRL pc
+        INNER JOIN USER_ROLE_PATH_CTRL urpc
+        ON urpc.PATH_CTRL_ID = pc.PATH_CTRL_ID
+        INNER JOIN  (
+            SELECT ROLE_ID
+            FROM USER_ROLE
+            WHERE STATUS = #{status}
+            AND ROLE_ID <![CDATA[ <> ]]> #{roleId}
+            START WITH ROLE_ID = #{roleId}
+            CONNECT BY PRIOR PARENT_ROLE_ID = ROLE_ID
+        ) ur
+        ON ur.ROLE_ID = urpc.ROLE_ID
+        ORDER BY urpc.ROLE_ID, pc.PATH
+    </select>
 </mapper>

@@ -10,4 +10,6 @@ import java.util.List;
 public interface SdUserRolePathCtrlMapper {
 
     List<SdUserRolePathCtrlEntity> getByStatus(@Param("status") String status);
+
+    List<SdUserRolePathCtrlEntity> getParentRolePathByRoleId(@Param("roleId") String roleId, @Param("status") String status);
 }

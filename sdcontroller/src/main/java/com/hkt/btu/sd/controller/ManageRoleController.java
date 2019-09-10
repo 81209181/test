@@ -3,6 +3,7 @@ package com.hkt.btu.sd.controller;
 
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.facade.SdUserRoleFacade;
+import com.hkt.btu.sd.facade.data.SdUserPathCtrlData;
 import com.hkt.btu.sd.facade.data.SdUserRoleData;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
@@ -53,6 +54,16 @@ public class ManageRoleController {
         } else {
             return ResponseEntity.ok(userRoleData);
         }
+    }
+
+    @GetMapping("/edit-user-role/getParentRolePathByRoleId")
+    public ResponseEntity<?> getParentRolePathByRoleId(@RequestParam String roleId) {
+        if (StringUtils.isEmpty(roleId)) {
+            return ResponseEntity.badRequest().body("Empty role id!");
+        }
+
+        List<SdUserPathCtrlData> UserPathCtrlData = userRoleFacade.getParentRolePathByRoleId(roleId);
+        return ResponseEntity.ok(UserPathCtrlData);
     }
 
     @PostMapping("/edit-user-role")

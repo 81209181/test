@@ -4,28 +4,28 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <alias name="sdUserFacadeImpl" alias="userFacade"/>
-    <bean id="sdUserFacadeImpl" class="com.hkt.btu.sd.facade.impl.SdUserFacadeImpl"/>
+    <bean id="sdUserFacadeImpl" class="com.hkt.btu.sd.facade.impl.SdUserFacadeImpl" />
 
     <alias name="sdUserGroupFacadeImpl" alias="userGroupFacade"/>
-    <bean id="sdUserGroupFacadeImpl" class="com.hkt.btu.sd.facade.impl.SdUserGroupFacadeImpl"/>
+    <bean id="sdUserGroupFacadeImpl" class="com.hkt.btu.sd.facade.impl.SdUserGroupFacadeImpl" />
 
     <alias name="sdConfigParamFacade" alias="configParamFacade"/>
-    <bean id="sdConfigParamFacade" class="com.hkt.btu.sd.facade.impl.SdConfigParamFacadeImpl"/>
+    <bean id="sdConfigParamFacade" class="com.hkt.btu.sd.facade.impl.SdConfigParamFacadeImpl" />
 
     <alias name="sdUserRoleFacade" alias="userRoleFacade"/>
     <bean id="sdUserRoleFacade" class="com.hkt.btu.sd.facade.impl.SdUserRoleFacadeImpl"/>
 
     <alias name="sdSiteConfigFacade" alias="siteConfigFacade"/>
-    <bean id="sdSiteConfigFacade" class="com.hkt.btu.sd.facade.impl.SdSiteConfigFacadeImpl"/>
+    <bean id="sdSiteConfigFacade" class="com.hkt.btu.sd.facade.impl.SdSiteConfigFacadeImpl" />
 
     <alias name="sdJobFacade" alias="jobFacade"/>
-    <bean id="sdJobFacade" class="com.hkt.btu.sd.facade.impl.SdJobFacadeImpl"/>
+    <bean id="sdJobFacade" class="com.hkt.btu.sd.facade.impl.SdJobFacadeImpl" />
 
     <alias name="sdHealthCheckFacade" alias="healthCheckFacade"/>
-    <bean id="sdHealthCheckFacade" class="com.hkt.btu.sd.facade.impl.SdHealthCheckFacadeImpl"/>
+    <bean id="sdHealthCheckFacade" class="com.hkt.btu.sd.facade.impl.SdHealthCheckFacadeImpl" />
 
     <alias name="sdAuditTrailFacade" alias="auditTrailFacade"/>
-    <bean id="sdAuditTrailFacade" class="com.hkt.btu.sd.facade.impl.SdAuditTrailFacadeImpl"/>
+    <bean id="sdAuditTrailFacade" class="com.hkt.btu.sd.facade.impl.SdAuditTrailFacadeImpl" />
 
     <alias name="sdRequestCreateFacade" alias="requestCreateFacade"/>
     <bean id="sdRequestCreateFacade" class="com.hkt.btu.sd.facade.impl.SdRequestCreateFacadeImpl"/>
@@ -64,4 +64,7 @@
 
     <alias name="sdSqlReportDataPopulator" alias="reportDataPopulator"/>
     <bean id="sdSqlReportDataPopulator" class="com.hkt.btu.sd.facade.populator.SdSqlReportDataPopulator"/>
+
+    <alias name="sdUserRolePathCtrlPopulator" alias="userRolePathCtrlDataPopulator"/>
+    <bean id="sdUserRolePathCtrlPopulator" class="com.hkt.btu.sd.facade.populator.SdUserRolePathCtrlPopulator"/>
 </beans>

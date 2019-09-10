@@ -1,25 +1,16 @@
 $(document).ready(function() {
-    // load user
-    ajaxGetUser();
+    // load user role
+    ajaxGetUserRole();
+    ajaxGetRolePath();
 
     // click event
     $('#btnUpdateUserRole').on("click",function(){
         clearAllMsg();
-        $.post('/admin/manage-role/edit-user-role',$('form').serialize(),function(data){
-            if(data.success){
-                showInfoMsg("Updated user role.");
-            }else{
-                showErrorMsg(data.feedback);
-            }
-        }).fail(function(e){
-            var responseError = e.responseText ? e.responseText : "Get failed.";
-            console.log("ERROR : ", responseError);
-            showErrorMsg(responseError);
-        })
+        ajaxUpdateUserRole();
     })
 });
 
-function ajaxGetUser(){
+function ajaxGetUserRole(){
     $.ajax({
         type: "GET",
         contentType: "application/json",
@@ -38,3 +29,37 @@ function ajaxGetUser(){
     });
 }
 
+function ajaxGetRolePath(){
+    $('#pathCtrlTable').DataTable({
+        ajax: {
+            type: "GET",
+            contentType: "application/json",
+            url: "/admin/manage-role/edit-user-role/getParentRolePathByRoleId?roleId="+$("#roleId").val(),
+            dataSrc: '',
+            error: function (e) {
+                if(e.responseText){
+                    showErrorMsg(e.responseText);
+                }
+            }
+        },
+        columns: [
+            { data: 'roleId' },
+            { data: 'path' },
+            { data: 'description' }
+        ]
+    });
+}
+
+function ajaxUpdateUserRole(){
+    $.post('/admin/manage-role/edit-user-role',$('form').serialize(),function(data){
+        if(data.success){
+            showInfoMsg("Updated user role.");
+        }else{
+            showErrorMsg(data.feedback);
+        }
+    }).fail(function(e){
+        var responseError = e.responseText ? e.responseText : "Get failed.";
+        console.log("ERROR : ", responseError);
+        showErrorMsg(responseError);
+    });
+}
