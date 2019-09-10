@@ -6,6 +6,7 @@ import com.hkt.btu.sd.core.service.SdSqlReportProfileService;
 import com.hkt.btu.sd.core.service.bean.SdSqlReportBean;
 import com.hkt.btu.sd.facade.SdSqlReportFacade;
 import com.hkt.btu.sd.facade.data.RequestReportData;
+import com.hkt.btu.sd.facade.data.ResponseReportData;
 import com.hkt.btu.sd.facade.data.SdSqlReportData;
 import com.hkt.btu.sd.facade.populator.SdSqlReportDataPopulator;
 import org.apache.commons.lang3.StringUtils;
@@ -32,13 +33,21 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
 
     @Override
     public List<SdSqlReportData> getAllReportData() {
-        return reportService.getAllReportData(null)
+        return reportService.getAllReportBean(null)
                 .stream()
                 .map(report -> {
                     SdSqlReportData data = new SdSqlReportData();
                     reportDataPopulator.populate(report, data);
                     return data;
                 }).collect(Collectors.toList());
+    }
+
+    @Override
+    public SdSqlReportData getSqlReportDataByReportId(String reportId) {
+        SdSqlReportBean bean = reportService.getSqlReportDataByReportId(reportId);
+        SdSqlReportData data = new SdSqlReportData();
+        reportDataPopulator.populate(bean, data);
+        return data;
     }
 
     @Override
@@ -90,7 +99,7 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
     }
 
     @Override
-    public String createReport(RequestReportData data) {
+    public ResponseReportData createReport(RequestReportData data) {
         try {
             checkReportData(data);
             reportService.createReport(data.getReportName(), data.getCronExpression(), data.getStatus(),
@@ -98,13 +107,13 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
             sdSchedulerService.scheduleReportJob(data.getReportName());
         } catch (InvalidInputException | SchedulerException | ClassNotFoundException e) {
             LOG.warn(e.getMessage());
-            return e.getMessage();
+            return ResponseReportData.of(null, e.getMessage());
         }
-        return null;
+        return ResponseReportData.of(data.getReportId(), null);
     }
 
     @Override
-    public String deleteReport(String reportId) {
+    public ResponseReportData deleteReport(String reportId) {
         try {
             if (StringUtils.isEmpty(reportId)) {
                 throw new InvalidInputException("Empty reportId.");
@@ -118,7 +127,7 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
     }
 
     @Override
-    public String updateReport(RequestReportData data) {
+    public ResponseReportData updateReport(RequestReportData data) {
         try {
             checkReportData(data);
             String reportName = reportService.updateReport(data.getReportId(), data.getReportName(), data.getCronExpression(), data.getStatus(),
@@ -128,8 +137,9 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
             sdSchedulerService.scheduleReportJob(reportName);
         } catch (InvalidInputException | SchedulerException | ClassNotFoundException e) {
             LOG.warn(e.getMessage());
+            return ResponseReportData.of(null, e.getMessage());
         }
-        return null;
+        return ResponseReportData.of(data.getReportId(), null);
     }
 
 

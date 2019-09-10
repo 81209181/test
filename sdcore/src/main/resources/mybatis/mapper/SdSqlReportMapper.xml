@@ -44,9 +44,9 @@
     </delete>
 
     <insert id="createSqlReport">
-        insert into SQL_REPORT(REPORT_ID, REPORT_NAME, CRON_EXP, STATUS, SQL, EXPORT_TO, EMAIL_TO, CREATEBY, MODIFYBY,
+        insert into SQL_REPORT(REPORT_NAME, CRON_EXP, STATUS, SQL, EXPORT_TO, EMAIL_TO, CREATEBY, MODIFYBY,
                                REMARKS)
-        VALUES (SEQ_SQL_REPORT_REPORT_ID.nextval, #{reportName}, #{cronExp}, #{status}, #{sql}, #{exportTo}, #{emailTo}, #{createBy},
+        VALUES (#{reportName}, #{cronExp}, #{status}, #{sql}, #{exportTo}, #{emailTo}, #{createBy},
                 #{modifyBy}, #{remarks})
     </insert>
 

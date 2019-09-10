@@ -6,7 +6,7 @@ $().ready(function(){
         var reportName = $('#reportName').val();
         let ctx = $("meta[name='_ctx']").attr("content");
         $.post('/report/createSqlReport',$('form').serialize(),function(res){
-            $(location).attr('href',ctx+'/report/edit-sql-report?reportName='+reportName);
+            $(location).attr('href',ctx+'/report/edit-sql-report?reportId='+reportId);
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";
             console.log("ERROR : ", responseError);

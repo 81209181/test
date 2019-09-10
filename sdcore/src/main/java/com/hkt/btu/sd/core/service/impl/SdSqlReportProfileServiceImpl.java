@@ -27,7 +27,7 @@ public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImp
     @Resource(name = "reportBeanPopulator")
     SdReportBeanPopulator reportBeanPopulator;
 
-    @Resource(name = "userSerivce")
+    @Resource(name = "userService")
     SdUserService sdUserService;
 
     @Resource
@@ -87,6 +87,14 @@ public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImp
             });
         }
         return maps;
+    }
+
+    @Override
+    public SdSqlReportBean getSqlReportDataByReportId(String reportId) {
+        SdSqlReportEntity entity = sdSqlReportMapper.getSqlReportDataByReportId(reportId);
+        SdSqlReportBean bean = new SdSqlReportBean();
+        reportBeanPopulator.populate(entity, bean);
+        return bean;
     }
 
     @Override

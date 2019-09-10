@@ -7,7 +7,7 @@ function createSqlReportTable() {
         ajax: {
             type: "GET",
             contentType: "application/json",
-            url: "/report/ajax-list-sql-report",
+            url: "/system/report/ajax-list-sql-report",
             dataSrc: '',
             error: function () {
                 showErrorMsg("Cannot load report list.");
@@ -23,16 +23,18 @@ function createSqlReportTable() {
         columnDefs: [
             {
                 targets: 5,
-                render: function (reportName, type, row, meta) {
+                data: "reportId",
+                render: function (reportId, type, row, meta) {
                     var ctx = $("meta[name='_ctx']").attr("content");
-                    var link = ctx + "/report/edit-sql-report?reportName=" + reportName;
+                    var link = ctx + "/system/report/edit-sql-report?reportId=" + reportId;
                     return '<a class="btn btn-info" href=' + link + ' role="button"><i class="fas fa-edit"></i> Edit</a>';
                 }
             },
             {
                 targets: 6,
-                render: function (reportName, type, row, meta) {
-                    return "<button type='button' class='btn btn-info' onclick='ajaxDeleteReport(\"" + reportName + "\")' ><i class=\"fas fa-stopwatch\"></i> Delete</button>";
+                data: "reportId",
+                render: function (reportId, type, row, meta) {
+                    return "<button type='button' class='btn btn-info' onclick='ajaxDeleteReport(\"" + reportId + "\")' ><i class=\"fas fa-stopwatch\"></i> Delete</button>";
                 }
             }
         ]
@@ -43,7 +45,7 @@ function ajaxDeleteReport(reportName) {
     $.ajax({
         type: "POST",
         contentType: "application/json",
-        url: "/report/ajax-delete-report?reportName=" + reportName,
+        url: "/system/report/ajax-delete-report?reportName=" + reportName,
         dataSrc: 'data',
         success: function (data) {
             clearAllMsg();
