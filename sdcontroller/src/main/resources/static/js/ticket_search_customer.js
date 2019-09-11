@@ -6,6 +6,12 @@ $().ready(function(){
         $('form').get(0).reset();
     })
 
+    $('#btnSearchCustomerNext').on('click',function(){
+        $.post('/ticket/create',{},function(res){
+            $(location).attr('href',ctx+'/ticket/00001');
+        })
+    })
+
     $('#btnSearchInfo').on('click',function(){
         let searchKey=$('#searchKey');
         let searchValue=$('#searchValue');
@@ -26,7 +32,7 @@ $().ready(function(){
         }else{
             searchValue.attr('class','form-control');
         }
-        $.post('/fault/search',{
+        $.post('/ticket/search',{
             searchKey : searchKey.val().trim(),
             searchValue : searchValue.val().trim()
         },function(res){
