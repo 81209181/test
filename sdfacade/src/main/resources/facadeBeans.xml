@@ -30,6 +30,9 @@
     <alias name="sdRequestCreateFacade" alias="requestCreateFacade"/>
     <bean id="sdRequestCreateFacade" class="com.hkt.btu.sd.facade.impl.SdRequestCreateFacadeImpl"/>
 
+    <alias name="sdSqlReportFacade" alias="reportFacade"/>
+    <bean id="sdSqlReportFacade" class="com.hkt.btu.sd.facade.impl.SdSqlReportFacadeImpl"/>
+
     <bean name="besApiFacade" class="com.hkt.btu.sd.facade.impl.BesApiFacadeImpl"/>
     <bean name="itsmApiFacade" class="com.hkt.btu.sd.facade.impl.ItsmApiFacadeImpl"/>
     <bean name="norarsApiFacade" class="com.hkt.btu.sd.facade.impl.NorarsApiFacadeImpl"/>
@@ -53,10 +56,14 @@
     <alias name="sdCronJobInstDataPopulator" alias="cronJobInstDataPopulator"/>
     <bean id="sdCronJobInstDataPopulator" class="com.hkt.btu.sd.facade.populator.SdCronJobInstDataPopulator"/>
 
-    <bean id="requestCreateSearchResultDataPopulator" class="com.hkt.btu.sd.facade.populator.RequestCreateSearchResultDataPopulator"/>
+    <bean id="requestCreateSearchResultDataPopulator"
+          class="com.hkt.btu.sd.facade.populator.RequestCreateSearchResultDataPopulator"/>
 
     <alias name="sdUserRoleDataPopulator" alias="userRoleDataPopulator"/>
     <bean id="sdUserRoleDataPopulator" class="com.hkt.btu.sd.facade.populator.SdUserRoleDataPopulator"/>
+
+    <alias name="sdSqlReportDataPopulator" alias="reportDataPopulator"/>
+    <bean id="sdSqlReportDataPopulator" class="com.hkt.btu.sd.facade.populator.SdSqlReportDataPopulator"/>
 
     <alias name="sdUserRolePathCtrlPopulator" alias="userRolePathCtrlDataPopulator"/>
     <bean id="sdUserRolePathCtrlPopulator" class="com.hkt.btu.sd.facade.populator.SdUserRolePathCtrlPopulator"/>

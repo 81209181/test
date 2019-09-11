@@ -13,21 +13,21 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label>Report Name</label>
-                <input type="text" class="form-control" id="reportName" name="reportName" th:value="${reportName}" readonly>
+                <input type="text" class="form-control" id="reportName" name="reportName" th:value="${data.reportName}" readonly>
             </div>
             <div class="form-group col-md-6">
                 <label>Cron Exp</label>
-                <input type="text" class="form-control" id="cronExp" name="cronExp" th:value="${cronExp}">
+                <input type="text" class="form-control" id="cronExp" name="cronExp" th:value="${data.cronExp}">
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label>SQL</label>
-                <input type="text" class="form-control" id="sql" name="sql" th:value="${sql}">
+                <input type="text" class="form-control" id="sql" name="sql" th:value="${data.sql}">
             </div>
             <div class="form-group col-md-6">
                 <label >Status</label>
-                <select name="status" id="status" class="form-control" th:value="${status}">
+                <select name="status" id="status" class="form-control" th:value="${data.status}">
                     <option value="A">Active</option>
                     <option value="D">Disable</option>
                 </select>
@@ -36,11 +36,11 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label>Export To</label>
-                <input type="text" class="form-control" id="exportTo" name="exportTo" th:value="${exportTo}">
+                <input type="text" class="form-control" id="exportTo" name="exportTo" th:value="${data.exportTo}">
             </div>
             <div class="form-group col-md-6">
                 <label>Email To</label>
-                <input type="text" class="form-control" id="emailTo" name="emailTo" th:value="${emailTo}">
+                <input type="text" class="form-control" id="emailTo" name="emailTo" th:value="${data.emailTo}">
             </div>
         </div>
         <div class="mt-5 from-row">

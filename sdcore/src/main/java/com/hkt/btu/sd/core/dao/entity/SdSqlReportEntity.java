@@ -1,8 +1,8 @@
-package com.hkt.btu.sd.facade.data;
+package com.hkt.btu.sd.core.dao.entity;
 
-import com.hkt.btu.common.facade.data.DataInterface;
+import com.hkt.btu.common.core.dao.entity.BaseEntity;
 
-public class SdSqlReportData implements DataInterface {
+public class SdSqlReportEntity extends BaseEntity {
 
     private String reportId;
     private String reportName;
@@ -11,7 +11,6 @@ public class SdSqlReportData implements DataInterface {
     private String sql;
     private String exportTo;
     private String emailTo;
-    private boolean isActive;
 
     public String getReportId() {
         return reportId;
@@ -67,13 +66,5 @@ public class SdSqlReportData implements DataInterface {
 
     public void setEmailTo(String emailTo) {
         this.emailTo = emailTo;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
     }
 }

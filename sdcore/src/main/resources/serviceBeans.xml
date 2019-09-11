@@ -55,6 +55,9 @@
     <alias name="sdSiteConfigService" alias="siteConfigService"/>
     <bean id="sdSiteConfigService" class="com.hkt.btu.sd.core.service.impl.SdSiteConfigServiceImpl"/>
 
+    <alias name="sdSqlReportProfileService" alias="sqlReportProfileService"/>
+    <bean id="sdSqlReportProfileService" class="com.hkt.btu.sd.core.service.impl.SdSqlReportProfileServiceImpl"/>
+
     <!-- Populator -->
     <alias name="sdUserBeanPopulator" alias="userBeanPopulator"/>
     <bean id="sdUserBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserBeanPopulator"/>
@@ -82,6 +85,9 @@
     <alias name="sdCronJobInstBeanPopulator" alias="cronJobInstBeanPopulator"/>
     <bean id="sdCronJobInstBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdCronJobInstBeanPopulator"/>
 
-    <alias name="sdUserRolePopulator" alias="userRolePopulator"/>
-    <bean id="sdUserRolePopulator" class="com.hkt.btu.sd.core.service.populator.SdUserRoleBeanPopulator"/>
+    <alias name="sdUserRoleBeanPopulator" alias="userRoleBeanPopulator"/>
+    <bean id="sdUserRoleBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserRoleBeanPopulator"/>
+
+    <alias name="sdReportBeanPopulator" alias="reportBeanPopulator"/>
+    <bean id="sdReportBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdReportBeanPopulator"/>
 </beans>

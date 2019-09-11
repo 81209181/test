@@ -4,7 +4,9 @@ import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.core.service.BtuCronJobLogService;
 import com.hkt.btu.common.core.service.BtuCronJobProfileService;
 import com.hkt.btu.common.core.service.BtuSchedulerService;
+import com.hkt.btu.common.core.service.BtuSqlReportProfileService;
 import com.hkt.btu.common.core.service.bean.BtuCronJobProfileBean;
+import com.hkt.btu.common.core.service.bean.BtuSqlReportBean;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -24,6 +26,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BtuSchedulerServiceImpl implements BtuSchedulerService {
     private static final Logger LOG = LogManager.getLogger(BtuSchedulerServiceImpl.class);
@@ -36,6 +39,8 @@ public class BtuSchedulerServiceImpl implements BtuSchedulerService {
     BtuCronJobLogService btuCronJobLogService;
     @Resource(name = "cronJobProfileService")
     BtuCronJobProfileService btuCronJobProfileService;
+    @Resource(name = "sqlReportProfileService")
+    BtuSqlReportProfileService sqlReportProfileService;
 
     @Override
     public void rescheduleAllCronJobs() {
@@ -56,7 +61,13 @@ public class BtuSchedulerServiceImpl implements BtuSchedulerService {
 
         // find all to-run schedule job from db
         List<BtuCronJobProfileBean> jobProfileBeanList = btuCronJobProfileService.getAll();
-        if (CollectionUtils.isEmpty(jobProfileBeanList)) {
+
+        // find all to-run sql report job from db
+        List<BtuCronJobProfileBean> sqlReportBeanList = sqlReportProfileService.getAllReportData(BtuSqlReportBean.ACTIVE_STATUS);
+
+        jobProfileBeanList.addAll(sqlReportBeanList);
+
+        if (CollectionUtils.isEmpty(jobProfileBeanList) && CollectionUtils.isEmpty(sqlReportBeanList)) {
             LOG.info("No job to scheduled according to database.");
             return;
         }
@@ -74,10 +85,17 @@ public class BtuSchedulerServiceImpl implements BtuSchedulerService {
         }
         LOG.info(String.format("Scheduled %d jobs out of %d job profiles.", successCounter, jobProfileBeanList.size()));
     }
+
     @Override
     public void scheduleJob(String keyGroup, String keyName) throws SchedulerException, InvalidInputException, ClassNotFoundException {
         BtuCronJobProfileBean jobProfileBean = btuCronJobProfileService.getProfileBeanByGrpAndName(keyGroup, keyName);
         scheduleJob(jobProfileBean);
+    }
+
+    @Override
+    public void scheduleReportJob(String reportName) throws SchedulerException, InvalidInputException, ClassNotFoundException {
+        BtuCronJobProfileBean reportProfileBean = sqlReportProfileService.getProfileBeanByGrpAndName(BtuSqlReportBean.KEY_GROUP, reportName);
+        scheduleJob(reportProfileBean);
     }
 
     private void scheduleJob(BtuCronJobProfileBean jobProfileBean) throws ClassNotFoundException, SchedulerException {

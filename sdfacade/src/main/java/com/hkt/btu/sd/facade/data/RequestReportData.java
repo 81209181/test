@@ -2,16 +2,16 @@ package com.hkt.btu.sd.facade.data;
 
 import com.hkt.btu.common.facade.data.DataInterface;
 
-public class SdSqlReportData implements DataInterface {
+public class RequestReportData implements DataInterface {
 
     private String reportId;
     private String reportName;
-    private String cronExp;
+    private String cronExpression;
     private String status;
-    private String sql;
     private String exportTo;
     private String emailTo;
-    private boolean isActive;
+    private String sql;
+    private String remarks;
 
     public String getReportId() {
         return reportId;
@@ -29,28 +29,12 @@ public class SdSqlReportData implements DataInterface {
         this.reportName = reportName;
     }
 
-    public String getCronExp() {
-        return cronExp;
+    public String getCronExpression() {
+        return cronExpression;
     }
 
-    public void setCronExp(String cronExp) {
-        this.cronExp = cronExp;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getSql() {
-        return sql;
-    }
-
-    public void setSql(String sql) {
-        this.sql = sql;
+    public void setCronExpression(String cronExpression) {
+        this.cronExpression = cronExpression;
     }
 
     public String getExportTo() {
@@ -69,11 +53,27 @@ public class SdSqlReportData implements DataInterface {
         this.emailTo = emailTo;
     }
 
-    public boolean isActive() {
-        return isActive;
+    public String getSql() {
+        return sql;
     }
 
-    public void setActive(boolean active) {
-        isActive = active;
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 }

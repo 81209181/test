@@ -3,7 +3,66 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdSqlReportMapper">
+    <resultMap id="SdSqlReportEntity" type="com.hkt.btu.sd.core.dao.entity.SdSqlReportEntity">
+        <result column="REPORT_ID" property="reportId"/>
+        <result column="REPORT_NAME" property="reportName"/>
+        <result column="CRON_EXP" property="cronExp"/>
+        <result column="STATUS" property="status"/>
+        <result column="SQL" property="sql"/>
+        <result column="EXPORT_TO" property="exportTo"/>
+        <result column="EMAIL_TO" property="emailTo"/>
+
+        <result column="CREATEDATE" property="createdate"/>
+        <result column="CREATEBY" property="createby"/>
+        <result column="MODIFYDATE" property="modifydate"/>
+        <result column="MODIFYBY" property="modifyby"/>
+        <result column="REMARKS" property="remarks"/>
+    </resultMap>
     <select id="queryBySQL" parameterType="String" resultType="java.util.LinkedHashMap">
         ${value}
     </select>
+
+    <select id="getSqlReportData" resultMap="SdSqlReportEntity">
+        select * from SQL_REPORT
+        <where>
+            <if test="status != null">
+                STATUS = #{status}
+            </if>
+        </where>
+    </select>
+
+    <select id="getSqlReportDataByReportId" resultMap="SdSqlReportEntity">
+        select *
+        from SQL_REPORT
+        where REPORT_ID = #{reportId}
+    </select>
+
+    <delete id="deleteSqlReportDataByReportId">
+        delete
+        from SQL_REPORT
+        where REPORT_ID = #{reportId}
+    </delete>
+
+    <insert id="createSqlReport">
+        insert into SQL_REPORT(REPORT_NAME, CRON_EXP, STATUS, SQL, EXPORT_TO, EMAIL_TO, CREATEBY, MODIFYBY,
+                               REMARKS)
+        VALUES (#{reportName}, #{cronExp}, #{status}, #{sql}, #{exportTo}, #{emailTo}, #{createBy},
+                #{modifyBy}, #{remarks})
+    </insert>
+
+    <update id="updateReportData">
+        update SQL_REPORT
+        <set>
+            <if test="reportName != null">REPORT_NAME = #{reportName},</if>
+            <if test="sql != null">SQL = #{sql},</if>
+            <if test="status !=null">STATUS = #{status},</if>
+            <if test="remarks != null">REMARKS = #{remarks},</if>
+            <if test="exportTo != null">EXPORT_TO = #{exportTo},</if>
+            <if test="emailTo != null">EMAIL_TO=#{emailTo},</if>
+            <if test="cronExp != null">CRON_EXP=#{cronExp},</if>
+            <if test="modifyBy != null">MODIFYBY=#{modifyBy},</if>
+            MODIFYDATE = CURRENT_TIMESTAMP
+        </set>
+        where reportId = #{reportId}
+    </update>
 </mapper>

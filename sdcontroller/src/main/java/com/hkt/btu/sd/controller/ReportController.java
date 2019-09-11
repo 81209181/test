@@ -2,6 +2,9 @@ package com.hkt.btu.sd.controller;
 
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.facade.data.SdSqlReportData;
+import com.hkt.btu.sd.facade.SdSqlReportFacade;
+import com.hkt.btu.sd.facade.data.RequestReportData;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -11,67 +14,60 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
+import javax.annotation.Resource;
 import java.util.List;
 
 @Controller
-@RequestMapping(value = "/report")
+@RequestMapping(value = "/system/report")
 public class ReportController {
+
+    @Resource(name = "reportFacade")
+    SdSqlReportFacade sqlReportFacade;
+
 
     @GetMapping({"", "/", "/index"})
     public String index() {
-        return "redirect:/report/search";
+        return "redirect:search";
     }
 
     @GetMapping({"/search"})
     public String searchSqlReport() {
-        return "report/searchSqlReport";
+        return "system/report/searchSqlReport";
     }
 
     @GetMapping("/ajax-list-sql-report")
     public ResponseEntity<?> ajaxListSqlReport() {
-        List<SdSqlReportData> sqlReportDataList = new ArrayList<>();
+        List<SdSqlReportData> sqlReportData = sqlReportFacade.getAllReportData();
 
-        // fix data
-        SdSqlReportData sqlReportData = new SdSqlReportData();
-        sqlReportData.setReportName("test");
-        sqlReportData.setCronExp("0/20 * * * * ? ");
-        sqlReportData.setSql("SELECT * FROM USER_PROFILE");
-        sqlReportData.setExportTo("D:/");
-        sqlReportData.setActive(true);
-        sqlReportDataList.add(sqlReportData);
-
-        if (sqlReportDataList == null) {
+        if (CollectionUtils.isEmpty(sqlReportData)) {
             return ResponseEntity.badRequest().body("Sql Report list not found.");
         } else {
-            return ResponseEntity.ok(sqlReportDataList);
+            return ResponseEntity.ok(sqlReportData);
         }
     }
 
-    @GetMapping("create")
+    @GetMapping("/create")
     public String showCreateConfigParam(Model model) {
-        return "report/createSqlReport";
+        return "system/report/createSqlReport";
     }
 
-    @PostMapping("createSqlReport")
-    public ResponseEntity<?> createSqlReport(@RequestParam String reportName, @RequestParam String cronExp,
-                                             @RequestParam String sql,@RequestParam String status,
-                                             @RequestParam String exportTo,@RequestParam String emailTo){
+    @PostMapping("/createSqlReport")
+    public ResponseEntity<?> createSqlReport(RequestReportData data) {
+        sqlReportFacade.createReport(data);
         return ResponseEntity.ok().body("SQL Report create success.");
     }
 
     @GetMapping("/edit-sql-report")
-    public String editUserRole(@RequestParam String reportName, Model model) {
-        if (StringUtils.isNotEmpty(reportName)) {
-            model.addAttribute("reportName", reportName);
+    public String editUserRole(@RequestParam String reportId, Model model) {
+        if (StringUtils.isNotEmpty(reportId)) {
+            SdSqlReportData data = sqlReportFacade.getSqlReportDataByReportId(reportId);
+            model.addAttribute("data", data);
         }
-        return "report/editSqlReport";
+        return "system/report/editSqlReport";
     }
 
-    @PostMapping("updateSqlReport")
-    public ResponseEntity<?> updateSqlReport(@RequestParam String reportName, @RequestParam String cronExp,
-                                             @RequestParam String sql,@RequestParam String status,
-                                             @RequestParam String exportTo,@RequestParam String emailTo){
+    @PostMapping("/updateSqlReport")
+    public ResponseEntity<?> updateSqlReport(RequestReportData data) {
         return ResponseEntity.ok().body("SQL Report update success.");
     }
 

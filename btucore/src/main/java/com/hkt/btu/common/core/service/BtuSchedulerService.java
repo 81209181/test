@@ -29,4 +29,6 @@ public interface BtuSchedulerService {
     void destroyJob(String keyGroup, String keyName) throws SchedulerException, InvalidInputException;
 
     void scheduleJob(String keyGroup, String keyName) throws SchedulerException, InvalidInputException, ClassNotFoundException;
+
+    void scheduleReportJob(String reportName) throws SchedulerException, InvalidInputException, ClassNotFoundException;
 }

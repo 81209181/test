@@ -60,12 +60,12 @@ public class AppTest {
     @Test
     public void testQueryColumnName() {
         try (CSVWriter csvWriter = prepareCSVWriter("D:\\test.csv", ',')) {
-            String sql = "DROP TABLE TEST";
+            String sql = "SELECT * FROM USER_PROFILE";
             //sql = sqlFilter(sql.toLowerCase());
-            List<Map<String, Object>> maps = null;
-            transactionTemplate.execute(txStatus -> {
+            List<Map<String, Object>> maps = new ArrayList<>();
+            maps = transactionTemplate.execute(txStatus ->{
                 txStatus.setRollbackOnly();
-                //sdUserMapper.querySQL(sql);
+                //return sdUserMapper.querySQL(sql);
                 return null;
             });
             String[] header = getHeader(maps);
@@ -101,11 +101,14 @@ public class AppTest {
         for (Map<String, Object> map : maps) {
             for (String key : map.keySet()) {
                 Object value = map.get(key);
+                if (value == null) {
+                    value = "";
+                }
                 if (value instanceof String) {
                     content.add((String) value);
                 }
                 if (value instanceof Timestamp) {
-                    content.add(convertTimestamp((Timestamp) value));
+                    content.add(convertTimestamp((Date) value));
                 }
             }
             contentResult.add(content.toArray(new String[content.size()]));
@@ -123,7 +126,7 @@ public class AppTest {
         return column_name.toArray(new String[column_name.size()]);
     }
 
-    private String convertTimestamp(Timestamp timestamp) {
+    private String convertTimestamp(Date timestamp) {
         String tsStr = "";
         //2019-08-20 18:01:21
         DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

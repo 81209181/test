@@ -4,6 +4,7 @@ import com.hkt.btu.common.core.service.impl.BtuSchedulerServiceImpl;
 import com.hkt.btu.sd.core.service.SdCronJobProfileService;
 import com.hkt.btu.sd.core.service.SdSchedulerService;
 import com.hkt.btu.sd.core.service.bean.SdCronJobInstBean;
+import com.hkt.btu.sd.core.service.bean.SdSqlReportBean;
 import com.hkt.btu.sd.core.service.populator.SdCronJobInstBeanPopulator;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
@@ -36,9 +37,11 @@ public class SdSchedulerServiceImpl extends BtuSchedulerServiceImpl implements S
 
         List<SdCronJobInstBean> jobBeanList = new LinkedList<>();
         for (String groupName : scheduler.getJobGroupNames()) {
-            for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
-                SdCronJobInstBean jobBean = getCronJobInstance(jobKey);
-                jobBeanList.add(jobBean);
+            if (!groupName.equals(SdSqlReportBean.KEY_GROUP)) {
+                for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
+                    SdCronJobInstBean jobBean = getCronJobInstance(jobKey);
+                    jobBeanList.add(jobBean);
+                }
             }
         }
         return jobBeanList;
@@ -52,17 +55,17 @@ public class SdSchedulerServiceImpl extends BtuSchedulerServiceImpl implements S
         sdCronJobInstBeanPopulator.populate(jobDetail, jobBean);
 
         List<? extends Trigger> triggerList = scheduler.getTriggersOfJob(jobKey);
-        if ( CollectionUtils.isEmpty(triggerList) ) {
+        if (CollectionUtils.isEmpty(triggerList)) {
             jobBean.setPaused(true);
         } else {
             List<CronTrigger> cronTriggerList = new LinkedList<>();
-            for(Trigger trigger : triggerList){
-                if(trigger instanceof CronTrigger){
+            for (Trigger trigger : triggerList) {
+                if (trigger instanceof CronTrigger) {
                     cronTriggerList.add((CronTrigger) trigger);
                 }
             }
 
-            if ( CollectionUtils.size(cronTriggerList)==1 ) {
+            if (CollectionUtils.size(cronTriggerList) == 1) {
                 CronTrigger cronTrigger = cronTriggerList.get(0);
                 sdCronJobInstBeanPopulator.populate(cronTrigger, jobBean);
 
@@ -78,10 +81,6 @@ public class SdSchedulerServiceImpl extends BtuSchedulerServiceImpl implements S
 
         return jobBean;
     }
-
-
-
-
 
 
 }

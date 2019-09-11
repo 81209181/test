@@ -54,13 +54,13 @@
 
     <!-- BTU Service -->
     <alias name="btuSiteConfigService" alias="siteConfigService"/>
-    <bean id="btuSiteConfigService" class="com.hkt.btu.common.core.service.impl.BtuSiteConfigServiceImpl" />
+    <bean id="btuSiteConfigService" class="com.hkt.btu.common.core.service.impl.BtuSiteConfigServiceImpl"/>
 
     <alias name="btuUserService" alias="userService"/>
-    <bean id="btuUserService" class="com.hkt.btu.common.core.service.impl.BtuUserServiceImpl" />
+    <bean id="btuUserService" class="com.hkt.btu.common.core.service.impl.BtuUserServiceImpl"/>
 
     <alias name="btuPathCtrlService" alias="pathCtrlService"/>
-    <bean id="btuPathCtrlService" class="com.hkt.btu.common.core.service.impl.BtuPathCtrlServiceImpl" />
+    <bean id="btuPathCtrlService" class="com.hkt.btu.common.core.service.impl.BtuPathCtrlServiceImpl"/>
 
     <alias name="btuDaoAuthenticationProvider" alias="customBtuDaoAuthenticationProvider"/>
     <bean id="btuDaoAuthenticationProvider"
@@ -85,9 +85,15 @@
     <alias name="btuEmailService" alias="emailService"/>
     <bean id="btuEmailService" class="com.hkt.btu.common.core.service.impl.BtuEmailServiceImpl"/>
 
-
     <!--  Populator  -->
     <alias name="btuSiteConfigBeanPopulator" alias="siteConfigBeanPopulator"/>
     <bean id="btuSiteConfigBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuSiteConfigBeanPopulator"/>
 
+
+    <!-- SQL_Reprot -->
+    <alias name="btuDateConverter" alias="dateConverter"/>
+    <bean id="btuDateConverter" class="com.hkt.btu.common.genrator.impl.BtuDateConverterImpl"/>
+
+    <alias name="btuCSVGenrator" alias="csvGenrator"/>
+    <bean id="btuCSVGenrator" class="com.hkt.btu.common.genrator.impl.BtuSQL2CSVGenratorImpl"/>
 </beans>
