@@ -85,6 +85,8 @@
     <alias name="btuEmailService" alias="emailService"/>
     <bean id="btuEmailService" class="com.hkt.btu.common.core.service.impl.BtuEmailServiceImpl"/>
 
+    <alias name="tokenAuthenticationProvider" alias="customTokenAuthenticationProvider"/>
+    <bean id="tokenAuthenticationProvider" class="com.hkt.btu.common.spring.security.authentication.TokenAuthenticationProvider"/>
 
     <!--  Populator  -->
     <alias name="btuSiteConfigBeanPopulator" alias="siteConfigBeanPopulator"/>

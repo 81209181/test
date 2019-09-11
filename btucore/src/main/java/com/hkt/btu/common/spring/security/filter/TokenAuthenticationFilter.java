@@ -2,40 +2,28 @@ package com.hkt.btu.common.spring.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
-import org.springframework.util.Assert;
+import org.springframework.util.Base64Utils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.HttpHeaders;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
-
-    @Value("${servicedesk.api.headerKey}")
-    private String headerKey;
-    @Value("${servicedesk.api.headerValue}")
-    private String headerValue;
-    @Value("${servicedesk.api.tokenUsername}")
-    private String tokenUsername;
-    @Value("${servicedesk.api.tokenPassword}")
-    private String tokenPassword;
-
-    @Autowired
-    SessionRegistry sessionRegistry;
 
     public TokenAuthenticationFilter() {
         super("/**");
@@ -43,19 +31,28 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws AuthenticationException, IOException, ServletException {
-        String token = httpServletRequest.getHeader(this.headerKey);
-        if (ObjectUtils.isEmpty(token)) {
-            throw new AuthenticationCredentialsNotFoundException("Access Token is not provided.");
+        String header = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
+        String token = "";
+        List<String> list;
+        if (!ObjectUtils.isEmpty(header)) {
+            if(header.startsWith("Bearer ")){
+                token = header.substring(7);
+            }
+        } else {
+            throw new BadCredentialsException("token not found.");
         }
-        if (!token.equalsIgnoreCase(headerValue)) {
-            throw new BadCredentialsException("Token is not match.");
+        try {
+            list = Arrays.asList(StringUtils.trimAllWhitespace(new String(Base64Utils.decodeFromString(token))).split(":"));
+        } catch (IllegalArgumentException e) {
+            throw new BadCredentialsException("token not match.");
         }
-        Assert.notNull(tokenUsername, "Token username must not be null.");
-        Assert.notNull(tokenPassword, "Token password must not be null.");
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(tokenUsername, tokenPassword);
-        authenticationToken.setDetails(authenticationDetailsSource.buildDetails(httpServletRequest));
+        if (list.size()<2) {
+            throw new BadCredentialsException("token not match.");
+        }
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(list.get(0),list.get(1));
         return getAuthenticationManager().authenticate(authenticationToken);
     }
+
 
     @Override
     protected boolean requiresAuthentication(HttpServletRequest request, HttpServletResponse response) {
@@ -74,7 +71,7 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(authResult);
         SecurityContextHolder.setContext(context);
-        chain.doFilter(request,response);
+        chain.doFilter(request, response);
     }
 
     @Override
