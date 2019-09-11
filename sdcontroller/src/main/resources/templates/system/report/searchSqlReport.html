@@ -9,6 +9,40 @@
 <div layout:fragment="content" th:remove="tag">
 
     <h1>SQL Report Job Instance</h1>
+    <h1>Job Instance</h1>
+    <table id="jobInstTable" class="display">
+        <thead>
+        <tr>
+            <th>Key Group</th>
+            <th>Key Name</th>
+            <th>Job Class</th>
+            <th>Cron Exp</th>
+            <th>Last Run</th>
+            <th>Next Run</th>
+            <th> </th>
+            <th> </th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+        <tr>
+            <th>Key Group</th>
+            <th>Key Name</th>
+            <th>Job Class</th>
+            <th>Cron Exp</th>
+            <th>Last Run</th>
+            <th>Next Run</th>
+            <th> </th>
+            <th> </th>
+        </tr>
+        </tfoot>
+    </table>
+
+    <br/>
+    <hr class="style1">
+    <br/>
+
+    <h1>Job Database Profile</h1>
     <a th:href="@{/report/create}" class="btn btn-success btn-lg mb-1"><i class="fas fa-plus-square"></i> Create</a>
     <table id="sqlReportTable" class="display">
         <thead>
@@ -18,8 +52,11 @@
                 <th>SQL</th>
                 <th>Export To</th>
                 <th>Email To</th>
-                <th></th>
-                <th></th>
+                <th>Active</th>
+                <th> </th>
+                <th> </th>
+                <th> </th>
+                <th> </th>
             </tr>
         </thead>
         <tbody></tbody>
@@ -30,8 +67,11 @@
                 <th>SQL</th>
                 <th>Export To</th>
                 <th>Email To</th>
-                <th></th>
-                <th></th>
+                <th>Active</th>
+                <th> </th>
+                <th> </th>
+                <th> </th>
+                <th> </th>
             </tr>
         </tfoot>
     </table>
