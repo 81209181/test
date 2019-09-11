@@ -1,5 +1,7 @@
 package com.hkt.btu.common.core.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hkt.btu.common.core.exception.InsufficientUserGroupException;
 import com.hkt.btu.common.core.exception.MissingRequiredUserGroupException;
 import com.hkt.btu.common.core.exception.NoAuthFoundException;
@@ -7,7 +9,9 @@ import com.hkt.btu.common.core.service.BtuHttpService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.util.ObjectUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,6 +29,16 @@ public class BtuHttpServiceImpl implements BtuHttpService {
         // check request info
         boolean isAjax = StringUtils.equals("XMLHttpRequest", request.getHeader("X-Requested-With"));
         String contextPath = request.getContextPath();
+
+        if (!ObjectUtils.isEmpty(request.getContentType())){
+            if (MediaType.APPLICATION_JSON_VALUE.equals(request.getContentType())) {
+                ObjectMapper mapper =new ObjectMapper();
+                ObjectNode node = mapper.createObjectNode();
+                node.put("message",exception.getMessage());
+                response.getOutputStream().write(mapper.writeValueAsBytes(node));
+                return true;
+            }
+        }
 
         // handle invalid session
         boolean isSessionInvalid = isInvalidSession(request);

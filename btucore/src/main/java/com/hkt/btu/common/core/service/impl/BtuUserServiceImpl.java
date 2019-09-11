@@ -115,6 +115,8 @@ public class BtuUserServiceImpl implements BtuUserService {
         return true;
     }
 
+    public boolean isActive(BtuUserBean btuUserBean){return true;}
+
     @Override
     public boolean hasAnyAuthority(String... targetAuthorities){
         return true;

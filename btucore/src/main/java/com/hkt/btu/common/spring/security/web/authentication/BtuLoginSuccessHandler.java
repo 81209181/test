@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@Service
+//@Service
 public class BtuLoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
     @Resource(name = "userService")
