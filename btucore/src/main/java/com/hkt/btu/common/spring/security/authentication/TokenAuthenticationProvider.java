@@ -3,6 +3,7 @@ package com.hkt.btu.common.spring.security.authentication;
 import com.hkt.btu.common.core.service.BtuConfigParamService;
 import com.hkt.btu.common.core.service.BtuSensitiveDataService;
 import com.hkt.btu.common.core.service.BtuUserService;
+import com.hkt.btu.common.core.service.bean.BtuConfigParamBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -33,7 +34,7 @@ public class TokenAuthenticationProvider extends AbstractUserDetailsAuthenticati
     protected UserDetails retrieveUser(String s, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
         String username = (String) usernamePasswordAuthenticationToken.getPrincipal();
         String password = (String) usernamePasswordAuthenticationToken.getCredentials();
-        String apiClient = configParamService.getString("API_CLIENT", String.format("%s.key", username));
+        String apiClient = configParamService.getString(BtuConfigParamBean.CONFIG_GROUP.API_CLIENT, String.format("%s.key", username));
         String decryptApiClient = sensitiveDataService.decryptToStringSafe(Base64Utils.decodeFromString(apiClient));
         boolean isNotMatch = true;
         if (!password.equals(apiClient)) {
