@@ -11,6 +11,7 @@ public class SdSqlReportEntity extends BaseEntity {
     private String sql;
     private String exportTo;
     private String emailTo;
+    private String remarks;
 
     public String getReportId() {
         return reportId;
@@ -66,5 +67,15 @@ public class SdSqlReportEntity extends BaseEntity {
 
     public void setEmailTo(String emailTo) {
         this.emailTo = emailTo;
+    }
+
+    @Override
+    public String getRemarks() {
+        return remarks;
+    }
+
+    @Override
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 }

@@ -12,19 +12,32 @@
     <form style="width:80%">
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label>Report Name</label>
-                <input type="text" class="form-control" id="reportName" name="reportName" th:value="${data.reportName}" readonly>
+                <label>Report Id</label>
+                <input type="text" class="form-control" name="reportId" th:value="${data.reportId}" readonly/>
             </div>
+
+            <div class="form-group col-md-6">
+                <label>Report Name</label>
+                <input type="text" class="form-control" id="reportName" name="reportName" th:value="${data.reportName}">
+            </div>
+
             <div class="form-group col-md-6">
                 <label>Cron Exp</label>
                 <input type="text" class="form-control" id="cronExp" name="cronExp" th:value="${data.cronExp}">
             </div>
+
+            <div class="form-group col-md-6">
+                <label>Remarks</label>
+                <input type="text" class="form-control" id="remarks" name="sql" th:value="${data.remarks}">
+            </div>
         </div>
+
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label>SQL</label>
                 <input type="text" class="form-control" id="sql" name="sql" th:value="${data.sql}">
             </div>
+
             <div class="form-group col-md-6">
                 <label >Status</label>
                 <select name="status" id="status" class="form-control" th:value="${data.status}">
@@ -33,6 +46,8 @@
                 </select>
             </div>
         </div>
+
+
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label>Export To</label>

@@ -35,7 +35,7 @@ public class BtuSQL2CSVGenratorImpl implements BtuCSVGenrator {
             LOG.info("Generated CSV successfully!");
             File csvFile = new File(filePath);
             return csvFile;
-        } catch (Exception e) {
+        } catch (IOException e) {
             LOG.warn("Genrate CSV has error:" + e.getMessage());
         }
         return null;

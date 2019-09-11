@@ -58,6 +58,9 @@
     <alias name="sdSqlReportProfileService" alias="sqlReportProfileService"/>
     <bean id="sdSqlReportProfileService" class="com.hkt.btu.sd.core.service.impl.SdSqlReportProfileServiceImpl"/>
 
+    <alias name="sdCsvGenratorService" alias="csvGenratorService"/>
+    <bean id="sdCsvGenratorService" class="com.hkt.btu.sd.core.service.impl.SdCsvGenratorServiceImpl"/>
+
     <!-- Populator -->
     <alias name="sdUserBeanPopulator" alias="userBeanPopulator"/>
     <bean id="sdUserBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserBeanPopulator"/>
