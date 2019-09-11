@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.controller;
 
+import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.facade.data.SdSqlReportData;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -28,12 +30,21 @@ public class ReportController {
 
     @GetMapping("/ajax-list-sql-report")
     public ResponseEntity<?> ajaxListSqlReport() {
-        List<SdSqlReportData> sqlReportData = null;
+        List<SdSqlReportData> sqlReportDataList = new ArrayList<>();
 
-        if (sqlReportData == null) {
+        // fix data
+        SdSqlReportData sqlReportData = new SdSqlReportData();
+        sqlReportData.setReportName("test");
+        sqlReportData.setCronExp("0/20 * * * * ? ");
+        sqlReportData.setSql("SELECT * FROM USER_PROFILE");
+        sqlReportData.setExportTo("D:/");
+        sqlReportData.setActive(true);
+        sqlReportDataList.add(sqlReportData);
+
+        if (sqlReportDataList == null) {
             return ResponseEntity.badRequest().body("Sql Report list not found.");
         } else {
-            return ResponseEntity.ok(sqlReportData);
+            return ResponseEntity.ok(sqlReportDataList);
         }
     }
 
@@ -66,6 +77,6 @@ public class ReportController {
 
     @PostMapping("ajax-delete-report")
     public ResponseEntity<?> deleteReport(@RequestParam String reportName){
-        return ResponseEntity.ok().body("SQL Report delete success.");
+        return ResponseEntity.ok(SimpleAjaxResponse.of());
     }
 }
