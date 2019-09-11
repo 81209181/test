@@ -1,8 +1,9 @@
 package com.hkt.btu.sd.controller;
 
+import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
+import com.hkt.btu.sd.facade.data.SdSqlReportData;
 import com.hkt.btu.sd.facade.SdSqlReportFacade;
 import com.hkt.btu.sd.facade.data.RequestReportData;
-import com.hkt.btu.sd.facade.data.SdSqlReportData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
@@ -70,8 +71,8 @@ public class ReportController {
         return ResponseEntity.ok().body("SQL Report update success.");
     }
 
-    @PostMapping("/ajax-delete-report")
-    public ResponseEntity<?> deleteReport(@RequestParam String reportName) {
-        return ResponseEntity.ok().body("SQL Report delete success.");
+    @PostMapping("ajax-delete-report")
+    public ResponseEntity<?> deleteReport(@RequestParam String reportName){
+        return ResponseEntity.ok(SimpleAjaxResponse.of());
     }
 }

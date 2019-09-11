@@ -13,12 +13,16 @@ import com.hkt.btu.sd.core.dao.entity.SdUserRoleEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdUserMapper;
 import com.hkt.btu.sd.core.dao.mapper.SdUserRoleMapper;
 import com.hkt.btu.sd.core.exception.*;
-import com.hkt.btu.sd.core.service.*;
+import com.hkt.btu.sd.core.service.SdEmailService;
+import com.hkt.btu.sd.core.service.SdOtpService;
+import com.hkt.btu.sd.core.service.SdUserRoleService;
+import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdCreateResultBean;
 import com.hkt.btu.sd.core.service.bean.SdEmailBean;
 import com.hkt.btu.sd.core.service.bean.SdOtpBean;
 import com.hkt.btu.sd.core.service.bean.SdUserBean;
 import com.hkt.btu.sd.core.service.populator.SdUserBeanPopulator;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,11 +32,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.transaction.annotation.Transactional;
-import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
-import javax.naming.NamingException;
 import java.security.GeneralSecurityException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -449,6 +452,13 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             return false;
         }
         return !SdUserEntity.STATUS.LOCKED.equals(btuUserBean.getStatus());
+    }
+
+    public boolean isActive(BtuUserBean btuUserBean) {
+        if (ObjectUtils.isEmpty(btuUserBean)) {
+            return false;
+        }
+        return SdUserEntity.STATUS.ACTIVE.equals(btuUserBean.getStatus());
     }
 
     private void checkValidPassword(String plaintext) throws InvalidPasswordException {

@@ -7,6 +7,10 @@ public class BtuConfigParamBean extends BaseBean {
         public static final String ENCRYPTED = "ENCRYPTED";
     }
 
+    public static class CONFIG_GROUP {
+        public static final String API_CLIENT ="API_CLIENT";
+    }
+
     private String configGroup;
     private String configKey;
     private String configValue;
