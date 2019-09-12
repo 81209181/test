@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdTicketMasMapper" >
+    <resultMap id="TicketMasEntity" type="com.hkt.btu.sd.core.dao.entity.SdTicketMasEntity" >
+        <result column="TICKET_MAS_ID" property="ticketMasId" />
+        <result column="CUST_CODE" property="custCode" />
+        <result column="TICKET_TYPE" property="ticketType" />
+        <result column="STATUS" property="status" />
+
+        <result column="CREATEDATE" property="createDate" />
+        <result column="CREATEBY" property="createBy" />
+        <result column="MODIFYDATE" property="modifyDate" />
+        <result column="MODIFYBY" property="modifyBy" />
+    </resultMap>
+    <insert id="insertQueryTicket" parameterType="com.hkt.btu.sd.core.dao.entity.SdTicketMasEntity">
+        <selectKey keyProperty="ticketMasId" order="BEFORE" resultType="Integer">
+            select SEQ_TICKET_MAS_ID.NEXTVAL from dual
+        </selectKey>
+        insert into TICKET_MAS (TICKET_MAS_ID,CUST_CODE,TICKET_TYPE,STATUS,CREATEBY,MODIFYBY)
+        values(#{ticketMasId},#{custCode},'QUERY','O',#{createBy},#{createBy})
+    </insert>
+
+    <select id="findTicketById" resultMap="TicketMasEntity">
+        select * from TICKET_MAS where TICKET_MAS_ID = #{ticketId}
+    </select>
+
+</mapper>

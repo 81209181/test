@@ -37,6 +37,9 @@
     <bean name="itsmApiFacade" class="com.hkt.btu.sd.facade.impl.ItsmApiFacadeImpl"/>
     <bean name="norarsApiFacade" class="com.hkt.btu.sd.facade.impl.NorarsApiFacadeImpl"/>
 
+    <alias name="sdTicketFacade" alias="ticketFacade" />
+    <bean id="sdTicketFacade" class="com.hkt.btu.sd.facade.impl.SdTicketFacadeImpl"/>
+
     <!-- Populator -->
     <alias name="sdUserDataPopulator" alias="userDataPopulator"/>
     <bean id="sdUserDataPopulator" class="com.hkt.btu.sd.facade.populator.SdUserDataPopulator"/>
@@ -67,4 +70,7 @@
 
     <alias name="sdUserRolePathCtrlPopulator" alias="userRolePathCtrlDataPopulator"/>
     <bean id="sdUserRolePathCtrlPopulator" class="com.hkt.btu.sd.facade.populator.SdUserRolePathCtrlPopulator"/>
+
+    <alias name="sdTicketMasDataPopulator" alias="ticketMasDataPopulator" />
+    <bean id="sdTicketMasDataPopulator" class="com.hkt.btu.sd.facade.populator.SdTicketMasDataPopulator"/>
 </beans>

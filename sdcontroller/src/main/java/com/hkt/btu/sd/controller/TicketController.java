@@ -1,7 +1,9 @@
 package com.hkt.btu.sd.controller;
 
 import com.hkt.btu.sd.facade.SdRequestCreateFacade;
+import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.data.RequestCreateSearchResultsData;
+import com.hkt.btu.sd.facade.data.SdTicketMasData;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
-import javax.ws.rs.POST;
+import java.util.Optional;
 
 @RequestMapping("ticket")
 @Controller
@@ -20,14 +22,16 @@ public class TicketController {
 
     @Resource(name = "requestCreateFacade")
     SdRequestCreateFacade requestCreateFacade;
+    @Resource(name = "ticketFacade")
+    SdTicketFacade ticketFacade;
 
     @GetMapping("search-customer")
     public String searchCustomer() {
         return "ticket/search_customer";
     }
 
-    @PostMapping("search")
-    public ResponseEntity<?> search(String searchKey,String searchValue) {
+    @PostMapping("searchCustomer")
+    public ResponseEntity<?> searchCustomer(String searchKey,String searchValue) {
         RequestCreateSearchResultsData resultsData = requestCreateFacade.searchProductList(searchKey, searchValue);
         if (!StringUtils.isEmpty(resultsData.getErrorMsg())) {
             return ResponseEntity.badRequest().body(resultsData.getErrorMsg());
@@ -36,15 +40,25 @@ public class TicketController {
         }
     }
 
-    @PostMapping("create")
-    public ResponseEntity<?> createQueryTicket() {
-        return ResponseEntity.ok("");
+    @PostMapping("query/create")
+    public ResponseEntity<?> createQueryTicket(String custCode) {
+        Optional<SdTicketMasData> data = ticketFacade.createQueryTicket(custCode);
+        if (data.isPresent()) {
+            return ResponseEntity.ok(data);
+        }else{
+            return ResponseEntity.badRequest().body("Create ticket fail.");
+        }
     }
 
     @GetMapping("{ticketId}")
-    public String showQueryTicket(@PathVariable String ticketId, Model model){
-        model.addAttribute("customerCode","20001");
-        model.addAttribute("ticketMasId",ticketId);
-        return "ticket/ticket_info";
+    public String showQueryTicket(@PathVariable Integer ticketId, Model model){
+        Optional<SdTicketMasData> data =ticketFacade.getTicket(ticketId);
+        if (data.isPresent()) {
+            model.addAttribute("customerCode", data.get().getCustCode());
+            model.addAttribute("ticketMasId", data.get().getTicketMasId());
+            return "ticket/ticket_info";
+        } else {
+            return "error";
+        }
     }
 }

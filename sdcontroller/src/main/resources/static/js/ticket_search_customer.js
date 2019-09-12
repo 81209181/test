@@ -1,5 +1,7 @@
 $().ready(function(){
 
+    let ctx = $("meta[name='_ctx']").attr("content");
+
     $('#btnSearchReset').on('click',function(){
         $('#searchKey').val('');
         $('#searchValue').val('');
@@ -7,8 +9,18 @@ $().ready(function(){
     })
 
     $('#btnSearchCustomerNext').on('click',function(){
-        $.post('/ticket/create',{},function(res){
-            $(location).attr('href',ctx+'/ticket/00001');
+        clearAllMsg();
+        let custCode =$('input[name=custCode]').val();
+        if(custCode.length < 1){
+            showErrorMsg('Please input customer code.');
+            return;
+        }
+        $.post('/ticket/query/create',{custCode:custCode},function(res){
+            $(location).attr('href',ctx+'/ticket/'+ res.ticketMasId);
+        }).fail(function(e){
+            var responseError = e.responseText ? e.responseText : "Get failed.";
+            console.log("ERROR : ", responseError);
+            showErrorMsg(responseError);
         })
     })
 
@@ -32,7 +44,7 @@ $().ready(function(){
         }else{
             searchValue.attr('class','form-control');
         }
-        $.post('/ticket/search',{
+        $.post('/ticket/searchCustomer',{
             searchKey : searchKey.val().trim(),
             searchValue : searchValue.val().trim()
         },function(res){
