@@ -144,4 +144,12 @@ public class AppTest {
         CSVWriter csvWriter = new CSVWriter(writer, separator);
         return csvWriter;
     }
+
+    public static void main(String[] args) throws ClassNotFoundException {
+         Class<?> aClass = Class.forName("com.hkt.btu.sd.core.job.SdSqlReportJob");
+         System.out.println(aClass.toString());
+
+        Class<?> bClass = Class.forName("com.hkt.btu.sd.core.job.SdSqlReportJob");
+        System.out.println(bClass.toString());
+    }
 }

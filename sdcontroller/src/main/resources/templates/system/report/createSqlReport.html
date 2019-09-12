@@ -9,47 +9,50 @@
 <div layout:fragment="content" th:remove="tag">
 
     <h1 style="padding-top:3%">Create SQL Report</h1>
-    <form style="width:80%">
+    <form style="width:80%" th:action="@{/system/report/createSqlReport}" th:object="${requestReportData}" method="post">
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label>Report Name</label>
-                <input type="text" class="form-control" id="reportName" name="reportName">
+                <input type="text" class="form-control" th:field="*{reportName}"  required>
             </div>
             <div class="form-group col-md-6">
                 <label>Cron Exp</label>
-                <input type="text" class="form-control" id="cronExp" name="cronExp">
+                <input type="text" class="form-control" th:field="*{cronExp}" required>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label>SQL</label>
-                <input type="text" class="form-control" id="sql" name="sql">
+                <input type="text" class="form-control" th:field="*{sql}" required>
             </div>
             <div class="form-group col-md-6">
                 <label >Status</label>
-                <select name="status" id="status" class="form-control">
+                <select th:field="*{status}" class="form-control" required>
                     <option value="A">Active</option>
-                    <option value="D">Disable</option>
+                    <option value="D">Deactivate</option>
                 </select>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label>Export To</label>
-                <input type="text" class="form-control" id="exportTo" name="exportTo">
+                <input type="text" class="form-control" th:field="*{exportTo}" required>
             </div>
             <div class="form-group col-md-6">
                 <label>Email To</label>
-                <input type="text" class="form-control" id="emailTo" name="emailTo">
+                <input type="text" class="form-control" th:field="*{emailTo}">
+            </div>
+            <div class="form-group col-md-6">
+                <label>Remarks</label>
+                <input type="text" class="form-control" th:field="*{remarks}"/>
             </div>
         </div>
         <div class="mt-5 from-row">
-            <button type="button" class="btn btn-lg btn-primary float-right mr-sm-2" id="btnCreateSqlRoeport"><i class="far fa-save"></i> Create
+            <button type="submit" class="btn btn-lg btn-primary float-right mr-sm-2" id="btnCreateSqlRoeport"><i class="far fa-save"></i> Create
             </button>
         </div>
     </form>
-    <script type="text/javascript" th:src="@{/js/createSqlReport.js}"></script>
-
+    <!--<script type="text/javascript" th:src="@{/js/createSqlReport.js}"></script>-->
 </div>
 </body>
 </html>

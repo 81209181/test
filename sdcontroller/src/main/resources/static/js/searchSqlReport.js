@@ -8,10 +8,10 @@ function createJobInstTable() {
         ajax: {
             type: "GET",
             contentType: "application/json",
-            url: "/system/job/ajax-list-job-inst",
+            url: "/system/report/ajax-list-report-job-inst",
             dataSrc: '',
             error: function () {
-                showErrorMsg("Cannot load job list.");
+                showErrorMsg("Cannot load  report job list.");
             }
         },
         columns: [
@@ -47,27 +47,27 @@ function createJobInstTable() {
                 targets: 6,
                 render: function (keyName, type, row, meta) {
                     if (row['paused']){
-                        return "<button type='button' class='btn btn-success' onclick='ajaxResumeJob(\"" + row['keyGroup'] + "\",\"" + row['keyName'] +"\")' ><i class=\"fas fa-play\"></i> Resume</button>";
+                        return "<button type='button' class='btn btn-success' onclick='ajaxResumeReport(\"" + row['keyName'] +"\")' ><i class=\"fas fa-play\"></i> Resume</button>";
                     } else {
-                        return "<button type='button' class='btn btn-danger' onclick='ajaxPauseJob(\"" + row['keyGroup'] + "\",\"" + row['keyName'] +"\")' ><i class=\"fas fa-pause\"></i> Pause</button>";
+                        return "<button type='button' class='btn btn-danger' onclick='ajaxPauseReport(\"" + row['keyName'] +"\")' ><i class=\"fas fa-pause\"></i> Pause</button>";
                     }
                 }
             },
             {
                 targets: 7,
                 render: function (keyName, type, row, meta) {
-                    return "<button type='button' class='btn btn-info' onclick='ajaxTriggerJob(\"" + row['keyGroup'] + "\",\"" + row['keyName'] +"\")' ><i class=\"fas fa-stopwatch\"></i> Trigger</button>";
+                    return "<button type='button' class='btn btn-info' onclick='ajaxTriggerReport(\"" + row['keyName'] +"\")' ><i class=\"fas fa-stopwatch\"></i> Trigger</button>";
                 }
             }
         ]
     });
 }
 
-function ajaxPauseJob( keyGroup, keyName ) {
+function ajaxPauseReport(  keyName ) {
     $.ajax({
         type: "POST",
         contentType: "application/json",
-        url: "/system/job/ajax-pause-job?keyGroup=" + keyGroup + "&keyName=" + keyName,
+        url: "/system/report/ajax-pause-report?keyName=" + keyName,
         dataSrc: 'data',
         success: function (data) {
             clearAllMsg();
@@ -84,11 +84,11 @@ function ajaxPauseJob( keyGroup, keyName ) {
     });
 }
 
-function ajaxResumeJob( keyGroup, keyName ) {
+function ajaxResumeReport(  keyName ) {
     $.ajax({
         type: "POST",
         contentType: "application/json",
-        url: "/system/job/ajax-resume-job?keyGroup=" + keyGroup + "&keyName=" + keyName,
+        url: "/system/report/ajax-resume-report?keyName=" + keyName,
         dataSrc: 'data',
         success: function (data) {
             clearAllMsg();
@@ -105,11 +105,11 @@ function ajaxResumeJob( keyGroup, keyName ) {
     });
 }
 
-function ajaxTriggerJob( keyGroup, keyName ) {
+function ajaxTriggerReport( keyName ) {
     $.ajax({
         type: "POST",
         contentType: "application/json",
-        url: "/system/job/ajax-trigger-job?keyGroup=" + keyGroup + "&keyName=" + keyName,
+        url: "/system/report/ajax-trigger-report?keyName=" + keyName,
         dataSrc: 'data',
         success: function (data) {
             clearAllMsg();
@@ -143,17 +143,12 @@ function createSqlReportTable() {
             { data: 'sql' },
             { data: 'exportTo' },
             { data: 'emailTo' },
-            { data: 'active' },
-            { data: 'reportName' },
-            { data: 'reportName' },
-            { data: 'reportName' },
-            { data: 'reportName' }
+            { data: 'active' }
         ],
         columnDefs: [
             {
                 targets: 6,
                 render: function (reportName, type, row, meta) {
-                    console.log(row['active']);
                     if (row['active']) {
                         return "<button type='button' class='btn btn-danger' onclick='ajaxDeactivateJobProfile(\"" + row['reportName'] + "\")' ><i class=\"fas fa-times-circle\"></i> Deactivate</button>";
                     } else {
@@ -169,7 +164,8 @@ function createSqlReportTable() {
             },
             {
                 targets: 8,
-                render: function (reportName, type, row, meta) {
+                data: "reportId",
+                render: function (reportId, type, row, meta) {
                     var ctx = $("meta[name='_ctx']").attr("content");
                     var link = ctx + "/system/report/edit-sql-report?reportId=" + reportId;
                     return '<a class="btn btn-info" href=' + link + ' role="button"><i class="fas fa-edit"></i> Edit</a>';
@@ -179,7 +175,7 @@ function createSqlReportTable() {
                 targets: 9,
                 data: "reportId",
                 render: function (reportId, type, row, meta) {
-                    return "<button type='button' class='btn btn-info' onclick='ajaxDeleteReport(\"" + reportId + "\")' ><i class=\"fas fa-stopwatch\"></i> Delete</button>";
+                    return "<button type='button' class='btn btn-danger' onclick='ajaxDeleteReport(\"" + reportId + "\")' ><i class=\"fas fa-times-circle\"></i> Delete</button>";
                 }
             }
         ]
@@ -249,17 +245,18 @@ function ajaxSyncJobProfile(reportName) {
     });
 }
 
-function ajaxDeleteReport(reportName) {
+function ajaxDeleteReport(reportId) {
     $.ajax({
         type: "POST",
         contentType: "application/json",
-        url: "/system/report/ajax-delete-report?reportName=" + reportName,
+        url: "/system/report/ajax-delete-report?reportId=" + reportId,
         dataSrc: 'data',
         success: function (data) {
             clearAllMsg();
             if(data.success){
-                showInfoMsg("Deleted report: " + reportName);
+                showInfoMsg("Deleted report");
                 $('#sqlReportTable').DataTable().ajax.reload();
+                $('#jobInstTable').DataTable().ajax.reload();
             }else{
                 showErrorMsg(data.feedback);
             }

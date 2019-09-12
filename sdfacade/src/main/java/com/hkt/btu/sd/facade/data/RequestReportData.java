@@ -6,7 +6,7 @@ public class RequestReportData implements DataInterface {
 
     private String reportId;
     private String reportName;
-    private String cronExpression;
+    private String cronExp;
     private String status;
     private String exportTo;
     private String emailTo;
@@ -29,12 +29,12 @@ public class RequestReportData implements DataInterface {
         this.reportName = reportName;
     }
 
-    public String getCronExpression() {
-        return cronExpression;
+    public String getCronExp() {
+        return cronExp;
     }
 
-    public void setCronExpression(String cronExpression) {
-        this.cronExpression = cronExpression;
+    public void setCronExp(String cronExp) {
+        this.cronExp = cronExp;
     }
 
     public String getExportTo() {
