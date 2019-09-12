@@ -58,6 +58,9 @@
     <alias name="sdSqlReportProfileService" alias="sqlReportProfileService"/>
     <bean id="sdSqlReportProfileService" class="com.hkt.btu.sd.core.service.impl.SdSqlReportProfileServiceImpl"/>
 
+    <alias name="sdTicketService" alias="ticketService"/>
+    <bean id="sdTicketService" class="com.hkt.btu.sd.core.service.impl.SdTicketServiceImpl" />
+
     <!-- Populator -->
     <alias name="sdUserBeanPopulator" alias="userBeanPopulator"/>
     <bean id="sdUserBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserBeanPopulator"/>
@@ -90,4 +93,7 @@
 
     <alias name="sdReportBeanPopulator" alias="reportBeanPopulator"/>
     <bean id="sdReportBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdReportBeanPopulator"/>
+
+    <alias name="sdTicketMasBeanPopulator" alias="ticketMasBeanPopulator"/>
+    <bean id="sdTicketMasBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdTicketMasBeanPopulator"/>
 </beans>
