@@ -16,6 +16,7 @@ public class SdReportBeanPopulator extends AbstractBeanPopulator<SdSqlReportBean
 
         target.setReportId(source.getReportId());
         target.setReportName(source.getReportName());
+        target.setJobClass("com.hkt.btu.sd.core.job.SdSqlReportJob");
         target.setCronExp(source.getCronExp());
         target.setEmailTo(source.getEmailTo());
         target.setExportTo(source.getExportTo());

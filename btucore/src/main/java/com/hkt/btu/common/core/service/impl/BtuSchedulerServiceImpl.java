@@ -6,6 +6,7 @@ import com.hkt.btu.common.core.service.BtuCronJobProfileService;
 import com.hkt.btu.common.core.service.BtuSchedulerService;
 import com.hkt.btu.common.core.service.BtuSqlReportProfileService;
 import com.hkt.btu.common.core.service.bean.BtuCronJobProfileBean;
+import com.hkt.btu.common.core.service.bean.BtuReportMetaDataBean;
 import com.hkt.btu.common.core.service.bean.BtuSqlReportBean;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -63,14 +64,13 @@ public class BtuSchedulerServiceImpl implements BtuSchedulerService {
         List<BtuCronJobProfileBean> jobProfileBeanList = btuCronJobProfileService.getAll();
 
         // find all to-run sql report job from db
-        List<BtuCronJobProfileBean> sqlReportBeanList = sqlReportProfileService.getAllReportData(BtuSqlReportBean.ACTIVE_STATUS);
-
-        jobProfileBeanList.addAll(sqlReportBeanList);
+        List<BtuSqlReportBean> sqlReportBeanList = sqlReportProfileService.getAllReportData(BtuSqlReportBean.ACTIVE_STATUS);
 
         if (CollectionUtils.isEmpty(jobProfileBeanList) && CollectionUtils.isEmpty(sqlReportBeanList)) {
             LOG.info("No job to scheduled according to database.");
             return;
         }
+
         LOG.info("Retrieved " + jobProfileBeanList.size() + " job profile(s) from database.");
 
         // try schedule all job
@@ -83,7 +83,19 @@ public class BtuSchedulerServiceImpl implements BtuSchedulerService {
                 LOG.error(e.getMessage(), e);
             }
         }
-        LOG.info(String.format("Scheduled %d jobs out of %d job profiles.", successCounter, jobProfileBeanList.size()));
+
+        for (BtuSqlReportBean sqlReportBean : sqlReportBeanList) {
+            try {
+                scheduleReportJob(sqlReportBean);
+                successCounter++;
+            } catch (SchedulerException | ClassNotFoundException | ClassCastException | InvalidInputException e) {
+                LOG.error(e.getMessage(), e);
+            }
+        }
+
+        int size = jobProfileBeanList.size() + sqlReportBeanList.size();
+
+        LOG.info(String.format("Scheduled %d jobs out of %d job profiles.", successCounter, size));
     }
 
     @Override
@@ -94,9 +106,50 @@ public class BtuSchedulerServiceImpl implements BtuSchedulerService {
 
     @Override
     public void scheduleReportJob(String reportName) throws SchedulerException, InvalidInputException, ClassNotFoundException {
-        BtuCronJobProfileBean reportProfileBean = sqlReportProfileService.getProfileBeanByGrpAndName(BtuSqlReportBean.KEY_GROUP, reportName);
-        scheduleJob(reportProfileBean);
+        BtuSqlReportBean reportProfileBean = sqlReportProfileService.getProfileBeanByGrpAndName(BtuSqlReportBean.KEY_GROUP, reportName);
+        scheduleReportJob(reportProfileBean);
     }
+
+    private void scheduleReportJob(BtuSqlReportBean sqlReportBean) throws ClassNotFoundException, SchedulerException {
+        Scheduler scheduler = schedulerFactoryBean.getScheduler();
+
+        // check already existed
+        Class<? extends QuartzJobBean> jobClass = Class.forName(sqlReportBean.getJobClass()).asSubclass(QuartzJobBean.class);
+        JobDetail jobDetail = JobBuilder.newJob(jobClass)
+                .withIdentity(sqlReportBean.getReportName(), BtuSqlReportBean.KEY_GROUP)
+                .build();
+        JobKey jobKey = jobDetail.getKey();
+        if (scheduler.checkExists(jobKey)) {
+            LOG.warn("Already scheduled Job: " + jobKey);
+            return;
+        }
+
+        // check cron expression
+        if (!CronExpression.isValidExpression(sqlReportBean.getCronExp())) {
+            LOG.error(jobKey + " has invalid cron expression: " + sqlReportBean.getCronExp());
+            throw new InvalidInputException("Invalid cron expression");
+        }
+
+        // calculate start time
+        LocalDateTime nowPlusTenSecond = LocalDateTime.now().plusSeconds(10);
+        Date startTime = Date.from(nowPlusTenSecond.atZone(ZoneId.systemDefault()).toInstant());
+
+        // schedule job
+        jobDetail = createReportJob(jobClass, context, sqlReportBean);
+        Trigger trigger = createCronTrigger(sqlReportBean.getReportName(), startTime,
+                sqlReportBean.getCronExp());
+
+        scheduler.scheduleJob(jobDetail, trigger);
+        // TODO: isRunnable
+        if (btuCronJobProfileService.isRunnable(sqlReportBean)) {
+            LOG.info("Scheduled job: " + jobKey);
+        } else {
+            scheduler.pauseJob(jobKey);
+            LOG.info("Scheduled job (paused on this host): " + jobKey);
+        }
+
+    }
+
 
     private void scheduleJob(BtuCronJobProfileBean jobProfileBean) throws ClassNotFoundException, SchedulerException {
         Scheduler scheduler = schedulerFactoryBean.getScheduler();
@@ -184,8 +237,33 @@ public class BtuSchedulerServiceImpl implements BtuSchedulerService {
         factoryBean.afterPropertiesSet();
 
         return factoryBean.getObject();
-
     }
+
+    public JobDetail createReportJob(Class<? extends QuartzJobBean> jobClass, ApplicationContext context, BtuSqlReportBean sqlReportBean) {
+        JobDetailFactoryBean factoryBean = new JobDetailFactoryBean();
+        factoryBean.setJobClass(jobClass);
+        factoryBean.setDurability(false);
+        factoryBean.setApplicationContext(context);
+        factoryBean.setName(sqlReportBean.getReportName());
+        factoryBean.setGroup(BtuSqlReportBean.KEY_GROUP);
+
+        // Build Report Meta Data
+        BtuReportMetaDataBean metaData = new BtuReportMetaDataBean();
+        metaData.setSql(sqlReportBean.getSql());
+        metaData.setEmailTo(sqlReportBean.getEmailTo());
+        metaData.setExportTo(sqlReportBean.getExportTo());
+        metaData.setReportName(sqlReportBean.getReportName());
+
+        // set job data map
+        JobDataMap jobDataMap = new JobDataMap();
+        jobDataMap.put(sqlReportBean.getReportName() + BtuSqlReportBean.KEY_GROUP, jobClass.getName());
+        jobDataMap.put(BtuSqlReportBean.REPORT_JOBDATAMAP_KEY, metaData);
+        factoryBean.setJobDataMap(jobDataMap);
+        factoryBean.afterPropertiesSet();
+
+        return factoryBean.getObject();
+    }
+
 
     @Override
     public void resumeJob(String keyGroup, String keyName) throws SchedulerException {

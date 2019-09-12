@@ -1,12 +1,13 @@
 package com.hkt.btu.common.core.service;
 
 import com.hkt.btu.common.core.service.bean.BtuCronJobProfileBean;
+import com.hkt.btu.common.core.service.bean.BtuSqlReportBean;
 
 import java.util.List;
 
 public interface BtuSqlReportProfileService {
 
-    List<BtuCronJobProfileBean> getAllReportData(String status);
+    List<BtuSqlReportBean> getAllReportData(String status);
 
-    BtuCronJobProfileBean getProfileBeanByGrpAndName(String keyGroup, String reportId);
+    BtuSqlReportBean getProfileBeanByGrpAndName(String keyGroup, String reportId);
 }

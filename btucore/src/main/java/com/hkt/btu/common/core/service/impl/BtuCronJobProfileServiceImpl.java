@@ -5,6 +5,7 @@ import com.hkt.btu.common.core.service.BtuCronJobProfileService;
 import com.hkt.btu.common.core.service.BtuSiteConfigService;
 import com.hkt.btu.common.core.service.bean.BtuCronJobProfileBean;
 import com.hkt.btu.common.core.service.bean.BtuSiteConfigBean;
+import com.hkt.btu.common.core.service.bean.BtuSqlReportBean;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,7 +39,7 @@ public class BtuCronJobProfileServiceImpl implements BtuCronJobProfileService {
 
     @Override
     public BtuCronJobProfileBean getProfileBeanByGrpAndName(String jobGroup, String jobName) {
-        LOG.warn("get profile bean by group and name:{},{}",jobGroup,jobName);
+        LOG.warn("get profile bean by group and name:{},{}", jobGroup, jobName);
         return null;
     }
 
@@ -48,6 +49,14 @@ public class BtuCronJobProfileServiceImpl implements BtuCronJobProfileService {
         boolean isActiveProfile = sdCronJobProfileBean.isActive();
 
         return isActiveProfile && !isWrongHostToRunJob;
+    }
+
+    //TODO: HostToRun
+    @Override
+    public boolean isRunnable(BtuSqlReportBean sqlReportBean) {
+        boolean isActiveProfile = sqlReportBean.getStatus() == BtuSqlReportBean.ACTIVE_STATUS ? true : false;
+
+        return isActiveProfile;
     }
 
     private boolean isWrongHostToRunJob(BtuCronJobProfileBean sdCronJobProfileBean) {
@@ -61,7 +70,7 @@ public class BtuCronJobProfileServiceImpl implements BtuCronJobProfileService {
         boolean isTargetHost = StringUtils.equals(serverHostname, targetHostname);
 
         boolean isWrongHostToRunJob = !isMandatory && !isTargetHost;
-        if(isWrongHostToRunJob){
+        if (isWrongHostToRunJob) {
             LOG.info("Not mandatory job. " +
                     "Not cron job target host. (server: " + serverHostname + ", target: " + targetHostname + ")");
         }
@@ -73,7 +82,7 @@ public class BtuCronJobProfileServiceImpl implements BtuCronJobProfileService {
     @Override
     public boolean isRunnable(String jobGroup, String jobName) {
         BtuCronJobProfileBean sdCronJobProfileBean = getProfileBeanByGrpAndName(jobGroup, jobName);
-        if(sdCronJobProfileBean==null){
+        if (sdCronJobProfileBean == null) {
             LOG.warn("Cron job profile not found - " + jobGroup + ", " + jobName + ".");
             return false;
         }
@@ -82,11 +91,11 @@ public class BtuCronJobProfileServiceImpl implements BtuCronJobProfileService {
 
     @Override
     public void activateJobProfile(String jobGroup, String jobName) throws InvalidInputException {
-        LOG.warn("activate job profile :{},{}",jobGroup,jobName);
+        LOG.warn("activate job profile :{},{}", jobGroup, jobName);
     }
 
     @Override
     public void deactivateJobProfile(String jobGroup, String jobName) throws InvalidInputException {
-        LOG.warn("deactivate job profile:{},{}",jobGroup,jobName);
+        LOG.warn("deactivate job profile:{},{}", jobGroup, jobName);
     }
 }

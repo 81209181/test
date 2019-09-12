@@ -12,6 +12,7 @@ public class SdSqlReportData implements DataInterface {
     private String exportTo;
     private String emailTo;
     private boolean isActive;
+    private String remarks;
 
     public String getReportId() {
         return reportId;
@@ -67,6 +68,14 @@ public class SdSqlReportData implements DataInterface {
 
     public void setEmailTo(String emailTo) {
         this.emailTo = emailTo;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 
     public boolean isActive() {

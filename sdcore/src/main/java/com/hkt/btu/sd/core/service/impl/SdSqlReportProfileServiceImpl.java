@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.core.service.impl;
 
 import com.hkt.btu.common.core.service.bean.BtuCronJobProfileBean;
+import com.hkt.btu.common.core.service.bean.BtuSqlReportBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.core.service.impl.BtuSqlReportProfileServiceImpl;
 import com.hkt.btu.sd.core.dao.entity.SdSqlReportEntity;
@@ -40,22 +41,16 @@ public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImp
     }
 
     @Override
-    public List<BtuCronJobProfileBean> getAllReportData(String status) {
+    public List<BtuSqlReportBean> getAllReportData(String status) {
         List<SdSqlReportEntity> sqlReportData = sdSqlReportMapper.getSqlReportData(status);
         if (CollectionUtils.isEmpty(sqlReportData)) {
             return null;
         }
-        List<BtuCronJobProfileBean> jobProfileBeans = sqlReportData.stream()
+        List<BtuSqlReportBean> jobProfileBeans = sqlReportData.stream()
                 .map(report -> {
                     SdSqlReportBean bean = new SdSqlReportBean();
                     reportBeanPopulator.populate(report, bean);
                     return bean;
-                }).collect(Collectors.toList())
-                .stream()
-                .map(reportBean -> {
-                    SdCronJobProfileBean target = new SdCronJobProfileBean();
-                    reportBeanPopulator.poluate(reportBean, target);
-                    return target;
                 }).collect(Collectors.toList());
 
         return jobProfileBeans;
@@ -136,14 +131,14 @@ public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImp
     }
 
     @Override
-    public BtuCronJobProfileBean getProfileBeanByGrpAndName(String keyGroup, String reportId) {
+    public BtuSqlReportBean getProfileBeanByGrpAndName(String keyGroup, String reportId) {
         SdSqlReportEntity entity = sdSqlReportMapper.getSqlReportDataByReportId(reportId);
         if (entity == null) {
             LOG.warn("No such report.");
             return null;
         }
-        SdCronJobProfileBean bean = new SdCronJobProfileBean();
-        reportBeanPopulator.poluate(entity, bean);
+        SdSqlReportBean bean = new SdSqlReportBean();
+        reportBeanPopulator.populate(entity, bean);
         return bean;
     }
 }
