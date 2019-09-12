@@ -18,6 +18,7 @@ public interface BtuUserService {
     BtuUserBean verifyLdapUser(BtuUser user,BtuUserBean userDetailBean);
     boolean isEnabled(BtuUserBean userDetailBean);
     boolean isNonLocked(BtuUserBean userDetailBean);
+    boolean isActive(BtuUserBean userDetailBean);
 
     boolean hasAnyAuthority(String... targetAuthorities);
 }

@@ -1,10 +1,12 @@
 package com.hkt.btu.sd;
 
 import com.hkt.btu.common.spring.security.access.BtuAccessDeniedHandler;
-import com.hkt.btu.common.spring.security.authentication.BtuDaoAuthenticationProvider;
-import com.hkt.btu.common.spring.security.authentication.DbDaoAuthenticationProvider;
 import com.hkt.btu.common.spring.security.access.intercept.BtuSecurityInterceptor;
 import com.hkt.btu.common.spring.security.access.intercept.BtuSecurityMetadataSource;
+import com.hkt.btu.common.spring.security.authentication.BtuDaoAuthenticationProvider;
+import com.hkt.btu.common.spring.security.authentication.DbDaoAuthenticationProvider;
+import com.hkt.btu.common.spring.security.authentication.TokenAuthenticationProvider;
+import com.hkt.btu.common.spring.security.filter.TokenAuthenticationFilter;
 import com.hkt.btu.common.spring.security.web.authentication.BtuExceptionMappingAuthenticationFailureHandler;
 import com.hkt.btu.common.spring.security.web.authentication.BtuLoginSuccessHandler;
 import com.hkt.btu.common.spring.security.web.authentication.BtuLoginUrlAuthenticationEntryPoint;
@@ -12,6 +14,8 @@ import com.hkt.btu.common.spring.security.web.authentication.logout.BtuLogoutSuc
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,14 +24,18 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 
-import static com.hkt.btu.common.spring.security.web.authentication.BtuLoginUrlAuthenticationEntryPoint.LOGIN_URI;
-import static com.hkt.btu.common.spring.security.web.authentication.BtuLoginUrlAuthenticationEntryPoint.LOGIN_ERROR;
-import static com.hkt.btu.common.spring.security.web.authentication.BtuLoginUrlAuthenticationEntryPoint.LOGIN_ERROR_PARA_URI;
+import static com.hkt.btu.common.spring.security.web.authentication.BtuLoginUrlAuthenticationEntryPoint.*;
 
 @Configuration
 @EnableWebSecurity
@@ -87,6 +95,7 @@ public class BtuSecurityConfig extends WebSecurityConfigurerAdapter {
                         BtuSecurityMetadataSource.RESERVED_ANT_PATH_IMG,
                         BtuSecurityMetadataSource.RESERVED_ANT_PATH_WEBJAR,
                         BtuSecurityMetadataSource.RESERVED_ANT_PATH_ERROR,
+                        "/ticket/**",
                         BtuSecurityMetadataSource.RESERVED_ANT_PATH_PUBLIC).permitAll()
                 .anyRequest().authenticated()
 
@@ -107,6 +116,10 @@ public class BtuSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessHandler(btuLogoutSuccessHandler)
                 .permitAll()
 
+                // csrf config
+                .and()
+                .csrf().requireCsrfProtectionMatcher(csrfRequestMatcher())
+
                 // session management
                 .and()
                 .sessionManagement()
@@ -119,6 +132,7 @@ public class BtuSecurityConfig extends WebSecurityConfigurerAdapter {
                 // User group control over incoming uri
                 .and()
                 .addFilterAfter(btuSecurityInterceptor, FilterSecurityInterceptor.class)
+                .addFilterBefore(getTokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
 
                 .exceptionHandling()
                 .authenticationEntryPoint(btuLoginUrlAuthenticationEntryPoint)
@@ -130,6 +144,26 @@ public class BtuSecurityConfig extends WebSecurityConfigurerAdapter {
          */
 //                .requiresChannel()
 //                .antMatchers("/**").requiresSecure() // always require https
+    }
+    private RequestMatcher csrfRequestMatcher(){
+        final HashSet<String> allowedMethods = new HashSet<>(Arrays.asList("GET", "HEAD", "TRACE", "OPTIONS"));
+        return httpServletRequest -> {
+            if (!ObjectUtils.isEmpty(httpServletRequest.getContentType())){
+                if (MediaType.APPLICATION_JSON_VALUE.equals(httpServletRequest.getContentType())) {
+                    return false;
+                }
+            }
+            return !allowedMethods.contains(httpServletRequest.getMethod());
+        };
+    }
+
+    @Resource(name = "customTokenAuthenticationProvider")
+    TokenAuthenticationProvider tokenAuthenticationProvider;
+
+    private TokenAuthenticationFilter getTokenAuthenticationFilter() {
+        TokenAuthenticationFilter filter = new TokenAuthenticationFilter();
+        filter.setAuthenticationManager(new ProviderManager(Collections.singletonList(tokenAuthenticationProvider)));
+        return filter;
     }
 
     @Bean
