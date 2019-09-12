@@ -133,7 +133,7 @@ public class ReportController {
     @PostMapping("ajax-delete-report")
     public ResponseEntity<?> deleteReport(@RequestParam String reportId) {
         ResponseReportData response = sqlReportFacade.deleteReport(reportId);
-        String errorMsg =  response == null ? "Delete failed." : response.getErrorMsg();
+        String errorMsg = response == null ? "Delete failed." : response.getErrorMsg();
         if (response != null) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         } else {
@@ -142,18 +142,36 @@ public class ReportController {
     }
 
     @PostMapping("/ajax-active-report")
-    public ResponseEntity<?> ajaxActiveReport(@RequestParam String reportId) {
-        return null;
+    public ResponseEntity<?> ajaxActiveReport(@RequestParam String reportName) {
+        String errorMsg = sqlReportFacade.activeReport(reportName);
+
+        if (errorMsg == null) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of());
+        } else {
+            return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
+        }
     }
 
     @PostMapping("/ajax-deactivate-report")
-    public ResponseEntity<?> ajaxDeactiveReport(@RequestParam String reportId) {
-        return null;
+    public ResponseEntity<?> ajaxDeactiveReport(@RequestParam String reportName) {
+        String errorMsg = sqlReportFacade.deactiveReport(reportName);
+
+        if (errorMsg == null) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of());
+        } else {
+            return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
+        }
     }
 
     @PostMapping("/ajax-sync-report")
-    public ResponseEntity<?> ajaxSyncJob(@RequestParam String reportId) {
-        return null;
+    public ResponseEntity<?> ajaxSyncJob(@RequestParam String reportName) {
+        String errorMsg = sqlReportFacade.syncReport(reportName);
+
+        if (errorMsg == null) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of());
+        } else {
+            return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
+        }
     }
 
 

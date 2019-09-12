@@ -186,7 +186,7 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
         }
 
         try {
-
+            reportService.activeReportProfile(reportId);
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             return e.getMessage();
@@ -202,7 +202,7 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
         }
 
         try {
-
+            reportService.deactiveReportProfile(reportId);
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             return e.getMessage();
@@ -218,7 +218,8 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
         }
 
         try {
-
+            sdSchedulerService.destroyJob(SdSqlReportBean.KEY_GROUP, reportId);
+            sdSchedulerService.scheduleReportJob(reportId);
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             return e.getMessage();
