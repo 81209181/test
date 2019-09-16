@@ -34,7 +34,7 @@
     <select id="getSqlReportDataByReportId" resultMap="SdSqlReportEntity">
         select *
         from SQL_REPORT
-        where REPORT_ID = #{reportId}
+        where REPORT_NAME = #{reportId}
     </select>
 
     <delete id="deleteSqlReportDataByReportId">

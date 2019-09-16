@@ -94,7 +94,8 @@ function ajaxResumeReport(  keyName ) {
             clearAllMsg();
             if(data.success){
                 showInfoMsg("Resumed job: " + keyName);
-                $('#jobInstTable').DataTable().ajax.reload();
+                //$('#jobInstTable').DataTable().ajax.reload()
+                location.reload();
             }else{
                 showErrorMsg(data.feedback);
             }
@@ -148,11 +149,12 @@ function createSqlReportTable() {
         columnDefs: [
             {
                 targets: 6,
-                render: function (reportName, type, row, meta) {
+                data: "reportId",
+                render: function (reportId, type, row, meta) {
                     if (row['active']) {
-                        return "<button type='button' class='btn btn-danger' onclick='ajaxDeactivateJobProfile(\"" + row['reportName'] + "\")' ><i class=\"fas fa-times-circle\"></i> Deactivate</button>";
+                        return "<button type='button' class='btn btn-danger' onclick='ajaxDeactivateJobProfile(\"" + reportId + "\")' ><i class=\"fas fa-times-circle\"></i> Deactivate</button>";
                     } else {
-                        return "<button type='button' class='btn btn-success' onclick='ajaxActivateJobProfile(\"" + row['reportName'] + "\")' ><i class=\"fas fa-check-circle\"></i> Activate</button>";
+                        return "<button type='button' class='btn btn-success' onclick='ajaxActivateJobProfile(\"" + reportId + "\")' ><i class=\"fas fa-check-circle\"></i> Activate</button>";
                     }
                 }
             },
@@ -186,13 +188,13 @@ function ajaxActivateJobProfile(reportName) {
     $.ajax({
         type: "POST",
         contentType: "application/json",
-        url: "/system/job/ajax-activate-job?reportName=" + reportName,
+        url: "/system/report/ajax-active-report?reportName=" + reportName,
         dataSrc: 'data',
         success: function (data) {
             clearAllMsg();
             if(data.success){
                 showInfoMsg("Activated job: " + reportName);
-                $('#jobProfileTable').DataTable().ajax.reload();
+                $('#sqlReportTable').DataTable().ajax.reload();
             }else{
                 showErrorMsg(data.feedback);
             }
@@ -207,13 +209,13 @@ function ajaxDeactivateJobProfile(reportName) {
     $.ajax({
         type: "POST",
         contentType: "application/json",
-        url: "/system/job/ajax-deactivate-job?reportName=" + reportName,
+        url: "/system/report/ajax-deactivate-report?reportName=" + reportName,
         dataSrc: 'data',
         success: function (data) {
             clearAllMsg();
             if(data.success){
                 showInfoMsg("Deactivated job: " + reportName);
-                $('#jobProfileTable').DataTable().ajax.reload();
+                $('#sqlReportTable').DataTable().ajax.reload();
             }else{
                 showErrorMsg(data.feedback);
             }
@@ -228,7 +230,7 @@ function ajaxSyncJobProfile(reportName) {
     $.ajax({
         type: "POST",
         contentType: "application/json",
-        url: "/system/job/ajax-sync-job?reportName=" + reportName,
+        url: "/system/report/ajax-sync-report?reportName=" + reportName,
         dataSrc: 'data',
         success: function (data) {
             clearAllMsg();

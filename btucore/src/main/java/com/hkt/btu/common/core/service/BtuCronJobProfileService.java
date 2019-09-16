@@ -13,7 +13,6 @@ public interface BtuCronJobProfileService {
     BtuCronJobProfileBean getProfileBeanByGrpAndName(String jobGroup, String jobName);
 
     boolean isRunnable(BtuCronJobProfileBean sdCronJobProfileBean);
-    boolean isRunnable(BtuSqlReportBean sqlReportBean);
     boolean isRunnable(String jobGroup, String jobName);
 
     void activateJobProfile(String jobGroup, String jobName) throws InvalidInputException;

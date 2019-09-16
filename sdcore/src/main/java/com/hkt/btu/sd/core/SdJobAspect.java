@@ -1,10 +1,8 @@
 package com.hkt.btu.sd.core;
 
 import com.hkt.btu.sd.core.dao.entity.SdConfigParamEntity;
-import com.hkt.btu.sd.core.service.SdConfigParamService;
-import com.hkt.btu.sd.core.service.SdCronJobLogService;
-import com.hkt.btu.sd.core.service.SdCronJobProfileService;
-import com.hkt.btu.sd.core.service.SdEmailService;
+import com.hkt.btu.sd.core.service.*;
+import com.hkt.btu.sd.core.service.bean.SdSqlReportBean;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,6 +34,8 @@ public class SdJobAspect {
     SdEmailService sdEmailService;
     @Resource(name = "configParamService")
     SdConfigParamService sdConfigParamService;
+    @Resource(name = "sqlReportProfileService")
+    SdSqlReportProfileService sqlReportProfileService;
 
 
     private JobExecutionContext getJobExecutionContext(Object[] args) throws JobExecutionException {
@@ -76,7 +76,12 @@ public class SdJobAspect {
         if(isCronTrigger) {
             // check if job should be run
             try {
-                boolean isRunnable = sdCronJobProfileService.isRunnable(jobKey.getGroup(), jobKey.getName());
+                boolean isRunnable = false;
+                if (SdSqlReportBean.KEY_GROUP.equals(jobKey.getGroup())) {
+                    isRunnable = sqlReportProfileService.isRunnable(jobKey.getName());
+                } else {
+                    isRunnable = sdCronJobProfileService.isRunnable(jobKey.getGroup(), jobKey.getName());
+                }
                 if (!isRunnable) {
                     LOG.warn("Skipped non-runnable job: " + jobKey);
                     sdCronJobLogService.logSkip(jobDetail);

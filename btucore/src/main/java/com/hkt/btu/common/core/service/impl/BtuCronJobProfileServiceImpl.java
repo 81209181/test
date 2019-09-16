@@ -51,14 +51,6 @@ public class BtuCronJobProfileServiceImpl implements BtuCronJobProfileService {
         return isActiveProfile && !isWrongHostToRunJob;
     }
 
-    //TODO: HostToRun
-    @Override
-    public boolean isRunnable(BtuSqlReportBean sqlReportBean) {
-        boolean isActiveProfile = sqlReportBean.getStatus() == BtuSqlReportBean.ACTIVE_STATUS ? true : false;
-
-        return isActiveProfile;
-    }
-
     private boolean isWrongHostToRunJob(BtuCronJobProfileBean sdCronJobProfileBean) {
         BtuSiteConfigBean sdSiteConfigBean = siteConfigService.getSiteConfigBean();
         // get current server hostname
