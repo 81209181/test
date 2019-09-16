@@ -99,4 +99,7 @@
 
     <alias name="sdTicketMasBeanPopulator" alias="ticketMasBeanPopulator"/>
     <bean id="sdTicketMasBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdTicketMasBeanPopulator"/>
+
+    <alias name="sdTicketContactBeanPopulator" alias="ticketContactBeanPopulator" />
+    <bean id="sdTicketContactBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdTicketContactBeanPopulator"/>
 </beans>

@@ -1,8 +1,8 @@
 package com.hkt.btu.sd.core.dao.entity;
 
-import java.time.LocalDateTime;
+import com.hkt.btu.common.core.dao.entity.BaseEntity;
 
-public class SdTicketMasEntity {
+public class SdTicketMasEntity extends BaseEntity {
 
     private Integer ticketMasId ;
 
@@ -12,13 +12,6 @@ public class SdTicketMasEntity {
 
     private String status;
 
-    private LocalDateTime createDate;
-
-    private String createBy;
-
-    private LocalDateTime modifyDate;
-
-    private String modifyBy;
 
     public Integer getTicketMasId() {
         return ticketMasId;
@@ -50,38 +43,6 @@ public class SdTicketMasEntity {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public LocalDateTime getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(LocalDateTime createDate) {
-        this.createDate = createDate;
-    }
-
-    public String getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy;
-    }
-
-    public LocalDateTime getModifyDate() {
-        return modifyDate;
-    }
-
-    public void setModifyDate(LocalDateTime modifyDate) {
-        this.modifyDate = modifyDate;
-    }
-
-    public String getModifyBy() {
-        return modifyBy;
-    }
-
-    public void setModifyBy(String modifyBy) {
-        this.modifyBy = modifyBy;
     }
 
 }
