@@ -2,10 +2,15 @@ $().ready(function(){
     $('#btnEditSqlRoeport').on("click",function(){
         clearAllMsg();
         $.post('/system/report/updateSqlReport',$('form').serialize(),function(res){
-            showInfoMsg(res);
+            if (res.success) {
+                showInfoMsg("Update success.");
+                setTimeout("location.reload()",800);
+            } else {
+                let responseError = res.feedback ? res.feedback : "Update failed.";
+                showErrorMsg(responseError);
+            }
         }).fail(function(e){
-            var responseError = e.responseText ? e.responseText : "Get failed.";
-            console.log("ERROR : ", responseError);
+            let responseError = e.responseText ? e.responseText : "Get failed.";
             showErrorMsg(responseError);
         })
     })

@@ -43,11 +43,14 @@
         where REPORT_ID = #{reportId}
     </delete>
 
-    <insert id="createSqlReport">
-        insert into SQL_REPORT(REPORT_NAME, CRON_EXP, STATUS, SQL, EXPORT_TO, EMAIL_TO, CREATEBY, MODIFYBY,
-                               REMARKS)
-        VALUES (#{reportName}, #{cronExp}, #{status}, #{sql}, #{exportTo}, #{emailTo}, #{createBy},
-                #{modifyBy}, #{remarks})
+    <insert id="createSqlReport" parameterType="com.hkt.btu.sd.core.dao.entity.SdSqlReportEntity">
+        <selectKey keyProperty="reportId" resultType="string" order="BEFORE">
+            SELECT SEQ_SQL_REPORT_REPORT_ID.nextval FROM DUAL
+        </selectKey>
+        insert into SQL_REPORT(REPORT_ID,REPORT_NAME, CRON_EXP, STATUS, SQL, EXPORT_TO, EMAIL_TO, CREATEBY, MODIFYBY,
+        REMARKS)
+        VALUES (#{reportId},#{reportName}, #{cronExp}, #{status}, #{sql}, #{exportTo}, #{emailTo}, #{createby},
+        #{modifyby}, #{remarks})
     </insert>
 
     <update id="updateReportData">
@@ -63,6 +66,13 @@
             <if test="modifyBy != null">MODIFYBY=#{modifyBy},</if>
             MODIFYDATE = CURRENT_TIMESTAMP
         </set>
-        where reportId = #{reportId}
+        where REPORT_ID = #{reportId}
+    </update>
+
+    <update id="updateReportStatus">
+        update SQL_REPORT
+        set STATUS   = #{status},
+            MODIFYBY = #{modifyby}
+        where REPORT_ID = #{reportId}
     </update>
 </mapper>

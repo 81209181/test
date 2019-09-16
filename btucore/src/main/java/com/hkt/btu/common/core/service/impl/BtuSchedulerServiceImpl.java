@@ -1,6 +1,7 @@
 package com.hkt.btu.common.core.service.impl;
 
 import com.hkt.btu.common.core.exception.InvalidInputException;
+import com.hkt.btu.common.core.job.BtuSampleJob;
 import com.hkt.btu.common.core.service.BtuCronJobLogService;
 import com.hkt.btu.common.core.service.BtuCronJobProfileService;
 import com.hkt.btu.common.core.service.BtuSchedulerService;
@@ -105,16 +106,17 @@ public class BtuSchedulerServiceImpl implements BtuSchedulerService {
     }
 
     @Override
-    public void scheduleReportJob(String reportName) throws SchedulerException, InvalidInputException, ClassNotFoundException {
-        BtuSqlReportBean reportProfileBean = sqlReportProfileService.getProfileBeanByGrpAndName(BtuSqlReportBean.KEY_GROUP, reportName);
+    public void scheduleReportJob(String reportId) throws SchedulerException, InvalidInputException, ClassNotFoundException {
+        BtuSqlReportBean reportProfileBean = sqlReportProfileService.getProfileBeanByGrpAndName(BtuSqlReportBean.KEY_GROUP, reportId);
         scheduleReportJob(reportProfileBean);
     }
 
-    private void scheduleReportJob(BtuSqlReportBean sqlReportBean) throws ClassNotFoundException, SchedulerException {
+    private void scheduleReportJob(BtuSqlReportBean sqlReportBean) throws ClassNotFoundException, SchedulerException{
         Scheduler scheduler = schedulerFactoryBean.getScheduler();
 
         // check already existed
         Class<? extends QuartzJobBean> jobClass = Class.forName(sqlReportBean.getJobClass()).asSubclass(QuartzJobBean.class);
+
         JobDetail jobDetail = JobBuilder.newJob(jobClass)
                 .withIdentity(sqlReportBean.getReportName(), BtuSqlReportBean.KEY_GROUP)
                 .build();

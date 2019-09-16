@@ -2,6 +2,7 @@ package com.hkt.btu.sd.core.service;
 
 import com.hkt.btu.common.core.service.BtuSqlReportProfileService;
 import com.hkt.btu.sd.core.dao.entity.SdSqlReportEntity;
+import com.hkt.btu.sd.core.exception.InvalidInputException;
 import com.hkt.btu.sd.core.service.bean.SdSqlReportBean;
 
 import java.util.List;
@@ -15,11 +16,15 @@ public interface SdSqlReportProfileService extends BtuSqlReportProfileService {
 
     SdSqlReportBean getSqlReportDataByReportId(String reportId);
 
-    void createReport(String reportName, String cronExpression, String status,
-                      String sql, String exportTo, String emailTo, String remarks);
+    String createReport(String reportName, String cronExpression, String status,
+                        String sql, String exportTo, String emailTo, String remarks);
 
     String deleteReport(String reportId);
 
-    String updateReport(String reportId,String reportName, String cronExpression, String status,
-                      String sql, String exportTo, String emailTo, String remarks);
+    String updateReport(String reportId, String reportName, String cronExpression, String status,
+                        String sql, String exportTo, String emailTo, String remarks);
+
+    void activeReportProfile(String reportId) throws InvalidInputException;
+
+    void deactiveReportProfile(String reportId) throws InvalidInputException;
 }

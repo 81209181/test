@@ -12,10 +12,8 @@ import com.hkt.btu.sd.core.util.SqlFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.quartz.DisallowConcurrentExecution;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import org.quartz.*;
+import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -23,7 +21,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-@DisallowConcurrentExecution
+
 public class SdSqlReportJob extends BtuSampleJob {
 
     private static final Logger LOG = LogManager.getLogger(SdSqlReportJob.class);
@@ -38,7 +36,10 @@ public class SdSqlReportJob extends BtuSampleJob {
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
         BtuReportMetaDataBean metaDataBean = (BtuReportMetaDataBean) jobDataMap.get(SdSqlReportBean.REPORT_JOBDATAMAP_KEY);
-
+        if (metaDataBean == null) {
+            LOG.warn("No report meta data.");
+            return;
+        }
         File csvFile = csvGenratorService.getCsvFile(metaDataBean);
         if (csvFile != null) {
             // Send Email

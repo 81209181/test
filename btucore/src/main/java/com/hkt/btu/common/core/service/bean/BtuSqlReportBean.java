@@ -7,7 +7,9 @@ public class BtuSqlReportBean extends BaseBean {
 
     public static final String ACTIVE_STATUS = "A";
 
-    public static final String REPORT_JOBDATAMAP_KEY = "reportMetaData";
+    public static final String DEACTIVE_STATUS = "D";
+
+   public static final String REPORT_JOBDATAMAP_KEY = "reportMetaData";
 
     private String reportId;
     private String reportName;

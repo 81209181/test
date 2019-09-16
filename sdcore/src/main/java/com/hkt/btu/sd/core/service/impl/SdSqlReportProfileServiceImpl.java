@@ -1,14 +1,15 @@
 package com.hkt.btu.sd.core.service.impl;
 
-import com.hkt.btu.common.core.service.bean.BtuCronJobProfileBean;
 import com.hkt.btu.common.core.service.bean.BtuSqlReportBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.core.service.impl.BtuSqlReportProfileServiceImpl;
+import com.hkt.btu.sd.core.dao.entity.SdCronJobEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSqlReportEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdSqlReportMapper;
+import com.hkt.btu.sd.core.exception.InvalidInputException;
+import com.hkt.btu.sd.core.service.SdCronJobLogService;
 import com.hkt.btu.sd.core.service.SdSqlReportProfileService;
 import com.hkt.btu.sd.core.service.SdUserService;
-import com.hkt.btu.sd.core.service.bean.SdCronJobProfileBean;
 import com.hkt.btu.sd.core.service.bean.SdSqlReportBean;
 import com.hkt.btu.sd.core.service.populator.SdReportBeanPopulator;
 import org.apache.commons.lang3.StringUtils;
@@ -30,6 +31,9 @@ public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImp
 
     @Resource(name = "userService")
     SdUserService sdUserService;
+
+    @Resource(name = "cronJobLogService")
+    SdCronJobLogService sdCronJobLogService;
 
     @Resource
     SdSqlReportMapper sdSqlReportMapper;
@@ -94,11 +98,26 @@ public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImp
 
     @Override
     @Transactional
-    public void createReport(String reportName, String cronExpression, String status,
-                             String sql, String exportTo, String emailTo, String remarks) {
+    public String createReport(String reportName, String cronExpression, String status,
+                               String sql, String exportTo, String emailTo, String remarks) {
         BtuUserBean currentUserBean = sdUserService.getCurrentUserBean();
         String createBy = currentUserBean.getUserId();
-        sdSqlReportMapper.createSqlReport(reportName, cronExpression, status, sql, exportTo, emailTo, createBy, createBy, remarks);
+        SdSqlReportEntity entity = new SdSqlReportEntity();
+        setProperties(reportName, cronExpression, status, sql, exportTo, emailTo, remarks, createBy, entity);
+        sdSqlReportMapper.createSqlReport(entity);
+        return entity.getReportId();
+    }
+
+    private void setProperties(String reportName, String cronExpression, String status, String sql, String exportTo, String emailTo, String remarks, String createBy, SdSqlReportEntity entity) {
+        entity.setSql(sql);
+        entity.setReportName(reportName);
+        entity.setCronExp(cronExpression);
+        entity.setEmailTo(emailTo);
+        entity.setExportTo(exportTo);
+        entity.setRemarks(remarks);
+        entity.setCreateby(createBy);
+        entity.setStatus(status);
+        entity.setModifyby(createBy);
     }
 
     @Override
@@ -120,14 +139,44 @@ public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImp
                                String sql, String exportTo, String emailTo, String remarks) {
         BtuUserBean currentUserBean = sdUserService.getCurrentUserBean();
         String modifyBy = currentUserBean.getUserId();
-        SdSqlReportEntity entity = sdSqlReportMapper.getSqlReportDataByReportId(null);
+        SdSqlReportEntity entity = sdSqlReportMapper.getSqlReportDataByReportId(reportId);
         if (entity == null) {
             return "No such report.";
         }
-        sdSqlReportMapper.updateSqlReport(reportId, reportName, sql, cronExpression, exportTo, emailTo, modifyBy, status, remarks);
+        sdSqlReportMapper.updateReportData(reportId, reportName, sql, cronExpression, exportTo, emailTo, modifyBy, status, remarks);
         String report = entity.getReportName();
 
         return report;
+    }
+
+    @Override
+    @Transactional
+    public void activeReportProfile(String reportId) throws InvalidInputException {
+        int updateCount = updateRepeortProfileStatus(reportId, SdSqlReportBean.ACTIVE_STATUS);
+        if (updateCount < 1) {
+            throw new InvalidInputException("Cannot activate job");
+        }
+
+        // log
+        LOG.info("activate job profile:{},{}", SdSqlReportBean.KEY_GROUP, reportId);
+        sdCronJobLogService.logUserActivateJob(SdSqlReportBean.KEY_GROUP, reportId);
+    }
+
+    @Override
+    public void deactiveReportProfile(String reportId) throws InvalidInputException {
+        int updateCount = updateRepeortProfileStatus(reportId, SdSqlReportBean.DEACTIVE_STATUS);
+        if (updateCount < 1) {
+            throw new InvalidInputException("Cannot activate job");
+        }
+
+        // log
+        LOG.info("activate job profile:{},{}", SdSqlReportBean.KEY_GROUP, reportId);
+        sdCronJobLogService.logUserActivateJob(SdSqlReportBean.KEY_GROUP, reportId);
+    }
+
+    private int updateRepeortProfileStatus(String reportId, String status) {
+        String modifyby = sdUserService.getCurrentUserUserId();
+        return sdSqlReportMapper.updateReportStatus(reportId, status, modifyby);
     }
 
     @Override

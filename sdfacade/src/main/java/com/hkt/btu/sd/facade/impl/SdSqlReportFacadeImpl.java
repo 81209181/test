@@ -1,20 +1,29 @@
 package com.hkt.btu.sd.facade.impl;
 
 import com.hkt.btu.common.core.exception.InvalidInputException;
+import com.hkt.btu.sd.core.service.SdInputCheckService;
 import com.hkt.btu.sd.core.service.SdSchedulerService;
 import com.hkt.btu.sd.core.service.SdSqlReportProfileService;
+import com.hkt.btu.sd.core.service.bean.SdCronJobInstBean;
 import com.hkt.btu.sd.core.service.bean.SdSqlReportBean;
 import com.hkt.btu.sd.facade.SdSqlReportFacade;
 import com.hkt.btu.sd.facade.data.RequestReportData;
 import com.hkt.btu.sd.facade.data.ResponseReportData;
+import com.hkt.btu.sd.facade.data.SdCronJobInstData;
 import com.hkt.btu.sd.facade.data.SdSqlReportData;
+import com.hkt.btu.sd.facade.populator.SdCronJobInstDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdSqlReportDataPopulator;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.quartz.CronExpression;
 import org.quartz.SchedulerException;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +40,9 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
     @Resource(name = "schedulerService")
     SdSchedulerService sdSchedulerService;
 
+    @Resource(name = "cronJobInstDataPopulator")
+    SdCronJobInstDataPopulator sdCronJobInstDataPopulator;
+
     @Override
     public List<SdSqlReportData> getAllReportData() {
         return reportService.getAllReportBean(null)
@@ -40,6 +52,29 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
                     reportDataPopulator.populate(report, data);
                     return data;
                 }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SdCronJobInstData> getAllReportJobInstance() {
+        List<SdCronJobInstBean> jobBeanInstList;
+        try {
+            jobBeanInstList = sdSchedulerService.getAllReportJobInstance();
+            if (CollectionUtils.isEmpty(jobBeanInstList)) {
+                return new ArrayList<>();
+            }
+        } catch (SchedulerException | ClassCastException e) {
+            LOG.error(e.getMessage(), e);
+            return null;
+        }
+
+        // populate
+        List<SdCronJobInstData> jobDataList = new LinkedList<>();
+        for (SdCronJobInstBean cronJobInstBean : jobBeanInstList) {
+            SdCronJobInstData jobData = new SdCronJobInstData();
+            sdCronJobInstDataPopulator.populate(cronJobInstBean, jobData);
+            jobDataList.add(jobData);
+        }
+        return jobDataList;
     }
 
     @Override
@@ -100,16 +135,17 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
 
     @Override
     public ResponseReportData createReport(RequestReportData data) {
+        String reportId = "";
         try {
             checkReportData(data);
-            reportService.createReport(data.getReportName(), data.getCronExpression(), data.getStatus(),
+            reportId = reportService.createReport(data.getReportName(), data.getCronExp(), data.getStatus(),
                     data.getSql(), data.getExportTo(), data.getEmailTo(), data.getRemarks());
-            sdSchedulerService.scheduleReportJob(data.getReportName());
+            sdSchedulerService.scheduleReportJob(reportId);
         } catch (InvalidInputException | SchedulerException | ClassNotFoundException e) {
             LOG.warn(e.getMessage());
             return ResponseReportData.of(null, e.getMessage());
         }
-        return ResponseReportData.of(data.getReportId(), null);
+        return ResponseReportData.of(reportId, null);
     }
 
     @Override
@@ -122,24 +158,74 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
             sdSchedulerService.destroyJob(SdSqlReportBean.KEY_GROUP, reportName);
         } catch (Exception e) {
             LOG.warn(e.getMessage());
+            return ResponseReportData.of(null, e.getMessage());
         }
-        return null;
+        return ResponseReportData.of(null, null);
     }
 
     @Override
     public ResponseReportData updateReport(RequestReportData data) {
         try {
             checkReportData(data);
-            String reportName = reportService.updateReport(data.getReportId(), data.getReportName(), data.getCronExpression(), data.getStatus(),
+            String reportName = reportService.updateReport(data.getReportId(), data.getReportName(), data.getCronExp(), data.getStatus(),
                     data.getSql(), data.getExportTo(), data.getEmailTo(), data.getRemarks());
             sdSchedulerService.pauseJob(SdSqlReportBean.KEY_GROUP, reportName);
             sdSchedulerService.destroyJob(SdSqlReportBean.KEY_GROUP, reportName);
-            sdSchedulerService.scheduleReportJob(reportName);
+            sdSchedulerService.scheduleReportJob(data.getReportId());
         } catch (InvalidInputException | SchedulerException | ClassNotFoundException e) {
             LOG.warn(e.getMessage());
             return ResponseReportData.of(null, e.getMessage());
         }
         return ResponseReportData.of(data.getReportId(), null);
+    }
+
+    @Override
+    public String activeReport(String reportId) {
+        if (StringUtils.isEmpty(reportId)) {
+            return "Empty reportId!";
+        }
+
+        try {
+            reportService.activeReportProfile(reportId);
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+            return e.getMessage();
+        }
+
+        return null;
+    }
+
+    @Override
+    public String deactiveReport(String reportId) {
+        if (StringUtils.isEmpty(reportId)) {
+            return "Empty reportId!";
+        }
+
+        try {
+            reportService.deactiveReportProfile(reportId);
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+            return e.getMessage();
+        }
+
+        return null;
+    }
+
+    @Override
+    public String syncReport(String reportId) {
+        if (StringUtils.isEmpty(reportId)) {
+            return "Empty reportId!";
+        }
+
+        try {
+            sdSchedulerService.destroyJob(SdSqlReportBean.KEY_GROUP, reportId);
+            sdSchedulerService.scheduleReportJob(reportId);
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+            return e.getMessage();
+        }
+
+        return null;
     }
 
 
@@ -153,11 +239,17 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
         if (StringUtils.isEmpty(data.getExportTo())) {
             throw new InvalidInputException("Empty input export place.");
         }
-        if (StringUtils.isEmpty(data.getEmailTo())) {
-            throw new InvalidInputException("Empty input email.");
+        if (StringUtils.isNotEmpty(data.getEmailTo())) {
+            if (!EmailValidator.getInstance().isValid(data.getEmailTo())) {
+                throw new InvalidInputException("Please input a valid email.");
+            }
         }
-        if (StringUtils.isEmpty(data.getCronExpression())) {
-            throw new InvalidInputException("Empty int cron expression.");
+        if (StringUtils.isEmpty(data.getCronExp())) {
+            throw new InvalidInputException("Empty intput cron expression.");
+        } else {
+            if (!CronExpression.isValidExpression(data.getCronExp())) {
+                throw new InvalidInputException("Invalid cron expression");
+            }
         }
     }
 }

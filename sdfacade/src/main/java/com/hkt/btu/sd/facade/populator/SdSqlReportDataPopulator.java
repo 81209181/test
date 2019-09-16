@@ -11,6 +11,7 @@ public class SdSqlReportDataPopulator extends AbstractDataPopulator<SdSqlReportD
         target.setCronExp(source.getCronExp());
         target.setStatus(source.getStatus());
         target.setSql(source.getSql());
+        target.setRemarks(source.getRemarks());
         target.setReportName(source.getReportName());
         target.setReportId(source.getReportId());
         target.setExportTo(source.getExportTo());

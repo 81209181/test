@@ -47,6 +47,22 @@ public class SdSchedulerServiceImpl extends BtuSchedulerServiceImpl implements S
         return jobBeanList;
     }
 
+    @Override
+    public List<SdCronJobInstBean> getAllReportJobInstance() throws SchedulerException {
+        Scheduler scheduler = schedulerFactoryBean.getScheduler();
+
+        List<SdCronJobInstBean> jobBeanList = new LinkedList<>();
+        for (String groupName : scheduler.getJobGroupNames()) {
+            if (groupName.equals(SdSqlReportBean.KEY_GROUP)) {
+                for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
+                    SdCronJobInstBean jobBean = getCronJobInstance(jobKey);
+                    jobBeanList.add(jobBean);
+                }
+            }
+        }
+        return jobBeanList;
+    }
+
     private SdCronJobInstBean getCronJobInstance(JobKey jobKey) throws SchedulerException {
         Scheduler scheduler = schedulerFactoryBean.getScheduler();
         SdCronJobInstBean jobBean = new SdCronJobInstBean();
