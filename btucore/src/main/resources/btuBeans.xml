@@ -88,6 +88,12 @@
     <alias name="tokenAuthenticationProvider" alias="customTokenAuthenticationProvider"/>
     <bean id="tokenAuthenticationProvider" class="com.hkt.btu.common.spring.security.authentication.TokenAuthenticationProvider"/>
 
+    <alias name="btuDateConverter" alias="dateConverter"/>
+    <bean id="btuDateConverter" class="com.hkt.btu.common.genrator.impl.BtuDateConverterImpl"/>
+
+    <alias name="btuCsvGenrator" alias="csvGenrator"/>
+    <bean id="btuCsvGenrator" class="com.hkt.btu.common.genrator.impl.BtuSQL2CSVGenratorImpl"/>
+
     <!--  Populator  -->
     <alias name="btuSiteConfigBeanPopulator" alias="siteConfigBeanPopulator"/>
     <bean id="btuSiteConfigBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuSiteConfigBeanPopulator"/>

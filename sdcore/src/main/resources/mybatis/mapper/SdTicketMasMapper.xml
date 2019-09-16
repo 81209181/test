@@ -9,17 +9,17 @@
         <result column="TICKET_TYPE" property="ticketType" />
         <result column="STATUS" property="status" />
 
-        <result column="CREATEDATE" property="createDate" />
-        <result column="CREATEBY" property="createBy" />
-        <result column="MODIFYDATE" property="modifyDate" />
-        <result column="MODIFYBY" property="modifyBy" />
+        <result column="CREATEDATE" property="createdate" />
+        <result column="CREATEBY" property="createby" />
+        <result column="MODIFYDATE" property="modifydate" />
+        <result column="MODIFYBY" property="modifyby" />
     </resultMap>
     <insert id="insertQueryTicket" parameterType="com.hkt.btu.sd.core.dao.entity.SdTicketMasEntity">
         <selectKey keyProperty="ticketMasId" order="BEFORE" resultType="Integer">
             select SEQ_TICKET_MAS_ID.NEXTVAL from dual
         </selectKey>
         insert into TICKET_MAS (TICKET_MAS_ID,CUST_CODE,TICKET_TYPE,STATUS,CREATEBY,MODIFYBY)
-        values(#{ticketMasId},#{custCode},'QUERY','O',#{createBy},#{createBy})
+        values(#{ticketMasId},#{custCode},'QUERY','O',#{createby},#{createby})
     </insert>
 
     <select id="findTicketById" resultMap="TicketMasEntity">
