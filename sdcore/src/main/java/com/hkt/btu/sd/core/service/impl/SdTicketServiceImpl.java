@@ -9,10 +9,15 @@ import com.hkt.btu.sd.core.service.bean.SdTicketContactBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketMasBean;
 import com.hkt.btu.sd.core.service.populator.SdTicketContactBeanPopulator;
 import com.hkt.btu.sd.core.service.populator.SdTicketMasBeanPopulator;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,5 +78,39 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Override
     public void removeContactInfoByTicketMasId(Integer ticketMasId) {
         ticketContactMapper.removeContactInfoByTicketMasId(ticketMasId);
+    }
+
+    @Override
+    public Page<SdTicketMasBean> searchTicketList(Pageable pageable, String dateFrom, String dateTo, String status) {
+        long offset = pageable.getOffset();
+        int pageSize = pageable.getPageSize();
+
+        List<SdTicketMasEntity> entityList = ticketMasMapper.searchTicketList(offset, pageSize, dateFrom, dateTo, status);
+        Integer totalCount = ticketMasMapper.searchTicketCount(dateFrom, dateTo, status);
+
+        List<SdTicketMasBean> beanList = new LinkedList<>();
+        for (SdTicketMasEntity entity : entityList) {
+            SdTicketMasBean bean = new SdTicketMasBean();
+            ticketMasBeanPopulator.populate(entity, bean);
+            beanList.add(bean);
+        }
+
+        return new PageImpl<>(beanList, pageable, totalCount);
+    }
+
+    @Override
+    public List<SdTicketMasBean> getMyTicket() {
+        List<SdTicketMasEntity> entityList = ticketMasMapper.getMyTicket(userService.getCurrentUserUserId());
+        if (CollectionUtils.isEmpty(entityList)) {
+            return null;
+        }
+        List<SdTicketMasBean> beanList = new LinkedList<>();
+        for (SdTicketMasEntity entity : entityList) {
+            SdTicketMasBean bean = new SdTicketMasBean();
+            ticketMasBeanPopulator.populate(entity, bean);
+            beanList.add(bean);
+        }
+
+        return beanList;
     }
 }
