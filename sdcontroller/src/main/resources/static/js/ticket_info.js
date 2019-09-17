@@ -1,6 +1,13 @@
 $().ready(function(){
 
     $.get('/ticket/contact/'+ticketMasId,function(res){
+        $.each(res,function(index,j){
+            let contact =$('#tempContact').children().clone();
+            $.each(j,function(key,value){
+                contact.find('input[name='+key+']').val(value);
+            })
+            contact.appendTo($('#contact_list'));
+        })
     })
 
     $('#btnAddContact').on('click',function(){
