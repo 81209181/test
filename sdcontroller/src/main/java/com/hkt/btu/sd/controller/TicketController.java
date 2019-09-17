@@ -1,10 +1,15 @@
 package com.hkt.btu.sd.controller;
 
+import com.hkt.btu.common.facade.data.PageData;
+import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
 import com.hkt.btu.sd.facade.SdRequestCreateFacade;
 import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.data.RequestCreateSearchResultsData;
 import com.hkt.btu.sd.facade.data.SdTicketContactData;
 import com.hkt.btu.sd.facade.data.SdTicketMasData;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -71,5 +76,34 @@ public class TicketController {
     public ResponseEntity<?> getContactInfo(@PathVariable Integer ticketMasId) {
         List<SdTicketContactData> data = ticketFacade.getContactInfo(ticketMasId);
         return ResponseEntity.ok(data);
+    }
+
+    @GetMapping("searchTicket")
+    public String searchTicket() {
+        return "ticket/searchTicket";
+    }
+
+    @GetMapping("search-ticket")
+    public ResponseEntity<?> searchTicket(@RequestParam(defaultValue = "0") int draw,
+                                          @RequestParam(defaultValue = "0") int start,
+                                          @RequestParam(defaultValue = "10") int length,
+                                          @RequestParam(required = false) String dateFrom,
+                                          @RequestParam(required = false) String dateTo,
+                                          @RequestParam(required = false) String status) {
+        int page = start / length;
+        Pageable pageable = PageRequest.of(page, length);
+
+        PageData<SdTicketMasData> pageData = ticketFacade.searchTicketList(pageable, dateFrom, dateTo, status);
+        return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
+    }
+
+    @GetMapping("my-ticket")
+    public ResponseEntity<?> getMyTicket() {
+        List<SdTicketMasData> dataList = ticketFacade.getMyTicket();
+        if (CollectionUtils.isEmpty(dataList)) {
+            return ResponseEntity.badRequest().body("Ticket list not found.");
+        } else {
+            return ResponseEntity.ok(dataList);
+        }
     }
 }

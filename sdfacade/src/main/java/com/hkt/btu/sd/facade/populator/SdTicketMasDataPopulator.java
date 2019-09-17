@@ -9,5 +9,9 @@ public class SdTicketMasDataPopulator extends AbstractDataPopulator<SdTicketMasD
     public void populate(SdTicketMasBean source, SdTicketMasData target) {
         target.setTicketMasId(source.getTicketMasId());
         target.setCustCode(source.getCustCode());
+        target.setTicketType(source.getTicketType());
+        target.setStatus(source.getStatus());
+        target.setCreateBy(source.getCreateby());
+        target.setCreateDate(source.getCreatedate());
     }
 }

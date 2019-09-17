@@ -2,6 +2,8 @@ package com.hkt.btu.sd.core.service;
 
 import com.hkt.btu.sd.core.service.bean.SdTicketContactBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketMasBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,4 +18,8 @@ public interface SdTicketService {
     List<SdTicketContactBean> getContactInfo(Integer ticketMasId);
 
     void removeContactInfoByTicketMasId(Integer ticketMasId);
+
+    Page<SdTicketMasBean> searchTicketList(Pageable pageable, String dateFrom, String dateTo, String status);
+
+    List<SdTicketMasBean> getMyTicket();
 }
