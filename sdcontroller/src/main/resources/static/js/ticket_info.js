@@ -43,7 +43,29 @@ $().ready(function(){
         })
     })
 
+    readyForTicketService();
 })
+
+
+function readyForTicketService() {
+    $('#btnAddService').on('click',function(){
+        let service =$('#tempService').children().clone();
+        service.appendTo($('#service_list'));
+        $('#btnUpdateService').attr('disabled',false);
+    })
+}
+
+function addFaults() {
+    let service =$('#tempFaults').children().clone();
+    service.appendTo($('#faults_list'));
+}
+
+function removeService(btn){
+    $(btn).parents('form').remove();
+    if($('#service_list').find('form').length <1){
+        $('#btnUpdateService').attr('disabled',true);
+    }
+}
 
 function removeContact(btn){
     $(btn).parents('form').remove();
