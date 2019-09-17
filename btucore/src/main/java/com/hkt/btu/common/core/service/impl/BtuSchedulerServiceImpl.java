@@ -65,7 +65,7 @@ public class BtuSchedulerServiceImpl implements BtuSchedulerService {
         List<BtuCronJobProfileBean> jobProfileBeanList = btuCronJobProfileService.getAll();
 
         // find all to-run sql report job from db
-        List<BtuSqlReportBean> sqlReportBeanList = sqlReportProfileService.getAllReportData(BtuSqlReportBean.ACTIVE_STATUS);
+        List<BtuSqlReportBean> sqlReportBeanList = sqlReportProfileService.getAllReportData(null);
 
         if (CollectionUtils.isEmpty(jobProfileBeanList) && CollectionUtils.isEmpty(sqlReportBeanList)) {
             LOG.info("No job to scheduled according to database.");
@@ -76,25 +76,30 @@ public class BtuSchedulerServiceImpl implements BtuSchedulerService {
 
         // try schedule all job
         int successCounter = 0;
-        for (BtuCronJobProfileBean jobProfileBean : jobProfileBeanList) {
-            try {
-                scheduleJob(jobProfileBean);
-                successCounter++;
-            } catch (SchedulerException | ClassNotFoundException | ClassCastException | InvalidInputException e) {
-                LOG.error(e.getMessage(), e);
+        int size = 0;
+        if (CollectionUtils.isNotEmpty(jobProfileBeanList)) {
+            for (BtuCronJobProfileBean jobProfileBean : jobProfileBeanList) {
+                try {
+                    scheduleJob(jobProfileBean);
+                    successCounter++;
+                } catch (SchedulerException | ClassNotFoundException | ClassCastException | InvalidInputException e) {
+                    LOG.error(e.getMessage(), e);
+                }
             }
+            size += jobProfileBeanList.size();
         }
 
-        for (BtuSqlReportBean sqlReportBean : sqlReportBeanList) {
-            try {
-                scheduleReportJob(sqlReportBean);
-                successCounter++;
-            } catch (SchedulerException | ClassNotFoundException | ClassCastException | InvalidInputException e) {
-                LOG.error(e.getMessage(), e);
+        if (CollectionUtils.isNotEmpty(sqlReportBeanList)) {
+            for (BtuSqlReportBean sqlReportBean : sqlReportBeanList) {
+                try {
+                    scheduleReportJob(sqlReportBean);
+                    successCounter++;
+                } catch (SchedulerException | ClassNotFoundException | ClassCastException | InvalidInputException e) {
+                    LOG.error(e.getMessage(), e);
+                }
             }
+            size += sqlReportBeanList.size();
         }
-
-        int size = jobProfileBeanList.size() + sqlReportBeanList.size();
 
         LOG.info(String.format("Scheduled %d jobs out of %d job profiles.", successCounter, size));
     }
@@ -107,11 +112,11 @@ public class BtuSchedulerServiceImpl implements BtuSchedulerService {
 
     @Override
     public void scheduleReportJob(String reportId) throws SchedulerException, InvalidInputException, ClassNotFoundException {
-        BtuSqlReportBean reportProfileBean = sqlReportProfileService.getProfileBeanByGrpAndName(BtuSqlReportBean.KEY_GROUP, reportId);
+        BtuSqlReportBean reportProfileBean = sqlReportProfileService.getProfileBeanByGrpAndName(reportId);
         scheduleReportJob(reportProfileBean);
     }
 
-    private void scheduleReportJob(BtuSqlReportBean sqlReportBean) throws ClassNotFoundException, SchedulerException{
+    private void scheduleReportJob(BtuSqlReportBean sqlReportBean) throws ClassNotFoundException, SchedulerException {
         Scheduler scheduler = schedulerFactoryBean.getScheduler();
 
         // check already existed
@@ -143,7 +148,7 @@ public class BtuSchedulerServiceImpl implements BtuSchedulerService {
 
         scheduler.scheduleJob(jobDetail, trigger);
         // TODO: isRunnable
-        if (btuCronJobProfileService.isRunnable(sqlReportBean)) {
+        if (sqlReportProfileService.isRunnable(sqlReportBean)) {
             LOG.info("Scheduled job: " + jobKey);
         } else {
             scheduler.pauseJob(jobKey);

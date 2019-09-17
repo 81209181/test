@@ -46,7 +46,7 @@ public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImp
 
     @Override
     public List<BtuSqlReportBean> getAllReportData(String status) {
-        List<SdSqlReportEntity> sqlReportData = sdSqlReportMapper.getSqlReportData(status);
+        List<SdSqlReportEntity> sqlReportData = sdSqlReportMapper.getSqlReportData(null);
         if (CollectionUtils.isEmpty(sqlReportData)) {
             return null;
         }
@@ -108,17 +108,6 @@ public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImp
         return entity.getReportId();
     }
 
-    private void setProperties(String reportName, String cronExpression, String status, String sql, String exportTo, String emailTo, String remarks, String createBy, SdSqlReportEntity entity) {
-        entity.setSql(sql);
-        entity.setReportName(reportName);
-        entity.setCronExp(cronExpression);
-        entity.setEmailTo(emailTo);
-        entity.setExportTo(exportTo);
-        entity.setRemarks(remarks);
-        entity.setCreateby(createBy);
-        entity.setStatus(status);
-        entity.setModifyby(createBy);
-    }
 
     @Override
     @Transactional
@@ -159,7 +148,7 @@ public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImp
 
         // log
         LOG.info("activate job profile:{},{}", SdSqlReportBean.KEY_GROUP, reportId);
-        sdCronJobLogService.logUserActivateJob(SdSqlReportBean.KEY_GROUP, reportId);
+        //sdCronJobLogService.logUserActivateJob(SdSqlReportBean.KEY_GROUP, reportId);
     }
 
     @Override
@@ -171,7 +160,7 @@ public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImp
 
         // log
         LOG.info("activate job profile:{},{}", SdSqlReportBean.KEY_GROUP, reportId);
-        sdCronJobLogService.logUserActivateJob(SdSqlReportBean.KEY_GROUP, reportId);
+        //sdCronJobLogService.logUserActivateJob(SdSqlReportBean.KEY_GROUP, reportId);
     }
 
     private int updateRepeortProfileStatus(String reportId, String status) {
@@ -180,7 +169,7 @@ public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImp
     }
 
     @Override
-    public BtuSqlReportBean getProfileBeanByGrpAndName(String keyGroup, String reportId) {
+    public BtuSqlReportBean getProfileBeanByGrpAndName(String reportId) {
         SdSqlReportEntity entity = sdSqlReportMapper.getSqlReportDataByReportId(reportId);
         if (entity == null) {
             LOG.warn("No such report.");
@@ -189,5 +178,18 @@ public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImp
         SdSqlReportBean bean = new SdSqlReportBean();
         reportBeanPopulator.populate(entity, bean);
         return bean;
+    }
+
+    private void setProperties(String reportName, String cronExpression, String status, String sql,
+                               String exportTo, String emailTo, String remarks, String createBy, SdSqlReportEntity entity) {
+        entity.setSql(sql);
+        entity.setReportName(reportName);
+        entity.setCronExp(cronExpression);
+        entity.setEmailTo(emailTo);
+        entity.setExportTo(exportTo);
+        entity.setRemarks(remarks);
+        entity.setCreateby(createBy);
+        entity.setStatus(status);
+        entity.setModifyby(createBy);
     }
 }

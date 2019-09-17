@@ -29,8 +29,25 @@ public class BtuSqlReportProfileServiceImpl implements BtuSqlReportProfileServic
     }
 
     @Override
-    public BtuSqlReportBean getProfileBeanByGrpAndName(String keyGroup, String reportName) {
-        LOG.warn("get profile bean by group and reportName:{},{}",keyGroup,reportName);
+    public BtuSqlReportBean getProfileBeanByGrpAndName(String reportName) {
+        LOG.warn("get profile bean by group and reportName:{}",reportName);
         return null;
+    }
+
+    @Override
+    public boolean isRunnable(BtuSqlReportBean bean) {
+        boolean isActiveProfile = bean.getStatus().equals(BtuSqlReportBean.ACTIVE_STATUS) ? true : false;
+
+        return isActiveProfile;
+    }
+
+    @Override
+    public boolean isRunnable(String reportId) {
+        BtuSqlReportBean sqlReportBean = getProfileBeanByGrpAndName(reportId);
+        if (sqlReportBean == null) {
+            LOG.warn("Cron job profile not found - " + sqlReportBean.getReportName() + ".");
+            return false;
+        }
+        return isRunnable(sqlReportBean);
     }
 }

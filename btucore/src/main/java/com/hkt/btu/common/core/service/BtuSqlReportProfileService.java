@@ -9,5 +9,9 @@ public interface BtuSqlReportProfileService {
 
     List<BtuSqlReportBean> getAllReportData(String status);
 
-    BtuSqlReportBean getProfileBeanByGrpAndName(String keyGroup, String reportId);
+    BtuSqlReportBean getProfileBeanByGrpAndName(String reportId);
+
+    boolean isRunnable(BtuSqlReportBean bean);
+
+    boolean isRunnable(String reportId);
 }

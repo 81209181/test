@@ -140,7 +140,7 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
             checkReportData(data);
             reportId = reportService.createReport(data.getReportName(), data.getCronExp(), data.getStatus(),
                     data.getSql(), data.getExportTo(), data.getEmailTo(), data.getRemarks());
-            sdSchedulerService.scheduleReportJob(reportId);
+            sdSchedulerService.scheduleReportJob(data.getReportName());
         } catch (InvalidInputException | SchedulerException | ClassNotFoundException e) {
             LOG.warn(e.getMessage());
             return ResponseReportData.of(null, e.getMessage());
@@ -171,7 +171,7 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
                     data.getSql(), data.getExportTo(), data.getEmailTo(), data.getRemarks());
             sdSchedulerService.pauseJob(SdSqlReportBean.KEY_GROUP, reportName);
             sdSchedulerService.destroyJob(SdSqlReportBean.KEY_GROUP, reportName);
-            sdSchedulerService.scheduleReportJob(data.getReportId());
+            sdSchedulerService.scheduleReportJob(data.getReportName());
         } catch (InvalidInputException | SchedulerException | ClassNotFoundException e) {
             LOG.warn(e.getMessage());
             return ResponseReportData.of(null, e.getMessage());
