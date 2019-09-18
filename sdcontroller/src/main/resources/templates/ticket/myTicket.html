@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Ticket</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <h1>My Ticket</h1>
+    <table id="myTicketTable" class="display" cellspacing="0" width="100%">
+        <thead>
+        <tr>
+            <th>Ticket ID</th>
+            <th>Ticket Type</th>
+            <th>Customer Code</th>
+            <th>Status</th>
+            <th>Create Date</th>
+            <th>Create By</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        <tfoot>
+        <tr>
+            <th>Ticket ID</th>
+            <th>Ticket Type</th>
+            <th>Customer Code</th>
+            <th>Status</th>
+            <th>Create Date</th>
+            <th>Create By</th>
+        </tr>
+        </tfoot>
+    </table>
+    <script type="text/javascript" th:src="@{/js/myTicket.js}"></script>
+</div>
+</body>
+</html>

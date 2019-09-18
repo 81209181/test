@@ -78,12 +78,12 @@ public class TicketController {
         return ResponseEntity.ok(data);
     }
 
-    @GetMapping("searchTicket")
+    @GetMapping("/search-ticket")
     public String searchTicket() {
         return "ticket/searchTicket";
     }
 
-    @GetMapping("search-ticket")
+    @GetMapping("/searchTicket")
     public ResponseEntity<?> searchTicket(@RequestParam(defaultValue = "0") int draw,
                                           @RequestParam(defaultValue = "0") int start,
                                           @RequestParam(defaultValue = "10") int length,
@@ -97,7 +97,12 @@ public class TicketController {
         return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
     }
 
-    @GetMapping("my-ticket")
+    @GetMapping("/my-ticket")
+    public String myTicket() {
+        return "ticket/myTicket";
+    }
+
+    @GetMapping("/myTicket")
     public ResponseEntity<?> getMyTicket() {
         List<SdTicketMasData> dataList = ticketFacade.getMyTicket();
         if (CollectionUtils.isEmpty(dataList)) {
