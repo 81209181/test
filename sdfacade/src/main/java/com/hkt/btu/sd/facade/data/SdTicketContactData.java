@@ -16,6 +16,19 @@ public class SdTicketContactData implements DataInterface {
 
     private String contactEmail;
 
+    public String getContactTypeValue() {
+        switch (contactType) {
+            case "Customer":
+                return "CUST";
+            case "Office Admin":
+                return "ADMIN";
+            case "On-site Contact":
+                return "SITE";
+            default:
+                return "Not found match contact type";
+        }
+    }
+
     public Integer getTicketMasId() {
         return ticketMasId;
     }
@@ -29,7 +42,7 @@ public class SdTicketContactData implements DataInterface {
     }
 
     public void setContactType(String contactType) {
-        this.contactType = contactType;
+        this.contactType =contactType;
     }
 
     public String getContactName() {

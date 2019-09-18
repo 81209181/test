@@ -62,7 +62,7 @@ public class SdApiServiceImpl implements SdApiService {
         bean.setUrl((String) configParamByConfigGroup.get(SiteInterfaceBean.API_CONFIG_KEY.KEY_URL));
         bean.setUserName((String) configParamByConfigGroup.get(SiteInterfaceBean.API_CONFIG_KEY.USER_NAME));
         bean.setPassword((String) configParamByConfigGroup.get(SiteInterfaceBean.API_CONFIG_KEY.PASSWORD));
-        bean.setxAppkey((String) configParamByConfigGroup.get(SiteInterfaceBean.API_CONFIG_KEY.X_APPKEY));
+        bean.setxAppkey((String) configParamByConfigGroup.get(SiteInterfaceBean.API_CONFIG_KEY.X_APP_KEY));
         bean.setBeId((String) configParamByConfigGroup.get(SiteInterfaceBean.API_CONFIG_KEY.BE_ID));
         bean.setChannelType((String) configParamByConfigGroup.get(SiteInterfaceBean.API_CONFIG_KEY.CHANNEL_TYPE));
 

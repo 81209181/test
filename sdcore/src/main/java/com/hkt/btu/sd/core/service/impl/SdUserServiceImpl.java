@@ -60,7 +60,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     @Resource(name = "ldapService")
     BtuLdapService btuLdapService;
 
-    @Resource(name = "roleService")
+    @Resource(name = "userRoleService")
     SdUserRoleService userRoleService;
 
     @Resource

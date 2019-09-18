@@ -33,7 +33,7 @@ public class SiteInterfaceBean {
         public static final String KEY_URL = "url";
         public static final String USER_NAME = "userName";
         public static final String PASSWORD = "password";
-        public static final String X_APPKEY = "xAppkey";
+        public static final String X_APP_KEY = "xAppKey";
         public static final String BE_ID = "beId";
         public static final String CHANNEL_TYPE = "channelType";
     }
