@@ -10,8 +10,8 @@ import java.util.Set;
 
 public interface SdUserRoleService {
 
-    void getTeamHeadList();
-    List<SdUserRoleEntity> getParentRoleByRoleId(String roleId);
+    void reloadCachedRoleAssignMap();
+    List<SdUserRoleEntity> getParentRoleByRoleId(String roleId); // todo: SdUserRoleEntity --> SdUserRoleBean
     List<SdUserRoleBean> getAllUserRole();
     SdUserRoleBean getUserRoleByRoleId(String roleId);
     List<SdUserRoleBean> getUserRoleByUserId(String userId);

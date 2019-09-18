@@ -5,12 +5,12 @@ import com.hkt.btu.sd.core.dao.entity.SdUserRoleEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdUserRoleMapper;
 import com.hkt.btu.sd.core.exception.InsufficientAuthorityException;
 import com.hkt.btu.sd.core.exception.InvalidInputException;
-import com.hkt.btu.sd.core.service.SdConfigParamService;
 import com.hkt.btu.sd.core.service.SdUserRoleService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
 import com.hkt.btu.sd.core.service.populator.SdUserRoleBeanPopulator;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,7 +23,8 @@ import java.util.stream.Collectors;
 
 public class SdUserRoleServiceImpl implements SdUserRoleService {
 
-    public static final Map<String, Object> ROLE_MAP = new HashMap<>();
+    // key: role id, value: list of role id that can be assigned by the key role id
+    private static final Map<String, List<SdUserRoleBean>> ROLE_ASSIGN_MAP = new HashMap<>();
 
     @Resource
     SdUserRoleMapper sdUserRoleMapper;
@@ -31,25 +32,30 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     @Resource(name = "userService")
     SdUserService userService;
 
-    @Resource(name = "configParamService")
-    SdConfigParamService configParamService;
-
     @Resource(name = "userRoleBeanPopulator")
     SdUserRoleBeanPopulator sdUserRoleBeanPopulator;
 
     @Override
     @PostConstruct
-    public void getTeamHeadList() {
+    public void reloadCachedRoleAssignMap() {
         List<String> teamHeadRoleIdList = sdUserRoleMapper
                 .getTeamHeadList(SdUserRoleEntity.TEAM_HEAD_INDICATOR)
                 .stream()
                 .map(SdUserRoleEntity::getRoleId)
                 .collect(Collectors.toList());
         for (String roleId : teamHeadRoleIdList) {
-            List<SdUserRoleEntity> eligibleRoles = sdUserRoleMapper
+            List<SdUserRoleEntity> eligibleRoleEntityList = sdUserRoleMapper
                     .getEligibleRolesByCurrentUserRole(roleId, SdUserRoleEntity.ACTIVE_ROLE_STATUS);
-            ROLE_MAP.put(roleId, eligibleRoles);
+            List<SdUserRoleBean> eligibleRoleBeanList = getSdUserRoleBeans(new LinkedList<>(), eligibleRoleEntityList);
+            ROLE_ASSIGN_MAP.put(roleId, eligibleRoleBeanList);
         }
+    }
+
+    private Map<String, List<SdUserRoleBean>> getCachedRoleAssignMap(){
+        if(MapUtils.isEmpty(ROLE_ASSIGN_MAP)){
+            reloadCachedRoleAssignMap();
+        }
+        return ROLE_ASSIGN_MAP;
     }
 
     @Override
@@ -157,29 +163,24 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
         }
 
         // extract eligible roles of current user role
-        List<SdUserRoleEntity> userRoleEntityList = new LinkedList<>();
-
-
+        List<SdUserRoleBean> eligibleUserRoleList = new LinkedList<>();
         for (GrantedAuthority authority : authorities) {
             if (authority instanceof SimpleGrantedAuthority) {
                 String roleId = authority.getAuthority();
                 if (roleId.equals(SdUserRoleEntity.SYS_ADMIN)) {
-                    userRoleEntityList = sdUserRoleMapper.getAllUserRole(SdUserRoleEntity.ACTIVE_ROLE_STATUS);
-                    break;
+                    List<SdUserRoleBean> userRoleBeanList = new LinkedList<>();
+                    List<SdUserRoleEntity> userRoleEntityList = sdUserRoleMapper.getAllUserRole(SdUserRoleEntity.ACTIVE_ROLE_STATUS);
+                    return getSdUserRoleBeans(userRoleBeanList, userRoleEntityList);
                 }
                 if (roleId.contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR)) {
-                    userRoleEntityList.addAll((List<SdUserRoleEntity>) ROLE_MAP.get(roleId));
+                    List<SdUserRoleBean> eligibleRoleListOfTeamHead = getCachedRoleAssignMap().get(roleId);
+                    eligibleUserRoleList.addAll(eligibleRoleListOfTeamHead);
                 }
             }
         }
 
-        if (CollectionUtils.isNotEmpty(userRoleEntityList)) {
-            List<SdUserRoleBean> eligibleUserRoleList = userRoleEntityList.stream().map(entity -> {
-                SdUserRoleBean bean = new SdUserRoleBean();
-                sdUserRoleBeanPopulator.populate(entity, bean);
-                return bean;
-            }).distinct().collect(Collectors.toList());
-
+        if (CollectionUtils.isNotEmpty(eligibleUserRoleList)) {
+            eligibleUserRoleList = eligibleUserRoleList.stream().distinct().collect(Collectors.toList());
             return eligibleUserRoleList;
         }
 

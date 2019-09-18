@@ -43,7 +43,7 @@
     <alias name="sdHealthCheckService" alias="healthCheckService"/>
     <bean id="sdHealthCheckService" class="com.hkt.btu.sd.core.service.impl.SdHealthCheckServiceImpl"/>
 
-    <alias name="sdUserRoleService" alias="roleService"/>
+    <alias name="sdUserRoleService" alias="userRoleService"/>
     <bean id="sdUserRoleService" class="com.hkt.btu.sd.core.service.impl.SdUserRoleServiceImpl"/>
 
     <alias name="sdApiService" alias="apiService"/>

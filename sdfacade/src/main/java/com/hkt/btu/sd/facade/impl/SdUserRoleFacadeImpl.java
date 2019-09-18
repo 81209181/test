@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
 
-    @Resource(name = "roleService")
+    @Resource(name = "userRoleService")
     SdUserRoleService sdUserRoleService;
 
     @Resource(name = "pathCtrlService")
