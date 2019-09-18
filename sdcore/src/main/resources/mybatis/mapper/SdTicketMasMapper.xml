@@ -30,14 +30,14 @@
     <sql id="searchTicketSql">
         from TICKET_MAS
         where 1=1
-        <if test="status != '' and status != null">
+        <if test="status != null">
             and status = #{status}
         </if>
-        <if test="dateFrom != '' and dateFrom != null">
-            and createdate &gt;= to_date(#{dateFrom},'yyyy-MM-dd')
+        <if test="dateFrom != null">
+            and trunc(createdate) &gt;= to_date(#{dateFrom},'yyyy-MM-dd')
         </if>
-        <if test="dateTo != '' and dateTo != null">
-            and createdate &lt; to_date(#{dateTo},'yyyy-MM-dd')
+        <if test="dateTo != null">
+            and to_date(#{dateTo},'yyyy-MM-dd') >= trunc(createdate)
         </if>
     </sql>
 
