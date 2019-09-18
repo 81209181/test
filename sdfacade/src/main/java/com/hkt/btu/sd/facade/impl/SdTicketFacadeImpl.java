@@ -5,11 +5,14 @@ import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
 import com.hkt.btu.sd.core.service.SdTicketService;
 import com.hkt.btu.sd.core.service.bean.SdTicketContactBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketMasBean;
+import com.hkt.btu.sd.core.service.bean.SdTicketServiceBean;
 import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.data.SdTicketContactData;
 import com.hkt.btu.sd.facade.data.SdTicketMasData;
+import com.hkt.btu.sd.facade.data.SdTicketServiceData;
 import com.hkt.btu.sd.facade.populator.SdTicketContactDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdTicketMasDataPopulator;
+import com.hkt.btu.sd.facade.populator.SdTicketServiceDataPopulator;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +23,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class SdTicketFacadeImpl implements SdTicketFacade {
 
@@ -30,13 +34,15 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     SdTicketMasDataPopulator ticketMasDataPopulator;
     @Resource(name = "ticketContactDataPopulator")
     SdTicketContactDataPopulator ticketContactDataPopulator;
+    @Resource(name = "ticketServiceDataPopulator")
+    SdTicketServiceDataPopulator ticketServiceDataPopulator;
 
     @Override
     public Optional<SdTicketMasData> createQueryTicket(String custCode) {
-        Optional<SdTicketMasBean> bean =ticketService.createQueryTicket(custCode);
+        Optional<SdTicketMasBean> bean = ticketService.createQueryTicket(custCode);
         if (bean.isPresent()) {
             SdTicketMasData ticketMasData = new SdTicketMasData();
-            ticketMasDataPopulator.populate(bean.get(),ticketMasData);
+            ticketMasDataPopulator.populate(bean.get(), ticketMasData);
             return Optional.of(ticketMasData);
         }
         return Optional.empty();
@@ -44,10 +50,10 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
     @Override
     public Optional<SdTicketMasData> getTicket(Integer ticketId) {
-        Optional<SdTicketMasBean> bean =ticketService.getTicket(ticketId);
+        Optional<SdTicketMasBean> bean = ticketService.getTicket(ticketId);
         if (bean.isPresent()) {
             SdTicketMasData ticketMasData = new SdTicketMasData();
-            ticketMasDataPopulator.populate(bean.get(),ticketMasData);
+            ticketMasDataPopulator.populate(bean.get(), ticketMasData);
             return Optional.of(ticketMasData);
         }
         return Optional.empty();
@@ -64,11 +70,11 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
     @Override
     public List<SdTicketContactData> getContactInfo(Integer ticketMasId) {
-        List<SdTicketContactBean> beans=ticketService.getContactInfo(ticketMasId);
+        List<SdTicketContactBean> beans = ticketService.getContactInfo(ticketMasId);
         List<SdTicketContactData> dataList = new ArrayList<>();
         beans.forEach(sdTicketContactBean -> {
             SdTicketContactData data = new SdTicketContactData();
-            ticketContactDataPopulator.populate(sdTicketContactBean,data);
+            ticketContactDataPopulator.populate(sdTicketContactBean, data);
             dataList.add(data);
         });
         return dataList;
@@ -111,5 +117,15 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             }
         }
         return dataList;
+    }
+
+    @Override
+    public List<SdTicketServiceData> getServiceInfo(Integer ticketMasId) {
+        List<SdTicketServiceBean> serviceInfoList = ticketService.getServiceInfo(ticketMasId);
+        return serviceInfoList.stream().map(bean -> {
+            SdTicketServiceData data = new SdTicketServiceData();
+            ticketServiceDataPopulator.populate(bean, data);
+            return data;
+        }).collect(Collectors.toList());
     }
 }

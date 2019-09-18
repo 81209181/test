@@ -1,14 +1,18 @@
 package com.hkt.btu.sd.core.service.impl;
 
 import com.hkt.btu.sd.core.dao.entity.SdTicketMasEntity;
+import com.hkt.btu.sd.core.dao.entity.SdTicketServiceEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdTicketContactMapper;
 import com.hkt.btu.sd.core.dao.mapper.SdTicketMasMapper;
+import com.hkt.btu.sd.core.dao.mapper.SdTicketServiceMapper;
 import com.hkt.btu.sd.core.service.SdTicketService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdTicketContactBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketMasBean;
+import com.hkt.btu.sd.core.service.bean.SdTicketServiceBean;
 import com.hkt.btu.sd.core.service.populator.SdTicketContactBeanPopulator;
 import com.hkt.btu.sd.core.service.populator.SdTicketMasBeanPopulator;
+import com.hkt.btu.sd.core.service.populator.SdTicketServiceBeanPopulator;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -20,6 +24,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class SdTicketServiceImpl implements SdTicketService {
 
@@ -29,6 +34,9 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Resource
     SdTicketContactMapper ticketContactMapper;
 
+    @Resource
+    SdTicketServiceMapper ticketServiceMapper;
+
     @Resource(name = "userService")
     SdUserService userService;
 
@@ -36,6 +44,8 @@ public class SdTicketServiceImpl implements SdTicketService {
     SdTicketMasBeanPopulator ticketMasBeanPopulator;
     @Resource(name = "ticketContactBeanPopulator")
     SdTicketContactBeanPopulator ticketContactBeanPopulator;
+    @Resource(name = "ticketServiceBeanPopulator")
+    SdTicketServiceBeanPopulator ticketServiceBeanPopulator;
 
     @Override
     public Optional<SdTicketMasBean> createQueryTicket(String custCode) {
@@ -44,7 +54,7 @@ public class SdTicketServiceImpl implements SdTicketService {
         ticketMasEntity.setCustCode(custCode);
         ticketMasEntity.setCreateby(userService.getCurrentUserUserId());
         ticketMasMapper.insertQueryTicket(ticketMasEntity);
-        ticketMasBeanPopulator.populate(ticketMasEntity,bean);
+        ticketMasBeanPopulator.populate(ticketMasEntity, bean);
         return Optional.of(bean);
     }
 
@@ -53,7 +63,7 @@ public class SdTicketServiceImpl implements SdTicketService {
         SdTicketMasEntity ticketMasEntity = ticketMasMapper.findTicketById(ticketId);
         if (!ObjectUtils.isEmpty(ticketMasEntity)) {
             SdTicketMasBean bean = new SdTicketMasBean();
-            ticketMasBeanPopulator.populate(ticketMasEntity,bean);
+            ticketMasBeanPopulator.populate(ticketMasEntity, bean);
             return Optional.of(bean);
         }
         return Optional.empty();
@@ -61,7 +71,7 @@ public class SdTicketServiceImpl implements SdTicketService {
 
     @Override
     public void updateContactInfo(Integer ticketMasId, String contactType, String contactName, String contactNumber, String contactEmail, String contactMobile) {
-        ticketContactMapper.insertTicketContactInfo(ticketMasId,contactType,contactName,contactMobile,contactEmail,contactNumber,userService.getCurrentUserUserId());
+        ticketContactMapper.insertTicketContactInfo(ticketMasId, contactType, contactName, contactMobile, contactEmail, contactNumber, userService.getCurrentUserUserId());
     }
 
     @Override
@@ -69,7 +79,7 @@ public class SdTicketServiceImpl implements SdTicketService {
         List<SdTicketContactBean> beanList = new ArrayList<>();
         ticketContactMapper.selectContactInfoByTicketMasId(ticketMasId).forEach(sdTicketContactEntity -> {
             SdTicketContactBean bean = new SdTicketContactBean();
-            ticketContactBeanPopulator.populate(sdTicketContactEntity,bean);
+            ticketContactBeanPopulator.populate(sdTicketContactEntity, bean);
             beanList.add(bean);
         });
         return beanList;
@@ -112,5 +122,20 @@ public class SdTicketServiceImpl implements SdTicketService {
         }
 
         return beanList;
+    }
+
+    @Override
+    public List<SdTicketServiceBean> getServiceInfo(Integer ticketMasId) {
+        List<SdTicketServiceEntity> serviceList = ticketServiceMapper.getTicketServiceInfoByTicketMasId(ticketMasId);
+
+        if (CollectionUtils.isEmpty(serviceList)) {
+            return null;
+        }
+        
+        return serviceList.stream().map(entity -> {
+            SdTicketServiceBean bean = new SdTicketServiceBean();
+            ticketServiceBeanPopulator.populate(entity, bean);
+            return bean;
+        }).collect(Collectors.toList());
     }
 }

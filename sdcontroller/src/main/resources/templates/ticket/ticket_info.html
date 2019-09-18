@@ -18,7 +18,8 @@
             <div id="customer" class="row">
                 <div class="col-md-6 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Customer Code:</label>
-                    <input type="text" class="form-control-plaintext col-md-3" name="custCode" th:value="${customerCode}">
+                    <input type="text" class="form-control-plaintext col-md-3" name="custCode"
+                           th:value="${customerCode}">
                 </div>
             </div>
             <hr>
@@ -31,54 +32,61 @@
                             <option value="ADMIN">ADMIN</option>
                             <option value="SITE">SITE</option>
                         </select>
-                        <button type="button" class="btn btn-light ml-2" id="btnAddContact"><i class="fa fa-plus" aria-hidden="true"></i>
-                        </button>
+                        <button type="button" class="btn btn-light ml-2" id="btnAddContact"><i class="fa fa-plus" aria-hidden="true"></i></button>
                     </div>
                 </div>
                 <div id="contact_list"></div>
                 <div class="offset-md-10">
-                    <button type="button" class="btn btn-primary mt-2" id="btnUpdateContact" disabled="disabled">Update</button>
+                    <button type="button" class="btn btn-primary mt-2" id="btnUpdateContact" disabled="disabled">
+                        Update
+                    </button>
                 </div>
             </div>
 
             <div id="service">
-                <div class="card-header">Service <button type="button" class="btn btn-light ml-2" id="btnAddService"><i class="fa fa-plus" aria-hidden="true"></i></button></div>
-                <div id="tempService" hidden="hidden">
-                    <form class="col-md-12 form">
-                        <div class="form-row">
-                            <div class="col-md-6 form-inline pt-2">
-                                <label class="col-form-label col-md-2 justify-content-end">Service Code: </label>
-                                <input type="text" class="form-control col-md-3" name="serviceCode"/>
-                                <label class="col-form-label col-md-2 justify-content-end">Service Type: </label>
-                                <input type="text" class="form-control col-md-3" name="serviceType"/>
-                                <button type="button" class="btn btn-light ml-2" onclick="addFaults();"><i class="fa fa-plus" aria-hidden="true"></i></button>
-                                <button type="button" class="btn btn-light ml-2" onclick="removeService(this)"><i class="fa fa-times" aria-hidden="true"></i></button>
-                            </div>
-                        </div>
-                    </form>
+                <div>Service
+                    <button type="button" class="btn btn-light ml-2" id="btnAddService"><i class="fa fa-plus"
+                                                                                           aria-hidden="true"></i>
+                    </button>
                 </div>
-
-                <div id="service_list"></div>
-                <div id="faults_list"></div>
+                <div id="service_list">
+                </div>
                 <div class="offset-md-10">
-                    <button type="button" class="btn btn-primary mt-2" id="btnUpdateService" disabled="disabled">Update</button>
+                    <button type="button" class="btn btn-primary mt-2" id="btnUpdateService" disabled="disabled">
+                        Update
+                    </button>
                 </div>
             </div>
-            <div id="tempFaults" hidden="hidden">
-                <form class="col-md-12 form">
-                    <div class="form-row">
-                        <div class="col-md-6 form-inline pt-2">
-                            <label class="col-form-label col-md-2 justify-content-end">Faults: </label>
-                            <input type="text" class="form-control col-md-3" name="faults"/>
-                            <button type="button" class="btn btn-light ml-2" onclick="removeService(this)"><i class="fa fa-times" aria-hidden="true"></i></button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-
             <div id="remark"></div>
         </div>
+
+    </div>
+
+    <div id="tempFaults" hidden="hidden">
+        <div class="temp_faults">
+        <label class="col-form-label col-md-2">Faults: </label>
+        <input type="text" class="form-control col-md-10" name="faults"/>
+        <button type="button" class="btn btn-light ml-2" onclick="removeFaults(this)"><i class="fa fa-times" aria-hidden="true"></i></button>
+        </div>
+    </div>
+
+    <div id="tempService" hidden="hidden">
+        <form class="col-md-12 form">
+            <div class="form-row">
+                <div class="col-md-6 form-inline pt-2">
+                    <label class="col-form-label col-md-2 justify-content-end">Service Code: </label>
+                    <input type="text" class="form-control col-md-3" name="serviceCode"/>
+                    <label class="col-form-label col-md-2 justify-content-end">Service Type: </label>
+                    <input type="text" class="form-control col-md-3" name="serviceType"/>
+                    <button type="button" class="btn btn-light ml-2" onclick="addFaults(this);"><i
+                            class="fa fa-plus" aria-hidden="true"></i></button>
+                    <button type="button" class="btn btn-light ml-2" onclick="removeService(this)"><i
+                            class="fa fa-times" aria-hidden="true"></i></button>
+
+                    <div class="faults_list"></div>
+                </div>
+            </div>
+        </form>
     </div>
 
     <div id="tempContact" hidden="hidden">
@@ -87,7 +95,8 @@
                 <div class="col-md-12 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Contact Type:</label>
                     <input type="text" class="form-control-plaintext col-md-1" name="contactType">
-                    <button type="button" class="btn btn-light ml-2" onclick="removeContact(this)"><i class="fa fa-times" aria-hidden="true"></i></button>
+                    <button type="button" class="btn btn-light ml-2" onclick="removeContact(this)"><i
+                            class="fa fa-times" aria-hidden="true"></i></button>
                 </div>
                 <div class="col-md-6 form-inline pt-2">
                     <label class="col-form-label col-md-3 justify-content-end">Contact Name:</label>

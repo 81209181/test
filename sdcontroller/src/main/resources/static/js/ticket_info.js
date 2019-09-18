@@ -10,6 +10,24 @@ $().ready(function(){
         })
     })
 
+    /*$.get('/ticket/service/'+ticketMasId,function(res){
+        $.each(res,function(index,j){
+            let service =$('#tempService').children().clone();
+            $.each(j,function(key,value){
+                service.find('input[name='+key+']').val(value);
+                if (value instanceof Array) {
+                    for (item of value) {
+                        let faults = $('#tempFaults').children().clone();
+                        faults.find('input[name=faults]').val(item.faults);
+                        faults.appendTo($('#faults_list'));
+                    }
+                }
+            })
+            service.appendTo($('#service_list'));
+        })
+    })*/
+
+
     $('#btnAddContact').on('click',function(){
         clearAllMsg();
         let contactType =$(this).prev('select').val();
@@ -62,9 +80,9 @@ function readyForTicketService() {
     })
 }
 
-function addFaults() {
+function addFaults(btn) {
     let service =$('#tempFaults').children().clone();
-    service.appendTo($('#faults_list'));
+    service.appendTo($(btn).parent().find('.faults_list'));
 }
 
 function removeService(btn){
@@ -73,6 +91,12 @@ function removeService(btn){
         $('#btnUpdateService').attr('disabled',true);
     }
 }
+
+function removeFaults(btn){
+    console.log($(btn).parent());
+    $(btn).parent().remove();
+}
+
 
 function removeContact(btn){
     $(btn).parents('form').remove();

@@ -7,6 +7,7 @@ import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.data.RequestCreateSearchResultsData;
 import com.hkt.btu.sd.facade.data.SdTicketContactData;
 import com.hkt.btu.sd.facade.data.SdTicketMasData;
+import com.hkt.btu.sd.facade.data.SdTicketServiceData;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -104,6 +105,16 @@ public class TicketController {
             return ResponseEntity.badRequest().body("Ticket list not found.");
         } else {
             return ResponseEntity.ok(dataList);
+        }
+    }
+
+    @GetMapping("/service/{ticketMasId}")
+    public ResponseEntity<?> getServiceInfo(@PathVariable Integer ticketMasId) {
+        List<SdTicketServiceData> serviceInfo = ticketFacade.getServiceInfo(ticketMasId);
+        if (CollectionUtils.isEmpty(serviceInfo)) {
+            return ResponseEntity.badRequest().body("Service info not found.");
+        } else {
+            return ResponseEntity.ok(serviceInfo);
         }
     }
 }

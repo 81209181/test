@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdTicketServiceMapper">
+    <resultMap id="TicketServiceEntity" type="com.hkt.btu.sd.core.dao.entity.SdTicketServiceEntity">
+        <id column="TICKET_DET_ID" property="ticketDetId"/>
+        <result column="TICKET_MAS_ID" property="ticketMasId"/>
+        <result column="SERVICE_TYPE_CODE" property="serviceTypeCode"/>
+        <result column="SERVICE_ID" property="serviceId"/>
+
+        <result column="CREATEDATE" property="createdate"/>
+        <result column="CREATEBY" property="createby"/>
+        <result column="MODIFYDATE" property="modifydate"/>
+        <result column="MODIFYBY" property="modifyby"/>
+
+        <collection property="faultList" ofType="com.hkt.btu.sd.core.dao.entity.SdServiceFaultsEntity">
+            <id column="TICKET_FAULTS_ID" property="ticketFaultsId"/>
+            <result column="TICKET_DET_ID" property="ticketDetId"/>
+            <result column="FAULTS" property="faults"/>
+        </collection>
+    </resultMap>
+
+    <select id="getTicketServiceInfoByTicketMasId" resultMap="TicketServiceEntity">
+        select
+            td.TICKET_MAS_ID,
+            td.TICKET_DET_ID,
+            td.SERVICE_ID,
+            td.SERVICE_TYPE_CODE,
+            tf.FAULTS,
+            tf.TICKET_FAULTS_ID
+        from TICKET_DET td
+        inner join TICKET_FAULTS tf on td.TICKET_DET_ID = tf.TICKET_DET_ID
+        where td.TICKET_MAS_ID = #{ticketMasId}
+    </select>
+</mapper>
