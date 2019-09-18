@@ -16,6 +16,7 @@ import com.hkt.btu.sd.facade.populator.SdTicketContactDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdTicketMasDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdTicketServiceDataPopulator;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
@@ -91,6 +92,10 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     public PageData<SdTicketMasData> searchTicketList(Pageable pageable, String dateFrom, String dateTo, String status) {
         Page<SdTicketMasBean> pageBean;
         try {
+            dateFrom = StringUtils.isEmpty(dateFrom) ? null : dateFrom;
+            dateTo = StringUtils.isEmpty(dateTo) ? null : dateTo;
+            status = StringUtils.isEmpty(status) ? null : status;
+
             pageBean = ticketService.searchTicketList(pageable, dateFrom, dateTo, status);
         } catch (AuthorityNotFoundException e) {
             return new PageData<>(e.getMessage());
