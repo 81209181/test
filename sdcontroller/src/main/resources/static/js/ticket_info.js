@@ -53,7 +53,9 @@ $().ready(function(){
 
 function removeContact(btn){
     $(btn).parents('form').remove();
-    if($('#contact_list').find('form').length <1){
+    if($('#contact_list').find('form').length < 1){
         $('#btnUpdateContact').attr('disabled',true);
+    }else{
+        $('#btnUpdateContact').attr('disabled',false);
     }
 }
