@@ -151,11 +151,14 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     @Override
     public List<SdTicketServiceData> getServiceInfo(Integer ticketMasId) {
         List<SdTicketServiceBean> serviceInfoList = ticketService.getServiceInfo(ticketMasId);
-        return serviceInfoList.stream().map(bean -> {
-            SdTicketServiceData data = new SdTicketServiceData();
-            ticketServiceDataPopulator.populate(bean, data);
-            return data;
-        }).collect(Collectors.toList());
+        if (CollectionUtils.isNotEmpty(serviceInfoList)) {
+            return serviceInfoList.stream().map(bean -> {
+                SdTicketServiceData data = new SdTicketServiceData();
+                ticketServiceDataPopulator.populate(bean, data);
+                return data;
+            }).collect(Collectors.toList());
+        }
+        return null;
     }
 
     @Override
