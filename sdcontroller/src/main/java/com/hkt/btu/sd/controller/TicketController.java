@@ -4,17 +4,18 @@ import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
 import com.hkt.btu.sd.facade.SdRequestCreateFacade;
 import com.hkt.btu.sd.facade.SdTicketFacade;
+import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.RequestCreateSearchResultsData;
 import com.hkt.btu.sd.facade.data.SdTicketContactData;
 import com.hkt.btu.sd.facade.data.SdTicketMasData;
 import com.hkt.btu.sd.facade.data.SdTicketRemarkData;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -110,6 +111,26 @@ public class TicketController {
             return ResponseEntity.badRequest().body("Ticket list not found.");
         } else {
             return ResponseEntity.ok(dataList);
+        }
+    }
+
+    @GetMapping("/service/{ticketMasId}")
+    public ResponseEntity<?> getServiceInfo(@PathVariable Integer ticketMasId) {
+        List<SdTicketServiceData> serviceInfo = ticketFacade.getServiceInfo(ticketMasId);
+        if (CollectionUtils.isEmpty(serviceInfo)) {
+            return ResponseEntity.badRequest().body("Service info not found.");
+        } else {
+            return ResponseEntity.ok(serviceInfo);
+        }
+    }
+
+    @PostMapping("/service/update")
+    public ResponseEntity<?> updateServiceInfo(@RequestBody List<RequestTicketServiceData> ticketServiceList) {
+        String errorMsg = ticketFacade.updateServiceInfo(ticketServiceList);
+        if (StringUtils.isEmpty(errorMsg)) {
+            return ResponseEntity.ok("Update success.");
+        } else {
+            return ResponseEntity.badRequest().body(errorMsg);
         }
     }
 

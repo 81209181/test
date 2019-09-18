@@ -59,7 +59,7 @@
     <bean id="sdSqlReportProfileService" class="com.hkt.btu.sd.core.service.impl.SdSqlReportProfileServiceImpl"/>
 
     <alias name="sdTicketService" alias="ticketService"/>
-    <bean id="sdTicketService" class="com.hkt.btu.sd.core.service.impl.SdTicketServiceImpl" />
+    <bean id="sdTicketService" class="com.hkt.btu.sd.core.service.impl.SdTicketServiceImpl"/>
 
     <alias name="sdCsvGenratorService" alias="csvGenratorService"/>
     <bean id="sdCsvGenratorService" class="com.hkt.btu.sd.core.service.impl.SdCsvGenratorServiceImpl"/>
@@ -100,8 +100,11 @@
     <alias name="sdTicketMasBeanPopulator" alias="ticketMasBeanPopulator"/>
     <bean id="sdTicketMasBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdTicketMasBeanPopulator"/>
 
-    <alias name="sdTicketContactBeanPopulator" alias="ticketContactBeanPopulator" />
+    <alias name="sdTicketContactBeanPopulator" alias="ticketContactBeanPopulator"/>
     <bean id="sdTicketContactBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdTicketContactBeanPopulator"/>
+
+    <alias name="sdTicketServiceBeanPopulator" alias="ticketServiceBeanPopulator"/>
+    <bean id="sdTicketServiceBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdTicketServiceBeanPopulator"/>
 
     <alias name="sdTicketRemarkBeanPopulator" alias="ticketRemarkBeanPopulator" />
     <bean id="sdTicketRemarkBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdTicketRemarkBeanPopulator"/>

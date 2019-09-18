@@ -2,7 +2,9 @@ package com.hkt.btu.sd;
 
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
+import com.hkt.btu.sd.core.dao.entity.SdTicketServiceEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdConfigParamMapper;
+import com.hkt.btu.sd.core.dao.mapper.SdTicketServiceMapper;
 import com.hkt.btu.sd.core.dao.mapper.SdUserMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
@@ -31,12 +33,14 @@ public class AppTest {
     @Autowired
     SdConfigParamMapper configParamMapper;
 
+    @Autowired
+    SdTicketServiceMapper ticketServiceMapper;
+
+
     @Test
     public void shouldAnswerWithTrue() {
-        List<String> entities = configParamMapper.getConfigGroupList();
-        for (String entity : entities) {
-            System.out.println(entity);
-        }
+        List<SdTicketServiceEntity> serviceList = ticketServiceMapper.getTicketServiceInfoByTicketMasId(22);
+        serviceList.forEach(System.out::println);
     }
 
     @Test

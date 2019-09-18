@@ -94,8 +94,7 @@ function ajaxResumeReport(  keyName ) {
             clearAllMsg();
             if(data.success){
                 showInfoMsg("Resumed job: " + keyName);
-                //$('#jobInstTable').DataTable().ajax.reload()
-                location.reload();
+                setTimeout('$(\'#jobInstTable\').DataTable().ajax.reload();', 200);
             }else{
                 showErrorMsg(data.feedback);
             }
