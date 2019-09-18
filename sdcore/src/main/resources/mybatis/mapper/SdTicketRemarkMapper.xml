@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdTicketRemarkMapper" >
+    <resultMap id="TicketContactEntity" type="com.hkt.btu.sd.core.dao.entity.SdTicketRemarkEntity" >
+        <result column="TICKET_REMARKS_ID" property="ticketRemarksId" />
+        <result column="TICKET_MAS_ID" property="ticketMasId" />
+        <result column="REMARKS_TYPE" property="remarksType" />
+        <result column="REMARKS" property="remarks" />
+
+        <result column="CREATEDATE" property="createdate" />
+        <result column="CREATEBY" property="createby" />
+        <result column="MODIFYDATE" property="modifydate" />
+        <result column="MODIFYBY" property="modifyby" />
+    </resultMap>
+
+    <insert id="insertTicketRemarks">
+        insert into TICKET_REMARKS (TICKET_MAS_ID,REMARKS_TYPE,REMARKS,CREATEBY,MODIFYBY)
+        values (#{ticketMasId},#{remarksType},#{remarks},#{createBy},#{createBy})
+    </insert>
+
+    <select id="getTicketRemarksByTicketId" resultMap="TicketContactEntity">
+        select * from TICKET_REMARKS where TICKET_MAS_ID =#{ticketMasId}
+    </select>
+
+    <delete id="removeTicketRemarks">
+        delete from TICKET_REMARKS where TICKET_MAS_ID =#{ticketMasId} and REMARKS_TYPE <![CDATA[ <> ]]> 'SYS'
+    </delete>
+</mapper>

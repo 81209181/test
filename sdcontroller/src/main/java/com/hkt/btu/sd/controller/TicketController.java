@@ -7,6 +7,7 @@ import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.data.RequestCreateSearchResultsData;
 import com.hkt.btu.sd.facade.data.SdTicketContactData;
 import com.hkt.btu.sd.facade.data.SdTicketMasData;
+import com.hkt.btu.sd.facade.data.SdTicketRemarkData;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -110,5 +111,17 @@ public class TicketController {
         } else {
             return ResponseEntity.ok(dataList);
         }
+    }
+
+    @GetMapping("/remark/{ticketMasId}")
+    public ResponseEntity<?> getRemarkInfo(@PathVariable Integer ticketMasId) {
+        List<SdTicketRemarkData> data = ticketFacade.getRemarkInfo(ticketMasId);
+        return ResponseEntity.ok(data);
+    }
+
+    @PostMapping("/remark/update")
+    public ResponseEntity<?> updateRemark(@RequestBody List<SdTicketRemarkData> remarkList) {
+        ticketFacade.updateRemark(remarkList);
+        return ResponseEntity.ok("Update success.");
     }
 }

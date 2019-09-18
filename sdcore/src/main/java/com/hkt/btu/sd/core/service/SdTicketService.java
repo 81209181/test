@@ -2,6 +2,7 @@ package com.hkt.btu.sd.core.service;
 
 import com.hkt.btu.sd.core.service.bean.SdTicketContactBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketMasBean;
+import com.hkt.btu.sd.core.service.bean.SdTicketRemarkBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -22,4 +23,10 @@ public interface SdTicketService {
     Page<SdTicketMasBean> searchTicketList(Pageable pageable, String dateFrom, String dateTo, String status);
 
     List<SdTicketMasBean> getMyTicket();
+
+    void updateRemark(Integer ticketMasId, String remarksType, String remarks);
+
+    void removeRemarkByTicketMasId(Integer ticketMasId);
+
+    List<SdTicketRemarkBean> getRemarkInfo(Integer ticketMasId);
 }

@@ -1,14 +1,18 @@
 package com.hkt.btu.sd.core.service.impl;
 
 import com.hkt.btu.sd.core.dao.entity.SdTicketMasEntity;
+import com.hkt.btu.sd.core.dao.entity.SdTicketRemarkEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdTicketContactMapper;
 import com.hkt.btu.sd.core.dao.mapper.SdTicketMasMapper;
+import com.hkt.btu.sd.core.dao.mapper.SdTicketRemarkMapper;
 import com.hkt.btu.sd.core.service.SdTicketService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdTicketContactBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketMasBean;
+import com.hkt.btu.sd.core.service.bean.SdTicketRemarkBean;
 import com.hkt.btu.sd.core.service.populator.SdTicketContactBeanPopulator;
 import com.hkt.btu.sd.core.service.populator.SdTicketMasBeanPopulator;
+import com.hkt.btu.sd.core.service.populator.SdTicketRemarkBeanPopulator;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -29,6 +33,9 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Resource
     SdTicketContactMapper ticketContactMapper;
 
+    @Resource
+    SdTicketRemarkMapper ticketRemarkMapper;
+
     @Resource(name = "userService")
     SdUserService userService;
 
@@ -36,6 +43,8 @@ public class SdTicketServiceImpl implements SdTicketService {
     SdTicketMasBeanPopulator ticketMasBeanPopulator;
     @Resource(name = "ticketContactBeanPopulator")
     SdTicketContactBeanPopulator ticketContactBeanPopulator;
+    @Resource(name = "ticketRemarkBeanPopulator")
+    SdTicketRemarkBeanPopulator ticketRemarkBeanPopulator;
 
     @Override
     public Optional<SdTicketMasBean> createQueryTicket(String custCode) {
@@ -112,5 +121,28 @@ public class SdTicketServiceImpl implements SdTicketService {
         }
 
         return beanList;
+    }
+
+    @Override
+    public List<SdTicketRemarkBean> getRemarkInfo(Integer ticketMasId) {
+        List<SdTicketRemarkBean> beanList = new ArrayList<>();
+        ticketRemarkMapper.getTicketRemarksByTicketId(ticketMasId).forEach(sdTicketRemarkEntity -> {
+            SdTicketRemarkBean bean = new SdTicketRemarkBean();
+            ticketRemarkBeanPopulator.populate(sdTicketRemarkEntity,bean);
+            beanList.add(bean);
+        });
+        return beanList;
+    }
+
+    @Override
+    public void updateRemark(Integer ticketMasId, String remarksType, String remarks) {
+        if (!remarksType.equals(SdTicketRemarkEntity.REMARKS_TYPE.SYSTEM)) {
+            ticketRemarkMapper.insertTicketRemarks(ticketMasId,remarksType,remarks,userService.getCurrentUserUserId());
+        }
+    }
+
+    @Override
+    public void removeRemarkByTicketMasId(Integer ticketMasId) {
+        ticketRemarkMapper.removeTicketRemarks(ticketMasId);
     }
 }

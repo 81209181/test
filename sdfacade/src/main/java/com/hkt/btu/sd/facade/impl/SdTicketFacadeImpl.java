@@ -5,11 +5,14 @@ import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
 import com.hkt.btu.sd.core.service.SdTicketService;
 import com.hkt.btu.sd.core.service.bean.SdTicketContactBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketMasBean;
+import com.hkt.btu.sd.core.service.bean.SdTicketRemarkBean;
 import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.data.SdTicketContactData;
 import com.hkt.btu.sd.facade.data.SdTicketMasData;
+import com.hkt.btu.sd.facade.data.SdTicketRemarkData;
 import com.hkt.btu.sd.facade.populator.SdTicketContactDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdTicketMasDataPopulator;
+import com.hkt.btu.sd.facade.populator.SdTicketRemarkDataPopulator;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +33,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     SdTicketMasDataPopulator ticketMasDataPopulator;
     @Resource(name = "ticketContactDataPopulator")
     SdTicketContactDataPopulator ticketContactDataPopulator;
+    @Resource(name = "ticketRemarkDataPopulator")
+    SdTicketRemarkDataPopulator ticketRemarkDataPopulator;
 
     @Override
     public Optional<SdTicketMasData> createQueryTicket(String custCode) {
@@ -111,5 +116,25 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             }
         }
         return dataList;
+    }
+
+    @Override
+    public List<SdTicketRemarkData> getRemarkInfo(Integer ticketMasId) {
+        List<SdTicketRemarkBean> beans=ticketService.getRemarkInfo(ticketMasId);
+        List<SdTicketRemarkData> dataList = new ArrayList<>();
+        beans.forEach(sdTicketRemarkBean -> {
+            SdTicketRemarkData data = new SdTicketRemarkData();
+            ticketRemarkDataPopulator.populate(sdTicketRemarkBean,data);
+            dataList.add(data);
+        });
+        return dataList;
+    }
+
+    @Override
+    public void updateRemark(List<SdTicketRemarkData> remarkList) {
+        ticketService.removeRemarkByTicketMasId(remarkList.get(0).getTicketMasId());
+        remarkList.forEach(data -> {
+            ticketService.updateRemark(data.getTicketMasId(),data.getRemarksType(),data.getRemarks());
+        });
     }
 }

@@ -7,21 +7,18 @@
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-    <script>
-        var customerCode = '[[${customerCode}]]';
-        var ticketMasId = '[[${ticketMasId}]]';
-
-    </script>
     <div class="card">
-        <div class="card-header bg-primary text-white">Ticket - <span th:text="${ticketMasId}"></span></div>
+        <div class="card-header bg-primary text-white">Ticket - <span id="ticketMasId" th:text="${ticketMasId}"></span></div>
         <div class="card-body">
+            <h3>Customer</h3>
             <div id="customer" class="row">
                 <div class="col-md-6 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Customer Code:</label>
-                    <input type="text" class="form-control-plaintext col-md-3" name="custCode" th:value="${customerCode}">
+                    <input type="text" class="form-control-plaintext col-md-3" id="custCode" name="custCode" th:value="${customerCode}">
                 </div>
             </div>
             <hr>
+            <h3>Contact</h3>
             <div id="contact" class="row">
                 <div class="col-md-12">
                     <div class="form-group form-inline">
@@ -40,8 +37,29 @@
                     <button type="button" class="btn btn-primary mt-2" id="btnUpdateContact" disabled="disabled">Update</button>
                 </div>
             </div>
-            <div id="service"></div>
-            <div id="remark"></div>
+            <hr>
+            <h3>Service</h3>
+            <div id="service" class="row"></div>
+            <hr>
+            <h3>Remark</h3>
+            <div id="remark" class="row">
+                <div class="col-md-12">
+                    <div class="form-group form-inline">
+                        <select class="custom-select">
+                            <option value="" hidden>Please select</option>
+                            <option value="CUST">Customer</option>
+                            <option value="FIELD">Field</option>
+                            <option value="SYS">System</option>
+                        </select>
+                        <button type="button" class="btn btn-light ml-2" id="btnAddRemark"><i class="fa fa-plus" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="remark_list"></div>
+                <div class="offset-md-10">
+                    <button type="button" class="btn btn-primary mt-2" id="btnUpdateRemark" disabled="disabled">Update</button>
+                </div>
+            </div>
         </div>
     </div>
     <div id="tempContact" hidden="hidden">
@@ -68,6 +86,35 @@
                     <label class="col-form-label col-md-3 justify-content-end">Contact Email:</label>
                     <input type="text" class="form-control col-md-6" name="contactEmail">
                 </div>
+            </div>
+        </form>
+    </div>
+
+    <div id="tempRemark" hidden="hidden">
+        <form class="col-md-12 form">
+            <div class="form-row">
+                <div class="col-md-12 form-inline pt-2">
+                    <label class="col-form-label justify-content-end">Remark Type:</label>
+                    <input type="text" class="form-control-plaintext col-md-2 text-center" name="remarksType">
+                    <button type="button" class="btn btn-light ml-2" onclick="removeRemark(this)"><i class="fa fa-times" aria-hidden="true"></i></button>
+                </div>
+                <div class="col-md-6 form-inline pt-2">
+                    <label class="col-form-label col-md-3 justify-content-end">Remark:</label>
+                    <input type="text" class="form-control col-md-6" name="remarks">
+                </div>
+
+                <!--<div class="col-md-6 form-inline pt-2">
+                    <label class="col-form-label col-md-3 justify-content-end">Remark:</label>
+                    <input type="text" class="form-control col-md-6" name="remark">
+                </div>
+                <div class="col-md-6 form-inline pt-2">
+                    <label class="col-form-label col-md-3 justify-content-end">Remark:</label>
+                    <input type="text" class="form-control col-md-6" name="remark">
+                </div>
+                <div class="col-md-6 form-inline pt-2">
+                    <label class="col-form-label col-md-3 justify-content-end">Remark:</label>
+                    <input type="text" class="form-control col-md-6" name="remark">
+                </div>-->
             </div>
         </form>
     </div>
