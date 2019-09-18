@@ -1,6 +1,3 @@
-var ticketMasId = $("#ticketMasId").text();
-var customerCode = $("#custCode").val();
-
 $().ready(function(){
 
     $.get('/ticket/contact/'+ticketMasId,function(res){
@@ -105,7 +102,6 @@ $().ready(function(){
     })
 
     readyForTicketService();
-    });
 
     $.get('/ticket/remark/'+ticketMasId,function(res){
         $.each(res,function(index,j){

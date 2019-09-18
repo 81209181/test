@@ -14,14 +14,13 @@
     </script>
     <div class="card " style="margin-bottom: 75px;">
         <div class="card-header bg-primary text-white">Ticket - <span th:text="${ticketMasId}"></span></div>
-    <div class="card">
-        <div class="card-header bg-primary text-white">Ticket - <span id="ticketMasId" th:text="${ticketMasId}"></span></div>
         <div class="card-body">
             <h3>Customer</h3>
             <div id="customer" class="row">
                 <div class="col-md-6 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Customer Code:</label>
-                    <input type="text" class="form-control-plaintext col-md-3" id="custCode" name="custCode" th:value="${customerCode}">
+                    <input type="text" class="form-control-plaintext col-md-3" name="custCode"
+                           th:value="${customerCode}">
                 </div>
             </div>
             <hr>
@@ -44,14 +43,9 @@
                     <button type="button" class="btn btn-primary mt-2" id="btnUpdateContact" disabled="disabled">Update</button>
                 </div>
             </div>
-
-            <div id="service">
-                <h2>Service
-                    <button type="button" class="btn btn-light ml-2" id="btnAddService"><i class="fa fa-plus"
-                                                                                           aria-hidden="true"></i>
-                    </button>
-                </h2>
-
+            <hr>
+            <h3>Service<button type="button" class="btn btn-light ml-2" id="btnAddService"><i class="fa fa-plus" aria-hidden="true"></i></button></h3>
+            <div id="service" class="row">
                 <div id="service_list">
                 </div>
                 <div class="offset-md-10">
@@ -60,10 +54,6 @@
                     </button>
                 </div>
             </div>
-            <div id="remark"></div>
-            <hr>
-            <h3>Service</h3>
-            <div id="service" class="row"></div>
             <hr>
             <h3>Remark</h3>
             <div id="remark" class="row">
@@ -158,19 +148,6 @@
                     <label class="col-form-label col-md-3 justify-content-end">Remark:</label>
                     <input type="text" class="form-control col-md-6" name="remarks">
                 </div>
-
-                <!--<div class="col-md-6 form-inline pt-2">
-                    <label class="col-form-label col-md-3 justify-content-end">Remark:</label>
-                    <input type="text" class="form-control col-md-6" name="remark">
-                </div>
-                <div class="col-md-6 form-inline pt-2">
-                    <label class="col-form-label col-md-3 justify-content-end">Remark:</label>
-                    <input type="text" class="form-control col-md-6" name="remark">
-                </div>
-                <div class="col-md-6 form-inline pt-2">
-                    <label class="col-form-label col-md-3 justify-content-end">Remark:</label>
-                    <input type="text" class="form-control col-md-6" name="remark">
-                </div>-->
             </div>
         </form>
     </div>

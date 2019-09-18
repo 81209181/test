@@ -79,7 +79,6 @@
 
     <alias name="sdTicketServiceDataPopulator" alias="ticketServiceDataPopulator"/>
     <bean id="sdTicketServiceDataPopulator" class="com.hkt.btu.sd.facade.populator.SdTicketServiceDataPopulator"/>
-    <bean id="sdTicketContactDataPopulator" class="com.hkt.btu.sd.facade.populator.SdTicketContactDataPopulator" />
 
     <alias name="sdTicketRemarkDataPopulator" alias="ticketRemarkDataPopulator"/>
     <bean id="sdTicketRemarkDataPopulator" class="com.hkt.btu.sd.facade.populator.SdTicketRemarkDataPopulator" />
