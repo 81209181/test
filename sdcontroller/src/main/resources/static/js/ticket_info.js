@@ -12,13 +12,12 @@ $().ready(function(){
 
     $('#btnAddContact').on('click',function(){
         clearAllMsg();
-        let contactType =$(this).prev('select').val();
-        if(contactType.length <1){
-            showErrorMsg('Please one contact type.');
+        if($(this).prev('select').val().length <1){
+            showErrorMsg('Please select one contact type.');
             return;
         }
         let contact =$('#tempContact').children().clone();
-        contact.find('input[name=contactType]').val(contactType);
+        contact.find('input[name=contactType]').val($(this).prev('select').find('option:selected').text());
         contact.appendTo($('#contact_list'));
         $('#btnUpdateContact').attr('disabled',false);
     })

@@ -7,7 +7,7 @@ import com.hkt.btu.sd.core.service.bean.SdTicketContactBean;
 public class SdTicketContactBeanPopulator extends AbstractBeanPopulator<SdTicketContactBean> {
 
     public void populate(SdTicketContactEntity source, SdTicketContactBean target) {
-        target.setContactType(source.getContactType());
+        target.setContactType(source.getContactTypeDesc());
         target.setContactName(source.getContactName());
         target.setContactEmail(source.getContactEmail());
         target.setContactNumber(source.getContactNumber());

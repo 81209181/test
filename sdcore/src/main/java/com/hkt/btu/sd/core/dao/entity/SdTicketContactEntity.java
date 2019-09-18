@@ -18,6 +18,17 @@ public class SdTicketContactEntity extends BaseEntity {
 
     private String contactEmail;
 
+    public String getContactTypeDesc(){
+        switch (contactType) {
+            case "CUST":
+                return "Customer";
+            case "ADMIN":
+                return "Office Admin";
+            case "SITE":
+                return "On-site Contact";
+        }
+        return "Not found match contact type";
+    }
 
     public Integer getTicketContactId() {
         return ticketContactId;

@@ -53,6 +53,15 @@
                     </div>
                 </li>
 
+                <li sec:authorize="hasAnyAuthority('BASIC')" class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="ticketDp" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Ticket
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" th:href="@{/ticket/search-customer}">Search Customer</a>
+                    </div>
+                </li>
+
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/public/contact-us}">Contact Us</a>
                 </li>
