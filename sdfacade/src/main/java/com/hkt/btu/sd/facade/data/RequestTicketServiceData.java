@@ -4,19 +4,19 @@ import com.hkt.btu.common.facade.data.DataInterface;
 
 import java.util.List;
 
-public class SdTicketServiceData implements DataInterface {
+public class RequestTicketServiceData implements DataInterface {
 
-    private Integer ticketDetId;
+    private Integer ticketMasId;
     private String serviceType;
     private String serviceCode;
-    private List<SdServiceFaultsData> faultsList;
+    private List<String> faults;
 
-    public Integer getTicketDetId() {
-        return ticketDetId;
+    public Integer getTicketMasId() {
+        return ticketMasId;
     }
 
-    public void setTicketDetId(Integer ticketDetId) {
-        this.ticketDetId = ticketDetId;
+    public void setTicketMasId(Integer ticketMasId) {
+        this.ticketMasId = ticketMasId;
     }
 
     public String getServiceType() {
@@ -35,11 +35,11 @@ public class SdTicketServiceData implements DataInterface {
         this.serviceCode = serviceCode;
     }
 
-    public List<SdServiceFaultsData> getFaultsList() {
-        return faultsList;
+    public List<String> getFaults() {
+        return faults;
     }
 
-    public void setFaultsList(List<SdServiceFaultsData> faultsList) {
-        this.faultsList = faultsList;
+    public void setFaults(List<String> faults) {
+        this.faults = faults;
     }
 }

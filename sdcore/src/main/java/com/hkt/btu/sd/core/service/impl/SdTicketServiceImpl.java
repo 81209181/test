@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.core.service.impl;
 
+import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.sd.core.dao.entity.SdTicketMasEntity;
 import com.hkt.btu.sd.core.dao.entity.SdTicketServiceEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdTicketContactMapper;
@@ -17,6 +18,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
@@ -131,11 +133,46 @@ public class SdTicketServiceImpl implements SdTicketService {
         if (CollectionUtils.isEmpty(serviceList)) {
             return null;
         }
-        
+
         return serviceList.stream().map(entity -> {
             SdTicketServiceBean bean = new SdTicketServiceBean();
             ticketServiceBeanPopulator.populate(entity, bean);
             return bean;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public void removeServiceInfoByTicketMasId(Integer ticketMasId) {
+        ticketServiceMapper.removeServiceInfoByTicketMasId(ticketMasId);
+        List<SdTicketServiceEntity> serviceInfoList = ticketServiceMapper.getTicketServiceInfoByTicketMasId(ticketMasId);
+        if (CollectionUtils.isNotEmpty(serviceInfoList)) {
+            List<Integer> ticketServiceIds = serviceInfoList.stream().map(SdTicketServiceEntity::getTicketDetId).collect(Collectors.toList());
+            ticketServiceIds.forEach(ticketDetId -> ticketServiceMapper.removeFaultsByTicketDetId(ticketDetId));
+        }
+    }
+
+    @Override
+    public int updateServiceInfo(SdTicketServiceBean bean) {
+        BtuUserBean currentUserBean = userService.getCurrentUserBean();
+        String createby = currentUserBean.getUserId();
+
+        SdTicketServiceEntity entity = new SdTicketServiceEntity();
+        entity.setCreateby(createby);
+        entity.setModifyby(createby);
+        entity.setServiceId(bean.getServiceId());
+        entity.setTicketMasId(bean.getTicketMasId());
+        entity.setServiceTypeCode(bean.getServiceTypeCode());
+
+        ticketServiceMapper.insertServiceInfo(entity);
+        int ticketDetId = entity.getTicketDetId();
+        return ticketDetId;
+    }
+
+    @Override
+    public void updateFaultsInfo(Integer ticketDetId, String faults) {
+        BtuUserBean currentUserBean = userService.getCurrentUserBean();
+        String createBy = currentUserBean.getUserId();
+
+        ticketServiceMapper.insertFaults(ticketDetId, faults, createBy, createBy);
     }
 }

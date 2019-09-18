@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.facade;
 
 import com.hkt.btu.common.facade.data.PageData;
+import com.hkt.btu.sd.facade.data.RequestTicketServiceData;
 import com.hkt.btu.sd.facade.data.SdTicketContactData;
 import com.hkt.btu.sd.facade.data.SdTicketMasData;
 import com.hkt.btu.sd.facade.data.SdTicketServiceData;
@@ -23,4 +24,6 @@ public interface SdTicketFacade {
     List<SdTicketMasData> getMyTicket();
 
     List<SdTicketServiceData> getServiceInfo(Integer ticketMasId);
+
+    String updateServiceInfo(List<RequestTicketServiceData> serviceList);
 }

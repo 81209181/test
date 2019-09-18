@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.core.service;
 
+import com.hkt.btu.sd.core.dao.entity.SdTicketServiceEntity;
 import com.hkt.btu.sd.core.service.bean.SdTicketContactBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketMasBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketServiceBean;
@@ -25,4 +26,10 @@ public interface SdTicketService {
     List<SdTicketMasBean> getMyTicket();
 
     List<SdTicketServiceBean> getServiceInfo(Integer ticketMasId);
+
+    void removeServiceInfoByTicketMasId(Integer ticketMasId);
+
+    int updateServiceInfo(SdTicketServiceBean bean);
+
+    void updateFaultsInfo(Integer ticketDetId, String faults);
 }

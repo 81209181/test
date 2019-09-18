@@ -22,15 +22,48 @@
     </resultMap>
 
     <select id="getTicketServiceInfoByTicketMasId" resultMap="TicketServiceEntity">
-        select
-            td.TICKET_MAS_ID,
-            td.TICKET_DET_ID,
-            td.SERVICE_ID,
-            td.SERVICE_TYPE_CODE,
-            tf.FAULTS,
-            tf.TICKET_FAULTS_ID
+        select td.TICKET_MAS_ID,
+               td.TICKET_DET_ID,
+               td.SERVICE_ID,
+               td.SERVICE_TYPE_CODE,
+               tf.FAULTS,
+               tf.TICKET_FAULTS_ID
         from TICKET_DET td
-        inner join TICKET_FAULTS tf on td.TICKET_DET_ID = tf.TICKET_DET_ID
+                 inner join TICKET_FAULTS tf on td.TICKET_DET_ID = tf.TICKET_DET_ID
         where td.TICKET_MAS_ID = #{ticketMasId}
     </select>
+
+    <select id="getTicketServiceByTicketMasId" resultType="com.hkt.btu.sd.core.dao.entity.SdTicketServiceEntity">
+        select TICKET_DET_ID      as ticketDetId,
+               TICKET_MAS_ID      as ticketMasId,
+               SERVICE_ID         as serviceId,
+               SERVICE_TYPE_CODE  as serviceTypeCode
+        from TICKET_DET
+        where TICKET_MAS_ID = #{ticketMasId}
+    </select>
+
+    <insert id="insertServiceInfo" parameterType="com.hkt.btu.sd.core.dao.entity.SdTicketServiceEntity">
+        <selectKey keyProperty="ticketDetId" resultType="int" order="BEFORE">
+            SELECT SEQ_TICKET_DET_ID.nextval FROM DUAL
+        </selectKey>
+        insert into TICKET_DET(TICKET_DET_ID, TICKET_MAS_ID, SERVICE_TYPE_CODE, SERVICE_ID, CREATEBY, MODIFYBY)
+        values (#{ticketDetId}, #{ticketMasId}, #{serviceTypeCode}, #{serviceId}, #{createby}, #{modifyby})
+    </insert>
+
+    <insert id="insertFaults">
+        insert into TICKET_FAULTS(TICKET_DET_ID, FAULTS, CREATEBY, MODIFYBY)
+        values (#{ticketDetId}, #{faults}, #{createby}, #{modifyby})
+    </insert>
+
+    <delete id="removeServiceInfoByTicketMasId">
+        delete
+        from TICKET_DET
+        where TICKET_MAS_ID = #{ticketMasId}
+    </delete>
+
+    <delete id="removeFaultsByTicketDetId">
+        delete
+        from TICKET_FAULTS
+        where TICKET_DET_ID = #{ticketDetId}
+    </delete>
 </mapper>

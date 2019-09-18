@@ -10,6 +10,7 @@ public class SdTicketServiceBean extends BaseBean {
     private int ticketMasId;
     private String serviceTypeCode;
     private String serviceId;
+    private List<String> faults;
     private List<SdServiceFaultsBean> faultsList;
 
     public int getTicketDetId() {
@@ -42,6 +43,14 @@ public class SdTicketServiceBean extends BaseBean {
 
     public void setServiceId(String serviceId) {
         this.serviceId = serviceId;
+    }
+
+    public List<String> getFaults() {
+        return faults;
+    }
+
+    public void setFaults(List<String> faults) {
+        this.faults = faults;
     }
 
     public List<SdServiceFaultsBean> getFaultsList() {

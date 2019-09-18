@@ -24,4 +24,5 @@ public class SdTicketServiceBeanPopulator extends AbstractBeanPopulator<SdTicket
             return bean;
         }).collect(Collectors.toList()));
     }
+
 }

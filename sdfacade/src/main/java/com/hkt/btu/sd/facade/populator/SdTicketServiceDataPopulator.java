@@ -11,6 +11,7 @@ public class SdTicketServiceDataPopulator extends AbstractDataPopulator<SdTicket
 
     public void populate(SdTicketServiceBean source, SdTicketServiceData target) {
         super.populate(source, target);
+        target.setTicketDetId(source.getTicketDetId());
         target.setServiceType(source.getServiceTypeCode());
         target.setServiceCode(source.getServiceId());
         target.setFaultsList(source.getFaultsList().stream().map(bean -> {

@@ -3,10 +3,12 @@ package com.hkt.btu.sd.facade.impl;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
 import com.hkt.btu.sd.core.service.SdTicketService;
+import com.hkt.btu.sd.core.service.bean.SdServiceFaultsBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketContactBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketMasBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketServiceBean;
 import com.hkt.btu.sd.facade.SdTicketFacade;
+import com.hkt.btu.sd.facade.data.RequestTicketServiceData;
 import com.hkt.btu.sd.facade.data.SdTicketContactData;
 import com.hkt.btu.sd.facade.data.SdTicketMasData;
 import com.hkt.btu.sd.facade.data.SdTicketServiceData;
@@ -14,8 +16,11 @@ import com.hkt.btu.sd.facade.populator.SdTicketContactDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdTicketMasDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdTicketServiceDataPopulator;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -26,6 +31,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class SdTicketFacadeImpl implements SdTicketFacade {
+
+    private static final Logger LOG = LogManager.getLogger(SdTicketFacadeImpl.class);
 
     @Resource(name = "ticketService")
     SdTicketService ticketService;
@@ -127,5 +134,32 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             ticketServiceDataPopulator.populate(bean, data);
             return data;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    public String updateServiceInfo(List<RequestTicketServiceData> serviceList) {
+        Integer ticketMasId = serviceList.get(0).getTicketMasId();
+        try {
+            ticketService.removeServiceInfoByTicketMasId(ticketMasId);
+
+            List<SdTicketServiceBean> serviceInfoList = serviceList.stream().map(requestData -> {
+                SdTicketServiceBean bean = new SdTicketServiceBean();
+                bean.setTicketMasId(requestData.getTicketMasId());
+                bean.setServiceTypeCode(requestData.getServiceType());
+                bean.setServiceId(requestData.getServiceCode());
+                bean.setFaults(requestData.getFaults());
+                return bean;
+            }).collect(Collectors.toList());
+
+            serviceInfoList.forEach(serviceInfo -> {
+                int ticketDetId = ticketService.updateServiceInfo(serviceInfo);
+                serviceInfo.getFaults().forEach(faults -> ticketService.updateFaultsInfo(ticketDetId, faults));
+            });
+        } catch (Exception e) {
+            LOG.error(e);
+            return "update service info failed.";
+        }
+        return null;
     }
 }
