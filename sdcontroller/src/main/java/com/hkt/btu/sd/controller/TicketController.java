@@ -2,7 +2,6 @@ package com.hkt.btu.sd.controller;
 
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
-import com.hkt.btu.sd.core.service.SdUserRoleService;
 import com.hkt.btu.sd.facade.SdRequestCreateFacade;
 import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.SdUserRoleFacade;
@@ -152,5 +151,14 @@ public class TicketController {
     public ResponseEntity<?> updateRemark(@RequestBody List<SdTicketRemarkData> remarkList) {
         ticketFacade.updateRemark(remarkList);
         return ResponseEntity.ok("Update success.");
+    }
+
+    @GetMapping("/ajax-get-fault")
+    public ResponseEntity<?> getFaultInfo(@RequestParam int subscriberId) {
+        // todo: api for BES
+        //    API:	 	GetSubFaultBySubscriberId
+        //    Original:	http://{domain}/saws/api/v3/Request/GetSubFaultBySubscriberId?subscriberId={subscriberId}
+        //    New: 		http://{domain}/servicedesk/ticket/ajax-get-fault?subscriberId={subscriberId}
+        return ResponseEntity.ok(null);
     }
 }
