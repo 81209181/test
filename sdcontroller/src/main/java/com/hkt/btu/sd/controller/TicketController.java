@@ -148,4 +148,13 @@ public class TicketController {
         ticketFacade.updateRemark(remarkList);
         return ResponseEntity.ok("Update success.");
     }
+
+    @GetMapping("/ajax-get-fault")
+    public ResponseEntity<?> getFaultInfo(@RequestParam int subscriberId) {
+        // todo: api for BES
+        //    API:	 	GetSubFaultBySubscriberId
+        //    Original:	http://{domain}/saws/api/v3/Request/GetSubFaultBySubscriberId?subscriberId={subscriberId}
+        //    New: 		http://{domain}/servicedesk/ticket/ajax-get-fault?subscriberId={subscriberId}
+        return ResponseEntity.ok(null);
+    }
 }
