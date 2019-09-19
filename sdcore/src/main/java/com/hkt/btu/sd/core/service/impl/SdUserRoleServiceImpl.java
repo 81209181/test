@@ -152,6 +152,16 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
         throw new InsufficientAuthorityException("You are no permission.");
     }
 
+    @Override
+    public boolean checkSameTeamRole(String loginId, String createBy) {
+        List<String> loginUser = sdUserRoleMapper.getTeamRoleByUserId(loginId);
+        List<String> createByUser = sdUserRoleMapper.getTeamRoleByUserId(createBy);
+        if (loginUser.isEmpty()) {
+            return false;
+        }
+        return createByUser.containsAll(loginUser);
+    }
+
 
     @Override
     public List<SdUserRoleBean> getEligibleUserRoleGrantList() {
