@@ -36,7 +36,6 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     SdUserRoleBeanPopulator sdUserRoleBeanPopulator;
 
     @Override
-    @PostConstruct
     public void reloadCachedRoleAssignMap() {
         List<String> teamHeadRoleIdList = sdUserRoleMapper
                 .getTeamHeadList(SdUserRoleEntity.TEAM_HEAD_INDICATOR)
@@ -59,16 +58,18 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     }
 
     @Override
-    public List<SdUserRoleEntity> getParentRoleByRoleId(String roleId) {
-        List<SdUserRoleEntity> roleEntityList = new LinkedList<>();
+    public List<SdUserRoleBean> getParentRoleByRoleId(String roleId) {
+        List<SdUserRoleBean> roleEntityList = new LinkedList<>();
         List<SdUserRoleEntity> parentRoleByRoleId = sdUserRoleMapper.getParentRoleByRoleId(roleId);
         for (SdUserRoleEntity role : parentRoleByRoleId) {
             if (role.getStatus().equals(SdUserRoleEntity.ACTIVE_ROLE_STATUS)) {
                 if (StringUtils.isNotEmpty(role.getParentRoleId())) {
-                    List<SdUserRoleEntity> parentRoleList = getParentRoleByRoleId(role.getParentRoleId());
+                    List<SdUserRoleBean> parentRoleList = getParentRoleByRoleId(role.getParentRoleId());
                     roleEntityList.addAll(parentRoleList);
                 }
-                roleEntityList.add(role);
+                SdUserRoleBean bean = new SdUserRoleBean();
+                sdUserRoleBeanPopulator.populate(role, bean);
+                roleEntityList.add(bean);
             }
         }
         return roleEntityList;

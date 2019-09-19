@@ -17,11 +17,9 @@ import com.hkt.btu.sd.core.service.SdEmailService;
 import com.hkt.btu.sd.core.service.SdOtpService;
 import com.hkt.btu.sd.core.service.SdUserRoleService;
 import com.hkt.btu.sd.core.service.SdUserService;
-import com.hkt.btu.sd.core.service.bean.SdCreateResultBean;
-import com.hkt.btu.sd.core.service.bean.SdEmailBean;
-import com.hkt.btu.sd.core.service.bean.SdOtpBean;
-import com.hkt.btu.sd.core.service.bean.SdUserBean;
+import com.hkt.btu.sd.core.service.bean.*;
 import com.hkt.btu.sd.core.service.populator.SdUserBeanPopulator;
+import com.hkt.btu.sd.core.service.populator.SdUserRoleBeanPopulator;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -63,6 +61,9 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     @Resource(name = "userRoleService")
     SdUserRoleService userRoleService;
 
+    @Resource(name = "userRoleBeanPopulator")
+    SdUserRoleBeanPopulator sdUserRoleBeanPopulator;
+
     @Resource
     SdUserRoleMapper sdUserRoleMapper;
 
@@ -96,17 +97,22 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         }
 
         // get user role data
-        List<SdUserRoleEntity> userRole = sdUserRoleMapper.getUserRoleByUserIdAndStatus(sdUserEntity.getUserId(), SdUserRoleEntity.ACTIVE_ROLE_STATUS);
-        if (CollectionUtils.isEmpty(userRole)) {
+        List<SdUserRoleEntity> userRoleEntityList = sdUserRoleMapper.getUserRoleByUserIdAndStatus(sdUserEntity.getUserId(), SdUserRoleEntity.ACTIVE_ROLE_STATUS);
+        if (CollectionUtils.isEmpty(userRoleEntityList)) {
             return null;
         }
+        List<SdUserRoleBean> userRole = userRoleEntityList.stream().map(role -> {
+            SdUserRoleBean bean = new SdUserRoleBean();
+            sdUserRoleBeanPopulator.populate(role, bean);
+            return bean;
+        }).collect(Collectors.toList());
 
-        List<SdUserRoleEntity> results = new LinkedList<>();
+        List<SdUserRoleBean> results = new LinkedList<>();
 
-        for (SdUserRoleEntity roleEntity : userRole) {
-            results.add(roleEntity);
-            if (StringUtils.isNotEmpty(roleEntity.getParentRoleId())) {
-                List<SdUserRoleEntity> parentRoleByRoleId = userRoleService.getParentRoleByRoleId(roleEntity.getParentRoleId());
+        for (SdUserRoleBean role : userRole) {
+            results.add(role);
+            if (StringUtils.isNotEmpty(role.getParentRoleId())) {
+                List<SdUserRoleBean> parentRoleByRoleId = userRoleService.getParentRoleByRoleId(role.getParentRoleId());
                 if (CollectionUtils.isNotEmpty(parentRoleByRoleId)) {
                     results.addAll(parentRoleByRoleId);
                 }
@@ -116,7 +122,14 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         // construct bean
         SdUserBean userBean = new SdUserBean();
         sdUserBeanPopulator.populate(sdUserEntity, userBean);
-        sdUserBeanPopulator.populate(results, userBean);
+        // set user role to userbean.
+        if (CollectionUtils.isNotEmpty(results)) {
+            Set<GrantedAuthority> grantedAuthSet = results.stream().map(role -> {
+                SimpleGrantedAuthority auth = new SimpleGrantedAuthority(role.getRoleId());
+                return auth;
+            }).collect(Collectors.toSet());
+            userBean.setAuthorities(grantedAuthSet);
+        }
 
         return userBean;
     }

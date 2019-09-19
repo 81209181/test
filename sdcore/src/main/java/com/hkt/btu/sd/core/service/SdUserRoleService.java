@@ -11,7 +11,7 @@ import java.util.Set;
 public interface SdUserRoleService {
 
     void reloadCachedRoleAssignMap();
-    List<SdUserRoleEntity> getParentRoleByRoleId(String roleId); // todo: SdUserRoleEntity --> SdUserRoleBean
+    List<SdUserRoleBean> getParentRoleByRoleId(String roleId);
     List<SdUserRoleBean> getAllUserRole();
     SdUserRoleBean getUserRoleByRoleId(String roleId);
     List<SdUserRoleBean> getUserRoleByUserId(String userId);
