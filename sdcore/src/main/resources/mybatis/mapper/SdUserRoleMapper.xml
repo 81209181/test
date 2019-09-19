@@ -103,4 +103,12 @@
             MODIFYDATE = CURRENT_TIMESTAMP
         WHERE ROLE_ID = #{roleId}
     </update>
+
+    <select id="getTeamRoleByUserId" resultType="String">
+        select uur.ROLE_ID
+        from USER_USER_ROLE uur join USER_ROLE ur
+        on ur.ROLE_ID= uur.ROLE_ID
+        and ur.PARENT_ROLE_ID in ('OPT','ENG')
+        where uur.USER_ID =#{userId}
+    </select>
 </mapper>

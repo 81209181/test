@@ -24,4 +24,6 @@ public interface SdUserRoleFacade {
     String updateUserRole(String roleId, String roleDesc, String status);
 
     List<SdUserPathCtrlData> getParentRolePathByRoleId(String roleId);
+
+    boolean checkSameTeamRole(String name, String createBy);
 }

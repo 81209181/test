@@ -21,4 +21,6 @@ public interface SdUserRoleService {
     void updateUserRole(String roleId, String roleDesc, String status);
     void checkUserRole(Set<GrantedAuthority> authorities, List<String> roleEntityList)
             throws InsufficientAuthorityException;
+
+    boolean checkSameTeamRole(String name, String createBy);
 }

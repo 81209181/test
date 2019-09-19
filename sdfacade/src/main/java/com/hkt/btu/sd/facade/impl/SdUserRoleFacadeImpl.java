@@ -147,4 +147,9 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
         return results;
     }
 
+    @Override
+    public boolean checkSameTeamRole(String name, String createBy) {
+        return sdUserRoleService.checkSameTeamRole(name,createBy);
+    }
+
 }
