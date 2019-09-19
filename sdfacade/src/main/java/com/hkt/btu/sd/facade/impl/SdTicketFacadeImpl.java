@@ -7,15 +7,19 @@ import com.hkt.btu.sd.core.service.bean.SdServiceFaultsBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketContactBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketMasBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketServiceBean;
+import com.hkt.btu.sd.core.service.bean.SdTicketRemarkBean;
 import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.data.RequestTicketServiceData;
 import com.hkt.btu.sd.facade.data.SdTicketContactData;
 import com.hkt.btu.sd.facade.data.SdTicketMasData;
 import com.hkt.btu.sd.facade.data.SdTicketServiceData;
+import com.hkt.btu.sd.facade.data.SdTicketRemarkData;
 import com.hkt.btu.sd.facade.populator.SdTicketContactDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdTicketMasDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdTicketServiceDataPopulator;
+import com.hkt.btu.sd.facade.populator.SdTicketRemarkDataPopulator;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
@@ -43,6 +47,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     SdTicketContactDataPopulator ticketContactDataPopulator;
     @Resource(name = "ticketServiceDataPopulator")
     SdTicketServiceDataPopulator ticketServiceDataPopulator;
+    @Resource(name = "ticketRemarkDataPopulator")
+    SdTicketRemarkDataPopulator ticketRemarkDataPopulator;
 
     @Override
     public Optional<SdTicketMasData> createQueryTicket(String custCode) {
@@ -91,6 +97,10 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     public PageData<SdTicketMasData> searchTicketList(Pageable pageable, String dateFrom, String dateTo, String status) {
         Page<SdTicketMasBean> pageBean;
         try {
+            dateFrom = StringUtils.isEmpty(dateFrom) ? null : dateFrom;
+            dateTo = StringUtils.isEmpty(dateTo) ? null : dateTo;
+            status = StringUtils.isEmpty(status) ? null : status;
+
             pageBean = ticketService.searchTicketList(pageable, dateFrom, dateTo, status);
         } catch (AuthorityNotFoundException e) {
             return new PageData<>(e.getMessage());
@@ -127,13 +137,28 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
+    public List<SdTicketRemarkData> getRemarkInfo(Integer ticketMasId) {
+        List<SdTicketRemarkBean> beans=ticketService.getRemarkInfo(ticketMasId);
+        List<SdTicketRemarkData> dataList = new ArrayList<>();
+        beans.forEach(sdTicketRemarkBean -> {
+            SdTicketRemarkData data = new SdTicketRemarkData();
+            ticketRemarkDataPopulator.populate(sdTicketRemarkBean,data);
+            dataList.add(data);
+        });
+        return dataList;
+    }
+
+    @Override
     public List<SdTicketServiceData> getServiceInfo(Integer ticketMasId) {
         List<SdTicketServiceBean> serviceInfoList = ticketService.getServiceInfo(ticketMasId);
-        return serviceInfoList.stream().map(bean -> {
-            SdTicketServiceData data = new SdTicketServiceData();
-            ticketServiceDataPopulator.populate(bean, data);
-            return data;
-        }).collect(Collectors.toList());
+        if (CollectionUtils.isNotEmpty(serviceInfoList)) {
+            return serviceInfoList.stream().map(bean -> {
+                SdTicketServiceData data = new SdTicketServiceData();
+                ticketServiceDataPopulator.populate(bean, data);
+                return data;
+            }).collect(Collectors.toList());
+        }
+        return null;
     }
 
     @Override
@@ -161,5 +186,13 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             return "update service info failed.";
         }
         return null;
+    }
+
+    @Override
+    public void updateRemark(List<SdTicketRemarkData> remarkList) {
+        ticketService.removeRemarkByTicketMasId(remarkList.get(0).getTicketMasId());
+        remarkList.forEach(data -> {
+            ticketService.updateRemark(data.getTicketMasId(),data.getRemarksType(),data.getRemarks());
+        });
     }
 }

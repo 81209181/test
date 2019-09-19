@@ -4,6 +4,7 @@ import com.hkt.btu.sd.core.dao.entity.SdTicketServiceEntity;
 import com.hkt.btu.sd.core.service.bean.SdTicketContactBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketMasBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketServiceBean;
+import com.hkt.btu.sd.core.service.bean.SdTicketRemarkBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -32,4 +33,10 @@ public interface SdTicketService {
     int updateServiceInfo(SdTicketServiceBean bean);
 
     void updateFaultsInfo(Integer ticketDetId, String faults);
+
+    void updateRemark(Integer ticketMasId, String remarksType, String remarks);
+
+    void removeRemarkByTicketMasId(Integer ticketMasId);
+
+    List<SdTicketRemarkBean> getRemarkInfo(Integer ticketMasId);
 }

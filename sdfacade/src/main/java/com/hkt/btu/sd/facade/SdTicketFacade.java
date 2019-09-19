@@ -5,6 +5,7 @@ import com.hkt.btu.sd.facade.data.RequestTicketServiceData;
 import com.hkt.btu.sd.facade.data.SdTicketContactData;
 import com.hkt.btu.sd.facade.data.SdTicketMasData;
 import com.hkt.btu.sd.facade.data.SdTicketServiceData;
+import com.hkt.btu.sd.facade.data.SdTicketRemarkData;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -26,4 +27,8 @@ public interface SdTicketFacade {
     List<SdTicketServiceData> getServiceInfo(Integer ticketMasId);
 
     String updateServiceInfo(List<RequestTicketServiceData> serviceList);
+
+    List<SdTicketRemarkData> getRemarkInfo(Integer ticketMasId);
+
+    void updateRemark(List<SdTicketRemarkData> remarkList);
 }

@@ -53,12 +53,14 @@
                     </div>
                 </li>
 
-                <li sec:authorize="hasAnyAuthority('BASIC')" class="nav-item dropdown">
+                <li sec:authorize="hasAnyAuthority('OPT','ENG')" class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="ticketDp" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Ticket
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" th:href="@{/ticket/search-customer}">Search Customer</a>
+                        <a class="dropdown-item" th:href="@{/ticket/my-ticket}">My Ticket</a>
+                        <a class="dropdown-item" th:href="@{/ticket/search-ticket}">Search Ticket</a>
                     </div>
                 </li>
 

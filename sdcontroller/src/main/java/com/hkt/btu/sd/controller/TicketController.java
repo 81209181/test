@@ -7,6 +7,10 @@ import com.hkt.btu.sd.facade.SdRequestCreateFacade;
 import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.SdUserRoleFacade;
 import com.hkt.btu.sd.facade.data.*;
+import com.hkt.btu.sd.facade.data.RequestCreateSearchResultsData;
+import com.hkt.btu.sd.facade.data.SdTicketContactData;
+import com.hkt.btu.sd.facade.data.SdTicketMasData;
+import com.hkt.btu.sd.facade.data.SdTicketRemarkData;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
@@ -84,12 +88,12 @@ public class TicketController {
         return ResponseEntity.ok(data);
     }
 
-    @GetMapping("searchTicket")
+    @GetMapping("/search-ticket")
     public String searchTicket() {
         return "ticket/searchTicket";
     }
 
-    @GetMapping("search-ticket")
+    @GetMapping("/searchTicket")
     public ResponseEntity<?> searchTicket(@RequestParam(defaultValue = "0") int draw,
                                           @RequestParam(defaultValue = "0") int start,
                                           @RequestParam(defaultValue = "10") int length,
@@ -103,7 +107,12 @@ public class TicketController {
         return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
     }
 
-    @GetMapping("my-ticket")
+    @GetMapping("/my-ticket")
+    public String myTicket() {
+        return "ticket/myTicket";
+    }
+
+    @GetMapping("/myTicket")
     public ResponseEntity<?> getMyTicket() {
         List<SdTicketMasData> dataList = ticketFacade.getMyTicket();
         if (CollectionUtils.isEmpty(dataList)) {
@@ -131,5 +140,17 @@ public class TicketController {
         } else {
             return ResponseEntity.badRequest().body(errorMsg);
         }
+    }
+
+    @GetMapping("/remark/{ticketMasId}")
+    public ResponseEntity<?> getRemarkInfo(@PathVariable Integer ticketMasId) {
+        List<SdTicketRemarkData> data = ticketFacade.getRemarkInfo(ticketMasId);
+        return ResponseEntity.ok(data);
+    }
+
+    @PostMapping("/remark/update")
+    public ResponseEntity<?> updateRemark(@RequestBody List<SdTicketRemarkData> remarkList) {
+        ticketFacade.updateRemark(remarkList);
+        return ResponseEntity.ok("Update success.");
     }
 }

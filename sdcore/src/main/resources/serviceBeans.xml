@@ -105,4 +105,7 @@
 
     <alias name="sdTicketServiceBeanPopulator" alias="ticketServiceBeanPopulator"/>
     <bean id="sdTicketServiceBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdTicketServiceBeanPopulator"/>
+
+    <alias name="sdTicketRemarkBeanPopulator" alias="ticketRemarkBeanPopulator" />
+    <bean id="sdTicketRemarkBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdTicketRemarkBeanPopulator"/>
 </beans>
