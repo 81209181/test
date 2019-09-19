@@ -2,15 +2,10 @@ package com.hkt.btu.sd.controller;
 
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
-import com.hkt.btu.sd.core.service.SdUserRoleService;
 import com.hkt.btu.sd.facade.SdRequestCreateFacade;
 import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.SdUserRoleFacade;
 import com.hkt.btu.sd.facade.data.*;
-import com.hkt.btu.sd.facade.data.RequestCreateSearchResultsData;
-import com.hkt.btu.sd.facade.data.SdTicketContactData;
-import com.hkt.btu.sd.facade.data.SdTicketMasData;
-import com.hkt.btu.sd.facade.data.SdTicketRemarkData;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
@@ -66,13 +61,13 @@ public class TicketController {
         Optional<SdTicketMasData> data = ticketFacade.getTicket(ticketId);
         if (data.isPresent()) {
             if (!userRoleFacade.checkSameTeamRole(principal.getName(), data.get().getCreateBy())) {
-                return "redirect:/ticket/searchTicket";
+                return "redirect:/ticket/search-ticket";
             }
             model.addAttribute("customerCode", data.get().getCustCode());
             model.addAttribute("ticketMasId", data.get().getTicketMasId());
             return "ticket/ticket_info";
         } else {
-            return "redirect:/ticket/searchTicket";
+            return "redirect:/ticket/search-ticket";
         }
     }
 

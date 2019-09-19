@@ -27,7 +27,17 @@ $().ready(function(){
             })
             service.appendTo($('#service_list'));
         })
-    })
+    });
+
+    $.get('/ticket/remark/'+ticketMasId,function(res){
+        $.each(res,function(index,j){
+            let remark =$('#tempRemark').children().clone();
+            $.each(j,function(key,value){
+                remark.find('input[name='+key+']').val(value);
+            })
+            remark.appendTo($('#remark_list'));
+        })
+    });
 
     $('#btnUpdateService').on('click',function () {
         console.log(ticketDetId);
@@ -103,16 +113,6 @@ $().ready(function(){
 
     readyForTicketService();
 
-    $.get('/ticket/remark/'+ticketMasId,function(res){
-        $.each(res,function(index,j){
-            let contact =$('#tempRemark').children().clone();
-            $.each(j,function(key,value){
-                contact.find('input[name='+key+']').val(value);
-            })
-            contact.appendTo($('#remark_list'));
-        })
-    });
-
     $('#btnAddRemark').on('click',function(){
         clearAllMsg();
         if($(this).prev('select').val().length <1){
@@ -120,7 +120,7 @@ $().ready(function(){
             return;
         }
         let remark =$('#tempRemark').children().clone();
-        remark.find('input[name=remarksType]').val($(this).prev('select').find('option:selected').text());
+        remark.find('input[name=remarksType]').val($(this).prev('select').find('option:selected').val());
         remark.appendTo($('#remark_list'));
         $('#btnUpdateRemark').attr('disabled',false);
     });
