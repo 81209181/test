@@ -159,7 +159,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
         if (loginUser.isEmpty()) {
             return false;
         }
-        return createByUser.containsAll(loginUser);
+        return createByUser.stream().anyMatch(loginUser::contains);
     }
 
 
