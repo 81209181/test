@@ -118,3 +118,57 @@ CREATE TABLE TICKET_FAULTS
     MODIFYBY            varchar2(10)             not null,
     CONSTRAINT TICKET_FAULTS_PK PRIMARY KEY (TICKET_FAULTS_ID)
 );
+
+--SYMPTOM------------------------------------------------------------------------------------------------
+CREATE TABLE SERVICE_TYPE
+(
+    SERVICE_TYPE_CODE             varchar2(10)             not null,
+    SYMPTOM_PROPERTY_TYPE         varchar2(30)             not null,
+
+    CREATEDATE                    date                     default SYSDATE not null,
+    CREATEBY                      varchar2(10)             not null,
+    MODIFYDATE                    date                     default SYSDATE not null,
+    MODIFYBY                      varchar2(10)             not null,
+    CONSTRAINT PK_SERVICE_TYPE PRIMARY KEY (SERVICE_TYPE_CODE)
+);
+--------------------------------------------------------------------------------------------------
+CREATE TABLE SYMPTOM_GROUP
+(
+    SYMPTOM_GROUP_CODE            varchar2(10)             not null,
+    SYMPTOM_PROPERTY_TYPE         varchar2(30)             not null,
+
+    CREATEDATE                    date                     default SYSDATE not null,
+    CREATEBY                      varchar2(10)             not null,
+    MODIFYDATE                    date                     default SYSDATE not null,
+    MODIFYBY                      varchar2(10)             not null,
+    CONSTRAINT PK_SYMPTOM_GROUP PRIMARY KEY (SYMPTOM_GROUP_CODE)
+);
+--------------------------------------------------------------------------------------------------
+CREATE TABLE SERVICE_TYPE_SYMPTOM_GROUP
+(
+    SERVICE_TYPE_CODE             varchar2(10)             not null,
+    SYMPTOM_GROUP_CODE            varchar2(10)             not null,
+
+    CREATEDATE                    date                     default SYSDATE not null,
+    CREATEBY                      varchar2(10)             not null,
+    MODIFYDATE                    date                     default SYSDATE not null,
+    MODIFYBY                      varchar2(10)             not null
+);
+CREATE INDEX IDX_SERVICE_TYPE_SYMPTOM_GROUP_1 ON SERVICE_TYPE_SYMPTOM_GROUP (SERVICE_TYPE_CODE);
+CREATE INDEX IDX_SERVICE_TYPE_SYMPTOM_GROUP_2 ON SERVICE_TYPE_SYMPTOM_GROUP (SYMPTOM_GROUP_CODE);
+CREATE UNIQUE INDEX IDX_SERVICE_TYPE_SYMPTOM_GROUP_3 ON SERVICE_TYPE_SYMPTOM_GROUP (SERVICE_TYPE_CODE,SYMPTOM_GROUP_CODE);
+--------------------------------------------------------------------------------------------------
+CREATE TABLE SYMPTOM
+(
+    SYMPTOM_CODE                  varchar2(10)             not null,
+    SYMPTOM_DESCRIPTION           varchar2(30)             not null,
+    SYMPTOM_GROUP_CODE            varchar2(10)             not null,
+
+    CREATEDATE                    date                     default SYSDATE not null,
+    CREATEBY                      varchar2(10)             not null,
+    MODIFYDATE                    date                     default SYSDATE not null,
+    MODIFYBY                      varchar2(10)             not null,
+    CONSTRAINT PK_SYMPTOM PRIMARY KEY (SYMPTOM_CODE)
+);
+
+
