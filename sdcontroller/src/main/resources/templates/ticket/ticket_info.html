@@ -59,7 +59,7 @@
             <div id="remark">
                 <div class="col-md-12">
                     <div class="form-group form-inline">
-                        <select class="custom-select">
+                        <select class="custom-select" id="remarksTypeSelect">
                             <option value="" hidden>Please select</option>
                             <option value="CUST">Customer</option>
                             <option value="FIELD">Field</option>
@@ -142,7 +142,7 @@
                 <div class="col-md-12 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Remark Type:</label>
                     <input type="text" class="form-control-plaintext col-md-1" name="remarksType">
-                    <button type="button" class="btn btn-light ml-2" onclick="removeRemark(this)"><i class="fa fa-times" aria-hidden="true"></i></button>
+                    <button type="button" class="btn btn-light ml-2" id="btnRemoveRemark" onclick="removeRemark(this)"><i class="fa fa-times" aria-hidden="true"></i></button>
                 </div>
                 <div class="col-md-6 form-inline pt-2">
                     <label class="col-form-label col-md-3 justify-content-end">Remark:</label>

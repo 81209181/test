@@ -10,6 +10,21 @@ public class SdTicketRemarkData implements DataInterface {
 
     private String remarks;
 
+    private boolean isSystem;
+
+    public String getRemarksTypeValue() {
+        switch (remarksType) {
+            case "Customer":
+                return "CUST";
+            case "Field":
+                return "FIELD";
+            case "System":
+                return "SYS";
+            default:
+                return "Not found match contact type";
+        }
+    }
+
     public Integer getTicketMasId() {
         return ticketMasId;
     }
@@ -32,5 +47,13 @@ public class SdTicketRemarkData implements DataInterface {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public boolean isSystem() {
+        return isSystem;
+    }
+
+    public void setSystem(boolean isSystem) {
+        this.isSystem = isSystem;
     }
 }
