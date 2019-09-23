@@ -187,7 +187,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     public void updateRemark(List<SdTicketRemarkData> remarkList) {
         ticketService.removeRemarkByTicketMasId(remarkList.get(0).getTicketMasId());
         remarkList.forEach(data -> {
-            ticketService.updateRemark(data.getTicketMasId(),data.getRemarksType(),data.getRemarks());
+            ticketService.updateRemark(data.getTicketMasId(),data.getRemarksTypeValue(),data.getRemarks());
         });
     }
 }
