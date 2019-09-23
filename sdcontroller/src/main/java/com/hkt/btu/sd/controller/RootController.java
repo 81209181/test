@@ -71,7 +71,7 @@ public class RootController {
     }
 
     @PostMapping(value = "reset-password")
-    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPwdFormData resetPwdFormData) {
+    public ResponseEntity<?> resetPassword(@Valid ResetPwdFormData resetPwdFormData) {
         String errorMsg = sdUserFacade.resetPassword(resetPwdFormData);
         if (errorMsg == null) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());

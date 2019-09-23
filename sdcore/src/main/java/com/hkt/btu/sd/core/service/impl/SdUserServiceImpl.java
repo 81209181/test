@@ -176,7 +176,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
     @Transactional
     public String createLdapUser(String name, String mobile, String employeeNumber,
-                                 String ldapDomain, List<String> roleIdList)
+                                 String ldapDomain, String email, List<String> roleIdList)
             throws DuplicateUserEmailException, UserNotFoundException {
         try {
             // get current userId for CreateBy
@@ -191,6 +191,12 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             if (!isEligibleUserGroup) {
                 LOG.warn("Ineligible to create user of selected user role (" + roleIdList + ") by user (" + createBy + ").");
                 throw new InvalidInputException("Invalid user role.");
+            }
+
+            // check email duplicated
+            SdUserEntity user = sdUserMapper.getUserByEmail(email);
+            if (user != null) {
+                throw new DuplicateUserEmailException();
             }
 
             // Data input
@@ -276,10 +282,8 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
         // send init password email
         try {
-            if (StringUtils.isNotEmpty(email)) {
-                password = null;
-                requestResetPassword(email);
-            }
+            password = null;
+            requestResetPassword(userId);
         } catch (UserNotFoundException e) {
             LOG.warn("User not found (" + email + ").");
         } catch (Exception e) {
@@ -659,7 +663,8 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
     @Override
     @Transactional
-    public String changeUserTypeToLdapUser(String oldUserId, String name, String mobile, String employeeNumber, String ldapDomain)
+    public String changeUserTypeToLdapUser(String oldUserId, String name, String mobile,
+                                           String employeeNumber, String ldapDomain, String email)
             throws InvalidInputException, UserNotFoundException {
         SdUserEntity entity = sdUserMapper.getLdapUserByUserId(employeeNumber);
         if (entity != null) {
@@ -675,7 +680,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         List<SdUserRoleEntity> userRoleByUserId = sdUserRoleMapper.getUserRoleByUserId(oldUserId);
 
         // Update User Data
-        sdUserMapper.changeUserType(oldUserId, name, mobile, employeeNumber, ldapDomain, null, currentUserBean.getUserId());
+        sdUserMapper.changeUserType(oldUserId, name, mobile, employeeNumber, ldapDomain, email, currentUserBean.getUserId());
 
         // Change USER_ID IN USER_USER_ROLE
         changeUserIdInUserUserRole(oldUserId, employeeNumber, userRoleByUserId);

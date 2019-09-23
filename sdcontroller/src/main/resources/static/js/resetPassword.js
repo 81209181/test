@@ -19,9 +19,9 @@ function ajaxRequestPwdOtp() {
 
             clearAllMsg();
             if(data.success){
-                showInfoMsg("Please check this email: " + data.recipient);
+                showInfoMsg("Please check your email.");
             }else{
-                showErrorMsg(data.msg);
+                showErrorMsg(data.feedback);
             }
         },
         error: function (e) {
@@ -43,18 +43,17 @@ $(document).ready(function () {
 });
 
 function ajaxResetPwdWithOtp() {
-    var input = {}
-    input["resetOtp"] = $("#resetOtp").val();
-    input["newPassword"] = $("#newPassword").val();
-    input["newPasswordRe"] = $("#newPasswordRe").val();
 
     $("#btn-reset-pwd").prop("disabled", true);
 
     $.ajax({
         type: "POST",
-        contentType: "application/json",
         url: "/reset-password",
-        data: JSON.stringify(input),
+        data: {
+            resetOtp: $("#resetOtp").val(),
+            newPassword: $("#newPassword").val(),
+            newPasswordRe: $("#newPasswordRe").val()
+        },
         dataType: 'json',
         cache: false,
         success: function (data) {

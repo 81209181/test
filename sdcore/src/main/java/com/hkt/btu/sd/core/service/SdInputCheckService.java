@@ -14,5 +14,5 @@ public interface SdInputCheckService {
     String checkEmployeeNumber(String input) throws InvalidInputException;
     String checkLdapDomain(String input) throws  InvalidInputException;
     String checkUserName(String input) throws InvalidInputException;
-    String checkAssignRoleEmail(List<String> roleList, String email) throws InvalidInputException;
+    String checkAssignRoleByDomain(List<String> roleList, String domain) throws InvalidInputException;
 }

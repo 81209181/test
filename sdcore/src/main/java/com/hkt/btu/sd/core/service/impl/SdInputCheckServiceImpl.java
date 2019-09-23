@@ -108,10 +108,12 @@ public class SdInputCheckServiceImpl implements SdInputCheckService {
     }
 
     @Override
-    public String checkAssignRoleEmail(List<String> roleList, String email) throws InvalidInputException {
+    public String checkAssignRoleByDomain(List<String> roleList, String domain) throws InvalidInputException {
         boolean flag = roleList.stream().anyMatch(role -> role.contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR));
         if (flag) {
-            checkEmail(email);
+            domain = Optional.ofNullable(domain)
+                    .orElseThrow(() -> new InvalidInputException("Only LDAP users can choose Team head permissions."));
+            checkLdapDomain(domain);
         }
         return null;
     }

@@ -32,7 +32,7 @@ public interface SdUserService extends BtuUserService {
     String changeUserTypeToNonPCCWOrHktUser(String oldUserId, String name, String mobile, String employeeNumber, String email)
             throws InvalidInputException, UserNotFoundException;
 
-    String changeUserTypeToLdapUser(String oldUserId, String name, String mobile, String employeeNumber, String ldapDomain)
+    String changeUserTypeToLdapUser(String oldUserId, String name, String mobile, String employeeNumber, String ldapDomain, String email)
             throws InvalidInputException, UserNotFoundException;
 
     SdUserBean getUserByUserId(String userId) throws UserNotFoundException;
@@ -51,7 +51,7 @@ public interface SdUserService extends BtuUserService {
             throws DuplicateUserEmailException, UserNotFoundException;
 
     String createLdapUser(String name, String mobile, String employeeNumber, String ldapDomain,
-                          List<String> roleIdList)
+                          String email,List<String> roleIdList)
             throws DuplicateUserEmailException, UserNotFoundException;
 
     void updateUser(String userId, String newName, String newMobile, List<String> userRoleIdList)

@@ -72,6 +72,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
             sdInputCheckService.checkEmail(email);
             sdInputCheckService.checkMobile(mobile);
             sdInputCheckService.checkEmployeeNumber(employeeNumber);
+            sdInputCheckService.checkAssignRoleByDomain(userRoleIdList, null);
             // PCCW / HKT user will use T prefix
             String userId = SdUserBean.CREATE_USER_PREFIX.PCCW_HKT_USER + employeeNumber;
             // create new user
@@ -101,7 +102,6 @@ public class SdUserFacadeImpl implements SdUserFacade {
         String name = StringUtils.trim(createUserFormData.getName());
         String email = StringUtils.trim(createUserFormData.getEmail());
         String mobile = StringUtils.trim(createUserFormData.getMobile());
-        String ldapDomain = StringUtils.trim(createUserFormData.getLdapDomain());
         String employeeNumber = StringUtils.trim(createUserFormData.getUserId());
         List<String> userRoleIdList = createUserFormData.getUserRoleIdList();
 
@@ -114,6 +114,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
             sdInputCheckService.checkEmail(email);
             sdInputCheckService.checkMobile(mobile);
             sdInputCheckService.checkUserName(employeeNumber);
+            sdInputCheckService.checkAssignRoleByDomain(userRoleIdList, null);
             // if user not have userId, wiil use X prefix.
             // create new user.
             // Non PCCW / HKT user will use X prefix
@@ -142,6 +143,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
 
         // Prepare User Data
         String name = StringUtils.trim(createUserFormData.getName());
+        String email = StringUtils.trim(createUserFormData.getEmail());
         String mobile = StringUtils.trim(createUserFormData.getMobile());
         String ldapDomain = StringUtils.trim(createUserFormData.getLdapDomain());
         String employeeNumber = StringUtils.trim(createUserFormData.getUserId());
@@ -151,10 +153,11 @@ public class SdUserFacadeImpl implements SdUserFacade {
         try {
             // check input
             sdInputCheckService.checkName(name);
+            sdInputCheckService.checkEmail(email);
             sdInputCheckService.checkMobile(mobile);
             sdInputCheckService.checkEmployeeNumber(employeeNumber);
             // create new LDAP user.
-            newUserId = sdUserService.createLdapUser(name, mobile, employeeNumber, ldapDomain, userRoleIdList);
+            newUserId = sdUserService.createLdapUser(name, mobile, employeeNumber, ldapDomain, email, userRoleIdList);
         } catch (DuplicateUserEmailException | UserNotFoundException e) {
             LOG.warn(e.getMessage());
             return CreateResultData.of(e.getMessage());
@@ -179,10 +182,17 @@ public class SdUserFacadeImpl implements SdUserFacade {
         String staffId = StringUtils.trim(updateUserFormData.getStaffId());
         List<String> userRoleIdList = updateUserFormData.getUserRoleIdList();
 
+        SdUserBean userBean = sdUserService.getUserByUserId(userId);
+        if (userBean == null) {
+            return "User not found.";
+        }
+        String ldapDomain = userBean.getLdapDomain();
+
         // check input
         try {
             sdInputCheckService.checkName(name);
             sdInputCheckService.checkMobile(mobile);
+            sdInputCheckService.checkAssignRoleByDomain(userRoleIdList, ldapDomain);
         } catch (InvalidInputException e) {
             return e.getMessage();
         }
@@ -273,6 +283,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
         }
         String oldUserId = changeUserTypeFormData.getUserId();
         String name = StringUtils.trim(changeUserTypeFormData.getName());
+        String email = StringUtils.trim(changeUserTypeFormData.getEmail());
         String ldapDomain = StringUtils.trim(changeUserTypeFormData.getLdapDomain());
         String mobile = StringUtils.trim(changeUserTypeFormData.getMobile());
         String employeeNumber = StringUtils.trim(changeUserTypeFormData.getNewUserId());
@@ -280,11 +291,12 @@ public class SdUserFacadeImpl implements SdUserFacade {
         try {
             // check input
             sdInputCheckService.checkName(name);
+            sdInputCheckService.checkEmail(email);
             sdInputCheckService.checkMobile(mobile);
             sdInputCheckService.checkLdapDomain(ldapDomain);
             sdInputCheckService.checkUserName(employeeNumber);
             // oldUserId, name , mobile, employeeNumber , ldapDomain.
-            userId = sdUserService.changeUserTypeToLdapUser(oldUserId, name, mobile, employeeNumber, ldapDomain);
+            userId = sdUserService.changeUserTypeToLdapUser(oldUserId, name, mobile, employeeNumber, ldapDomain, email);
         } catch (InvalidInputException | UserNotFoundException e) {
             LOG.warn(e.getMessage());
             return ChangeUserTypeResultData.ofMsg(e.getMessage());
