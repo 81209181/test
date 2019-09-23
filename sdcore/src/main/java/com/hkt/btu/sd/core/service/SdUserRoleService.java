@@ -1,12 +1,10 @@
 package com.hkt.btu.sd.core.service;
 
-import com.hkt.btu.sd.core.dao.entity.SdUserRoleEntity;
 import com.hkt.btu.sd.core.exception.InsufficientAuthorityException;
 import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public interface SdUserRoleService {
