@@ -684,14 +684,13 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     }
 
     public void requestResetPassword(String username) throws UserNotFoundException, MessagingException {
-        // make email lower case
-        String email = StringUtils.lowerCase(username);
 
         // get user data
-        SdUserEntity sdUserEntity = sdUserMapper.getUserByEmail(email);
+        SdUserEntity sdUserEntity = sdUserMapper.getUserByUserId(username);
         if (sdUserEntity == null) {
             throw new UserNotFoundException();
         }
+
         String userId = sdUserEntity.getUserId();
 
         // reject LDAP user to reset password

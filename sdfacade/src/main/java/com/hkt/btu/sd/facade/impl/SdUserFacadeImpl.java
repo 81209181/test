@@ -69,9 +69,9 @@ public class SdUserFacadeImpl implements SdUserFacade {
         try {
             // check input
             sdInputCheckService.checkName(name);
+            sdInputCheckService.checkEmail(email);
             sdInputCheckService.checkMobile(mobile);
             sdInputCheckService.checkEmployeeNumber(employeeNumber);
-            sdInputCheckService.checkEmail(email);
             // PCCW / HKT user will use T prefix
             String userId = SdUserBean.CREATE_USER_PREFIX.PCCW_HKT_USER + employeeNumber;
             // create new user
@@ -111,12 +111,9 @@ public class SdUserFacadeImpl implements SdUserFacade {
         try {
             // check input
             sdInputCheckService.checkName(name);
+            sdInputCheckService.checkEmail(email);
             sdInputCheckService.checkMobile(mobile);
             sdInputCheckService.checkUserName(employeeNumber);
-            // User maybe not have email,If have email check it.
-            if (StringUtils.isNotEmpty(email)) {
-                sdInputCheckService.checkEmail(email);
-            }
             // if user not have userId, wiil use X prefix.
             // create new user.
             // Non PCCW / HKT user will use X prefix

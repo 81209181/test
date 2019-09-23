@@ -35,8 +35,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     @Resource(name = "userRoleBeanPopulator")
     SdUserRoleBeanPopulator sdUserRoleBeanPopulator;
 
-    @Override
-    public void reloadCachedRoleAssignMap() {
+    private void reloadCachedRoleAssignMap() {
         List<String> teamHeadRoleIdList = sdUserRoleMapper
                 .getTeamHeadList(SdUserRoleEntity.TEAM_HEAD_INDICATOR)
                 .stream()
@@ -50,11 +49,12 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
         }
     }
 
-    private Map<String, List<SdUserRoleBean>> getCachedRoleAssignMap(){
-        if(MapUtils.isEmpty(ROLE_ASSIGN_MAP)){
+    @Override
+    public List<SdUserRoleBean> getCachedRoleAssignMap(String roleId) {
+        if (MapUtils.isEmpty(ROLE_ASSIGN_MAP)) {
             reloadCachedRoleAssignMap();
         }
-        return ROLE_ASSIGN_MAP;
+        return ROLE_ASSIGN_MAP.get(roleId);
     }
 
     @Override
@@ -184,7 +184,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
                     return getSdUserRoleBeans(userRoleBeanList, userRoleEntityList);
                 }
                 if (roleId.contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR)) {
-                    List<SdUserRoleBean> eligibleRoleListOfTeamHead = getCachedRoleAssignMap().get(roleId);
+                    List<SdUserRoleBean> eligibleRoleListOfTeamHead = getCachedRoleAssignMap(roleId);
                     eligibleUserRoleList.addAll(eligibleRoleListOfTeamHead);
                 }
             }

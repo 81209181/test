@@ -6,11 +6,12 @@ import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface SdUserRoleService {
 
-    void reloadCachedRoleAssignMap();
+    List<SdUserRoleBean> getCachedRoleAssignMap(String roleId);
     List<SdUserRoleBean> getParentRoleByRoleId(String roleId);
     List<SdUserRoleBean> getAllUserRole();
     SdUserRoleBean getUserRoleByRoleId(String roleId);

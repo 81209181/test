@@ -3,6 +3,8 @@ package com.hkt.btu.sd.core.service;
 
 import com.hkt.btu.sd.core.exception.InvalidInputException;
 
+import java.util.List;
+
 public interface SdInputCheckService {
     String checkName(String input) throws InvalidInputException;
     String checkCompanyName(String input) throws InvalidInputException;
@@ -12,4 +14,5 @@ public interface SdInputCheckService {
     String checkEmployeeNumber(String input) throws InvalidInputException;
     String checkLdapDomain(String input) throws  InvalidInputException;
     String checkUserName(String input) throws InvalidInputException;
+    String checkAssignRoleEmail(List<String> roleList, String email) throws InvalidInputException;
 }

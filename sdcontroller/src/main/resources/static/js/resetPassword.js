@@ -11,8 +11,7 @@ function ajaxRequestPwdOtp() {
 
     $.ajax({
         type: "POST",
-        contentType: "application/json",
-        url: "/reset-password-otp?email=" + $("#email").val(),
+        url: "/reset-password-otp?name=" + $("#name").val(),
         dataType: 'json',
         cache: false,
         success: function (data) {
@@ -20,9 +19,9 @@ function ajaxRequestPwdOtp() {
 
             clearAllMsg();
             if(data.success){
-                showInfoMsg("Please check your email.");
+                showInfoMsg("Please check this email: " + data.recipient);
             }else{
-                showErrorMsg(data.feedback);
+                showErrorMsg(data.msg);
             }
         },
         error: function (e) {

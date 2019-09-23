@@ -1,12 +1,14 @@
 package com.hkt.btu.sd.core.service.impl;
 
 import com.hkt.btu.common.core.service.constant.LdapEnum;
+import com.hkt.btu.sd.core.dao.entity.SdUserRoleEntity;
 import com.hkt.btu.sd.core.exception.InvalidInputException;
 import com.hkt.btu.sd.core.service.SdInputCheckService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -101,6 +103,15 @@ public class SdInputCheckServiceImpl implements SdInputCheckService {
                 .orElseThrow(() -> new InvalidInputException("Empty input UserName."));
         if (input.length() > 8) {
             throw new InvalidInputException("Please input a username of no less than 8 characters");
+        }
+        return null;
+    }
+
+    @Override
+    public String checkAssignRoleEmail(List<String> roleList, String email) throws InvalidInputException {
+        boolean flag = roleList.stream().anyMatch(role -> role.contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR));
+        if (flag) {
+            checkEmail(email);
         }
         return null;
     }
