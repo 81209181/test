@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     private static final Logger LOG = LogManager.getLogger(SdRequestCreateFacadeImpl.class);
@@ -35,87 +36,18 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     public RequestCreateSearchResultsData searchProductList(String searchKey, String searchValue) {
         RequestCreateSearchResultsData resultsData = new RequestCreateSearchResultsData();
         try {
-            if (StringUtils.startsWith(searchKey, "bes_")) {
-                String besServiceId = StringUtils.equals(searchKey, "besServiceId") ? searchValue : null;
-                // find customer with BES API
-                BesCustomerData besCustomerData = getBesCustomerDataForSearchResult(searchKey, searchValue);
-                String besCustCode = besApiFacade.getBesCustomerCode(besCustomerData);
-                if (StringUtils.isEmpty(besCustCode)) {
-                    String errorMsg = String.format("Service(s) not found with BES [searchKey: %s, searchValue:%s].", searchKey, searchValue);
-                    LOG.info(errorMsg);
-                    resultsData.setErrorMsg(errorMsg);
-                    return resultsData;
-                }
-                // find subscribe list with BES API
-                BesSubscriberData besSubscriberData = getBesSubscriberDataForSearchResult(besCustCode, besServiceId);
-                List<BesSubscriberInfoResourceData> subscriberInfos = besSubscriberData == null ? null : besSubscriberData.getSubscriberInfos();
-                if (CollectionUtils.isEmpty(subscriberInfos)) {
-                    String errorMsg = String.format("Service(s) not found with BES API [besCustCode: %s, besServiceId:%s].", besCustCode, besServiceId);
-                    LOG.info(errorMsg);
-                    resultsData.setErrorMsg(errorMsg);
-                    return resultsData;
-                }
-                // transform result
-                List<RequestCreateSearchResultData> resultDataList = new ArrayList<>();
-                for (BesSubscriberInfoResourceData subscriberInfoResourceData : subscriberInfos) {
-                    RequestCreateSearchResultData resultData = new RequestCreateSearchResultData();
-                    requestCreateSearchResultDataPopulator.populateFromBesSubscriberInfoResourceData(
-                            subscriberInfoResourceData, resultData);
-                    resultDataList.add(resultData);
-                }
-                // fill in customer data
-                if (!CollectionUtils.isEmpty(resultDataList) && besCustomerData != null) {
-                    for (RequestCreateSearchResultData resultData : resultDataList) {
-                        requestCreateSearchResultDataPopulator.populateFromBesCustomerDataData(besCustomerData, resultData);
-                    }
-                }
-                // set result
-                resultsData.setList(resultDataList);
-                return resultsData;
-            } else if (StringUtils.startsWith(searchKey, "itsm_")) {
-                // get data from ITSM API
-                ItsmSearchProfileResponseData itsmResponseData = getItsmDataForSearchResult(searchKey, searchValue);
-                List<ItsmProfileData> itsmProfileDataList = itsmResponseData == null ? null : itsmResponseData.getList();
-                if (CollectionUtils.isEmpty(itsmProfileDataList)) {
-                    String errorMsg = String.format("Service(s) not found with ITSM [searchKey: %s, searchValue:%s].", searchKey, searchValue);
-                    LOG.info(errorMsg);
-                    resultsData.setErrorMsg(errorMsg);
-                    return resultsData;
-                }
-                // transform result
-                List<RequestCreateSearchResultData> resultDataList = new ArrayList<>();
-                for (ItsmProfileData itsmProfileData : itsmProfileDataList) {
-                    RequestCreateSearchResultData resultData = new RequestCreateSearchResultData();
-                    requestCreateSearchResultDataPopulator.populateFromItsmProfileData(itsmProfileData, resultData);
-                    resultDataList.add(resultData);
-                }
-                // set result
-                resultsData.setList(resultDataList);
-                return resultsData;
-            } else if (StringUtils.startsWith(searchKey, "norars_dn")) {
-                // get data from NORARS
-                NorarsBsnData norarsBsnData = norarsApiFacade.getBsnByDn(searchValue);
-                String bsn = norarsBsnData == null ? null : norarsBsnData.getBsn();
-                if (StringUtils.isEmpty(bsn)) {
-                    String errorMsg = "BSN of DN (" + searchValue + ") not found in NORARS.";
+            switch (searchKey) {
+                case "bsn":
+                    return findData4Bsn(searchValue);
+                case "tenantId":
+                    return findData4Tenant(searchValue);
+                case "dn":
+                    return findData4Dn(searchValue);
+                default:
+                    String errorMsg = "Unknown search key: " + searchKey + ", search value: " + searchValue;
                     LOG.warn(errorMsg);
                     resultsData.setErrorMsg(errorMsg);
                     return resultsData;
-                }
-                // get data from BES
-                RequestCreateSearchResultsData besResultData = searchProductList("bes_serviceId", norarsBsnData.getBsn());
-                if (StringUtils.isNotEmpty(besResultData.getErrorMsg())) {
-                    String errorMsg = "BSN (" + bsn + ") of DN (" + searchValue + ") not found in BES.";
-                    LOG.warn(errorMsg);
-                    resultsData.setErrorMsg(errorMsg);
-                    return resultsData;
-                }
-                return besResultData;
-            } else {
-                String errorMsg = "Unknown search key: " + searchKey + ", search value: " + searchValue;
-                LOG.warn(errorMsg);
-                resultsData.setErrorMsg(errorMsg);
-                return resultsData;
             }
         } catch (InvalidInputException e) {
             LOG.warn(e.getMessage());
@@ -126,6 +58,60 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
             resultsData.setErrorMsg("Internal System Error!");
             return resultsData;
         }
+    }
+
+    private RequestCreateSearchResultsData findData4Dn(String dn) {
+        return Optional.ofNullable(norarsApiFacade.getBsnByDn(dn))
+                .map(NorarsBsnData::getBsn)
+                .map(this::findData4Bsn).get();
+    }
+
+    private RequestCreateSearchResultsData findData4Tenant(String tenantId) {
+        RequestCreateSearchResultsData resultsData = new RequestCreateSearchResultsData();
+        List<RequestCreateSearchResultData> resultDataList = new ArrayList<>();
+        Optional.ofNullable(itsmApiFacade.searchProfileByTenantId(tenantId))
+                .map(ItsmSearchProfileResponseData::getList)
+                .ifPresent(list -> list.forEach(itsmProfileData -> {
+                    RequestCreateSearchResultData resultData = new RequestCreateSearchResultData();
+                    requestCreateSearchResultDataPopulator.populateFromItsmProfileData(itsmProfileData, resultData);
+                    resultDataList.add(resultData);
+                }));
+        if (CollectionUtils.isEmpty(resultDataList)) {
+            resultsData.setErrorMsg(String.format("Service(s) not found with %s .", tenantId));
+        }
+        resultsData.setList(resultDataList);
+        return resultsData;
+    }
+
+    private RequestCreateSearchResultsData findData4Bsn(String bsn) {
+        RequestCreateSearchResultsData resultsData = new RequestCreateSearchResultsData();
+        List<RequestCreateSearchResultData> resultDataList = new ArrayList<>();
+        //find in BES API
+        Optional<BesCustomerData> besCustomerData = Optional.ofNullable(besApiFacade.queryCustomerByServiceCode(bsn));
+        besCustomerData.map(BesCustomerData::getCustomerInfos)
+                .map(BesCustomerInfosData::getCustBasicInfo)
+                .map(BesCustBasicInfoData::getCustCode)
+                .flatMap(s -> Optional.ofNullable(getBesSubscriberDataForSearchResult(s, bsn))
+                        .map(BesSubscriberData::getSubscriberInfos))
+                .ifPresent(subscriberInfos -> subscriberInfos.forEach(info -> {
+                    RequestCreateSearchResultData resultData = new RequestCreateSearchResultData();
+                    requestCreateSearchResultDataPopulator.populateFromBesSubscriberInfoResourceData(info, resultData);
+                    resultDataList.add(resultData);
+                }));
+        //find in ITSM API
+        Optional.ofNullable(itsmApiFacade.searchProfileByServiceNo(bsn)).map(ItsmSearchProfileResponseData::getList).ifPresent(list -> list.forEach(profileData -> {
+            RequestCreateSearchResultData resultData = new RequestCreateSearchResultData();
+            requestCreateSearchResultDataPopulator.populateFromItsmProfileData(profileData, resultData);
+            resultDataList.add(resultData);
+        }));
+        // fill in customer data
+        if (CollectionUtils.isNotEmpty(resultDataList)) {
+            besCustomerData.ifPresent(bes -> resultDataList.forEach(resultData -> requestCreateSearchResultDataPopulator.populateFromBesCustomerDataData(bes, resultData)));
+        } else {
+            resultsData.setErrorMsg(String.format("Service(s) not found with %s .", bsn));
+        }
+        resultsData.setList(resultDataList);
+        return resultsData;
     }
 
     private ItsmSearchProfileResponseData getItsmDataForSearchResult(String searchKey, String searchValue) throws InvalidInputException {
@@ -151,9 +137,9 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     }
 
     private BesSubscriberData getBesSubscriberDataForSearchResult(String besCustCode, String besServiceId) {
-        if (!StringUtils.isEmpty(besServiceId)) {
+        if (StringUtils.isNotEmpty(besServiceId)) {
             return besApiFacade.querySubscriberByServiceNumber(besServiceId);
-        } else if (!StringUtils.isEmpty(besCustCode)) {
+        } else if (StringUtils.isNotEmpty(besCustCode)) {
             return besApiFacade.querySubscriberByCustomerCode(besCustCode);
         } else {
             LOG.warn("Cannot get subscriber without both besCustCode and besServiceId.");

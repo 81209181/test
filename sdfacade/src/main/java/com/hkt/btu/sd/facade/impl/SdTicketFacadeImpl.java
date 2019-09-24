@@ -46,25 +46,17 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     SdTicketRemarkDataPopulator ticketRemarkDataPopulator;
 
     @Override
-    public Optional<SdTicketMasData> createQueryTicket(String custCode) {
-        Optional<SdTicketMasBean> bean = ticketService.createQueryTicket(custCode);
-        if (bean.isPresent()) {
-            SdTicketMasData ticketMasData = new SdTicketMasData();
-            ticketMasDataPopulator.populate(bean.get(), ticketMasData);
-            return Optional.of(ticketMasData);
-        }
-        return Optional.empty();
+    public int createQueryTicket(String custCode, String serviceNo, String serviceType) {
+        return ticketService.createQueryTicket(custCode,serviceNo,serviceType);
     }
 
     @Override
     public Optional<SdTicketMasData> getTicket(Integer ticketId) {
-        Optional<SdTicketMasBean> bean = ticketService.getTicket(ticketId);
-        if (bean.isPresent()) {
-            SdTicketMasData ticketMasData = new SdTicketMasData();
-            ticketMasDataPopulator.populate(bean.get(), ticketMasData);
-            return Optional.of(ticketMasData);
-        }
-        return Optional.empty();
+        SdTicketMasData ticketMasData = new SdTicketMasData();
+        return ticketService.getTicket(ticketId).map(sdTicketMasBean -> {
+            ticketMasDataPopulator.populate(sdTicketMasBean, ticketMasData);
+            return ticketMasData;
+        });
     }
 
     @Override

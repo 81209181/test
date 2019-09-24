@@ -12,13 +12,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 
 @RequestMapping("ticket")
 @Controller
@@ -47,28 +46,23 @@ public class TicketController {
     }
 
     @PostMapping("query/create")
-    public ResponseEntity<?> createQueryTicket(String custCode) {
-        Optional<SdTicketMasData> data = ticketFacade.createQueryTicket(custCode);
-        if (data.isPresent()) {
-            return ResponseEntity.ok(data);
-        } else {
-            return ResponseEntity.badRequest().body("Create ticket fail.");
-        }
+    @ResponseBody
+    public int createQueryTicket(String custCode, String serviceNo, String serviceType) {
+        return ticketFacade.createQueryTicket(custCode, serviceNo, serviceType);
     }
 
     @GetMapping("{ticketId}")
-    public String showQueryTicket(@PathVariable Integer ticketId, Model model, Principal principal) {
-        Optional<SdTicketMasData> data = ticketFacade.getTicket(ticketId);
-        if (data.isPresent()) {
-            if (!userRoleFacade.checkSameTeamRole(principal.getName(), data.get().getCreateBy())) {
-                return "redirect:/ticket/search-ticket";
-            }
-            model.addAttribute("customerCode", data.get().getCustCode());
-            model.addAttribute("ticketMasId", data.get().getTicketMasId());
-            return "ticket/ticket_info";
-        } else {
-            return "redirect:/ticket/search-ticket";
-        }
+    public ModelAndView showQueryTicket(@PathVariable Integer ticketId, Principal principal) {
+        ModelAndView modelAndView = new ModelAndView("ticket/ticket_info");
+        ticketFacade.getTicket(ticketId)
+                .filter(sdTicketMasData -> userRoleFacade.checkSameTeamRole(principal.getName(), sdTicketMasData.getCreateBy()))
+                .ifPresentOrElse(sdTicketMasData -> {
+                    modelAndView.addObject("customerCode", sdTicketMasData.getCustCode())
+                            .addObject("ticketMasId", sdTicketMasData.getTicketMasId());
+                }, () -> {
+                    modelAndView.setViewName("redirect:/ticket/search-ticket");
+                });
+        return modelAndView;
     }
 
     @PostMapping("contact/update")

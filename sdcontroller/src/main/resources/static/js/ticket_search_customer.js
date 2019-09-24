@@ -15,8 +15,8 @@ $().ready(function(){
             showErrorMsg('Please input customer code.');
             return;
         }
-        $.post('/ticket/query/create',{custCode:custCode},function(res){
-            $(location).attr('href',ctx+'/ticket/'+ res.ticketMasId);
+        $.post('/ticket/query/create',$('form').serialize(),function(res){
+            $(location).attr('href',ctx+'/ticket/'+ res);
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";
             console.log("ERROR : ", responseError);
@@ -52,13 +52,11 @@ $().ready(function(){
                 let tr ='<tr class="text-center"></tr>';
                 $('tbody').append(tr);
                 $('tbody tr:last').data('info',val);
-                $('tbody tr:last').append('<td><input type="checkbox"></td>')
-                    .append('<td>'+val.custId+'</td>')
+                $('tbody tr:last').append('<td><input type="radio"></td>')
                     .append('<td>'+val.custCode+'</td>')
                     .append('<td>'+val.custName+'</td>')
-                    .append('<td>'+val.offerName+'</td>')
-                    .append('<td>'+val.statusDesc+'</td>')
-                    .append('<td><a class="text-secondary goNewWin" style="cursor:pointer"><i class="fa fa-table" aria-hidden="true"></i></a></td>');
+                    .append('<td>'+val.serviceType+'</td>')
+                    .append('<td>'+val.serviceNo+'</td>')
             });
             $('.modal').modal('show');
         }).fail(function(e){
@@ -66,9 +64,6 @@ $().ready(function(){
             console.log("ERROR : ", responseError);
             showErrorMsg(responseError);
         }).then(function(){
-            $('.goNewWin').on('click',function(){
-                window.open($(this).parent().parent().data('info').url,'Profile','scrollbars=yes,height=600,width=800');
-            })
             $('#btnApplyProduct').on('click',function(){
                 $.each($('tbody').find('input:checked').parent().parent().data('info'),function(i,val){
                     $('form').find('input[name='+i+']').val(val);

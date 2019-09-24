@@ -22,7 +22,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.util.ObjectUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -58,25 +58,31 @@ public class SdTicketServiceImpl implements SdTicketService {
     SdTicketRemarkBeanPopulator ticketRemarkBeanPopulator;
 
     @Override
-    public Optional<SdTicketMasBean> createQueryTicket(String custCode) {
-        SdTicketMasBean bean = new SdTicketMasBean();
+    @Transactional(rollbackFor = Exception.class)
+    public int createQueryTicket(String custCode, String serviceNo, String serviceType) {
         SdTicketMasEntity ticketMasEntity = new SdTicketMasEntity();
+        String userId = userService.getCurrentUserUserId();
         ticketMasEntity.setCustCode(custCode);
-        ticketMasEntity.setCreateby(userService.getCurrentUserUserId());
+        ticketMasEntity.setCreateby(userId);
         ticketMasMapper.insertQueryTicket(ticketMasEntity);
-        ticketMasBeanPopulator.populate(ticketMasEntity, bean);
-        return Optional.of(bean);
+
+        SdTicketServiceEntity entity = new SdTicketServiceEntity();
+        entity.setCreateby(userId);
+        entity.setModifyby(userId);
+        entity.setServiceId(serviceNo);
+        entity.setTicketMasId(ticketMasEntity.getTicketMasId());
+        entity.setServiceTypeCode(serviceType);
+        ticketServiceMapper.insertServiceInfo(entity);
+        return ticketMasEntity.getTicketMasId();
     }
 
     @Override
     public Optional<SdTicketMasBean> getTicket(Integer ticketId) {
-        SdTicketMasEntity ticketMasEntity = ticketMasMapper.findTicketById(ticketId);
-        if (!ObjectUtils.isEmpty(ticketMasEntity)) {
-            SdTicketMasBean bean = new SdTicketMasBean();
-            ticketMasBeanPopulator.populate(ticketMasEntity, bean);
-            return Optional.of(bean);
-        }
-        return Optional.empty();
+        SdTicketMasBean bean = new SdTicketMasBean();
+        return Optional.ofNullable(ticketMasMapper.findTicketById(ticketId)).map(sdTicketMasEntity -> {
+            ticketMasBeanPopulator.populate(sdTicketMasEntity, bean);
+            return bean;
+        });
     }
 
     @Override
@@ -139,7 +145,7 @@ public class SdTicketServiceImpl implements SdTicketService {
         List<SdTicketRemarkBean> beanList = new ArrayList<>();
         ticketRemarkMapper.getTicketRemarksByTicketId(ticketMasId).forEach(sdTicketRemarkEntity -> {
             SdTicketRemarkBean bean = new SdTicketRemarkBean();
-            ticketRemarkBeanPopulator.populate(sdTicketRemarkEntity,bean);
+            ticketRemarkBeanPopulator.populate(sdTicketRemarkEntity, bean);
             beanList.add(bean);
         });
         return beanList;
@@ -198,7 +204,7 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Override
     public void updateRemark(Integer ticketMasId, String remarksType, String remarks) {
         if (!remarksType.equals(SdTicketRemarkEntity.REMARKS_TYPE.SYSTEM)) {
-            ticketRemarkMapper.insertTicketRemarks(ticketMasId,remarksType,remarks,userService.getCurrentUserUserId());
+            ticketRemarkMapper.insertTicketRemarks(ticketMasId, remarksType, remarks, userService.getCurrentUserUserId());
         }
     }
 

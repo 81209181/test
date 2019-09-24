@@ -167,6 +167,11 @@ $().ready(function(){
             showErrorMsg(responseError);
         })
     });
+
+    $('.itsm_link').on('click',function(){
+        window.open($('.itsm_link').data('url'),'Profile','scrollbars=yes,height=600,width=800');
+    })
+
 })
 
 
