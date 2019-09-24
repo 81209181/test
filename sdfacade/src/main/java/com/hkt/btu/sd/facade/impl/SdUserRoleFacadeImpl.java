@@ -60,11 +60,11 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
 
     @Override
     public EditResultData getUserRoleByUserId(String userId) {
-        List<String> results = new ArrayList<>();
+        List<String> results;
         try {
             List<SdUserRoleBean> userRoleBeanList = sdUserRoleService.getUserRoleByUserId(userId);
             if (CollectionUtils.isEmpty(userRoleBeanList)) {
-                return EditResultData.error("This user no role.");
+                return EditResultData.error("This user has no role.");
             }
             results = userRoleBeanList.stream().map(bean -> {
                 SdUserRoleData data = new SdUserRoleData();
@@ -98,24 +98,21 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
     @Override
     public LinkedList<SdUserRoleData> getEligibleUserRoleList() {
         LinkedList<SdUserRoleData> results = new LinkedList<>();
-        List<SdUserRoleBean> eligibleUserGroupGrantList =
-                sdUserRoleService.getEligibleUserRoleGrantList();
+        List<SdUserRoleBean> eligibleUserGroupGrantList = sdUserRoleService.getEligibleUserRoleGrantList();
         results = (LinkedList<SdUserRoleData>) getSdUserRoleData(results, eligibleUserGroupGrantList);
         return results;
     }
 
     @Override
     public HashMap<String, SdUserRoleData> getUserRoleMap(List<SdUserRoleData> userGroupDataList) {
-        HashMap<String, SdUserRoleData> result = new HashMap<>(16);
-
         if (CollectionUtils.isEmpty(userGroupDataList)) {
-            return result;
+            return new HashMap<>();
         }
 
+        HashMap<String, SdUserRoleData> result = new HashMap<>();
         for (SdUserRoleData userRoleData : userGroupDataList) {
-            result.put(userRoleData.getRoleDesc(), userRoleData);
+            result.put(userRoleData.getRoleId(), userRoleData);
         }
-
         return result;
     }
 
