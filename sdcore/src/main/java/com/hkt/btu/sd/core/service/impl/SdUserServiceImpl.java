@@ -1,8 +1,6 @@
 package com.hkt.btu.sd.core.service.impl;
 
 import com.hkt.btu.common.core.exception.UserNotFoundException;
-import com.hkt.btu.common.core.service.BtuLdapService;
-import com.hkt.btu.common.core.service.BtuSensitiveDataService;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.core.service.impl.BtuUserServiceImpl;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
@@ -34,7 +32,6 @@ import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
-import java.security.GeneralSecurityException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -51,12 +48,6 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     SdOtpService sdOtpService;
     @Resource(name = "emailService")
     SdEmailService sdEmailService;
-
-    @Resource(name = "sensitiveDataService")
-    BtuSensitiveDataService btuSensitiveDataService;
-
-    @Resource(name = "ldapService")
-    BtuLdapService btuLdapService;
 
     @Resource(name = "userRoleService")
     SdUserRoleService userRoleService;
@@ -81,9 +72,8 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
     @Override
     public BtuUserBean getUserBeanByUsername(String username) {
-
         // get user data
-        SdUserEntity sdUserEntity = null;
+        SdUserEntity sdUserEntity;
         if (username.contains(SdUserBean.CREATE_USER_PREFIX.PCCW_HKT_USER) ||
                 username.contains(SdUserBean.CREATE_USER_PREFIX.NON_PCCW_HKT_USER)) {
             sdUserEntity = sdUserMapper.getLdapUserByUserId(username);
@@ -124,10 +114,8 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         sdUserBeanPopulator.populate(sdUserEntity, userBean);
         // set user role to userbean.
         if (CollectionUtils.isNotEmpty(results)) {
-            Set<GrantedAuthority> grantedAuthSet = results.stream().map(role -> {
-                SimpleGrantedAuthority auth = new SimpleGrantedAuthority(role.getRoleId());
-                return auth;
-            }).collect(Collectors.toSet());
+            Set<GrantedAuthority> grantedAuthSet = results.stream().map(
+                    role -> new SimpleGrantedAuthority(role.getRoleId())).collect(Collectors.toSet());
             userBean.setAuthorities(grantedAuthSet);
         }
 
@@ -146,8 +134,6 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             throw new UserNotFoundException("Empty user id input.");
         }
 
-
-        // TH__TEAM_B
         Set<GrantedAuthority> authorities = getCurrentUserBean().getAuthorities();
 
         // get user data
@@ -282,7 +268,6 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
         // send init password email
         try {
-            password = null;
             requestResetPassword(userId);
         } catch (UserNotFoundException e) {
             LOG.warn("User not found (" + email + ").");
@@ -290,13 +275,14 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             LOG.error(e.getMessage(), e);
         }
 
-        return SdCreateResultBean.of(userId, password);
+        return SdCreateResultBean.of(userId, null);
     }
 
 
     @Override
     @Transactional
-    public void updateUser(String userId, String newName, String newMobile, List<String> userRoleIdList) throws UserNotFoundException, InsufficientAuthorityException, GeneralSecurityException {
+    public void updateUser(String userId, String newName, String newMobile, List<String> userRoleIdList)
+            throws UserNotFoundException, InsufficientAuthorityException {
         SdUserBean currentUser = (SdUserBean) this.getCurrentUserBean();
         if (currentUser.getUserId().equals(userId)) {
             throw new InvalidInputException("Cannot update your own account!");
