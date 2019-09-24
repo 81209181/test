@@ -4,7 +4,7 @@ import com.hkt.btu.common.core.dao.entity.BaseEntity;
 
 public class SdTicketMasEntity extends BaseEntity {
 
-    private Integer ticketMasId ;
+    private int ticketMasId ;
 
     private String custCode;
 
@@ -12,12 +12,11 @@ public class SdTicketMasEntity extends BaseEntity {
 
     private String status;
 
-
-    public Integer getTicketMasId() {
+    public int getTicketMasId() {
         return ticketMasId;
     }
 
-    public void setTicketMasId(Integer ticketMasId) {
+    public void setTicketMasId(int ticketMasId) {
         this.ticketMasId = ticketMasId;
     }
 

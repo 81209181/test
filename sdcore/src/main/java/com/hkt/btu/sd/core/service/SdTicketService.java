@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SdTicketService {
-    Optional<SdTicketMasBean> createQueryTicket(String custCode);
+    int createQueryTicket(String custCode, String serviceNo, String serviceType);
 
     Optional<SdTicketMasBean> getTicket(Integer ticketId);
 
