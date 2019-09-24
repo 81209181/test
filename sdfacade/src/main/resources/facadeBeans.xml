@@ -40,6 +40,9 @@
     <alias name="sdTicketFacade" alias="ticketFacade"/>
     <bean id="sdTicketFacade" class="com.hkt.btu.sd.facade.impl.SdTicketFacadeImpl"/>
 
+    <alias name="sdSymptomFacade" alias="symptomFacade"/>
+    <bean id="sdSymptomFacade" class="com.hkt.btu.sd.facade.impl.SdSymptomFacadeImpl"/>
+
     <!-- Populator -->
     <alias name="sdUserDataPopulator" alias="userDataPopulator"/>
     <bean id="sdUserDataPopulator" class="com.hkt.btu.sd.facade.populator.SdUserDataPopulator"/>
@@ -82,4 +85,7 @@
 
     <alias name="sdTicketRemarkDataPopulator" alias="ticketRemarkDataPopulator"/>
     <bean id="sdTicketRemarkDataPopulator" class="com.hkt.btu.sd.facade.populator.SdTicketRemarkDataPopulator" />
+
+    <alias name="sdSymptomDataPopulator" alias="symptomDataPopulator"/>
+    <bean id="sdSymptomDataPopulator" class="com.hkt.btu.sd.facade.populator.SdSymptomDataPopulator" />
 </beans>

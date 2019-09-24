@@ -64,6 +64,9 @@
     <alias name="sdCsvGenratorService" alias="csvGenratorService"/>
     <bean id="sdCsvGenratorService" class="com.hkt.btu.sd.core.service.impl.SdCsvGenratorServiceImpl"/>
 
+    <alias name="sdSymptomService" alias="symptomService"/>
+    <bean id="sdSymptomService" class="com.hkt.btu.sd.core.service.impl.SdSymptomServiceImpl"/>
+
     <!-- Populator -->
     <alias name="sdUserBeanPopulator" alias="userBeanPopulator"/>
     <bean id="sdUserBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserBeanPopulator"/>
@@ -108,4 +111,7 @@
 
     <alias name="sdTicketRemarkBeanPopulator" alias="ticketRemarkBeanPopulator" />
     <bean id="sdTicketRemarkBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdTicketRemarkBeanPopulator"/>
+
+    <alias name="sdSymptmBeanPopulator" alias="symptmBeanPopulator" />
+    <bean id="sdSymptmBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdSymptomBeanPopulator"/>
 </beans>

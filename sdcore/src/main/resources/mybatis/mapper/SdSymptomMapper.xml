@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdSymptomMapper" >
+    <resultMap id="SymptomEntity" type="com.hkt.btu.sd.core.dao.entity.SdSymptomEntity" >
+        <result column="SYMPTOM_CODE" property="symptomCode" />
+        <result column="SYMPTOM_DESCRIPTION" property="symptomDescription" />
+        <result column="SYMPTOM_GROUP_CODE" property="symptomGroupCode" />
+        <result column="SYMPTOM_GROUP_NAME" property="symptomGroupName" />
+
+        <result column="CREATEDATE" property="createdate" />
+        <result column="CREATEBY" property="createby" />
+        <result column="MODIFYDATE" property="modifydate" />
+        <result column="MODIFYBY" property="modifyby" />
+    </resultMap>
+
+    <select id="getSymptomGroupList" resultMap="SymptomEntity">
+        SELECT SYMPTOM_GROUP_CODE,SYMPTOM_GROUP_NAME
+        FROM SYMPTOM_GROUP
+        GROUP BY SYMPTOM_GROUP_CODE,SYMPTOM_GROUP_NAME
+        ORDER BY SYMPTOM_GROUP_CODE
+    </select>
+
+    <insert id="insertSymptom">
+        insert into symptom (SYMPTOM_CODE,SYMPTOM_DESCRIPTION,SYMPTOM_GROUP_CODE,CREATEBY,MODIFYBY)
+        values (#{symptomCode},#{symptomDescription},#{symptomGroupCode},#{createby},#{createby})
+    </insert>
+
+</mapper>
