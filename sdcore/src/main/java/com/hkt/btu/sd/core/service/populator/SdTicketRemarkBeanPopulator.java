@@ -8,7 +8,7 @@ public class SdTicketRemarkBeanPopulator extends AbstractBeanPopulator<SdTicketR
 
     public void populate(SdTicketRemarkEntity source, SdTicketRemarkBean target) {
         target.setTicketMasId(source.getTicketMasId());
-        target.setRemarksType(source.getRemarksType());
+        target.setRemarksType(source.getRemarksTypeDesc());
         target.setRemarks(source.getRemarks());
     }
 }

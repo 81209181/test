@@ -16,7 +16,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -35,9 +34,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     @Resource(name = "userRoleBeanPopulator")
     SdUserRoleBeanPopulator sdUserRoleBeanPopulator;
 
-    @Override
-    @PostConstruct
-    public void reloadCachedRoleAssignMap() {
+    private void reloadCachedRoleAssignMap() {
         List<String> teamHeadRoleIdList = sdUserRoleMapper
                 .getTeamHeadList(SdUserRoleEntity.TEAM_HEAD_INDICATOR)
                 .stream()
@@ -51,24 +48,27 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
         }
     }
 
-    private Map<String, List<SdUserRoleBean>> getCachedRoleAssignMap(){
-        if(MapUtils.isEmpty(ROLE_ASSIGN_MAP)){
+    @Override
+    public List<SdUserRoleBean> getCachedRoleAssignMap(String roleId) {
+        if (MapUtils.isEmpty(ROLE_ASSIGN_MAP)) {
             reloadCachedRoleAssignMap();
         }
-        return ROLE_ASSIGN_MAP;
+        return ROLE_ASSIGN_MAP.get(roleId);
     }
 
     @Override
-    public List<SdUserRoleEntity> getParentRoleByRoleId(String roleId) {
-        List<SdUserRoleEntity> roleEntityList = new LinkedList<>();
+    public List<SdUserRoleBean> getParentRoleByRoleId(String roleId) {
+        List<SdUserRoleBean> roleEntityList = new LinkedList<>();
         List<SdUserRoleEntity> parentRoleByRoleId = sdUserRoleMapper.getParentRoleByRoleId(roleId);
         for (SdUserRoleEntity role : parentRoleByRoleId) {
             if (role.getStatus().equals(SdUserRoleEntity.ACTIVE_ROLE_STATUS)) {
                 if (StringUtils.isNotEmpty(role.getParentRoleId())) {
-                    List<SdUserRoleEntity> parentRoleList = getParentRoleByRoleId(role.getParentRoleId());
+                    List<SdUserRoleBean> parentRoleList = getParentRoleByRoleId(role.getParentRoleId());
                     roleEntityList.addAll(parentRoleList);
                 }
-                roleEntityList.add(role);
+                SdUserRoleBean bean = new SdUserRoleBean();
+                sdUserRoleBeanPopulator.populate(role, bean);
+                roleEntityList.add(bean);
             }
         }
         return roleEntityList;
@@ -183,7 +183,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
                     return getSdUserRoleBeans(userRoleBeanList, userRoleEntityList);
                 }
                 if (roleId.contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR)) {
-                    List<SdUserRoleBean> eligibleRoleListOfTeamHead = getCachedRoleAssignMap().get(roleId);
+                    List<SdUserRoleBean> eligibleRoleListOfTeamHead = getCachedRoleAssignMap(roleId);
                     eligibleUserRoleList.addAll(eligibleRoleListOfTeamHead);
                 }
             }

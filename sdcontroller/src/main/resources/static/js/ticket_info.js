@@ -34,9 +34,25 @@ $().ready(function(){
             let remark =$('#tempRemark').children().clone();
             $.each(j,function(key,value){
                 remark.find('input[name='+key+']').val(value);
+                if(key == "remarksType" && value == "System"){
+                    remark.find('input[name='+key+']').attr("readonly","readonly");
+                    remark.find('#btnRemoveRemark').attr("disabled",true);
+                }
+                if(key == "system" && value == true){
+                    remark.find('input[name="remarks"]').attr("readonly","readonly");
+                }
             })
             remark.appendTo($('#remark_list'));
         })
+    });
+
+     $('#remarksTypeSelect').change(function(){
+        let selected = $(this).children('option:selected').val();
+        if(selected == 'SYS'){
+            $('#btnAddRemark').attr("disabled",true);
+        }else{
+            $('#btnAddRemark').attr("disabled",false);
+        }
     });
 
     $('#btnUpdateService').on('click',function () {
@@ -120,7 +136,7 @@ $().ready(function(){
             return;
         }
         let remark =$('#tempRemark').children().clone();
-        remark.find('input[name=remarksType]').val($(this).prev('select').find('option:selected').val());
+        remark.find('input[name=remarksType]').val($(this).prev('select').find('option:selected').text());
         remark.appendTo($('#remark_list'));
         $('#btnUpdateRemark').attr('disabled',false);
     });

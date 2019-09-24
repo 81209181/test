@@ -5,6 +5,7 @@ $(document).ready(function() {
 
 function createJobInstTable() {
     $('#jobInstTable').DataTable({
+        searching: false,
         ajax: {
             type: "GET",
             contentType: "application/json",
@@ -128,6 +129,7 @@ function ajaxTriggerReport( keyName ) {
 
 function createSqlReportTable() {
     $('#sqlReportTable').DataTable({
+        searching: false,
         ajax: {
             type: "GET",
             contentType: "application/json",

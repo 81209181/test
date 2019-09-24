@@ -5,6 +5,7 @@ import com.hkt.btu.common.core.service.populator.AbstractBeanPopulator;
 import com.hkt.btu.sd.core.dao.entity.SdUserEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserRoleEntity;
 import com.hkt.btu.sd.core.service.bean.SdUserBean;
+import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -51,5 +52,6 @@ public class SdUserBeanPopulator extends AbstractBeanPopulator<SdUserBean> {
 
         target.setAuthorities(grantedAuthSet);
     }
+
 
 }

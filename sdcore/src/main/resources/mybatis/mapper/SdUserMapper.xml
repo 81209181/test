@@ -140,13 +140,7 @@
             USER_USER_ROLE uur
             ON u.USER_ID = uur.USER_ID
             AND uur.ROLE_ID =
-            (
-            SELECT SUBSTR(#{roleId}, (
-            SELECT INSTR(#{roleId}, '__') + 2
-            FROM DUAL
-            )
-            ) FROM DUAL
-            )
+            (SELECT SUBSTR(#{roleId}, (SELECT INSTR(#{roleId}, '__') + 2 FROM DUAL)) FROM DUAL)
         </if>
 
         <where>
@@ -163,14 +157,23 @@
             </if>
         </where>
     </sql>
+
     <select id="searchUser" resultMap="SdUserEntity">
         select u.*
         <include refid="searchUserSql"/>
         order by u.USER_ID
         OFFSET #{offset} ROWS FETCH NEXT #{pageSize} ROWS ONLY
     </select>
+
     <select id="countSearchUser" resultType="Integer">
         select count(1)
         <include refid="searchUserSql"/>
+    </select>
+
+    <select id="getUserByRoleId" resultMap="SdUserEntity">
+        select up.* from USER_PROFILE up
+                             inner join USER_USER_ROLE uur on up.USER_ID = uur.USER_ID
+                             inner join USER_ROLE ur on ur.ROLE_ID = uur.ROLE_ID
+        where ur.ROLE_ID = #{roleId}
     </select>
 </mapper>

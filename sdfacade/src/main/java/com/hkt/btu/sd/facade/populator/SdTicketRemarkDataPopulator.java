@@ -10,5 +10,6 @@ public class SdTicketRemarkDataPopulator extends AbstractDataPopulator<SdTicketR
         target.setTicketMasId(source.getTicketMasId());
         target.setRemarksType(source.getRemarksType());
         target.setRemarks(source.getRemarks());
+        target.setSystem(source.getRemarksType().equals("System")?true:false);
     }
 }

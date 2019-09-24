@@ -71,7 +71,7 @@ public class RootController {
     }
 
     @PostMapping(value = "reset-password")
-    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPwdFormData resetPwdFormData) {
+    public ResponseEntity<?> resetPassword(@Valid ResetPwdFormData resetPwdFormData) {
         String errorMsg = sdUserFacade.resetPassword(resetPwdFormData);
         if (errorMsg == null) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
@@ -81,8 +81,8 @@ public class RootController {
     }
 
     @PostMapping(value = "reset-password-otp")
-    public ResponseEntity<?> requestResetPassword(@RequestParam String email) {
-        String errorMsg = sdUserFacade.requestResetPassword(email);
+    public ResponseEntity<?> requestResetPassword(@RequestParam String name) {
+        String errorMsg = sdUserFacade.requestResetPassword(name);
         if (errorMsg == null) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         } else {
