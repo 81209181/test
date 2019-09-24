@@ -162,55 +162,50 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
     @Transactional
     public String createLdapUser(String name, String mobile, String employeeNumber,
-                                 String ldapDomain, String email, List<String> roleIdList)
-            throws DuplicateUserEmailException, UserNotFoundException {
-        try {
-            // get current userId for CreateBy
-            String createBy = getCurrentUserUserId();
-            // Check if there is a duplicate name
-            SdUserEntity sdUserEntity = sdUserMapper.getLdapUserByUserId(name);
-            if (sdUserEntity != null) {
-                throw new DuplicateUserEmailException("User already exist.");
-            }
-            // check current user has right to create user of user role
-            boolean isEligibleUserGroup = userRoleService.isEligibleToGrantUserRole(roleIdList);
-            if (!isEligibleUserGroup) {
-                LOG.warn("Ineligible to create user of selected user role (" + roleIdList + ") by user (" + createBy + ").");
-                throw new InvalidInputException("Invalid user role.");
-            }
+                                 String ldapDomain, String email, List<String> toGrantRoleIdList)
+            throws DuplicateUserEmailException, UserNotFoundException, InvalidInputException {
+        // get current userId for CreateBy
+        String createBy = getCurrentUserUserId();
+        // Check if there is a duplicate name
+        SdUserEntity sdUserEntity = sdUserMapper.getLdapUserByUserId(name);
+        if (sdUserEntity != null) {
+            throw new DuplicateUserEmailException("User already exist.");
+        }
+        // check current user has right to create user of user role
+        boolean isEligibleUserGroup = userRoleService.isEligibleToGrantUserRole(toGrantRoleIdList);
+        if (!isEligibleUserGroup) {
+            LOG.warn("Ineligible to create user of selected user role (" + toGrantRoleIdList + ") by user (" + createBy + ").");
+            throw new InvalidInputException("Invalid user role.");
+        }
 
-            // check email duplicated
-            SdUserEntity user = sdUserMapper.getUserByEmail(email);
-            if (user != null) {
-                throw new DuplicateUserEmailException();
-            }
-
-            // Data input
-            SdUserEntity userEntity = new SdUserEntity();
-            userEntity.setName(name);
-            userEntity.setCreateby(createBy);
-            userEntity.setUserId(employeeNumber);
-            userEntity.setMobile(mobile);
-            userEntity.setStatus(SdUserEntity.STATUS.ACTIVE);
-            userEntity.setLdapDomain(ldapDomain);
-
-            // create user in db
-            sdUserMapper.insertUser(userEntity);
-
-            // create user role relation in db
-            if (!CollectionUtils.isEmpty(roleIdList)) {
-                for (String roleId : roleIdList) {
-                    sdUserRoleMapper.insertUserUserRole(employeeNumber, roleId);
-                }
-            }
-
-            LOG.info("User (id: " + employeeNumber + ") created.");
-
-            return employeeNumber;
-        } catch (Exception e) {
-            LOG.warn(e.getMessage());
+        // check email duplicated
+        SdUserEntity user = sdUserMapper.getUserByEmail(email);
+        if (user != null) {
             throw new DuplicateUserEmailException("User already exists.");
         }
+
+        // Data input
+        SdUserEntity userEntity = new SdUserEntity();
+        userEntity.setName(name);
+        userEntity.setCreateby(createBy);
+        userEntity.setUserId(employeeNumber);
+        userEntity.setEmail(email);
+        userEntity.setMobile(mobile);
+        userEntity.setStatus(SdUserEntity.STATUS.ACTIVE);
+        userEntity.setLdapDomain(ldapDomain);
+
+        // create user in db
+        sdUserMapper.insertUser(userEntity);
+
+        // create user role relation in db
+        if (!CollectionUtils.isEmpty(toGrantRoleIdList)) {
+            for (String roleId : toGrantRoleIdList) {
+                sdUserRoleMapper.insertUserUserRole(employeeNumber, roleId);
+            }
+        }
+
+        LOG.info("User (id: " + employeeNumber + ") created.");
+        return employeeNumber;
     }
 
     @Override

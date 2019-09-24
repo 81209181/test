@@ -199,8 +199,8 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
 
 
     @Override
-    public boolean isEligibleToGrantUserRole(List<String> roleIdList) {
-        if (CollectionUtils.isEmpty(roleIdList)) {
+    public boolean isEligibleToGrantUserRole(List<String> toGrantRoleIdList) {
+        if (CollectionUtils.isEmpty(toGrantRoleIdList)) {
             return true;
         }
 
@@ -214,7 +214,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
             eligibleUserRoleIdGrantList.add(userRoleBean.getRoleId());
         }
 
-        for (String roleId : roleIdList) {
+        for (String roleId : toGrantRoleIdList) {
             if (!eligibleUserRoleIdGrantList.contains(roleId)) {
                 return false;
             }
