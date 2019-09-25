@@ -88,4 +88,7 @@
 
     <alias name="sdSymptomDataPopulator" alias="symptomDataPopulator"/>
     <bean id="sdSymptomDataPopulator" class="com.hkt.btu.sd.facade.populator.SdSymptomDataPopulator" />
+
+    <alias name="sdServiceTypeDataPopulator" alias="serviceTypeDataPopulator"/>
+    <bean id="sdServiceTypeDataPopulator" class="com.hkt.btu.sd.facade.populator.SdServiceTypeDataPopulator" />
 </beans>

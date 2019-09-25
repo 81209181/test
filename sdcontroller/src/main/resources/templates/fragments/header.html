@@ -54,6 +54,16 @@
                 </li>
 
                 <li sec:authorize="hasAnyAuthority('OPT','ENG')" class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="symptomDp" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Symptom
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" th:href="@{/symptom/create-symptom}">Create Symptom</a>
+                        <a class="dropdown-item" th:href="@{/symptom/create-symptom-mapping}">Create Symptom Mapping</a>
+                    </div>
+                </li>
+
+                <li sec:authorize="hasAnyAuthority('OPT','ENG')" class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="ticketDp" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Ticket
                     </a>
