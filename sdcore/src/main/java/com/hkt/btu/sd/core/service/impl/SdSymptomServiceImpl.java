@@ -39,6 +39,7 @@ public class SdSymptomServiceImpl implements SdSymptomService {
         if (CollectionUtils.isEmpty(entityList)) {
             return null;
         }
+
         List<SdSymptomBean> beanList = new LinkedList<>();
         for (SdSymptomEntity entity : entityList) {
             SdSymptomBean bean = new SdSymptomBean();
@@ -50,8 +51,10 @@ public class SdSymptomServiceImpl implements SdSymptomService {
     }
 
     @Override
-    public void createSymptom(String symptomCode,String symptomGroupCode,String symptomDescription) {
-        sdSymptomMapper.createSymptom(symptomCode,symptomGroupCode,symptomDescription,userService.getCurrentUserUserId());
+    public void createSymptom(String symptomCode, String symptomGroupCode, String symptomDescription) {
+        String createby = userService.getCurrentUserUserId();
+        sdSymptomMapper.createSymptom(symptomCode, symptomGroupCode, symptomDescription, createby);
+        LOG.info(String.format("Created symptom %s - %s", symptomCode, symptomDescription));
     }
 
     @Override
@@ -84,11 +87,5 @@ public class SdSymptomServiceImpl implements SdSymptomService {
     @Override
     public void deleteSymptomMapping(String serviceTypeCode, String symptomGroupCode) {
         sdSymptomMapper.deleteSymptomMapping(serviceTypeCode,symptomGroupCode);
-    }
-
-    @Override
-    public boolean checkSymptom(String symptomCode) {
-        Optional<SdSymptomEntity> entity = Optional.ofNullable(sdSymptomMapper.getSymptomBySymptomCode(symptomCode));
-        return entity.isPresent();
     }
 }

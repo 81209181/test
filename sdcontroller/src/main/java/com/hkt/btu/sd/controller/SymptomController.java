@@ -3,6 +3,7 @@ package com.hkt.btu.sd.controller;
 
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.facade.SdSymptomFacade;
+import com.hkt.btu.sd.facade.data.SdSymptomData;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/symptom")
@@ -22,13 +24,16 @@ public class SymptomController {
 
     @GetMapping("/create-symptom")
     public String showCreateSymptom(Model model) {
-        model.addAttribute("symptomGroupList", sdSymptomFacade.getSymptomGroupList());
+        List<SdSymptomData> symptomGroupList = sdSymptomFacade.getSymptomGroupList();
+        if(symptomGroupList!=null) {
+            model.addAttribute("symptomGroupList", symptomGroupList);
+        }
         return "symptom/createSymptom";
     }
 
     @PostMapping("/post-create-symptom")
-    public ResponseEntity<?> createSymptom(@RequestParam String symptomCode,@RequestParam String symptomGroupCode,@RequestParam String symptomDescription) {
-        String errorMsg = sdSymptomFacade.createSymptom(symptomCode,symptomGroupCode,symptomDescription);
+    public ResponseEntity<?> createSymptom(@RequestParam String symptomCode, @RequestParam String symptomGroupCode, @RequestParam String symptomDescription) {
+        String errorMsg = sdSymptomFacade.createSymptom(symptomCode, symptomGroupCode, symptomDescription);
         if (errorMsg == null) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         } else {

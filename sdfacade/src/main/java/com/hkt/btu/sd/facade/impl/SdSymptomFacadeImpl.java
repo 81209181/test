@@ -9,6 +9,9 @@ import com.hkt.btu.sd.facade.data.SdSymptomData;
 import com.hkt.btu.sd.facade.populator.SdServiceTypeDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdSymptomDataPopulator;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -17,6 +20,7 @@ import java.util.List;
 
 
 public class SdSymptomFacadeImpl implements SdSymptomFacade {
+    private static final Logger LOG = LogManager.getLogger(SdSymptomFacadeImpl.class);
 
     @Resource(name = "sdSymptomService")
     SdSymptomService sdSymptomService;
@@ -45,21 +49,21 @@ public class SdSymptomFacadeImpl implements SdSymptomFacade {
     }
 
     @Override
-    public String createSymptom(String symptomCode,String symptomGroupCode,String symptomDescription) {
+    public String createSymptom(String symptomCode, String symptomGroupCode, String symptomDescription) {
         if (StringUtils.isEmpty(symptomCode)) {
-            return "Symptom Code empty.";
+            return "Empty Symptom Code.";
+        } else if (StringUtils.isEmpty(symptomGroupCode)) {
+            return "Empty Symptom Group Code.";
+        } else if (StringUtils.isEmpty(symptomDescription)) {
+            return "Empty Symptom Description.";
         }
-        if (StringUtils.isEmpty(symptomGroupCode)) {
-            return "Symptom Group Code empty.";
-        }
-        if (StringUtils.isEmpty(symptomDescription)) {
-            return "Symptom Description empty.";
-        }
-        if (sdSymptomService.checkSymptom(symptomCode)) {
+
+        try {
+            sdSymptomService.createSymptom(symptomCode, symptomGroupCode, symptomDescription);
+        } catch (DuplicateKeyException e){
             return "Symptom Code already exists.";
         }
 
-        sdSymptomService.createSymptom(symptomCode,symptomGroupCode,symptomDescription);
         return null;
     }
 

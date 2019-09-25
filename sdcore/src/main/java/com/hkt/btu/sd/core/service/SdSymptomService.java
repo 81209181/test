@@ -19,5 +19,4 @@ public interface SdSymptomService {
 
     void deleteSymptomMapping(String oldServiceTypeCode, String oldSymptomGroupCode);
 
-    boolean checkSymptom(String symptomCode);
 }
