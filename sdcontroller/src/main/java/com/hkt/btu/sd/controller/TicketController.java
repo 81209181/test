@@ -5,6 +5,7 @@ import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
 import com.hkt.btu.sd.facade.SdRequestCreateFacade;
 import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.SdUserRoleFacade;
+import com.hkt.btu.sd.facade.WfmApiFacade;
 import com.hkt.btu.sd.facade.data.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -29,6 +30,8 @@ public class TicketController {
     SdTicketFacade ticketFacade;
     @Resource(name = "userRoleFacade")
     SdUserRoleFacade userRoleFacade;
+    @Resource(name = "wfmApiFacade")
+    WfmApiFacade wfmApiFacade;
 
     @GetMapping("search-customer")
     public String searchCustomer() {
@@ -53,16 +56,13 @@ public class TicketController {
 
     @GetMapping("{ticketId}")
     public ModelAndView showQueryTicket(@PathVariable Integer ticketId, Principal principal) {
-        ModelAndView modelAndView = new ModelAndView("ticket/ticket_info");
-        ticketFacade.getTicket(ticketId)
-                .filter(sdTicketMasData -> userRoleFacade.checkSameTeamRole(principal.getName(), sdTicketMasData.getCreateBy()))
-                .ifPresentOrElse(sdTicketMasData -> {
+        return ticketFacade.getTicket(ticketId).filter(sdTicketMasData -> userRoleFacade.checkSameTeamRole(principal.getName(), sdTicketMasData.getCreateBy()))
+                .map(sdTicketMasData -> {
+                    ModelAndView modelAndView = new ModelAndView("ticket/ticket_info");
                     modelAndView.addObject("customerCode", sdTicketMasData.getCustCode())
                             .addObject("ticketMasId", sdTicketMasData.getTicketMasId());
-                }, () -> {
-                    modelAndView.setViewName("redirect:/ticket/search-ticket");
-                });
-        return modelAndView;
+                    return modelAndView;
+                }).orElse(new ModelAndView("redirect:/ticket/search-ticket"));
     }
 
     @PostMapping("contact/update")
@@ -150,5 +150,11 @@ public class TicketController {
         //    Original:	http://{domain}/saws/api/v3/Request/GetSubFaultBySubscriberId?subscriberId={subscriberId}
         //    New: 		http://{domain}/servicedesk/ticket/ajax-get-fault?subscriberId={subscriberId}
         return ResponseEntity.ok(null);
+    }
+
+    @PostMapping("submit")
+    public ResponseEntity<?> submit(WfmRequestDetailsBeanDate wfmRequestDetailsBeanDate, Principal principal) {
+        Integer jobId = wfmApiFacade.createJob(wfmRequestDetailsBeanDate, principal.getName());
+        return ResponseEntity.ok(jobId);
     }
 }

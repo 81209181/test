@@ -169,7 +169,12 @@ $().ready(function(){
     });
 
     $('.itsm_link').on('click',function(){
-        window.open($('.itsm_link').data('url'),'Profile','scrollbars=yes,height=600,width=800');
+//        window.open($(this).data('url'),'Profile','scrollbars=yes,height=600,width=800');
+        window.open('https://10.111.7.32/itsm/info/ResourcePoolTab.action?resourceId=309033','Profile','scrollbars=yes,height=600,width=800');
+    })
+
+    $('#btnTicketSubmit').on('click',function(){
+        alert('sfddf');
     })
 
 })

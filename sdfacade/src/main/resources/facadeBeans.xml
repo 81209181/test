@@ -36,6 +36,7 @@
     <bean name="besApiFacade" class="com.hkt.btu.sd.facade.impl.BesApiFacadeImpl"/>
     <bean name="itsmApiFacade" class="com.hkt.btu.sd.facade.impl.ItsmApiFacadeImpl"/>
     <bean name="norarsApiFacade" class="com.hkt.btu.sd.facade.impl.NorarsApiFacadeImpl"/>
+    <bean name="wfmApiFacade" class="com.hkt.btu.sd.facade.impl.WfmApiFacadeImpl"/>
 
     <alias name="sdTicketFacade" alias="ticketFacade"/>
     <bean id="sdTicketFacade" class="com.hkt.btu.sd.facade.impl.SdTicketFacadeImpl"/>
