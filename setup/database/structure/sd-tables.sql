@@ -163,7 +163,7 @@ CREATE INDEX IDX_SYMPTOM_1 ON SYMPTOM (SYMPTOM_GROUP_CODE);
 CREATE TABLE SYMPTOM_MAPPING
 (
     SERVICE_TYPE_CODE             varchar2(10)             not null,
-    SYMPTOM_CODE                  varchar2(10)             not null,
+    SYMPTOM_GROUP_CODE            varchar2(10)             not null,
 
     CREATEDATE                    date                     default SYSDATE not null,
     CREATEBY                      varchar2(10)             not null

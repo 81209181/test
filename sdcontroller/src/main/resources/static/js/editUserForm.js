@@ -31,21 +31,6 @@ function ajaxGetUser(){
                 $("label.ldapUserInfo").hide();
                 $("#edit-ldap-domain").hide();
             }
-
-            if($("#edit-user-group-admin").val() && $.inArray("ADMIN", data.userGroupList)>=0){
-                $("#edit-user-group-admin").prop('checked', true);
-            }
-            if($("#edit-user-group-user").val() && $.inArray("USER", data.userGroupList)>=0){
-                $("#edit-user-group-user").prop('checked', true);
-            }
-            if($("#edit-user-group-cadmin").val() && $.inArray("C_ADMIN", data.userGroupList)>=0){
-                $("#edit-user-group-cadmin").prop('checked', true);
-            }
-            if($("#edit-user-group-cuser").val() && $.inArray("C_USER", data.userGroupList)>=0 ){
-                $("#edit-user-group-cuser").prop('checked', true);
-            }
-
-
         },
         error: function (e) {
             var responseError = e.responseText ? e.responseText : "Get failed.";

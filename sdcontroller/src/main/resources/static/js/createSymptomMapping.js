@@ -1,11 +1,11 @@
 $().ready(function(){
 
-    $('#btnCreateSymptom').on('click',function(){
+    $('#btnCreateSymptomMapping').on('click',function(){
         clearAllMsg();
         let ctx = $("meta[name='_ctx']").attr("content");
-        $.post('/symptom/post-create-symptom',$('form').serialize(),function(res){
+        $.post('/symptom/post-create-symptom-mapping',$('form').serialize(),function(res){
             if (res.success) {
-                showInfoMsg("Create success.");
+                $(location).attr('href',ctx+'/symptom/edit-symptom-mapping?'+$('form').serialize());
             } else {
                 showErrorMsg(res.feedback);
             }

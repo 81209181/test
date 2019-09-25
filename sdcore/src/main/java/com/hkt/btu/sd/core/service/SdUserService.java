@@ -47,7 +47,7 @@ public interface SdUserService extends BtuUserService {
 
     void disableUserByUsername(String username) throws UserNotFoundException, InvalidInputException;
 
-    SdCreateResultBean createUser(String userId, String name, String mobile, String email, List<String> roleIdList)
+    SdCreateResultBean createUser(String userId, String name, String mobile, String email, List<String> toGrantRoleIdList)
             throws DuplicateUserEmailException, UserNotFoundException;
 
     String createLdapUser(String name, String mobile, String employeeNumber, String ldapDomain,
