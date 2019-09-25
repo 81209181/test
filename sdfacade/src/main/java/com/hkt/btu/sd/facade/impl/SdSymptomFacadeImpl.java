@@ -1,13 +1,18 @@
 package com.hkt.btu.sd.facade.impl;
 
+import com.hkt.btu.sd.core.exception.InsufficientAuthorityException;
 import com.hkt.btu.sd.core.service.SdSymptomService;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
 import com.hkt.btu.sd.core.service.bean.SdSymptomBean;
+import com.hkt.btu.sd.core.service.bean.SdSymptomMappingBean;
 import com.hkt.btu.sd.facade.SdSymptomFacade;
+import com.hkt.btu.sd.facade.data.EditResultData;
 import com.hkt.btu.sd.facade.data.SdServiceTypeData;
 import com.hkt.btu.sd.facade.data.SdSymptomData;
+import com.hkt.btu.sd.facade.data.SdSymptomMappingData;
 import com.hkt.btu.sd.facade.populator.SdServiceTypeDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdSymptomDataPopulator;
+import com.hkt.btu.sd.facade.populator.SdSymptomMappingDataPopulator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,6 +22,8 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.Resource;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 public class SdSymptomFacadeImpl implements SdSymptomFacade {
@@ -30,6 +37,9 @@ public class SdSymptomFacadeImpl implements SdSymptomFacade {
 
     @Resource(name = "serviceTypeDataPopulator")
     SdServiceTypeDataPopulator serviceTypeDataPopulator;
+
+    @Resource(name = "symptomMappingDataPopulator")
+    SdSymptomMappingDataPopulator symptomMappingDataPopulator;
 
     @Override
     public List<SdSymptomData> getSymptomGroupList() {
@@ -85,33 +95,71 @@ public class SdSymptomFacadeImpl implements SdSymptomFacade {
     }
 
     @Override
-    public String createSymptomMapping(String serviceTypeCode, String symptomGroupCode) {
-        if (StringUtils.isEmpty(serviceTypeCode)) {
-            return "Service Type Code empty.";
-        }
-        if (StringUtils.isEmpty(symptomGroupCode)) {
-            return "Symptom Group Code empty.";
-        }
-        if (sdSymptomService.checkSymptomMapping(serviceTypeCode, symptomGroupCode)) {
-            return "Service Type, Symptom Group already exists.";
+    public List<SdSymptomData> getAllSymptom() {
+        List<SdSymptomBean> beanList = sdSymptomService.getAllSymptom();
+        if (CollectionUtils.isEmpty(beanList)) {
+            return null;
         }
 
-        sdSymptomService.createSymptomMapping(serviceTypeCode,symptomGroupCode);
+        List<SdSymptomData> dataList = new LinkedList<>();
+        for (SdSymptomBean bean : beanList) {
+            SdSymptomData data = new SdSymptomData();
+            symptomDataPopulator.populate(bean, data);
+            dataList.add(data);
+        }
+
+        return dataList;
+    }
+
+    @Override
+    public SdSymptomData getSymptomBySymptomCode(String symptomCode) {
+        SdSymptomBean bean = sdSymptomService.getSymptomBySymptomCode(symptomCode);
+        if (bean == null) {
+            return null;
+        }
+        SdSymptomData data = new SdSymptomData();
+        symptomDataPopulator.populate(bean, data);
+        return data;
+    }
+
+    @Override
+    public String editSymptomMapping(SdSymptomMappingData symptomMappingData) {
+        String symptomCode = symptomMappingData.getSymptomCode();
+        List<String> serviceTypeList = symptomMappingData.getServiceTypeList();
+
+        try {
+            sdSymptomService.deleteSymptomMapping(symptomCode);
+            serviceTypeList.forEach(serviceTypeCode -> {
+                sdSymptomService.createSymptomMapping(serviceTypeCode, symptomCode);
+            });
+        } catch (Exception e){
+            LOG.error(e.getMessage());
+            return "Edit failed.";
+        }
+
         return null;
     }
 
     @Override
-    public String editSymptomMapping(String oldServiceTypeCode, String oldSymptomGroupCode, String serviceTypeCode, String symptomGroupCode) {
-        if (oldServiceTypeCode.equals(serviceTypeCode) && oldSymptomGroupCode.equals(symptomGroupCode)) {
-            /**/
-        } else {
-            if (sdSymptomService.checkSymptomMapping(serviceTypeCode, symptomGroupCode)) {
-                return "Service Type, Symptom Group already exists.";
+    public EditResultData getSymptomMapping(String symptomCode) {
+        List<String> results;
+        try {
+            List<SdSymptomMappingBean> userRoleBeanList = sdSymptomService.getSymptomMapping(symptomCode);
+            if (CollectionUtils.isEmpty(userRoleBeanList)) {
+                return EditResultData.error("Symptom Mapping not found.");
             }
+            results = userRoleBeanList.stream().map(bean -> {
+                SdSymptomMappingData data = new SdSymptomMappingData();
+                symptomMappingDataPopulator.populate(bean, data);
+                return data;
+            }).collect(Collectors.toList())
+                    .stream()
+                    .map(SdSymptomMappingData::getServiceTypeCode)
+                    .collect(Collectors.toList());
+        } catch (InsufficientAuthorityException e) {
+            return EditResultData.error(e.getMessage());
         }
 
-        sdSymptomService.deleteSymptomMapping(oldServiceTypeCode,oldSymptomGroupCode);
-        sdSymptomService.createSymptomMapping(serviceTypeCode,symptomGroupCode);
-        return null;
+        return EditResultData.dataList(results);
     }
 }

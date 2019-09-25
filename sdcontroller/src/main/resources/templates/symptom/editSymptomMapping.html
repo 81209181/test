@@ -9,27 +9,41 @@
 <div layout:fragment="content" th:remove="tag">
     <h1 style="padding-top:3%">Edit Symptom Mapping</h1>
     <form style="width:80%">
-        <input type="text" id="oldServiceTypeCode" name="oldServiceTypeCode" th:value="${serviceTypeCode}" hidden="hidden" />
-        <input type="text" id="oldSymptomGroupCode" name="oldSymptomGroupCode" th:value="${symptomGroupCode}" hidden="hidden" />
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Symptom Code</label>
+                <input type="text" class="form-control" id="symptomCode" name="symptomCode" th:attr="value = ${symptomCode}" readonly>
+            </div>
+            <div class="form-group col-md-6">
+                <label>Symptom Group</label>
+                <input type="text" class="form-control" id="symptomGroupName" name="symptomGroupName" readonly>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Symptom Description</label>
+                <input type="text" class="form-control" id="symptomDescription" name="symptomDescription" readonly>
+            </div>
+        </div>
+
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label>Service Type</label>
-                <select class="form-control custom-select" id="serviceTypeCode" name="serviceTypeCode" readonly disabled>
-                    <option th:each="type : ${serviceTypeList}" th:text="${type.serviceTypeName}" th:value="${type.serviceTypeCode}"></option>
-                </select>
+                <div class="d-block">
+                    <div class="form-check form-check-inline" th:each="type : ${serviceTypeList}">
+                        <input class="form-check-input" type="checkbox" name="serviceTypeCode"
+                               th:value="${type.serviceTypeCode}"
+                               th:attr="checked=${symptomMappingList!=null?(symptomMappingList.contains(type.serviceTypeCode)?true:false): false}">
+                        <label class="form-check-label" th:text="${type.serviceTypeName}"></label>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label>Symptom Group</label>
-                <select class="form-control custom-select" id="symptomGroupCode" name="symptomGroupCode" readonly disabled>
-                    <option th:each="group : ${symptomGroupList}" th:text="${group.symptomGroupName}" th:value="${group.symptomGroupCode}"></option>
-                </select>
-            </div>
-        </div>
+
         <div class="mt-5 from-row">
-            <button type="button" class="btn btn-lg btn-primary mr-sm-2" id="btnEdit"><i class="far fa-save"></i> Edit</button>
-            <button type="button" class="btn btn-lg btn-primary mr-sm-2" id="btnSubmit"><i class="far fa-save"></i> Submit</button>
+            <button type="button" class="btn btn-lg btn-primary float-right mr-sm-2" id="btnSubmit"><i class="far fa-save"></i> Submit</button>
         </div>
     </form>
     <script type="text/javascript" th:src="@{/js/editSymptomMapping.js}"></script>

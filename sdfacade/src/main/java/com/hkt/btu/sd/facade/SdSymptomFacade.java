@@ -1,8 +1,10 @@
 package com.hkt.btu.sd.facade;
 
 
+import com.hkt.btu.sd.facade.data.EditResultData;
 import com.hkt.btu.sd.facade.data.SdServiceTypeData;
 import com.hkt.btu.sd.facade.data.SdSymptomData;
+import com.hkt.btu.sd.facade.data.SdSymptomMappingData;
 
 import java.util.List;
 
@@ -14,7 +16,11 @@ public interface SdSymptomFacade {
 
     List<SdServiceTypeData> getServiceTypeList();
 
-    String createSymptomMapping(String serviceTypeCode, String symptomGroupCode);
+    List<SdSymptomData> getAllSymptom();
 
-    String editSymptomMapping(String oldServiceTypeCode, String oldSymptomGroupCode, String serviceTypeCode, String symptomGroupCode);
+    SdSymptomData getSymptomBySymptomCode(String symptomCode);
+
+    String editSymptomMapping(SdSymptomMappingData symptomMappingData);
+
+    EditResultData getSymptomMapping(String symptomCode);
 }
