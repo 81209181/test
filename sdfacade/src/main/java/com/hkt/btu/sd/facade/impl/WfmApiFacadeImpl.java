@@ -51,7 +51,10 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
         WfmResponseData<WfmJobCreateResponseData> wfmResponseData = populateWfmResponseData(
                 wfmResponseDataJsonString, new TypeToken<WfmResponseData<WfmJobCreateResponseData>>() {
                 }.getType());
-        return Optional.ofNullable(wfmResponseData.getData()).map(WfmJobCreateResponseData::getJobId).orElse(0);
+        return Optional.ofNullable(wfmResponseData)
+                .map(WfmResponseData::getData)
+                .map(WfmJobCreateResponseData::getJobId)
+                .orElse(0);
     }
 
     @Override

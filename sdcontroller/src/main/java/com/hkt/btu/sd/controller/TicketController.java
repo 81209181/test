@@ -155,6 +155,11 @@ public class TicketController {
     @PostMapping("submit")
     public ResponseEntity<?> submit(WfmRequestDetailsBeanDate wfmRequestDetailsBeanDate, Principal principal) {
         Integer jobId = wfmApiFacade.createJob(wfmRequestDetailsBeanDate, principal.getName());
-        return ResponseEntity.ok(jobId);
+        if (jobId > 0) {
+            return ResponseEntity.ok(jobId);
+        } else {
+            return ResponseEntity.badRequest().body("Submit fail.");
+        }
+
     }
 }

@@ -174,7 +174,27 @@ $().ready(function(){
     })
 
     $('#btnTicketSubmit').on('click',function(){
-        alert('sfddf');
+        let job_id =$('input[name=jobId]');
+
+        let ticket ={};
+        let ticket_input =$('.card-body').find('input');
+        $.each(ticket_input,function(index,input){
+            ticket[$(input).attr('name')] =$(input).val();
+        })
+        $.ajax({
+            url:'/ticket/submit',
+            type : 'POST',
+            dataType: 'text',
+            contentType: "application/json",
+            data: JSON.stringify(ticket),
+            success:function(res){
+                job_id.val(res);
+            }
+        }).fail(function(e){
+            var responseError = e.responseText ? e.responseText : "Get failed.";
+            console.log("ERROR : ", responseError);
+            showErrorMsg(responseError);
+        })
     })
 
 })

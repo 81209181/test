@@ -11,15 +11,19 @@
         var customerCode = '[[${customerCode}]]';
         var ticketMasId = '[[${ticketMasId}]]';
     </script>
-    <div class="card " style="margin-bottom: 75px;">
+    <div class="card" style="margin-bottom: 75px;">
         <div class="card-header bg-primary text-white">Ticket - <span th:text="${ticketMasId}"></span></div>
         <div class="card-body">
             <h3>Customer</h3>
             <div id="customer" class="row">
-                <div class="col-md-6 form-inline pt-2">
+                <div class="col-md-3 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Customer Code:</label>
                     <input type="text" class="form-control-plaintext col-md-3" name="custCode"
                            th:value="${customerCode}">
+                </div>
+                <div class="col-md-3 form-inline pt-2">
+                    <label class="col-form-label justify-content-end">Job Id:</label>
+                    <input type="text" class="form-control-plaintext col-md-3" name="jobId">
                 </div>
             </div>
             <hr>
