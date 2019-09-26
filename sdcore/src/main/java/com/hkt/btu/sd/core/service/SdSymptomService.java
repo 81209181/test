@@ -2,6 +2,7 @@ package com.hkt.btu.sd.core.service;
 
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
 import com.hkt.btu.sd.core.service.bean.SdSymptomBean;
+import com.hkt.btu.sd.core.service.bean.SdSymptomMappingBean;
 
 import java.util.List;
 
@@ -13,10 +14,13 @@ public interface SdSymptomService {
 
     List<SdServiceTypeBean> getServiceTypeList();
 
-    void createSymptomMapping(String serviceTypeCode, String symptomGroupCode);
+    List<SdSymptomBean> getAllSymptom();
 
-    boolean checkSymptomMapping(String serviceTypeCode, String symptomGroupCode);
+    SdSymptomBean getSymptomBySymptomCode(String symptomCode);
 
-    void deleteSymptomMapping(String oldServiceTypeCode, String oldSymptomGroupCode);
+    void deleteSymptomMapping(String symptomCode);
 
+    void createSymptomMapping(String serviceTypeCode, String symptomCode);
+
+    List<SdSymptomMappingBean> getSymptomMapping(String symptomCode);
 }

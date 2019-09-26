@@ -1,8 +1,8 @@
-package com.hkt.btu.sd.core.dao.entity;
+package com.hkt.btu.sd.core.service.bean;
 
-import com.hkt.btu.common.core.dao.entity.BaseEntity;
+import com.hkt.btu.common.core.service.bean.BaseBean;
 
-public class SdSymptomMappingEntity extends BaseEntity {
+public class SdSymptomMappingBean extends BaseBean {
 
     private String serviceTypeCode;
     private String symptomCode;

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Search Symptom</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <h1>Symptom List</h1>
+    <table id="searchSymptomTable" class="display">
+        <thead>
+            <tr>
+                <th>Symptom Code</th>
+                <th>Symptom Description</th>
+                <th>Symptom Group</th>
+                <th>Modify Date</th>
+                <th>Modify By</th>
+                <th><!--edit symptom link--></th>
+            </tr>
+        </thead>
+
+        <tbody></tbody>
+
+        <tfoot>
+            <tr>
+                <th>Symptom Code</th>
+                <th>Symptom Description</th>
+                <th>Symptom Group</th>
+                <th>Modify Date</th>
+                <th>Modify By</th>
+                <th><!--edit symptom link--></th>
+            </tr>
+        </tfoot>
+    </table>
+
+    <script type="text/javascript" th:src="@{/js/searchSymptom.js}"></script>
+</div>
+</body>
+</html>

@@ -5,7 +5,7 @@ $().ready(function(){
         let ctx = $("meta[name='_ctx']").attr("content");
         $.post('/symptom/post-create-symptom-mapping',$('form').serialize(),function(res){
             if (res.success) {
-                $(location).attr('href',ctx+'/symptom/edit-symptom-mapping?'+$('form').serialize());
+                showInfoMsg("Create success.");
             } else {
                 showErrorMsg(res.feedback);
             }

@@ -14,5 +14,7 @@ public class SdSymptomDataPopulator extends AbstractDataPopulator<SdSymptomData>
         target.setSymptomDescription(source.getSymptomDescription());
         target.setSymptomGroupCode(source.getSymptomGroupCode());
         target.setSymptomGroupName(source.getSymptomGroupName());
+        target.setModifydate(source.getModifydate());
+        target.setModifyby(source.getModifyby());
     }
 }

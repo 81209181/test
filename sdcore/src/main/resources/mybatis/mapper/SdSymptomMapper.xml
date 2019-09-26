@@ -53,19 +53,46 @@
     </select>
 
     <insert id="createSymptomMapping">
-        insert into symptom_mapping (SERVICE_TYPE_CODE,SYMPTOM_GROUP_CODE,CREATEBY)
-        values (#{serviceTypeCode},#{symptomGroupCode},#{createby})
+        insert into symptom_mapping (SERVICE_TYPE_CODE,SYMPTOM_CODE,CREATEBY)
+        values (#{serviceTypeCode},#{symptomCode},#{createby})
     </insert>
 
     <select id="getSymptomMapping" resultMap="SymptomMappingEntity">
-        select * from SYMPTOM_MAPPING where SERVICE_TYPE_CODE = #{serviceTypeCode} and SYMPTOM_GROUP_CODE = #{symptomGroupCode}
+        select * from SYMPTOM_MAPPING where SYMPTOM_CODE = #{symptomCode}
     </select>
 
     <delete id="deleteSymptomMapping">
-        delete from SYMPTOM_MAPPING where SERVICE_TYPE_CODE = #{serviceTypeCode} and SYMPTOM_GROUP_CODE = #{symptomGroupCode}
+        delete from SYMPTOM_MAPPING where SYMPTOM_CODE = #{symptomCode}
     </delete>
 
     <select id="getSymptomBySymptomCode" resultMap="SymptomEntity">
-        select * from SYMPTOM where SYMPTOM_CODE = #{symptomCode}
+        select
+        sy.SYMPTOM_CODE,
+        sy.SYMPTOM_DESCRIPTION,
+        sy.SYMPTOM_GROUP_CODE,
+        sg.SYMPTOM_GROUP_NAME,
+        sy.CREATEDATE,
+        sy.CREATEBY,
+        sy.MODIFYDATE,
+        sy.MODIFYBY
+        from SYMPTOM sy
+        inner join SYMPTOM_GROUP sg on sy.SYMPTOM_GROUP_CODE = sg.SYMPTOM_GROUP_CODE
+        where sy.SYMPTOM_CODE = #{symptomCode}
+        order by sy.SYMPTOM_CODE
+    </select>
+
+    <select id="getAllSymptom" resultMap="SymptomEntity">
+        select
+        sy.SYMPTOM_CODE,
+        sy.SYMPTOM_DESCRIPTION,
+        sy.SYMPTOM_GROUP_CODE,
+        sg.SYMPTOM_GROUP_NAME,
+        sy.CREATEDATE,
+        sy.CREATEBY,
+        sy.MODIFYDATE,
+        sy.MODIFYBY
+        from SYMPTOM sy
+        inner join SYMPTOM_GROUP sg on sy.SYMPTOM_GROUP_CODE = sg.SYMPTOM_GROUP_CODE
+        order by sy.SYMPTOM_CODE
     </select>
 </mapper>

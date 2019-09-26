@@ -117,4 +117,7 @@
 
     <alias name="sdServiceTypeBeanPopulator" alias="serviceTypeBeanPopulator" />
     <bean id="sdServiceTypeBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdServiceTypeBeanPopulator"/>
+
+    <alias name="sdSymptmMappingBeanPopulator" alias="symptmMappingBeanPopulator" />
+    <bean id="sdSymptmMappingBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdSymptomMappingBeanPopulator"/>
 </beans>
