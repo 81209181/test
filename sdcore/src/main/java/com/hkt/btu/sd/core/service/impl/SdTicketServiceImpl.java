@@ -59,7 +59,7 @@ public class SdTicketServiceImpl implements SdTicketService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int createQueryTicket(String custCode, String serviceNo, String serviceType) {
+    public int createQueryTicket(String custCode, String serviceNo, String serviceType, String subsId) {
         SdTicketMasEntity ticketMasEntity = new SdTicketMasEntity();
         String userId = userService.getCurrentUserUserId();
         ticketMasEntity.setCustCode(custCode);
@@ -72,6 +72,7 @@ public class SdTicketServiceImpl implements SdTicketService {
         entity.setServiceId(serviceNo);
         entity.setTicketMasId(ticketMasEntity.getTicketMasId());
         entity.setServiceTypeCode(serviceType);
+        entity.setSubsId(subsId);
         ticketServiceMapper.insertServiceInfo(entity);
         return ticketMasEntity.getTicketMasId();
     }
@@ -149,6 +150,20 @@ public class SdTicketServiceImpl implements SdTicketService {
             beanList.add(bean);
         });
         return beanList;
+    }
+
+    @Override
+    public void updateJobIdInService(Integer jobId, String ticketMasId, String userId) {
+        ticketServiceMapper.updateTicketServiceByJobId(jobId, ticketMasId, userId);
+    }
+
+    @Override
+    public Optional<SdTicketServiceBean> getService(Integer ticketId) {
+        return Optional.ofNullable(ticketServiceMapper.getTicketServiceByTicketMasId(ticketId)).map(sdTicketServiceEntity -> {
+            SdTicketServiceBean bean = new SdTicketServiceBean();
+            ticketServiceBeanPopulator.populate(sdTicketServiceEntity, bean);
+            return bean;
+        });
     }
 
     @Override

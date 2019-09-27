@@ -1,5 +1,8 @@
 package com.hkt.btu.sd.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
 import com.hkt.btu.sd.facade.SdRequestCreateFacade;
@@ -19,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @RequestMapping("ticket")
 @Controller
@@ -49,9 +53,11 @@ public class TicketController {
     }
 
     @PostMapping("query/create")
-    @ResponseBody
-    public int createQueryTicket(String custCode, String serviceNo, String serviceType) {
-        return ticketFacade.createQueryTicket(custCode, serviceNo, serviceType);
+    public ResponseEntity<?> createQueryTicket(String custCode, String serviceNo,String serviceType,String subsId) {
+        if (StringUtils.isEmpty(serviceNo) || StringUtils.isEmpty(serviceType)) {
+            return ResponseEntity.badRequest().body("Service No. / Service Type is empty.");
+        }
+        return ResponseEntity.ok(ticketFacade.createQueryTicket(custCode, serviceNo, serviceType,subsId));
     }
 
     @GetMapping("{ticketId}")
@@ -61,6 +67,15 @@ public class TicketController {
                     ModelAndView modelAndView = new ModelAndView("ticket/ticket_info");
                     modelAndView.addObject("customerCode", sdTicketMasData.getCustCode())
                             .addObject("ticketMasId", sdTicketMasData.getTicketMasId());
+                    ticketFacade.getService(ticketId)
+                            .map(SdTicketServiceData::getJobId)
+                            .ifPresent(jobId ->{
+                                modelAndView.addObject("jobId",jobId);
+                                Optional.ofNullable(wfmApiFacade.getJobDetails(Integer.valueOf(jobId)))
+                                        .map(WfmJobDetailsData::getJobBean)
+                                        .map(WfmJobBeanData::getStatus)
+                                        .ifPresent(status -> modelAndView.addObject("jobStatus", status));
+                            });
                     return modelAndView;
                 }).orElse(new ModelAndView("redirect:/ticket/search-ticket"));
     }
@@ -153,10 +168,17 @@ public class TicketController {
     }
 
     @PostMapping("submit")
-    public ResponseEntity<?> submit(WfmRequestDetailsBeanDate wfmRequestDetailsBeanDate, Principal principal) {
+    public ResponseEntity<?> submit(Principal principal,WfmRequestDetailsBeanDate wfmRequestDetailsBeanDate) throws JsonProcessingException {
         Integer jobId = wfmApiFacade.createJob(wfmRequestDetailsBeanDate, principal.getName());
         if (jobId > 0) {
-            return ResponseEntity.ok(jobId);
+            ticketFacade.updateJobIdInService(jobId,wfmRequestDetailsBeanDate.getTicketMasId(),principal.getName());
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectNode node = mapper.createObjectNode();
+            Optional.ofNullable(wfmApiFacade.getJobDetails(jobId)).map(WfmJobDetailsData::getJobBean).ifPresent(wfmJobBeanData -> {
+                node.put("jobId", jobId);
+                node.put("jobStatus", wfmJobBeanData.getStatus());
+            });
+            return ResponseEntity.ok(mapper.writeValueAsString(node));
         } else {
             return ResponseEntity.badRequest().body("Submit fail.");
         }

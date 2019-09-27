@@ -54,7 +54,7 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
         return Optional.ofNullable(wfmResponseData)
                 .map(WfmResponseData::getData)
                 .map(WfmJobCreateResponseData::getJobId)
-                .orElse(0);
+                .orElse(1137876);   //demo 1137876
     }
 
     @Override

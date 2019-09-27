@@ -22,8 +22,16 @@
                            th:value="${customerCode}">
                 </div>
                 <div class="col-md-3 form-inline pt-2">
+                    <label class="col-form-label justify-content-end">Customer Name:</label>
+                    <input type="text" class="form-control-plaintext col-md-3" name="custName">
+                </div>
+                <div class="col-md-3 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Job Id:</label>
-                    <input type="text" class="form-control-plaintext col-md-3" name="jobId">
+                    <input type="text" class="form-control-plaintext col-md-3" name="jobId" th:value="${jobId}">
+                </div>
+                <div class="col-md-3 form-inline pt-2">
+                    <label class="col-form-label justify-content-end">Job Status:</label>
+                    <input type="text" class="form-control-plaintext col-md-3" name="jobStatus" th:value="${jobStatus}">
                 </div>
             </div>
             <hr>

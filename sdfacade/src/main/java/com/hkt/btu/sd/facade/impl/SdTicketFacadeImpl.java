@@ -46,8 +46,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     SdTicketRemarkDataPopulator ticketRemarkDataPopulator;
 
     @Override
-    public int createQueryTicket(String custCode, String serviceNo, String serviceType) {
-        return ticketService.createQueryTicket(custCode,serviceNo,serviceType);
+    public int createQueryTicket(String custCode, String serviceNo, String serviceType, String subsId) {
+        return ticketService.createQueryTicket(custCode, serviceNo, serviceType, subsId);
     }
 
     @Override
@@ -125,11 +125,11 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
     @Override
     public List<SdTicketRemarkData> getRemarkInfo(Integer ticketMasId) {
-        List<SdTicketRemarkBean> beans=ticketService.getRemarkInfo(ticketMasId);
+        List<SdTicketRemarkBean> beans = ticketService.getRemarkInfo(ticketMasId);
         List<SdTicketRemarkData> dataList = new ArrayList<>();
         beans.forEach(sdTicketRemarkBean -> {
             SdTicketRemarkData data = new SdTicketRemarkData();
-            ticketRemarkDataPopulator.populate(sdTicketRemarkBean,data);
+            ticketRemarkDataPopulator.populate(sdTicketRemarkBean, data);
             dataList.add(data);
         });
         return dataList;
@@ -179,7 +179,21 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     public void updateRemark(List<SdTicketRemarkData> remarkList) {
         ticketService.removeRemarkByTicketMasId(remarkList.get(0).getTicketMasId());
         remarkList.forEach(data -> {
-            ticketService.updateRemark(data.getTicketMasId(),data.getRemarksTypeValue(),data.getRemarks());
+            ticketService.updateRemark(data.getTicketMasId(), data.getRemarksTypeValue(), data.getRemarks());
+        });
+    }
+
+    @Override
+    public void updateJobIdInService(Integer jobId, String ticketMasId, String userId) {
+        ticketService.updateJobIdInService(jobId, ticketMasId, userId);
+    }
+
+    @Override
+    public Optional<SdTicketServiceData> getService(Integer ticketId) {
+        return ticketService.getService(ticketId).map(sdTicketServiceBean -> {
+            SdTicketServiceData data = new SdTicketServiceData();
+            ticketServiceDataPopulator.populate(sdTicketServiceBean, data);
+            return data;
         });
     }
 }

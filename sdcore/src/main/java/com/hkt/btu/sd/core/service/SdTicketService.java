@@ -1,10 +1,9 @@
 package com.hkt.btu.sd.core.service;
 
-import com.hkt.btu.sd.core.dao.entity.SdTicketServiceEntity;
 import com.hkt.btu.sd.core.service.bean.SdTicketContactBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketMasBean;
-import com.hkt.btu.sd.core.service.bean.SdTicketServiceBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketRemarkBean;
+import com.hkt.btu.sd.core.service.bean.SdTicketServiceBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -12,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SdTicketService {
-    int createQueryTicket(String custCode, String serviceNo, String serviceType);
+    int createQueryTicket(String custCode, String serviceNo, String serviceType, String subsId);
 
     Optional<SdTicketMasBean> getTicket(Integer ticketId);
 
@@ -39,4 +38,8 @@ public interface SdTicketService {
     void removeRemarkByTicketMasId(Integer ticketMasId);
 
     List<SdTicketRemarkBean> getRemarkInfo(Integer ticketMasId);
+
+    void updateJobIdInService(Integer jobId, String ticketMasId, String userId);
+
+    Optional<SdTicketServiceBean> getService(Integer ticketId);
 }
