@@ -52,7 +52,7 @@ public class BesSubscriberBasicData implements DataInterface {
     }
 
 
-    private long subsId;
+    private Long subsId;
     private String subsName;
     private String subsVoiceLang;
     private String subsWritenLang;

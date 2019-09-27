@@ -47,6 +47,16 @@ public class RequestCreateSearchResultData implements DataInterface {
     private String domainName;
 
 
+    private Long subsId;
+
+    public Long getSubsId() {
+        return subsId;
+    }
+
+    public void setSubsId(Long subsId) {
+        this.subsId = subsId;
+    }
+
     public String getAdminId() {
         return adminId;
     }

@@ -19,10 +19,20 @@ public class WfmRequestDetailsBeanDate implements DataInterface {
     private Boolean majorIncident;
     private String tenantIds;
 
+    private String ticketMasId;
+
     private WfmFdBeanListData[] fdBeanList;
 
     private WfmContactBeanData contactBean;
     private WfmCustomerBeanData customerBean;
+
+    public String getTicketMasId() {
+        return ticketMasId;
+    }
+
+    public void setTicketMasId(String ticketMasId) {
+        this.ticketMasId = ticketMasId;
+    }
 
     public String getCust_name() {
         return cust_name;

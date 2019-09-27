@@ -8,6 +8,8 @@
         <result column="TICKET_MAS_ID" property="ticketMasId"/>
         <result column="SERVICE_TYPE_CODE" property="serviceTypeCode"/>
         <result column="SERVICE_ID" property="serviceId"/>
+        <result column="SUBS_ID" property="subsId"/>
+        <result column="JOB_ID" property="jobId"/>
 
         <result column="CREATEDATE" property="createdate"/>
         <result column="CREATEBY" property="createby"/>
@@ -37,7 +39,9 @@
         select TICKET_DET_ID      as ticketDetId,
                TICKET_MAS_ID      as ticketMasId,
                SERVICE_ID         as serviceId,
-               SERVICE_TYPE_CODE  as serviceTypeCode
+               SERVICE_TYPE_CODE  as serviceTypeCode,
+               JOB_ID  as jobId,
+               SUBS_ID  as subsId
         from TICKET_DET
         where TICKET_MAS_ID = #{ticketMasId}
     </select>
@@ -46,8 +50,8 @@
         <selectKey keyProperty="ticketDetId" resultType="int" order="BEFORE">
             SELECT SEQ_TICKET_DET_ID.nextval FROM DUAL
         </selectKey>
-        insert into TICKET_DET(TICKET_DET_ID, TICKET_MAS_ID, SERVICE_TYPE_CODE, SERVICE_ID, CREATEBY, MODIFYBY)
-        values (#{ticketDetId}, #{ticketMasId}, #{serviceTypeCode}, #{serviceId}, #{createby}, #{modifyby})
+        insert into TICKET_DET(TICKET_DET_ID, TICKET_MAS_ID, SERVICE_TYPE_CODE, SERVICE_ID, CREATEBY, MODIFYBY,SUBS_ID)
+        values (#{ticketDetId}, #{ticketMasId}, #{serviceTypeCode}, #{serviceId}, #{createby}, #{modifyby},#{subsId})
     </insert>
 
     <insert id="insertFaults">
@@ -66,4 +70,12 @@
         from TICKET_FAULTS
         where TICKET_DET_ID = #{ticketDetId}
     </delete>
+
+    <update id="updateTicketServiceByJobId">
+        update TICKET_DET
+        set JOB_ID =#{jobId},
+            MODIFYBY= #{userId},
+            MODIFYDATE=sysdate
+        where TICKET_MAS_ID =#{ticketMasId}
+    </update>
 </mapper>

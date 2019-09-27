@@ -47,8 +47,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     SdTicketRemarkDataPopulator ticketRemarkDataPopulator;
 
     @Override
-    public int createQueryTicket(String custCode, String serviceNo, String serviceType) {
-        return ticketService.createQueryTicket(custCode,serviceNo,serviceType);
+    public int createQueryTicket(String custCode, String serviceNo, String serviceType, String subsId) {
+        return ticketService.createQueryTicket(custCode, serviceNo, serviceType, subsId);
     }
 
     @Override
@@ -214,5 +214,19 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         }
 
         return null;
+    }
+
+    @Override
+    public void updateJobIdInService(Integer jobId, String ticketMasId, String userId) {
+        ticketService.updateJobIdInService(jobId, ticketMasId, userId);
+    }
+
+    @Override
+    public Optional<SdTicketServiceData> getService(Integer ticketId) {
+        return ticketService.getService(ticketId).map(sdTicketServiceBean -> {
+            SdTicketServiceData data = new SdTicketServiceData();
+            ticketServiceDataPopulator.populate(sdTicketServiceBean, data);
+            return data;
+        });
     }
 }

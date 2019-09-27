@@ -10,6 +10,15 @@ public class SdTicketServiceData implements DataInterface {
     private String serviceType;
     private String serviceCode;
     private List<SdServiceFaultsData> faultsList;
+    private String jobId;
+
+    public String getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(String jobId) {
+        this.jobId = jobId;
+    }
 
     public Integer getTicketDetId() {
         return ticketDetId;

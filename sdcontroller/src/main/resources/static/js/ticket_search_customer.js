@@ -48,17 +48,23 @@ $().ready(function(){
             searchKey : searchKey.val().trim(),
             searchValue : searchValue.val().trim()
         },function(res){
-            $.each(res,function(i,val){
-                let tr ='<tr class="text-center"></tr>';
-                $('tbody').append(tr);
-                $('tbody tr:last').data('info',val);
-                $('tbody tr:last').append('<td><input type="radio"></td>')
-                    .append('<td>'+val.custCode+'</td>')
-                    .append('<td>'+val.custName+'</td>')
-                    .append('<td>'+val.serviceType+'</td>')
-                    .append('<td>'+val.serviceNo+'</td>')
-            });
-            $('.modal').modal('show');
+            if(res.length > 1){
+                $.each(res,function(i,val){
+                    let tr ='<tr class="text-center"></tr>';
+                    $('tbody').append(tr);
+                    $('tbody tr:last').data('info',val);
+                    $('tbody tr:last').append('<td><input type="radio"></td>')
+                        .append('<td>'+val.custCode+'</td>')
+                        .append('<td>'+val.custName+'</td>')
+                        .append('<td>'+val.serviceType+'</td>')
+                        .append('<td>'+val.serviceNo+'</td>')
+                });
+                $('.modal').modal('show');
+            }else{
+                $.each(res.pop(),function(key,val){
+                     $('form').find('input[name='+ key +']').val(val);
+                })
+            }
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";
             console.log("ERROR : ", responseError);

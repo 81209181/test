@@ -9,7 +9,7 @@
 <div layout:fragment="content" th:remove="tag">
 
     <div class="card" style="height:700px">
-        <div class="card-header bg-primary text-white">Search Customer</div>
+        <div class="card-header bg-primary text-white">Search Service</div>
         <div class="card-body">
             <div class="row">
                 <div class="form-group">
@@ -31,9 +31,7 @@
 
             <div class="row col-md-10" style="margin-left:200px">
                 <form class="col-md-12">
-                    <input type="hidden" name="serviceType">
-                    <input type="hidden" name="serviceNo">
-                    <p class="pb-2" style="border-bottom:1px solid #949494">Contact Info</p>
+                    <p class="pb-2" style="border-bottom:1px solid #949494">Customer Info</p>
                     <div class="form-row">
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Customer ID:</label>
@@ -76,7 +74,22 @@
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-primary float-right mt-3" id="btnSearchCustomerNext">Next</button>
+                    <p class="pb-2" style="border-bottom:1px solid #949494">Service Info</p>
+                    <div class="form-row">
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Service Type :</label>
+                            <input type="text" class="form-control-plaintext col-md-5" name="serviceType">
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Service Number :</label>
+                            <input type="text" class="form-control-plaintext col-md-5" name="serviceNo">
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Subscriber Number :</label>
+                            <input type="text" class="form-control-plaintext col-md-5" name="subsId">
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary float-right mt-3" id="btnSearchCustomerNext">Create Ticket</button>
                 </form>
             </div>
         </div>

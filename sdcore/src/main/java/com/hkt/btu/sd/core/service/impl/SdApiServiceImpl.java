@@ -1,9 +1,7 @@
 package com.hkt.btu.sd.core.service.impl;
 
-import com.hkt.btu.common.core.service.BtuSensitiveDataService;
 import com.hkt.btu.sd.core.service.SdApiService;
 import com.hkt.btu.sd.core.service.SdConfigParamService;
-import com.hkt.btu.sd.core.service.SdSiteConfigService;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.logging.log4j.LogManager;

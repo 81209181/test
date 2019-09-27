@@ -140,7 +140,27 @@ $().ready(function(){
     })
 
     $('#btnTicketSubmit').on('click',function(){
-        alert('sfddf');
+        let ticket ={};
+        let ticket_input =$('.card-body').find('input');
+        $.each(ticket_input,function(index,input){
+            ticket[$(input).attr('name')] =$(input).val();
+        })
+        ticket['ticketMasId'] =ticketMasId;
+        $.ajax({
+            url:'/ticket/submit',
+            type : 'POST',
+            dataType: 'json',
+            data: ticket,
+            success:function(res){
+                $.each(res,function(key,val){
+                    $('input[name='+ key +']').val(val);
+                })
+            }
+        }).fail(function(e){
+            var responseError = e.responseText ? e.responseText : "Get failed.";
+            console.log("ERROR : ", responseError);
+            showErrorMsg(responseError);
+        })
     })
 
 })

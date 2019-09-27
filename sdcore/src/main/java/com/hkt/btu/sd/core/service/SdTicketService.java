@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SdTicketService {
-    int createQueryTicket(String custCode, String serviceNo, String serviceType);
+    int createQueryTicket(String custCode, String serviceNo, String serviceType, String subsId);
 
     Optional<SdTicketMasBean> getTicket(Integer ticketId);
 
@@ -36,4 +36,8 @@ public interface SdTicketService {
     List<SdTicketRemarkBean> getTicketRemarksByTicketId(Integer ticketMasId);
 
     void createTicketRemarks(Integer ticketMasId, String remarksType, String remarks);
+
+    void updateJobIdInService(Integer jobId, String ticketMasId, String userId);
+
+    Optional<SdTicketServiceBean> getService(Integer ticketId);
 }

@@ -48,6 +48,7 @@ public class RequestCreateSearchResultDataPopulator extends AbstractDataPopulato
     private void populateFromBesSubscriberBasicTypeData(BesSubscriberBasicData source, RequestCreateSearchResultData target) {
 
         target.setServiceNo(source.getServiceNumber());
+        target.setSubsId(source.getSubsId());
 
         String status = source.getStatus();
         if (StringUtils.equals(status, BesSubscriberBasicData.STATUS.TO_BE_ACTIVATED)) {
