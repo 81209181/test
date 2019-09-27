@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.controller;
 
 import com.hkt.btu.common.facade.data.PageData;
+import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
 import com.hkt.btu.sd.facade.SdRequestCreateFacade;
 import com.hkt.btu.sd.facade.SdTicketFacade;
@@ -67,8 +68,8 @@ public class TicketController {
 
     @PostMapping("contact/update")
     public ResponseEntity<?> updateContactInfo(@RequestBody List<SdTicketContactData> contactList) {
-        ticketFacade.updateContactInfo(contactList);
-        return ResponseEntity.ok("Update contact info success.");
+        String errorMsg = ticketFacade.updateContactInfo(contactList);
+        return ResponseEntity.ok(errorMsg);
     }
 
     @GetMapping("/contact/{ticketMasId}")
@@ -131,18 +132,6 @@ public class TicketController {
         }
     }
 
-    @GetMapping("/remark/{ticketMasId}")
-    public ResponseEntity<?> getRemarkInfo(@PathVariable Integer ticketMasId) {
-        List<SdTicketRemarkData> data = ticketFacade.getRemarkInfo(ticketMasId);
-        return ResponseEntity.ok(data);
-    }
-
-    @PostMapping("/remark/update")
-    public ResponseEntity<?> updateRemark(@RequestBody List<SdTicketRemarkData> remarkList) {
-        ticketFacade.updateRemark(remarkList);
-        return ResponseEntity.ok("Update success.");
-    }
-
     @GetMapping("/ajax-get-fault")
     public ResponseEntity<?> getFaultInfo(@RequestParam int subscriberId) {
         // todo: api for BES
@@ -156,5 +145,21 @@ public class TicketController {
     public ResponseEntity<?> submit(WfmRequestDetailsBeanDate wfmRequestDetailsBeanDate, Principal principal) {
         Integer jobId = wfmApiFacade.createJob(wfmRequestDetailsBeanDate, principal.getName());
         return ResponseEntity.ok(jobId);
+    }
+
+    @GetMapping("ajax-search-ticket-remarks")
+    public ResponseEntity<?> ajaxSearchTicketRemarks(@RequestParam Integer ticketMasId) {
+        List<SdTicketRemarkData> dataList = ticketFacade.getTicketRemarksByTicketId(ticketMasId);
+        return ResponseEntity.ok(dataList);
+    }
+
+    @PostMapping("/post-create-ticket-remarks")
+    public ResponseEntity<?> createTicketRemarks(@RequestParam Integer ticketMasId, @RequestParam String remarksType, @RequestParam String remarks) {
+        String errorMsg = ticketFacade.createTicketRemarks(ticketMasId, remarksType, remarks);
+        if (errorMsg == null) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of());
+        } else {
+            return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
+        }
     }
 }

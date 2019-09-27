@@ -1,10 +1,9 @@
 package com.hkt.btu.sd.core.service;
 
-import com.hkt.btu.sd.core.dao.entity.SdTicketServiceEntity;
 import com.hkt.btu.sd.core.service.bean.SdTicketContactBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketMasBean;
-import com.hkt.btu.sd.core.service.bean.SdTicketServiceBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketRemarkBean;
+import com.hkt.btu.sd.core.service.bean.SdTicketServiceBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -16,7 +15,7 @@ public interface SdTicketService {
 
     Optional<SdTicketMasBean> getTicket(Integer ticketId);
 
-    void updateContactInfo(Integer ticketMasId, String contactType, String contactName, String contactNumber, String contactEmail, String contactMobile);
+    void insertTicketContactInfo(Integer ticketMasId, String contactType, String contactName, String contactNumber, String contactEmail, String contactMobile);
 
     List<SdTicketContactBean> getContactInfo(Integer ticketMasId);
 
@@ -34,9 +33,7 @@ public interface SdTicketService {
 
     void updateFaultsInfo(Integer ticketDetId, String faults);
 
-    void updateRemark(Integer ticketMasId, String remarksType, String remarks);
+    List<SdTicketRemarkBean> getTicketRemarksByTicketId(Integer ticketMasId);
 
-    void removeRemarkByTicketMasId(Integer ticketMasId);
-
-    List<SdTicketRemarkBean> getRemarkInfo(Integer ticketMasId);
+    void createTicketRemarks(Integer ticketMasId, String remarksType, String remarks);
 }

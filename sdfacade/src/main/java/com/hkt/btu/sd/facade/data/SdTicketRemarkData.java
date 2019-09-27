@@ -2,6 +2,8 @@ package com.hkt.btu.sd.facade.data;
 
 import com.hkt.btu.common.facade.data.DataInterface;
 
+import java.time.LocalDateTime;
+
 public class SdTicketRemarkData implements DataInterface {
 
     private Integer ticketMasId;
@@ -10,7 +12,7 @@ public class SdTicketRemarkData implements DataInterface {
 
     private String remarks;
 
-    private boolean isSystem;
+    private LocalDateTime createdate;
 
     public String getRemarksTypeValue() {
         switch (remarksType) {
@@ -21,7 +23,7 @@ public class SdTicketRemarkData implements DataInterface {
             case "System":
                 return "SYS";
             default:
-                return "Not found match contact type";
+                return "Not found match remarks type";
         }
     }
 
@@ -49,11 +51,11 @@ public class SdTicketRemarkData implements DataInterface {
         this.remarks = remarks;
     }
 
-    public boolean isSystem() {
-        return isSystem;
+    public LocalDateTime getCreatedate() {
+        return createdate;
     }
 
-    public void setSystem(boolean isSystem) {
-        this.isSystem = isSystem;
+    public void setCreatedate(LocalDateTime createdate) {
+        this.createdate = createdate;
     }
 }

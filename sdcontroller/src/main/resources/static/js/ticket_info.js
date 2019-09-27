@@ -1,13 +1,20 @@
 $().ready(function(){
 
     $.get('/ticket/contact/'+ticketMasId,function(res){
-        $.each(res,function(index,j){
+        if (res.length == 0) {
             let contact =$('#tempContact').children().clone();
-            $.each(j,function(key,value){
-                contact.find('input[name='+key+']').val(value);
-            })
+            contact.find('input[name=contactType]').val("On-site Contact");
             contact.appendTo($('#contact_list'));
-        })
+            $('#btnUpdateContact').attr('disabled',false);
+        } else {
+            $.each(res,function(index,j){
+                let contact =$('#tempContact').children().clone();
+                $.each(j,function(key,value){
+                    contact.find('input[name='+key+']').val(value);
+                })
+                contact.appendTo($('#contact_list'));
+            })
+        }
     });
 
     var ticketDetId = "";
@@ -29,31 +36,7 @@ $().ready(function(){
         })
     });
 
-    $.get('/ticket/remark/'+ticketMasId,function(res){
-        $.each(res,function(index,j){
-            let remark =$('#tempRemark').children().clone();
-            $.each(j,function(key,value){
-                remark.find('input[name='+key+']').val(value);
-                if(key == "remarksType" && value == "System"){
-                    remark.find('input[name='+key+']').attr("readonly","readonly");
-                    remark.find('#btnRemoveRemark').attr("disabled",true);
-                }
-                if(key == "system" && value == true){
-                    remark.find('input[name="remarks"]').attr("readonly","readonly");
-                }
-            })
-            remark.appendTo($('#remark_list'));
-        })
-    });
-
-     $('#remarksTypeSelect').change(function(){
-        let selected = $(this).children('option:selected').val();
-        if(selected == 'SYS'){
-            $('#btnAddRemark').attr("disabled",true);
-        }else{
-            $('#btnAddRemark').attr("disabled",false);
-        }
-    });
+    ajaxGetDataTable();
 
     $('#btnUpdateService').on('click',function () {
         console.log(ticketDetId);
@@ -118,7 +101,11 @@ $().ready(function(){
             contentType: "application/json",
             data: JSON.stringify(arr),
             success:function(res){
-                showInfoMsg(res);
+                if (res == "") {
+                    showInfoMsg("Update contact info success");
+                } else {
+                    showErrorMsg(res);
+                }
             }
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";
@@ -127,46 +114,25 @@ $().ready(function(){
         })
     })
 
-    readyForTicketService();
-
-    $('#btnAddRemark').on('click',function(){
+    $('#btnCreateTicketRemarks').on('click',function(){
         clearAllMsg();
-        if($(this).prev('select').val().length <1){
-            showErrorMsg('Please one remark type.');
-            return;
-        }
-        let remark =$('#tempRemark').children().clone();
-        remark.find('input[name=remarksType]').val($(this).prev('select').find('option:selected').text());
-        remark.appendTo($('#remark_list'));
-        $('#btnUpdateRemark').attr('disabled',false);
-    });
-
-    $('#btnUpdateRemark').on('click',function(){
-        let arr =new Array() ;
-        $('#remark_list').find('form').each(function(index,form){
-            let form_arr =$(form).serializeArray();
-            let form_json = {};
-            $.map(form_arr, function (n, i) {
-              form_json[n['name']] = n['value'];
-            });
-            form_json['ticketMasId']=ticketMasId;
-            arr.push(form_json);
-        })
-        $.ajax({
-            url:'/ticket/remark/update',
-            type : 'POST',
-            dataType: 'text',
-            contentType: "application/json",
-            data: JSON.stringify(arr),
-            success:function(res){
-                showInfoMsg(res);
+        let form_arr = $('#remark').find('form').serialize();
+        form_arr += "&ticketMasId="+ticketMasId;
+        $.post('/ticket/post-create-ticket-remarks',form_arr,function(res){
+            if (res.success) {
+                $('#remark').find('form')[0].reset();
+                $('#searchTicketRemarksTable').DataTable().ajax.reload();
+            } else {
+                showErrorMsg(res.feedback);
             }
         }).fail(function(e){
-            var responseError = e.responseText ? e.responseText : "Get failed.";
+            var responseError = e.responseText ? e.responseText : "Create failed.";
             console.log("ERROR : ", responseError);
             showErrorMsg(responseError);
         })
-    });
+    })
+
+    readyForTicketService();
 
     $('.itsm_link').on('click',function(){
 //        window.open($(this).data('url'),'Profile','scrollbars=yes,height=600,width=800');
@@ -216,11 +182,33 @@ function removeContact(btn){
     }
 }
 
-function removeRemark(btn){
-    $(btn).parents('form').remove();
-    if($('#remark_list').find('form').length < 1){
-        $('#btnUpdateRemark').attr('disabled',true);
-    }else{
-        $('#btnUpdateRemark').attr('disabled',false);
-    }
+function ajaxGetDataTable(){
+    $('#searchTicketRemarksTable').DataTable({
+        searching: false,
+        ajax: {
+            type: "GET",
+            contentType: "application/json",
+            url: "/ticket/ajax-search-ticket-remarks?ticketMasId="+ticketMasId,
+            dataSrc: '',
+            error: function (e) {
+                if(e.responseText){
+                    showErrorMsg(e.responseText);
+                }
+            }
+        },
+        columns: [
+            { data: 'remarksType' },
+            { data: 'remarks' },
+            { data: 'createdate' }
+        ],
+        columnDefs: [
+            {
+                targets: 2,
+                data: "createdate",
+                render: function (nextRunTime, type, row, meta) {
+                     return nextRunTime==null ? null : nextRunTime.replace('T', ' ');
+                }
+            },
+        ]
+    });
 }

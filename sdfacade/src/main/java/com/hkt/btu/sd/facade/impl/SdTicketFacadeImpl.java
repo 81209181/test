@@ -17,6 +17,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Propagation;
@@ -61,11 +62,27 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateContactInfo(List<SdTicketContactData> contactList) {
-        ticketService.removeContactInfoByTicketMasId(contactList.get(0).getTicketMasId());
-        contactList.forEach(data -> {
-            ticketService.updateContactInfo(data.getTicketMasId(), data.getContactTypeValue(), data.getContactName(), data.getContactNumber(), data.getContactEmail(), data.getContactMobile());
-        });
+    public String updateContactInfo(List<SdTicketContactData> contactList) {
+
+        for (SdTicketContactData data : contactList) {
+            if (StringUtils.isEmpty(data.getContactName())) {
+                return "Contact name is empty.";
+            } else if (StringUtils.isEmpty(data.getContactNumber()) && StringUtils.isEmpty(data.getContactMobile()) && StringUtils.isEmpty(data.getContactEmail())) {
+                return "Contact No.,Contact Mobile,Contact Email must have one not empty.";
+            }
+        }
+
+        try {
+            ticketService.removeContactInfoByTicketMasId(contactList.get(0).getTicketMasId());
+            contactList.forEach(data -> {
+                ticketService.insertTicketContactInfo(data.getTicketMasId(), data.getContactTypeValue(), data.getContactName(), data.getContactNumber(), data.getContactEmail(), data.getContactMobile());
+            });
+        } catch (Exception e){
+            LOG.error(e.getMessage());
+            return "Update failed.";
+        }
+
+        return null;
     }
 
     @Override
@@ -124,14 +141,19 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public List<SdTicketRemarkData> getRemarkInfo(Integer ticketMasId) {
-        List<SdTicketRemarkBean> beans=ticketService.getRemarkInfo(ticketMasId);
-        List<SdTicketRemarkData> dataList = new ArrayList<>();
-        beans.forEach(sdTicketRemarkBean -> {
+    public List<SdTicketRemarkData> getTicketRemarksByTicketId(Integer ticketMasId) {
+        List<SdTicketRemarkBean> beanList = ticketService.getTicketRemarksByTicketId(ticketMasId);
+        if (CollectionUtils.isEmpty(beanList)) {
+            return null;
+        }
+
+        List<SdTicketRemarkData> dataList = new LinkedList<>();
+        for (SdTicketRemarkBean bean : beanList) {
             SdTicketRemarkData data = new SdTicketRemarkData();
-            ticketRemarkDataPopulator.populate(sdTicketRemarkBean,data);
+            ticketRemarkDataPopulator.populate(bean, data);
             dataList.add(data);
-        });
+        }
+
         return dataList;
     }
 
@@ -176,10 +198,21 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public void updateRemark(List<SdTicketRemarkData> remarkList) {
-        ticketService.removeRemarkByTicketMasId(remarkList.get(0).getTicketMasId());
-        remarkList.forEach(data -> {
-            ticketService.updateRemark(data.getTicketMasId(),data.getRemarksTypeValue(),data.getRemarks());
-        });
+    public String createTicketRemarks(Integer ticketMasId, String remarksType, String remarks) {
+        if (ticketMasId == null) {
+            return "Ticket Mas ID is empty.";
+        } else if (StringUtils.isEmpty(remarksType)) {
+            return "Remarks Type is empty.";
+        } else if (StringUtils.isEmpty(remarks)) {
+            return "Remarks is empty.";
+        }
+
+        try {
+            ticketService.createTicketRemarks(ticketMasId, remarksType, remarks);
+        } catch (DuplicateKeyException e){
+            return "Duplicate data already exists.";
+        }
+
+        return null;
     }
 }

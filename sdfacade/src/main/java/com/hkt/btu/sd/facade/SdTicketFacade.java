@@ -16,7 +16,7 @@ public interface SdTicketFacade {
 
     Optional<SdTicketMasData> getTicket(Integer ticketId);
 
-    void updateContactInfo(List<SdTicketContactData> contactList);
+    String updateContactInfo(List<SdTicketContactData> contactList);
 
     List<SdTicketContactData> getContactInfo(Integer ticketMasId);
 
@@ -28,7 +28,7 @@ public interface SdTicketFacade {
 
     String updateServiceInfo(List<RequestTicketServiceData> serviceList);
 
-    List<SdTicketRemarkData> getRemarkInfo(Integer ticketMasId);
+    List<SdTicketRemarkData> getTicketRemarksByTicketId(Integer ticketMasId);
 
-    void updateRemark(List<SdTicketRemarkData> remarkList);
+    String createTicketRemarks(Integer ticketMasId, String remarksType, String remarks);
 }

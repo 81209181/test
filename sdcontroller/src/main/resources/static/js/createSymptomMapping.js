@@ -2,7 +2,6 @@ $().ready(function(){
 
     $('#btnCreateSymptomMapping').on('click',function(){
         clearAllMsg();
-        let ctx = $("meta[name='_ctx']").attr("content");
         $.post('/symptom/post-create-symptom-mapping',$('form').serialize(),function(res){
             if (res.success) {
                 showInfoMsg("Create success.");

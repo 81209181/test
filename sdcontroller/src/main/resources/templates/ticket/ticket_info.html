@@ -32,6 +32,7 @@
                             <option value="CUST">Customer</option>
                             <option value="ADMIN">Office Admin</option>
                             <option value="SITE">On-site Contact</option>
+                            <option value="CALL">Caller</option>
                         </select>
                         <button type="button" class="btn btn-light ml-2" id="btnAddContact"><i class="fa fa-plus" aria-hidden="true"></i>
                         </button>
@@ -47,29 +48,25 @@
                 Service
                 <a class="btn btn-info ml-3 text-white itsm_link">Link</a>
             </h3>
-<!--                <button type="button" class="btn btn-light ml-2" id="btnAddService"><i class="fa fa-plus" aria-hidden="true"></i></button>-->
             <div id="service">
-<!--                <div id="service_list">-->
-                    <form class="col-md-12 form">
-                        <div class="form-row">
-                            <div class="col-md-6 form-inline pt-2">
-                                <label class="col-form-label col-md-3 justify-content-end">Service Code: </label>
-                                <input type="text" class="form-control col-md-6" name="serviceCode"/>
-                            </div>
-                            <div class="col-md-6 form-inline pt-2">
-                                <label class="col-form-label col-md-3 justify-content-end">Service Type: </label>
-                                <input type="text" class="form-control col-md-6" name="serviceType"/>
-                                <button type="button" class="btn btn-light" onclick="addFaults(this);"><i
-                                        class="fa fa-plus" aria-hidden="true"></i></button>
-                                <button type="button" class="btn btn-light" onclick="removeService(this)"><i
-                                        class="fa fa-times" aria-hidden="true"></i></button>
-                            </div>
+                <form class="col-md-12 form">
+                    <div class="form-row">
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Service Code: </label>
+                            <input type="text" class="form-control col-md-6" name="serviceCode"/>
                         </div>
-                        <div class="form-row faults_list"></div>
-                    </form>
-<!--                </div>-->
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Service Type: </label>
+                            <input type="text" class="form-control col-md-6" name="serviceType"/>
+                            <button type="button" class="btn btn-light" onclick="addFaults(this);"><i
+                                    class="fa fa-plus" aria-hidden="true"></i></button>
+                            <button type="button" class="btn btn-light" onclick="removeService(this)"><i
+                                    class="fa fa-times" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-row faults_list"></div>
+                </form>
                 <div class="offset-md-10">
-<!--                    disabled="disabled"-->
                     <button type="button" class="btn btn-primary mt-2" id="btnUpdateService" >
                         Update
                     </button>
@@ -78,22 +75,43 @@
             <hr>
             <h3>Remark</h3>
             <div id="remark">
-                <div class="col-md-12">
-                    <div class="form-group form-inline">
-                        <select class="custom-select" id="remarksTypeSelect">
-                            <option value="" hidden>Please select</option>
-                            <option value="CUST">Customer</option>
-                            <option value="FIELD">Field</option>
-                            <option value="SYS">System</option>
-                        </select>
-                        <button type="button" class="btn btn-light ml-2" id="btnAddRemark"><i class="fa fa-plus" aria-hidden="true"></i>
-                        </button>
+                <form class="col-md-12 form">
+                    <div class="form-row">
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Remarks Type: </label>
+                            <select class="form-control col-md-6" name="remarksType">
+                                <option value="CUST">Customer</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Remarks: </label>
+                            <textarea rows="3" cols="20" class="form-control col-md-6" name="remarks"></textarea>
+                        </div>
                     </div>
-                </div>
-                <div id="remark_list"></div>
+                </form>
                 <div class="offset-md-10">
-                    <button type="button" class="btn btn-primary mt-2" id="btnUpdateRemark" disabled="disabled">Update</button>
+                    <button type="button" class="btn btn-primary mt-2" id="btnCreateTicketRemarks">
+                        <i class="far fa-save"></i> Save
+                    </button>
                 </div>
+                <table id="searchTicketRemarksTable" class="display" cellspacing="0" width="100%">
+                    <thead>
+                    <tr>
+                        <th>Remarks Type</th>
+                        <th>Remarks</th>
+                        <th>Create Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th>Remarks Type</th>
+                        <th>Remarks</th>
+                        <th>Create Date</th>
+                    </tr>
+                    </tfoot>
+                </table>
             </div>
         </div>
         <div class="card-footer">
@@ -159,21 +177,6 @@
         </form>
     </div>
 
-    <div id="tempRemark" hidden="hidden">
-        <form class="col-md-12 form">
-            <div class="form-row">
-                <div class="col-md-12 form-inline pt-2">
-                    <label class="col-form-label justify-content-end">Remark Type:</label>
-                    <input type="text" class="form-control-plaintext col-md-1" name="remarksType">
-                    <button type="button" class="btn btn-light ml-2" id="btnRemoveRemark" onclick="removeRemark(this)"><i class="fa fa-times" aria-hidden="true"></i></button>
-                </div>
-                <div class="col-md-6 form-inline pt-2">
-                    <label class="col-form-label col-md-3 justify-content-end">Remark:</label>
-                    <input type="text" class="form-control col-md-6" name="remarks">
-                </div>
-            </div>
-        </form>
-    </div>
     <script type="text/javascript" th:src="@{/js/ticket_info.js}"></script>
 </div>
 </body>
