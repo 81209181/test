@@ -4,6 +4,7 @@ import com.hkt.btu.sd.core.dao.entity.SdTicketMasEntity;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -21,4 +22,9 @@ public interface SdTicketMasMapper {
                               @Param("status") String status);
 
     List<SdTicketMasEntity> getMyTicket(@Param("createBy") String createBy);
+
+    void updateAppointmentInMas(@Param("appointmentDate") LocalDateTime appointmentDate,
+                                    @Param("asap") String asap,
+                                    @Param("userId") String userId,
+                                    @Param("ticketMasId") String ticketMasId);
 }

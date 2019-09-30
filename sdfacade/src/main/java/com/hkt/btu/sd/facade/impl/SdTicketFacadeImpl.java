@@ -227,4 +227,14 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             return data;
         });
     }
+
+    @Override
+    public void updateAppointment(String appointmentDate, boolean asap, String userId, String ticketMasId) {
+        ticketService.updateAppointment(appointmentDate, asap, userId,ticketMasId);
+    }
+
+    @Override
+    public boolean checkAppointmentDate(String appointmentDate) {
+        return ticketService.checkAppointmentDate(appointmentDate);
+    }
 }

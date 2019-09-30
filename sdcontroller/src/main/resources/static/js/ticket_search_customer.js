@@ -24,12 +24,18 @@ $().ready(function(){
         })
     })
 
+
+    $('.itsm').on('click',function(){
+        window.open($(this).data('url'),'Profile','scrollbars=yes,height=600,width=800');
+    })
+
     $('#btnSearchInfo').on('click',function(){
         let searchKey=$('#searchKey');
         let searchValue=$('#searchValue');
         clearAllMsg();
         $('tbody').empty();
         $('form').get(0).reset();
+        $('.itsm').attr('disabled',true);
         if(searchKey.val().trim().length <1){
             searchKey.attr('class','custom-select is-invalid');
             searchKey.focus();
@@ -73,12 +79,16 @@ $().ready(function(){
             $('#btnApplyProduct').on('click',function(){
                 $.each($('tbody').find('input:checked').parent().parent().data('info'),function(i,val){
                     $('form').find('input[name='+i+']').val(val);
+                    if(i == 'url'){
+                        if(val !=null){
+                            $('.itsm').data('url',val);
+                            $('.itsm').removeAttr('disabled');
+                        }
+                    }
                 })
                 $('.modal').modal('hide');
-            });
+            })
         })
-
-
     })
 
 })

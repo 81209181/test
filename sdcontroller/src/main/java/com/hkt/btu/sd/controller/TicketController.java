@@ -68,6 +68,12 @@ public class TicketController {
                     ModelAndView modelAndView = new ModelAndView("ticket/ticket_info");
                     modelAndView.addObject("customerCode", sdTicketMasData.getCustCode())
                             .addObject("ticketMasId", sdTicketMasData.getTicketMasId());
+                    Optional.ofNullable(sdTicketMasData.getAsap()).ifPresent(s -> {
+                        modelAndView.addObject("asap", s);
+                    });
+                    Optional.ofNullable(sdTicketMasData.getAppointmentDate()).ifPresent(localDateTime -> {
+                        modelAndView.addObject("appointmentDate", localDateTime);
+                    });
                     ticketFacade.getService(ticketId)
                             .map(SdTicketServiceData::getJobId)
                             .ifPresent(jobId ->{
@@ -188,5 +194,16 @@ public class TicketController {
         } else {
             return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
         }
+    }
+
+    @PostMapping("appointment/update")
+    public ResponseEntity<?> updateAppointment(String appointmentDate,boolean asap,Principal principal,String ticketMasId) {
+        if (!asap) {
+            if (!ticketFacade.checkAppointmentDate(appointmentDate)) {
+                return ResponseEntity.badRequest().body("The appointment time must be two hours later.");
+            }
+        }
+        ticketFacade.updateAppointment(appointmentDate,asap,principal.getName(),ticketMasId);
+        return ResponseEntity.ok("Update appointment success.");
     }
 }

@@ -25,10 +25,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class SdTicketServiceImpl implements SdTicketService {
@@ -177,6 +175,16 @@ public class SdTicketServiceImpl implements SdTicketService {
             ticketServiceBeanPopulator.populate(sdTicketServiceEntity, bean);
             return bean;
         });
+    }
+
+    @Override
+    public void updateAppointment(String appointmentDate, boolean asap, String userId, String ticketMasId) {
+        ticketMasMapper.updateAppointmentInMas(LocalDateTime.parse(appointmentDate),asap? "Y":"N",userId,ticketMasId);
+    }
+
+    @Override
+    public boolean checkAppointmentDate(String appointmentDate) {
+        return LocalDateTime.now().plusHours(2).plusMinutes(-1).isBefore(LocalDateTime.parse(appointmentDate));
     }
 
     @Override
