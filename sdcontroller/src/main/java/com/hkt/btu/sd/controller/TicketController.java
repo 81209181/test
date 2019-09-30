@@ -181,8 +181,8 @@ public class TicketController {
     }
 
     @PostMapping("/post-create-ticket-remarks")
-    public ResponseEntity<?> createTicketRemarks(@RequestParam Integer ticketMasId, @RequestParam String remarksType, @RequestParam String remarks) {
-        String errorMsg = ticketFacade.createTicketRemarks(ticketMasId, remarksType, remarks);
+    public ResponseEntity<?> createTicketRemarks(@RequestParam Integer ticketMasId, @RequestParam String remarks) {
+        String errorMsg = ticketFacade.createTicketRemarks(ticketMasId, remarks);
         if (errorMsg == null) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         } else {

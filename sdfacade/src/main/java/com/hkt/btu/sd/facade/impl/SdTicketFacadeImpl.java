@@ -66,9 +66,9 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
         for (SdTicketContactData data : contactList) {
             if (StringUtils.isEmpty(data.getContactName())) {
-                return "Contact name is empty.";
+                return "In contact type : " + data.getContactType() + ", please input contact name.";
             } else if (StringUtils.isEmpty(data.getContactNumber()) && StringUtils.isEmpty(data.getContactMobile()) && StringUtils.isEmpty(data.getContactEmail())) {
-                return "Contact No.,Contact Mobile,Contact Email must have one not empty.";
+                return "In Contact Name : "+ data.getContactName() + ", please input Contact No. or Contact Mobile or Contact Email, at least one is not empty.";
             }
         }
 
@@ -198,17 +198,15 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public String createTicketRemarks(Integer ticketMasId, String remarksType, String remarks) {
+    public String createTicketRemarks(Integer ticketMasId, String remarks) {
         if (ticketMasId == null) {
             return "Ticket Mas ID is empty.";
-        } else if (StringUtils.isEmpty(remarksType)) {
-            return "Remarks Type is empty.";
         } else if (StringUtils.isEmpty(remarks)) {
             return "Remarks is empty.";
         }
 
         try {
-            ticketService.createTicketRemarks(ticketMasId, remarksType, remarks);
+            ticketService.createTicketRemarks(ticketMasId, SdTicketRemarkData.Type.CUSTOMER, remarks);
         } catch (DuplicateKeyException e){
             return "Duplicate data already exists.";
         }

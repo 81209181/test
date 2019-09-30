@@ -84,6 +84,7 @@ $().ready(function(){
     });
 
     $('#btnUpdateContact').on('click',function(){
+        clearAllMsg();
         let arr =new Array() ;
         $('#contact_list').find('form').each(function(index,form){
             let form_arr =$(form).serializeArray();
@@ -217,18 +218,19 @@ function ajaxGetDataTable(){
             }
         },
         columns: [
-            { data: 'remarksType' },
-            { data: 'remarks' },
-            { data: 'createdate' }
+            { width: '15%', data: 'createdate' },
+            { width: '15%', data: 'remarksType' },
+            { width: '70%', data: 'remarks' }
         ],
         columnDefs: [
             {
-                targets: 2,
+                targets: 0,
                 data: "createdate",
                 render: function (nextRunTime, type, row, meta) {
                      return nextRunTime==null ? null : nextRunTime.replace('T', ' ');
                 }
             },
-        ]
+        ],
+        order: [[ 0, "desc" ]]
     });
 }

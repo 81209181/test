@@ -14,6 +14,12 @@ public class SdTicketRemarkData implements DataInterface {
 
     private LocalDateTime createdate;
 
+    public static class Type {
+        public static final String CUSTOMER = "CUST";
+        public static final String FIELD = "FIELD";
+        public static final String SYSTEM = "SYS";
+    }
+
     public String getRemarksTypeValue() {
         switch (remarksType) {
             case "Customer":
