@@ -63,13 +63,20 @@ $().ready(function(){
 
     //contact
     $.get('/ticket/contact/'+ticketMasId,function(res){
-        $.each(res,function(index,j){
+        if (res.length == 0) {
             let contact =$('#tempContact').children().clone();
-            $.each(j,function(key,value){
-                contact.find('input[name='+key+']').val(value);
-            })
+            contact.find('input[name=contactType]').val("On-site Contact");
             contact.appendTo($('#contact_list'));
-        })
+            $('#btnUpdateContact').attr('disabled',false);
+        } else {
+            $.each(res,function(index,j){
+                let contact =$('#tempContact').children().clone();
+                $.each(j,function(key,value){
+                    contact.find('input[name='+key+']').val(value);
+                })
+                contact.appendTo($('#contact_list'));
+            })
+        }
     });
 
     $('#btnAddContact').on('click',function(){
