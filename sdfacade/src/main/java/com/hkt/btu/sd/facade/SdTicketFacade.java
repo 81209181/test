@@ -35,4 +35,8 @@ public interface SdTicketFacade {
     void updateJobIdInService(Integer jobId, String ticketMasId, String name);
 
     Optional<SdTicketServiceData> getService(Integer ticketId);
+
+    void updateAppointment(String appointmentDate, boolean asap, String name, String ticketMasId);
+
+    boolean checkAppointmentDate(String appointmentDate);
 }

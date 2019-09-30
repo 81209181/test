@@ -2,6 +2,8 @@ package com.hkt.btu.sd.core.service.bean;
 
 import com.hkt.btu.common.core.service.bean.BaseBean;
 
+import java.time.LocalDateTime;
+
 public class SdTicketMasBean extends BaseBean {
 
     private int ticketMasId ;
@@ -11,6 +13,26 @@ public class SdTicketMasBean extends BaseBean {
     private String ticketType;
 
     private String status;
+
+    private LocalDateTime appointmentDate;
+
+    private String asap;
+
+    public LocalDateTime getAppointmentDate() {
+        return appointmentDate;
+    }
+
+    public void setAppointmentDate(LocalDateTime appointmentDate) {
+        this.appointmentDate = appointmentDate;
+    }
+
+    public String getAsap() {
+        return asap;
+    }
+
+    public void setAsap(String asap) {
+        this.asap = asap;
+    }
 
     public int getTicketMasId() {
         return ticketMasId;

@@ -1,15 +1,5 @@
 $().ready(function(){
 
-    $.get('/ticket/contact/'+ticketMasId,function(res){
-        $.each(res,function(index,j){
-            let contact =$('#tempContact').children().clone();
-            $.each(j,function(key,value){
-                contact.find('input[name='+key+']').val(value);
-            })
-            contact.appendTo($('#contact_list'));
-        })
-    });
-
     var ticketDetId = "";
 
     $.get('/ticket/service/'+ticketMasId,function(res){
@@ -87,6 +77,18 @@ $().ready(function(){
             showErrorMsg(responseError);
         })
     })
+
+
+    //contact
+    $.get('/ticket/contact/'+ticketMasId,function(res){
+        $.each(res,function(index,j){
+            let contact =$('#tempContact').children().clone();
+            $.each(j,function(key,value){
+                contact.find('input[name='+key+']').val(value);
+            })
+            contact.appendTo($('#contact_list'));
+        })
+    });
 
     $('#btnAddContact').on('click',function(){
         clearAllMsg();
@@ -173,6 +175,41 @@ $().ready(function(){
         window.open('https://10.111.7.32/itsm/info/ResourcePoolTab.action?resourceId=309033','Profile','scrollbars=yes,height=600,width=800');
     })
 
+
+    // appointment
+    $('#asap_checkbox').change(function(){
+        let input =$('input[name=appointmentDate]');
+        if(this.checked){
+            let tzoffset = (new Date()).getTimezoneOffset() * 60000;
+            let localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 16);
+            input.val(localISOTime);
+            input.attr('disabled',true);
+        }else{
+            input.val('');
+            input.attr('disabled',false);
+        }
+    })
+
+    $('#btnUpdateAppointment').on('click',function(){
+        let appointment =$('input[name=appointmentDate]').val();
+        if(!appointment){
+            showErrorMsg('please input appointment date.');
+            return ;
+        }
+        $.post('/ticket/appointment/update',{
+            appointmentDate:appointment,
+            asap:$(this).parents('form').find('input[type=checkbox]').get(0).checked,
+            ticketMasId:ticketMasId
+        },function(res){
+            console.log(res);
+        }).fail(function(e){
+            var responseError = e.responseText ? e.responseText : "Get failed.";
+            console.log("ERROR : ", responseError);
+            showErrorMsg(responseError);
+        })
+    })
+
+    // submit button
     $('#btnTicketSubmit').on('click',function(){
         let ticket ={};
         let ticket_input =$('.card-body').find('input');

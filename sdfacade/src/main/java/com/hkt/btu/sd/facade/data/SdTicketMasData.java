@@ -18,6 +18,26 @@ public class SdTicketMasData implements DataInterface {
 
     private String createBy;
 
+    private LocalDateTime appointmentDate;
+
+    private String asap;
+
+    public LocalDateTime getAppointmentDate() {
+        return appointmentDate;
+    }
+
+    public void setAppointmentDate(LocalDateTime appointmentDate) {
+        this.appointmentDate = appointmentDate;
+    }
+
+    public String getAsap() {
+        return asap;
+    }
+
+    public void setAsap(String asap) {
+        this.asap = asap;
+    }
+
     public int getTicketMasId() {
         return ticketMasId;
     }

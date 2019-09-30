@@ -14,8 +14,10 @@
     <div class="card" style="margin-bottom: 75px;">
         <div class="card-header bg-primary text-white">Ticket - <span th:text="${ticketMasId}"></span></div>
         <div class="card-body">
-            <h3>Customer</h3>
-            <div id="customer" class="row">
+            <form id="customer" class="row">
+                <div class="col-md-12">
+                    <h3>Customer</h3>
+                </div>
                 <div class="col-md-3 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Customer Code:</label>
                     <input type="text" class="form-control-plaintext col-md-3" name="custCode"
@@ -33,10 +35,12 @@
                     <label class="col-form-label justify-content-end">Job Status:</label>
                     <input type="text" class="form-control-plaintext col-md-3" name="jobStatus" th:value="${jobStatus}">
                 </div>
-            </div>
+            </form>
             <hr>
-            <h3>Contact</h3>
             <div id="contact" class="row">
+                <div class="col-md-12">
+                    <h3>Contact</h3>
+                </div>
                 <div class="col-md-12">
                     <div class="form-group form-inline">
                         <select class="custom-select">
@@ -49,47 +53,71 @@
                         </button>
                     </div>
                 </div>
-                <div id="contact_list"></div>
-                <div class="offset-md-10">
+                <div id="contact_list" style="width:100%"></div>
+                <div class="offset-md-11">
                     <button type="button" class="btn btn-primary mt-2" id="btnUpdateContact" disabled="disabled">Update</button>
                 </div>
             </div>
             <hr>
-            <h3>
-                Service
-                <a class="btn btn-info ml-3 text-white itsm_link">Link</a>
-            </h3>
-<!--                <button type="button" class="btn btn-light ml-2" id="btnAddService"><i class="fa fa-plus" aria-hidden="true"></i></button>-->
-            <div id="service">
-<!--                <div id="service_list">-->
-                    <form class="col-md-12 form">
-                        <div class="form-row">
-                            <div class="col-md-6 form-inline pt-2">
-                                <label class="col-form-label col-md-3 justify-content-end">Service Code: </label>
-                                <input type="text" class="form-control col-md-6" name="serviceCode"/>
-                            </div>
-                            <div class="col-md-6 form-inline pt-2">
-                                <label class="col-form-label col-md-3 justify-content-end">Service Type: </label>
-                                <input type="text" class="form-control col-md-6" name="serviceType"/>
-                                <button type="button" class="btn btn-light" onclick="addFaults(this);"><i
-                                        class="fa fa-plus" aria-hidden="true"></i></button>
-                                <button type="button" class="btn btn-light" onclick="removeService(this)"><i
-                                        class="fa fa-times" aria-hidden="true"></i></button>
-                            </div>
+            <form id="service" class="row">
+                <div class="col-md-12">
+                    <h3>
+                        Service
+                        <a class="btn btn-info ml-3 text-white itsm_link">Link</a>
+                    </h3>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-row">
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Service Code: </label>
+                            <input type="text" class="form-control col-md-6" name="serviceCode"/>
                         </div>
-                        <div class="form-row faults_list"></div>
-                    </form>
-<!--                </div>-->
-                <div class="offset-md-10">
-<!--                    disabled="disabled"-->
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Service Type: </label>
+                            <input type="text" class="form-control col-md-6" name="serviceType"/>
+                            <button type="button" class="btn btn-light" onclick="addFaults(this);"><i
+                                    class="fa fa-plus" aria-hidden="true"></i></button>
+                            <button type="button" class="btn btn-light" onclick="removeService(this)"><i
+                                    class="fa fa-times" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-row faults_list"></div>
+                </div>
+                <div class="offset-md-11">
                     <button type="button" class="btn btn-primary mt-2" id="btnUpdateService" >
                         Update
                     </button>
                 </div>
-            </div>
+            </form>
             <hr>
-            <h3>Remark</h3>
-            <div id="remark">
+            <form id="appointment" class="row">
+                <div class="col-md-12">
+                    <h3>Appointment</h3>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-row">
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Appointment Date:</label>
+                            <input type="datetime-local" class="form-control col-md-6"
+                                   name="appointmentDate" placeholder="1900-01-01T01:00"
+                                   pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}"
+                                    th:value="${appointmentDate}" th:disabled="${asap}">
+                            <div class="form-check ml-3">
+                                <input type="checkbox" class="form-check-input" id="asap_checkbox" th:checked="${asap}">
+                                <label class="form-check-label" for="asap_checkbox">ASAP</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="offset-md-11">
+                    <button type="button" class="btn btn-primary mt-2" id="btnUpdateAppointment">Update</button>
+                </div>
+            </form>
+            <hr>
+            <div id="remark" class="row">
+                <div class="col-md-12">
+                    <h3>Remark</h3>
+                </div>
                 <div class="col-md-12">
                     <div class="form-group form-inline">
                         <select class="custom-select" id="remarksTypeSelect">
@@ -102,8 +130,8 @@
                         </button>
                     </div>
                 </div>
-                <div id="remark_list"></div>
-                <div class="offset-md-10">
+                <div id="remark_list" style="width:100%"></div>
+                <div class="offset-md-11">
                     <button type="button" class="btn btn-primary mt-2" id="btnUpdateRemark" disabled="disabled">Update</button>
                 </div>
             </div>
@@ -144,7 +172,7 @@
     </div>
 
     <div id="tempContact" hidden="hidden">
-        <form class="col-md-12 form">
+        <form class="col-md-12">
             <div class="form-row">
                 <div class="col-md-12 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Contact Type:</label>
