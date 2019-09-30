@@ -10,5 +10,6 @@ public class SdTicketRemarkBeanPopulator extends AbstractBeanPopulator<SdTicketR
         target.setTicketMasId(source.getTicketMasId());
         target.setRemarksType(source.getRemarksTypeDesc());
         target.setRemarks(source.getRemarks());
+        target.setCreatedate(source.getCreatedate());
     }
 }
