@@ -2,6 +2,12 @@ $().ready(function(){
 
     var ticketDetId = "";
 
+    if($('input[name=jobId]').val()){
+        $.each($('.card button'),function(){
+            $(this).attr('disabled',true);
+        })
+    }
+
     $.get('/ticket/service/'+ticketMasId,function(res){
         $.each(res,function(index,j){
             let service =$('#tempService').children().clone();
