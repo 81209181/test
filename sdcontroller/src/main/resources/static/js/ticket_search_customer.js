@@ -79,6 +79,13 @@ $().ready(function(){
             $('#btnApplyProduct').on('click',function(){
                 $.each($('tbody').find('input:checked').parent().parent().data('info'),function(i,val){
                     $('form').find('input[name='+i+']').val(val);
+                    // start temp
+                    if(i == 'serviceType'){
+                        if(val == null){
+                            $('form').find('input[name='+i+']').val('test service type');
+                        }
+                    }
+                    // end temp
                     if(i == 'url'){
                         if(val !=null){
                             $('.itsm').data('url',val);

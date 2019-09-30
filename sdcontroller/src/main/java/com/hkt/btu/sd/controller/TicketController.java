@@ -164,6 +164,10 @@ public class TicketController {
 
     @PostMapping("submit")
     public ResponseEntity<?> submit(Principal principal,WfmRequestDetailsBeanDate wfmRequestDetailsBeanDate) throws JsonProcessingException {
+        Optional<String> jobIdInService = ticketFacade.getService(Integer.valueOf(wfmRequestDetailsBeanDate.getTicketMasId())).map(SdTicketServiceData::getJobId);
+        if (jobIdInService.isPresent()) {
+            return ResponseEntity.badRequest().body("This ticket has been submitted.");
+        }
         Integer jobId = wfmApiFacade.createJob(wfmRequestDetailsBeanDate, principal.getName());
         if (jobId > 0) {
             ticketFacade.updateJobIdInService(jobId,wfmRequestDetailsBeanDate.getTicketMasId(),principal.getName());

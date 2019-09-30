@@ -3,9 +3,7 @@ $().ready(function(){
     var ticketDetId = "";
 
     if($('input[name=jobId]').val()){
-        $.each($('.card button'),function(){
-            $(this).attr('disabled',true);
-        })
+        $('#btnTicketSubmit').attr('disabled',true);
     }
 
     $.get('/ticket/service/'+ticketMasId,function(res){
@@ -157,6 +155,7 @@ $().ready(function(){
     })
 
     $('#btnUpdateAppointment').on('click',function(){
+        clearAllMsg();
         let appointment =$('input[name=appointmentDate]').val();
         if(!appointment){
             showErrorMsg('please input appointment date.');
@@ -167,7 +166,7 @@ $().ready(function(){
             asap:$(this).parents('form').find('input[type=checkbox]').get(0).checked,
             ticketMasId:ticketMasId
         },function(res){
-            console.log(res);
+            showInfoMsg(res);
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";
             console.log("ERROR : ", responseError);
@@ -192,6 +191,7 @@ $().ready(function(){
                 $.each(res,function(key,val){
                     $('input[name='+ key +']').val(val);
                 })
+                $('#btnTicketSubmit').attr('disabled',true);
             }
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";
