@@ -69,6 +69,12 @@ $().ready(function(){
             }else{
                 $.each(res.pop(),function(key,val){
                      $('form').find('input[name='+ key +']').val(val);
+                     // temp
+                     if(key == 'serviceType'){
+                         if(val == null){
+                             $('form').find('input[name='+key+']').val('test service type');
+                         }
+                     }
                 })
             }
         }).fail(function(e){
