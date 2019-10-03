@@ -6,9 +6,6 @@
     <alias name="sdUserFacadeImpl" alias="userFacade"/>
     <bean id="sdUserFacadeImpl" class="com.hkt.btu.sd.facade.impl.SdUserFacadeImpl"/>
 
-    <alias name="sdUserGroupFacadeImpl" alias="userGroupFacade"/>
-    <bean id="sdUserGroupFacadeImpl" class="com.hkt.btu.sd.facade.impl.SdUserGroupFacadeImpl"/>
-
     <alias name="sdConfigParamFacade" alias="configParamFacade"/>
     <bean id="sdConfigParamFacade" class="com.hkt.btu.sd.facade.impl.SdConfigParamFacadeImpl"/>
 

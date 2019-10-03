@@ -19,9 +19,6 @@
     <alias name="sdConfigParamService" alias="configParamService"/>
     <bean id="sdConfigParamService" class="com.hkt.btu.sd.core.service.impl.SdConfigParamServiceImpl"/>
 
-    <alias name="sdUserGroupService" alias="userGroupService"/>
-    <bean id="sdUserGroupService" class="com.hkt.btu.sd.core.service.impl.SdUserGroupServiceImpl"/>
-
     <alias name="sdOtpService" alias="otpService"/>
     <bean id="sdOtpService" class="com.hkt.btu.sd.core.service.impl.SdOtpServiceImpl"/>
 
@@ -74,9 +71,6 @@
     <alias name="sdUserRolePathCtrlBeanPopulator" alias="pathCtrlBeanPopulator"/>
     <bean id="sdUserRolePathCtrlBeanPopulator"
           class="com.hkt.btu.sd.core.service.populator.SdUserRolePathCtrlBeanPopulator"/>
-
-    <alias name="sdUserGroupBeanPopulator" alias="userGroupBeanPopulator"/>
-    <bean id="sdUserGroupBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserGroupBeanPopulator"/>
 
     <alias name="sdOtpBeanPopulator" alias="otpBeanPopulator"/>
     <bean id="sdOtpBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdOtpBeanPopulator"/>

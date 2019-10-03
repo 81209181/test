@@ -6,7 +6,6 @@ import com.hkt.btu.common.core.service.impl.BtuUserServiceImpl;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
 import com.hkt.btu.sd.core.dao.entity.SdOtpEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserEntity;
-import com.hkt.btu.sd.core.dao.entity.SdUserGroupEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserRoleEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdUserMapper;
 import com.hkt.btu.sd.core.dao.mapper.SdUserRoleMapper;
@@ -532,58 +531,6 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         return new PageImpl<>(sdUserBeanList, pageable, totalCount);
     }
 
-
-    /**
-     * Return company id that the current user belongs and has access to,
-     * return null if there is no limitation.
-     */
-    public Integer getCompanyIdRestriction() throws AuthorityNotFoundException {
-        SdUserBean currentUser;
-        try {
-            currentUser = (SdUserBean) getCurrentUserBean();
-        } catch (UserNotFoundException e) {
-            throw new AuthorityNotFoundException(e.getMessage());
-        }
-
-        Integer companyIdRestriction = currentUser.getCompanyId();
-        if (isInternalUser()) {
-            // internal user has no restriction over company id (independent of user id)
-            return null;
-        }
-
-        return companyIdRestriction;
-    }
-
-    /**
-     * Return user id that the current user has access to,
-     * return null if there is no limitation.
-     */
-    public String getUserIdRestriction() throws AuthorityNotFoundException {
-        SdUserBean currentUser;
-        try {
-            currentUser = (SdUserBean) getCurrentUserBean();
-        } catch (UserNotFoundException e) {
-            throw new AuthorityNotFoundException(e.getMessage());
-        }
-
-        String userIdRestriction = currentUser.getUserId();
-        if (isAdminUser()) {
-            // admin user has no restriction over user id (independent of company id)
-            return null;
-        }
-
-        return userIdRestriction;
-    }
-
-    @Override
-    public boolean isInternalUser() {
-        return hasAnyAuthority(SdUserGroupEntity.GROUP_ID.ROOT, SdUserGroupEntity.GROUP_ID.ADMIN, SdUserGroupEntity.GROUP_ID.USER);
-    }
-
-    @Override
-    public boolean isAdminUser() {
-        return hasAnyAuthority(SdUserGroupEntity.GROUP_ID.ROOT, SdUserGroupEntity.GROUP_ID.ADMIN, SdUserGroupEntity.GROUP_ID.C_ADMIN);
-    }
 
     @Override
     @Transactional
