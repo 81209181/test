@@ -219,6 +219,7 @@ CREATE TABLE USER_ROLE_HIST(
   ROLE_DESC             varchar2(50)                    not null,
   PARENT_ROLE_ID        varchar2(20),
   STATUS                varchar2(2),
+  ABSTRACT              varchar2(2),
   ACTION                VARCHAR2(1)                     not null,
   CREATEDATE            DATE                            default SYSDATE not null
 );
@@ -262,6 +263,7 @@ end before statement;
             l_audit_rows(l_audit_rows.count).role_desc        := :old.role_desc;
             l_audit_rows(l_audit_rows.count).parent_role_id   := :old.parent_role_id;
             l_audit_rows(l_audit_rows.count).status           := :old.status;
+            l_audit_rows(l_audit_rows.count).ABSTRACT         := :old.ABSTRACT;
         end if;
 
         if l_audit_rows.count > 1000 then

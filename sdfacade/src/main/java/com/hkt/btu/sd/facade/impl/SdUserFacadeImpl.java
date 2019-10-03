@@ -483,9 +483,4 @@ public class SdUserFacadeImpl implements SdUserFacade {
 
         return userData;
     }
-
-    @Override
-    public boolean isInternalUser() {
-        return sdUserService.isInternalUser();
-    }
 }

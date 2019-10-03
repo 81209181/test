@@ -8,6 +8,7 @@ public class SdUserRoleData implements DataInterface {
     private String roleDesc;
     private String parentRoleId;
     private String status;
+    private String abstractFlag;
 
     public String getRoleId() {
         return roleId;
@@ -39,5 +40,13 @@ public class SdUserRoleData implements DataInterface {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getAbstractFlag() {
+        return abstractFlag;
+    }
+
+    public void setAbstractFlag(String abstractFlag) {
+        this.abstractFlag = abstractFlag;
     }
 }

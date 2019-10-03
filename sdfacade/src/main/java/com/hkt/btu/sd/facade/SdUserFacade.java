@@ -12,9 +12,6 @@ public interface SdUserFacade {
 
     SdUserData getUserByUserId(String userId);
 
-    boolean isInternalUser();
-
-
     CreateResultData createUser(CreateUserFormData createUserFormData);
 
     CreateResultData createNonPccwHktUser(CreateUserFormData createUserFormData);

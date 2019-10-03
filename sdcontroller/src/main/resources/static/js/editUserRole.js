@@ -20,6 +20,7 @@ function ajaxGetUserRole(){
             $("#parentRoleId").val(data.parentRoleId);
             $("#roleDesc").val(data.roleDesc);
             $("#status").val(data.status);
+            $("#abstractFlag").val(data.abstractFlag);
         },
         error: function (e) {
             var responseError = e.responseText ? e.responseText : "Get failed.";

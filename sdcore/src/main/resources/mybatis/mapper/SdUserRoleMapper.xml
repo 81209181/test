@@ -8,6 +8,7 @@
         <result column="ROLE_DESC" property="roleDesc"/>
         <result column="PARENT_ROLE_ID" property="parentRoleId"/>
         <result column="STATUS" property="status"/>
+        <result column="ABSTRACT" property="abstractFlag"/>
         <result column="CREATEDATE" property="modifydate"/>
         <result column="CREATEBY" property="modifyby"/>
         <result column="REMARKS" property="remarks"/>
@@ -99,6 +100,7 @@
         UPDATE USER_ROLE
         SET ROLE_DESC  = #{roleDesc},
             STATUS     = #{status},
+            ABSTRACT   = #{abstractFlag},
             MODIFYBY   = #{modifyby},
             MODIFYDATE = CURRENT_TIMESTAMP
         WHERE ROLE_ID = #{roleId}

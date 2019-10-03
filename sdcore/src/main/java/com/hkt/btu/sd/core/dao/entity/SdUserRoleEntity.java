@@ -8,10 +8,13 @@ public class SdUserRoleEntity extends BaseEntity {
     public final static String TEAM_HEAD_INDICATOR = "TH__";
     public final static String ACTIVE_ROLE_STATUS = "A";
 
+    public final static String IS_ABSTRACT = "Y";
+
     private String roleId;
     private String roleDesc;
     private String parentRoleId;
     private String status;
+    private String abstractFlag;
 
     public String getRoleId() {
         return roleId;
@@ -43,5 +46,13 @@ public class SdUserRoleEntity extends BaseEntity {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getAbstractFlag() {
+        return abstractFlag;
+    }
+
+    public void setAbstractFlag(String abstractFlag) {
+        this.abstractFlag = abstractFlag;
     }
 }

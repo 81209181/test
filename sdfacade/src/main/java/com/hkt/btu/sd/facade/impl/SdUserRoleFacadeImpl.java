@@ -11,6 +11,7 @@ import com.hkt.btu.sd.facade.data.SdUserPathCtrlData;
 import com.hkt.btu.sd.facade.data.SdUserRoleData;
 import com.hkt.btu.sd.facade.populator.SdUserRoleDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdUserRolePathCtrlPopulator;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
@@ -44,17 +45,14 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
 
     @Override
     public SdUserRoleData getUserRoleByRoleId(String roleId) {
-        SdUserRoleData userRoleData = new SdUserRoleData();
-
         // get user role info
         SdUserRoleBean sdUserRoleBean = sdUserRoleService.getUserRoleByRoleId(roleId);
-
         if (sdUserRoleBean == null) {
             return null;
         }
 
+        SdUserRoleData userRoleData = new SdUserRoleData();
         sdUserRoleDataPopulator.populate(sdUserRoleBean, userRoleData);
-
         return userRoleData;
     }
 
@@ -117,16 +115,20 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
     }
 
     @Override
-    public String updateUserRole(String roleId, String roleDesc, String status) {
+    public String updateUserRole(String roleId, String roleDesc, String status, String abstractFlag) {
         if (StringUtils.isEmpty(roleId)) {
             return "Empty role id.";
         } else if (StringUtils.isEmpty(roleDesc)) {
             return "Empty role desc.";
         } else if (StringUtils.isEmpty(status)) {
             return "Empty status.";
+        } else if (StringUtils.isEmpty(abstractFlag)){
+            return "Empty abstract flag.";
         }
 
-        sdUserRoleService.updateUserRole(roleId, roleDesc, status);
+        boolean isAbstract = BooleanUtils.toBoolean(abstractFlag);
+
+        sdUserRoleService.updateUserRole(roleId, roleDesc, status, isAbstract);
         return null;
     }
 
