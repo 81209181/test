@@ -21,7 +21,7 @@ public interface SdUserRoleFacade {
 
     HashMap<String, SdUserRoleData> getUserRoleMap(List<SdUserRoleData> userGroupDataList);
 
-    LinkedList<SdUserRoleData> getEligibleUserRoleList();
+    List<SdUserRoleData> getEligibleUserRoleList();
 
     boolean checkSameTeamRole(String name, String createBy);
 }

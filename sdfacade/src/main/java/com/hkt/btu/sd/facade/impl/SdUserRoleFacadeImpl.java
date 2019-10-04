@@ -11,15 +11,12 @@ import com.hkt.btu.sd.facade.data.SdUserPathCtrlData;
 import com.hkt.btu.sd.facade.data.SdUserRoleData;
 import com.hkt.btu.sd.facade.populator.SdUserRoleDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdUserRolePathCtrlPopulator;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
@@ -94,11 +91,12 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
     }
 
     @Override
-    public LinkedList<SdUserRoleData> getEligibleUserRoleList() {
-        LinkedList<SdUserRoleData> results = new LinkedList<>();
+    public List<SdUserRoleData> getEligibleUserRoleList() {
         List<SdUserRoleBean> eligibleUserGroupGrantList = sdUserRoleService.getEligibleUserRoleGrantList();
-        results = (LinkedList<SdUserRoleData>) getSdUserRoleData(results, eligibleUserGroupGrantList);
-        return results;
+        if(CollectionUtils.isEmpty(eligibleUserGroupGrantList)) {
+            eligibleUserGroupGrantList.sort(Comparator.comparing(SdUserRoleBean::getRoleId));
+        }
+        return getSdUserRoleData(new ArrayList<>(), eligibleUserGroupGrantList);
     }
 
     @Override

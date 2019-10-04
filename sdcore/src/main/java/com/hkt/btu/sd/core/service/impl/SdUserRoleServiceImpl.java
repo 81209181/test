@@ -173,28 +173,35 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
         }
 
         // extract eligible roles of current user role
-        List<SdUserRoleBean> eligibleUserRoleList = new LinkedList<>();
+        List<SdUserRoleBean> rawEligibleUserRoleList = new LinkedList<>();
         for (GrantedAuthority authority : authorities) {
             if (authority instanceof SimpleGrantedAuthority) {
                 String roleId = authority.getAuthority();
                 if (roleId.equals(SdUserRoleEntity.SYS_ADMIN)) {
-                    List<SdUserRoleBean> userRoleBeanList = new LinkedList<>();
-                    List<SdUserRoleEntity> userRoleEntityList = sdUserRoleMapper.getAllUserRole(SdUserRoleEntity.ACTIVE_ROLE_STATUS);
-                    return getSdUserRoleBeans(userRoleBeanList, userRoleEntityList);
+                    rawEligibleUserRoleList = getAllUserRole();
+                    break;
                 }
                 if (roleId.contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR)) {
                     List<SdUserRoleBean> eligibleRoleListOfTeamHead = getCachedRoleAssignMap(roleId);
-                    eligibleUserRoleList.addAll(eligibleRoleListOfTeamHead);
+                    rawEligibleUserRoleList.addAll(eligibleRoleListOfTeamHead);
                 }
             }
         }
-
-        if (CollectionUtils.isNotEmpty(eligibleUserRoleList)) {
-            eligibleUserRoleList = eligibleUserRoleList.stream().distinct().collect(Collectors.toList());
-            return eligibleUserRoleList;
+        if (CollectionUtils.isEmpty(rawEligibleUserRoleList)) {
+            return null;
         }
 
-        return null;
+        // remove duplicate role
+        rawEligibleUserRoleList = rawEligibleUserRoleList.stream().distinct().collect(Collectors.toList());
+
+        // remove abstract role
+        List<SdUserRoleBean> eligibleUserRoleList = new LinkedList<>();
+        for(SdUserRoleBean sdUserRoleBean : rawEligibleUserRoleList){
+            if(!sdUserRoleBean.isAbstract()){
+                eligibleUserRoleList.add(sdUserRoleBean);
+            }
+        }
+        return eligibleUserRoleList;
     }
 
 
