@@ -78,7 +78,7 @@
 
     </div>
 
-    <div id="tempFaults" hidden="hidden">
+    <!--<div id="tempFaults" hidden="hidden">
         <div class="temp_faults col-md-6 form-inline pt-2">
             <label class="col-form-label col-md-3 justify-content-end">Faults: </label>
             <input type="text" class="form-control col-md-4" name="faults"/>
@@ -86,7 +86,7 @@
                                                                                              aria-hidden="true"></i>
             </button>
         </div>
-    </div>
+    </div>-->
 
     <div id="tempService" hidden="hidden">
         <form class="col-md-12 form">
@@ -103,6 +103,18 @@
                         <button type="button" class="btn btn-light" onclick="removeService(this)"><i
                                 class="fa fa-times" aria-hidden="true"></i></button>
                     </div>
+                    <div class="temp_faults col-md-6 form-inline pt-2">
+                        <label class="col-form-label col-md-3 justify-content-end">Symptom: </label>
+                        <!--<input type="text" class="form-control col-md-4" name="faults"/>-->
+                        <!--<option th:each="status : ${requestStatusList}" th:value="${status}" th:text="${status}"></option>-->
+<!--                        <div class="col-md-6" style="padding-left: 0px">-->
+                            <select id="symptomList" class="selectpicker form-control col-md-6" data-width="500px" data-live-search="true">
+                            </select>
+<!--                        </div>-->
+                        <button type="button" class="btn btn-light md-2" onclick="removeFaults(this)"><i class="fa fa-times"
+                                                                                                     aria-hidden="true"></i>
+                        </button>
+                </div>
             </div>
             <div class="form-row faults_list"></div>
         </form>

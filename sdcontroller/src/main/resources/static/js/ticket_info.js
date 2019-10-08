@@ -12,22 +12,24 @@ $().ready(function(){
 
     var ticketDetId = "";
 
+    $('.selectpicker').selectpicker({});
+    $('.selectpicker').append("<option>Rabbit</option>");
+    $('.selectpicker').append("<option>Cat</option>");
+    $('.selectpicker').append("<option>Spider</option>");
+    $('.selectpicker').append("<option>Worm</option>");
+    $('.selectpicker').selectpicker('refresh');
+
     $.get('/ticket/service/'+ticketMasId,function(res){
         $.each(res,function(index,j){
             let service =$('#tempService').children().clone();
             $.each(j,function(key,value){
                 service.find('input[name='+key+']').val(value);
-                if (value instanceof Array) {
-                    for (item of value) {
-                        let faults = $('#tempFaults').children().clone();
-                        faults.find('input[name=faults]').val(item.faults);
-                        faults.appendTo(service.find('.faults_list'));
-                    }
-                }
             })
             service.appendTo($('#service_list'));
         })
     });
+
+
 
     $.get('/ticket/remark/'+ticketMasId,function(res){
         $.each(res,function(index,j){
