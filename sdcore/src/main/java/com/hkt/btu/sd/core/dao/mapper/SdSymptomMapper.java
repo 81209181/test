@@ -22,13 +22,17 @@ public interface SdSymptomMapper {
 
     SdSymptomEntity getSymptomBySymptomCode(@Param("symptomCode") String symptomCode);
 
-    List<SdSymptomEntity> getAllSymptom();
+    List<SdSymptomEntity> searchSymptomList(@Param("offset") long offset,
+                                            @Param("pageSize") int pageSize,
+                                            @Param("symptomGroupCode") String symptomGroupCode,
+                                            @Param("symptomDescription") String symptomDescription);
 
-    void deleteSymptomMapping(@Param("symptomCode")String symptomCode);
+    void deleteSymptomMapping(@Param("symptomCode")String symptomCode, List<String> serviceTypeList);
 
     void createSymptomMapping(@Param("serviceTypeCode") String serviceTypeCode,
                               @Param("symptomCode") String symptomCode,
                               @Param("createby") String createby);
 
-    List<SdSymptomMappingEntity> getSymptomMapping(@Param("symptomCode") String symptomCode);
+    List<SdSymptomMappingEntity> getSymptomMapping(@Param("symptomCode") String symptomCode,
+                                                   @Param("serviceTypeCode") String serviceTypeCode);
 }

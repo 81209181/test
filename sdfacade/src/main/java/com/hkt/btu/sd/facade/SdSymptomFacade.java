@@ -1,10 +1,12 @@
 package com.hkt.btu.sd.facade;
 
 
+import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.facade.data.EditResultData;
 import com.hkt.btu.sd.facade.data.SdServiceTypeData;
 import com.hkt.btu.sd.facade.data.SdSymptomData;
 import com.hkt.btu.sd.facade.data.SdSymptomMappingData;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -16,7 +18,7 @@ public interface SdSymptomFacade {
 
     List<SdServiceTypeData> getServiceTypeList();
 
-    List<SdSymptomData> getAllSymptom();
+    PageData<SdSymptomData> searchSymptomList(Pageable pageable, String symptomGroupCode, String symptomDescription);
 
     SdSymptomData getSymptomBySymptomCode(String symptomCode);
 

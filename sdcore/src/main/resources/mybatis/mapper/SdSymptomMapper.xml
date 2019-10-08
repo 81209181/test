@@ -59,10 +59,17 @@
 
     <select id="getSymptomMapping" resultMap="SymptomMappingEntity">
         select * from SYMPTOM_MAPPING where SYMPTOM_CODE = #{symptomCode}
+        <if test="serviceTypeCode != null and serviceTypeCode != ''">
+            and SERVICE_TYPE_CODE = #{serviceTypeCode}
+        </if>
     </select>
 
     <delete id="deleteSymptomMapping">
         delete from SYMPTOM_MAPPING where SYMPTOM_CODE = #{symptomCode}
+        and SERVICE_TYPE_CODE not in
+        <foreach item="serviceType" index="index" collection="serviceTypeList" open="(" separator="," close=")">
+            #{serviceType}
+        </foreach>
     </delete>
 
     <select id="getSymptomBySymptomCode" resultMap="SymptomEntity">
@@ -81,7 +88,7 @@
         order by sy.SYMPTOM_CODE
     </select>
 
-    <select id="getAllSymptom" resultMap="SymptomEntity">
+    <select id="searchSymptomList" resultMap="SymptomEntity">
         select
         sy.SYMPTOM_CODE,
         sy.SYMPTOM_DESCRIPTION,
@@ -93,6 +100,14 @@
         sy.MODIFYBY
         from SYMPTOM sy
         inner join SYMPTOM_GROUP sg on sy.SYMPTOM_GROUP_CODE = sg.SYMPTOM_GROUP_CODE
+        where 1=1
+        <if test="symptomGroupCode != null and symptomGroupCode != ''">
+            and lower(sy.SYMPTOM_GROUP_CODE) like '%' || lower(#{symptomGroupCode}) || '%'
+        </if>
+        <if test="symptomDescription != null and symptomDescription != ''">
+            and lower(sy.SYMPTOM_DESCRIPTION) like '%' || lower(#{symptomDescription}) || '%'
+        </if>
         order by sy.SYMPTOM_CODE
+        OFFSET #{offset} ROWS FETCH NEXT #{pageSize} ROWS ONLY
     </select>
 </mapper>
