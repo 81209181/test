@@ -9,6 +9,9 @@ public class SdUserRoleBean extends BaseBean {
     private String parentRoleId;
     private String status;
 
+    private boolean isActive;
+    private boolean isAbstract;
+
     public String getRoleId() {
         return roleId;
     }
@@ -39,5 +42,21 @@ public class SdUserRoleBean extends BaseBean {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public boolean isAbstract() {
+        return isAbstract;
+    }
+
+    public void setAbstract(boolean anAbstract) {
+        isAbstract = anAbstract;
     }
 }

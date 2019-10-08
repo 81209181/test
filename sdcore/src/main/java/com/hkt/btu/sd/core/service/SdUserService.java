@@ -15,47 +15,36 @@ import java.util.List;
 
 public interface SdUserService extends BtuUserService {
 
-    String getCurrentUserUserId() throws UserNotFoundException;
-
-    Integer getCompanyIdRestriction() throws AuthorityNotFoundException;
-
-    String getUserIdRestriction() throws AuthorityNotFoundException;
-
-    boolean isInternalUser();
-
-    boolean isAdminUser();
-
-
-    String changeUserTypeToPCCWOrHktUser(String oldUserId, String name, String mobile, String employeeNumber, String email)
-            throws InvalidInputException, UserNotFoundException;
-
-    String changeUserTypeToNonPCCWOrHktUser(String oldUserId, String name, String mobile, String employeeNumber, String email)
-            throws InvalidInputException, UserNotFoundException;
-
-    String changeUserTypeToLdapUser(String oldUserId, String name, String mobile, String employeeNumber, String ldapDomain, String email)
-            throws InvalidInputException, UserNotFoundException;
-
-    SdUserBean getUserByUserId(String userId) throws UserNotFoundException;
-
-    Page<SdUserBean> searchUser(Pageable pageable, String userId, String email, String name);
-
-    void updateUserPwd(String userId, String rawOldPassword, String rawNewPassword)
-            throws UserNotFoundException, InvalidPasswordException;
-
-    void resetPwd(String otp, String rawNewPassword)
-            throws UserNotFoundException, InvalidPasswordException, InvalidInputException;
-
-    void disableUserByUsername(String username) throws UserNotFoundException, InvalidInputException;
-
-    SdCreateResultBean createUser(String userId, String name, String mobile, String email, List<String> roleIdList)
+    SdCreateResultBean createUser(String userId, String name, String mobile, String email, List<String> toGrantRoleIdList)
             throws DuplicateUserEmailException, UserNotFoundException;
-
     String createLdapUser(String name, String mobile, String employeeNumber, String ldapDomain,
                           String email,List<String> roleIdList)
             throws DuplicateUserEmailException, UserNotFoundException;
 
+
+    String changeUserTypeToPCCWOrHktUser(String oldUserId, String name, String mobile, String employeeNumber, String email)
+            throws InvalidInputException, UserNotFoundException;
+    String changeUserTypeToNonPCCWOrHktUser(String oldUserId, String name, String mobile, String employeeNumber, String email)
+            throws InvalidInputException, UserNotFoundException;
+    String changeUserTypeToLdapUser(String oldUserId, String name, String mobile, String employeeNumber, String ldapDomain, String email)
+            throws InvalidInputException, UserNotFoundException;
+
+
+    void updateUserPwd(String userId, String rawOldPassword, String rawNewPassword)
+            throws UserNotFoundException, InvalidPasswordException;
+    void resetPwd(String otp, String rawNewPassword)
+            throws UserNotFoundException, InvalidPasswordException, InvalidInputException;
+    void requestResetPassword(String username) throws UserNotFoundException, MessagingException;
+    void disableUserByUsername(String username) throws UserNotFoundException, InvalidInputException;
     void updateUser(String userId, String newName, String newMobile, List<String> userRoleIdList)
             throws UserNotFoundException, InsufficientAuthorityException, GeneralSecurityException;
 
-    void requestResetPassword(String username) throws UserNotFoundException, MessagingException;
+
+    String getCurrentUserUserId() throws UserNotFoundException;
+    SdUserBean getUserByUserId(String userId) throws UserNotFoundException;
+
+
+    Page<SdUserBean> searchUser(Pageable pageable, String userId, String email, String name);
+
+
 }

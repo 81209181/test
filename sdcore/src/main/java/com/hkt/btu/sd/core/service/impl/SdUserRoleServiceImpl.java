@@ -16,7 +16,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -174,34 +173,41 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
         }
 
         // extract eligible roles of current user role
-        List<SdUserRoleBean> eligibleUserRoleList = new LinkedList<>();
+        List<SdUserRoleBean> rawEligibleUserRoleList = new LinkedList<>();
         for (GrantedAuthority authority : authorities) {
             if (authority instanceof SimpleGrantedAuthority) {
                 String roleId = authority.getAuthority();
                 if (roleId.equals(SdUserRoleEntity.SYS_ADMIN)) {
-                    List<SdUserRoleBean> userRoleBeanList = new LinkedList<>();
-                    List<SdUserRoleEntity> userRoleEntityList = sdUserRoleMapper.getAllUserRole(SdUserRoleEntity.ACTIVE_ROLE_STATUS);
-                    return getSdUserRoleBeans(userRoleBeanList, userRoleEntityList);
+                    rawEligibleUserRoleList = getAllUserRole();
+                    break;
                 }
                 if (roleId.contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR)) {
                     List<SdUserRoleBean> eligibleRoleListOfTeamHead = getCachedRoleAssignMap(roleId);
-                    eligibleUserRoleList.addAll(eligibleRoleListOfTeamHead);
+                    rawEligibleUserRoleList.addAll(eligibleRoleListOfTeamHead);
                 }
             }
         }
-
-        if (CollectionUtils.isNotEmpty(eligibleUserRoleList)) {
-            eligibleUserRoleList = eligibleUserRoleList.stream().distinct().collect(Collectors.toList());
-            return eligibleUserRoleList;
+        if (CollectionUtils.isEmpty(rawEligibleUserRoleList)) {
+            return null;
         }
 
-        return null;
+        // remove duplicate role
+        rawEligibleUserRoleList = rawEligibleUserRoleList.stream().distinct().collect(Collectors.toList());
+
+        // remove abstract role
+        List<SdUserRoleBean> eligibleUserRoleList = new LinkedList<>();
+        for(SdUserRoleBean sdUserRoleBean : rawEligibleUserRoleList){
+            if(!sdUserRoleBean.isAbstract()){
+                eligibleUserRoleList.add(sdUserRoleBean);
+            }
+        }
+        return eligibleUserRoleList;
     }
 
 
     @Override
-    public boolean isEligibleToGrantUserRole(List<String> roleIdList) {
-        if (CollectionUtils.isEmpty(roleIdList)) {
+    public boolean isEligibleToGrantUserRole(List<String> toGrantRoleIdList) {
+        if (CollectionUtils.isEmpty(toGrantRoleIdList)) {
             return true;
         }
 
@@ -215,7 +221,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
             eligibleUserRoleIdGrantList.add(userRoleBean.getRoleId());
         }
 
-        for (String roleId : roleIdList) {
+        for (String roleId : toGrantRoleIdList) {
             if (!eligibleUserRoleIdGrantList.contains(roleId)) {
                 return false;
             }
@@ -238,7 +244,9 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     }
 
     @Override
-    public void updateUserRole(String roleId, String roleDesc, String status) {
-        sdUserRoleMapper.updateUserRole(roleId, roleDesc, status, userService.getCurrentUserUserId());
+    public void updateUserRole(String roleId, String roleDesc, String status, Boolean isAbstract) {
+        String modifyby = userService.getCurrentUserUserId();
+        String abstractFlag = isAbstract ? SdUserRoleEntity.IS_ABSTRACT : StringUtils.EMPTY;
+        sdUserRoleMapper.updateUserRole(roleId, roleDesc, status, abstractFlag, modifyby);
     }
 }

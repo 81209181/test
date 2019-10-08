@@ -23,7 +23,7 @@ public class SdTicketRemarkEntity extends BaseEntity {
             case "SYS":
                 return "System";
         }
-        return "Not found match contact type";
+        return "Not found match remarks type";
     }
 
     public Integer getTicketRemarksId() {

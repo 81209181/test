@@ -300,6 +300,7 @@ CREATE TABLE USER_ROLE(
   ROLE_DESC             varchar2(50)                    not null,
   PARENT_ROLE_ID        varchar2(20),
   STATUS                varchar2(2),
+  ABSTRACT              varchar2(2),
 
   CREATEDATE            date     default SYSDATE        not null,
   CREATEBY              varchar2(10)                    not null,

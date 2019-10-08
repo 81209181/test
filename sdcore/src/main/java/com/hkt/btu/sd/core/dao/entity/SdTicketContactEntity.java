@@ -26,6 +26,8 @@ public class SdTicketContactEntity extends BaseEntity {
                 return "Office Admin";
             case "SITE":
                 return "On-site Contact";
+            case "CALL":
+                return "Caller";
         }
         return "Not found match contact type";
     }

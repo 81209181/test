@@ -11,6 +11,24 @@ public class SdTicketServiceEntity extends BaseEntity {
     private String serviceTypeCode;
     private String serviceId;
     private List<SdServiceFaultsEntity> faultList;
+    private String jobId;
+    private String subsId;
+
+    public String getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(String jobId) {
+        this.jobId = jobId;
+    }
+
+    public String getSubsId() {
+        return subsId;
+    }
+
+    public void setSubsId(String subsId) {
+        this.subsId = subsId;
+    }
 
     public int getTicketDetId() {
         return ticketDetId;

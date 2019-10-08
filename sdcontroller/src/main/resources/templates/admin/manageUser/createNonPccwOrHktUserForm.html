@@ -29,7 +29,7 @@
                 <div class="d-block">
                     <div class="form-check form-check-inline" th:each="userRole : ${userRoleOptionDataMap}" >
                         <input class="form-check-input" th:field="*{userRoleIdList}" type="checkbox" th:value="${userRole.value.getRoleId()}">
-                        <label class="form-check-label" th:text="${userRole.key}"></label>
+                        <label class="form-check-label" th:text="${userRole.value.roleDesc}"></label>
                     </div>
                 </div>
             </div>

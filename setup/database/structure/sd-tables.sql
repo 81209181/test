@@ -42,7 +42,7 @@ CREATE TABLE TICKET_CONTACT
     TICKET_CONTACT_ID       number                  default SEQ_TICKET_CONTACT_ID.nextval,
     TICKET_MAS_ID           number,
 
-    CONTACT_TYPE            varchar2(5), -- {Customer: 'CUST', Office Admin: 'ADMIN', On-site Contact: 'SITE'}
+    CONTACT_TYPE            varchar2(5), -- {Customer: 'CUST', Office Admin: 'ADMIN', On-site Contact: 'SITE', Caller: 'CALL'}
     CONTACT_NAME            varchar2(100),
     CONTACT_NUMBER          varchar2(50),
     CONTACT_MOBILE          varchar2(20),

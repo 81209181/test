@@ -9,25 +9,15 @@
 <div layout:fragment="content" th:remove="tag">
 
     <div class="card" style="height:700px">
-        <div class="card-header bg-primary text-white">Search Customer</div>
+        <div class="card-header bg-primary text-white">Search Service</div>
         <div class="card-body">
             <div class="row">
                 <div class="form-group">
                     <select id="searchKey" class="custom-select" required>
                         <option value="" hidden>Please select</option>
-                        <option value="bes_custCode">[BES] Customer Code</option>
-                        <option value="bes_serviceId">[BES] Service No.</option>
-                        <option value="bes_brNo">[BES] Business Reg</option>
-                        <option value="bes_passport">[BES] Passport</option>
-                        <option value="bes_idCard">[BES] ID Card</option>
-                        <option value="bes_schoolCert">[BES] School Cert.</option>
-                        <option value="bes_certIncorp">[BES] Cert. Incorporation</option>
-                        <option value="itsm_custName">[ITSM] Customer Name</option>
-                        <option value="itsm_custId">[ITSM] Customer ID</option>
-                        <option value="itsm_serviceNo">[ITSM] Service No.</option>
-                        <option value="itsm_tenantId">[ITSM] Tenant ID</option>
-                        <option value="itsm_domainName">[ITSM] Domain Name</option>
-                        <option value="norars_dn">[NORARS] DN</option>
+                        <option value="bsn">Service Number / BSN</option>
+                        <option value="tenantId">Tenant ID</option>
+                        <option value="dn">DN</option>
                     </select>
                 </div>
                 <div class="form-group col-md-2">
@@ -41,7 +31,7 @@
 
             <div class="row col-md-10" style="margin-left:200px">
                 <form class="col-md-12">
-                    <p class="pb-2" style="border-bottom:1px solid #949494">Contact Info</p>
+                    <p class="pb-2" style="border-bottom:1px solid #949494">Customer Info</p>
                     <div class="form-row">
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Customer ID:</label>
@@ -84,7 +74,25 @@
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-primary float-right mt-3" id="btnSearchCustomerNext">Next</button>
+                    <p class="pb-2" style="border-bottom:1px solid #949494">Service Info</p>
+                    <div class="form-row">
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Service Type :</label>
+                            <input type="text" class="form-control-plaintext col-md-5" name="serviceType">
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Service Number :</label>
+                            <input type="text" class="form-control-plaintext col-md-5" name="serviceNo">
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Subscriber Number :</label>
+                            <input type="text" class="form-control-plaintext col-md-5" name="subsId">
+                        </div>
+                    </div>
+                    <div class="form-row ml-5">
+                        <button type="button" class="btn btn-primary mt-2 ml-5 itsm" disabled>Details</button>
+                    </div>
+                    <button type="button" class="btn btn-primary float-right mt-3" id="btnSearchCustomerNext">Create Ticket</button>
                 </form>
             </div>
         </div>
@@ -101,12 +109,10 @@
                         <thead class="thead-light">
                         <tr class="text-center">
                             <th></th>
-                            <th>Customer ID</th>
                             <th>Customer Code</th>
-                            <th>Customer</th>
-                            <th>Offer</th>
-                            <th>Status</th>
-                            <th>Action</th>
+                            <th>Customer Name</th>
+                            <th>Service Type</th>
+                            <th>Service Number / BSN</th>
                         </tr>
                         </thead>
                         <tbody></tbody>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Symptom</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+    <h1 style="padding-top:3%">Edit Symptom Mapping</h1>
+    <form style="width:80%">
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Symptom Code</label>
+                <input type="text" class="form-control" id="symptomCode" name="symptomCode" th:attr="value = ${symptomCode}" readonly>
+            </div>
+            <div class="form-group col-md-6">
+                <label>Symptom Group</label>
+                <input type="text" class="form-control" id="symptomGroupName" name="symptomGroupName" readonly>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Symptom Description</label>
+                <input type="text" class="form-control" id="symptomDescription" name="symptomDescription" readonly>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Service Type</label>
+                <div class="d-block">
+                    <div class="form-check form-check-inline" th:each="type : ${serviceTypeList}">
+                        <input class="form-check-input" type="checkbox" name="serviceTypeCode"
+                               th:value="${type.serviceTypeCode}"
+                               th:attr="checked=${symptomMappingList!=null?(symptomMappingList.contains(type.serviceTypeCode)?true:false): false}">
+                        <label class="form-check-label" th:text="${type.serviceTypeName}"></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-5 from-row">
+            <button type="button" class="btn btn-lg btn-primary float-right mr-sm-2" id="btnSubmit"><i class="far fa-save"></i> Submit</button>
+        </div>
+    </form>
+    <script type="text/javascript" th:src="@{/js/editSymptomMapping.js}"></script>
+
+</div>
+</body>
+</html>

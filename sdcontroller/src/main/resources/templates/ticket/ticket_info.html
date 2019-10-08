@@ -10,22 +10,37 @@
     <script>
         var customerCode = '[[${customerCode}]]';
         var ticketMasId = '[[${ticketMasId}]]';
-
     </script>
-    <div class="card " style="margin-bottom: 75px;">
+    <div class="card" style="margin-bottom: 75px;">
         <div class="card-header bg-primary text-white">Ticket - <span th:text="${ticketMasId}"></span></div>
         <div class="card-body">
-            <h3>Customer</h3>
-            <div id="customer" class="row">
-                <div class="col-md-6 form-inline pt-2">
+            <form id="customer" class="row">
+                <div class="col-md-12">
+                    <h3>Customer</h3>
+                </div>
+                <div class="col-md-3 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Customer Code:</label>
                     <input type="text" class="form-control-plaintext col-md-3" name="custCode"
                            th:value="${customerCode}">
                 </div>
-            </div>
+                <div class="col-md-3 form-inline pt-2">
+                    <label class="col-form-label justify-content-end">Customer Name:</label>
+                    <input type="text" class="form-control-plaintext col-md-3" name="custName">
+                </div>
+                <div class="col-md-3 form-inline pt-2">
+                    <label class="col-form-label justify-content-end">Job Id:</label>
+                    <input type="text" class="form-control-plaintext col-md-3" name="jobId" th:value="${jobId}">
+                </div>
+                <div class="col-md-3 form-inline pt-2">
+                    <label class="col-form-label justify-content-end">Job Status:</label>
+                    <input type="text" class="form-control-plaintext col-md-3" name="jobStatus" th:value="${jobStatus}">
+                </div>
+            </form>
             <hr>
-            <h3>Contact</h3>
             <div id="contact" class="row">
+                <div class="col-md-12">
+                    <h3>Contact</h3>
+                </div>
                 <div class="col-md-12">
                     <div class="form-group form-inline">
                         <select class="custom-select">
@@ -33,54 +48,116 @@
                             <option value="CUST">Customer</option>
                             <option value="ADMIN">Office Admin</option>
                             <option value="SITE">On-site Contact</option>
+                            <option value="CALL">Caller</option>
                         </select>
                         <button type="button" class="btn btn-light ml-2" id="btnAddContact"><i class="fa fa-plus" aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>
-                <div id="contact_list"></div>
-                <div class="offset-md-10">
+                <div id="contact_list" style="width:100%"></div>
+                <div class="offset-md-11">
                     <button type="button" class="btn btn-primary mt-2" id="btnUpdateContact" disabled="disabled">Update</button>
                 </div>
             </div>
             <hr>
-            <h3>Service<button type="button" class="btn btn-light ml-2" id="btnAddService"><i class="fa fa-plus" aria-hidden="true"></i></button></h3>
-            <div id="service">
-                <div id="service_list">
+            <form id="service" class="row">
+                <div class="col-md-12">
+                    <h3>
+                        Service
+                        <a class="btn btn-info ml-3 text-white itsm_link">Link</a>
+                    </h3>
                 </div>
-                <div class="offset-md-10">
-                    <button type="button" class="btn btn-primary mt-2" id="btnUpdateService" disabled="disabled">
+                <div class="col-md-12">
+                    <div class="form-row">
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Service Code: </label>
+                            <input type="text" class="form-control col-md-6" name="serviceCode"/>
+                        </div>
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Service Type: </label>
+                            <input type="text" class="form-control col-md-6" name="serviceType"/>
+                            <button type="button" class="btn btn-light" onclick="addFaults(this);"><i
+                                    class="fa fa-plus" aria-hidden="true"></i></button>
+                            <button type="button" class="btn btn-light" onclick="removeService(this)"><i
+                                    class="fa fa-times" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-row faults_list"></div>
+                </div>
+                <div class="offset-md-11">
+                    <button type="button" class="btn btn-primary mt-2" id="btnUpdateService" >
                         Update
                     </button>
                 </div>
-            </div>
+            </form>
+            <hr>
+            <form id="appointment" class="row">
+                <div class="col-md-12">
+                    <h3>Appointment</h3>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-row">
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Appointment Date:</label>
+                            <input type="datetime-local" class="form-control col-md-6"
+                                   name="appointmentDate" placeholder="1900-01-01T01:00"
+                                   pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}"
+                                    th:value="${appointmentDate}" th:disabled="${asap}">
+                            <div class="form-check ml-3">
+                                <input type="checkbox" class="form-check-input" id="asap_checkbox" th:checked="${asap}">
+                                <label class="form-check-label" for="asap_checkbox">ASAP</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="offset-md-11">
+                    <button type="button" class="btn btn-primary mt-2" id="btnUpdateAppointment">Update</button>
+                </div>
+            </form>
             <hr>
             <h3>Remark</h3>
             <div id="remark">
-                <div class="col-md-12">
-                    <div class="form-group form-inline">
-                        <select class="custom-select" id="remarksTypeSelect">
-                            <option value="" hidden>Please select</option>
-                            <option value="CUST">Customer</option>
-                            <option value="FIELD">Field</option>
-                            <option value="SYS">System</option>
-                        </select>
-                        <button type="button" class="btn btn-light ml-2" id="btnAddRemark"><i class="fa fa-plus" aria-hidden="true"></i>
-                        </button>
+                <form class="col-md-12 form">
+                    <div class="form-row">
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Remarks: </label>
+                            <textarea rows="3" cols="20" class="form-control col-md-6" name="remarks"></textarea>
+                        </div>
                     </div>
-                </div>
-                <div id="remark_list"></div>
+                </form>
                 <div class="offset-md-10">
-                    <button type="button" class="btn btn-primary mt-2" id="btnUpdateRemark" disabled="disabled">Update</button>
+                    <button type="button" class="btn btn-primary mt-2" id="btnCreateTicketRemarks">
+                        <i class="far fa-save"></i> Save
+                    </button>
                 </div>
+                <table id="searchTicketRemarksTable" class="display" cellspacing="0" width="100%">
+                    <thead>
+                    <tr>
+                        <th>Create Date</th>
+                        <th>Type</th>
+                        <th>Remarks</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th>Create Date</th>
+                        <th>Type</th>
+                        <th>Remarks</th>
+                    </tr>
+                    </tfoot>
+                </table>
             </div>
         </div>
-
+        <div class="card-footer">
+            <button type="button" class="btn btn-primary float-right" id="btnTicketSubmit">Submit</button>
+        </div>
     </div>
 
     <!--<div id="tempFaults" hidden="hidden">
         <div class="temp_faults col-md-6 form-inline pt-2">
-            <label class="col-form-label col-md-3 justify-content-end">Faults: </label>
+            <label class="col-form-label col-md-3 justify-content-end">Faults: </label>D
             <input type="text" class="form-control col-md-4" name="faults"/>
             <button type="button" class="btn btn-light md-2" onclick="removeFaults(this)"><i class="fa fa-times"
                                                                                              aria-hidden="true"></i>
@@ -121,7 +198,7 @@
     </div>
 
     <div id="tempContact" hidden="hidden">
-        <form class="col-md-12 form">
+        <form class="col-md-12">
             <div class="form-row">
                 <div class="col-md-12 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Contact Type:</label>
@@ -148,21 +225,6 @@
         </form>
     </div>
 
-    <div id="tempRemark" hidden="hidden">
-        <form class="col-md-12 form">
-            <div class="form-row">
-                <div class="col-md-12 form-inline pt-2">
-                    <label class="col-form-label justify-content-end">Remark Type:</label>
-                    <input type="text" class="form-control-plaintext col-md-1" name="remarksType">
-                    <button type="button" class="btn btn-light ml-2" id="btnRemoveRemark" onclick="removeRemark(this)"><i class="fa fa-times" aria-hidden="true"></i></button>
-                </div>
-                <div class="col-md-6 form-inline pt-2">
-                    <label class="col-form-label col-md-3 justify-content-end">Remark:</label>
-                    <input type="text" class="form-control col-md-6" name="remarks">
-                </div>
-            </div>
-        </form>
-    </div>
     <script type="text/javascript" th:src="@{/js/ticket_info.js}"></script>
 </div>
 </body>

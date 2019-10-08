@@ -158,7 +158,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
             sdInputCheckService.checkEmployeeNumber(employeeNumber);
             // create new LDAP user.
             newUserId = sdUserService.createLdapUser(name, mobile, employeeNumber, ldapDomain, email, userRoleIdList);
-        } catch (DuplicateUserEmailException | UserNotFoundException e) {
+        } catch (DuplicateUserEmailException | UserNotFoundException | InvalidInputException e) {
             LOG.warn(e.getMessage());
             return CreateResultData.of(e.getMessage());
         }
@@ -482,10 +482,5 @@ public class SdUserFacadeImpl implements SdUserFacade {
         }
 
         return userData;
-    }
-
-    @Override
-    public boolean isInternalUser() {
-        return sdUserService.isInternalUser();
     }
 }

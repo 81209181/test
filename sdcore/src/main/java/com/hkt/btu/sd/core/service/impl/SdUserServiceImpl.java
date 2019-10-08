@@ -1,14 +1,11 @@
 package com.hkt.btu.sd.core.service.impl;
 
 import com.hkt.btu.common.core.exception.UserNotFoundException;
-import com.hkt.btu.common.core.service.BtuLdapService;
-import com.hkt.btu.common.core.service.BtuSensitiveDataService;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.core.service.impl.BtuUserServiceImpl;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
 import com.hkt.btu.sd.core.dao.entity.SdOtpEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserEntity;
-import com.hkt.btu.sd.core.dao.entity.SdUserGroupEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserRoleEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdUserMapper;
 import com.hkt.btu.sd.core.dao.mapper.SdUserRoleMapper;
@@ -34,7 +31,6 @@ import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
-import java.security.GeneralSecurityException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -51,12 +47,6 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     SdOtpService sdOtpService;
     @Resource(name = "emailService")
     SdEmailService sdEmailService;
-
-    @Resource(name = "sensitiveDataService")
-    BtuSensitiveDataService btuSensitiveDataService;
-
-    @Resource(name = "ldapService")
-    BtuLdapService btuLdapService;
 
     @Resource(name = "userRoleService")
     SdUserRoleService userRoleService;
@@ -81,9 +71,8 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
     @Override
     public BtuUserBean getUserBeanByUsername(String username) {
-
         // get user data
-        SdUserEntity sdUserEntity = null;
+        SdUserEntity sdUserEntity;
         if (username.contains(SdUserBean.CREATE_USER_PREFIX.PCCW_HKT_USER) ||
                 username.contains(SdUserBean.CREATE_USER_PREFIX.NON_PCCW_HKT_USER)) {
             sdUserEntity = sdUserMapper.getLdapUserByUserId(username);
@@ -124,10 +113,8 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         sdUserBeanPopulator.populate(sdUserEntity, userBean);
         // set user role to userbean.
         if (CollectionUtils.isNotEmpty(results)) {
-            Set<GrantedAuthority> grantedAuthSet = results.stream().map(role -> {
-                SimpleGrantedAuthority auth = new SimpleGrantedAuthority(role.getRoleId());
-                return auth;
-            }).collect(Collectors.toSet());
+            Set<GrantedAuthority> grantedAuthSet = results.stream().map(
+                    role -> new SimpleGrantedAuthority(role.getRoleId())).collect(Collectors.toSet());
             userBean.setAuthorities(grantedAuthSet);
         }
 
@@ -146,8 +133,6 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             throw new UserNotFoundException("Empty user id input.");
         }
 
-
-        // TH__TEAM_B
         Set<GrantedAuthority> authorities = getCurrentUserBean().getAuthorities();
 
         // get user data
@@ -176,55 +161,50 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
     @Transactional
     public String createLdapUser(String name, String mobile, String employeeNumber,
-                                 String ldapDomain, String email, List<String> roleIdList)
-            throws DuplicateUserEmailException, UserNotFoundException {
-        try {
-            // get current userId for CreateBy
-            String createBy = getCurrentUserUserId();
-            // Check if there is a duplicate name
-            SdUserEntity sdUserEntity = sdUserMapper.getLdapUserByUserId(name);
-            if (sdUserEntity != null) {
-                throw new DuplicateUserEmailException("User already exist.");
-            }
-            // check current user has right to create user of user role
-            boolean isEligibleUserGroup = userRoleService.isEligibleToGrantUserRole(roleIdList);
-            if (!isEligibleUserGroup) {
-                LOG.warn("Ineligible to create user of selected user role (" + roleIdList + ") by user (" + createBy + ").");
-                throw new InvalidInputException("Invalid user role.");
-            }
+                                 String ldapDomain, String email, List<String> toGrantRoleIdList)
+            throws DuplicateUserEmailException, UserNotFoundException, InvalidInputException {
+        // get current userId for CreateBy
+        String createBy = getCurrentUserUserId();
+        // Check if there is a duplicate name
+        SdUserEntity sdUserEntity = sdUserMapper.getLdapUserByUserId(name);
+        if (sdUserEntity != null) {
+            throw new DuplicateUserEmailException("User already exist.");
+        }
+        // check current user has right to create user of user role
+        boolean isEligibleUserGroup = userRoleService.isEligibleToGrantUserRole(toGrantRoleIdList);
+        if (!isEligibleUserGroup) {
+            LOG.warn("Ineligible to create user of selected user role (" + toGrantRoleIdList + ") by user (" + createBy + ").");
+            throw new InvalidInputException("Invalid user role.");
+        }
 
-            // check email duplicated
-            SdUserEntity user = sdUserMapper.getUserByEmail(email);
-            if (user != null) {
-                throw new DuplicateUserEmailException();
-            }
-
-            // Data input
-            SdUserEntity userEntity = new SdUserEntity();
-            userEntity.setName(name);
-            userEntity.setCreateby(createBy);
-            userEntity.setUserId(employeeNumber);
-            userEntity.setMobile(mobile);
-            userEntity.setStatus(SdUserEntity.STATUS.ACTIVE);
-            userEntity.setLdapDomain(ldapDomain);
-
-            // create user in db
-            sdUserMapper.insertUser(userEntity);
-
-            // create user role relation in db
-            if (!CollectionUtils.isEmpty(roleIdList)) {
-                for (String roleId : roleIdList) {
-                    sdUserRoleMapper.insertUserUserRole(employeeNumber, roleId);
-                }
-            }
-
-            LOG.info("User (id: " + employeeNumber + ") created.");
-
-            return employeeNumber;
-        } catch (Exception e) {
-            LOG.warn(e.getMessage());
+        // check email duplicated
+        SdUserEntity user = sdUserMapper.getUserByEmail(email);
+        if (user != null) {
             throw new DuplicateUserEmailException("User already exists.");
         }
+
+        // Data input
+        SdUserEntity userEntity = new SdUserEntity();
+        userEntity.setName(name);
+        userEntity.setCreateby(createBy);
+        userEntity.setUserId(employeeNumber);
+        userEntity.setEmail(email);
+        userEntity.setMobile(mobile);
+        userEntity.setStatus(SdUserEntity.STATUS.ACTIVE);
+        userEntity.setLdapDomain(ldapDomain);
+
+        // create user in db
+        sdUserMapper.insertUser(userEntity);
+
+        // create user role relation in db
+        if (!CollectionUtils.isEmpty(toGrantRoleIdList)) {
+            for (String roleId : toGrantRoleIdList) {
+                sdUserRoleMapper.insertUserUserRole(employeeNumber, roleId);
+            }
+        }
+
+        LOG.info("User (id: " + employeeNumber + ") created.");
+        return employeeNumber;
     }
 
     @Override
@@ -282,7 +262,6 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
         // send init password email
         try {
-            password = null;
             requestResetPassword(userId);
         } catch (UserNotFoundException e) {
             LOG.warn("User not found (" + email + ").");
@@ -290,13 +269,14 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             LOG.error(e.getMessage(), e);
         }
 
-        return SdCreateResultBean.of(userId, password);
+        return SdCreateResultBean.of(userId, null);
     }
 
 
     @Override
     @Transactional
-    public void updateUser(String userId, String newName, String newMobile, List<String> userRoleIdList) throws UserNotFoundException, InsufficientAuthorityException, GeneralSecurityException {
+    public void updateUser(String userId, String newName, String newMobile, List<String> userRoleIdList)
+            throws UserNotFoundException, InsufficientAuthorityException {
         SdUserBean currentUser = (SdUserBean) this.getCurrentUserBean();
         if (currentUser.getUserId().equals(userId)) {
             throw new InvalidInputException("Cannot update your own account!");
@@ -551,58 +531,6 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         return new PageImpl<>(sdUserBeanList, pageable, totalCount);
     }
 
-
-    /**
-     * Return company id that the current user belongs and has access to,
-     * return null if there is no limitation.
-     */
-    public Integer getCompanyIdRestriction() throws AuthorityNotFoundException {
-        SdUserBean currentUser;
-        try {
-            currentUser = (SdUserBean) getCurrentUserBean();
-        } catch (UserNotFoundException e) {
-            throw new AuthorityNotFoundException(e.getMessage());
-        }
-
-        Integer companyIdRestriction = currentUser.getCompanyId();
-        if (isInternalUser()) {
-            // internal user has no restriction over company id (independent of user id)
-            return null;
-        }
-
-        return companyIdRestriction;
-    }
-
-    /**
-     * Return user id that the current user has access to,
-     * return null if there is no limitation.
-     */
-    public String getUserIdRestriction() throws AuthorityNotFoundException {
-        SdUserBean currentUser;
-        try {
-            currentUser = (SdUserBean) getCurrentUserBean();
-        } catch (UserNotFoundException e) {
-            throw new AuthorityNotFoundException(e.getMessage());
-        }
-
-        String userIdRestriction = currentUser.getUserId();
-        if (isAdminUser()) {
-            // admin user has no restriction over user id (independent of company id)
-            return null;
-        }
-
-        return userIdRestriction;
-    }
-
-    @Override
-    public boolean isInternalUser() {
-        return hasAnyAuthority(SdUserGroupEntity.GROUP_ID.ROOT, SdUserGroupEntity.GROUP_ID.ADMIN, SdUserGroupEntity.GROUP_ID.USER);
-    }
-
-    @Override
-    public boolean isAdminUser() {
-        return hasAnyAuthority(SdUserGroupEntity.GROUP_ID.ROOT, SdUserGroupEntity.GROUP_ID.ADMIN, SdUserGroupEntity.GROUP_ID.C_ADMIN);
-    }
 
     @Override
     @Transactional

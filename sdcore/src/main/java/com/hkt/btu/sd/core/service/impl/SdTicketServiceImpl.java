@@ -22,13 +22,11 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.util.ObjectUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class SdTicketServiceImpl implements SdTicketService {
@@ -58,30 +56,38 @@ public class SdTicketServiceImpl implements SdTicketService {
     SdTicketRemarkBeanPopulator ticketRemarkBeanPopulator;
 
     @Override
-    public Optional<SdTicketMasBean> createQueryTicket(String custCode) {
-        SdTicketMasBean bean = new SdTicketMasBean();
+    @Transactional(rollbackFor = Exception.class)
+    public int createQueryTicket(String custCode, String serviceNo, String serviceType, String subsId) {
         SdTicketMasEntity ticketMasEntity = new SdTicketMasEntity();
+        String userId = userService.getCurrentUserUserId();
         ticketMasEntity.setCustCode(custCode);
-        ticketMasEntity.setCreateby(userService.getCurrentUserUserId());
+        ticketMasEntity.setCreateby(userId);
         ticketMasMapper.insertQueryTicket(ticketMasEntity);
-        ticketMasBeanPopulator.populate(ticketMasEntity, bean);
-        return Optional.of(bean);
+
+        SdTicketServiceEntity entity = new SdTicketServiceEntity();
+        entity.setCreateby(userId);
+        entity.setModifyby(userId);
+        entity.setServiceId(serviceNo);
+        entity.setTicketMasId(ticketMasEntity.getTicketMasId());
+        entity.setServiceTypeCode(serviceType);
+        entity.setSubsId(subsId);
+        ticketServiceMapper.insertServiceInfo(entity);
+        return ticketMasEntity.getTicketMasId();
     }
 
     @Override
     public Optional<SdTicketMasBean> getTicket(Integer ticketId) {
-        SdTicketMasEntity ticketMasEntity = ticketMasMapper.findTicketById(ticketId);
-        if (!ObjectUtils.isEmpty(ticketMasEntity)) {
-            SdTicketMasBean bean = new SdTicketMasBean();
-            ticketMasBeanPopulator.populate(ticketMasEntity, bean);
-            return Optional.of(bean);
-        }
-        return Optional.empty();
+        SdTicketMasBean bean = new SdTicketMasBean();
+        return Optional.ofNullable(ticketMasMapper.findTicketById(ticketId)).map(sdTicketMasEntity -> {
+            ticketMasBeanPopulator.populate(sdTicketMasEntity, bean);
+            return bean;
+        });
     }
 
     @Override
-    public void updateContactInfo(Integer ticketMasId, String contactType, String contactName, String contactNumber, String contactEmail, String contactMobile) {
-        ticketContactMapper.insertTicketContactInfo(ticketMasId, contactType, contactName, contactMobile, contactEmail, contactNumber, userService.getCurrentUserUserId());
+    public void insertTicketContactInfo(Integer ticketMasId, String contactType, String contactName, String contactNumber, String contactEmail, String contactMobile) {
+        String createBy = userService.getCurrentUserUserId();
+        ticketContactMapper.insertTicketContactInfo(ticketMasId, contactType, contactName, contactMobile, contactEmail, contactNumber, createBy);
     }
 
     @Override
@@ -120,7 +126,8 @@ public class SdTicketServiceImpl implements SdTicketService {
 
     @Override
     public List<SdTicketMasBean> getMyTicket() {
-        List<SdTicketMasEntity> entityList = ticketMasMapper.getMyTicket(userService.getCurrentUserUserId());
+        String createBy = userService.getCurrentUserUserId();
+        List<SdTicketMasEntity> entityList = ticketMasMapper.getMyTicket(createBy);
         if (CollectionUtils.isEmpty(entityList)) {
             return null;
         }
@@ -135,14 +142,49 @@ public class SdTicketServiceImpl implements SdTicketService {
     }
 
     @Override
-    public List<SdTicketRemarkBean> getRemarkInfo(Integer ticketMasId) {
-        List<SdTicketRemarkBean> beanList = new ArrayList<>();
-        ticketRemarkMapper.getTicketRemarksByTicketId(ticketMasId).forEach(sdTicketRemarkEntity -> {
+    public List<SdTicketRemarkBean> getTicketRemarksByTicketId(Integer ticketMasId) {
+        List<SdTicketRemarkEntity> entityList = ticketRemarkMapper.getTicketRemarksByTicketId(ticketMasId);
+        if (CollectionUtils.isEmpty(entityList)) {
+            return null;
+        }
+        List<SdTicketRemarkBean> beanList = new LinkedList<>();
+        for (SdTicketRemarkEntity entity : entityList) {
             SdTicketRemarkBean bean = new SdTicketRemarkBean();
-            ticketRemarkBeanPopulator.populate(sdTicketRemarkEntity,bean);
+            ticketRemarkBeanPopulator.populate(entity, bean);
             beanList.add(bean);
-        });
+        }
+
         return beanList;
+    }
+
+    @Override
+    public void createTicketRemarks(Integer ticketMasId, String remarksType, String remarks) {
+        String createby = userService.getCurrentUserUserId();
+        ticketRemarkMapper.insertTicketRemarks(ticketMasId, remarksType, remarks, createby);
+    }
+
+    @Override
+    public void updateJobIdInService(Integer jobId, String ticketMasId, String userId) {
+        ticketServiceMapper.updateTicketServiceByJobId(jobId, ticketMasId, userId);
+    }
+
+    @Override
+    public Optional<SdTicketServiceBean> getService(Integer ticketId) {
+        return Optional.ofNullable(ticketServiceMapper.getTicketServiceByTicketMasId(ticketId)).map(sdTicketServiceEntity -> {
+            SdTicketServiceBean bean = new SdTicketServiceBean();
+            ticketServiceBeanPopulator.populate(sdTicketServiceEntity, bean);
+            return bean;
+        });
+    }
+
+    @Override
+    public void updateAppointment(String appointmentDate, boolean asap, String userId, String ticketMasId) {
+        ticketMasMapper.updateAppointmentInMas(LocalDateTime.parse(appointmentDate),asap? "Y":"N",userId,ticketMasId);
+    }
+
+    @Override
+    public boolean checkAppointmentDate(String appointmentDate) {
+        return LocalDateTime.now().plusHours(2).plusMinutes(-1).isBefore(LocalDateTime.parse(appointmentDate));
     }
 
     @Override
@@ -193,17 +235,5 @@ public class SdTicketServiceImpl implements SdTicketService {
         String createBy = currentUserBean.getUserId();
 
         ticketServiceMapper.insertFaults(ticketDetId, faults, createBy, createBy);
-    }
-
-    @Override
-    public void updateRemark(Integer ticketMasId, String remarksType, String remarks) {
-        if (!remarksType.equals(SdTicketRemarkEntity.REMARKS_TYPE.SYSTEM)) {
-            ticketRemarkMapper.insertTicketRemarks(ticketMasId,remarksType,remarks,userService.getCurrentUserUserId());
-        }
-    }
-
-    @Override
-    public void removeRemarkByTicketMasId(Integer ticketMasId) {
-        ticketRemarkMapper.removeTicketRemarks(ticketMasId);
     }
 }

@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SdTicketFacade {
-    Optional<SdTicketMasData> createQueryTicket(String custCode);
+    int createQueryTicket(String custCode, String serviceNo, String serviceType, String subsId);
 
     Optional<SdTicketMasData> getTicket(Integer ticketId);
 
-    void updateContactInfo(List<SdTicketContactData> contactList);
+    String updateContactInfo(List<SdTicketContactData> contactList);
 
     List<SdTicketContactData> getContactInfo(Integer ticketMasId);
 
@@ -28,7 +28,15 @@ public interface SdTicketFacade {
 
     String updateServiceInfo(List<RequestTicketServiceData> serviceList);
 
-    List<SdTicketRemarkData> getRemarkInfo(Integer ticketMasId);
+    List<SdTicketRemarkData> getTicketRemarksByTicketId(Integer ticketMasId);
 
-    void updateRemark(List<SdTicketRemarkData> remarkList);
+    String createTicketRemarks(Integer ticketMasId, String remarks);
+
+    void updateJobIdInService(Integer jobId, String ticketMasId, String name);
+
+    Optional<SdTicketServiceData> getService(Integer ticketId);
+
+    void updateAppointment(String appointmentDate, boolean asap, String name, String ticketMasId);
+
+    boolean checkAppointmentDate(String appointmentDate);
 }

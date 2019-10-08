@@ -11,19 +11,17 @@ import java.util.List;
 
 public interface SdUserRoleFacade {
 
+    String updateUserRole(String roleId, String roleDesc, String status, String isAbstract);
+
     List<SdUserRoleData> listAllUserRole();
 
     SdUserRoleData getUserRoleByRoleId(String roleId);
-
+    List<SdUserPathCtrlData> getParentRolePathByRoleId(String roleId);
     EditResultData getUserRoleByUserId (String userId);
-
-    LinkedList<SdUserRoleData> getEligibleUserRoleList();
 
     HashMap<String, SdUserRoleData> getUserRoleMap(List<SdUserRoleData> userGroupDataList);
 
-    String updateUserRole(String roleId, String roleDesc, String status);
-
-    List<SdUserPathCtrlData> getParentRolePathByRoleId(String roleId);
+    List<SdUserRoleData> getEligibleUserRoleList();
 
     boolean checkSameTeamRole(String name, String createBy);
 }

@@ -16,10 +16,12 @@ $(document).ready(function() {
         columns: [
             { data: 'roleId' },
             { data: 'roleDesc' },
-            { data: 'parentRoleId' }
+            { data: 'parentRoleId' },
+            { data: 'status' },
+            { data: 'abstractFlag' }
         ],
         columnDefs: [ {
-            targets: 3,
+            targets: 5,
             data: "roleId",
             render: function ( roleId, type, row, meta ) {
                 var ctx = $("meta[name='_ctx']").attr("content");

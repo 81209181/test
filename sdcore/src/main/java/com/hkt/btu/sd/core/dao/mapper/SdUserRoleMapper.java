@@ -27,7 +27,9 @@ public interface SdUserRoleMapper {
 
     void deleteUserRoleByUserId(@Param("userId") String userId);
 
-    void updateUserRole(@Param("roleId") String roleId, @Param("roleDesc") String roleDesc, @Param("status") String status, @Param("modifyby") String modifyby);
+    void updateUserRole(@Param("roleId") String roleId, @Param("roleDesc") String roleDesc,
+                        @Param("status") String status, @Param("abstractFlag") String abstractFlag,
+                        @Param("modifyby") String modifyby);
 
     List<String> getTeamRoleByUserId(@Param("userId") String userId);
 }

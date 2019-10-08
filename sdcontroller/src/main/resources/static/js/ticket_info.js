@@ -1,16 +1,10 @@
 $().ready(function(){
 
-    $.get('/ticket/contact/'+ticketMasId,function(res){
-        $.each(res,function(index,j){
-            let contact =$('#tempContact').children().clone();
-            $.each(j,function(key,value){
-                contact.find('input[name='+key+']').val(value);
-            })
-            contact.appendTo($('#contact_list'));
-        })
-    });
-
     var ticketDetId = "";
+
+    if($('input[name=jobId]').val()){
+        $('#btnTicketSubmit').attr('disabled',true);
+    }
 
     $('.selectpicker').selectpicker({});
     $('.selectpicker').append("<option>Rabbit</option>");
@@ -24,38 +18,19 @@ $().ready(function(){
             let service =$('#tempService').children().clone();
             $.each(j,function(key,value){
                 service.find('input[name='+key+']').val(value);
+                if (value instanceof Array) {
+                    for (item of value) {
+                        let faults = $('#tempFaults').children().clone();
+                        faults.find('input[name=faults]').val(item.faults);
+                        faults.appendTo(service.find('.faults_list'));
+                    }
+                }
             })
             service.appendTo($('#service_list'));
         })
     });
 
-
-
-    $.get('/ticket/remark/'+ticketMasId,function(res){
-        $.each(res,function(index,j){
-            let remark =$('#tempRemark').children().clone();
-            $.each(j,function(key,value){
-                remark.find('input[name='+key+']').val(value);
-                if(key == "remarksType" && value == "System"){
-                    remark.find('input[name='+key+']').attr("readonly","readonly");
-                    remark.find('#btnRemoveRemark').attr("disabled",true);
-                }
-                if(key == "system" && value == true){
-                    remark.find('input[name="remarks"]').attr("readonly","readonly");
-                }
-            })
-            remark.appendTo($('#remark_list'));
-        })
-    });
-
-     $('#remarksTypeSelect').change(function(){
-        let selected = $(this).children('option:selected').val();
-        if(selected == 'SYS'){
-            $('#btnAddRemark').attr("disabled",true);
-        }else{
-            $('#btnAddRemark').attr("disabled",false);
-        }
-    });
+    ajaxGetDataTable();
 
     $('#btnUpdateService').on('click',function () {
         console.log(ticketDetId);
@@ -90,6 +65,25 @@ $().ready(function(){
         })
     })
 
+
+    //contact
+    $.get('/ticket/contact/'+ticketMasId,function(res){
+        if (res.length == 0) {
+            let contact =$('#tempContact').children().clone();
+            contact.find('input[name=contactType]').val("On-site Contact");
+            contact.appendTo($('#contact_list'));
+            $('#btnUpdateContact').attr('disabled',false);
+        } else {
+            $.each(res,function(index,j){
+                let contact =$('#tempContact').children().clone();
+                $.each(j,function(key,value){
+                    contact.find('input[name='+key+']').val(value);
+                })
+                contact.appendTo($('#contact_list'));
+            })
+        }
+    });
+
     $('#btnAddContact').on('click',function(){
         clearAllMsg();
         if($(this).prev('select').val().length <1){
@@ -103,6 +97,7 @@ $().ready(function(){
     });
 
     $('#btnUpdateContact').on('click',function(){
+        clearAllMsg();
         let arr =new Array() ;
         $('#contact_list').find('form').each(function(index,form){
             let form_arr =$(form).serializeArray();
@@ -120,7 +115,11 @@ $().ready(function(){
             contentType: "application/json",
             data: JSON.stringify(arr),
             success:function(res){
-                showInfoMsg(res);
+                if (res == "") {
+                    showInfoMsg("Update contact info success");
+                } else {
+                    showErrorMsg(res);
+                }
             }
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";
@@ -129,46 +128,92 @@ $().ready(function(){
         })
     })
 
+    $('#btnCreateTicketRemarks').on('click',function(){
+        clearAllMsg();
+        let form_arr = $('#remark').find('form').serialize();
+        form_arr += "&ticketMasId="+ticketMasId;
+        $.post('/ticket/post-create-ticket-remarks',form_arr,function(res){
+            if (res.success) {
+                $('#remark').find('form')[0].reset();
+                $('#searchTicketRemarksTable').DataTable().ajax.reload();
+            } else {
+                showErrorMsg(res.feedback);
+            }
+        }).fail(function(e){
+            var responseError = e.responseText ? e.responseText : "Create failed.";
+            console.log("ERROR : ", responseError);
+            showErrorMsg(responseError);
+        })
+    })
+
     readyForTicketService();
 
-    $('#btnAddRemark').on('click',function(){
-        clearAllMsg();
-        if($(this).prev('select').val().length <1){
-            showErrorMsg('Please one remark type.');
-            return;
-        }
-        let remark =$('#tempRemark').children().clone();
-        remark.find('input[name=remarksType]').val($(this).prev('select').find('option:selected').text());
-        remark.appendTo($('#remark_list'));
-        $('#btnUpdateRemark').attr('disabled',false);
-    });
+    $('.itsm_link').on('click',function(){
+//        window.open($(this).data('url'),'Profile','scrollbars=yes,height=600,width=800');
+        window.open('https://10.111.7.32/itsm/info/ResourcePoolTab.action?resourceId=309033','Profile','scrollbars=yes,height=600,width=800');
+    })
 
-    $('#btnUpdateRemark').on('click',function(){
-        let arr =new Array() ;
-        $('#remark_list').find('form').each(function(index,form){
-            let form_arr =$(form).serializeArray();
-            let form_json = {};
-            $.map(form_arr, function (n, i) {
-              form_json[n['name']] = n['value'];
-            });
-            form_json['ticketMasId']=ticketMasId;
-            arr.push(form_json);
+
+    // appointment
+    $('#asap_checkbox').change(function(){
+        let input =$('input[name=appointmentDate]');
+        if(this.checked){
+            let tzoffset = (new Date()).getTimezoneOffset() * 60000;
+            let localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 16);
+            input.val(localISOTime);
+            input.attr('disabled',true);
+        }else{
+            input.val('');
+            input.attr('disabled',false);
+        }
+    })
+
+    $('#btnUpdateAppointment').on('click',function(){
+        clearAllMsg();
+        let appointment =$('input[name=appointmentDate]').val();
+        if(!appointment){
+            showErrorMsg('please input appointment date.');
+            return ;
+        }
+        $.post('/ticket/appointment/update',{
+            appointmentDate:appointment,
+            asap:$(this).parents('form').find('input[type=checkbox]').get(0).checked,
+            ticketMasId:ticketMasId
+        },function(res){
+            showInfoMsg(res);
+        }).fail(function(e){
+            var responseError = e.responseText ? e.responseText : "Get failed.";
+            console.log("ERROR : ", responseError);
+            showErrorMsg(responseError);
         })
+    })
+
+    // submit button
+    $('#btnTicketSubmit').on('click',function(){
+        let ticket ={};
+        let ticket_input =$('.card-body').find('input');
+        $.each(ticket_input,function(index,input){
+            ticket[$(input).attr('name')] =$(input).val();
+        })
+        ticket['ticketMasId'] =ticketMasId;
         $.ajax({
-            url:'/ticket/remark/update',
+            url:'/ticket/submit',
             type : 'POST',
-            dataType: 'text',
-            contentType: "application/json",
-            data: JSON.stringify(arr),
+            dataType: 'json',
+            data: ticket,
             success:function(res){
-                showInfoMsg(res);
+                $.each(res,function(key,val){
+                    $('input[name='+ key +']').val(val);
+                })
+                $('#btnTicketSubmit').attr('disabled',true);
             }
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";
             console.log("ERROR : ", responseError);
             showErrorMsg(responseError);
         })
-    });
+    })
+
 })
 
 
@@ -208,11 +253,34 @@ function removeContact(btn){
     }
 }
 
-function removeRemark(btn){
-    $(btn).parents('form').remove();
-    if($('#remark_list').find('form').length < 1){
-        $('#btnUpdateRemark').attr('disabled',true);
-    }else{
-        $('#btnUpdateRemark').attr('disabled',false);
-    }
+function ajaxGetDataTable(){
+    $('#searchTicketRemarksTable').DataTable({
+        searching: false,
+        ajax: {
+            type: "GET",
+            contentType: "application/json",
+            url: "/ticket/ajax-search-ticket-remarks?ticketMasId="+ticketMasId,
+            dataSrc: '',
+            error: function (e) {
+                if(e.responseText){
+                    showErrorMsg(e.responseText);
+                }
+            }
+        },
+        columns: [
+            { width: '15%', data: 'createdate' },
+            { width: '15%', data: 'remarksType' },
+            { width: '70%', data: 'remarks' }
+        ],
+        columnDefs: [
+            {
+                targets: 0,
+                data: "createdate",
+                render: function (nextRunTime, type, row, meta) {
+                     return nextRunTime==null ? null : nextRunTime.replace('T', ' ');
+                }
+            },
+        ],
+        order: [[ 0, "desc" ]]
+    });
 }

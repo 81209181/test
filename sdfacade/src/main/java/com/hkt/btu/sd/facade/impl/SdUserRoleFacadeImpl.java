@@ -11,14 +11,12 @@ import com.hkt.btu.sd.facade.data.SdUserPathCtrlData;
 import com.hkt.btu.sd.facade.data.SdUserRoleData;
 import com.hkt.btu.sd.facade.populator.SdUserRoleDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdUserRolePathCtrlPopulator;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
@@ -44,27 +42,24 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
 
     @Override
     public SdUserRoleData getUserRoleByRoleId(String roleId) {
-        SdUserRoleData userRoleData = new SdUserRoleData();
-
         // get user role info
         SdUserRoleBean sdUserRoleBean = sdUserRoleService.getUserRoleByRoleId(roleId);
-
         if (sdUserRoleBean == null) {
             return null;
         }
 
+        SdUserRoleData userRoleData = new SdUserRoleData();
         sdUserRoleDataPopulator.populate(sdUserRoleBean, userRoleData);
-
         return userRoleData;
     }
 
     @Override
     public EditResultData getUserRoleByUserId(String userId) {
-        List<String> results = new ArrayList<>();
+        List<String> results;
         try {
             List<SdUserRoleBean> userRoleBeanList = sdUserRoleService.getUserRoleByUserId(userId);
             if (CollectionUtils.isEmpty(userRoleBeanList)) {
-                return EditResultData.error("This user no role.");
+                return EditResultData.error("This user has no role.");
             }
             results = userRoleBeanList.stream().map(bean -> {
                 SdUserRoleData data = new SdUserRoleData();
@@ -96,40 +91,42 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
     }
 
     @Override
-    public LinkedList<SdUserRoleData> getEligibleUserRoleList() {
-        LinkedList<SdUserRoleData> results = new LinkedList<>();
-        List<SdUserRoleBean> eligibleUserGroupGrantList =
-                sdUserRoleService.getEligibleUserRoleGrantList();
-        results = (LinkedList<SdUserRoleData>) getSdUserRoleData(results, eligibleUserGroupGrantList);
-        return results;
+    public List<SdUserRoleData> getEligibleUserRoleList() {
+        List<SdUserRoleBean> eligibleUserGroupGrantList = sdUserRoleService.getEligibleUserRoleGrantList();
+        if(CollectionUtils.isEmpty(eligibleUserGroupGrantList)) {
+            eligibleUserGroupGrantList.sort(Comparator.comparing(SdUserRoleBean::getRoleId));
+        }
+        return getSdUserRoleData(new ArrayList<>(), eligibleUserGroupGrantList);
     }
 
     @Override
     public HashMap<String, SdUserRoleData> getUserRoleMap(List<SdUserRoleData> userGroupDataList) {
-        HashMap<String, SdUserRoleData> result = new HashMap<>(16);
-
         if (CollectionUtils.isEmpty(userGroupDataList)) {
-            return result;
+            return new HashMap<>();
         }
 
+        HashMap<String, SdUserRoleData> result = new HashMap<>();
         for (SdUserRoleData userRoleData : userGroupDataList) {
-            result.put(userRoleData.getRoleDesc(), userRoleData);
+            result.put(userRoleData.getRoleId(), userRoleData);
         }
-
         return result;
     }
 
     @Override
-    public String updateUserRole(String roleId, String roleDesc, String status) {
+    public String updateUserRole(String roleId, String roleDesc, String status, String abstractFlag) {
         if (StringUtils.isEmpty(roleId)) {
             return "Empty role id.";
         } else if (StringUtils.isEmpty(roleDesc)) {
             return "Empty role desc.";
         } else if (StringUtils.isEmpty(status)) {
             return "Empty status.";
+        } else if (StringUtils.isEmpty(abstractFlag)){
+            return "Empty abstract flag.";
         }
 
-        sdUserRoleService.updateUserRole(roleId, roleDesc, status);
+        boolean isAbstract = BooleanUtils.toBoolean(abstractFlag);
+
+        sdUserRoleService.updateUserRole(roleId, roleDesc, status, isAbstract);
         return null;
     }
 

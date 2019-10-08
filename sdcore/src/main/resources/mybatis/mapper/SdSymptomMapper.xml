@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdSymptomMapper" >
+    <resultMap id="SymptomEntity" type="com.hkt.btu.sd.core.dao.entity.SdSymptomEntity" >
+        <result column="SYMPTOM_CODE" property="symptomCode" />
+        <result column="SYMPTOM_DESCRIPTION" property="symptomDescription" />
+        <result column="SYMPTOM_GROUP_CODE" property="symptomGroupCode" />
+        <result column="SYMPTOM_GROUP_NAME" property="symptomGroupName" />
+
+        <result column="CREATEDATE" property="createdate" />
+        <result column="CREATEBY" property="createby" />
+        <result column="MODIFYDATE" property="modifydate" />
+        <result column="MODIFYBY" property="modifyby" />
+    </resultMap>
+
+    <resultMap id="ServiceTypeEntity" type="com.hkt.btu.sd.core.dao.entity.SdServiceTypeEntity" >
+        <result column="SERVICE_TYPE_CODE" property="serviceTypeCode" />
+        <result column="SERVICE_TYPE_NAME" property="serviceTypeName" />
+
+        <result column="CREATEDATE" property="createdate" />
+        <result column="CREATEBY" property="createby" />
+        <result column="MODIFYDATE" property="modifydate" />
+        <result column="MODIFYBY" property="modifyby" />
+    </resultMap>
+
+    <resultMap id="SymptomMappingEntity" type="com.hkt.btu.sd.core.dao.entity.SdSymptomMappingEntity" >
+        <result column="SERVICE_TYPE_CODE" property="serviceTypeCode" />
+        <result column="SYMPTOM_GROUP_CODE" property="symptomGroupCode" />
+
+        <result column="CREATEDATE" property="createdate" />
+        <result column="CREATEBY" property="createby" />
+    </resultMap>
+
+    <select id="getSymptomGroupList" resultMap="SymptomEntity">
+        SELECT SYMPTOM_GROUP_CODE,SYMPTOM_GROUP_NAME
+        FROM SYMPTOM_GROUP
+        GROUP BY SYMPTOM_GROUP_CODE,SYMPTOM_GROUP_NAME
+        ORDER BY SYMPTOM_GROUP_CODE
+    </select>
+
+    <insert id="createSymptom">
+        insert into symptom (SYMPTOM_CODE,SYMPTOM_DESCRIPTION,SYMPTOM_GROUP_CODE,CREATEBY,MODIFYBY)
+        values (#{symptomCode},#{symptomDescription},#{symptomGroupCode},#{createby},#{createby})
+    </insert>
+
+    <select id="getServiceTypeList" resultMap="ServiceTypeEntity">
+        SELECT SERVICE_TYPE_CODE,SERVICE_TYPE_NAME
+        FROM SERVICE_TYPE
+        GROUP BY SERVICE_TYPE_CODE,SERVICE_TYPE_NAME
+        ORDER BY SERVICE_TYPE_CODE
+    </select>
+
+    <insert id="createSymptomMapping">
+        insert into symptom_mapping (SERVICE_TYPE_CODE,SYMPTOM_CODE,CREATEBY)
+        values (#{serviceTypeCode},#{symptomCode},#{createby})
+    </insert>
+
+    <select id="getSymptomMapping" resultMap="SymptomMappingEntity">
+        select * from SYMPTOM_MAPPING where SYMPTOM_CODE = #{symptomCode}
+    </select>
+
+    <delete id="deleteSymptomMapping">
+        delete from SYMPTOM_MAPPING where SYMPTOM_CODE = #{symptomCode}
+    </delete>
+
+    <select id="getSymptomBySymptomCode" resultMap="SymptomEntity">
+        select
+        sy.SYMPTOM_CODE,
+        sy.SYMPTOM_DESCRIPTION,
+        sy.SYMPTOM_GROUP_CODE,
+        sg.SYMPTOM_GROUP_NAME,
+        sy.CREATEDATE,
+        sy.CREATEBY,
+        sy.MODIFYDATE,
+        sy.MODIFYBY
+        from SYMPTOM sy
+        inner join SYMPTOM_GROUP sg on sy.SYMPTOM_GROUP_CODE = sg.SYMPTOM_GROUP_CODE
+        where sy.SYMPTOM_CODE = #{symptomCode}
+        order by sy.SYMPTOM_CODE
+    </select>
+
+    <select id="getAllSymptom" resultMap="SymptomEntity">
+        select
+        sy.SYMPTOM_CODE,
+        sy.SYMPTOM_DESCRIPTION,
+        sy.SYMPTOM_GROUP_CODE,
+        sg.SYMPTOM_GROUP_NAME,
+        sy.CREATEDATE,
+        sy.CREATEBY,
+        sy.MODIFYDATE,
+        sy.MODIFYBY
+        from SYMPTOM sy
+        inner join SYMPTOM_GROUP sg on sy.SYMPTOM_GROUP_CODE = sg.SYMPTOM_GROUP_CODE
+        order by sy.SYMPTOM_CODE
+    </select>
+</mapper>

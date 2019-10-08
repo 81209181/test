@@ -2,9 +2,11 @@ package com.hkt.btu.sd.core.dao.entity;
 
 import com.hkt.btu.common.core.dao.entity.BaseEntity;
 
+import java.time.LocalDateTime;
+
 public class SdTicketMasEntity extends BaseEntity {
 
-    private Integer ticketMasId ;
+    private int ticketMasId ;
 
     private String custCode;
 
@@ -12,12 +14,31 @@ public class SdTicketMasEntity extends BaseEntity {
 
     private String status;
 
+    private LocalDateTime appointmentDate;
 
-    public Integer getTicketMasId() {
+    private String asap;
+
+    public LocalDateTime getAppointmentDate() {
+        return appointmentDate;
+    }
+
+    public void setAppointmentDate(LocalDateTime appointmentDate) {
+        this.appointmentDate = appointmentDate;
+    }
+
+    public String getAsap() {
+        return asap;
+    }
+
+    public void setAsap(String asap) {
+        this.asap = asap;
+    }
+
+    public int getTicketMasId() {
         return ticketMasId;
     }
 
-    public void setTicketMasId(Integer ticketMasId) {
+    public void setTicketMasId(int ticketMasId) {
         this.ticketMasId = ticketMasId;
     }
 

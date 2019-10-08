@@ -6,9 +6,6 @@
     <alias name="sdUserFacadeImpl" alias="userFacade"/>
     <bean id="sdUserFacadeImpl" class="com.hkt.btu.sd.facade.impl.SdUserFacadeImpl"/>
 
-    <alias name="sdUserGroupFacadeImpl" alias="userGroupFacade"/>
-    <bean id="sdUserGroupFacadeImpl" class="com.hkt.btu.sd.facade.impl.SdUserGroupFacadeImpl"/>
-
     <alias name="sdConfigParamFacade" alias="configParamFacade"/>
     <bean id="sdConfigParamFacade" class="com.hkt.btu.sd.facade.impl.SdConfigParamFacadeImpl"/>
 
@@ -36,9 +33,13 @@
     <bean name="besApiFacade" class="com.hkt.btu.sd.facade.impl.BesApiFacadeImpl"/>
     <bean name="itsmApiFacade" class="com.hkt.btu.sd.facade.impl.ItsmApiFacadeImpl"/>
     <bean name="norarsApiFacade" class="com.hkt.btu.sd.facade.impl.NorarsApiFacadeImpl"/>
+    <bean name="wfmApiFacade" class="com.hkt.btu.sd.facade.impl.WfmApiFacadeImpl"/>
 
     <alias name="sdTicketFacade" alias="ticketFacade"/>
     <bean id="sdTicketFacade" class="com.hkt.btu.sd.facade.impl.SdTicketFacadeImpl"/>
+
+    <alias name="sdSymptomFacade" alias="symptomFacade"/>
+    <bean id="sdSymptomFacade" class="com.hkt.btu.sd.facade.impl.SdSymptomFacadeImpl"/>
 
     <!-- Populator -->
     <alias name="sdUserDataPopulator" alias="userDataPopulator"/>
@@ -82,4 +83,13 @@
 
     <alias name="sdTicketRemarkDataPopulator" alias="ticketRemarkDataPopulator"/>
     <bean id="sdTicketRemarkDataPopulator" class="com.hkt.btu.sd.facade.populator.SdTicketRemarkDataPopulator" />
+
+    <alias name="sdSymptomDataPopulator" alias="symptomDataPopulator"/>
+    <bean id="sdSymptomDataPopulator" class="com.hkt.btu.sd.facade.populator.SdSymptomDataPopulator" />
+
+    <alias name="sdServiceTypeDataPopulator" alias="serviceTypeDataPopulator"/>
+    <bean id="sdServiceTypeDataPopulator" class="com.hkt.btu.sd.facade.populator.SdServiceTypeDataPopulator" />
+
+    <alias alias="symptomMappingDataPopulator" name="sdSymptomMappingDataPopulator"/>
+    <bean class="com.hkt.btu.sd.facade.populator.SdSymptomMappingDataPopulator" id="sdSymptomMappingDataPopulator"/>
 </beans>

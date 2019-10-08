@@ -15,13 +15,18 @@ $().ready(function(){
             showErrorMsg('Please input customer code.');
             return;
         }
-        $.post('/ticket/query/create',{custCode:custCode},function(res){
-            $(location).attr('href',ctx+'/ticket/'+ res.ticketMasId);
+        $.post('/ticket/query/create',$('form').serialize(),function(res){
+            $(location).attr('href',ctx+'/ticket/'+ res);
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";
             console.log("ERROR : ", responseError);
             showErrorMsg(responseError);
         })
+    })
+
+
+    $('.itsm').on('click',function(){
+        window.open($(this).data('url'),'Profile','scrollbars=yes,height=600,width=800');
     })
 
     $('#btnSearchInfo').on('click',function(){
@@ -30,6 +35,7 @@ $().ready(function(){
         clearAllMsg();
         $('tbody').empty();
         $('form').get(0).reset();
+        $('.itsm').attr('disabled',true);
         if(searchKey.val().trim().length <1){
             searchKey.attr('class','custom-select is-invalid');
             searchKey.focus();
@@ -48,36 +54,54 @@ $().ready(function(){
             searchKey : searchKey.val().trim(),
             searchValue : searchValue.val().trim()
         },function(res){
-            $.each(res,function(i,val){
-                let tr ='<tr class="text-center"></tr>';
-                $('tbody').append(tr);
-                $('tbody tr:last').data('info',val);
-                $('tbody tr:last').append('<td><input type="checkbox"></td>')
-                    .append('<td>'+val.custId+'</td>')
-                    .append('<td>'+val.custCode+'</td>')
-                    .append('<td>'+val.custName+'</td>')
-                    .append('<td>'+val.offerName+'</td>')
-                    .append('<td>'+val.statusDesc+'</td>')
-                    .append('<td><a class="text-secondary goNewWin" style="cursor:pointer"><i class="fa fa-table" aria-hidden="true"></i></a></td>');
-            });
-            $('.modal').modal('show');
+            if(res.length > 1){
+                $.each(res,function(i,val){
+                    let tr ='<tr class="text-center"></tr>';
+                    $('tbody').append(tr);
+                    $('tbody tr:last').data('info',val);
+                    $('tbody tr:last').append('<td><input type="radio"></td>')
+                        .append('<td>'+val.custCode+'</td>')
+                        .append('<td>'+val.custName+'</td>')
+                        .append('<td>'+val.serviceType+'</td>')
+                        .append('<td>'+val.serviceNo+'</td>')
+                });
+                $('.modal').modal('show');
+            }else{
+                $.each(res.pop(),function(key,val){
+                     $('form').find('input[name='+ key +']').val(val);
+                     // temp
+                     if(key == 'serviceType'){
+                         if(val == null){
+                             $('form').find('input[name='+key+']').val('test service type');
+                         }
+                     }
+                })
+            }
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";
             console.log("ERROR : ", responseError);
             showErrorMsg(responseError);
         }).then(function(){
-            $('.goNewWin').on('click',function(){
-                window.open($(this).parent().parent().data('info').url,'Profile','scrollbars=yes,height=600,width=800');
-            })
             $('#btnApplyProduct').on('click',function(){
                 $.each($('tbody').find('input:checked').parent().parent().data('info'),function(i,val){
                     $('form').find('input[name='+i+']').val(val);
+                    // start temp
+                    if(i == 'serviceType'){
+                        if(val == null){
+                            $('form').find('input[name='+i+']').val('test service type');
+                        }
+                    }
+                    // end temp
+                    if(i == 'url'){
+                        if(val !=null){
+                            $('.itsm').data('url',val);
+                            $('.itsm').removeAttr('disabled');
+                        }
+                    }
                 })
                 $('.modal').modal('hide');
-            });
+            })
         })
-
-
     })
 
 })

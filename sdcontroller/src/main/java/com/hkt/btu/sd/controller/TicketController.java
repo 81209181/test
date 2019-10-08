@@ -1,10 +1,15 @@
 package com.hkt.btu.sd.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hkt.btu.common.facade.data.PageData;
+import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
 import com.hkt.btu.sd.facade.SdRequestCreateFacade;
 import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.SdUserRoleFacade;
+import com.hkt.btu.sd.facade.WfmApiFacade;
 import com.hkt.btu.sd.facade.data.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -12,8 +17,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import java.security.Principal;
@@ -30,6 +35,8 @@ public class TicketController {
     SdTicketFacade ticketFacade;
     @Resource(name = "userRoleFacade")
     SdUserRoleFacade userRoleFacade;
+    @Resource(name = "wfmApiFacade")
+    WfmApiFacade wfmApiFacade;
 
     @GetMapping("search-customer")
     public String searchCustomer() {
@@ -47,34 +54,43 @@ public class TicketController {
     }
 
     @PostMapping("query/create")
-    public ResponseEntity<?> createQueryTicket(String custCode) {
-        Optional<SdTicketMasData> data = ticketFacade.createQueryTicket(custCode);
-        if (data.isPresent()) {
-            return ResponseEntity.ok(data);
-        } else {
-            return ResponseEntity.badRequest().body("Create ticket fail.");
+    public ResponseEntity<?> createQueryTicket(String custCode, String serviceNo,String serviceType,String subsId) {
+        if (StringUtils.isEmpty(serviceNo) || StringUtils.isEmpty(serviceType)) {
+            return ResponseEntity.badRequest().body("Service No. / Service Type is empty.");
         }
+        return ResponseEntity.ok(ticketFacade.createQueryTicket(custCode, serviceNo, serviceType,subsId));
     }
 
     @GetMapping("{ticketId}")
-    public String showQueryTicket(@PathVariable Integer ticketId, Model model, Principal principal) {
-        Optional<SdTicketMasData> data = ticketFacade.getTicket(ticketId);
-        if (data.isPresent()) {
-            if (!userRoleFacade.checkSameTeamRole(principal.getName(), data.get().getCreateBy())) {
-                return "redirect:/ticket/search-ticket";
-            }
-            model.addAttribute("customerCode", data.get().getCustCode());
-            model.addAttribute("ticketMasId", data.get().getTicketMasId());
-            return "ticket/ticket_info";
-        } else {
-            return "redirect:/ticket/search-ticket";
-        }
+    public ModelAndView showQueryTicket(@PathVariable Integer ticketId, Principal principal) {
+        return ticketFacade.getTicket(ticketId).filter(sdTicketMasData -> userRoleFacade.checkSameTeamRole(principal.getName(), sdTicketMasData.getCreateBy()))
+                .map(sdTicketMasData -> {
+                    ModelAndView modelAndView = new ModelAndView("ticket/ticket_info");
+                    modelAndView.addObject("customerCode", sdTicketMasData.getCustCode())
+                            .addObject("ticketMasId", sdTicketMasData.getTicketMasId());
+                    Optional.ofNullable(sdTicketMasData.getAsap()).ifPresent(s -> {
+                        modelAndView.addObject("asap", s);
+                    });
+                    Optional.ofNullable(sdTicketMasData.getAppointmentDate()).ifPresent(localDateTime -> {
+                        modelAndView.addObject("appointmentDate", localDateTime);
+                    });
+                    ticketFacade.getService(ticketId)
+                            .map(SdTicketServiceData::getJobId)
+                            .ifPresent(jobId ->{
+                                modelAndView.addObject("jobId",jobId);
+                                Optional.ofNullable(wfmApiFacade.getJobDetails(Integer.valueOf(jobId)))
+                                        .map(WfmJobDetailsData::getJobBean)
+                                        .map(WfmJobBeanData::getStatus)
+                                        .ifPresent(status -> modelAndView.addObject("jobStatus", status));
+                            });
+                    return modelAndView;
+                }).orElse(new ModelAndView("redirect:/ticket/search-ticket"));
     }
 
     @PostMapping("contact/update")
     public ResponseEntity<?> updateContactInfo(@RequestBody List<SdTicketContactData> contactList) {
-        ticketFacade.updateContactInfo(contactList);
-        return ResponseEntity.ok("Update contact info success.");
+        String errorMsg = ticketFacade.updateContactInfo(contactList);
+        return ResponseEntity.ok(errorMsg);
     }
 
     @GetMapping("/contact/{ticketMasId}")
@@ -137,18 +153,6 @@ public class TicketController {
         }
     }
 
-    @GetMapping("/remark/{ticketMasId}")
-    public ResponseEntity<?> getRemarkInfo(@PathVariable Integer ticketMasId) {
-        List<SdTicketRemarkData> data = ticketFacade.getRemarkInfo(ticketMasId);
-        return ResponseEntity.ok(data);
-    }
-
-    @PostMapping("/remark/update")
-    public ResponseEntity<?> updateRemark(@RequestBody List<SdTicketRemarkData> remarkList) {
-        ticketFacade.updateRemark(remarkList);
-        return ResponseEntity.ok("Update success.");
-    }
-
     @GetMapping("/ajax-get-fault")
     public ResponseEntity<?> getFaultInfo(@RequestParam int subscriberId) {
         // todo: api for BES
@@ -156,5 +160,54 @@ public class TicketController {
         //    Original:	http://{domain}/saws/api/v3/Request/GetSubFaultBySubscriberId?subscriberId={subscriberId}
         //    New: 		http://{domain}/servicedesk/ticket/ajax-get-fault?subscriberId={subscriberId}
         return ResponseEntity.ok(null);
+    }
+
+    @PostMapping("submit")
+    public ResponseEntity<?> submit(Principal principal,WfmRequestDetailsBeanDate wfmRequestDetailsBeanDate) throws JsonProcessingException {
+        Optional<String> jobIdInService = ticketFacade.getService(Integer.valueOf(wfmRequestDetailsBeanDate.getTicketMasId())).map(SdTicketServiceData::getJobId);
+        if (jobIdInService.isPresent()) {
+            return ResponseEntity.badRequest().body("This ticket has been submitted.");
+        }
+        Integer jobId = wfmApiFacade.createJob(wfmRequestDetailsBeanDate, principal.getName());
+        if (jobId > 0) {
+            ticketFacade.updateJobIdInService(jobId,wfmRequestDetailsBeanDate.getTicketMasId(),principal.getName());
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectNode node = mapper.createObjectNode();
+            Optional.ofNullable(wfmApiFacade.getJobDetails(jobId)).map(WfmJobDetailsData::getJobBean).ifPresent(wfmJobBeanData -> {
+                node.put("jobId", jobId);
+                node.put("jobStatus", wfmJobBeanData.getStatus());
+            });
+            return ResponseEntity.ok(mapper.writeValueAsString(node));
+        } else {
+            return ResponseEntity.badRequest().body("Submit fail.");
+        }
+
+    }
+
+    @GetMapping("ajax-search-ticket-remarks")
+    public ResponseEntity<?> ajaxSearchTicketRemarks(@RequestParam Integer ticketMasId) {
+        List<SdTicketRemarkData> dataList = ticketFacade.getTicketRemarksByTicketId(ticketMasId);
+        return ResponseEntity.ok(dataList);
+    }
+
+    @PostMapping("/post-create-ticket-remarks")
+    public ResponseEntity<?> createTicketRemarks(@RequestParam Integer ticketMasId, @RequestParam String remarks) {
+        String errorMsg = ticketFacade.createTicketRemarks(ticketMasId, remarks);
+        if (errorMsg == null) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of());
+        } else {
+            return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
+        }
+    }
+
+    @PostMapping("appointment/update")
+    public ResponseEntity<?> updateAppointment(String appointmentDate,boolean asap,Principal principal,String ticketMasId) {
+        if (!asap) {
+            if (!ticketFacade.checkAppointmentDate(appointmentDate)) {
+                return ResponseEntity.badRequest().body("The appointment time must be two hours later.");
+            }
+        }
+        ticketFacade.updateAppointment(appointmentDate,asap,principal.getName(),ticketMasId);
+        return ResponseEntity.ok("Update appointment success.");
     }
 }

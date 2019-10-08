@@ -24,6 +24,8 @@ public class SdTicketContactData implements DataInterface {
                 return "ADMIN";
             case "On-site Contact":
                 return "SITE";
+            case "Caller":
+                return "CALL";
             default:
                 return "Not found match contact type";
         }
