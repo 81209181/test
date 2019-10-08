@@ -153,6 +153,17 @@ public class TicketController {
         }
     }
 
+    @GetMapping("/service/symptom/{ticketMasId}")
+    public ResponseEntity<?> getSymptom(@PathVariable Integer ticketMasId) {
+        List<SdSymptomData> symptomData = ticketFacade.getSymptom(ticketMasId);
+        if (CollectionUtils.isEmpty(symptomData)) {
+            return ResponseEntity.badRequest().body("Symptom info not found.");
+        } else {
+            return ResponseEntity.ok(symptomData);
+        }
+    }
+
+
     @GetMapping("/ajax-get-fault")
     public ResponseEntity<?> getFaultInfo(@RequestParam int subscriberId) {
         // todo: api for BES

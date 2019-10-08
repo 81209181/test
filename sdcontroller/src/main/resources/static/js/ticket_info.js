@@ -7,40 +7,42 @@ $().ready(function(){
     }
 
     $('.selectpicker').selectpicker({});
-    $('.selectpicker').append("<option>Rabbit</option>");
-    $('.selectpicker').append("<option>Cat</option>");
-    $('.selectpicker').append("<option>Spider</option>");
-    $('.selectpicker').append("<option>Worm</option>");
-    $('.selectpicker').selectpicker('refresh');
+
+
+    $.get('/ticket/service/symptom/'+ticketMasId, function (res) {
+        for (item of res) {
+            $('.selectpicker').append("<option value="+item.symptomCode+">"+item.symptomCode+"---"+item.symptomDescription+"</option>");
+        }
+        $('.selectpicker').selectpicker('refresh');
+    })
+
 
     $.get('/ticket/service/'+ticketMasId,function(res){
         $.each(res,function(index,j){
-            let service =$('#tempService').children().clone();
+            let service =$('#service');
             $.each(j,function(key,value){
                 service.find('input[name='+key+']').val(value);
-                if (value instanceof Array) {
+                if (key == 'faultsList') {
                     for (item of value) {
-                        let faults = $('#tempFaults').children().clone();
-                        faults.find('input[name=faults]').val(item.faults);
-                        faults.appendTo(service.find('.faults_list'));
+                        $('#symptomList').find('option[value='+item.symptomCode+']').attr('selected','selected');
                     }
                 }
             })
-            service.appendTo($('#service_list'));
         })
+        $('.selectpicker').selectpicker('refresh');
+        $('.selectpicker').selectpicker('render');
     });
 
     ajaxGetDataTable();
 
     $('#btnUpdateService').on('click',function () {
-        console.log(ticketDetId);
         let arr = new Array();
-        $('#service_list').find('form').each(function(index,form){
+        $('#service').each(function(index,form){
             let form_arr =$(form).serializeArray();
             let faults = new Array();
             let form_json = {};
             $.map(form_arr, function (n, i) {
-                if (n['name'] == 'faults') {
+                if (n['name'] == 'symptom') {
                     faults.push(n['value']);
                 }
                 form_json[n['name']] = n['value'];
@@ -228,7 +230,7 @@ function readyForTicketService() {
 function addFaults(btn) {
     $('#btnUpdateService').attr('disabled',false);
     let service =$('#tempFaults').children().clone();
-    service.appendTo($(btn).parent().parent().next('.faults_list'));
+    service.appendTo($(btn).parent().next('.faults_list'));
 }
 
 function removeService(btn){
