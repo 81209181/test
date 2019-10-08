@@ -3,10 +3,7 @@ package com.hkt.btu.sd.facade.impl;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
 import com.hkt.btu.sd.core.service.SdTicketService;
-import com.hkt.btu.sd.core.service.bean.SdTicketContactBean;
-import com.hkt.btu.sd.core.service.bean.SdTicketMasBean;
-import com.hkt.btu.sd.core.service.bean.SdTicketRemarkBean;
-import com.hkt.btu.sd.core.service.bean.SdTicketServiceBean;
+import com.hkt.btu.sd.core.service.bean.*;
 import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.populator.SdTicketContactDataPopulator;
@@ -68,7 +65,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             if (StringUtils.isEmpty(data.getContactName())) {
                 return "In contact type : " + data.getContactType() + ", please input contact name.";
             } else if (StringUtils.isEmpty(data.getContactNumber()) && StringUtils.isEmpty(data.getContactMobile()) && StringUtils.isEmpty(data.getContactEmail())) {
-                return "In Contact Name : "+ data.getContactName() + ", please input Contact No. or Contact Mobile or Contact Email, at least one is not empty.";
+                return "In Contact Name : " + data.getContactName() + ", please input Contact No. or Contact Mobile or Contact Email, at least one is not empty.";
             }
         }
 
@@ -77,7 +74,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             contactList.forEach(data -> {
                 ticketService.insertTicketContactInfo(data.getTicketMasId(), data.getContactTypeValue(), data.getContactName(), data.getContactNumber(), data.getContactEmail(), data.getContactMobile());
             });
-        } catch (Exception e){
+        } catch (Exception e) {
             LOG.error(e.getMessage());
             return "Update failed.";
         }
@@ -171,11 +168,15 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public String updateServiceInfo(List<RequestTicketServiceData> serviceList) {
+
+        if (CollectionUtils.isEmpty(serviceList)) {
+            return "update service info failed.";
+        }
+
         Integer ticketMasId = serviceList.get(0).getTicketMasId();
         try {
-            ticketService.removeServiceInfoByTicketMasId(ticketMasId);
+            //ticketService.removeServiceInfoByTicketMasId(ticketMasId);
 
             List<SdTicketServiceBean> serviceInfoList = serviceList.stream().map(requestData -> {
                 SdTicketServiceBean bean = new SdTicketServiceBean();
@@ -186,10 +187,14 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                 return bean;
             }).collect(Collectors.toList());
 
-            serviceInfoList.forEach(serviceInfo -> {
-                int ticketDetId = ticketService.updateServiceInfo(serviceInfo);
-                serviceInfo.getFaults().forEach(faults -> ticketService.updateFaultsInfo(ticketDetId, faults));
-            });
+            for (SdTicketServiceBean serviceInfo : serviceInfoList) {
+                List<String> faults = serviceInfo.getFaults();
+                if (CollectionUtils.isEmpty(faults)) {
+                    return "Please select symptom.";
+                }
+                faults.forEach(symptom ->
+                        ticketService.updateServiceSymptom(serviceInfo.getTicketMasId(), symptom));
+            }
         } catch (Exception e) {
             LOG.error(e);
             return "update service info failed.";
@@ -207,7 +212,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
         try {
             ticketService.createTicketRemarks(ticketMasId, SdTicketRemarkData.Type.CUSTOMER, remarks);
-        } catch (DuplicateKeyException e){
+        } catch (DuplicateKeyException e) {
             return "Duplicate data already exists.";
         }
 
@@ -230,11 +235,28 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
     @Override
     public void updateAppointment(String appointmentDate, boolean asap, String userId, String ticketMasId) {
-        ticketService.updateAppointment(appointmentDate, asap, userId,ticketMasId);
+        ticketService.updateAppointment(appointmentDate, asap, userId, ticketMasId);
     }
 
     @Override
     public boolean checkAppointmentDate(String appointmentDate) {
         return ticketService.checkAppointmentDate(appointmentDate);
+    }
+
+    @Override
+    public List<SdSymptomData> getSymptom(Integer ticketMasId) {
+        List<SdSymptomBean> beanList = ticketService.getSymptomList(ticketMasId);
+
+        if (CollectionUtils.isEmpty(beanList)) {
+            return null;
+        }
+
+        List<SdSymptomData> dataList = beanList.stream().map(bean -> {
+            SdSymptomData data = new SdSymptomData();
+            ticketServiceDataPopulator.populate(bean, data);
+            return data;
+        }).collect(Collectors.toList());
+
+        return dataList;
     }
 }

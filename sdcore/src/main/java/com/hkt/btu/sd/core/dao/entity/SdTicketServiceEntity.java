@@ -10,7 +10,7 @@ public class SdTicketServiceEntity extends BaseEntity {
     private int ticketMasId;
     private String serviceTypeCode;
     private String serviceId;
-    private List<SdServiceFaultsEntity> faultList;
+    private List<SdSymptomEntity> symptomList;
     private String jobId;
     private String subsId;
 
@@ -62,12 +62,12 @@ public class SdTicketServiceEntity extends BaseEntity {
         this.serviceId = serviceId;
     }
 
-    public List<SdServiceFaultsEntity> getFaults() {
-        return faultList;
+    public List<SdSymptomEntity> getSymptomList() {
+        return symptomList;
     }
 
-    public void setFaults(List<SdServiceFaultsEntity> faults) {
-        this.faultList = faults;
+    public void setSymptomList(List<SdSymptomEntity> symptomList) {
+        this.symptomList = symptomList;
     }
 
     @Override
@@ -77,7 +77,9 @@ public class SdTicketServiceEntity extends BaseEntity {
                 ", ticketMasId=" + ticketMasId +
                 ", serviceTypeCode='" + serviceTypeCode + '\'' +
                 ", serviceId='" + serviceId + '\'' +
-                ", faults=" + faultList +
+                ", symptomList=" + symptomList +
+                ", jobId='" + jobId + '\'' +
+                ", subsId='" + subsId + '\'' +
                 '}';
     }
 }

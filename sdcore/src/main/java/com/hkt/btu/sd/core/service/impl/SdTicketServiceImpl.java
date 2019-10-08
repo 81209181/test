@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.core.service.impl;
 
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
+import com.hkt.btu.sd.core.dao.entity.SdSymptomEntity;
 import com.hkt.btu.sd.core.dao.entity.SdTicketMasEntity;
 import com.hkt.btu.sd.core.dao.entity.SdTicketRemarkEntity;
 import com.hkt.btu.sd.core.dao.entity.SdTicketServiceEntity;
@@ -10,10 +11,7 @@ import com.hkt.btu.sd.core.dao.mapper.SdTicketRemarkMapper;
 import com.hkt.btu.sd.core.dao.mapper.SdTicketServiceMapper;
 import com.hkt.btu.sd.core.service.SdTicketService;
 import com.hkt.btu.sd.core.service.SdUserService;
-import com.hkt.btu.sd.core.service.bean.SdTicketContactBean;
-import com.hkt.btu.sd.core.service.bean.SdTicketMasBean;
-import com.hkt.btu.sd.core.service.bean.SdTicketRemarkBean;
-import com.hkt.btu.sd.core.service.bean.SdTicketServiceBean;
+import com.hkt.btu.sd.core.service.bean.*;
 import com.hkt.btu.sd.core.service.populator.SdTicketContactBeanPopulator;
 import com.hkt.btu.sd.core.service.populator.SdTicketMasBeanPopulator;
 import com.hkt.btu.sd.core.service.populator.SdTicketRemarkBeanPopulator;
@@ -22,6 +20,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -179,12 +178,29 @@ public class SdTicketServiceImpl implements SdTicketService {
 
     @Override
     public void updateAppointment(String appointmentDate, boolean asap, String userId, String ticketMasId) {
-        ticketMasMapper.updateAppointmentInMas(LocalDateTime.parse(appointmentDate),asap? "Y":"N",userId,ticketMasId);
+        ticketMasMapper.updateAppointmentInMas(LocalDateTime.parse(appointmentDate), asap ? "Y" : "N", userId, ticketMasId);
     }
 
     @Override
     public boolean checkAppointmentDate(String appointmentDate) {
         return LocalDateTime.now().plusHours(2).plusMinutes(-1).isBefore(LocalDateTime.parse(appointmentDate));
+    }
+
+    @Override
+    public List<SdSymptomBean> getSymptomList(Integer ticketMasId) {
+        List<SdSymptomEntity> symptomEntities = ticketServiceMapper.getSymptomListByTicketMasId(ticketMasId);
+
+        if (CollectionUtils.isEmpty(symptomEntities)) {
+            return null;
+        }
+
+        List<SdSymptomBean> beanList = symptomEntities.stream().map(entity -> {
+            SdSymptomBean bean = new SdSymptomBean();
+            ticketServiceBeanPopulator.populate(entity, bean);
+            return bean;
+        }).collect(Collectors.toList());
+
+        return beanList;
     }
 
     @Override
@@ -203,6 +219,7 @@ public class SdTicketServiceImpl implements SdTicketService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public void removeServiceInfoByTicketMasId(Integer ticketMasId) {
         ticketServiceMapper.removeServiceInfoByTicketMasId(ticketMasId);
         List<SdTicketServiceEntity> serviceInfoList = ticketServiceMapper.getTicketServiceInfoByTicketMasId(ticketMasId);
@@ -213,6 +230,7 @@ public class SdTicketServiceImpl implements SdTicketService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public int updateServiceInfo(SdTicketServiceBean bean) {
         BtuUserBean currentUserBean = userService.getCurrentUserBean();
         String createby = currentUserBean.getUserId();
@@ -230,6 +248,16 @@ public class SdTicketServiceImpl implements SdTicketService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    public void updateServiceSymptom(Integer ticketMasId, String symptomCode) {
+        BtuUserBean currentUserBean = userService.getCurrentUserBean();
+        String modifyby = currentUserBean.getUserId();
+
+        ticketServiceMapper.updateTicketServiceSymptomByTicketMasId(ticketMasId, symptomCode, modifyby);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public void updateFaultsInfo(Integer ticketDetId, String faults) {
         BtuUserBean currentUserBean = userService.getCurrentUserBean();
         String createBy = currentUserBean.getUserId();
