@@ -8,6 +8,11 @@
 <body>
 <div layout:fragment="content" th:remove="tag">
 
+    <form th:id="search-symptom-form" class="form-inline">
+        <input type="text" class="form-control mb-2 mr-sm-2" th:id="symptomGroupCode" placeholder="Symptom Group Code">
+        <input type="text" class="form-control mb-2 mr-sm-2" th:id="symptomDescription" placeholder="Symptom Description">
+        <button type="submit" class="btn btn-lg btn-primary mb-2"><i class="fas fa-search"></i> Search</button>
+    </form>
     <h1>Symptom List</h1>
     <table id="searchSymptomTable" class="display">
         <thead>

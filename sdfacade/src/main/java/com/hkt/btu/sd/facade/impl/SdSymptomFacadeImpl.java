@@ -1,5 +1,7 @@
 package com.hkt.btu.sd.facade.impl;
 
+import com.hkt.btu.common.facade.data.PageData;
+import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
 import com.hkt.btu.sd.core.exception.InsufficientAuthorityException;
 import com.hkt.btu.sd.core.service.SdSymptomService;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
@@ -17,12 +19,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -95,20 +98,29 @@ public class SdSymptomFacadeImpl implements SdSymptomFacade {
     }
 
     @Override
-    public List<SdSymptomData> getAllSymptom() {
-        List<SdSymptomBean> beanList = sdSymptomService.getAllSymptom();
-        if (CollectionUtils.isEmpty(beanList)) {
-            return null;
+    public PageData<SdSymptomData> searchSymptomList(Pageable pageable, String symptomGroupCode, String symptomDescription) {
+        Page<SdSymptomBean> pageBean;
+        try {
+            symptomGroupCode = StringUtils.isEmpty(symptomGroupCode) ? null : symptomGroupCode;
+            symptomDescription = StringUtils.isEmpty(symptomDescription) ? null : symptomDescription;
+
+            pageBean = sdSymptomService.searchSymptomList(pageable, symptomGroupCode, symptomDescription);
+        } catch (AuthorityNotFoundException e) {
+            return new PageData<>(e.getMessage());
         }
 
+        // populate content
+        List<SdSymptomBean> beanList = pageBean.getContent();
         List<SdSymptomData> dataList = new LinkedList<>();
-        for (SdSymptomBean bean : beanList) {
-            SdSymptomData data = new SdSymptomData();
-            symptomDataPopulator.populate(bean, data);
-            dataList.add(data);
+        if (!CollectionUtils.isEmpty(beanList)) {
+            for (SdSymptomBean bean : beanList) {
+                SdSymptomData data = new SdSymptomData();
+                symptomDataPopulator.populate(bean, data);
+                dataList.add(data);
+            }
         }
 
-        return dataList;
+        return new PageData<>(dataList, pageBean.getPageable(), pageBean.getTotalElements());
     }
 
     @Override
@@ -128,10 +140,7 @@ public class SdSymptomFacadeImpl implements SdSymptomFacade {
         List<String> serviceTypeList = symptomMappingData.getServiceTypeList();
 
         try {
-            sdSymptomService.deleteSymptomMapping(symptomCode);
-            serviceTypeList.forEach(serviceTypeCode -> {
-                sdSymptomService.createSymptomMapping(serviceTypeCode, symptomCode);
-            });
+            sdSymptomService.editSymptomMapping(symptomCode,serviceTypeList);
         } catch (Exception e){
             LOG.error(e.getMessage());
             return "Edit failed.";
