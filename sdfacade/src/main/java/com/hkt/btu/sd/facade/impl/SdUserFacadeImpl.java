@@ -179,7 +179,6 @@ public class SdUserFacadeImpl implements SdUserFacade {
         String userId = updateUserFormData.getUserId();
         String name = StringUtils.trim(updateUserFormData.getName());
         String mobile = StringUtils.trim(updateUserFormData.getMobile());
-        String staffId = StringUtils.trim(updateUserFormData.getStaffId());
         List<String> userRoleIdList = updateUserFormData.getUserRoleIdList();
 
         SdUserBean userBean = sdUserService.getUserByUserId(userId);
