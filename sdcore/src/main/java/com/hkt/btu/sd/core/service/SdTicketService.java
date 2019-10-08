@@ -45,4 +45,5 @@ public interface SdTicketService {
     boolean checkAppointmentDate(String appointmentDate);
 
     List<SdSymptomBean> getSymptomList(Integer ticketMasId);
+
 }

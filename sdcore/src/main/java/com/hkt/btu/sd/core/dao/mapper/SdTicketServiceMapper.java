@@ -31,4 +31,6 @@ public interface SdTicketServiceMapper {
                                                  @Param("modifyby") String modifyby);
 
     List<SdSymptomEntity> getSymptomListByTicketMasId(Integer ticketMasId);
+
+    List<SdSymptomEntity> getAllSymptomList();
 }
