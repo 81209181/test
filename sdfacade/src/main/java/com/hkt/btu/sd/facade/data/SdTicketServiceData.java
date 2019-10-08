@@ -9,7 +9,7 @@ public class SdTicketServiceData implements DataInterface {
     private Integer ticketDetId;
     private String serviceType;
     private String serviceCode;
-    private List<SdServiceFaultsData> faultsList;
+    private List<SdSymptomData> faultsList;
     private String jobId;
 
     public String getJobId() {
@@ -44,11 +44,11 @@ public class SdTicketServiceData implements DataInterface {
         this.serviceCode = serviceCode;
     }
 
-    public List<SdServiceFaultsData> getFaultsList() {
+    public List<SdSymptomData> getFaultsList() {
         return faultsList;
     }
 
-    public void setFaultsList(List<SdServiceFaultsData> faultsList) {
+    public void setFaultsList(List<SdSymptomData> faultsList) {
         this.faultsList = faultsList;
     }
 }

@@ -2,8 +2,10 @@ package com.hkt.btu.sd.core.service.populator;
 
 
 import com.hkt.btu.common.core.service.populator.AbstractBeanPopulator;
+import com.hkt.btu.sd.core.dao.entity.SdSymptomEntity;
 import com.hkt.btu.sd.core.dao.entity.SdTicketServiceEntity;
 import com.hkt.btu.sd.core.service.bean.SdServiceFaultsBean;
+import com.hkt.btu.sd.core.service.bean.SdSymptomBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketServiceBean;
 
 import java.util.Optional;
@@ -18,13 +20,17 @@ public class SdTicketServiceBeanPopulator extends AbstractBeanPopulator<SdTicket
         target.setServiceId(source.getServiceId());
         target.setServiceTypeCode(source.getServiceTypeCode());
         target.setJobId(source.getJobId());
-        Optional.ofNullable(source.getFaults()).ifPresent(entities -> target.setFaultsList(entities.stream().map(entity -> {
-            SdServiceFaultsBean bean = new SdServiceFaultsBean();
-            bean.setTicketFaultsId(entity.getTicketFaultsId());
-            bean.setTicketDetId(entity.getTicketDetId());
-            bean.setFaults(entity.getFaults());
+        Optional.ofNullable(source.getSymptomList()).ifPresent(entities -> target.setFaultsList(entities.stream().map(entity -> {
+            SdSymptomBean bean = new SdSymptomBean();
+            bean.setSymptomCode(entity.getSymptomCode());
+            bean.setSymptomDescription(entity.getSymptomDescription());
             return bean;
         }).collect(Collectors.toList())));
     }
 
+
+    public void populate(SdSymptomEntity source, SdSymptomBean target) {
+        target.setSymptomCode(source.getSymptomCode());
+        target.setSymptomDescription(source.getSymptomDescription());
+    }
 }

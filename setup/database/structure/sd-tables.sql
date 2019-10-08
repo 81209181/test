@@ -24,6 +24,7 @@ CREATE TABLE TICKET_DET
 
     SERVICE_TYPE_CODE  varchar2(20)             not null,
     SERVICE_ID         varchar2(30)             not null,
+    SYMPTOM_CODE       varchar2(10),
 
     CREATEDATE         date                     default SYSDATE not null,
     CREATEBY           varchar2(10)             not null,
