@@ -225,17 +225,17 @@ public class TicketController {
 
     @GetMapping("/ajax-get-ticket")
     public ResponseEntity<?> getTicketInfo(@RequestParam Integer ticketMasId) {
-        Optional<SdTicketMasData> ticketMasInfo = ticketFacade.getTicket(ticketMasId);
+        SdTicketMasData ticketMasInfo = ticketFacade.getTicket(ticketMasId).get();
         List<SdTicketContactData> contactInfo = ticketFacade.getContactInfo(ticketMasId);
         List<SdTicketServiceData> serviceInfo = ticketFacade.getServiceInfo(ticketMasId);
         List<SdTicketRemarkData> remarkInfo = ticketFacade.getTicketRemarksByTicketId(ticketMasId);
 
-        List<Object> dataList = new ArrayList<>();
-        dataList.add(ticketMasInfo);
-        dataList.add(contactInfo);
-        dataList.add(serviceInfo);
-        dataList.add(remarkInfo);
+        SdTicketData ticketData = new SdTicketData();
+        ticketData.setTicketMasInfo(ticketMasInfo);
+        ticketData.setContactInfo(contactInfo);
+        ticketData.setServiceInfo(serviceInfo);
+        ticketData.setRemarkInfo(remarkInfo);
 
-        return ResponseEntity.ok(dataList);
+        return ResponseEntity.ok(ticketData);
     }
 }
