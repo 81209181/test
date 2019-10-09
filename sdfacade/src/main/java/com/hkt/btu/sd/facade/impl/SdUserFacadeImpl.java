@@ -2,13 +2,12 @@ package com.hkt.btu.sd.facade.impl;
 
 import com.hkt.btu.common.core.exception.UserNotFoundException;
 import com.hkt.btu.common.facade.data.PageData;
-import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
 import com.hkt.btu.sd.core.exception.*;
 import com.hkt.btu.sd.core.service.SdInputCheckService;
+import com.hkt.btu.sd.core.service.SdUserRoleService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdCreateResultBean;
 import com.hkt.btu.sd.core.service.bean.SdUserBean;
-import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
 import com.hkt.btu.sd.facade.SdUserFacade;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.populator.SdUserDataPopulator;
@@ -17,8 +16,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -26,8 +23,6 @@ import javax.mail.MessagingException;
 import java.security.GeneralSecurityException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 public class SdUserFacadeImpl implements SdUserFacade {
     private static final Logger LOG = LogManager.getLogger(SdUserFacadeImpl.class);
@@ -41,6 +36,9 @@ public class SdUserFacadeImpl implements SdUserFacade {
 
     @Resource(name = "userDataPopulator")
     SdUserDataPopulator userDataPopulator;
+
+    @Resource(name = "userRoleService")
+    SdUserRoleService userRoleService;
 
 
     /**
@@ -193,6 +191,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
             sdInputCheckService.checkName(name);
             sdInputCheckService.checkMobile(mobile);
             sdInputCheckService.checkAssignRoleByDomain(userRoleIdList, ldapDomain);
+            sdInputCheckService.checkUserRole(userRoleIdList,userRoleService.getEligibleUserRoleGrantList());
         } catch (InvalidInputException e) {
             return e.getMessage();
         }

@@ -2,6 +2,7 @@ package com.hkt.btu.sd.core.service;
 
 
 import com.hkt.btu.sd.core.exception.InvalidInputException;
+import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
 
 import java.util.List;
 
@@ -15,4 +16,6 @@ public interface SdInputCheckService {
     String checkLdapDomain(String input) throws  InvalidInputException;
     String checkUserName(String input) throws InvalidInputException;
     String checkAssignRoleByDomain(List<String> roleList, String domain) throws InvalidInputException;
+
+    void checkUserRole(List<String> userRoleIdList, List<SdUserRoleBean> eligibleUserRoleGrantList);
 }

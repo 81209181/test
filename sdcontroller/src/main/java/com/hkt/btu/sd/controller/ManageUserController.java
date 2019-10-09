@@ -9,12 +9,16 @@ import com.hkt.btu.sd.facade.SdUserFacade;
 import com.hkt.btu.sd.facade.SdUserRoleFacade;
 import com.hkt.btu.sd.facade.data.*;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.User;
@@ -27,10 +31,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @SuppressWarnings({"ParameterCanBeLocal", "SameReturnValue"})
 @Controller
@@ -140,13 +142,17 @@ public class ManageUserController {
                 return "redirect:search-user";
             }
         }
-
+        model.addAttribute("allUserRole", userRoleFacade.listAllUserRole().stream()
+                .filter(sdUserRoleData -> !BooleanUtils.toBoolean(sdUserRoleData.getAbstractFlag()))
+                .filter(sdUserRoleData -> sdUserRoleData.getStatus().equals("A"))
+                .collect(Collectors.toList()));
+        model.addAttribute("eligibleUserRole", userRoleFacade.getEligibleUserRoleList().stream().map(SdUserRoleData::getRoleId).collect(Collectors.toList()));
         // user group info
-        List<SdUserRoleData> userRoleDataList = userRoleFacade.getEligibleUserRoleList();
-        userRoleDataMap = userRoleFacade.getUserRoleMap(userRoleDataList);
-        if (!MapUtils.isEmpty(userRoleDataMap)) {
-            model.addAttribute("userRoleOptionDataMap", userRoleDataMap);
-        }
+//        List<SdUserRoleData> userRoleDataList = userRoleFacade.getEligibleUserRoleList();
+//        userRoleDataMap = userRoleFacade.getUserRoleMap(userRoleDataList);
+//        if (!MapUtils.isEmpty(userRoleDataMap)) {
+//            model.addAttribute("userRoleOptionDataMap", userRoleDataMap);
+//        }
 
         return "admin/manageUser/editUserForm";
     }
@@ -302,7 +308,7 @@ public class ManageUserController {
                 .map(principal -> sessionRegistry.getAllSessions(principal, false))
                 .filter(allSessions -> !ObjectUtils.isEmpty(allSessions))
                 .flatMap(Collection::stream).forEach(SessionInformation::expireNow);
-        sdAuditTrailFacade.insertClickAuditTrail(userId,p.getName());
+        sdAuditTrailFacade.insertClickAuditTrail(userId, p.getName());
         return ResponseEntity.ok("Expire user session successfully.");
 
     }

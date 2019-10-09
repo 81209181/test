@@ -4,12 +4,15 @@ import com.hkt.btu.common.core.service.constant.LdapEnum;
 import com.hkt.btu.sd.core.dao.entity.SdUserRoleEntity;
 import com.hkt.btu.sd.core.exception.InvalidInputException;
 import com.hkt.btu.sd.core.service.SdInputCheckService;
+import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 public class SdInputCheckServiceImpl implements SdInputCheckService {
@@ -116,6 +119,14 @@ public class SdInputCheckServiceImpl implements SdInputCheckService {
             checkLdapDomain(domain);
         }
         return null;
+    }
+
+    @Override
+    public void checkUserRole(List<String> userRoleIdList, List<SdUserRoleBean> eligibleUserRoleGrantList) {
+        List<String> collect = eligibleUserRoleGrantList.stream().map(SdUserRoleBean::getRoleId).collect(Collectors.toList());
+        CollectionUtils.disjunction(collect, userRoleIdList).stream().filter(s -> !collect.contains(s)).findFirst().ifPresent(s -> {
+            throw new InvalidInputException("Your choice is wrong.");
+        });
     }
 
 }
