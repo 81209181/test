@@ -191,7 +191,12 @@ public class SdTicketServiceImpl implements SdTicketService {
         List<SdSymptomEntity> symptomEntities = ticketServiceMapper.getSymptomListByTicketMasId(ticketMasId);
 
         if (CollectionUtils.isEmpty(symptomEntities)) {
-            symptomEntities= ticketServiceMapper.getAllSymptomList();
+            List<SdSymptomEntity> allSymptomList = ticketServiceMapper.getAllSymptomList();
+            if (CollectionUtils.isEmpty(allSymptomList)) {
+                return null;
+            } else {
+                symptomEntities = allSymptomList;
+            }
         }
 
         List<SdSymptomBean> beanList = symptomEntities.stream().map(entity -> {
