@@ -22,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -220,5 +221,21 @@ public class TicketController {
         }
         ticketFacade.updateAppointment(appointmentDate,asap,principal.getName(),ticketMasId);
         return ResponseEntity.ok("Update appointment success.");
+    }
+
+    @GetMapping("/ajax-get-ticket")
+    public ResponseEntity<?> getTicketInfo(@RequestParam Integer ticketMasId) {
+        Optional<SdTicketMasData> ticketMasInfo = ticketFacade.getTicket(ticketMasId);
+        List<SdTicketContactData> contactInfo = ticketFacade.getContactInfo(ticketMasId);
+        List<SdTicketServiceData> serviceInfo = ticketFacade.getServiceInfo(ticketMasId);
+        List<SdTicketRemarkData> remarkInfo = ticketFacade.getTicketRemarksByTicketId(ticketMasId);
+
+        List<Object> dataList = new ArrayList<>();
+        dataList.add(ticketMasInfo);
+        dataList.add(contactInfo);
+        dataList.add(serviceInfo);
+        dataList.add(remarkInfo);
+
+        return ResponseEntity.ok(dataList);
     }
 }
