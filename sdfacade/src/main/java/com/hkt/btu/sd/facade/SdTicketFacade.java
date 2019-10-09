@@ -1,11 +1,7 @@
 package com.hkt.btu.sd.facade;
 
 import com.hkt.btu.common.facade.data.PageData;
-import com.hkt.btu.sd.facade.data.RequestTicketServiceData;
-import com.hkt.btu.sd.facade.data.SdTicketContactData;
-import com.hkt.btu.sd.facade.data.SdTicketMasData;
-import com.hkt.btu.sd.facade.data.SdTicketServiceData;
-import com.hkt.btu.sd.facade.data.SdTicketRemarkData;
+import com.hkt.btu.sd.facade.data.*;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -39,4 +35,6 @@ public interface SdTicketFacade {
     void updateAppointment(String appointmentDate, boolean asap, String name, String ticketMasId);
 
     boolean checkAppointmentDate(String appointmentDate);
+
+    List<SdSymptomData> getSymptom(Integer ticketMasId);
 }

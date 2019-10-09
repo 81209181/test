@@ -115,7 +115,7 @@ public class SdInputCheckServiceImpl implements SdInputCheckService {
         boolean flag = roleList.stream().anyMatch(role -> role.contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR));
         if (flag) {
             domain = Optional.ofNullable(domain)
-                    .orElseThrow(() -> new InvalidInputException("Only LDAP users can choose Team head permissions."));
+                    .orElseThrow(() -> new InvalidInputException("Only LDAP users can chosen Team head permissions."));
             checkLdapDomain(domain);
         }
         return null;

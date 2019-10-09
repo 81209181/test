@@ -16,10 +16,9 @@
         <result column="MODIFYDATE" property="modifydate"/>
         <result column="MODIFYBY" property="modifyby"/>
 
-        <collection property="faultList" ofType="com.hkt.btu.sd.core.dao.entity.SdServiceFaultsEntity">
-            <id column="TICKET_FAULTS_ID" property="ticketFaultsId"/>
-            <result column="TICKET_DET_ID" property="ticketDetId"/>
-            <result column="FAULTS" property="faults"/>
+        <collection property="symptomList" ofType="com.hkt.btu.sd.core.dao.entity.SdSymptomEntity">
+            <id column="SYMPTOM_CODE" property="symptomCode"/>
+            <result column="SYMPTOM_DESCRIPTION" property="symptomDescription"/>
         </collection>
     </resultMap>
 
@@ -27,11 +26,10 @@
         select td.TICKET_MAS_ID,
                td.TICKET_DET_ID,
                td.SERVICE_ID,
-               td.SERVICE_TYPE_CODE,
-               tf.FAULTS,
-               tf.TICKET_FAULTS_ID
+               td.SYMPTOM_CODE,
+               st.SERVICE_TYPE_NAME as SERVICE_TYPE_CODE
         from TICKET_DET td
-                 inner join TICKET_FAULTS tf on td.TICKET_DET_ID = tf.TICKET_DET_ID
+                 inner join SERVICE_TYPE st on st.SERVICE_TYPE_CODE = td.SERVICE_TYPE_CODE
         where td.TICKET_MAS_ID = #{ticketMasId}
     </select>
 
@@ -78,4 +76,28 @@
             MODIFYDATE=sysdate
         where TICKET_MAS_ID =#{ticketMasId}
     </update>
+
+    <update id="updateTicketServiceSymptomByTicketMasId">
+        update TICKET_DET
+        set SYMPTOM_CODE = #{symptomCode},
+            MODIFYBY = #{modifyby},
+            MODIFYDATE = sysdate
+        where TICKET_MAS_ID = #{ticketMasId}
+    </update>
+
+    <select id="getSymptomListByTicketMasId" resultType="com.hkt.btu.sd.core.dao.entity.SdSymptomEntity">
+        select s.SYMPTOM_DESCRIPTION as symptomDescription,
+               s.SYMPTOM_CODE as symptomCode
+        from TICKET_DET td
+                 inner join SERVICE_TYPE st on st.SERVICE_TYPE_CODE = td.SERVICE_TYPE_CODE
+                 inner join SYMPTOM_MAPPING sm on sm.SERVICE_TYPE_CODE = st.SERVICE_TYPE_CODE
+                 inner join SYMPTOM s on s.SYMPTOM_CODE = sm.SYMPTOM_CODE
+        where td.TICKET_MAS_ID = #{ticketMasId}
+    </select>
+
+    <select id="getAllSymptomList" resultType="com.hkt.btu.sd.core.dao.entity.SdSymptomEntity">
+        select SYMPTOM_CODE as symptomCode,
+               SYMPTOM_DESCRIPTION as symptomDescription
+        from SYMPTOM
+    </select>
 </mapper>

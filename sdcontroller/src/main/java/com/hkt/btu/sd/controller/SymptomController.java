@@ -1,7 +1,9 @@
 package com.hkt.btu.sd.controller;
 
 
+import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
+import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
 import com.hkt.btu.sd.facade.SdSymptomFacade;
 import com.hkt.btu.sd.facade.data.EditResultData;
 import com.hkt.btu.sd.facade.data.SdServiceTypeData;
@@ -9,6 +11,8 @@ import com.hkt.btu.sd.facade.data.SdSymptomData;
 import com.hkt.btu.sd.facade.data.SdSymptomMappingData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -50,14 +54,16 @@ public class SymptomController {
     }
 
     @GetMapping("ajax-search-symptom")
-    public ResponseEntity<?> ajaxSearchSymptom() {
-        List<SdSymptomData> dataList = sdSymptomFacade.getAllSymptom();
+    public ResponseEntity<?> ajaxSearchSymptom(@RequestParam(defaultValue = "0") int draw,
+                                               @RequestParam(defaultValue = "0") int start,
+                                               @RequestParam(defaultValue = "10") int length,
+                                               @RequestParam String symptomGroupCode,
+                                               @RequestParam String symptomDescription) {
+        int page = start / length;
+        Pageable pageable = PageRequest.of(page, length);
 
-        if (dataList == null) {
-            return ResponseEntity.badRequest().body("Symptom list not found.");
-        } else {
-            return ResponseEntity.ok(dataList);
-        }
+        PageData<SdSymptomData> pageData = sdSymptomFacade.searchSymptomList(pageable, symptomGroupCode, symptomDescription);
+        return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
     }
 
     @GetMapping("/edit-symptom-mapping")

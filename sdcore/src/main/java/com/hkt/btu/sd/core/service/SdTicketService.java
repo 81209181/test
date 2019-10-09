@@ -1,9 +1,6 @@
 package com.hkt.btu.sd.core.service;
 
-import com.hkt.btu.sd.core.service.bean.SdTicketContactBean;
-import com.hkt.btu.sd.core.service.bean.SdTicketMasBean;
-import com.hkt.btu.sd.core.service.bean.SdTicketRemarkBean;
-import com.hkt.btu.sd.core.service.bean.SdTicketServiceBean;
+import com.hkt.btu.sd.core.service.bean.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -31,6 +28,8 @@ public interface SdTicketService {
 
     int updateServiceInfo(SdTicketServiceBean bean);
 
+    void updateServiceSymptom(Integer ticketMasId, String symptomCode);
+
     void updateFaultsInfo(Integer ticketDetId, String faults);
 
     List<SdTicketRemarkBean> getTicketRemarksByTicketId(Integer ticketMasId);
@@ -44,4 +43,7 @@ public interface SdTicketService {
     void updateAppointment(String appointmentDate, boolean asap, String userId, String ticketMasId);
 
     boolean checkAppointmentDate(String appointmentDate);
+
+    List<SdSymptomBean> getSymptomList(Integer ticketMasId);
+
 }

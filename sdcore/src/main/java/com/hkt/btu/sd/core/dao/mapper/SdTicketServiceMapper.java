@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.core.dao.mapper;
 
+import com.hkt.btu.sd.core.dao.entity.SdSymptomEntity;
 import com.hkt.btu.sd.core.dao.entity.SdTicketServiceEntity;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -24,4 +25,12 @@ public interface SdTicketServiceMapper {
                       @Param("createby") String createby, @Param("modifyby")String modifyby);
 
     void updateTicketServiceByJobId(@Param("jobId")Integer jobId, @Param("ticketMasId")String ticketMasId,@Param("userId") String userId);
+
+    void updateTicketServiceSymptomByTicketMasId(@Param("ticketMasId") Integer ticketMasId,
+                                                 @Param("symptomCode") String symptomCode,
+                                                 @Param("modifyby") String modifyby);
+
+    List<SdSymptomEntity> getSymptomListByTicketMasId(Integer ticketMasId);
+
+    List<SdSymptomEntity> getAllSymptomList();
 }

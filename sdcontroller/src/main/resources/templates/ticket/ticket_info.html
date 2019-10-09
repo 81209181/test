@@ -71,18 +71,27 @@
                     <div class="form-row">
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Service Code: </label>
-                            <input type="text" class="form-control col-md-6" name="serviceCode"/>
+                            <input type="text" class="form-control col-md-6" name="serviceCode" readonly/>
                         </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Service Type: </label>
-                            <input type="text" class="form-control col-md-6" name="serviceType"/>
-                            <button type="button" class="btn btn-light" onclick="addFaults(this);"><i
+                            <input type="text" class="form-control col-md-6" name="serviceType" readonly/>
+                            <!--<button type="button" class="btn btn-light" onclick="addFaults(this);"><i
                                     class="fa fa-plus" aria-hidden="true"></i></button>
                             <button type="button" class="btn btn-light" onclick="removeService(this)"><i
-                                    class="fa fa-times" aria-hidden="true"></i></button>
+                                    class="fa fa-times" aria-hidden="true"></i></button>-->
                         </div>
+                        <div class="temp_faults col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Symptom: </label>
+                            <select name="symptom" id="symptomList" class="selectpicker form-control col-md-6" data-width="500px" data-live-search="true">
+
+                            </select>
+                            <!--<button type="button" class="btn btn-light md-2" onclick="removeFaults(this)"><i class="fa fa-times"
+                                                                                                             aria-hidden="true"></i>
+                            </button>-->
+                        </div>
+                        <div class="form-row faults_list"></div>
                     </div>
-                    <div class="form-row faults_list"></div>
                 </div>
                 <div class="offset-md-11">
                     <button type="button" class="btn btn-primary mt-2" id="btnUpdateService" >
@@ -155,17 +164,18 @@
         </div>
     </div>
 
-    <div id="tempFaults" hidden="hidden">
+    <!--<div id="tempFaults" hidden="hidden">
         <div class="temp_faults col-md-6 form-inline pt-2">
-            <label class="col-form-label col-md-3 justify-content-end">Faults: </label>D
-            <input type="text" class="form-control col-md-4" name="faults"/>
+            <label class="col-form-label col-md-3 justify-content-end">Symptom: </label>
+            <select id="symptomList" class="selectpicker form-control col-md-6" data-width="500px" data-live-search="true">
+            </select>
             <button type="button" class="btn btn-light md-2" onclick="removeFaults(this)"><i class="fa fa-times"
                                                                                              aria-hidden="true"></i>
             </button>
         </div>
-    </div>
+    </div>-->
 
-    <div id="tempService" hidden="hidden">
+    <!--<div id="tempService" hidden="hidden">
         <form class="col-md-12 form">
             <div class="form-row">
                     <div class="col-md-6 form-inline pt-2">
@@ -183,7 +193,7 @@
             </div>
             <div class="form-row faults_list"></div>
         </form>
-    </div>
+    </div>-->
 
     <div id="tempContact" hidden="hidden">
         <form class="col-md-12">

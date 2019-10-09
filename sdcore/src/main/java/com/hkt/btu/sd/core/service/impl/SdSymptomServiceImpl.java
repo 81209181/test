@@ -14,12 +14,14 @@ import com.hkt.btu.sd.core.service.populator.SdSymptomBeanPopulator;
 import com.hkt.btu.sd.core.service.populator.SdSymptomMappingBeanPopulator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 public class SdSymptomServiceImpl implements SdSymptomService {
     private static final Logger LOG = LogManager.getLogger(SdSymptomServiceImpl.class);
@@ -78,11 +80,13 @@ public class SdSymptomServiceImpl implements SdSymptomService {
     }
 
     @Override
-    public List<SdSymptomBean> getAllSymptom() {
-        List<SdSymptomEntity> entityList = sdSymptomMapper.getAllSymptom();
-        if (CollectionUtils.isEmpty(entityList)) {
-            return null;
-        }
+    public Page<SdSymptomBean> searchSymptomList(Pageable pageable, String symptomGroupCode, String symptomDescription) {
+        long offset = pageable.getOffset();
+        int pageSize = pageable.getPageSize();
+
+        List<SdSymptomEntity> entityList = sdSymptomMapper.searchSymptomList(offset, pageSize, symptomGroupCode, symptomDescription);
+        Integer totalCount = entityList.size();
+
         List<SdSymptomBean> beanList = new LinkedList<>();
         for (SdSymptomEntity entity : entityList) {
             SdSymptomBean bean = new SdSymptomBean();
@@ -90,7 +94,7 @@ public class SdSymptomServiceImpl implements SdSymptomService {
             beanList.add(bean);
         }
 
-        return beanList;
+        return new PageImpl<>(beanList, pageable, totalCount);
     }
 
     @Override
@@ -105,21 +109,10 @@ public class SdSymptomServiceImpl implements SdSymptomService {
     }
 
     @Override
-    public void deleteSymptomMapping(String symptomCode) {
-        sdSymptomMapper.deleteSymptomMapping(symptomCode);
-    }
-
-    @Override
-    public void createSymptomMapping(String serviceTypeCode, String symptomCode) {
-        String createby = userService.getCurrentUserUserId();
-        sdSymptomMapper.createSymptomMapping(serviceTypeCode, symptomCode, createby);
-    }
-
-    @Override
     public List<SdSymptomMappingBean> getSymptomMapping(String symptomCode) {
         List<SdSymptomMappingBean> results = new LinkedList<>();
 
-        List<SdSymptomMappingEntity> symptomMappingEntity = sdSymptomMapper.getSymptomMapping(symptomCode);
+        List<SdSymptomMappingEntity> symptomMappingEntity = sdSymptomMapper.getSymptomMapping(symptomCode, null);
 
         if (CollectionUtils.isEmpty(symptomMappingEntity)) {
             return null;
@@ -130,5 +123,17 @@ public class SdSymptomServiceImpl implements SdSymptomService {
             results.add(bean);
         }
         return results;
+    }
+
+    @Override
+    public void editSymptomMapping(String symptomCode, List<String> serviceTypeList) {
+        String createby = userService.getCurrentUserUserId();
+        sdSymptomMapper.deleteSymptomMapping(symptomCode, serviceTypeList);
+        serviceTypeList.forEach(serviceTypeCode -> {
+            List<SdSymptomMappingEntity> symptomMappingEntity = sdSymptomMapper.getSymptomMapping(symptomCode, serviceTypeCode);
+            if (CollectionUtils.isEmpty(symptomMappingEntity)) {
+                sdSymptomMapper.createSymptomMapping(serviceTypeCode, symptomCode, createby);
+            }
+        });
     }
 }
