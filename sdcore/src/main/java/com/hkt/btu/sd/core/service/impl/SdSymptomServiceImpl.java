@@ -127,6 +127,9 @@ public class SdSymptomServiceImpl implements SdSymptomService {
 
     @Override
     public void editSymptomMapping(String symptomCode, List<String> serviceTypeList) {
+        // todo: List<SdSymptomMappingBean> deleteSymptomList
+        // todo: List<SdSymptomMappingBean> createSymptomList
+
         String createby = userService.getCurrentUserUserId();
         sdSymptomMapper.deleteSymptomMapping(symptomCode, serviceTypeList);
         serviceTypeList.forEach(serviceTypeCode -> {
