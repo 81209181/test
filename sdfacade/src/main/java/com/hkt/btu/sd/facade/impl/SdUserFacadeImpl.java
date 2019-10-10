@@ -8,6 +8,7 @@ import com.hkt.btu.sd.core.service.SdUserRoleService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdCreateResultBean;
 import com.hkt.btu.sd.core.service.bean.SdUserBean;
+import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
 import com.hkt.btu.sd.facade.SdUserFacade;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.populator.SdUserDataPopulator;
@@ -184,13 +185,12 @@ public class SdUserFacadeImpl implements SdUserFacade {
             return "User not found.";
         }
         String ldapDomain = userBean.getLdapDomain();
-
         // check input
         try {
             sdInputCheckService.checkName(name);
             sdInputCheckService.checkMobile(mobile);
             sdInputCheckService.checkAssignRoleByDomain(userRoleIdList, ldapDomain);
-            sdInputCheckService.checkUserRole(userRoleIdList,userRoleService.getEligibleUserRoleGrantList());
+            sdInputCheckService.checkUserRole(userRoleIdList,userRoleService.getEligibleUserRoleGrantList(),userRoleService.getUserRoleByUserId(userId));
         } catch (InvalidInputException e) {
             return e.getMessage();
         }
