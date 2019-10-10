@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -112,7 +113,7 @@ public class SdSymptomServiceImpl implements SdSymptomService {
     public List<SdSymptomMappingBean> getSymptomMapping(String symptomCode) {
         List<SdSymptomMappingBean> results = new LinkedList<>();
 
-        List<SdSymptomMappingEntity> symptomMappingEntity = sdSymptomMapper.getSymptomMapping(symptomCode, null);
+        List<SdSymptomMappingEntity> symptomMappingEntity = sdSymptomMapper.getSymptomMapping(symptomCode);
 
         if (CollectionUtils.isEmpty(symptomMappingEntity)) {
             return null;
@@ -126,17 +127,42 @@ public class SdSymptomServiceImpl implements SdSymptomService {
     }
 
     @Override
-    public void editSymptomMapping(String symptomCode, List<String> serviceTypeList) {
-        // todo: List<SdSymptomMappingBean> deleteSymptomList
-        // todo: List<SdSymptomMappingBean> createSymptomList
-
+    public void updateSymptom(String oldSymptomCode, String symptomCode, String symptomGroupCode, String symptomDescription) {
         String createby = userService.getCurrentUserUserId();
-        sdSymptomMapper.deleteSymptomMapping(symptomCode, serviceTypeList);
-        serviceTypeList.forEach(serviceTypeCode -> {
-            List<SdSymptomMappingEntity> symptomMappingEntity = sdSymptomMapper.getSymptomMapping(symptomCode, serviceTypeCode);
-            if (CollectionUtils.isEmpty(symptomMappingEntity)) {
-                sdSymptomMapper.createSymptomMapping(serviceTypeCode, symptomCode, createby);
+        sdSymptomMapper.updateSymptom(oldSymptomCode, symptomCode, symptomGroupCode, symptomDescription, createby);
+        LOG.info(String.format("Updated symptom %s - %s", symptomCode, symptomDescription));
+    }
+
+    @Override
+    public void editSymptomMapping(String oldSymptomCode, String symptomCode, List<String> serviceTypeList) {
+        String createby = userService.getCurrentUserUserId();
+
+        List<SdSymptomMappingEntity> existSymptomList = sdSymptomMapper.getSymptomMapping(oldSymptomCode);
+        // first insert data
+        if (CollectionUtils.isEmpty(existSymptomList)) {
+            sdSymptomMapper.createSymptomMapping(serviceTypeList, symptomCode, createby);
+        } else {
+            List<String> existServiceTypeList = new ArrayList<>();
+            List<String> oldServiceTypeList = new ArrayList<>();
+            List<String> newServiceTypeList = new ArrayList<>();
+
+            for (SdSymptomMappingEntity symptomMappingEntity : existSymptomList) {
+                existServiceTypeList.add(symptomMappingEntity.getServiceTypeCode());
             }
-        });
+            oldServiceTypeList.addAll(existServiceTypeList);
+            newServiceTypeList.addAll(serviceTypeList);
+
+            oldServiceTypeList.removeAll(serviceTypeList);
+            LOG.debug("Deleted symptomCode:" + symptomCode + ", oldServiceTypeList:" + oldServiceTypeList);
+            newServiceTypeList.removeAll(existServiceTypeList);
+            LOG.debug("Created symptomCode:" + symptomCode + ", newServiceTypeList:" + newServiceTypeList);
+
+            if (!CollectionUtils.isEmpty(oldServiceTypeList)) {
+                sdSymptomMapper.deleteSymptomMapping(oldSymptomCode, oldServiceTypeList);
+            }
+            if (!CollectionUtils.isEmpty(newServiceTypeList)) {
+                sdSymptomMapper.createSymptomMapping(newServiceTypeList, symptomCode, createby);
+            }
+        }
     }
 }

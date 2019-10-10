@@ -16,7 +16,7 @@ function ajaxGetSymptom() {
         success: function (data) {
             // fill in form
             $("#symptomDescription").val(data.symptomDescription);
-            $("#symptomGroupName").val(data.symptomGroupName);
+            $("#symptomGroupCode").val(data.symptomGroupCode);
         },
         error: function (e) {
             var responseError = e.responseText ? e.responseText : "Get failed.";
@@ -27,8 +27,12 @@ function ajaxGetSymptom() {
 }
 
 function ajaxUpdateSymptom() {
+    clearAllMsg();
     var input = {};
+    input["oldSymptomCode"] = $("#oldSymptomCode").val();
     input["symptomCode"] = $("#symptomCode").val();
+    input["symptomGroupCode"] = $("#symptomGroupCode").val();
+    input["symptomDescription"] = $("#symptomDescription").val();
 
     let serviceTypes = new Array();
     $("input[name='serviceTypeCode']:checked").each(function (j) {
@@ -36,7 +40,6 @@ function ajaxUpdateSymptom() {
             serviceTypes.push($(this).val());
         }
     });
-
     input["serviceTypeList"] = serviceTypes;
 
     $.ajax({
@@ -47,7 +50,6 @@ function ajaxUpdateSymptom() {
         dataType: 'json',
         cache: false,
         success: function (data) {
-            clearAllMsg();
             if(data.success){
                 showInfoMsg("Updated Symptom Mapping.");
                 ajaxGetSymptom();

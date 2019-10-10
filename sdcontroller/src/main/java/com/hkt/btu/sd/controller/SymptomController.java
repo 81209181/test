@@ -8,7 +8,7 @@ import com.hkt.btu.sd.facade.SdSymptomFacade;
 import com.hkt.btu.sd.facade.data.EditResultData;
 import com.hkt.btu.sd.facade.data.SdServiceTypeData;
 import com.hkt.btu.sd.facade.data.SdSymptomData;
-import com.hkt.btu.sd.facade.data.SdSymptomMappingData;
+import com.hkt.btu.sd.facade.data.UpdateSymptomFormData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
@@ -82,6 +82,11 @@ public class SymptomController {
             }
         }
 
+        List<SdSymptomData> symptomGroupList = sdSymptomFacade.getSymptomGroupList();
+        if (CollectionUtils.isNotEmpty(symptomGroupList)) {
+            model.addAttribute("symptomGroupList", symptomGroupList);
+        }
+
         List<SdServiceTypeData> serviceTypeList = sdSymptomFacade.getServiceTypeList();
         if (CollectionUtils.isNotEmpty(serviceTypeList)) {
             model.addAttribute("serviceTypeList", serviceTypeList);
@@ -106,8 +111,8 @@ public class SymptomController {
     }
 
     @PostMapping("/post-edit-symptom-mapping")
-    public ResponseEntity<?> editSymptomMapping(@RequestBody SdSymptomMappingData symptomMappingData) {
-        String errorMsg = sdSymptomFacade.editSymptomMapping(symptomMappingData);
+    public ResponseEntity<?> editSymptomMapping(@RequestBody UpdateSymptomFormData symptomFormData) {
+        String errorMsg = sdSymptomFacade.editSymptomMapping(symptomFormData);
         if (errorMsg == null) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         } else {

@@ -13,18 +13,21 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label>Symptom Code</label>
-                <input type="text" class="form-control" id="symptomCode" name="symptomCode" th:attr="value = ${symptomCode}" readonly>
+                <input type="text" class="form-control" id="symptomCode" name="symptomCode" th:attr="value = ${symptomCode}">
+                <input type="text" class="form-control" id="oldSymptomCode" name="oldSymptomCode" th:attr="value = ${symptomCode}" hidden="hidden">
             </div>
             <div class="form-group col-md-6">
                 <label>Symptom Group</label>
-                <input type="text" class="form-control" id="symptomGroupName" name="symptomGroupName" readonly>
+                <select class="form-control custom-select" id="symptomGroupCode" name="symptomGroupCode">
+                    <option th:each="group : ${symptomGroupList}" th:text="${group.symptomGroupName}" th:value="${group.symptomGroupCode}"></option>
+                </select>
             </div>
         </div>
 
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label>Symptom Description</label>
-                <input type="text" class="form-control" id="symptomDescription" name="symptomDescription" readonly>
+                <input type="text" class="form-control" id="symptomDescription" name="symptomDescription">
             </div>
         </div>
 
