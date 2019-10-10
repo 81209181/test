@@ -37,6 +37,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         RequestCreateSearchResultsData resultsData = new RequestCreateSearchResultsData();
         try {
             switch (searchKey) {
+                case "sn":
                 case "bsn":
                     return findData4Bsn(searchValue);
                 case "tenantId":
@@ -99,11 +100,11 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
                     resultDataList.add(resultData);
                 }));
         //find in ITSM API
-        Optional.ofNullable(itsmApiFacade.searchProfileByServiceNo(bsn)).map(ItsmSearchProfileResponseData::getList).ifPresent(list -> list.forEach(profileData -> {
+        /*Optional.ofNullable(itsmApiFacade.searchProfileByServiceNo(bsn)).map(ItsmSearchProfileResponseData::getList).ifPresent(list -> list.forEach(profileData -> {
             RequestCreateSearchResultData resultData = new RequestCreateSearchResultData();
             requestCreateSearchResultDataPopulator.populateFromItsmProfileData(profileData, resultData);
             resultDataList.add(resultData);
-        }));
+        }));*/
         // fill in customer data
         if (CollectionUtils.isNotEmpty(resultDataList)) {
             besCustomerData.ifPresent(bes -> resultDataList.forEach(resultData -> requestCreateSearchResultDataPopulator.populateFromBesCustomerDataData(bes, resultData)));

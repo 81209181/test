@@ -5,49 +5,73 @@ import com.hkt.btu.common.facade.data.DataInterface;
 public class RequestCreateSearchResultData implements DataInterface {
 
     private String adminId;
-
-    private String custCode;
     private long custId;
-    private String custName;
     private String customer;
     private String email;
     private String mobileNo;
-
     private String url;
-
     private String contactName;
     private String contactEmail;
     private String contactNumber;
-
     private String jmsOrderNum;
     private String l1OrderNum;
     private String lastUpdId;
-
     private int packageType;
     private String password;
     private int pid;
     private String prefix;
     private String productDesc;
     private int profileId;
-
     private String resourceId;
     private String resourceName;
-
     private String status;
     private String statusDesc;
     private String stb;
-
     private int type;
     private String userName;
-
-    private String serviceNo;
-    private String serviceType;
-    private String offerName;
     private int tenantId;
     private String domainName;
 
+    // customer info
+    private String custCode;
+    private String custName;
+    private String custType;
+    private String custStatus;
+    private String languagePreference;
 
+    // service info
+    private String serviceType;
+    private String serviceNo;
     private Long subsId;
+    private String offerName;
+    private String serviceStatus;
+
+
+
+
+    public String getServiceStatus() {
+        return serviceStatus;
+    }
+
+    public void setServiceStatus(String serviceStatus) {
+        this.serviceStatus = serviceStatus;
+    }
+
+    public String getCustStatus() {
+        return custStatus;
+    }
+
+    public void setCustStatus(String custStatus) {
+        this.custStatus = custStatus;
+    }
+
+    public String getLanguagePreference() {
+        return languagePreference;
+    }
+
+    public void setLanguagePreference(String languagePreference) {
+        this.languagePreference = languagePreference;
+    }
 
     public Long getSubsId() {
         return subsId;
@@ -291,6 +315,14 @@ public class RequestCreateSearchResultData implements DataInterface {
 
     public int getType() {
         return type;
+    }
+
+    public String getCustType() {
+        return custType;
+    }
+
+    public void setCustType(String custType) {
+        this.custType = custType;
     }
 
     public void setType(int type) {

@@ -22,7 +22,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,13 +38,13 @@ public class TicketController {
     @Resource(name = "wfmApiFacade")
     WfmApiFacade wfmApiFacade;
 
-    @GetMapping("search-customer")
-    public String searchCustomer() {
-        return "ticket/search_customer";
+    @GetMapping("service-identity")
+    public String serviceIdentity() {
+        return "ticket/service_identity";
     }
 
-    @PostMapping("searchCustomer")
-    public ResponseEntity<?> searchCustomer(String searchKey, String searchValue) {
+    @PostMapping("search-service")
+    public ResponseEntity<?> searchService(String searchKey, String searchValue) {
         RequestCreateSearchResultsData resultsData = requestCreateFacade.searchProductList(searchKey, searchValue);
         if (!StringUtils.isEmpty(resultsData.getErrorMsg())) {
             return ResponseEntity.badRequest().body(resultsData.getErrorMsg());
@@ -221,21 +220,5 @@ public class TicketController {
         }
         ticketFacade.updateAppointment(appointmentDate,asap,principal.getName(),ticketMasId);
         return ResponseEntity.ok("Update appointment success.");
-    }
-
-    @GetMapping("/ajax-get-ticket")
-    public ResponseEntity<?> getTicketInfo(@RequestParam Integer ticketMasId) {
-        SdTicketMasData ticketMasInfo = ticketFacade.getTicket(ticketMasId).get();
-        List<SdTicketContactData> contactInfo = ticketFacade.getContactInfo(ticketMasId);
-        List<SdTicketServiceData> serviceInfo = ticketFacade.getServiceInfo(ticketMasId);
-        List<SdTicketRemarkData> remarkInfo = ticketFacade.getTicketRemarksByTicketId(ticketMasId);
-
-        SdTicketData ticketData = new SdTicketData();
-        ticketData.setTicketMasInfo(ticketMasInfo);
-        ticketData.setContactInfo(contactInfo);
-        ticketData.setServiceInfo(serviceInfo);
-        ticketData.setRemarkInfo(remarkInfo);
-
-        return ResponseEntity.ok(ticketData);
     }
 }

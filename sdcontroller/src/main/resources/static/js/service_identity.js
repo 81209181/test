@@ -50,7 +50,7 @@ $().ready(function(){
         }else{
             searchValue.attr('class','form-control');
         }
-        $.post('/ticket/searchCustomer',{
+        $.post('/ticket/search-service',{
             searchKey : searchKey.val().trim(),
             searchValue : searchValue.val().trim()
         },function(res){
@@ -69,12 +69,6 @@ $().ready(function(){
             }else{
                 $.each(res.pop(),function(key,val){
                      $('form').find('input[name='+ key +']').val(val);
-                     // temp
-                     if(key == 'serviceType'){
-                         if(val == null){
-                             $('form').find('input[name='+key+']').val('test service type');
-                         }
-                     }
                 })
             }
         }).fail(function(e){
@@ -85,13 +79,6 @@ $().ready(function(){
             $('#btnApplyProduct').on('click',function(){
                 $.each($('tbody').find('input:checked').parent().parent().data('info'),function(i,val){
                     $('form').find('input[name='+i+']').val(val);
-                    // start temp
-                    if(i == 'serviceType'){
-                        if(val == null){
-                            $('form').find('input[name='+i+']').val('test service type');
-                        }
-                    }
-                    // end temp
                     if(i == 'url'){
                         if(val !=null){
                             $('.itsm').data('url',val);

@@ -71,13 +71,10 @@ public class BesCustBasicInfoData implements DataInterface {
         public static final String NO = "N";
     }
 
-
-
-
-
-
     private String custCode;
     private String custName;
+    private String custType;
+    private String status;
     private String custRegistrationType;
     private String documentNumber;
     private String custSegment;
@@ -94,6 +91,21 @@ public class BesCustBasicInfoData implements DataInterface {
     private String sensitiveCustomer;
     private String custRemark;
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getCustType() {
+        return custType;
+    }
+
+    public void setCustType(String custType) {
+        this.custType = custType;
+    }
 
     public String getCustCode() {
         return custCode;
