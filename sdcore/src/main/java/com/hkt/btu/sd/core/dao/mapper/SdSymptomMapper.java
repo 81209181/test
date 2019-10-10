@@ -29,10 +29,15 @@ public interface SdSymptomMapper {
 
     void deleteSymptomMapping(@Param("symptomCode")String symptomCode, List<String> serviceTypeList);
 
-    void createSymptomMapping(@Param("serviceTypeCode") String serviceTypeCode,
+    void createSymptomMapping(List<String> serviceTypeList,
                               @Param("symptomCode") String symptomCode,
                               @Param("createby") String createby);
 
-    List<SdSymptomMappingEntity> getSymptomMapping(@Param("symptomCode") String symptomCode,
-                                                   @Param("serviceTypeCode") String serviceTypeCode);
+    List<SdSymptomMappingEntity> getSymptomMapping(@Param("symptomCode") String symptomCode);
+
+    Integer updateSymptom(@Param("oldSymptomCode") String oldSymptomCode,
+                          @Param("symptomCode") String symptomCode,
+                          @Param("symptomGroupCode") String symptomGroupCode,
+                          @Param("symptomDescription") String symptomDescription,
+                          @Param("createby") String createby);
 }

@@ -22,5 +22,7 @@ public interface SdSymptomService {
 
     List<SdSymptomMappingBean> getSymptomMapping(String symptomCode);
 
-    void editSymptomMapping(String symptomCode, List<String> serviceTypeList);
+    void updateSymptom(String oldSymptomCode, String symptomCode, String symptomGroupCode, String symptomDescription);
+
+    void editSymptomMapping(String oldSymptomCode, String symptomCode, List<String> serviceTypeList);
 }

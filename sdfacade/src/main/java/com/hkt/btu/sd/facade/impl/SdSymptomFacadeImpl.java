@@ -8,10 +8,7 @@ import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
 import com.hkt.btu.sd.core.service.bean.SdSymptomBean;
 import com.hkt.btu.sd.core.service.bean.SdSymptomMappingBean;
 import com.hkt.btu.sd.facade.SdSymptomFacade;
-import com.hkt.btu.sd.facade.data.EditResultData;
-import com.hkt.btu.sd.facade.data.SdServiceTypeData;
-import com.hkt.btu.sd.facade.data.SdSymptomData;
-import com.hkt.btu.sd.facade.data.SdSymptomMappingData;
+import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.populator.SdServiceTypeDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdSymptomDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdSymptomMappingDataPopulator;
@@ -135,12 +132,29 @@ public class SdSymptomFacadeImpl implements SdSymptomFacade {
     }
 
     @Override
-    public String editSymptomMapping(SdSymptomMappingData symptomMappingData) {
-        String symptomCode = symptomMappingData.getSymptomCode();
-        List<String> serviceTypeList = symptomMappingData.getServiceTypeList();
+    public String editSymptomMapping(UpdateSymptomFormData symptomFormData) {
+        String symptomCode = symptomFormData.getSymptomCode();
+        String symptomGroupCode = symptomFormData.getSymptomGroupCode();
+        String symptomDescription = symptomFormData.getSymptomDescription();
+        String oldSymptomCode = symptomFormData.getOldSymptomCode();
+        List<String> serviceTypeList = symptomFormData.getServiceTypeList();
+
+        if (StringUtils.isEmpty(symptomCode)) {
+            return "Empty Symptom Code.";
+        } else if (StringUtils.isEmpty(symptomGroupCode)) {
+            return "Empty Symptom Group Code.";
+        } else if (StringUtils.isEmpty(symptomDescription)) {
+            return "Empty Symptom Description.";
+        }
 
         try {
-            sdSymptomService.editSymptomMapping(symptomCode,serviceTypeList);
+            sdSymptomService.updateSymptom(oldSymptomCode, symptomCode, symptomGroupCode, symptomDescription);
+        } catch (DuplicateKeyException e){
+            return "Symptom Code already exists.";
+        }
+
+        try {
+            sdSymptomService.editSymptomMapping(oldSymptomCode, symptomCode, serviceTypeList);
         } catch (Exception e){
             LOG.error(e.getMessage());
             return "Edit failed.";
