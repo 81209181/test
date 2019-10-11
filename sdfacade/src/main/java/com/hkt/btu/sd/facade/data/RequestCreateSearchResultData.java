@@ -47,8 +47,6 @@ public class RequestCreateSearchResultData implements DataInterface {
     private String serviceStatus;
 
 
-
-
     public String getServiceStatus() {
         return serviceStatus;
     }

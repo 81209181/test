@@ -104,14 +104,15 @@ public class RequestCreateSearchResultDataPopulator extends AbstractDataPopulato
         target.setCustStatus(source.getStatus());
         switch (source.getLanguagePreference()) {
             case BesCustBasicInfoData.LANGUAGE_PREFERENCE.CHINESE:
-                target.setLanguagePreference("CHINESE");
+                target.setLanguagePreference("Chinese");
                 break;
             case BesCustBasicInfoData.LANGUAGE_PREFERENCE.ENGLISH:
-                target.setLanguagePreference("ENGLISH");
+                target.setLanguagePreference("English");
                 break;
             default:
-                target.setLanguagePreference("UNKNOWN");
+                target.setLanguagePreference("Unknown");
         }
+        target.setServiceType("Unknown");
 
     }
 
@@ -159,12 +160,7 @@ public class RequestCreateSearchResultDataPopulator extends AbstractDataPopulato
         target.setUrl(source.getUrl());
         target.setUserName(source.getUserName());
 
-        switch (source.getServiceType()) {
-            case "test":
-                break;
-            default:
-                target.setServiceType("UNKNOWN");
-        }
+        target.setServiceType(source.getServiceType());
     }
 
 }

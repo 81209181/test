@@ -38,6 +38,7 @@ public class TicketController {
     @Resource(name = "wfmApiFacade")
     WfmApiFacade wfmApiFacade;
 
+
     @GetMapping("service-identity")
     public String serviceIdentity() {
         return "ticket/service_identity";
@@ -54,35 +55,20 @@ public class TicketController {
     }
 
     @PostMapping("query/create")
-    public ResponseEntity<?> createQueryTicket(String custCode, String serviceNo,String serviceType,String subsId) {
+    public ResponseEntity<?> createQueryTicket(String custCode, String serviceNo, String serviceType, String subsId) {
         if (StringUtils.isEmpty(serviceNo) || StringUtils.isEmpty(serviceType)) {
             return ResponseEntity.badRequest().body("Service No. / Service Type is empty.");
         }
-        return ResponseEntity.ok(ticketFacade.createQueryTicket(custCode, serviceNo, serviceType,subsId));
+        return ResponseEntity.ok(ticketFacade.createQueryTicket(custCode, serviceNo, serviceType, subsId));
     }
 
     @GetMapping("{ticketId}")
     public ModelAndView showQueryTicket(@PathVariable Integer ticketId, Principal principal) {
-        return ticketFacade.getTicket(ticketId).filter(sdTicketMasData -> userRoleFacade.checkSameTeamRole(principal.getName(), sdTicketMasData.getCreateBy()))
+        return ticketFacade.getTicket(ticketId)
+                .filter(sdTicketMasData -> userRoleFacade.checkSameTeamRole(principal.getName(), sdTicketMasData.getCreateBy()))
                 .map(sdTicketMasData -> {
                     ModelAndView modelAndView = new ModelAndView("ticket/ticket_info");
-                    modelAndView.addObject("customerCode", sdTicketMasData.getCustCode())
-                            .addObject("ticketMasId", sdTicketMasData.getTicketMasId());
-                    Optional.ofNullable(sdTicketMasData.getAsap()).ifPresent(s -> {
-                        modelAndView.addObject("asap", s);
-                    });
-                    Optional.ofNullable(sdTicketMasData.getAppointmentDate()).ifPresent(localDateTime -> {
-                        modelAndView.addObject("appointmentDate", localDateTime);
-                    });
-                    ticketFacade.getService(ticketId)
-                            .map(SdTicketServiceData::getJobId)
-                            .ifPresent(jobId ->{
-                                modelAndView.addObject("jobId",jobId);
-                                Optional.ofNullable(wfmApiFacade.getJobDetails(Integer.valueOf(jobId)))
-                                        .map(WfmJobDetailsData::getJobBean)
-                                        .map(WfmJobBeanData::getStatus)
-                                        .ifPresent(status -> modelAndView.addObject("jobStatus", status));
-                            });
+                    modelAndView.addObject("ticketInfo", requestCreateFacade.getTicketInfo(sdTicketMasData));
                     return modelAndView;
                 }).orElse(new ModelAndView("redirect:/ticket/search-ticket"));
     }
@@ -174,14 +160,14 @@ public class TicketController {
     }
 
     @PostMapping("submit")
-    public ResponseEntity<?> submit(Principal principal,WfmRequestDetailsBeanDate wfmRequestDetailsBeanDate) throws JsonProcessingException {
+    public ResponseEntity<?> submit(Principal principal, WfmRequestDetailsBeanDate wfmRequestDetailsBeanDate) throws JsonProcessingException {
         Optional<String> jobIdInService = ticketFacade.getService(Integer.valueOf(wfmRequestDetailsBeanDate.getTicketMasId())).map(SdTicketServiceData::getJobId);
         if (jobIdInService.isPresent()) {
             return ResponseEntity.badRequest().body("This ticket has been submitted.");
         }
         Integer jobId = wfmApiFacade.createJob(wfmRequestDetailsBeanDate, principal.getName());
         if (jobId > 0) {
-            ticketFacade.updateJobIdInService(jobId,wfmRequestDetailsBeanDate.getTicketMasId(),principal.getName());
+            ticketFacade.updateJobIdInService(jobId, wfmRequestDetailsBeanDate.getTicketMasId(), principal.getName());
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode node = mapper.createObjectNode();
             Optional.ofNullable(wfmApiFacade.getJobDetails(jobId)).map(WfmJobDetailsData::getJobBean).ifPresent(wfmJobBeanData -> {
@@ -212,13 +198,13 @@ public class TicketController {
     }
 
     @PostMapping("appointment/update")
-    public ResponseEntity<?> updateAppointment(String appointmentDate,boolean asap,Principal principal,String ticketMasId) {
+    public ResponseEntity<?> updateAppointment(String appointmentDate, boolean asap, Principal principal, String ticketMasId) {
         if (!asap) {
             if (!ticketFacade.checkAppointmentDate(appointmentDate)) {
                 return ResponseEntity.badRequest().body("The appointment time must be two hours later.");
             }
         }
-        ticketFacade.updateAppointment(appointmentDate,asap,principal.getName(),ticketMasId);
+        ticketFacade.updateAppointment(appointmentDate, asap, principal.getName(), ticketMasId);
         return ResponseEntity.ok("Update appointment success.");
     }
 }
