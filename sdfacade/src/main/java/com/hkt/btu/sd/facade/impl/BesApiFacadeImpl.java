@@ -116,6 +116,14 @@ public class BesApiFacadeImpl extends AbstractRestfulApiFacade implements BesApi
         return besCustBasicInfoData==null ? null : besCustBasicInfoData.getCustCode();
     }
 
+    @Override
+    public BesSubFaultData getSubFaultBySubscriberId(String subscriberId) {
+        String apiPath ="/saws/api/v3/Request/GetSubFaultBySubscriberId";
+        Map<String, String> queryParamMap = new HashMap<>();
+        queryParamMap.put("subscriberId", subscriberId);
+        return getData(apiPath, BesSubFaultData.class, queryParamMap);
+    }
+
     private BesCustomerData queryCustomer(
             String customerCode, String serviceNumber, String idType, String idNumber,
             boolean includeDeactivation, boolean includeDefAcct, boolean includeContactPerson,
