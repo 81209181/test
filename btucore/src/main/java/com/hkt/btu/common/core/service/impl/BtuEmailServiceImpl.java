@@ -16,6 +16,7 @@ import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
@@ -80,11 +81,11 @@ public class BtuEmailServiceImpl implements BtuEmailService {
         dataMap.put(BtuEmailBean.DEFAULT_EMAIL.EMAIL_SUBJECT, subjectText);
         dataMap.put(BtuEmailBean.DEFAULT_EMAIL.EMAIL_BODY, bodyText);
 
-        send(templateId, recipient, dataMap);
+        send(templateId, recipient, null, dataMap);
     }
 
     @Override
-    public void send(String templateId, String recipient, Map<String, Object> dataMap) throws MessagingException {
+    public void send(String templateId, String recipient, File file, Map<String, Object> dataMap) throws MessagingException {
         JavaMailSender mailSender = getJavaMailSender();
         BtuSiteConfigBean sdSiteConfigBean = siteConfigService.getSiteConfigBean();
 
@@ -112,6 +113,9 @@ public class BtuEmailServiceImpl implements BtuEmailService {
         messageHelper.setTo(recipient);
         messageHelper.setSubject(subjectString);
         messageHelper.setText(htmlBodyString, true);
+        if (file != null) {
+            messageHelper.addAttachment(file.getName(), file);
+        }
         if (senderProfile != null) {
             messageHelper.setFrom(senderProfile);
         }
@@ -147,7 +151,7 @@ public class BtuEmailServiceImpl implements BtuEmailService {
         dataMap.put(BtuEmailBean.ERROR_STACK_TRACE_EMAIL.EMAIL_SUBJECT, subjectText);
         dataMap.put(BtuEmailBean.ERROR_STACK_TRACE_EMAIL.EMAIL_BODY, errorStackTraceString);
 
-        send(templateId, recipient, dataMap);
+        send(templateId, recipient, null, dataMap);
     }
 
     private void injectGlobalEmailData(Map<String, Object> dataMap, BtuSiteConfigBean sdSiteConfigBean) {

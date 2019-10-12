@@ -1,12 +1,14 @@
 package com.hkt.btu.sd.core.job;
 
 import com.hkt.btu.common.core.job.BtuSampleJob;
+import com.hkt.btu.common.core.service.bean.BtuEmailBean;
 import com.hkt.btu.common.core.service.bean.BtuReportMetaDataBean;
 import com.hkt.btu.common.core.service.bean.BtuSqlReportBean;
 import com.hkt.btu.common.genrator.BtuCSVGenrator;
 import com.hkt.btu.sd.core.service.SdCsvGenratorService;
 import com.hkt.btu.sd.core.service.SdEmailService;
 import com.hkt.btu.sd.core.service.SdSqlReportProfileService;
+import com.hkt.btu.sd.core.service.bean.SdEmailBean;
 import com.hkt.btu.sd.core.service.bean.SdSqlReportBean;
 import com.hkt.btu.sd.core.util.SqlFilter;
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +19,9 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import javax.mail.MessagingException;
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +47,15 @@ public class SdSqlReportJob extends BtuSampleJob {
         File csvFile = csvGenratorService.getCsvFile(metaDataBean);
         if (csvFile != null) {
             // Send Email
-            // TODO: Send Email Function
+            if (StringUtils.isNotEmpty(metaDataBean.getEmailTo())) {
+                try {
+                    Map<String, Object> dataMap = new HashMap<>();
+                    dataMap.put(SdEmailBean.EMAIL_BASIC_RECIPIENT_NAME, "Sir/Miss");
+                    emailService.send(SdEmailBean.DEFAULT_EMAIL.TEMPLATE_ID, metaDataBean.getEmailTo(), csvFile, dataMap);
+                } catch (MessagingException e) {
+                    LOG.warn(e);
+                }
+            }
         }
     }
 }

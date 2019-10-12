@@ -75,4 +75,10 @@
             MODIFYBY = #{modifyby}
         where REPORT_ID = #{reportId}
     </update>
+
+    <select id="getSqlReportByReportId" resultMap="SdSqlReportEntity">
+        select *
+        from SQL_REPORT
+        where REPORT_ID = #{reportId}
+    </select>
 </mapper>
