@@ -1,10 +1,7 @@
 package com.hkt.btu.sd.facade.impl;
 
 import com.hkt.btu.common.core.exception.InvalidInputException;
-import com.hkt.btu.sd.facade.BesApiFacade;
-import com.hkt.btu.sd.facade.ItsmApiFacade;
-import com.hkt.btu.sd.facade.NorarsApiFacade;
-import com.hkt.btu.sd.facade.SdRequestCreateFacade;
+import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.populator.RequestCreateSearchResultDataPopulator;
 import org.apache.commons.collections4.CollectionUtils;
@@ -29,6 +26,12 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     @Resource(name = "norarsApiFacade")
     NorarsApiFacade norarsApiFacade;
 
+    @Resource(name = "ticketFacade")
+    SdTicketFacade ticketFacade;
+
+    @Resource(name = "wfmApiFacade")
+    WfmApiFacade wfmApiFacade;
+
     @Resource(name = "requestCreateSearchResultDataPopulator")
     RequestCreateSearchResultDataPopulator requestCreateSearchResultDataPopulator;
 
@@ -37,6 +40,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         RequestCreateSearchResultsData resultsData = new RequestCreateSearchResultsData();
         try {
             switch (searchKey) {
+                case "sn":
                 case "bsn":
                     return findData4Bsn(searchValue);
                 case "tenantId":
@@ -58,6 +62,36 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
             resultsData.setErrorMsg("Internal System Error!");
             return resultsData;
         }
+    }
+
+    @Override
+    public SdTicketInfoData getTicketInfo(SdTicketMasData sdTicketMasData) {
+        SdTicketInfoData infoData = new SdTicketInfoData();
+        infoData.setCustCode(sdTicketMasData.getCustCode());
+        infoData.setTicketMasId(sdTicketMasData.getTicketMasId());
+        infoData.setAsap(sdTicketMasData.getAsap());
+        infoData.setAppointmentDate(sdTicketMasData.getAppointmentDate());
+        ticketFacade.getService(sdTicketMasData.getTicketMasId()).ifPresent(sdTicketServiceData -> {
+            Optional.ofNullable(sdTicketServiceData.getJobId()).ifPresent(s -> {
+                infoData.setJobId(s);
+                Optional.ofNullable(wfmApiFacade.getJobDetails(Integer.valueOf(s)).getJobBean()).map(WfmJobBeanData::getStatus).ifPresent(infoData::setJobStatus);
+            });
+            findData4Bsn(sdTicketServiceData.getServiceCode()).getList().stream()
+                    .filter(requestCreateSearchResultData -> requestCreateSearchResultData.getServiceNo().equals(sdTicketServiceData.getServiceCode()))
+                    .findFirst().ifPresent(requestCreateSearchResultData -> {
+                        infoData.setCustName(requestCreateSearchResultData.getCustName());
+                        infoData.setCustType(requestCreateSearchResultData.getCustType());
+                        infoData.setCustStatus(requestCreateSearchResultData.getCustStatus());
+                        infoData.setLanguagePreference(requestCreateSearchResultData.getLanguagePreference());
+                        infoData.setServiceStatus(requestCreateSearchResultData.getServiceStatus());
+                        infoData.setServiceType(requestCreateSearchResultData.getServiceType());
+                        infoData.setSubsId(requestCreateSearchResultData.getSubsId());
+                        infoData.setOfferName(requestCreateSearchResultData.getOfferName());
+            });
+            infoData.setServiceNo(sdTicketServiceData.getServiceCode());
+
+        });
+        return infoData;
     }
 
     private RequestCreateSearchResultsData findData4Dn(String dn) {
@@ -99,11 +133,11 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
                     resultDataList.add(resultData);
                 }));
         //find in ITSM API
-        Optional.ofNullable(itsmApiFacade.searchProfileByServiceNo(bsn)).map(ItsmSearchProfileResponseData::getList).ifPresent(list -> list.forEach(profileData -> {
+        /*Optional.ofNullable(itsmApiFacade.searchProfileByServiceNo(bsn)).map(ItsmSearchProfileResponseData::getList).ifPresent(list -> list.forEach(profileData -> {
             RequestCreateSearchResultData resultData = new RequestCreateSearchResultData();
             requestCreateSearchResultDataPopulator.populateFromItsmProfileData(profileData, resultData);
             resultDataList.add(resultData);
-        }));
+        }));*/
         // fill in customer data
         if (CollectionUtils.isNotEmpty(resultDataList)) {
             besCustomerData.ifPresent(bes -> resultDataList.forEach(resultData -> requestCreateSearchResultDataPopulator.populateFromBesCustomerDataData(bes, resultData)));

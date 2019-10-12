@@ -5,7 +5,7 @@ import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.facade.data.EditResultData;
 import com.hkt.btu.sd.facade.data.SdServiceTypeData;
 import com.hkt.btu.sd.facade.data.SdSymptomData;
-import com.hkt.btu.sd.facade.data.SdSymptomMappingData;
+import com.hkt.btu.sd.facade.data.UpdateSymptomFormData;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public interface SdSymptomFacade {
 
     SdSymptomData getSymptomBySymptomCode(String symptomCode);
 
-    String editSymptomMapping(SdSymptomMappingData symptomMappingData);
+    String editSymptomMapping(UpdateSymptomFormData symptomFormData);
 
     EditResultData getSymptomMapping(String symptomCode);
 }

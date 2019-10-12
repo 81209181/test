@@ -53,20 +53,20 @@
     </select>
 
     <insert id="createSymptomMapping">
-        insert into symptom_mapping (SERVICE_TYPE_CODE,SYMPTOM_CODE,CREATEBY)
-        values (#{serviceTypeCode},#{symptomCode},#{createby})
+        INSERT ALL
+        <foreach item="serviceType" index="index" collection="serviceTypeList">
+            INTO SYMPTOM_MAPPING (SERVICE_TYPE_CODE,SYMPTOM_CODE,CREATEBY) VALUES (#{serviceType},#{symptomCode},#{createby})
+        </foreach>
+        SELECT 1 FROM DUAL
     </insert>
 
     <select id="getSymptomMapping" resultMap="SymptomMappingEntity">
         select * from SYMPTOM_MAPPING where SYMPTOM_CODE = #{symptomCode}
-        <if test="serviceTypeCode != null and serviceTypeCode != ''">
-            and SERVICE_TYPE_CODE = #{serviceTypeCode}
-        </if>
     </select>
 
     <delete id="deleteSymptomMapping">
         delete from SYMPTOM_MAPPING where SYMPTOM_CODE = #{symptomCode}
-        and SERVICE_TYPE_CODE not in
+        and SERVICE_TYPE_CODE in
         <foreach item="serviceType" index="index" collection="serviceTypeList" open="(" separator="," close=")">
             #{serviceType}
         </foreach>
@@ -110,4 +110,13 @@
         order by sy.SYMPTOM_CODE
         OFFSET #{offset} ROWS FETCH NEXT #{pageSize} ROWS ONLY
     </select>
+
+    <update id="updateSymptom">
+        update SYMPTOM set SYMPTOM_CODE = #{symptomCode},
+        SYMPTOM_GROUP_CODE = #{symptomGroupCode},
+        SYMPTOM_DESCRIPTION = #{symptomDescription},
+        MODIFYBY = #{createby},
+        MODIFYDATE = sysdate
+        where SYMPTOM_CODE = #{oldSymptomCode}
+    </update>
 </mapper>

@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.facade;
 
 import com.hkt.btu.sd.facade.data.BesCustomerData;
+import com.hkt.btu.sd.facade.data.BesSubFaultData;
 import com.hkt.btu.sd.facade.data.BesSubscriberData;
 
 public interface BesApiFacade {
@@ -17,4 +18,6 @@ public interface BesApiFacade {
     BesSubscriberData querySubscriberByCustomerCode(String customerCode);
 
     String getBesCustomerCode (BesCustomerData besCustomerData);
+
+    BesSubFaultData getSubFaultBySubscriberId(String subscriberId);
 }

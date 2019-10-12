@@ -24,7 +24,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li sec:authorize="hasAnyAuthority('SYS_ADMIN')" class="nav-item dropdown">
-                <!--<li sec:authorize="isAuthenticated()" class="nav-item dropdown">-->
+                    <!--<li sec:authorize="isAuthenticated()" class="nav-item dropdown">-->
                     <a class="nav-link dropdown-toggle" href="#" id="systemConfigDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         System
                     </a>
@@ -68,7 +68,7 @@
                         Ticket
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" th:href="@{/ticket/search-customer}">Search Service</a>
+                        <a class="dropdown-item" th:href="@{/ticket/service-identity}">Search Service</a>
                         <a class="dropdown-item" th:href="@{/ticket/my-ticket}">My Ticket</a>
                         <a class="dropdown-item" th:href="@{/ticket/search-ticket}">Search Ticket</a>
                     </div>

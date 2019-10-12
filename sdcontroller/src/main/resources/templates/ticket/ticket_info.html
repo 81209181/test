@@ -8,32 +8,43 @@
 <body>
 <div layout:fragment="content" th:remove="tag">
     <script>
-        var customerCode = '[[${customerCode}]]';
-        var ticketMasId = '[[${ticketMasId}]]';
+        var customerCode = '[[${ticketInfo.custCode}]]';
+        var ticketMasId = '[[${ticketInfo.ticketMasId}]]';
     </script>
-    <div class="card" style="margin-bottom: 75px;">
-        <div class="card-header bg-primary text-white">Ticket - <span th:text="${ticketMasId}"></span></div>
+    <div class="card" style="margin-bottom: 75px;" th:object="${ticketInfo}">
+        <div class="card-header bg-primary text-white">Ticket - <span th:text="*{ticketMasId}"></span></div>
         <div class="card-body">
-            <form id="customer" class="row">
+            <form id="customer" class="row" >
                 <div class="col-md-12">
                     <h3>Customer</h3>
                 </div>
                 <div class="col-md-3 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Customer Code:</label>
-                    <input type="text" class="form-control-plaintext col-md-3" name="custCode"
-                           th:value="${customerCode}">
+                    <input type="text" class="form-control-plaintext col-md-7" name="custCode" th:value="*{custCode}" readonly>
+                </div>
+                <div class="col-md-3 form-inline pt-2">
+                    <label class="col-form-label justify-content-end">Customer Type:</label>
+                    <input type="text" class="form-control-plaintext col-md-7" name="custType" th:value="*{custType}" readonly>
                 </div>
                 <div class="col-md-3 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Customer Name:</label>
-                    <input type="text" class="form-control-plaintext col-md-3" name="custName">
+                    <input type="text" class="form-control-plaintext col-md-7" name="custName" th:value="*{custName}" readonly>
+                </div>
+                <div class="col-md-3 form-inline pt-2">
+                    <label class="col-form-label justify-content-end">Status:</label>
+                    <input type="text" class="form-control-plaintext col-md-7" name="custStatus" th:value="*{custStatus}" readonly>
+                </div>
+                <div class="col-md-3 form-inline pt-2">
+                    <label class="col-form-label justify-content-end">Language Preference:</label>
+                    <input type="text" class="form-control-plaintext col-md-5" th:value="*{languagePreference}" name="languagePreference" readonly>
                 </div>
                 <div class="col-md-3 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Job Id:</label>
-                    <input type="text" class="form-control-plaintext col-md-3" name="jobId" th:value="${jobId}">
+                    <input type="text" class="form-control-plaintext col-md-7" name="jobId" th:value="*{jobId}" readonly>
                 </div>
                 <div class="col-md-3 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Job Status:</label>
-                    <input type="text" class="form-control-plaintext col-md-3" name="jobStatus" th:value="${jobStatus}">
+                    <input type="text" class="form-control-plaintext col-md-7" name="jobStatus" th:value="*{jobStatus}" readonly>
                 </div>
             </form>
             <hr>
@@ -76,21 +87,44 @@
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Service Type: </label>
                             <input type="text" class="form-control col-md-6" name="serviceType" readonly/>
-                            <!--<button type="button" class="btn btn-light" onclick="addFaults(this);"><i
-                                    class="fa fa-plus" aria-hidden="true"></i></button>
-                            <button type="button" class="btn btn-light" onclick="removeService(this)"><i
-                                    class="fa fa-times" aria-hidden="true"></i></button>-->
                         </div>
                         <div class="temp_faults col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Symptom: </label>
-                            <select name="symptom" id="symptomList" class="selectpicker form-control col-md-6" data-width="500px" data-live-search="true">
-
-                            </select>
-                            <!--<button type="button" class="btn btn-light md-2" onclick="removeFaults(this)"><i class="fa fa-times"
-                                                                                                             aria-hidden="true"></i>
-                            </button>-->
+                            <select name="symptom" id="symptomList" class="selectpicker form-control col-md-6" data-width="500px" data-live-search="true"></select>
                         </div>
-                        <div class="form-row faults_list"></div>
+<!--                        <div class="form-row faults_list"></div>-->
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Subscriber ID: </label>
+                            <input type="text" class="form-control col-md-6" name="subsId" th:value="*{subsId}" readonly/>
+                        </div>
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Service Name: </label>
+                            <input type="text" class="form-control col-md-6" name="offerName" th:value="*{offerName}" readonly/>
+                        </div>
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Status: </label>
+                            <input type="text" class="form-control col-md-6" name="serviceStatus" th:value="*{serviceStatus}" readonly/>
+                        </div>
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Service Address: </label>
+                            <input type="text" class="form-control col-md-6" name="serviceAddress" th:value="*{serviceAddress}" readonly/>
+                        </div>
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Pending order: </label>
+                            <input type="text" class="form-control col-md-6" name="pendingOrder" th:value="*{pendingOrder}" readonly/>
+                        </div>
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Supplementary Offer: </label>
+                            <input type="text" class="form-control col-md-6" name="supplementaryOffer" th:value="*{supplementaryOffer}" readonly/>
+                        </div>
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Offer Detail: </label>
+                            <input type="text" class="form-control col-md-6" name="offerDetail" th:value="*{offerDetail}" readonly/>
+                        </div>
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">L1 PID/STB/Description: </label>
+                            <input type="text" class="form-control col-md-6" name="description" th:value="*{description}" readonly/>
+                        </div>
                     </div>
                 </div>
                 <div class="offset-md-11">

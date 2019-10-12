@@ -122,9 +122,13 @@ public class SdInputCheckServiceImpl implements SdInputCheckService {
     }
 
     @Override
-    public void checkUserRole(List<String> userRoleIdList, List<SdUserRoleBean> eligibleUserRoleGrantList) {
-        List<String> collect = eligibleUserRoleGrantList.stream().map(SdUserRoleBean::getRoleId).collect(Collectors.toList());
-        CollectionUtils.disjunction(collect, userRoleIdList).stream().filter(s -> !collect.contains(s)).findFirst().ifPresent(s -> {
+    public void checkUserRole(List<String> inputList, List<SdUserRoleBean> eligibleUserRoleGrantList, List<SdUserRoleBean> userRoleByUserId) {
+        List<String> eligibleList = eligibleUserRoleGrantList.stream().map(SdUserRoleBean::getRoleId).collect(Collectors.toList());
+        List<String> oldList = userRoleByUserId.stream().map(SdUserRoleBean::getRoleId).collect(Collectors.toList());
+        CollectionUtils.disjunction(eligibleList, inputList).stream()
+                .filter(s -> !eligibleList.contains(s))
+                .filter(s -> !oldList.contains(s))
+                .findFirst().ifPresent(s -> {
             throw new InvalidInputException("Your choice is wrong.");
         });
     }

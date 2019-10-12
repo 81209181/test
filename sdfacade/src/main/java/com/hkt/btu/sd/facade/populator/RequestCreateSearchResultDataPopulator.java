@@ -14,8 +14,9 @@ public class RequestCreateSearchResultDataPopulator extends AbstractDataPopulato
     private static final Logger LOG = LogManager.getLogger(RequestCreateSearchResultDataPopulator.class);
 
     private static RequestCreateSearchResultDataPopulator instance;
-    public static synchronized RequestCreateSearchResultDataPopulator getInstance(){
-        if(instance==null){
+
+    public static synchronized RequestCreateSearchResultDataPopulator getInstance() {
+        if (instance == null) {
             instance = new RequestCreateSearchResultDataPopulator();
         }
         return instance;
@@ -23,12 +24,12 @@ public class RequestCreateSearchResultDataPopulator extends AbstractDataPopulato
 
     public void populateFromBesSubscriberInfoResourceData(BesSubscriberInfoResourceData source, RequestCreateSearchResultData target) {
         BesSubscriberBasicData besSubscriberBasicData = source.getSubInfo();
-        if(besSubscriberBasicData != null){
+        if (besSubscriberBasicData != null) {
             populateFromBesSubscriberBasicTypeData(besSubscriberBasicData, target);
         }
 
         List<BesOfferingInstDetailInfoData> primaryOfferingList = source.getPrimaryOfferingList();
-        if( ! CollectionUtils.isEmpty(primaryOfferingList) ){
+        if (!CollectionUtils.isEmpty(primaryOfferingList)) {
             BesOfferingInstDetailInfoData primaryOffer = primaryOfferingList.get(0);
             populateFromBesPrimaryOfferData(primaryOffer, target);
         }
@@ -36,13 +37,14 @@ public class RequestCreateSearchResultDataPopulator extends AbstractDataPopulato
 
     public void populateFromBesPrimaryOfferData(BesOfferingInstDetailInfoData source, RequestCreateSearchResultData target) {
         BesOfferingInstData besOfferingInstData = source.getOfferingBasic();
-        if(besOfferingInstData != null){
+        if (besOfferingInstData != null) {
             populateFromBesOfferingInstData(besOfferingInstData, target);
         }
     }
 
     public void populateFromBesOfferingInstData(BesOfferingInstData source, RequestCreateSearchResultData target) {
-        target.setOfferName( source.getOfferingName() );
+        target.setOfferName(source.getOfferingName());
+        target.setServiceStatus(source.getStatus());
     }
 
     private void populateFromBesSubscriberBasicTypeData(BesSubscriberBasicData source, RequestCreateSearchResultData target) {
@@ -70,80 +72,95 @@ public class RequestCreateSearchResultDataPopulator extends AbstractDataPopulato
 
     public void populateFromBesCustomerDataData(BesCustomerData source, RequestCreateSearchResultData target) {
         BesCustomerInfosData besCustomerInfosData = source.getCustomerInfos();
-        if(besCustomerInfosData!=null) {
+        if (besCustomerInfosData != null) {
             populateFromBesCustomerInfosData(besCustomerInfosData, target);
         }
     }
 
     private void populateFromBesCustomerInfosData(BesCustomerInfosData source, RequestCreateSearchResultData target) {
-        try{
-            long custId = Long.parseLong( source.getCustomerId() );
-            target.setCustId( custId );
-        }catch (NumberFormatException e){
+        try {
+            long custId = Long.parseLong(source.getCustomerId());
+            target.setCustId(custId);
+        } catch (NumberFormatException e) {
             LOG.warn(e.getMessage(), e);
         }
 
         BesCustBasicInfoData besCustBasicInfoData = source.getCustBasicInfo();
-        if(besCustBasicInfoData!=null) {
+        if (besCustBasicInfoData != null) {
             populateFromBesCustBasicInfoData(besCustBasicInfoData, target);
         }
 
         BesContactPersonInfoData besContactPersonInfoData =
                 CollectionUtils.isEmpty(source.getContactPersonInfo()) ? null : source.getContactPersonInfo().get(0);
-        if(besContactPersonInfoData!=null){
+        if (besContactPersonInfoData != null) {
             populateFromBesContactPersonInfoData(besContactPersonInfoData, target);
         }
     }
 
     private void populateFromBesCustBasicInfoData(BesCustBasicInfoData source, RequestCreateSearchResultData target) {
-        target.setCustCode( source.getCustCode() );
-        target.setCustName( source.getCustName() );
+        target.setCustCode(source.getCustCode());
+        target.setCustName(source.getCustName());
+        target.setCustType(source.getCustType());
+        target.setCustStatus(source.getStatus());
+        switch (source.getLanguagePreference()) {
+            case BesCustBasicInfoData.LANGUAGE_PREFERENCE.CHINESE:
+                target.setLanguagePreference("Chinese");
+                break;
+            case BesCustBasicInfoData.LANGUAGE_PREFERENCE.ENGLISH:
+                target.setLanguagePreference("English");
+                break;
+            default:
+                target.setLanguagePreference("Unknown");
+        }
+        target.setServiceType("Unknown");
+
     }
 
     private void populateFromBesContactPersonInfoData(BesContactPersonInfoData source, RequestCreateSearchResultData target) {
-        target.setContactName( source.getName() );
-        target.setContactEmail( source.getEmail() );
-        target.setContactNumber( source.getOfficePhone() );
+        target.setContactName(source.getName());
+        target.setContactEmail(source.getEmail());
+        target.setContactNumber(source.getOfficePhone());
     }
 
-    public void populateFromItsmProfileData(ItsmProfileData source, RequestCreateSearchResultData target){
-        target.setAdminId( source.getAdminId() );
+    public void populateFromItsmProfileData(ItsmProfileData source, RequestCreateSearchResultData target) {
+        target.setAdminId(source.getAdminId());
 
-        target.setCustCode( source.getCustCode() );
-        target.setCustId( source.getCustId() );
-        target.setCustName( source.getCustName() );
-        target.setCustomer( source.getCustomer() );
+        target.setCustCode(source.getCustCode());
+        target.setCustId(source.getCustId());
+        target.setCustName(source.getCustName());
+        target.setCustomer(source.getCustomer());
 
-        target.setDomainName( source.getDomainName() );
-        target.setEmail( source.getEmail() );
-        target.setMobileNo( source.getMobileNo() );
+        target.setDomainName(source.getDomainName());
+        target.setEmail(source.getEmail());
+        target.setMobileNo(source.getMobileNo());
 
-        target.setJmsOrderNum( source.getJmsOrderNum() );
-        target.setL1OrderNum( source.getL1OrderNum() );
-        target.setLastUpdId( source.getLastUpdId() );
+        target.setJmsOrderNum(source.getJmsOrderNum());
+        target.setL1OrderNum(source.getL1OrderNum());
+        target.setLastUpdId(source.getLastUpdId());
 
-        target.setOfferName( source.getOfferName() );
-        target.setPackageType( source.getPackageType() );
-        target.setPassword( source.getPassword() );
-        target.setPid( source.getPid() );
-        target.setPrefix( source.getPrefix() );
-        target.setProductDesc( source.getProductDesc() );
-        target.setProfileId( source.getProfileId() );
+        target.setOfferName(source.getOfferName());
+        target.setPackageType(source.getPackageType());
+        target.setPassword(source.getPassword());
+        target.setPid(source.getPid());
+        target.setPrefix(source.getPrefix());
+        target.setProductDesc(source.getProductDesc());
+        target.setProfileId(source.getProfileId());
 
-        target.setResourceId( source.getResourceId() );
-        target.setResourceName( source.getResourceName() );
+        target.setResourceId(source.getResourceId());
+        target.setResourceName(source.getResourceName());
 
-        target.setServiceNo( source.getServiceNo() );
-        target.setServiceType( source.getServiceType() );
+        target.setServiceNo(source.getServiceNo());
 
-        target.setStatus( source.getStatus() );
-        target.setStatusDesc( source.getStatusDesc() );
-        target.setStb( source.getStb() );
+        target.setStatus(source.getStatus());
+        target.setStatusDesc(source.getStatusDesc());
+        target.setStb(source.getStb());
 
-        target.setTenantId( source.getTenantId() );
-        target.setType( source.getType() );
-        target.setUrl( source.getUrl() );
-        target.setUserName( source.getUserName() );
+        target.setTenantId(source.getTenantId());
+        target.setType(source.getType());
+        target.setUrl(source.getUrl());
+        target.setUserName(source.getUserName());
+
+        target.setServiceType(source.getServiceType());
     }
 
 }
