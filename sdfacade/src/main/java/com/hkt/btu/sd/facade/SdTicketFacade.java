@@ -37,4 +37,6 @@ public interface SdTicketFacade {
     boolean checkAppointmentDate(String appointmentDate);
 
     List<SdSymptomData> getSymptom(Integer ticketMasId);
+
+    BesSubFaultData getFaultInfo(String subscriberId);
 }

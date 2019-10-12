@@ -9,7 +9,7 @@ public class BesSubFaultData implements DataInterface {
     private String msgCode;
     private String description;
 
-    private List<BesFaultInfosData> besFaultInfos;
+    private List<BesFaultInfoData> list;
 
     public String getMsgCode() {
         return msgCode;
@@ -27,11 +27,11 @@ public class BesSubFaultData implements DataInterface {
         this.description = description;
     }
 
-    public List<BesFaultInfosData> getBesFaultInfos() {
-        return besFaultInfos;
+    public List<BesFaultInfoData> getList() {
+        return list;
     }
 
-    public void setBesFaultInfos(List<BesFaultInfosData> besFaultInfos) {
-        this.besFaultInfos = besFaultInfos;
+    public void setList(List<BesFaultInfoData> list) {
+        this.list = list;
     }
 }

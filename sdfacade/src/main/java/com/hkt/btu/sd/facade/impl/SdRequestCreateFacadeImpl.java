@@ -94,6 +94,17 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         return infoData;
     }
 
+    @Override
+    public BesFaultInfoData getCustomerInfo(String serviceCode) {
+        return findData4Bsn(serviceCode).getList().stream().filter(requestCreateSearchResultData -> requestCreateSearchResultData.getServiceNo().equals(serviceCode))
+                .findFirst().map(requestCreateSearchResultData -> {
+                    BesFaultInfoData data  = new BesFaultInfoData();
+                    data.setCustName(requestCreateSearchResultData.getCustName());
+                    data.setProductType(requestCreateSearchResultData.getOfferName());
+                    return data;
+                }).orElse(new BesFaultInfoData());
+    }
+
     private RequestCreateSearchResultsData findData4Dn(String dn) {
         return Optional.ofNullable(norarsApiFacade.getBsnByDn(dn))
                 .map(NorarsBsnData::getBsn)

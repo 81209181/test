@@ -1,6 +1,6 @@
 package com.hkt.btu.sd.facade.data;
 
-public class BesFaultInfosData {
+public class BesFaultInfoData {
 
     private String subscriberName;
     private long requestId;

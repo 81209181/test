@@ -18,6 +18,4 @@ public interface BesApiFacade {
     BesSubscriberData querySubscriberByCustomerCode(String customerCode);
 
     String getBesCustomerCode (BesCustomerData besCustomerData);
-
-    BesSubFaultData getSubFaultBySubscriberId(String subscriberId);
 }
