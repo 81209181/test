@@ -1,4 +1,9 @@
 $(document).ready(function() {
+    // click event
+    $("#btnReloadUserRole").on("click", function (){
+        ajaxReload();
+    });
+
     $('#userGroupTable').DataTable({
         ajax: {
             type: "GET",
@@ -31,3 +36,19 @@ $(document).ready(function() {
         } ]
     });
 });
+
+function ajaxReload() {
+    $.ajax({
+        type: "GET",
+        contentType: "application/json",
+        url: "/admin/manage-role/reloadRole",
+        dataSrc: 'data',
+        success: function (data) {
+            clearAllMsg();
+            showInfoMsg("Reloaded user role.");
+        },
+        error: function (e) {
+            showErrorMsg("Cannot reload user role.");
+        }
+    });
+}

@@ -76,4 +76,10 @@ public class ManageRoleController {
             return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
         }
     }
+
+    @GetMapping("/reloadRole")
+    public ResponseEntity<?> reloadUserRole() {
+        userRoleFacade.reloadUserRole();
+        return ResponseEntity.ok("done.");
+    }
 }
