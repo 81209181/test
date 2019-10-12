@@ -14,6 +14,6 @@ public class SdSiteConfigServiceImpl extends BtuSiteConfigServiceImpl implements
     @Override
     public void reload() {
         super.reload();
-        userRoleService.getCachedRoleAssignMap(null);
+        userRoleService.reloadCachedRoleTree();
     }
 }

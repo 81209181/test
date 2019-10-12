@@ -12,6 +12,8 @@ public interface SdSqlReportMapper {
 
     SdSqlReportEntity getSqlReportDataByReportId(@Param("reportId") String reportId);
 
+    SdSqlReportEntity getSqlReportByReportId(@Param("reportId") String reportId);
+
     List<Map<String, Object>> queryBySQL(String value);
 
     List<SdSqlReportEntity> getSqlReportData(@Param("status") String status);

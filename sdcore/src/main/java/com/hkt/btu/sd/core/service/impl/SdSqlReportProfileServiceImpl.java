@@ -90,7 +90,7 @@ public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImp
 
     @Override
     public SdSqlReportBean getSqlReportDataByReportId(String reportId) {
-        SdSqlReportEntity entity = sdSqlReportMapper.getSqlReportDataByReportId(reportId);
+        SdSqlReportEntity entity = sdSqlReportMapper.getSqlReportByReportId(reportId);
         SdSqlReportBean bean = new SdSqlReportBean();
         reportBeanPopulator.populate(entity, bean);
         return bean;

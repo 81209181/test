@@ -10,11 +10,11 @@ import java.util.Set;
 public interface SdUserRoleService {
     void updateUserRoleByUserId(String userId, List<String> roleIdList);
     void updateUserRole(String roleId, String roleDesc, String status, Boolean isAbstract);
+    void reloadCachedRoleTree();
 
     List<SdUserRoleBean> getAllUserRole();
     SdUserRoleBean getUserRoleByRoleId(String roleId);
 
-    List<SdUserRoleBean> getCachedRoleAssignMap(String roleId);
     List<SdUserRoleBean> getParentRoleByRoleId(String roleId);
 
     List<SdUserRoleBean> getUserRoleByUserId(String userId);

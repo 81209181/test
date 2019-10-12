@@ -2,6 +2,9 @@ package com.hkt.btu.sd.core.dao.entity;
 
 import com.hkt.btu.common.core.dao.entity.BaseEntity;
 
+import java.util.List;
+import java.util.StringJoiner;
+
 public class SdUserRoleEntity extends BaseEntity {
 
     public final static String SYS_ADMIN = "SYS_ADMIN";
@@ -15,6 +18,7 @@ public class SdUserRoleEntity extends BaseEntity {
     private String parentRoleId;
     private String status;
     private String abstractFlag;
+    private List<SdUserRoleEntity> children;
 
     public String getRoleId() {
         return roleId;
@@ -54,5 +58,25 @@ public class SdUserRoleEntity extends BaseEntity {
 
     public void setAbstractFlag(String abstractFlag) {
         this.abstractFlag = abstractFlag;
+    }
+
+    public List<SdUserRoleEntity> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<SdUserRoleEntity> children) {
+        this.children = children;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", SdUserRoleEntity.class.getSimpleName() + "[", "]")
+                .add("roleId='" + roleId + "'")
+                .add("roleDesc='" + roleDesc + "'")
+                .add("parentRoleId='" + parentRoleId + "'")
+                .add("status='" + status + "'")
+                .add("abstractFlag='" + abstractFlag + "'")
+                .add("children=" + children)
+                .toString();
     }
 }

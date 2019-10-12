@@ -650,7 +650,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             dataMap.put(SdEmailBean.INIT_PW_EMAIL.OTP, otp);
 
             // send otp email
-            sdEmailService.send(SdEmailBean.INIT_PW_EMAIL.TEMPLATE_ID, recipient, dataMap);
+            sdEmailService.send(SdEmailBean.INIT_PW_EMAIL.TEMPLATE_ID, recipient, null, dataMap);
         } else {
             // valid reset password otp
             SdOtpBean sdOtpBean = sdOtpService.getValidOtp(userId, SdOtpEntity.ACTION.RESET_PWD);
@@ -668,7 +668,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             dataMap.put(SdEmailBean.RESET_PW_EMAIL.OTP, otp);
 
             // send otp email
-            sdEmailService.send(SdEmailBean.RESET_PW_EMAIL.TEMPLATE_ID, recipient, dataMap);
+            sdEmailService.send(SdEmailBean.RESET_PW_EMAIL.TEMPLATE_ID, recipient, null, dataMap);
         }
     }
 
