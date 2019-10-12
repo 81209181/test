@@ -152,4 +152,9 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
         return sdUserRoleService.checkSameTeamRole(name,createBy);
     }
 
+    @Override
+    public void reloadUserRole() {
+        sdUserRoleService.reloadCachedRoleTree();
+    }
+
 }

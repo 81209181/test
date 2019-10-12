@@ -12,6 +12,7 @@ import com.hkt.btu.sd.core.service.populator.SdUserRoleBeanPopulator;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -22,8 +23,7 @@ import java.util.stream.Collectors;
 
 public class SdUserRoleServiceImpl implements SdUserRoleService {
 
-    // key: role id, value: list of role id that can be assigned by the key role id
-    private static final Map<String, List<SdUserRoleBean>> ROLE_ASSIGN_MAP = new HashMap<>();
+    private static final SdUserRoleEntity ROLE_TREE = new SdUserRoleEntity();
 
     @Resource
     SdUserRoleMapper sdUserRoleMapper;
@@ -34,44 +34,27 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     @Resource(name = "userRoleBeanPopulator")
     SdUserRoleBeanPopulator sdUserRoleBeanPopulator;
 
-    private void reloadCachedRoleAssignMap() {
-        List<String> teamHeadRoleIdList = sdUserRoleMapper
-                .getTeamHeadList(SdUserRoleEntity.TEAM_HEAD_INDICATOR)
-                .stream()
-                .map(SdUserRoleEntity::getRoleId)
-                .collect(Collectors.toList());
-        for (String roleId : teamHeadRoleIdList) {
-            List<SdUserRoleEntity> eligibleRoleEntityList = sdUserRoleMapper
-                    .getEligibleRolesByCurrentUserRole(roleId, SdUserRoleEntity.ACTIVE_ROLE_STATUS);
-            List<SdUserRoleBean> eligibleRoleBeanList = getSdUserRoleBeans(new LinkedList<>(), eligibleRoleEntityList);
-            ROLE_ASSIGN_MAP.put(roleId, eligibleRoleBeanList);
-        }
-    }
-
     @Override
-    public List<SdUserRoleBean> getCachedRoleAssignMap(String roleId) {
-        if (MapUtils.isEmpty(ROLE_ASSIGN_MAP)) {
-            reloadCachedRoleAssignMap();
-        }
-        return ROLE_ASSIGN_MAP.get(roleId);
+    public void reloadCachedRoleTree() {
+        getRoleTree();
     }
 
     @Override
     public List<SdUserRoleBean> getParentRoleByRoleId(String roleId) {
-        List<SdUserRoleBean> roleEntityList = new LinkedList<>();
-        List<SdUserRoleEntity> parentRoleByRoleId = sdUserRoleMapper.getParentRoleByRoleId(roleId);
-        for (SdUserRoleEntity role : parentRoleByRoleId) {
-            if (role.getStatus().equals(SdUserRoleEntity.ACTIVE_ROLE_STATUS)) {
-                if (StringUtils.isNotEmpty(role.getParentRoleId())) {
-                    List<SdUserRoleBean> parentRoleList = getParentRoleByRoleId(role.getParentRoleId());
-                    roleEntityList.addAll(parentRoleList);
-                }
-                SdUserRoleBean bean = new SdUserRoleBean();
-                sdUserRoleBeanPopulator.populate(role, bean);
-                roleEntityList.add(bean);
-            }
+
+        checkRoleTree();
+
+        List<SdUserRoleEntity> parentRole = getParentRole(ROLE_TREE.getChildren(), roleId);
+
+        if (CollectionUtils.isEmpty(parentRole)) {
+            return null;
         }
-        return roleEntityList;
+
+        return parentRole.stream().map(entity -> {
+            SdUserRoleBean bean = new SdUserRoleBean();
+            sdUserRoleBeanPopulator.populate(entity, bean);
+            return bean;
+        }).collect(Collectors.toList());
     }
 
     @Override
@@ -83,19 +66,27 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
 
     @Override
     public SdUserRoleBean getUserRoleByRoleId(String roleId) {
-        if (roleId == null) {
+        if (StringUtils.isEmpty(roleId)) {
             return null;
         }
 
-        // get user data
-        SdUserRoleEntity sdUserRoleEntity = sdUserRoleMapper.getUserRoleByRoleId(roleId);
-        if (sdUserRoleEntity == null) {
+        SdUserRoleEntity children = new SdUserRoleEntity();
+
+        checkRoleTree();
+
+        if (ROLE_TREE.getRoleId().equals(roleId)) {
+            children = ROLE_TREE;
+        } else {
+            children = getChildren(ROLE_TREE.getChildren(), roleId);
+        }
+
+        if (children == null) {
             return null;
         }
 
         // construct bean
         SdUserRoleBean userBean = new SdUserRoleBean();
-        sdUserRoleBeanPopulator.populate(sdUserRoleEntity, userBean);
+        sdUserRoleBeanPopulator.populate(children, userBean);
 
         return userBean;
     }
@@ -121,6 +112,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
         if (CollectionUtils.isEmpty(userRole)) {
             return null;
         }
+
         for (SdUserRoleEntity entity : userRole) {
             SdUserRoleBean bean = new SdUserRoleBean();
             sdUserRoleBeanPopulator.populate(entity, bean);
@@ -172,19 +164,16 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
             return null;
         }
 
+        checkRoleTree();
+
         // extract eligible roles of current user role
         List<SdUserRoleBean> rawEligibleUserRoleList = new LinkedList<>();
         for (GrantedAuthority authority : authorities) {
             if (authority instanceof SimpleGrantedAuthority) {
                 String roleId = authority.getAuthority();
-                if (roleId.equals(SdUserRoleEntity.SYS_ADMIN)) {
-                    rawEligibleUserRoleList = getAllUserRole();
-                    break;
-                }
-                if (roleId.contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR)) {
-                    List<SdUserRoleBean> eligibleRoleListOfTeamHead = getCachedRoleAssignMap(roleId);
-                    rawEligibleUserRoleList.addAll(eligibleRoleListOfTeamHead);
-                }
+                // get user role from role tree
+                List<SdUserRoleEntity> roleList = getUserRoleByRoleIdInRoleTree(roleId);
+                rawEligibleUserRoleList.addAll(populate(roleList));
             }
         }
         if (CollectionUtils.isEmpty(rawEligibleUserRoleList)) {
@@ -196,8 +185,8 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
 
         // remove abstract role
         List<SdUserRoleBean> eligibleUserRoleList = new LinkedList<>();
-        for(SdUserRoleBean sdUserRoleBean : rawEligibleUserRoleList){
-            if(!sdUserRoleBean.isAbstract()){
+        for (SdUserRoleBean sdUserRoleBean : rawEligibleUserRoleList) {
+            if (!sdUserRoleBean.isAbstract()) {
                 eligibleUserRoleList.add(sdUserRoleBean);
             }
         }
@@ -249,4 +238,145 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
         String abstractFlag = isAbstract ? SdUserRoleEntity.IS_ABSTRACT : StringUtils.EMPTY;
         sdUserRoleMapper.updateUserRole(roleId, roleDesc, status, abstractFlag, modifyby);
     }
+
+    /**
+     *   Initial role tree
+     */
+    private void getRoleTree() {
+        SdUserRoleEntity topUserRole = sdUserRoleMapper.getTopUserRole();
+        BeanUtils.copyProperties(topUserRole, ROLE_TREE);
+        List<SdUserRoleEntity> secondRoleList = sdUserRoleMapper.getUserRoleByParentRoleId(ROLE_TREE.getRoleId());
+        List<SdUserRoleEntity> allRoleList = new ArrayList<>();
+        ROLE_TREE.setChildren(secondRoleList);
+
+        for (SdUserRoleEntity entity : secondRoleList) {
+            List<SdUserRoleEntity> roleList = getAllRoleList(entity.getRoleId());
+            entity.setChildren(roleList);
+            allRoleList.addAll(roleList);
+        }
+
+        // if roleId is System admin.
+        for (SdUserRoleEntity entity : secondRoleList) {
+            if (SdUserRoleEntity.SYS_ADMIN.equals(entity.getRoleId())) {
+                entity.setChildren(allRoleList);
+            }
+        }
+    }
+
+    /**
+     *  Get all user role from database.
+     * @param roleId
+     * @return
+     */
+    private List<SdUserRoleEntity> getAllRoleList(String roleId) {
+        List<SdUserRoleEntity> roleList = sdUserRoleMapper.getUserRoleByParentRoleId(roleId);
+        if (CollectionUtils.isNotEmpty(roleList)) {
+            for (SdUserRoleEntity entity : roleList) {
+                entity.setChildren(getAllRoleList(entity.getRoleId()));
+            }
+        }
+        return roleList;
+    }
+
+    /**
+     *  According to roleId, get user role from role tree
+     * @param roleId
+     * @return
+     */
+    private List<SdUserRoleEntity> getUserRoleByRoleIdInRoleTree(String roleId) {
+        List<SdUserRoleEntity> userRole = new ArrayList<>();
+
+        checkRoleTree();
+
+        if (SdUserRoleEntity.SYS_ADMIN.equals(roleId)) {
+            Optional<SdUserRoleEntity> adminRole = ROLE_TREE.getChildren().stream().filter(role -> SdUserRoleEntity.SYS_ADMIN.equals(roleId)).findFirst();
+            SdUserRoleEntity entity = adminRole.get();
+            userRole.add(entity);
+            userRole.addAll(entity.getChildren().stream()
+                    .filter(role -> role.getStatus().equals(SdUserRoleEntity.ACTIVE_ROLE_STATUS))
+                    .collect(Collectors.toList()));
+            return userRole;
+        } else if (ROLE_TREE.getRoleId().equals(roleId)) {
+            userRole.add(ROLE_TREE);
+        } else {
+            List<SdUserRoleEntity> children = ROLE_TREE.getChildren();
+            if (CollectionUtils.isNotEmpty(children)) {
+                Optional<SdUserRoleEntity> first = children.stream().filter(role -> role.getRoleId().equals(roleId)).findFirst();
+                SdUserRoleEntity entity = first.orElse(getChildren(children, roleId));
+                if (entity != null) {
+                    userRole.add(entity);
+                    List<SdUserRoleEntity> parentRole = getParentRole(children, entity.getParentRoleId());
+                    userRole.addAll(parentRole.stream()
+                            .filter(role -> role.getStatus().equals(SdUserRoleEntity.ACTIVE_ROLE_STATUS))
+                            .collect(Collectors.toList()));
+                }
+            }
+        }
+        return userRole;
+    }
+
+    /**
+     *  According to roleId, get user role from roleEntityList.
+     * @param roleEntityList
+     * @param roleId
+     * @return
+     */
+    private SdUserRoleEntity getChildren(List<SdUserRoleEntity> roleEntityList, String roleId) {
+        if (CollectionUtils.isNotEmpty(roleEntityList)) {
+            Optional<SdUserRoleEntity> first = roleEntityList
+                    .stream()
+                    .filter(role -> role.getRoleId().equals(roleId))
+                    .findFirst();
+
+            if (first.isEmpty()) {
+                for (SdUserRoleEntity item : roleEntityList) {
+                    if (SdUserRoleEntity.SYS_ADMIN.equals(item.getRoleId())) {
+                        continue;
+                    }
+                    List<SdUserRoleEntity> children = item.getChildren();
+                    if (CollectionUtils.isNotEmpty(children)) {
+                        SdUserRoleEntity secondRole = getChildren(children, roleId);
+                        if (secondRole != null) {
+                            return secondRole;
+                        }
+                    }
+                }
+            } else {
+                return first.get();
+            }
+        }
+        return null;
+    }
+
+    private List<SdUserRoleEntity> getParentRole(List<SdUserRoleEntity> roleList, String roleId) {
+        List<SdUserRoleEntity> parentRole = new ArrayList<>();
+        for (SdUserRoleEntity child : roleList) {
+            if (roleId.equals(child.getRoleId())) {
+                getParentRole(roleList, child.getParentRoleId());
+                parentRole.add(child);
+            }
+        }
+        parentRole.add(ROLE_TREE);
+        return parentRole;
+    }
+
+    private void checkRoleTree() {
+        if (ROLE_TREE == null) {
+            getRoleTree();
+        }
+    }
+
+    private List<SdUserRoleBean> populate(List<SdUserRoleEntity> roleEntityList) {
+        if (CollectionUtils.isEmpty(roleEntityList)) {
+            return null;
+        }
+
+        return roleEntityList.stream().map(entity -> {
+          SdUserRoleBean bean = new SdUserRoleBean();
+          sdUserRoleBeanPopulator.populate(entity, bean);
+          return bean;
+        }).collect(Collectors.toList());
+    }
+
+
 }

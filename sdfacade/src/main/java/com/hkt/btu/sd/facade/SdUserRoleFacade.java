@@ -24,4 +24,6 @@ public interface SdUserRoleFacade {
     List<SdUserRoleData> getEligibleUserRoleList();
 
     boolean checkSameTeamRole(String name, String createBy);
+
+    void reloadUserRole();
 }

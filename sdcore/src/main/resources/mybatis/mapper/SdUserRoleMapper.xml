@@ -113,4 +113,14 @@
         and ur.PARENT_ROLE_ID in ('OPT','ENG')
         where uur.USER_ID =#{userId}
     </select>
+
+    <select id="getTopUserRole" resultMap="SdUserRoleEntity">
+        select * from USER_ROLE where PARENT_ROLE_ID is null
+    </select>
+
+    <select id="getUserRoleByParentRoleId" resultMap="SdUserRoleEntity">
+        select * from USER_ROLE
+        where
+            PARENT_ROLE_ID = #{roleId}
+    </select>
 </mapper>
