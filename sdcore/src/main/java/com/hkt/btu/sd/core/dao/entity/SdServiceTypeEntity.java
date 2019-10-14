@@ -4,6 +4,10 @@ import com.hkt.btu.common.core.dao.entity.BaseEntity;
 
 public class SdServiceTypeEntity extends BaseEntity {
 
+    public static class SERVICE_TYPE{
+        public static final String UNKNOWN = "UNKNOWN";
+    }
+
     private String serviceTypeCode;
     private String serviceTypeName;
 

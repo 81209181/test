@@ -138,9 +138,21 @@ public class SdSymptomServiceImpl implements SdSymptomService {
         String createby = userService.getCurrentUserUserId();
 
         List<SdSymptomMappingEntity> existSymptomList = sdSymptomMapper.getSymptomMapping(oldSymptomCode);
+
+        // filter unknown service type
+        for (int i = 0; i < serviceTypeList.size(); i++) {
+            String serviceType = serviceTypeList.get(i);
+            if (serviceType.equals(SdServiceTypeEntity.SERVICE_TYPE.UNKNOWN)) {
+                serviceTypeList.remove(i);
+            }
+        }
+
         // first insert data
         if (CollectionUtils.isEmpty(existSymptomList)) {
-            sdSymptomMapper.createSymptomMapping(serviceTypeList, symptomCode, createby);
+            if (!CollectionUtils.isEmpty(serviceTypeList)) {
+                LOG.info("Created symptomCode:" + symptomCode + ", serviceTypeList:" + serviceTypeList);
+                sdSymptomMapper.createSymptomMapping(serviceTypeList, symptomCode, createby);
+            }
         } else {
             List<String> existServiceTypeList = new ArrayList<>();
             List<String> oldServiceTypeList = new ArrayList<>();

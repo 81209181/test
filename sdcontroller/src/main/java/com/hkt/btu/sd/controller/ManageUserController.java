@@ -308,7 +308,7 @@ public class ManageUserController {
                 .map(principal -> sessionRegistry.getAllSessions(principal, false))
                 .filter(allSessions -> !ObjectUtils.isEmpty(allSessions))
                 .flatMap(Collection::stream).forEach(SessionInformation::expireNow);
-        sdAuditTrailFacade.insertClickAuditTrail(userId, p.getName());
+        sdAuditTrailFacade.insertKickAuditTrail(userId, p.getName());
         return ResponseEntity.ok("Expire user session successfully.");
 
     }

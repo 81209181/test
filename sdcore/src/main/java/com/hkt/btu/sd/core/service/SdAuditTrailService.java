@@ -13,4 +13,6 @@ public interface SdAuditTrailService extends BtuAuditTrailService {
     void insertKickAuditTrail(String user, String clickBy);
 
     int houseKeep();
+
+    void insertViewTicketAuditTrail(String user, String ticketMasId);
 }
