@@ -12,12 +12,13 @@ import com.hkt.btu.sd.core.service.bean.SdSymptomMappingBean;
 import com.hkt.btu.sd.core.service.populator.SdServiceTypeBeanPopulator;
 import com.hkt.btu.sd.core.service.populator.SdSymptomBeanPopulator;
 import com.hkt.btu.sd.core.service.populator.SdSymptomMappingBeanPopulator;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -137,43 +138,47 @@ public class SdSymptomServiceImpl implements SdSymptomService {
     public void editSymptomMapping(String oldSymptomCode, String symptomCode, List<String> serviceTypeList) {
         String createby = userService.getCurrentUserUserId();
 
-        List<SdSymptomMappingEntity> existSymptomList = sdSymptomMapper.getSymptomMapping(oldSymptomCode);
-
         // filter unknown service type
-        for (int i = 0; i < serviceTypeList.size(); i++) {
-            String serviceType = serviceTypeList.get(i);
-            if (serviceType.equals(SdServiceTypeEntity.SERVICE_TYPE.UNKNOWN)) {
-                serviceTypeList.remove(i);
+        List<String> filteredServiceTypeList = new ArrayList<>();
+        if(CollectionUtils.isNotEmpty(serviceTypeList)){
+            for (String serviceType : serviceTypeList) {
+                if (StringUtils.equals(SdServiceTypeEntity.SERVICE_TYPE.UNKNOWN, serviceType)) {
+                    filteredServiceTypeList.add(serviceType);
+                }
             }
         }
 
-        // first insert data
+        // get all existing service type list of the symptom
+        List<SdSymptomMappingEntity> existSymptomList = sdSymptomMapper.getSymptomMapping(oldSymptomCode);
         if (CollectionUtils.isEmpty(existSymptomList)) {
-            if (!CollectionUtils.isEmpty(serviceTypeList)) {
-                LOG.info("Created symptomCode:" + symptomCode + ", serviceTypeList:" + serviceTypeList);
-                sdSymptomMapper.createSymptomMapping(serviceTypeList, symptomCode, createby);
+            if (!CollectionUtils.isEmpty(filteredServiceTypeList)) {
+                LOG.info("Created symptomCode:" + symptomCode + ", serviceTypeList:" + filteredServiceTypeList);
+                sdSymptomMapper.createSymptomMapping(filteredServiceTypeList, symptomCode, createby);
             }
         } else {
             List<String> existServiceTypeList = new ArrayList<>();
-            List<String> oldServiceTypeList = new ArrayList<>();
-            List<String> newServiceTypeList = new ArrayList<>();
-
             for (SdSymptomMappingEntity symptomMappingEntity : existSymptomList) {
                 existServiceTypeList.add(symptomMappingEntity.getServiceTypeCode());
             }
-            oldServiceTypeList.addAll(existServiceTypeList);
-            newServiceTypeList.addAll(serviceTypeList);
 
-            oldServiceTypeList.removeAll(serviceTypeList);
-            LOG.info("Deleted symptomCode:" + symptomCode + ", oldServiceTypeList:" + oldServiceTypeList);
-            newServiceTypeList.removeAll(existServiceTypeList);
-            LOG.info("Created symptomCode:" + symptomCode + ", newServiceTypeList:" + newServiceTypeList);
+            // find which service type to delete
+            List<String> toDeleteServiceTypeList = new ArrayList<>(existServiceTypeList);
+            toDeleteServiceTypeList.removeAll(filteredServiceTypeList);
+            LOG.info("Deleted symptomCode:" + symptomCode + ", toDeleteServiceTypeList:" + toDeleteServiceTypeList);
 
-            if (!CollectionUtils.isEmpty(oldServiceTypeList)) {
-                sdSymptomMapper.deleteSymptomMapping(oldSymptomCode, oldServiceTypeList);
+            // find which service type to insert
+            List<String> toInsertServiceTypeList = new ArrayList<>(filteredServiceTypeList);
+            toInsertServiceTypeList.removeAll(existServiceTypeList);
+            LOG.info("Created symptomCode:" + symptomCode + ", toInsertServiceTypeList:" + toInsertServiceTypeList);
+
+            // delete service type
+            if (!CollectionUtils.isEmpty(toDeleteServiceTypeList)) {
+                sdSymptomMapper.deleteSymptomMapping(oldSymptomCode, toDeleteServiceTypeList);
             }
-            if (!CollectionUtils.isEmpty(newServiceTypeList)) {
-                sdSymptomMapper.createSymptomMapping(newServiceTypeList, symptomCode, createby);
+
+            // insert service type
+            if (!CollectionUtils.isEmpty(toInsertServiceTypeList)) {
+                sdSymptomMapper.createSymptomMapping(toInsertServiceTypeList, symptomCode, createby);
             }
         }
     }
