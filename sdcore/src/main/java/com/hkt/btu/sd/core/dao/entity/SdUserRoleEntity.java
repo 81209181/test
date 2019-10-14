@@ -18,7 +18,6 @@ public class SdUserRoleEntity extends BaseEntity {
     private String parentRoleId;
     private String status;
     private String abstractFlag;
-    private List<SdUserRoleEntity> children;
 
     public String getRoleId() {
         return roleId;
@@ -60,14 +59,6 @@ public class SdUserRoleEntity extends BaseEntity {
         this.abstractFlag = abstractFlag;
     }
 
-    public List<SdUserRoleEntity> getChildren() {
-        return children;
-    }
-
-    public void setChildren(List<SdUserRoleEntity> children) {
-        this.children = children;
-    }
-
     @Override
     public String toString() {
         return new StringJoiner(", ", SdUserRoleEntity.class.getSimpleName() + "[", "]")
@@ -76,7 +67,6 @@ public class SdUserRoleEntity extends BaseEntity {
                 .add("parentRoleId='" + parentRoleId + "'")
                 .add("status='" + status + "'")
                 .add("abstractFlag='" + abstractFlag + "'")
-                .add("children=" + children)
                 .toString();
     }
 }
