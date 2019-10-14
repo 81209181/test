@@ -12,6 +12,7 @@ public class SdAuditTrailEntity extends BaseEntity {
         public static final String VIEW_USER = "VIEW_USER";
         public static final String VIEW_REQUESTER = "VIEW_REQUESTER";
         public static final String VIEW_VISITOR = "VIEW_VISITOR";
+        public static final String VIEW_TICKET = "VIEW_TICKET";
     }
 
     private Integer auditId;

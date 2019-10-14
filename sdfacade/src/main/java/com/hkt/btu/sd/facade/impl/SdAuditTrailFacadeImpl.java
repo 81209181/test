@@ -19,7 +19,12 @@ public class SdAuditTrailFacadeImpl implements SdAuditTrailFacade {
     }
 
     @Override
-    public void insertClickAuditTrail(String user, String name) {
+    public void insertKickAuditTrail(String user, String name) {
         sdAuditTrailService.insertKickAuditTrail(user,name);
+    }
+
+    @Override
+    public void insertViewTicketAuditTrail(String user, String ticketMasId) {
+        sdAuditTrailService.insertViewTicketAuditTrail(user,ticketMasId);
     }
 }
