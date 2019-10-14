@@ -10,6 +10,7 @@ public class UpdateUserFormData implements DataInterface {
     private String name;
     private String mobile;
     private String staffId;
+    private String email;
 
     private Boolean userGroupAdmin;
     private Boolean userGroupUser;
@@ -49,6 +50,14 @@ public class UpdateUserFormData implements DataInterface {
 
     public void setStaffId(String staffId) {
         this.staffId = staffId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Boolean isUserGroupAdmin() {

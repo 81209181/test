@@ -275,7 +275,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
     @Override
     @Transactional
-    public void updateUser(String userId, String newName, String newMobile, List<String> userRoleIdList)
+    public void updateUser(String userId, String newName, String newMobile, String email,List<String> userRoleIdList)
             throws UserNotFoundException, InsufficientAuthorityException {
         SdUserBean currentUser = (SdUserBean) this.getCurrentUserBean();
         if (currentUser.getUserId().equals(userId)) {
@@ -291,7 +291,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
         userRoleService.checkUserRole(modifier.getAuthorities(), userRoleIdList);
 
-        sdUserMapper.updateUser(userId, name, encryptedMobile, modifier.getUserId());
+        sdUserMapper.updateUser(userId, name, encryptedMobile, email, modifier.getUserId());
 
         // update user role
         userRoleService.updateUserRoleByUserId(userId, userRoleIdList);

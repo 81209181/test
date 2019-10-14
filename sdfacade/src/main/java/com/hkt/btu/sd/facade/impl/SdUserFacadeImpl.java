@@ -177,6 +177,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
 
         String userId = updateUserFormData.getUserId();
         String name = StringUtils.trim(updateUserFormData.getName());
+        String email = StringUtils.trim(updateUserFormData.getEmail());
         String mobile = StringUtils.trim(updateUserFormData.getMobile());
         List<String> userRoleIdList = updateUserFormData.getUserRoleIdList();
 
@@ -188,6 +189,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
         // check input
         try {
             sdInputCheckService.checkName(name);
+            sdInputCheckService.checkEmail(email);
             sdInputCheckService.checkMobile(mobile);
             sdInputCheckService.checkAssignRoleByDomain(userRoleIdList, ldapDomain);
             sdInputCheckService.checkUserRole(userRoleIdList,userRoleService.getEligibleUserRoleGrantList(),userRoleService.getUserRoleByUserId(userId));
@@ -196,7 +198,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
         }
 
         try {
-            sdUserService.updateUser(userId, name, mobile, userRoleIdList);
+            sdUserService.updateUser(userId, name, mobile, email, userRoleIdList);
         } catch (UserNotFoundException | InsufficientAuthorityException | InvalidInputException e) {
             LOG.warn(e.getMessage());
             return e.getMessage();
