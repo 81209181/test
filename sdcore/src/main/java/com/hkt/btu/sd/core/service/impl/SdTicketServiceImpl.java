@@ -62,15 +62,17 @@ public class SdTicketServiceImpl implements SdTicketService {
         ticketMasEntity.setCustCode(custCode);
         ticketMasEntity.setCreateby(userId);
         ticketMasMapper.insertQueryTicket(ticketMasEntity);
-
-        SdTicketServiceEntity entity = new SdTicketServiceEntity();
-        entity.setCreateby(userId);
-        entity.setModifyby(userId);
-        entity.setServiceId(serviceNo);
-        entity.setTicketMasId(ticketMasEntity.getTicketMasId());
-        entity.setServiceTypeCode(serviceType);
-        entity.setSubsId(subsId);
-        ticketServiceMapper.insertServiceInfo(entity);
+        // service
+        SdTicketServiceEntity serviceEntity = new SdTicketServiceEntity();
+        serviceEntity.setCreateby(userId);
+        serviceEntity.setModifyby(userId);
+        serviceEntity.setServiceId(serviceNo);
+        serviceEntity.setTicketMasId(ticketMasEntity.getTicketMasId());
+        serviceEntity.setServiceTypeCode(serviceType);
+        serviceEntity.setSubsId(subsId);
+        ticketServiceMapper.insertServiceInfo(serviceEntity);
+        // remark
+        ticketRemarkMapper.insertTicketRemarks(ticketMasEntity.getTicketMasId(), SdTicketRemarkEntity.REMARKS_TYPE.SYSTEM, "Created ticket.", userId);
         return ticketMasEntity.getTicketMasId();
     }
 
