@@ -71,6 +71,11 @@ public class SdAuditTrailServiceImpl extends BtuAuditTrailServiceImpl implements
         return sdAuditTrailMapper.houseKeep();
     }
 
+    @Override
+    public void insertViewTicketAuditTrail(String user, String ticketMasId) {
+        insertAuditTrail(user,SdAuditTrailEntity.ACTION.VIEW_TICKET,ticketMasId);
+    }
+
     public void insertLoginAuditTrail(BtuUser btuUser) {
         this.insertAuditTrail(btuUser, SdAuditTrailEntity.ACTION.LOGIN, "SUCCESS");
     }
