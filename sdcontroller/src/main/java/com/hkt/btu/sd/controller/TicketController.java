@@ -34,8 +34,7 @@ public class TicketController {
     SdUserRoleFacade userRoleFacade;
     @Resource(name = "wfmApiFacade")
     WfmApiFacade wfmApiFacade;
-    @Resource(name = "besApiFacade")
-    BesApiFacade besApiFacade;
+
 
 
     @GetMapping("service-identity")
@@ -151,8 +150,7 @@ public class TicketController {
 
     @GetMapping("/ajax-get-fault")
     public ResponseEntity<?> getFaultInfo(@RequestParam String subscriberId) {
-        BesSubFaultData data = besApiFacade.getSubFaultBySubscriberId(subscriberId);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(ticketFacade.getFaultInfo(subscriberId));
     }
 
     @PostMapping("submit")

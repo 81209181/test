@@ -13,6 +13,15 @@ public class SdTicketServiceBean extends BaseBean {
     private List<String> faults;
     private List<SdSymptomBean> faultsList;
     private String jobId;
+    private String subsId;
+
+    public String getSubsId() {
+        return subsId;
+    }
+
+    public void setSubsId(String subsId) {
+        this.subsId = subsId;
+    }
 
     public String getJobId() {
         return jobId;

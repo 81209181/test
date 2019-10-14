@@ -4,6 +4,7 @@ import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
 import com.hkt.btu.sd.core.service.SdTicketService;
 import com.hkt.btu.sd.core.service.bean.*;
+import com.hkt.btu.sd.facade.SdRequestCreateFacade;
 import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.populator.SdTicketContactDataPopulator;
@@ -17,14 +18,11 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class SdTicketFacadeImpl implements SdTicketFacade {
@@ -33,6 +31,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
     @Resource(name = "ticketService")
     SdTicketService ticketService;
+    @Resource(name = "requestCreateFacade")
+    SdRequestCreateFacade requestCreateFacade;
 
     @Resource(name = "ticketMasDataPopulator")
     SdTicketMasDataPopulator ticketMasDataPopulator;
@@ -258,5 +258,57 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         }).collect(Collectors.toList());
 
         return dataList;
+    }
+
+    @Override
+    public BesSubFaultData getFaultInfo(String subscriberId) {
+        BesSubFaultData faultData = new BesSubFaultData();
+        try {
+            return Optional.ofNullable(subscriberId).filter(StringUtils::isNotBlank).map(s -> {
+                faultData.setList(ticketService.findServiceBySubscriberId(s).stream().map(sdTicketServiceBean -> {
+                    BesFaultInfoData info = requestCreateFacade.getCustomerInfo(sdTicketServiceBean.getServiceId());
+                    info.setSubscriberName(sdTicketServiceBean.getSubsId());
+                    info.setRequestId(sdTicketServiceBean.getTicketMasId());
+                    info.setRepeatedGroupIdCount(0);
+                    info.setRepeatedSubscriberIdCount(0);
+                    info.setSubFaultId(String.valueOf(sdTicketServiceBean.getTicketDetId()));
+                    Optional.ofNullable(sdTicketServiceBean.getFaultsList()).ifPresent(list -> list.forEach(sdSymptomBean -> {
+                        info.setFaultId(sdSymptomBean.getSymptomCode());
+                        info.setSymptom(sdSymptomBean.getSymptomDescription());
+                        info.setMainFaultCode(sdSymptomBean.getSymptomGroupName());
+                        info.setSubFaultId(sdSymptomBean.getSymptomCode());
+                    }));
+                    ticketService.getTicket(sdTicketServiceBean.getTicketMasId()).ifPresent(sdTicketMasBean -> {
+                        info.setSubFaultStatus(sdTicketMasBean.getStatus());
+                        info.setCreatedBy(sdTicketMasBean.getCreateby());
+                        info.setCreatedDate(sdTicketMasBean.getCreatedate().toString());
+                        String modifyDate = Optional.ofNullable(sdTicketMasBean.getModifydate()).map(LocalDateTime::toString).orElse(StringUtils.EMPTY);
+                        info.setLastUpdatedDate(modifyDate);
+                        info.setLastUpdatedBy(sdTicketMasBean.getModifyby());
+                        info.setClosedDate(String.format("%s - %s", sdTicketMasBean.getStatus(), modifyDate));
+                    });
+                    return info;
+                }).collect(Collectors.toList()));
+                if (faultData.getList().isEmpty()) {
+                    faultData.setMsgCode("CD0001");
+                    faultData.setDescription("No Fault History Found");
+                } else {
+                    faultData.setMsgCode("CD0000");
+                    faultData.setDescription("SUCCESS");
+                }
+                return faultData;
+            }).orElseGet(() -> {
+                faultData.setMsgCode("CD0002");
+                faultData.setDescription("Missing Parameter");
+                faultData.setList(Collections.emptyList());
+                return faultData;
+            });
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+            faultData.setMsgCode("CD0003");
+            faultData.setDescription("General System Failure");
+            faultData.setList(Collections.emptyList());
+            return faultData;
+        }
     }
 }

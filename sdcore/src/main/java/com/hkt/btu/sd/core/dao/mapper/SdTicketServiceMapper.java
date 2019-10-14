@@ -21,10 +21,10 @@ public interface SdTicketServiceMapper {
 
     void insertServiceInfo(SdTicketServiceEntity entity);
 
-    void insertFaults(@Param("ticketDetId") Integer ticketDetId, @Param("faults")String faults,
-                      @Param("createby") String createby, @Param("modifyby")String modifyby);
+    void insertFaults(@Param("ticketDetId") Integer ticketDetId, @Param("faults") String faults,
+                      @Param("createby") String createby, @Param("modifyby") String modifyby);
 
-    void updateTicketServiceByJobId(@Param("jobId")Integer jobId, @Param("ticketMasId")String ticketMasId,@Param("userId") String userId);
+    void updateTicketServiceByJobId(@Param("jobId") Integer jobId, @Param("ticketMasId") String ticketMasId, @Param("userId") String userId);
 
     void updateTicketServiceSymptomByTicketMasId(@Param("ticketMasId") Integer ticketMasId,
                                                  @Param("symptomCode") String symptomCode,
@@ -33,4 +33,6 @@ public interface SdTicketServiceMapper {
     List<SdSymptomEntity> getSymptomListByTicketMasId(Integer ticketMasId);
 
     List<SdSymptomEntity> getAllSymptomList();
+
+    List<SdTicketServiceEntity> getTicketServiceBySubscriberId(@Param("subscriberId") String subscriberId);
 }

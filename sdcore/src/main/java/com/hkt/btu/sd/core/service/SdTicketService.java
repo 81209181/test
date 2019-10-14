@@ -46,4 +46,5 @@ public interface SdTicketService {
 
     List<SdSymptomBean> getSymptomList(Integer ticketMasId);
 
+    List<SdTicketServiceBean> findServiceBySubscriberId(String subscriberId);
 }
