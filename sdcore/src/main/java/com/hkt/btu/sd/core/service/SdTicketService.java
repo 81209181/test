@@ -18,7 +18,7 @@ public interface SdTicketService {
 
     void removeContactInfoByTicketMasId(Integer ticketMasId);
 
-    Page<SdTicketMasBean> searchTicketList(Pageable pageable, String dateFrom, String dateTo, String status);
+    Page<SdTicketMasBean> searchTicketList(Pageable pageable, String dateFrom, String dateTo, String status, String ticketMasId, String custCode);
 
     List<SdTicketMasBean> getMyTicket();
 

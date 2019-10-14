@@ -62,15 +62,17 @@ public class SdTicketServiceImpl implements SdTicketService {
         ticketMasEntity.setCustCode(custCode);
         ticketMasEntity.setCreateby(userId);
         ticketMasMapper.insertQueryTicket(ticketMasEntity);
-
-        SdTicketServiceEntity entity = new SdTicketServiceEntity();
-        entity.setCreateby(userId);
-        entity.setModifyby(userId);
-        entity.setServiceId(serviceNo);
-        entity.setTicketMasId(ticketMasEntity.getTicketMasId());
-        entity.setServiceTypeCode(serviceType);
-        entity.setSubsId(subsId);
-        ticketServiceMapper.insertServiceInfo(entity);
+        // service
+        SdTicketServiceEntity serviceEntity = new SdTicketServiceEntity();
+        serviceEntity.setCreateby(userId);
+        serviceEntity.setModifyby(userId);
+        serviceEntity.setServiceId(serviceNo);
+        serviceEntity.setTicketMasId(ticketMasEntity.getTicketMasId());
+        serviceEntity.setServiceTypeCode(serviceType);
+        serviceEntity.setSubsId(subsId);
+        ticketServiceMapper.insertServiceInfo(serviceEntity);
+        // remark
+        ticketRemarkMapper.insertTicketRemarks(ticketMasEntity.getTicketMasId(), SdTicketRemarkEntity.REMARKS_TYPE.SYSTEM, "Created ticket.", userId);
         return ticketMasEntity.getTicketMasId();
     }
 
@@ -106,12 +108,12 @@ public class SdTicketServiceImpl implements SdTicketService {
     }
 
     @Override
-    public Page<SdTicketMasBean> searchTicketList(Pageable pageable, String dateFrom, String dateTo, String status) {
+    public Page<SdTicketMasBean> searchTicketList(Pageable pageable, String dateFrom, String dateTo, String status, String ticketMasId, String custCode) {
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
 
-        List<SdTicketMasEntity> entityList = ticketMasMapper.searchTicketList(offset, pageSize, dateFrom, dateTo, status);
-        Integer totalCount = ticketMasMapper.searchTicketCount(dateFrom, dateTo, status);
+        List<SdTicketMasEntity> entityList = ticketMasMapper.searchTicketList(offset, pageSize, dateFrom, dateTo, status,ticketMasId,custCode);
+        Integer totalCount = ticketMasMapper.searchTicketCount(dateFrom, dateTo, status,ticketMasId,custCode);
 
         List<SdTicketMasBean> beanList = new LinkedList<>();
         for (SdTicketMasEntity entity : entityList) {

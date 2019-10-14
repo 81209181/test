@@ -9,25 +9,37 @@
 <div layout:fragment="content" th:remove="tag">
 
     <h1>Search Ticket</h1>
-    <form th:id="search-ticket-form" class="form-inline">
-        <div class="form-group">
-            <label>  Date From：</label>
-            <input th:id="search-date-from" type="date" class="form-control mb-2 mr-sm-2" placeholder="Date From">
+    <form th:id="search-ticket-form" class="form-inline ml-3">
+        <div class="form-row">
+            <div class="form-group">
+                <label>  Date From：</label>
+                <input th:id="search-date-from" type="date" class="form-control mb-2 mr-sm-2" placeholder="Date From">
+            </div>
+            <div class="form-group">
+                <label>  Date To：</label>
+                <input th:id="search-date-to" type="date" class="form-control mb-2 mr-sm-2" placeholder="Date To">
+            </div>
+            <div class="form-group">
+                <label>  Status：</label>
+                <select th:id="search-status" class="form-control mb-2 mr-sm-2">
+                    <option value=""><!--Please select--></option>
+                    <option value="O">Open</option>
+                    <option value="CX">Cancel</option>
+                    <option value="CP">Complete</option>
+                </select>
+            </div>
         </div>
-        <div class="form-group">
-            <label>  Date To：</label>
-            <input th:id="search-date-to" type="date" class="form-control mb-2 mr-sm-2" placeholder="Date To">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="ticket_mas_id" class="form-label mr-2">Ticket Mas Id:</label>
+                <input type="text" id="ticket_mas_id" class="form-control">
+            </div>
+            <div class="form-group ml-2">
+                <label for="customer_code" class="form-label mr-2">Customer Code:</label>
+                <input type="text" id="customer_code" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-lg btn-primary ml-2"><i class="fas fa-search"></i> Search</button>
         </div>
-        <div class="form-group">
-            <label>  Status：</label>
-            <select th:id="search-status" class="form-control mb-2 mr-sm-2">
-                <option value=""><!--Please select--></option>
-                <option value="O">Open</option>
-                <option value="CX">Cancel</option>
-                <option value="CP">Complete</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-lg btn-primary mb-2"><i class="fas fa-search"></i> Search</button>
     </form>
     <table id="searchTicketTable" class="display" cellspacing="0" width="100%">
         <thead>

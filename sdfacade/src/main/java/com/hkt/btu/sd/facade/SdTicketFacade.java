@@ -16,7 +16,7 @@ public interface SdTicketFacade {
 
     List<SdTicketContactData> getContactInfo(Integer ticketMasId);
 
-    PageData<SdTicketMasData> searchTicketList(Pageable pageable, String dateFrom, String dateTo, String status);
+    PageData<SdTicketMasData> searchTicketList(Pageable pageable, String dateFrom, String dateTo, String status, String ticketMasId, String custCode);
 
     List<SdTicketMasData> getMyTicket();
 

@@ -35,8 +35,6 @@ public class TicketController {
     @Resource(name = "wfmApiFacade")
     WfmApiFacade wfmApiFacade;
 
-
-
     @GetMapping("service-identity")
     public String serviceIdentity() {
         return "ticket/service_identity";
@@ -60,9 +58,9 @@ public class TicketController {
         return ResponseEntity.ok(ticketFacade.createQueryTicket(custCode, serviceNo, serviceType, subsId));
     }
 
-    @GetMapping("{ticketId}")
-    public ModelAndView showQueryTicket(@PathVariable Integer ticketId, Principal principal) {
-        return ticketFacade.getTicket(ticketId)
+    @GetMapping("")
+    public ModelAndView showQueryTicket(Principal principal,int ticketMasId) {
+        return ticketFacade.getTicket(ticketMasId)
                 .filter(sdTicketMasData -> userRoleFacade.checkSameTeamRole(principal.getName(), sdTicketMasData.getCreateBy()))
                 .map(sdTicketMasData -> {
                     ModelAndView modelAndView = new ModelAndView("ticket/ticket_info");
@@ -94,11 +92,13 @@ public class TicketController {
                                           @RequestParam(defaultValue = "10") int length,
                                           @RequestParam(required = false) String dateFrom,
                                           @RequestParam(required = false) String dateTo,
-                                          @RequestParam(required = false) String status) {
+                                          @RequestParam(required = false) String status,
+                                          @RequestParam(required = false) String ticketMasId,
+                                          @RequestParam(required = false) String custCode) {
         int page = start / length;
         Pageable pageable = PageRequest.of(page, length);
 
-        PageData<SdTicketMasData> pageData = ticketFacade.searchTicketList(pageable, dateFrom, dateTo, status);
+        PageData<SdTicketMasData> pageData = ticketFacade.searchTicketList(pageable, dateFrom, dateTo, status,ticketMasId,custCode);
         return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
     }
 

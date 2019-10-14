@@ -16,7 +16,7 @@ $().ready(function(){
             return;
         }
         $.post('/ticket/query/create',$('form').serialize(),function(res){
-            $(location).attr('href',ctx+'/ticket/'+ res);
+            $(location).attr('href',ctx+'/ticket?ticketMasId='+ res);
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";
             console.log("ERROR : ", responseError);

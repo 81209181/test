@@ -30,6 +30,8 @@ function createSearchTicketDataTable(){
                 d.dateFrom = $("#search-date-from").val();
                 d.dateTo = $("#search-date-to").val();
                 d.status = $("#search-status").val();
+                d.ticketMasId =$('#ticket_mas_id').val();
+                d.custCode =$('#customer_code').val();
             },
             error: function (e) {
                 if(e.responseText){
