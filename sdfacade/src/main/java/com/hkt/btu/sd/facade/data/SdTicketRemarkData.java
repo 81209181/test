@@ -14,6 +14,8 @@ public class SdTicketRemarkData implements DataInterface {
 
     private LocalDateTime createdate;
 
+    private String createby;
+
     public static class Type {
         public static final String CUSTOMER = "CUST";
         public static final String FIELD = "FIELD";
@@ -63,5 +65,13 @@ public class SdTicketRemarkData implements DataInterface {
 
     public void setCreatedate(LocalDateTime createdate) {
         this.createdate = createdate;
+    }
+
+    public String getCreateby() {
+        return createby;
+    }
+
+    public void setCreateby(String createby) {
+        this.createby = createby;
     }
 }
