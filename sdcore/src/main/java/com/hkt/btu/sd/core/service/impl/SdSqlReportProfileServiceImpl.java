@@ -128,14 +128,8 @@ public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImp
                                String sql, String exportTo, String emailTo, String remarks) {
         BtuUserBean currentUserBean = sdUserService.getCurrentUserBean();
         String modifyBy = currentUserBean.getUserId();
-        SdSqlReportEntity entity = sdSqlReportMapper.getSqlReportDataByReportId(reportId);
-        if (entity == null) {
-            return "No such report.";
-        }
         sdSqlReportMapper.updateReportData(reportId, reportName, sql, cronExpression, exportTo, emailTo, modifyBy, status, remarks);
-        String report = entity.getReportName();
-
-        return report;
+        return reportName;
     }
 
     @Override

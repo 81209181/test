@@ -95,14 +95,16 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public PageData<SdTicketMasData> searchTicketList(Pageable pageable, String dateFrom, String dateTo, String status) {
+    public PageData<SdTicketMasData> searchTicketList(Pageable pageable, String dateFrom, String dateTo, String status, String ticketMasId, String custCode) {
         Page<SdTicketMasBean> pageBean;
         try {
             dateFrom = StringUtils.isEmpty(dateFrom) ? null : dateFrom;
             dateTo = StringUtils.isEmpty(dateTo) ? null : dateTo;
             status = StringUtils.isEmpty(status) ? null : status;
+            ticketMasId = StringUtils.isEmpty(ticketMasId) ? null : ticketMasId;
+            custCode = StringUtils.isEmpty(custCode) ? null : custCode;
 
-            pageBean = ticketService.searchTicketList(pageable, dateFrom, dateTo, status);
+            pageBean = ticketService.searchTicketList(pageable, dateFrom, dateTo, status,ticketMasId,custCode);
         } catch (AuthorityNotFoundException e) {
             return new PageData<>(e.getMessage());
         }

@@ -147,7 +147,6 @@ public class BtuSchedulerServiceImpl implements BtuSchedulerService {
                 sqlReportBean.getCronExp());
 
         scheduler.scheduleJob(jobDetail, trigger);
-        // TODO: isRunnable
         if (sqlReportProfileService.isRunnable(sqlReportBean)) {
             LOG.info("Scheduled job: " + jobKey);
         } else {
@@ -339,6 +338,9 @@ public class BtuSchedulerServiceImpl implements BtuSchedulerService {
     public void destroyJob(String keyGroup, String keyName) throws SchedulerException, InvalidInputException {
         JobKey targetJobKey = getJobKey(keyGroup, keyName);
         Scheduler scheduler = schedulerFactoryBean.getScheduler();
+        TriggerKey triggerKey = TriggerKey.triggerKey(keyName);
+        scheduler.pauseTrigger(triggerKey);
+        scheduler.unscheduleJob(triggerKey);
         scheduler.deleteJob(targetJobKey);
         LOG.info("Destroyed job: " + targetJobKey);
     }

@@ -176,4 +176,8 @@
                              inner join USER_ROLE ur on ur.ROLE_ID = uur.ROLE_ID
         where ur.ROLE_ID = #{roleId}
     </select>
+
+    <select id="getAllUser" resultMap="SdUserEntity">
+        select * from USER_PROFILE
+    </select>
 </mapper>

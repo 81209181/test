@@ -41,6 +41,12 @@
         <if test="dateTo != null">
             and to_date(#{dateTo},'yyyy-MM-dd') >= trunc(createdate)
         </if>
+        <if test="ticketMasId != null">
+            and ticket_mas_id = #{ticketMasId}
+        </if>
+        <if test="custCode != null">
+            and cust_code =#{custCode}
+        </if>
     </sql>
 
     <select id="searchTicketList" resultMap="TicketMasEntity">
