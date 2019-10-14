@@ -12,6 +12,7 @@
         <result column="COMPANY_ID" property="companyId"/>
         <result column="STAFF_ID" property="staffId"/>
         <result column="LDAP_DOMAIN" property="ldapDomain"/>
+        <result column="DOMAIN_EMAIL" property="domainEmail"/>
 
         <result column="PASSWORD" property="password"/>
         <result column="PASSWORD_MODIFYDATE" property="passwordModifydate"/>
@@ -86,6 +87,7 @@
         <set>
             <if test="name != null">NAME=#{name},</if>
             <if test="mobile != null">MOBILE=#{mobile},</if>
+            <if test="email != null">EMAIL=#{email},</if>
             MODIFYDATE = CURRENT_TIMESTAMP, MODIFYBY = #{modifyby}
         </set>
         where USER_ID = #{userId}
@@ -95,7 +97,7 @@
         update USER_PROFILE
         <set>
             <if test="name != null">NAME=#{name},</if>
-            <if test="email !=  null">EMAIL=#{email},</if>
+            <if test="email !=  null">DOMAIN_EMAIL=#{email},</if>
             MODIFYDATE = CURRENT_TIMESTAMP
         </set>
         where USER_ID = #{userId}
