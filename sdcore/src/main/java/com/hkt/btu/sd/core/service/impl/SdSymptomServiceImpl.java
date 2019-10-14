@@ -153,9 +153,9 @@ public class SdSymptomServiceImpl implements SdSymptomService {
             newServiceTypeList.addAll(serviceTypeList);
 
             oldServiceTypeList.removeAll(serviceTypeList);
-            LOG.debug("Deleted symptomCode:" + symptomCode + ", oldServiceTypeList:" + oldServiceTypeList);
+            LOG.info("Deleted symptomCode:" + symptomCode + ", oldServiceTypeList:" + oldServiceTypeList);
             newServiceTypeList.removeAll(existServiceTypeList);
-            LOG.debug("Created symptomCode:" + symptomCode + ", newServiceTypeList:" + newServiceTypeList);
+            LOG.info("Created symptomCode:" + symptomCode + ", newServiceTypeList:" + newServiceTypeList);
 
             if (!CollectionUtils.isEmpty(oldServiceTypeList)) {
                 sdSymptomMapper.deleteSymptomMapping(oldSymptomCode, oldServiceTypeList);
