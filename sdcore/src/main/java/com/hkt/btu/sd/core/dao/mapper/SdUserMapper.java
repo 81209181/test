@@ -58,4 +58,6 @@ public interface SdUserMapper {
     void insertPasswordHist(@Param("userId") String userId, @Param("password") String password);
 
     List<SdUserEntity> getUserByRoleId(@Param("roleId") String roleId);
+
+    List<SdUserEntity> getAllUser();
 }

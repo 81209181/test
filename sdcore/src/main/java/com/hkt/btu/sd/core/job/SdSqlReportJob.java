@@ -5,9 +5,12 @@ import com.hkt.btu.common.core.service.bean.BtuEmailBean;
 import com.hkt.btu.common.core.service.bean.BtuReportMetaDataBean;
 import com.hkt.btu.common.core.service.bean.BtuSqlReportBean;
 import com.hkt.btu.common.genrator.BtuCSVGenrator;
+import com.hkt.btu.sd.core.dao.entity.SdUserEntity;
+import com.hkt.btu.sd.core.dao.mapper.SdUserMapper;
 import com.hkt.btu.sd.core.service.SdCsvGenratorService;
 import com.hkt.btu.sd.core.service.SdEmailService;
 import com.hkt.btu.sd.core.service.SdSqlReportProfileService;
+import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdEmailBean;
 import com.hkt.btu.sd.core.service.bean.SdSqlReportBean;
 import com.hkt.btu.sd.core.util.SqlFilter;
@@ -36,6 +39,9 @@ public class SdSqlReportJob extends BtuSampleJob {
     @Resource(name = "emailService")
     SdEmailService emailService;
 
+    @Resource
+    SdUserMapper userMapper;
+
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
@@ -46,14 +52,21 @@ public class SdSqlReportJob extends BtuSampleJob {
         }
         File csvFile = csvGenratorService.getCsvFile(metaDataBean);
         if (csvFile != null) {
-            // Send Email
-            if (StringUtils.isNotEmpty(metaDataBean.getEmailTo())) {
-                try {
-                    Map<String, Object> dataMap = new HashMap<>();
-                    dataMap.put(SdEmailBean.EMAIL_BASIC_RECIPIENT_NAME, "Sir/Miss");
-                    emailService.send(SdEmailBean.DEFAULT_EMAIL.TEMPLATE_ID, metaDataBean.getEmailTo(), csvFile, dataMap);
-                } catch (MessagingException e) {
-                    LOG.warn(e);
+            List<SdUserEntity> userList = userMapper.getAllUser();
+            if (CollectionUtils.isEmpty(userList)) {
+                return;
+            }
+            for (SdUserEntity userEntity : userList) {
+                String email = userEntity.getEmail();
+                // Send Email
+                if (StringUtils.isNotEmpty(email)) {
+                    try {
+                        Map<String, Object> dataMap = new HashMap<>(16);
+                        dataMap.put(SdEmailBean.EMAIL_BASIC_RECIPIENT_NAME, userEntity.getName());
+                        emailService.send(SdEmailBean.DEFAULT_EMAIL.TEMPLATE_ID, email, csvFile, dataMap);
+                    } catch (MessagingException e) {
+                        LOG.warn(e);
+                    }
                 }
             }
         }
