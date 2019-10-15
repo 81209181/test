@@ -169,8 +169,7 @@ public class TicketController {
         if (ticketFacade.isCancel(wfmRequestDetailsBeanDate.getTicketMasId())) {
             return ResponseEntity.badRequest().body("The ticket has been cancelled.");
         }
-        Optional<String> jobIdInService = ticketFacade.getService(Integer.valueOf(wfmRequestDetailsBeanDate.getTicketMasId())).map(SdTicketServiceData::getJobId);
-        if (jobIdInService.isPresent()) {
+        if (ticketFacade.getService(Integer.valueOf(wfmRequestDetailsBeanDate.getTicketMasId())).map(SdTicketServiceData::getJobId).isPresent()) {
             return ResponseEntity.badRequest().body("This ticket has been submitted.");
         }
         Integer jobId = wfmApiFacade.createJob(wfmRequestDetailsBeanDate, principal.getName());
