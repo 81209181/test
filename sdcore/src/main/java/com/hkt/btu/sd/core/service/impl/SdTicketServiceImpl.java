@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.core.service.impl;
 
+import com.hkt.btu.common.core.service.BtuSensitiveDataService;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomEntity;
 import com.hkt.btu.sd.core.dao.entity.SdTicketMasEntity;
@@ -22,28 +23,31 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Base64Utils;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class SdTicketServiceImpl implements SdTicketService {
 
     @Resource
     SdTicketMasMapper ticketMasMapper;
-
     @Resource
     SdTicketContactMapper ticketContactMapper;
-
     @Resource
     SdTicketServiceMapper ticketServiceMapper;
-
     @Resource
     SdTicketRemarkMapper ticketRemarkMapper;
 
     @Resource(name = "userService")
     SdUserService userService;
+    @Resource(name = "sensitiveDataService")
+    BtuSensitiveDataService sensitiveDataService;
 
     @Resource(name = "ticketMasBeanPopulator")
     SdTicketMasBeanPopulator ticketMasBeanPopulator;
@@ -88,7 +92,10 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Override
     public void insertTicketContactInfo(Integer ticketMasId, String contactType, String contactName, String contactNumber, String contactEmail, String contactMobile) {
         String createBy = userService.getCurrentUserUserId();
-        ticketContactMapper.insertTicketContactInfo(ticketMasId, contactType, contactName, contactMobile, contactEmail, contactNumber, createBy);
+        String mobileStr = Base64Utils.encodeToString(sensitiveDataService.encryptFromStringSafe(contactMobile));
+        String emailStr = Base64Utils.encodeToString(sensitiveDataService.encryptFromStringSafe(contactEmail));
+        String numberStr = Base64Utils.encodeToString(sensitiveDataService.encryptFromStringSafe(contactNumber));
+        ticketContactMapper.insertTicketContactInfo(ticketMasId, contactType, contactName, mobileStr, emailStr, numberStr, createBy);
     }
 
     @Override
@@ -96,6 +103,9 @@ public class SdTicketServiceImpl implements SdTicketService {
         List<SdTicketContactBean> beanList = new ArrayList<>();
         ticketContactMapper.selectContactInfoByTicketMasId(ticketMasId).forEach(sdTicketContactEntity -> {
             SdTicketContactBean bean = new SdTicketContactBean();
+            sdTicketContactEntity.setContactMobile(sensitiveDataService.decryptToStringSafe(Base64Utils.decodeFromString(sdTicketContactEntity.getContactMobile())));
+            sdTicketContactEntity.setContactEmail(sensitiveDataService.decryptToStringSafe(Base64Utils.decodeFromString(sdTicketContactEntity.getContactEmail())));
+            sdTicketContactEntity.setContactNumber(sensitiveDataService.decryptToStringSafe(Base64Utils.decodeFromString(sdTicketContactEntity.getContactNumber())));
             ticketContactBeanPopulator.populate(sdTicketContactEntity, bean);
             beanList.add(bean);
         });
@@ -112,8 +122,8 @@ public class SdTicketServiceImpl implements SdTicketService {
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
 
-        List<SdTicketMasEntity> entityList = ticketMasMapper.searchTicketList(offset, pageSize, dateFrom, dateTo, status,ticketMasId,custCode);
-        Integer totalCount = ticketMasMapper.searchTicketCount(dateFrom, dateTo, status,ticketMasId,custCode);
+        List<SdTicketMasEntity> entityList = ticketMasMapper.searchTicketList(offset, pageSize, dateFrom, dateTo, status, ticketMasId, custCode);
+        Integer totalCount = ticketMasMapper.searchTicketCount(dateFrom, dateTo, status, ticketMasId, custCode);
 
         List<SdTicketMasBean> beanList = new LinkedList<>();
         for (SdTicketMasEntity entity : entityList) {
@@ -168,8 +178,8 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Transactional(rollbackFor = Exception.class)
     public void updateJobIdInService(Integer jobId, String ticketMasId, String userId) {
         ticketServiceMapper.updateTicketServiceByJobId(jobId, ticketMasId, userId);
-        ticketMasMapper.updateTicketStatus(Integer.parseInt(ticketMasId),SdTicketMasBean.STATUS_TYPE_CODE.WORKING,userId);
-        ticketRemarkMapper.insertTicketRemarks(Integer.valueOf(ticketMasId),SdTicketRemarkEntity.REMARKS_TYPE.CUSTOMER,"ticket status update to working.",userId);
+        ticketMasMapper.updateTicketStatus(Integer.parseInt(ticketMasId), SdTicketMasBean.STATUS_TYPE_CODE.WORKING, userId);
+        ticketRemarkMapper.insertTicketRemarks(Integer.valueOf(ticketMasId), SdTicketRemarkEntity.REMARKS_TYPE.CUSTOMER, "ticket status update to working.", userId);
     }
 
     @Override
@@ -217,7 +227,7 @@ public class SdTicketServiceImpl implements SdTicketService {
     public List<SdTicketServiceBean> findServiceBySubscriberId(String subscriberId) {
         return ticketServiceMapper.getTicketServiceBySubscriberId(subscriberId).stream().map(sdTicketServiceEntity -> {
             SdTicketServiceBean bean = new SdTicketServiceBean();
-            ticketServiceBeanPopulator.populate(sdTicketServiceEntity,bean);
+            ticketServiceBeanPopulator.populate(sdTicketServiceEntity, bean);
             return bean;
         }).collect(Collectors.toList());
     }
@@ -225,7 +235,7 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateTicketStatus(int ticketMasId, String status, String userId) {
-        ticketMasMapper.updateTicketStatus(ticketMasId,status,userId);
+        ticketMasMapper.updateTicketStatus(ticketMasId, status, userId);
         ticketRemarkMapper.insertTicketRemarks(ticketMasId, SdTicketRemarkEntity.REMARKS_TYPE.CUSTOMER, "Cancel ticket.", userId);
     }
 

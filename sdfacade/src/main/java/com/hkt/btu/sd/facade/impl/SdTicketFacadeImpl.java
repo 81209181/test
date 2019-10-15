@@ -78,9 +78,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
         try {
             ticketService.removeContactInfoByTicketMasId(contactList.get(0).getTicketMasId());
-            contactList.forEach(data -> {
-                ticketService.insertTicketContactInfo(data.getTicketMasId(), data.getContactTypeValue(), data.getContactName(), data.getContactNumber(), data.getContactEmail(), data.getContactMobile());
-            });
+            contactList.forEach(data -> ticketService.insertTicketContactInfo(data.getTicketMasId(), data.getContactTypeValue(), data.getContactName(), data.getContactNumber(), data.getContactEmail(), data.getContactMobile()));
         } catch (Exception e) {
             LOG.error(e.getMessage());
             return "Update failed.";
