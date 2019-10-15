@@ -11,5 +11,6 @@ public class SdTicketRemarkDataPopulator extends AbstractDataPopulator<SdTicketR
         target.setRemarksType(source.getRemarksType());
         target.setRemarks(source.getRemarks());
         target.setCreatedate(source.getCreatedate());
+        target.setCreateby(source.getCreateby());
     }
 }

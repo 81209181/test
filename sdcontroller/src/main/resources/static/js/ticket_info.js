@@ -272,7 +272,8 @@ function ajaxGetDataTable(){
         columns: [
             { width: '15%', data: 'createdate' },
             { width: '15%', data: 'remarksType' },
-            { width: '70%', data: 'remarks' }
+            { width: '55%', data: 'remarks' },
+            { width: '15%', data: 'createby' }
         ],
         columnDefs: [
             {

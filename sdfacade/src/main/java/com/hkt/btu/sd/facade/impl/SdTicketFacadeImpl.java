@@ -3,7 +3,9 @@ package com.hkt.btu.sd.facade.impl;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
 import com.hkt.btu.sd.core.service.SdTicketService;
+import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.*;
+import com.hkt.btu.sd.facade.SdAuditTrailFacade;
 import com.hkt.btu.sd.facade.SdRequestCreateFacade;
 import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.data.*;
@@ -33,6 +35,10 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     SdTicketService ticketService;
     @Resource(name = "requestCreateFacade")
     SdRequestCreateFacade requestCreateFacade;
+    @Resource(name = "auditTrailFacade")
+    SdAuditTrailFacade auditTrailFacade;
+    @Resource(name = "userService")
+    SdUserService userService;
 
     @Resource(name = "ticketMasDataPopulator")
     SdTicketMasDataPopulator ticketMasDataPopulator;
@@ -53,6 +59,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         SdTicketMasData ticketMasData = new SdTicketMasData();
         return ticketService.getTicket(ticketId).map(sdTicketMasBean -> {
             ticketMasDataPopulator.populate(sdTicketMasBean, ticketMasData);
+            auditTrailFacade.insertViewTicketAuditTrail(userService.getCurrentUserUserId(),String.valueOf(ticketMasData.getTicketMasId()));
             return ticketMasData;
         });
     }
@@ -95,14 +102,16 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public PageData<SdTicketMasData> searchTicketList(Pageable pageable, String dateFrom, String dateTo, String status) {
+    public PageData<SdTicketMasData> searchTicketList(Pageable pageable, String dateFrom, String dateTo, String status, String ticketMasId, String custCode) {
         Page<SdTicketMasBean> pageBean;
         try {
             dateFrom = StringUtils.isEmpty(dateFrom) ? null : dateFrom;
             dateTo = StringUtils.isEmpty(dateTo) ? null : dateTo;
             status = StringUtils.isEmpty(status) ? null : status;
+            ticketMasId = StringUtils.isEmpty(ticketMasId) ? null : ticketMasId;
+            custCode = StringUtils.isEmpty(custCode) ? null : custCode;
 
-            pageBean = ticketService.searchTicketList(pageable, dateFrom, dateTo, status);
+            pageBean = ticketService.searchTicketList(pageable, dateFrom, dateTo, status,ticketMasId,custCode);
         } catch (AuthorityNotFoundException e) {
             return new PageData<>(e.getMessage());
         }

@@ -25,6 +25,8 @@ CREATE TABLE TICKET_DET
     SERVICE_TYPE_CODE  varchar2(20)             not null,
     SERVICE_ID         varchar2(30)             not null,
     SYMPTOM_CODE       varchar2(10),
+    SUBS_ID             varchar2(20),
+    JOB_ID              varchar2(20),
 
     CREATEDATE         date                     default SYSDATE not null,
     CREATEBY           varchar2(10)             not null,
@@ -35,6 +37,8 @@ CREATE TABLE TICKET_DET
 CREATE INDEX IDX_TICKET_DET_1 ON TICKET_DET (TICKET_MAS_ID);
 CREATE INDEX IDX_TICKET_DET_2 ON TICKET_DET (CREATEDATE);
 CREATE INDEX IDX_TICKET_DET_3 ON TICKET_DET (SERVICE_ID);
+CREATE INDEX IDX_TICKET_DET_4 ON TICKET_DET (SUBS_ID);
+CREATE INDEX IDX_TICKET_DET_5 ON TICKET_DET (JOB_ID);
 
 --------------------------------------------------------------------------------------------------
 CREATE SEQUENCE SEQ_TICKET_CONTACT_ID START WITH 1;

@@ -1,11 +1,14 @@
 package com.hkt.btu.sd.facade.data;
 
+import com.hkt.btu.common.facade.data.DataInterface;
+
 import java.util.List;
 
+@Deprecated // todo: EditResultData<D extends DataInterface>
 public class EditResultData {
 
     private String errorMsg;
-    private List<?> list;
+    private List<?> list; // todo: List<D> list
 
     public static EditResultData error(String errorMsg) {
         EditResultData data = new EditResultData();
