@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 public class SdTicketInfoData {
 
     private int ticketMasId;
+    private String ticketStatus;
 
     // customer info
     private String custCode;
@@ -28,6 +29,7 @@ public class SdTicketInfoData {
     private String supplementaryOffer;
     private String offerDetail;
     private String description;
+    private String itsmUrl;
 
     public int getTicketMasId() {
         return ticketMasId;
@@ -35,6 +37,14 @@ public class SdTicketInfoData {
 
     public void setTicketMasId(int ticketMasId) {
         this.ticketMasId = ticketMasId;
+    }
+
+    public String getTicketStatus() {
+        return ticketStatus;
+    }
+
+    public void setTicketStatus(String ticketStatus) {
+        this.ticketStatus = ticketStatus;
     }
 
     public String getCustCode() {
@@ -187,5 +197,13 @@ public class SdTicketInfoData {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getItsmUrl() {
+        return itsmUrl;
+    }
+
+    public void setItsmUrl(String itsmUrl) {
+        this.itsmUrl = itsmUrl;
     }
 }

@@ -39,4 +39,8 @@ public interface SdTicketFacade {
     List<SdSymptomData> getSymptom(Integer ticketMasId);
 
     BesSubFaultData getFaultInfo(String subscriberId);
+
+    void cancelTicket(int ticketMasId, String name);
+
+    boolean isCancel(String ticketMasId);
 }

@@ -69,6 +69,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         SdTicketInfoData infoData = new SdTicketInfoData();
         infoData.setCustCode(sdTicketMasData.getCustCode());
         infoData.setTicketMasId(sdTicketMasData.getTicketMasId());
+        infoData.setTicketStatus(sdTicketMasData.getStatus());
         infoData.setAsap(sdTicketMasData.getAsap());
         infoData.setAppointmentDate(sdTicketMasData.getAppointmentDate());
         ticketFacade.getService(sdTicketMasData.getTicketMasId()).ifPresent(sdTicketServiceData -> {
@@ -79,14 +80,15 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
             findData4Bsn(sdTicketServiceData.getServiceCode()).getList().stream()
                     .filter(requestCreateSearchResultData -> requestCreateSearchResultData.getServiceNo().equals(sdTicketServiceData.getServiceCode()))
                     .findFirst().ifPresent(requestCreateSearchResultData -> {
-                        infoData.setCustName(requestCreateSearchResultData.getCustName());
-                        infoData.setCustType(requestCreateSearchResultData.getCustType());
-                        infoData.setCustStatus(requestCreateSearchResultData.getCustStatus());
-                        infoData.setLanguagePreference(requestCreateSearchResultData.getLanguagePreference());
-                        infoData.setServiceStatus(requestCreateSearchResultData.getServiceStatus());
-                        infoData.setServiceType(requestCreateSearchResultData.getServiceType());
-                        infoData.setSubsId(requestCreateSearchResultData.getSubsId());
-                        infoData.setOfferName(requestCreateSearchResultData.getOfferName());
+                infoData.setCustName(requestCreateSearchResultData.getCustName());
+                infoData.setCustType(requestCreateSearchResultData.getCustType());
+                infoData.setCustStatus(requestCreateSearchResultData.getCustStatus());
+                infoData.setLanguagePreference(requestCreateSearchResultData.getLanguagePreference());
+                infoData.setServiceStatus(requestCreateSearchResultData.getServiceStatus());
+                infoData.setServiceType(requestCreateSearchResultData.getServiceType());
+                infoData.setSubsId(requestCreateSearchResultData.getSubsId());
+                infoData.setOfferName(requestCreateSearchResultData.getOfferName());
+                infoData.setItsmUrl(requestCreateSearchResultData.getUrl());
             });
             infoData.setServiceNo(sdTicketServiceData.getServiceCode());
 
@@ -98,7 +100,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     public BesFaultInfoData getCustomerInfo(String serviceCode) {
         return findData4Bsn(serviceCode).getList().stream().filter(requestCreateSearchResultData -> requestCreateSearchResultData.getServiceNo().equals(serviceCode))
                 .findFirst().map(requestCreateSearchResultData -> {
-                    BesFaultInfoData data  = new BesFaultInfoData();
+                    BesFaultInfoData data = new BesFaultInfoData();
                     data.setCustName(requestCreateSearchResultData.getCustName());
                     data.setProductType(requestCreateSearchResultData.getOfferName());
                     return data;

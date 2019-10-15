@@ -320,4 +320,16 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             return faultData;
         }
     }
+
+    @Override
+    public void cancelTicket(int ticketMasId, String userId) {
+        ticketService.updateTicketStatus(ticketMasId,SdTicketMasBean.STATUS_TYPE_CODE.CANCEL,userId);
+    }
+
+    @Override
+    public boolean isCancel(String ticketMasId) {
+        return ticketService.getTicket(Integer.valueOf(ticketMasId))
+                .map(SdTicketMasBean::getStatus)
+                .filter(s -> s.equals(SdTicketMasBean.STATUS_TYPE.CANCEL)).isPresent();
+    }
 }

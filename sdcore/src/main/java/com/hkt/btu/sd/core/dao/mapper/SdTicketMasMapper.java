@@ -16,15 +16,19 @@ public interface SdTicketMasMapper {
 
     List<SdTicketMasEntity> searchTicketList(@Param("offset") long offset, @Param("pageSize") int pageSize,
                                              @Param("dateFrom") String dateFrom, @Param("dateTo") String dateTo,
-                                             @Param("status") String status, @Param("ticketMasId")String ticketMasId,@Param("custCode") String custCode);
+                                             @Param("status") String status, @Param("ticketMasId") String ticketMasId, @Param("custCode") String custCode);
 
     Integer searchTicketCount(@Param("dateFrom") String dateFrom, @Param("dateTo") String dateTo,
-                              @Param("status") String status, @Param("ticketMasId")String ticketMasId,@Param("custCode") String custCode);
+                              @Param("status") String status, @Param("ticketMasId") String ticketMasId, @Param("custCode") String custCode);
 
     List<SdTicketMasEntity> getMyTicket(@Param("createBy") String createBy);
 
     void updateAppointmentInMas(@Param("appointmentDate") LocalDateTime appointmentDate,
-                                    @Param("asap") String asap,
-                                    @Param("userId") String userId,
-                                    @Param("ticketMasId") String ticketMasId);
+                                @Param("asap") String asap,
+                                @Param("userId") String userId,
+                                @Param("ticketMasId") String ticketMasId);
+
+    void updateTicketStatus(@Param("ticketMasId") int ticketMasId,
+                            @Param("status") String status,
+                            @Param("userId") String userId);
 }

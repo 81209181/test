@@ -6,7 +6,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
-import com.hkt.btu.sd.facade.*;
+import com.hkt.btu.sd.facade.SdRequestCreateFacade;
+import com.hkt.btu.sd.facade.SdTicketFacade;
+import com.hkt.btu.sd.facade.SdUserRoleFacade;
+import com.hkt.btu.sd.facade.WfmApiFacade;
 import com.hkt.btu.sd.facade.data.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -59,7 +62,7 @@ public class TicketController {
     }
 
     @GetMapping("")
-    public ModelAndView showQueryTicket(Principal principal,int ticketMasId) {
+    public ModelAndView showQueryTicket(Principal principal, int ticketMasId) {
         return ticketFacade.getTicket(ticketMasId)
                 .filter(sdTicketMasData -> userRoleFacade.checkSameTeamRole(principal.getName(), sdTicketMasData.getCreateBy()))
                 .map(sdTicketMasData -> {
@@ -71,6 +74,10 @@ public class TicketController {
 
     @PostMapping("contact/update")
     public ResponseEntity<?> updateContactInfo(@RequestBody List<SdTicketContactData> contactList) {
+        if (contactList.stream().map(SdTicketContactData::getTicketMasId).findFirst()
+                .filter(ticketMasId -> ticketFacade.isCancel(String.valueOf(ticketMasId))).isPresent()) {
+            return ResponseEntity.badRequest().body("The ticket has been cancelled.");
+        }
         String errorMsg = ticketFacade.updateContactInfo(contactList);
         return ResponseEntity.ok(errorMsg);
     }
@@ -98,7 +105,7 @@ public class TicketController {
         int page = start / length;
         Pageable pageable = PageRequest.of(page, length);
 
-        PageData<SdTicketMasData> pageData = ticketFacade.searchTicketList(pageable, dateFrom, dateTo, status,ticketMasId,custCode);
+        PageData<SdTicketMasData> pageData = ticketFacade.searchTicketList(pageable, dateFrom, dateTo, status, ticketMasId, custCode);
         return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
     }
 
@@ -129,6 +136,10 @@ public class TicketController {
 
     @PostMapping("/service/update")
     public ResponseEntity<?> updateServiceInfo(@RequestBody List<RequestTicketServiceData> ticketServiceList) {
+        if (ticketServiceList.stream().map(RequestTicketServiceData::getTicketMasId).findFirst()
+                .filter(ticketMasId -> ticketFacade.isCancel(String.valueOf(ticketMasId))).isPresent()) {
+            return ResponseEntity.badRequest().body("The ticket has been cancelled.");
+        }
         String errorMsg = ticketFacade.updateServiceInfo(ticketServiceList);
         if (StringUtils.isEmpty(errorMsg)) {
             return ResponseEntity.ok("Update success.");
@@ -155,6 +166,9 @@ public class TicketController {
 
     @PostMapping("submit")
     public ResponseEntity<?> submit(Principal principal, WfmRequestDetailsBeanDate wfmRequestDetailsBeanDate) throws JsonProcessingException {
+        if (ticketFacade.isCancel(wfmRequestDetailsBeanDate.getTicketMasId())) {
+            return ResponseEntity.badRequest().body("The ticket has been cancelled.");
+        }
         Optional<String> jobIdInService = ticketFacade.getService(Integer.valueOf(wfmRequestDetailsBeanDate.getTicketMasId())).map(SdTicketServiceData::getJobId);
         if (jobIdInService.isPresent()) {
             return ResponseEntity.badRequest().body("This ticket has been submitted.");
@@ -172,7 +186,13 @@ public class TicketController {
         } else {
             return ResponseEntity.badRequest().body("Submit fail.");
         }
+    }
 
+    @ResponseBody
+    @PostMapping("cancel")
+    public SimpleAjaxResponse cancel(Principal principal, int ticketMasId) {
+        ticketFacade.cancelTicket(ticketMasId, principal.getName());
+        return SimpleAjaxResponse.of();
     }
 
     @GetMapping("ajax-search-ticket-remarks")
@@ -193,6 +213,9 @@ public class TicketController {
 
     @PostMapping("appointment/update")
     public ResponseEntity<?> updateAppointment(String appointmentDate, boolean asap, Principal principal, String ticketMasId) {
+        if (ticketFacade.isCancel(ticketMasId)) {
+            return ResponseEntity.badRequest().body("The ticket has been cancelled.");
+        }
         if (!asap) {
             if (!ticketFacade.checkAppointmentDate(appointmentDate)) {
                 return ResponseEntity.badRequest().body("The appointment time must be two hours later.");
