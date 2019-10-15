@@ -15,7 +15,7 @@ $(document).ready(function() {
 });
 
 function createSearchTicketDataTable(){
-    $('#searchTicketTable').DataTable({
+    let table = $('#searchTicketTable').DataTable({
         processing: true,
         serverSide: true,
         ordering: false,
@@ -56,7 +56,16 @@ function createSearchTicketDataTable(){
                 render: function (nextRunTime, type, row, meta) {
                      return nextRunTime==null ? null : nextRunTime.replace('T', ' ');
                 }
-            },
+            },{
+                  targets:6,
+                  data:null,
+                  defaultContent:'<button class="btn btn-info">Detail</button>'
+              }
         ]
     });
+    let ctx = $("meta[name='_ctx']").attr("content");
+    $('#searchTicketTable tbody').on('click','button',function(){
+        var data = table.row( $(this).parents('tr') ).data();
+         $(location).attr('href',ctx+'/ticket?ticketMasId='+data.ticketMasId);
+    })
 }

@@ -47,4 +47,6 @@ public interface SdTicketService {
     List<SdSymptomBean> getSymptomList(Integer ticketMasId);
 
     List<SdTicketServiceBean> findServiceBySubscriberId(String subscriberId);
+
+    void updateTicketStatus(int ticketMasId, String status, String userId);
 }

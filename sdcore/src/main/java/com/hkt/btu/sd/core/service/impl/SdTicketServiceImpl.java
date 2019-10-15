@@ -165,8 +165,11 @@ public class SdTicketServiceImpl implements SdTicketService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateJobIdInService(Integer jobId, String ticketMasId, String userId) {
         ticketServiceMapper.updateTicketServiceByJobId(jobId, ticketMasId, userId);
+        ticketMasMapper.updateTicketStatus(Integer.parseInt(ticketMasId),SdTicketMasBean.STATUS_TYPE_CODE.WORKING,userId);
+        ticketRemarkMapper.insertTicketRemarks(Integer.valueOf(ticketMasId),SdTicketRemarkEntity.REMARKS_TYPE.CUSTOMER,"ticket status update to working.",userId);
     }
 
     @Override
@@ -217,6 +220,13 @@ public class SdTicketServiceImpl implements SdTicketService {
             ticketServiceBeanPopulator.populate(sdTicketServiceEntity,bean);
             return bean;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateTicketStatus(int ticketMasId, String status, String userId) {
+        ticketMasMapper.updateTicketStatus(ticketMasId,status,userId);
+        ticketRemarkMapper.insertTicketRemarks(ticketMasId, SdTicketRemarkEntity.REMARKS_TYPE.CUSTOMER, "Cancel ticket.", userId);
     }
 
     @Override

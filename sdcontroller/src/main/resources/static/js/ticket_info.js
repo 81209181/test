@@ -71,10 +71,12 @@ $().ready(function(){
     //contact
     $.get('/ticket/contact/'+ticketMasId,function(res){
         if (res.length == 0) {
-            let contact =$('#tempContact').children().clone();
-            contact.find('input[name=contactType]').val("On-site Contact");
-            contact.appendTo($('#contact_list'));
-            $('#btnUpdateContact').attr('disabled',false);
+            if(ticketStatus != 'CANCEL'){
+                let contact =$('#tempContact').children().clone();
+                contact.find('input[name=contactType]').val("On-site Contact");
+                contact.appendTo($('#contact_list'));
+                $('#btnUpdateContact').attr('disabled',false);
+            }
         } else {
             $.each(res,function(index,j){
                 let contact =$('#tempContact').children().clone();
@@ -150,9 +152,14 @@ $().ready(function(){
 
     readyForTicketService();
 
+    // for test
+//    itsmUrl = 'https://10.111.7.32/itsm/info/ResourcePoolTab.action?resourceId=309033';
+
+    if(itsmUrl ==''){
+        $('.itsm_link').addClass("disabled");
+    }
     $('.itsm_link').on('click',function(){
-//        window.open($(this).data('url'),'Profile','scrollbars=yes,height=600,width=800');
-        window.open('https://10.111.7.32/itsm/info/ResourcePoolTab.action?resourceId=309033','Profile','scrollbars=yes,height=600,width=800');
+        window.open(itsmUrl,'Profile','scrollbars=yes,height=600,width=800');
     })
 
 
@@ -215,7 +222,20 @@ $().ready(function(){
             showErrorMsg(responseError);
         })
     })
+    // cancel ticket
+    $('#btnTicketCancel').on('click',function(){
+        $.post('/ticket/cancel',{
+            ticketMasId:ticketMasId
+        },function(res){
+            if(res.success){
+               location.reload();
+            }
+        })
+    })
 
+    if(ticketStatus=='CANCEL'){
+        $('.card').find('button').attr('disabled',true);
+    }
 })
 
 
