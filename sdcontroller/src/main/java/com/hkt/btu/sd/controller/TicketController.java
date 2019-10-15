@@ -202,6 +202,9 @@ public class TicketController {
 
     @PostMapping("/post-create-ticket-remarks")
     public ResponseEntity<?> createTicketRemarks(@RequestParam Integer ticketMasId, @RequestParam String remarks) {
+        if (ticketFacade.isCancel(String.valueOf(ticketMasId))) {
+            return ResponseEntity.badRequest().body("The ticket has been cancelled.");
+        }
         String errorMsg = ticketFacade.createTicketRemarks(ticketMasId, remarks);
         if (errorMsg == null) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
