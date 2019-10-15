@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.core.service.impl;
 
+import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
 import com.hkt.btu.sd.core.dao.entity.SdUserRoleEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdUserRoleMapper;
@@ -11,9 +12,12 @@ import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
 import com.hkt.btu.sd.core.service.populator.SdUserRoleBeanPopulator;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import javax.annotation.Resource;
@@ -21,6 +25,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class SdUserRoleServiceImpl implements SdUserRoleService {
+
+    private static final Logger LOG = LogManager.getLogger(SdUserRoleServiceImpl.class);
 
     private static final SdUserRoleBean ROLE_TREE = new SdUserRoleBean();
 
@@ -208,20 +214,55 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     }
 
     @Override
+    @Transactional
+    public void changeUserIdInUserUserRole(String oldUserId, String userId, List<SdUserRoleEntity> userRoleByUserId) {
+        sdUserRoleMapper.updateUserUserRoleByUserId(oldUserId, userId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateUserRoleByUserId(String userId, List<String> roleIdList) {
         if (StringUtils.isEmpty(userId)) {
             throw new InvalidInputException("Target user not found.");
         }
 
+        BtuUserBean currentUserBean = userService.getCurrentUserBean();
+        checkUserRole(currentUserBean.getAuthorities(), roleIdList);
+
         if (!CollectionUtils.isEmpty(roleIdList)) {
-            sdUserRoleMapper.deleteUserRoleByUserId(userId);
-            for (String roleId : roleIdList) {
-                sdUserRoleMapper.insertUserUserRole(userId, roleId);
+            // get all existing user role list of userId
+            List<SdUserRoleEntity> userRoleList = sdUserRoleMapper.getUserRoleByUserId(userId);
+
+            if (CollectionUtils.isEmpty(userRoleList)) {
+                LOG.info("Create userId:" + userId + ", roleIdList:" + roleIdList);
+                sdUserRoleMapper.insertUserUserRole(userId, userRoleList.stream().map(SdUserRoleEntity::getRoleId).collect(Collectors.toList()));
+            } else {
+                List<String> existUserRoleList = userRoleList.stream()
+                        .map(SdUserRoleEntity::getRoleId)
+                        .collect(Collectors.toList());
+
+                // find which user role to delete
+                List<String> toDeleteUserRoleList = new ArrayList<>(existUserRoleList);
+                toDeleteUserRoleList.removeAll(roleIdList);
+                LOG.info("Deleted userId:" + userId + ", toDeleteUserRoleList:" + toDeleteUserRoleList);
+
+                // find which user role to insert
+                roleIdList.removeAll(existUserRoleList);
+                LOG.info("Create userId:" + userId + ", toInsertServiceTypeList:" + roleIdList);
+
+                if (CollectionUtils.isNotEmpty(toDeleteUserRoleList)) {
+                    sdUserRoleMapper.deleteUserRoleByUserId(userId, toDeleteUserRoleList);
+                }
+
+                if (CollectionUtils.isNotEmpty(roleIdList)) {
+                    sdUserRoleMapper.insertUserUserRole(userId, roleIdList);
+                }
             }
         }
     }
 
     @Override
+    @Transactional
     public void updateUserRole(String roleId, String roleDesc, String status, Boolean isAbstract) {
         String modifyby = userService.getCurrentUserUserId();
         String abstractFlag = isAbstract ? SdUserRoleEntity.IS_ABSTRACT : StringUtils.EMPTY;

@@ -11,7 +11,7 @@ $(document).ready(function () {
     $("#my-ldap-domain").show();
     $("#update-pwd-h1").hide();
     $("#update-pwd-form").hide();
-    $("#my-domain-email").hide();
+    $("#my-domain-email").show();
 });
 
 function ajaxUpdatePwd() {

@@ -198,9 +198,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
         // create user role relation in db
         if (!CollectionUtils.isEmpty(toGrantRoleIdList)) {
-            for (String roleId : toGrantRoleIdList) {
-                sdUserRoleMapper.insertUserUserRole(employeeNumber, roleId);
-            }
+            sdUserRoleMapper.insertUserUserRole(employeeNumber, toGrantRoleIdList);
         }
 
         LOG.info("User (id: " + employeeNumber + ") created.");
@@ -252,9 +250,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
         // create user group relation in db
         if (!CollectionUtils.isEmpty(roleIdList)) {
-            for (String groupId : roleIdList) {
-                sdUserRoleMapper.insertUserUserRole(userId, groupId);
-            }
+            sdUserRoleMapper.insertUserUserRole(userId, roleIdList);
         }
 
         LOG.info("User (id: " + userId + ") " + email + " created.");
@@ -288,8 +284,6 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         String name = StringUtils.equals(newName, targetUserBean.getName()) ? null : newName;
         String mobile = StringUtils.equals(newMobile, targetUserBean.getMobile()) ? null : newMobile;
         String encryptedMobile = StringUtils.isEmpty(mobile) ? null : mobile;
-
-        userRoleService.checkUserRole(modifier.getAuthorities(), userRoleIdList);
 
         sdUserMapper.updateUser(userId, name, encryptedMobile, email, modifier.getUserId());
 
@@ -398,7 +392,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     @Override
     @Transactional
     public BtuUserBean verifyLdapUser(BtuUser user, BtuUserBean userDetailBean) {
-        if (StringUtils.isEmpty(userDetailBean.getEmail()) &&
+        if (StringUtils.isEmpty(userDetailBean.getDomainEmail()) &&
                 StringUtils.isNotEmpty(userDetailBean.getLdapDomain())) {
             BtuUserBean btuUserBean = super.verifyLdapUser(user, userDetailBean);
             String userId = userDetailBean.getUserId();
@@ -555,7 +549,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         List<SdUserRoleEntity> userRoleByUserId = sdUserRoleMapper.getUserRoleByUserId(oldUserId);
 
         sdUserMapper.changeUserType(oldUserId, name, mobile, userId, null, email, currentUserBean.getUserId());
-        changeUserIdInUserUserRole(oldUserId, userId, userRoleByUserId);
+        userRoleService.changeUserIdInUserUserRole(oldUserId, userId, userRoleByUserId);
 
         return userId;
     }
@@ -584,7 +578,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         sdUserMapper.changeUserType(oldUserId, name, mobile, userId, null, email, currentUserBean.getUserId());
 
         // Change USER_ID IN USER_USER_ROLE
-        changeUserIdInUserUserRole(oldUserId, userId, userRoleByUserId);
+        userRoleService.changeUserIdInUserUserRole(oldUserId, userId, userRoleByUserId);
 
         return userId;
     }
@@ -604,6 +598,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         }
         // Get CurrentUser For ModifyBy
         SdUserBean currentUserBean = (SdUserBean) getCurrentUserBean();
+
         // Get the User Role
         List<SdUserRoleEntity> userRoleByUserId = sdUserRoleMapper.getUserRoleByUserId(oldUserId);
 
@@ -611,7 +606,9 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         sdUserMapper.changeUserType(oldUserId, name, mobile, employeeNumber, ldapDomain, email, currentUserBean.getUserId());
 
         // Change USER_ID IN USER_USER_ROLE
-        changeUserIdInUserUserRole(oldUserId, employeeNumber, userRoleByUserId);
+        userRoleService.changeUserIdInUserUserRole(oldUserId, employeeNumber, userRoleByUserId);
+
+        LOG.info("User :" + oldUserId + "has been change to LDAP user =>" + employeeNumber);
 
         return employeeNumber;
     }
@@ -687,14 +684,6 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
         if (user == null) {
             throw new UserNotFoundException("User not Exist.");
-        }
-    }
-
-    private void changeUserIdInUserUserRole(String oldUserId, String userId, List<SdUserRoleEntity> userRoleByUserId) {
-        // Change USER_ID IN USER_USER_ROLE
-        sdUserRoleMapper.deleteUserRoleByUserId(oldUserId);
-        for (SdUserRoleEntity entity : userRoleByUserId) {
-            sdUserRoleMapper.insertUserUserRole(userId, entity.getRoleId());
         }
     }
 }

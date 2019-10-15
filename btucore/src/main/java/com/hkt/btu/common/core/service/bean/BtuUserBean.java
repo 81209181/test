@@ -14,6 +14,7 @@ public class BtuUserBean extends BaseBean {
     private LocalDateTime passwordModifydate;
     private Integer loginTried;
     private String ldapDomain;
+    private String domainEmail;
 
     private Set<GrantedAuthority> authorities;
 
@@ -137,5 +138,13 @@ public class BtuUserBean extends BaseBean {
 
     public void setLdapDomain(String ldapDomain) {
         this.ldapDomain = ldapDomain;
+    }
+
+    public String getDomainEmail() {
+        return domainEmail;
+    }
+
+    public void setDomainEmail(String domainEmail) {
+        this.domainEmail = domainEmail;
     }
 }
