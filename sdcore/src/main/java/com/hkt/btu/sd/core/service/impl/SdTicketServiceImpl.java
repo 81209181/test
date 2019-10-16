@@ -92,10 +92,11 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Override
     public void insertTicketContactInfo(Integer ticketMasId, String contactType, String contactName, String contactNumber, String contactEmail, String contactMobile) {
         String createBy = userService.getCurrentUserUserId();
-        String mobileStr = Base64Utils.encodeToString(sensitiveDataService.encryptFromStringSafe(contactMobile));
-        String emailStr = Base64Utils.encodeToString(sensitiveDataService.encryptFromStringSafe(contactEmail));
-        String numberStr = Base64Utils.encodeToString(sensitiveDataService.encryptFromStringSafe(contactNumber));
-        ticketContactMapper.insertTicketContactInfo(ticketMasId, contactType, contactName, mobileStr, emailStr, numberStr, createBy);
+        ticketContactMapper.insertTicketContactInfo(ticketMasId, contactType, contactName,
+                sensitiveDataService.encryptFromStringSafe(contactMobile),
+                sensitiveDataService.encryptFromStringSafe(contactEmail),
+                sensitiveDataService.encryptFromStringSafe(contactNumber),
+                createBy);
     }
 
     @Override
@@ -103,9 +104,9 @@ public class SdTicketServiceImpl implements SdTicketService {
         List<SdTicketContactBean> beanList = new ArrayList<>();
         ticketContactMapper.selectContactInfoByTicketMasId(ticketMasId).forEach(sdTicketContactEntity -> {
             SdTicketContactBean bean = new SdTicketContactBean();
-            sdTicketContactEntity.setContactMobile(sensitiveDataService.decryptToStringSafe(Base64Utils.decodeFromString(sdTicketContactEntity.getContactMobile())));
-            sdTicketContactEntity.setContactEmail(sensitiveDataService.decryptToStringSafe(Base64Utils.decodeFromString(sdTicketContactEntity.getContactEmail())));
-            sdTicketContactEntity.setContactNumber(sensitiveDataService.decryptToStringSafe(Base64Utils.decodeFromString(sdTicketContactEntity.getContactNumber())));
+            bean.setContactMobile(sensitiveDataService.decryptToStringSafe(sdTicketContactEntity.getContactEmail()));
+            bean.setContactEmail(sensitiveDataService.decryptToStringSafe(sdTicketContactEntity.getContactEmail()));
+            bean.setContactNumber(sensitiveDataService.decryptToStringSafe(sdTicketContactEntity.getContactNumber()));
             ticketContactBeanPopulator.populate(sdTicketContactEntity, bean);
             beanList.add(bean);
         });

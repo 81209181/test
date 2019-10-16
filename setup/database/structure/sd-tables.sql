@@ -49,9 +49,9 @@ CREATE TABLE TICKET_CONTACT
 
     CONTACT_TYPE            varchar2(5), -- {Customer: 'CUST', Office Admin: 'ADMIN', On-site Contact: 'SITE', Caller: 'CALL'}
     CONTACT_NAME            varchar2(100),
-    CONTACT_NUMBER          varchar2(100),
-    CONTACT_MOBILE          varchar2(100),
-    CONTACT_EMAIL           varchar2(100),
+    CONTACT_NUMBER          BLOB,
+    CONTACT_MOBILE          BLOB,
+    CONTACT_EMAIL           BLOB,
 
     CREATEDATE         date                    default SYSDATE not null,
     CREATEBY           varchar2(10)            not null,
