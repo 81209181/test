@@ -6,10 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
-import com.hkt.btu.sd.facade.SdRequestCreateFacade;
-import com.hkt.btu.sd.facade.SdTicketFacade;
-import com.hkt.btu.sd.facade.SdUserRoleFacade;
-import com.hkt.btu.sd.facade.WfmApiFacade;
+import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.data.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -229,17 +226,7 @@ public class TicketController {
 
     @GetMapping("/ajax-get-ticket")
     public ResponseEntity<?> getTicketInfo(@RequestParam Integer ticketMasId) {
-        SdTicketMasData ticketMasInfo = ticketFacade.getTicket(ticketMasId).get();
-        List<SdTicketContactData> contactInfo = ticketFacade.getContactInfo(ticketMasId);
-        List<SdTicketServiceData> serviceInfo = ticketFacade.getServiceInfo(ticketMasId);
-        List<SdTicketRemarkData> remarkInfo = ticketFacade.getTicketRemarksByTicketId(ticketMasId);
-
-        SdTicketData ticketData = new SdTicketData();
-        ticketData.setTicketMasInfo(ticketMasInfo);
-        ticketData.setContactInfo(contactInfo);
-        ticketData.setServiceInfo(serviceInfo);
-        ticketData.setRemarkInfo(remarkInfo);
-
+        SdTicketData ticketData = ticketFacade.getTicketInfo(ticketMasId);
         return ResponseEntity.ok(ticketData);
     }
 }
