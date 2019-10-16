@@ -147,16 +147,10 @@ $().ready(function(){
 
     readyForTicketService();
 
-    // for test
-//    itsmUrl = 'https://10.111.7.32/itsm/info/ResourcePoolTab.action?resourceId=309033';
-
-    if(itsmUrl ==''){
-        $('.itsm_link').addClass("disabled");
-    }
+    // service link button
     $('.itsm_link').on('click',function(){
-        window.open(itsmUrl,'Profile','scrollbars=yes,height=600,width=800');
+        window.open($(this).data('url'),'Profile','scrollbars=yes,height=600,width=800');
     })
-
 
     // appointment
     $('#asap_checkbox').change(function(){
