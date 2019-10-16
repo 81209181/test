@@ -18,6 +18,10 @@ public class SdTicketMasData implements DataInterface {
 
     private String createBy;
 
+    private LocalDateTime modifyDate;
+
+    private String modifyBy;
+
     private LocalDateTime appointmentDate;
 
     private String asap;
@@ -84,5 +88,21 @@ public class SdTicketMasData implements DataInterface {
 
     public void setCreateBy(String createBy) {
         this.createBy = createBy;
+    }
+
+    public LocalDateTime getModifyDate() {
+        return modifyDate;
+    }
+
+    public void setModifyDate(LocalDateTime modifyDate) {
+        this.modifyDate = modifyDate;
+    }
+
+    public String getModifyBy() {
+        return modifyBy;
+    }
+
+    public void setModifyBy(String modifyBy) {
+        this.modifyBy = modifyBy;
     }
 }
