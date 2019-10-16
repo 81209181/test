@@ -229,7 +229,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
         BtuUserBean currentUserBean = userService.getCurrentUserBean();
         checkUserRole(currentUserBean.getAuthorities(), roleIdList);
 
-        if (!CollectionUtils.isEmpty(roleIdList)) {
+        if (CollectionUtils.isNotEmpty(roleIdList)) {
             // get all existing user role list of userId
             List<SdUserRoleEntity> userRoleList = sdUserRoleMapper.getUserRoleByUserId(userId);
 
@@ -312,7 +312,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
             }
         }
         return roleList;
-    }
+    }                                                                                                                                                                                               
 
     /**
      * According to roleId, get user role from role tree

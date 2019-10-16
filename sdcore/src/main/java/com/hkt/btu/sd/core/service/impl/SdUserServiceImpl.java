@@ -271,7 +271,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
     @Override
     @Transactional
-    public void updateUser(String userId, String newName, String newMobile, String email,List<String> userRoleIdList)
+    public void updateUser(String userId, String newName, String newMobile, String email, List<String> userRoleIdList)
             throws UserNotFoundException, InsufficientAuthorityException {
         SdUserBean currentUser = (SdUserBean) this.getCurrentUserBean();
         if (currentUser.getUserId().equals(userId)) {
@@ -481,42 +481,18 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
 
-        // make email lower case (**assume email are all lower case)
-        email = StringUtils.lowerCase(email);
-
-        // get Current User Role
-        SdUserBean currentUserBean = (SdUserBean) getCurrentUserBean();
-
         LOG.info(String.format(
                 "Searching user with {userId: %s, email: %s, name: %s}",
                 userId, email, name));
 
-        Set<GrantedAuthority> authorities = currentUserBean.getAuthorities();
-        Set<SdUserEntity> sdUserEntitySet = new HashSet<>();
+        Integer totalCount = sdUserMapper.countSearchUser(userId, email, name);
 
-        Integer totalCount = 0;
-
-        for (GrantedAuthority authority : authorities) {
-            if (authority instanceof SimpleGrantedAuthority) {
-                String roleId = authority.getAuthority();
-                if (SdUserRoleEntity.SYS_ADMIN.equals(roleId)) {
-                    totalCount += sdUserMapper.countSearchUser(roleId, userId, email, name);
-                    sdUserEntitySet.addAll(sdUserMapper.searchUser(offset, pageSize, roleId, userId, email, name));
-                    break;
-                }
-                if (roleId.contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR)) {
-                    totalCount += sdUserMapper.countSearchUser(roleId, userId, email, name);
-                    sdUserEntitySet.addAll(sdUserMapper.searchUser(offset, pageSize, roleId, userId, email, name));
-                }
-            }
-        }
-
+        List<SdUserEntity> sdUserEntityList = sdUserMapper.searchUser(offset, pageSize, userId, email, name);
 
         List<SdUserBean> sdUserBeanList = new LinkedList<>();
-        if (!CollectionUtils.isEmpty(sdUserEntitySet)) {
-            for (SdUserEntity sdUserEntity : sdUserEntitySet) {
+        if (!CollectionUtils.isEmpty(sdUserEntityList)) {
+            for (SdUserEntity sdUserEntity : sdUserEntityList) {
                 SdUserBean sdUserBean = new SdUserBean();
-                sdUserBeanPopulator.populate(sdUserEntity, sdUserBean);
                 sdUserBeanPopulator.populate(sdUserEntity, sdUserBean);
                 sdUserBeanList.add(sdUserBean);
             }

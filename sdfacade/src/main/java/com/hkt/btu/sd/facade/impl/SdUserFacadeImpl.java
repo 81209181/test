@@ -189,7 +189,9 @@ public class SdUserFacadeImpl implements SdUserFacade {
         // check input
         try {
             sdInputCheckService.checkName(name);
-            sdInputCheckService.checkEmail(email);
+            if (StringUtils.isNotEmpty(email)) {
+                sdInputCheckService.checkEmail(email);
+            }
             sdInputCheckService.checkMobile(mobile);
             sdInputCheckService.checkAssignRoleByDomain(userRoleIdList, ldapDomain);
             sdInputCheckService.checkUserRole(userRoleIdList,userRoleService.getEligibleUserRoleGrantList(),userRoleService.getUserRoleByUserId(userId));

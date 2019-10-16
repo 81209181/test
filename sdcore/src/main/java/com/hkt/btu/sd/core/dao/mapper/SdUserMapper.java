@@ -25,15 +25,14 @@ public interface SdUserMapper {
     List<String> getPasswordHistByUserId(@Param("userId") String userId);
 
 
-    List<SdUserEntity> searchUser(@Param("offset") long offset, @Param("pageSize") int pageSize,
-                                  String roleId, String userId, String email, String name);
+    List<SdUserEntity> searchUser(@Param("offset") long offset, @Param("pageSize") int pageSize, String userId, String email, String name);
 
-    Integer countSearchUser(String roleId, String userId, String email, String name);
+    Integer countSearchUser(String userId, String email, String name);
 
 
     void insertUser(SdUserEntity sdUserEntity);
 
-    // TODO: byte[] mobile, byte[] staffId
+
     void updateUser(@Param("userId") String userId,
                     @Param("name") String name, @Param("mobile") String mobile, @Param("email") String email, @Param("modifyby") String modifyby);
 

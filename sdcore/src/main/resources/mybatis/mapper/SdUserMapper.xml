@@ -137,17 +137,11 @@
 
     <sql id="searchUserSql">
         from USER_PROFILE u
-        <if test="roleId != null and roleId.indexOf('__') >= 0">
-            INNER JOIN
-            USER_USER_ROLE uur
-            ON u.USER_ID = uur.USER_ID
-            AND uur.ROLE_ID =
-            (SELECT SUBSTR(#{roleId}, (SELECT INSTR(#{roleId}, '__') + 2 FROM DUAL)) FROM DUAL)
-        </if>
 
         <where>
             <if test="userId != null">
-                u.USER_ID = #{userId}
+                <bind name="like_userId" value="'%' + userId + '%'"/>
+                u.USER_ID like #{like_userId}
             </if>
             <if test="email != null">
                 <bind name="like_email" value="'%' + email + '%'"/>
