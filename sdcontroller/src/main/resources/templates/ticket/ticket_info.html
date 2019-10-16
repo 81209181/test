@@ -76,7 +76,7 @@
                 <div class="col-md-12">
                     <h3>
                         Service
-                        <a class="btn btn-info ml-3 text-white itsm_link" th:attr="data-url=*{itsmUrl}" th:classappend="*{itsmUrl eq null}? 'disabled'">Link</a>
+                        <button type="button" class="btn btn-info ml-3" th:attr="data-url=*{itsmUrl}" th:disabled="not *{itsmUrl}" id="btnServiceLink">Link</button>
                     </h3>
                 </div>
                 <div class="col-md-12">

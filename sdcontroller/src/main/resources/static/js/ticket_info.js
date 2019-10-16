@@ -148,7 +148,7 @@ $().ready(function(){
     readyForTicketService();
 
     // service link button
-    $('.itsm_link').on('click',function(){
+    $('#btnServiceLink').on('click',function(){
         window.open($(this).data('url'),'Profile','scrollbars=yes,height=600,width=800');
     })
 
