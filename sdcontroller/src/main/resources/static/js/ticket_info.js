@@ -8,6 +8,15 @@ $().ready(function(){
 
     $('.selectpicker').selectpicker({});
 
+    if(ticketStatus == "OPEN"){
+        $("#ticketStatus").css("color","blue");
+    } else if(ticketStatus == "WORKING"){
+         $("#ticketStatus").css("color","orange");
+    } else if(ticketStatus == "COMPLETE"){
+         $("#ticketStatus").css("color","green");
+    } else if(ticketStatus == "CANCEL"){
+         $("#ticketStatus").css("color","red");
+    }
 
     $.get('/ticket/service/symptom/'+ticketMasId, function (res) {
         for (item of res) {
