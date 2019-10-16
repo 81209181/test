@@ -18,8 +18,6 @@ public interface SdSymptomMapper {
                           @Param("symptomDescription") String symptomDescription,
                           @Param("createby") String createby);
 
-    List<SdServiceTypeEntity> getServiceTypeList();
-
     SdSymptomEntity getSymptomBySymptomCode(@Param("symptomCode") String symptomCode);
 
     List<SdSymptomEntity> searchSymptomList(@Param("offset") long offset,

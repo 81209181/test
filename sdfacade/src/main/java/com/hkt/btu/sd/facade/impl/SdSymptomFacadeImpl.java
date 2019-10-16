@@ -7,6 +7,7 @@ import com.hkt.btu.sd.core.service.SdSymptomService;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
 import com.hkt.btu.sd.core.service.bean.SdSymptomBean;
 import com.hkt.btu.sd.core.service.bean.SdSymptomMappingBean;
+import com.hkt.btu.sd.facade.SdServiceTypeFacade;
 import com.hkt.btu.sd.facade.SdSymptomFacade;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.populator.SdServiceTypeDataPopulator;
@@ -31,12 +32,11 @@ public class SdSymptomFacadeImpl implements SdSymptomFacade {
 
     @Resource(name = "sdSymptomService")
     SdSymptomService sdSymptomService;
+    @Resource(name = "serviceTypeFacade")
+    SdServiceTypeFacade serviceTypeFacade;
 
     @Resource(name = "symptomDataPopulator")
     SdSymptomDataPopulator symptomDataPopulator;
-
-    @Resource(name = "serviceTypeDataPopulator")
-    SdServiceTypeDataPopulator serviceTypeDataPopulator;
 
     @Resource(name = "symptomMappingDataPopulator")
     SdSymptomMappingDataPopulator symptomMappingDataPopulator;
@@ -75,23 +75,6 @@ public class SdSymptomFacadeImpl implements SdSymptomFacade {
         }
 
         return null;
-    }
-
-    @Override
-    public List<SdServiceTypeData> getServiceTypeList() {
-        List<SdServiceTypeBean> beanList = sdSymptomService.getServiceTypeList();
-        if (CollectionUtils.isEmpty(beanList)) {
-            return null;
-        }
-
-        List<SdServiceTypeData> dataList = new LinkedList<>();
-        for (SdServiceTypeBean bean : beanList) {
-            SdServiceTypeData data = new SdServiceTypeData();
-            serviceTypeDataPopulator.populate(bean, data);
-            dataList.add(data);
-        }
-
-        return dataList;
     }
 
     @Override

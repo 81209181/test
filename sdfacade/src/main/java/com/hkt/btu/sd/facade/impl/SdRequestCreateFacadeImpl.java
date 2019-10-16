@@ -19,18 +19,16 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
 
     @Resource(name = "besApiFacade")
     BesApiFacade besApiFacade;
-
     @Resource(name = "itsmApiFacade")
     ItsmApiFacade itsmApiFacade;
-
     @Resource(name = "norarsApiFacade")
     NorarsApiFacade norarsApiFacade;
-
     @Resource(name = "ticketFacade")
     SdTicketFacade ticketFacade;
-
     @Resource(name = "wfmApiFacade")
     WfmApiFacade wfmApiFacade;
+    @Resource(name = "serviceTypeFacade")
+    SdServiceTypeFacade serviceTypeFacade;
 
     @Resource(name = "requestCreateSearchResultDataPopulator")
     RequestCreateSearchResultDataPopulator requestCreateSearchResultDataPopulator;
@@ -85,7 +83,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
                 infoData.setCustStatus(requestCreateSearchResultData.getCustStatus());
                 infoData.setLanguagePreference(requestCreateSearchResultData.getLanguagePreference());
                 infoData.setServiceStatus(requestCreateSearchResultData.getServiceStatus());
-                infoData.setServiceType(requestCreateSearchResultData.getServiceType());
+                infoData.setServiceType(serviceTypeFacade.getServiceTypeByOfferName(requestCreateSearchResultData.getOfferName()));
                 infoData.setSubsId(requestCreateSearchResultData.getSubsId());
                 infoData.setOfferName(requestCreateSearchResultData.getOfferName());
                 infoData.setItsmUrl(requestCreateSearchResultData.getUrl());
