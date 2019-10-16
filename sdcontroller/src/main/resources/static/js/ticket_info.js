@@ -2,12 +2,7 @@ $().ready(function(){
 
     var ticketDetId = "";
 
-    if($('input[name=jobId]').val()){
-        $('#btnTicketSubmit').attr('disabled',true);
-    }
-
     $('.selectpicker').selectpicker({});
-
 
     $.get('/ticket/service/symptom/'+ticketMasId, function (res) {
         for (item of res) {
@@ -211,10 +206,9 @@ $().ready(function(){
             dataType: 'json',
             data: ticket,
             success:function(res){
-                $.each(res,function(key,val){
-                    $('input[name='+ key +']').val(val);
-                })
-                $('#btnTicketSubmit').attr('disabled',true);
+                if(res.success){
+                    location.reload();
+                }
             }
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";
@@ -222,7 +216,7 @@ $().ready(function(){
             showErrorMsg(responseError);
         })
     })
-    // cancel ticket
+    // cancel button
     $('#btnTicketCancel').on('click',function(){
         $.post('/ticket/cancel',{
             ticketMasId:ticketMasId

@@ -200,7 +200,7 @@
         <div class="card-footer">
             <div class="float-right">
                 <button type="button" class="btn btn-danger" id="btnTicketCancel">Cancel</button>
-                <button type="button" class="btn btn-primary " id="btnTicketSubmit">Submit</button>
+                <button type="button" class="btn btn-primary " id="btnTicketSubmit" th:disabled="*{not #strings.isEmpty(jobId)}">Submit</button>
             </div>
         </div>
     </div>
