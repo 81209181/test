@@ -4,6 +4,16 @@ $().ready(function(){
 
     $('.selectpicker').selectpicker({});
 
+    if(ticketStatus == "OPEN"){
+        $("#ticketStatus").css("color","blue");
+    } else if(ticketStatus == "WORKING"){
+         $("#ticketStatus").css("color","orange");
+    } else if(ticketStatus == "COMPLETE"){
+         $("#ticketStatus").css("color","green");
+    } else if(ticketStatus == "CANCEL"){
+         $("#ticketStatus").css("color","red");
+    }
+
     $.get('/ticket/service/symptom/'+ticketMasId, function (res) {
         for (item of res) {
             $('.selectpicker').append("<option value="+item.symptomCode+">"+item.symptomCode+"---"+item.symptomDescription+"</option>");
@@ -147,10 +157,16 @@ $().ready(function(){
 
     readyForTicketService();
 
-    // service link button
-    $('#btnServiceLink').on('click',function(){
-        window.open($(this).data('url'),'Profile','scrollbars=yes,height=600,width=800');
+    // for test
+//    itsmUrl = 'https://10.111.7.32/itsm/info/ResourcePoolTab.action?resourceId=309033';
+
+    if(itsmUrl ==''){
+        $('.itsm_link').addClass("disabled");
+    }
+    $('.itsm_link').on('click',function(){
+        window.open(itsmUrl,'Profile','scrollbars=yes,height=600,width=800');
     })
+
 
     // appointment
     $('#asap_checkbox').change(function(){
@@ -200,9 +216,10 @@ $().ready(function(){
             dataType: 'json',
             data: ticket,
             success:function(res){
-                if(res.success){
-                    location.reload();
-                }
+                $.each(res,function(key,val){
+                    $('input[name='+ key +']').val(val);
+                })
+                $('#btnTicketSubmit').attr('disabled',true);
             }
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";
@@ -210,7 +227,7 @@ $().ready(function(){
             showErrorMsg(responseError);
         })
     })
-    // cancel button
+    // cancel ticket
     $('#btnTicketCancel').on('click',function(){
         $.post('/ticket/cancel',{
             ticketMasId:ticketMasId

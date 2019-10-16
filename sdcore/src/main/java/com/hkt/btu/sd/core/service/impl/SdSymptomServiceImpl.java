@@ -122,7 +122,7 @@ public class SdSymptomServiceImpl implements SdSymptomService {
         List<String> filteredServiceTypeList = new ArrayList<>();
         if(CollectionUtils.isNotEmpty(serviceTypeList)){
             for (String serviceType : serviceTypeList) {
-                if (StringUtils.equals(SdServiceTypeEntity.SERVICE_TYPE.UNKNOWN, serviceType)) {
+                if (!StringUtils.equals(SdServiceTypeEntity.SERVICE_TYPE.UNKNOWN, serviceType)) {
                     filteredServiceTypeList.add(serviceType);
                 }
             }

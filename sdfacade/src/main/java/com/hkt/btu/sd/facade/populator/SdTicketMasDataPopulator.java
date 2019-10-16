@@ -13,6 +13,8 @@ public class SdTicketMasDataPopulator extends AbstractDataPopulator<SdTicketMasD
         target.setStatus(source.getStatus());
         target.setCreateBy(source.getCreateby());
         target.setCreateDate(source.getCreatedate());
+        target.setModifyBy(source.getModifyby());
+        target.setModifyDate(source.getModifydate());
         target.setAppointmentDate(source.getAppointmentDate());
         target.setAsap(source.getAsap());
     }

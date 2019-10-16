@@ -40,6 +40,8 @@ public interface SdTicketFacade {
 
     BesSubFaultData getFaultInfo(String subscriberId);
 
+    SdTicketData getTicketInfo(Integer ticketMasId);
+
     void cancelTicket(int ticketMasId, String name);
 
     boolean isCancel(String ticketMasId);

@@ -138,6 +138,16 @@ CREATE TABLE SERVICE_TYPE
     MODIFYBY                      varchar2(10)             not null,
     CONSTRAINT PK_SERVICE_TYPE PRIMARY KEY (SERVICE_TYPE_CODE)
 );
+
+--------------------------------------------------------------------------------------------------
+CREATE TABLE SERVICE_TYPE_OFFER_MAPPING
+(
+    SERVICE_TYPE_CODE             varchar2(10)             not null,
+    OFFER_NAME                    varchar2(40)             not null,
+
+    CREATEDATE                    date                     default SYSDATE not null,
+    CREATEBY                      varchar2(10)             not null
+);
 --------------------------------------------------------------------------------------------------
 CREATE TABLE SYMPTOM_GROUP
 (

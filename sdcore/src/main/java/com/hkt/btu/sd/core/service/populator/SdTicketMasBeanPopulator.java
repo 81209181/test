@@ -14,6 +14,8 @@ public class SdTicketMasBeanPopulator extends AbstractBeanPopulator<SdTicketMasB
         target.setTicketType(source.getTicketType());
         target.setCreateby(source.getCreateby());
         target.setCreatedate(source.getCreatedate());
+        target.setModifyby(source.getModifyby());
+        target.setModifydate(source.getModifydate());
         target.setAppointmentDate(source.getAppointmentDate());
         target.setAsap(source.getAsap());
         switch (source.getStatus()) {

@@ -285,14 +285,14 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                         info.setMainFaultCode(sdSymptomBean.getSymptomGroupName());
                         info.setSubFaultId(sdSymptomBean.getSymptomCode());
                     }));
-                    ticketService.getTicket(sdTicketServiceBean.getTicketMasId()).ifPresent(sdTicketMasBean -> {
-                        info.setSubFaultStatus(sdTicketMasBean.getStatus());
-                        info.setCreatedBy(sdTicketMasBean.getCreateby());
-                        info.setCreatedDate(sdTicketMasBean.getCreatedate().toString());
-                        String modifyDate = Optional.ofNullable(sdTicketMasBean.getModifydate()).map(LocalDateTime::toString).orElse(StringUtils.EMPTY);
+                    Optional.ofNullable(getTicketMas(sdTicketServiceBean.getTicketMasId())).ifPresent(ticketMasData -> {
+                        info.setSubFaultStatus(ticketMasData.getStatus());
+                        info.setCreatedBy(ticketMasData.getCreateBy());
+                        info.setCreatedDate(ticketMasData.getCreateDate().toString());
+                        String modifyDate = Optional.ofNullable(ticketMasData.getModifyDate()).map(LocalDateTime::toString).orElse(StringUtils.EMPTY);
                         info.setLastUpdatedDate(modifyDate);
-                        info.setLastUpdatedBy(sdTicketMasBean.getModifyby());
-                        info.setClosedDate(String.format("%s - %s", sdTicketMasBean.getStatus(), modifyDate));
+                        info.setLastUpdatedBy(ticketMasData.getModifyBy());
+                        info.setClosedDate(String.format("%s - %s", ticketMasData.getStatus(), modifyDate));
                     });
                     return info;
                 }).collect(Collectors.toList()));
@@ -317,6 +317,31 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             faultData.setList(Collections.emptyList());
             return faultData;
         }
+    }
+
+    @Override
+    public SdTicketData getTicketInfo(Integer ticketMasId) {
+        SdTicketMasData ticketMasInfo = getTicketMas(ticketMasId);
+        List<SdTicketContactData> contactInfo = getContactInfo(ticketMasId);
+        List<SdTicketServiceData> serviceInfo = getServiceInfo(ticketMasId);
+        List<SdTicketRemarkData> remarkInfo = getTicketRemarksByTicketId(ticketMasId);
+
+        SdTicketData ticketData = new SdTicketData();
+        ticketData.setTicketMasInfo(ticketMasInfo);
+        ticketData.setContactInfo(contactInfo);
+        ticketData.setServiceInfo(serviceInfo);
+        ticketData.setRemarkInfo(remarkInfo);
+
+        return ticketData;
+    }
+
+    public SdTicketMasData getTicketMas(Integer ticketMasId) {
+        SdTicketMasData sdticketMasData = new SdTicketMasData();
+        Optional<SdTicketMasBean> sdTicketMasBean = ticketService.getTicket(ticketMasId);
+        if (sdTicketMasBean.isPresent()) {
+            ticketMasDataPopulator.populate(sdTicketMasBean.get(), sdticketMasData);
+        }
+        return sdticketMasData;
     }
 
     @Override

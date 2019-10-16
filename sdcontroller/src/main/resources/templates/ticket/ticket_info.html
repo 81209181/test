@@ -15,6 +15,20 @@
     <div class="card" style="margin-bottom: 75px;" th:object="${ticketInfo}">
         <div class="card-header bg-primary text-white">Ticket - <span th:text="*{ticketMasId}"></span></div>
         <div class="card-body">
+            <div id="ticket" class="row">
+                <div class="col-md-12">
+                    <h3>Ticket</h3>
+                </div>
+                <div class="col-md-3 form-inline pt-2">
+                    <label class="col-form-label justify-content-end">Ticket Mas ID:</label>
+                    <font class="form-control-plaintext col-md-7" th:text="*{ticketMasId}"></font>
+                </div>
+                <div class="col-md-3 form-inline pt-2">
+                    <label class="col-form-label justify-content-end">Ticket Status:</label>
+                    <font class="form-control-plaintext col-md-7" th:text="*{ticketStatus}" id="ticketStatus"></font>
+                </div>
+            </div>
+            <hr>
             <form id="customer" class="row" >
                 <div class="col-md-12">
                     <h3>Customer</h3>
@@ -38,14 +52,6 @@
                 <div class="col-md-3 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Language Preference:</label>
                     <input type="text" class="form-control-plaintext col-md-5" th:value="*{languagePreference}" name="languagePreference" readonly>
-                </div>
-                <div class="col-md-3 form-inline pt-2">
-                    <label class="col-form-label justify-content-end">Job Id:</label>
-                    <input type="text" class="form-control-plaintext col-md-7" name="jobId" th:value="*{jobId}" readonly>
-                </div>
-                <div class="col-md-3 form-inline pt-2">
-                    <label class="col-form-label justify-content-end">Job Status:</label>
-                    <input type="text" class="form-control-plaintext col-md-7" name="jobStatus" th:value="*{jobStatus}" readonly>
                 </div>
             </form>
             <hr>
@@ -137,10 +143,18 @@
             <hr>
             <form id="appointment" class="row">
                 <div class="col-md-12">
-                    <h3>Appointment</h3>
+                    <h3>Job</h3>
                 </div>
                 <div class="col-md-12">
                     <div class="form-row">
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Job Id:</label>
+                            <input type="text" class="form-control col-md-6" name="jobId" th:value="*{jobId}" readonly>
+                        </div>
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Job Status:</label>
+                            <input type="text" class="form-control col-md-6" name="jobStatus" th:value="*{jobStatus}" readonly>
+                        </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Appointment Date:</label>
                             <input type="datetime-local" class="form-control col-md-6"
@@ -160,7 +174,7 @@
             </form>
             <hr>
             <h3>Remark</h3>
-            <div id="remark">
+            <div id="remark" class="row">
                 <form class="col-md-12 form">
                     <div class="form-row">
                         <div class="col-md-6 form-inline pt-2">
@@ -169,32 +183,32 @@
                         </div>
                     </div>
                 </form>
-                <div class="offset-md-10">
+                <div class="offset-md-11">
                     <button type="button" class="btn btn-primary mt-2" id="btnCreateTicketRemarks">
                         <i class="far fa-save"></i> Save
                     </button>
                 </div>
-                <table id="searchTicketRemarksTable" class="display" cellspacing="0" width="100%">
-                    <thead>
-                    <tr>
-                        <th>Create Date</th>
-                        <th>Type</th>
-                        <th>Remarks</th>
-                        <th>Create By</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                    <tfoot>
-                    <tr>
-                        <th>Create Date</th>
-                        <th>Type</th>
-                        <th>Remarks</th>
-                        <th>Create By</th>
-                    </tr>
-                    </tfoot>
-                </table>
             </div>
+            <table id="searchTicketRemarksTable" class="display" cellspacing="0" width="100%">
+                <thead>
+                <tr>
+                    <th>Create Date</th>
+                    <th>Type</th>
+                    <th>Remarks</th>
+                    <th>Create By</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <th>Create Date</th>
+                    <th>Type</th>
+                    <th>Remarks</th>
+                    <th>Create By</th>
+                </tr>
+                </tfoot>
+            </table>
         </div>
         <div class="card-footer">
             <div class="float-right">
