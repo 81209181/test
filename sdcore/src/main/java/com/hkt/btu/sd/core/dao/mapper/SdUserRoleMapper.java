@@ -2,7 +2,6 @@ package com.hkt.btu.sd.core.dao.mapper;
 
 import com.hkt.btu.sd.core.dao.entity.SdUserRoleEntity;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -24,13 +23,15 @@ public interface SdUserRoleMapper {
 
     List<SdUserRoleEntity> getUserRoleByUserId(@Param("userId") String userId);
 
-    void insertUserUserRole(@Param("userId") String userId, @Param("roleId") String roleId);
+    void insertUserUserRole(@Param("userId") String userId, List<String> userRoleList);
 
-    void deleteUserRoleByUserId(@Param("userId") String userId);
+    void deleteUserRoleByUserId(@Param("userId") String userId, List<String> userRoleList);
 
     void updateUserRole(@Param("roleId") String roleId, @Param("roleDesc") String roleDesc,
                         @Param("status") String status, @Param("abstractFlag") String abstractFlag,
                         @Param("modifyby") String modifyby);
+
+    void updateUserUserRoleByUserId(@Param("oldUserId") String oldUserId, @Param("newUserId") String newUserId);
 
     List<String> getTeamRoleByUserId(@Param("userId") String userId);
 

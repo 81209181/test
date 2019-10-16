@@ -11,7 +11,6 @@
         var customerCode = '[[${ticketInfo.custCode}]]';
         var ticketMasId = '[[${ticketInfo.ticketMasId}]]';
         var ticketStatus = '[[${ticketInfo.ticketStatus}]]';
-        var itsmUrl = '[[${ticketInfo.itsmUrl}]]';
     </script>
     <div class="card" style="margin-bottom: 75px;" th:object="${ticketInfo}">
         <div class="card-header bg-primary text-white">Ticket - <span th:text="*{ticketMasId}"></span></div>
@@ -83,7 +82,7 @@
                 <div class="col-md-12">
                     <h3>
                         Service
-                        <a class="btn btn-info ml-3 text-white itsm_link" th:data>Link</a>
+                        <button type="button" class="btn btn-info ml-3" th:attr="data-url=*{itsmUrl}" th:disabled="not *{itsmUrl}" id="btnServiceLink">Link</button>
                     </h3>
                 </div>
                 <div class="col-md-12">
@@ -214,7 +213,7 @@
         <div class="card-footer">
             <div class="float-right">
                 <button type="button" class="btn btn-danger" id="btnTicketCancel">Cancel</button>
-                <button type="button" class="btn btn-primary " id="btnTicketSubmit">Submit</button>
+                <button type="button" class="btn btn-primary " id="btnTicketSubmit" th:disabled="*{not #strings.isEmpty(jobId)}">Submit</button>
             </div>
         </div>
     </div>

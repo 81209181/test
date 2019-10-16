@@ -147,12 +147,6 @@ public class ManageUserController {
                 .filter(sdUserRoleData -> sdUserRoleData.getStatus().equals("A"))
                 .collect(Collectors.toList()));
         model.addAttribute("eligibleUserRole", userRoleFacade.getEligibleUserRoleList().stream().map(SdUserRoleData::getRoleId).collect(Collectors.toList()));
-        // user group info
-//        List<SdUserRoleData> userRoleDataList = userRoleFacade.getEligibleUserRoleList();
-//        userRoleDataMap = userRoleFacade.getUserRoleMap(userRoleDataList);
-//        if (!MapUtils.isEmpty(userRoleDataMap)) {
-//            model.addAttribute("userRoleOptionDataMap", userRoleDataMap);
-//        }
 
         return "admin/manageUser/editUserForm";
     }

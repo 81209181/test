@@ -17,7 +17,7 @@
                 <input th:id="edit-user-id" th:attr="value = ${editUserId}" type="text" class="form-control" readonly>
 
                 <label>Email</label>
-                <input th:id="edit-email" type="email" class="form-control" readonly>
+                <input th:id="edit-email" type="email" class="form-control">
 
                 <label>Name</label>
                 <input th:id="edit-name" type="text" class="form-control" maxlength="100" required>
@@ -38,6 +38,9 @@
 
                 <label class="ldapUserInfo">LDAP Domain</label>
                 <input th:id="edit-ldap-domain" type="text" class="form-control" readonly>
+
+                <label class="ldapUserInfo">Domain Email</label>
+                <input th:id="edit-domain-email" type="text" class="form-control" readonly>
             </div>
 
             <div class="d-inline-block col-md-5 form-group">
@@ -49,15 +52,15 @@
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                        <li id="pccw-hkt-type" hidden="hidden"><a class="dropdown-item"
+                        <!--<li id="pccw-hkt-type" hidden="hidden"><a class="dropdown-item"
                                th:href="@{/admin/manage-user/edit-user/changeUserType/pccw-hkt-user(userId=${editUserId})}">PCCW/HKT
-                            User</a></li>
-                        <li id="ldap-type" hidden="hidden"><a class="dropdown-item"
+                            User</a></li>-->
+                        <li id="ldap-type"><a class="dropdown-item"
                                th:href="@{/admin/manage-user/edit-user/changeUserType/ldap-user(userId=${editUserId})}">LDAP
                             User</a></li>
-                        <li id="non-type" hidden="hidden"><a class="dropdown-item"
+                        <!--<li id="non-type" hidden="hidden"><a class="dropdown-item"
                                th:href="@{/admin/manage-user/edit-user/changeUserType/non-pccw-hkt-user(userId=${editUserId})}">Non PCCW/HKT
-                            User</a></li>
+                            User</a></li>-->
                     </ul>
                 </div>
             </div>

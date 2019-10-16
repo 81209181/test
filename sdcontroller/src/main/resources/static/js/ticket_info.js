@@ -2,10 +2,6 @@ $().ready(function(){
 
     var ticketDetId = "";
 
-    if($('input[name=jobId]').val()){
-        $('#btnTicketSubmit').attr('disabled',true);
-    }
-
     $('.selectpicker').selectpicker({});
 
     if(ticketStatus == "OPEN"){

@@ -12,6 +12,7 @@
         <result column="COMPANY_ID" property="companyId"/>
         <result column="STAFF_ID" property="staffId"/>
         <result column="LDAP_DOMAIN" property="ldapDomain"/>
+        <result column="DOMAIN_EMAIL" property="domainEmail"/>
 
         <result column="PASSWORD" property="password"/>
         <result column="PASSWORD_MODIFYDATE" property="passwordModifydate"/>
@@ -86,6 +87,7 @@
         <set>
             <if test="name != null">NAME=#{name},</if>
             <if test="mobile != null">MOBILE=#{mobile},</if>
+            <if test="email != null">EMAIL=#{email},</if>
             MODIFYDATE = CURRENT_TIMESTAMP, MODIFYBY = #{modifyby}
         </set>
         where USER_ID = #{userId}
@@ -95,7 +97,7 @@
         update USER_PROFILE
         <set>
             <if test="name != null">NAME=#{name},</if>
-            <if test="email !=  null">EMAIL=#{email},</if>
+            <if test="email !=  null">DOMAIN_EMAIL=#{email},</if>
             MODIFYDATE = CURRENT_TIMESTAMP
         </set>
         where USER_ID = #{userId}
@@ -135,17 +137,11 @@
 
     <sql id="searchUserSql">
         from USER_PROFILE u
-        <if test="roleId != null and roleId.indexOf('__') >= 0">
-            INNER JOIN
-            USER_USER_ROLE uur
-            ON u.USER_ID = uur.USER_ID
-            AND uur.ROLE_ID =
-            (SELECT SUBSTR(#{roleId}, (SELECT INSTR(#{roleId}, '__') + 2 FROM DUAL)) FROM DUAL)
-        </if>
 
         <where>
             <if test="userId != null">
-                u.USER_ID = #{userId}
+                <bind name="like_userId" value="'%' + userId + '%'"/>
+                u.USER_ID like #{like_userId}
             </if>
             <if test="email != null">
                 <bind name="like_email" value="'%' + email + '%'"/>

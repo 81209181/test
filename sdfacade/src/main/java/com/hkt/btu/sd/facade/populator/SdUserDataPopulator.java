@@ -31,7 +31,7 @@ public class SdUserDataPopulator extends AbstractDataPopulator<SdUserData> {
         target.setCompanyId(source.getCompanyId());
         target.setCompanyName(source.getCompanyName());
         target.setLdapDomain(source.getLdapDomain());
-
+        target.setDomainEmail(source.getDomainEmail());
         // use detailed status
         String detailedStatus = STATUS_DESC_MAP.get(source.getStatus());
         if( StringUtils.isEmpty(detailedStatus) ){

@@ -174,10 +174,7 @@ public class TicketController {
             ticketFacade.updateJobIdInService(jobId, wfmRequestDetailsBeanDate.getTicketMasId(), principal.getName());
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode node = mapper.createObjectNode();
-            Optional.ofNullable(wfmApiFacade.getJobDetails(jobId)).map(WfmJobDetailsData::getJobBean).ifPresent(wfmJobBeanData -> {
-                node.put("jobId", jobId);
-                node.put("jobStatus", wfmJobBeanData.getStatus());
-            });
+            node.put("success", true);
             return ResponseEntity.ok(mapper.writeValueAsString(node));
         } else {
             return ResponseEntity.badRequest().body("Submit fail.");

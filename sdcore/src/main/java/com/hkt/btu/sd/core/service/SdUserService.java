@@ -36,7 +36,7 @@ public interface SdUserService extends BtuUserService {
             throws UserNotFoundException, InvalidPasswordException, InvalidInputException;
     void requestResetPassword(String username) throws UserNotFoundException, MessagingException;
     void disableUserByUsername(String username) throws UserNotFoundException, InvalidInputException;
-    void updateUser(String userId, String newName, String newMobile, List<String> userRoleIdList)
+    void updateUser(String userId, String newName, String newMobile, String email, List<String> userRoleIdList)
             throws UserNotFoundException, InsufficientAuthorityException, GeneralSecurityException;
 
 
