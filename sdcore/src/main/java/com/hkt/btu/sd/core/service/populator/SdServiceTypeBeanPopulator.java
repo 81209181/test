@@ -10,4 +10,6 @@ public class SdServiceTypeBeanPopulator extends AbstractBeanPopulator<SdServiceT
         target.setServiceTypeCode(source.getServiceTypeCode());
         target.setServiceTypeName(source.getServiceTypeName());
     }
+
+
 }

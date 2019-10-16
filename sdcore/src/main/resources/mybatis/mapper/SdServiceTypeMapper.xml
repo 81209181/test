@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdServiceTypeMapper" >
+    <resultMap id="ServiceTypeEntity" type="com.hkt.btu.sd.core.dao.entity.SdServiceTypeEntity" >
+        <result column="SERVICE_TYPE_CODE" property="serviceTypeCode" />
+        <result column="SERVICE_TYPE_NAME" property="serviceTypeName" />
+
+        <result column="CREATEDATE" property="createdate" />
+        <result column="CREATEBY" property="createby" />
+        <result column="MODIFYDATE" property="modifydate" />
+        <result column="MODIFYBY" property="modifyby" />
+    </resultMap>
+    <resultMap id="ServiceTypeOfferMapping" type="com.hkt.btu.sd.core.dao.entity.SdServiceTypeOfferMappingEntity" >
+        <result column="SERVICE_TYPE_CODE" property="serviceTypeCode" />
+        <result column="OFFER_NAME" property="offerName" />
+
+        <result column="CREATEDATE" property="createdate" />
+        <result column="CREATEBY" property="createby" />
+        <result column="MODIFYDATE" property="modifydate" />
+        <result column="MODIFYBY" property="modifyby" />
+    </resultMap>
+
+    <select id="getServiceTypeList" resultMap="ServiceTypeEntity">
+        SELECT SERVICE_TYPE_CODE,SERVICE_TYPE_NAME
+        FROM SERVICE_TYPE
+        GROUP BY SERVICE_TYPE_CODE,SERVICE_TYPE_NAME
+        ORDER BY SERVICE_TYPE_CODE
+    </select>
+
+    <select id="getServiceTypeOfferMapping" resultMap="ServiceTypeOfferMapping">
+        select service_type_code,offer_name from service_type_offer_mapping order by service_type_code
+    </select>
+
+</mapper>

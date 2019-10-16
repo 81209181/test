@@ -4,6 +4,7 @@ package com.hkt.btu.sd.controller;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
+import com.hkt.btu.sd.facade.SdServiceTypeFacade;
 import com.hkt.btu.sd.facade.SdSymptomFacade;
 import com.hkt.btu.sd.facade.data.EditResultData;
 import com.hkt.btu.sd.facade.data.SdServiceTypeData;
@@ -28,6 +29,8 @@ public class SymptomController {
 
     @Resource(name = "sdSymptomFacade")
     SdSymptomFacade sdSymptomFacade;
+    @Resource(name = "serviceTypeFacade")
+    SdServiceTypeFacade serviceTypeFacade;
 
     @GetMapping("/create-symptom")
     public String showCreateSymptom(Model model) {
@@ -87,7 +90,7 @@ public class SymptomController {
             model.addAttribute("symptomGroupList", symptomGroupList);
         }
 
-        List<SdServiceTypeData> serviceTypeList = sdSymptomFacade.getServiceTypeList();
+        List<SdServiceTypeData> serviceTypeList = serviceTypeFacade.getServiceTypeList();
         if (CollectionUtils.isNotEmpty(serviceTypeList)) {
             model.addAttribute("serviceTypeList", serviceTypeList);
         }

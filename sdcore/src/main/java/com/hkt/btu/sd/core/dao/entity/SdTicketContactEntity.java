@@ -12,11 +12,11 @@ public class SdTicketContactEntity extends BaseEntity {
 
     private String contactName;
 
-    private String contactNumber;
+    private byte[] contactNumber;
 
-    private String contactMobile;
+    private byte[] contactMobile;
 
-    private String contactEmail;
+    private byte[] contactEmail;
 
     public String getContactTypeDesc(){
         switch (contactType) {
@@ -64,28 +64,27 @@ public class SdTicketContactEntity extends BaseEntity {
         this.contactName = contactName;
     }
 
-    public String getContactNumber() {
+    public byte[] getContactNumber() {
         return contactNumber;
     }
 
-    public void setContactNumber(String contactNumber) {
+    public void setContactNumber(byte[] contactNumber) {
         this.contactNumber = contactNumber;
     }
 
-    public String getContactMobile() {
+    public byte[] getContactMobile() {
         return contactMobile;
     }
 
-    public void setContactMobile(String contactMobile) {
+    public void setContactMobile(byte[] contactMobile) {
         this.contactMobile = contactMobile;
     }
 
-    public String getContactEmail() {
+    public byte[] getContactEmail() {
         return contactEmail;
     }
 
-    public void setContactEmail(String contactEmail) {
+    public void setContactEmail(byte[] contactEmail) {
         this.contactEmail = contactEmail;
     }
-
 }

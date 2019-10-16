@@ -64,6 +64,9 @@
     <alias name="sdSymptomService" alias="symptomService"/>
     <bean id="sdSymptomService" class="com.hkt.btu.sd.core.service.impl.SdSymptomServiceImpl"/>
 
+    <alias name="sdServiceTypeService" alias="serviceTypeService"/>
+    <bean id="sdServiceTypeService" class="com.hkt.btu.sd.core.service.impl.SdServiceTypeServiceImpl"/>
+
     <!-- Populator -->
     <alias name="sdUserBeanPopulator" alias="userBeanPopulator"/>
     <bean id="sdUserBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserBeanPopulator"/>
@@ -114,4 +117,7 @@
 
     <alias name="sdSymptmMappingBeanPopulator" alias="symptmMappingBeanPopulator" />
     <bean id="sdSymptmMappingBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdSymptomMappingBeanPopulator"/>
+
+    <alias name="sdServiceTypeOfferMappingBeanPopulator" alias="serviceTypeOfferMappingBeanPopulator" />
+    <bean id="sdServiceTypeOfferMappingBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdServiceTypeOfferMappingBeanPopulator" />
 </beans>
