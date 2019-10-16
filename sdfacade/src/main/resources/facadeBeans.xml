@@ -92,4 +92,7 @@
 
     <alias alias="symptomMappingDataPopulator" name="sdSymptomMappingDataPopulator"/>
     <bean class="com.hkt.btu.sd.facade.populator.SdSymptomMappingDataPopulator" id="sdSymptomMappingDataPopulator"/>
+
+    <alias alias="faultInfoDataPopulator" name="besFaultInfoDataPopulator"/>
+    <bean class="com.hkt.btu.sd.facade.populator.BesFaultInfoDataPopulator" id="besFaultInfoDataPopulator"/>
 </beans>

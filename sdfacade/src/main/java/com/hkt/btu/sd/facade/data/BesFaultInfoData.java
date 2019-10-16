@@ -1,6 +1,8 @@
 package com.hkt.btu.sd.facade.data;
 
-public class BesFaultInfoData {
+import com.hkt.btu.common.facade.data.DataInterface;
+
+public class BesFaultInfoData implements DataInterface {
 
     private String subscriberName;
     private long requestId;
