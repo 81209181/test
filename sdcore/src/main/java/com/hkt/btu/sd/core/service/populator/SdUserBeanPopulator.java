@@ -29,6 +29,7 @@ public class SdUserBeanPopulator extends AbstractBeanPopulator<SdUserBean> {
         target.setPasswordModifydate(source.getPasswordModifydate());
         target.setLoginTried(source.getLoginTried());
         target.setLdapDomain(source.getLdapDomain());
+        target.setDomainEmail(source.getDomainEmail());
         // SdUserBean
         target.setUserId(source.getUserId());
         target.setName(source.getName());

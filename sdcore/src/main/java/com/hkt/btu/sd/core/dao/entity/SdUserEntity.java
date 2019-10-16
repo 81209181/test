@@ -28,6 +28,7 @@ public class SdUserEntity extends BaseEntity {
     //private byte[] staffId;
 
     private String ldapDomain;
+    private String domainEmail;
     private String password;
     private LocalDateTime passwordModifydate;
     private Integer loginTried;
@@ -121,6 +122,13 @@ public class SdUserEntity extends BaseEntity {
         this.ldapDomain = ldapDomain;
     }
 
+    public String getDomainEmail() {
+        return domainEmail;
+    }
+
+    public void setDomainEmail(String domainEmail) {
+        this.domainEmail = domainEmail;
+    }
 
     @Override
     public boolean equals(Object o) {

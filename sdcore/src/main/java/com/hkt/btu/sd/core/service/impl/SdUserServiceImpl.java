@@ -198,9 +198,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
         // create user role relation in db
         if (!CollectionUtils.isEmpty(toGrantRoleIdList)) {
-            for (String roleId : toGrantRoleIdList) {
-                sdUserRoleMapper.insertUserUserRole(employeeNumber, roleId);
-            }
+            sdUserRoleMapper.insertUserUserRole(employeeNumber, toGrantRoleIdList);
         }
 
         LOG.info("User (id: " + employeeNumber + ") created.");
@@ -252,9 +250,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
         // create user group relation in db
         if (!CollectionUtils.isEmpty(roleIdList)) {
-            for (String groupId : roleIdList) {
-                sdUserRoleMapper.insertUserUserRole(userId, groupId);
-            }
+            sdUserRoleMapper.insertUserUserRole(userId, roleIdList);
         }
 
         LOG.info("User (id: " + userId + ") " + email + " created.");
@@ -275,7 +271,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
     @Override
     @Transactional
-    public void updateUser(String userId, String newName, String newMobile, List<String> userRoleIdList)
+    public void updateUser(String userId, String newName, String newMobile, String email, List<String> userRoleIdList)
             throws UserNotFoundException, InsufficientAuthorityException {
         SdUserBean currentUser = (SdUserBean) this.getCurrentUserBean();
         if (currentUser.getUserId().equals(userId)) {
@@ -289,9 +285,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         String mobile = StringUtils.equals(newMobile, targetUserBean.getMobile()) ? null : newMobile;
         String encryptedMobile = StringUtils.isEmpty(mobile) ? null : mobile;
 
-        userRoleService.checkUserRole(modifier.getAuthorities(), userRoleIdList);
-
-        sdUserMapper.updateUser(userId, name, encryptedMobile, modifier.getUserId());
+        sdUserMapper.updateUser(userId, name, encryptedMobile, email, modifier.getUserId());
 
         // update user role
         userRoleService.updateUserRoleByUserId(userId, userRoleIdList);
@@ -398,7 +392,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     @Override
     @Transactional
     public BtuUserBean verifyLdapUser(BtuUser user, BtuUserBean userDetailBean) {
-        if (StringUtils.isEmpty(userDetailBean.getEmail()) &&
+        if (StringUtils.isEmpty(userDetailBean.getDomainEmail()) &&
                 StringUtils.isNotEmpty(userDetailBean.getLdapDomain())) {
             BtuUserBean btuUserBean = super.verifyLdapUser(user, userDetailBean);
             String userId = userDetailBean.getUserId();
@@ -487,42 +481,18 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
 
-        // make email lower case (**assume email are all lower case)
-        email = StringUtils.lowerCase(email);
-
-        // get Current User Role
-        SdUserBean currentUserBean = (SdUserBean) getCurrentUserBean();
-
         LOG.info(String.format(
                 "Searching user with {userId: %s, email: %s, name: %s}",
                 userId, email, name));
 
-        Set<GrantedAuthority> authorities = currentUserBean.getAuthorities();
-        Set<SdUserEntity> sdUserEntitySet = new HashSet<>();
+        Integer totalCount = sdUserMapper.countSearchUser(userId, email, name);
 
-        Integer totalCount = 0;
-
-        for (GrantedAuthority authority : authorities) {
-            if (authority instanceof SimpleGrantedAuthority) {
-                String roleId = authority.getAuthority();
-                if (SdUserRoleEntity.SYS_ADMIN.equals(roleId)) {
-                    totalCount += sdUserMapper.countSearchUser(roleId, userId, email, name);
-                    sdUserEntitySet.addAll(sdUserMapper.searchUser(offset, pageSize, roleId, userId, email, name));
-                    break;
-                }
-                if (roleId.contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR)) {
-                    totalCount += sdUserMapper.countSearchUser(roleId, userId, email, name);
-                    sdUserEntitySet.addAll(sdUserMapper.searchUser(offset, pageSize, roleId, userId, email, name));
-                }
-            }
-        }
-
+        List<SdUserEntity> sdUserEntityList = sdUserMapper.searchUser(offset, pageSize, userId, email, name);
 
         List<SdUserBean> sdUserBeanList = new LinkedList<>();
-        if (!CollectionUtils.isEmpty(sdUserEntitySet)) {
-            for (SdUserEntity sdUserEntity : sdUserEntitySet) {
+        if (!CollectionUtils.isEmpty(sdUserEntityList)) {
+            for (SdUserEntity sdUserEntity : sdUserEntityList) {
                 SdUserBean sdUserBean = new SdUserBean();
-                sdUserBeanPopulator.populate(sdUserEntity, sdUserBean);
                 sdUserBeanPopulator.populate(sdUserEntity, sdUserBean);
                 sdUserBeanList.add(sdUserBean);
             }
@@ -555,7 +525,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         List<SdUserRoleEntity> userRoleByUserId = sdUserRoleMapper.getUserRoleByUserId(oldUserId);
 
         sdUserMapper.changeUserType(oldUserId, name, mobile, userId, null, email, currentUserBean.getUserId());
-        changeUserIdInUserUserRole(oldUserId, userId, userRoleByUserId);
+        userRoleService.changeUserIdInUserUserRole(oldUserId, userId, userRoleByUserId);
 
         return userId;
     }
@@ -584,7 +554,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         sdUserMapper.changeUserType(oldUserId, name, mobile, userId, null, email, currentUserBean.getUserId());
 
         // Change USER_ID IN USER_USER_ROLE
-        changeUserIdInUserUserRole(oldUserId, userId, userRoleByUserId);
+        userRoleService.changeUserIdInUserUserRole(oldUserId, userId, userRoleByUserId);
 
         return userId;
     }
@@ -604,6 +574,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         }
         // Get CurrentUser For ModifyBy
         SdUserBean currentUserBean = (SdUserBean) getCurrentUserBean();
+
         // Get the User Role
         List<SdUserRoleEntity> userRoleByUserId = sdUserRoleMapper.getUserRoleByUserId(oldUserId);
 
@@ -611,7 +582,9 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         sdUserMapper.changeUserType(oldUserId, name, mobile, employeeNumber, ldapDomain, email, currentUserBean.getUserId());
 
         // Change USER_ID IN USER_USER_ROLE
-        changeUserIdInUserUserRole(oldUserId, employeeNumber, userRoleByUserId);
+        userRoleService.changeUserIdInUserUserRole(oldUserId, employeeNumber, userRoleByUserId);
+
+        LOG.info("User :" + oldUserId + "has been change to LDAP user =>" + employeeNumber);
 
         return employeeNumber;
     }
@@ -687,14 +660,6 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
         if (user == null) {
             throw new UserNotFoundException("User not Exist.");
-        }
-    }
-
-    private void changeUserIdInUserUserRole(String oldUserId, String userId, List<SdUserRoleEntity> userRoleByUserId) {
-        // Change USER_ID IN USER_USER_ROLE
-        sdUserRoleMapper.deleteUserRoleByUserId(oldUserId);
-        for (SdUserRoleEntity entity : userRoleByUserId) {
-            sdUserRoleMapper.insertUserUserRole(userId, entity.getRoleId());
         }
     }
 }

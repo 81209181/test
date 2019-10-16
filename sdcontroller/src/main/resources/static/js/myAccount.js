@@ -11,6 +11,7 @@ $(document).ready(function () {
     $("#my-ldap-domain").show();
     $("#update-pwd-h1").hide();
     $("#update-pwd-form").hide();
+    $("#my-domain-email").show();
 });
 
 function ajaxUpdatePwd() {
@@ -66,6 +67,7 @@ function ajaxGetCurrentUser(){
             $("#my-login-tried").val(data.loginTried);
             $("#my-password-modify-date").val(data.passwordModifyDate);
             $("#my-ldap-domain").val(data.ldapDomain);
+            $("#my-domain-email").val(data.domainEmail);
 
             $("#my-company-id").val(data.companyId);
             $("#my-company-name").val(data.companyName);
@@ -78,6 +80,7 @@ function ajaxGetCurrentUser(){
                 $("#my-ldap-domain").hide();
                 $("#update-pwd-h1").show();
                 $("#update-pwd-form").show();
+                $("#my-domain-email").hide();
             }
             populateSelectOptions($("#my-user-role"), data.userRoleList);
         },

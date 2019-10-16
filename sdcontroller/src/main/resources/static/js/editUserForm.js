@@ -13,14 +13,11 @@ function ajaxGetUser(){
             $("#edit-login-tried").val(data.loginTried);
             $("#edit-password-modify-date").val(data.passwordModifyDate);
             $("#edit-ldap-domain").val(data.ldapDomain);
+            $("#edit-domain-email").val(data.domainEmail);
 
             $("#edit-company-name").val(data.companyName);
             $("#edit-company-id").val(data.companyId);
             $("#edit-staff-id").val(data.staffId);
-
-            let userId = data.userId;
-
-            checkUserType(userId);
 
             if (data.ldapDomain == null) {
                 $("#btnActivateUser").show();
@@ -30,6 +27,7 @@ function ajaxGetUser(){
                 $("label.emailUserInfo").show();
                 $("label.ldapUserInfo").hide();
                 $("#edit-ldap-domain").hide();
+                $("#edit-domain-email").hide();
             }
         },
         error: function (e) {
@@ -46,6 +44,7 @@ function ajaxUpdateUser() {
     input["name"] = $("#edit-name").val();
     input["mobile"] = $("#edit-mobile").val();
     input["staffId"] = $("#edit-staff-id").val();
+    input["email"] = $("#edit-email").val();
 
     input["userGroupAdmin"] = $("#edit-user-group-admin").val() ? ($("#edit-user-group-admin").prop("checked") ? true : false) : null;
     input["userGroupUser"] = $("#edit-user-group-user").val() ? ($("#edit-user-group-user").prop("checked") ? true : false) : null;
@@ -166,7 +165,7 @@ $(document).ready(function() {
     $("label.emailUserInfo").hide();
     $("label.ldapUserInfo").show();
     $("#edit-ldap-domain").show();
-
+    $("#edit-domain-email").show();
 
     // load user
     ajaxGetUser();

@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.core.service;
 
+import com.hkt.btu.sd.core.dao.entity.SdUserRoleEntity;
 import com.hkt.btu.sd.core.exception.InsufficientAuthorityException;
 import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,4 +24,6 @@ public interface SdUserRoleService {
     void checkUserRole(Set<GrantedAuthority> authorities, List<String> roleEntityList) throws InsufficientAuthorityException;
     boolean checkSameTeamRole(String name, String createBy);
     boolean isEligibleToGrantUserRole(List<String> roleIdList);
+
+    void changeUserIdInUserUserRole(String oldUserId, String userId, List<SdUserRoleEntity> userRoleByUserId);
 }

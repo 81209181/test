@@ -16,6 +16,8 @@ public class SdUserBean extends BtuUserBean {
     private String mobile;
     private String staffId;
     private String ldapDomain;
+    private String domainEmail;
+
 
     public String getUserId() {
         return userId;
@@ -65,4 +67,11 @@ public class SdUserBean extends BtuUserBean {
         this.ldapDomain = ldapDomain;
     }
 
+    public String getDomainEmail() {
+        return domainEmail;
+    }
+
+    public void setDomainEmail(String domainEmail) {
+        this.domainEmail = domainEmail;
+    }
 }

@@ -70,14 +70,22 @@
     </select>
 
     <insert id="insertUserUserRole">
-        INSERT INTO USER_USER_ROLE (USER_ID, ROLE_ID)
-        VALUES (#{userId}, #{roleId})
+        INSERT ALL
+        <foreach item="roleId" index="index" collection="userRoleList">
+            INTO USER_USER_ROLE (USER_ID, ROLE_ID)
+            VALUES (#{userId}, #{roleId})
+        </foreach>
+        SELECT 1 FROM DUAL
     </insert>
 
     <delete id="deleteUserRoleByUserId">
         DELETE
         FROM USER_USER_ROLE
         WHERE USER_ID = #{userId}
+        AND ROLE_ID IN
+        <foreach item="roleId" index="index" collection="userRoleList" open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
     </delete>
 
     <select id="getUserRoleByRoleId" resultMap="SdUserRoleEntity">
@@ -108,19 +116,26 @@
 
     <select id="getTeamRoleByUserId" resultType="String">
         select uur.ROLE_ID
-        from USER_USER_ROLE uur join USER_ROLE ur
-        on ur.ROLE_ID= uur.ROLE_ID
-        and ur.PARENT_ROLE_ID in ('OPT','ENG')
-        where uur.USER_ID =#{userId}
+        from USER_USER_ROLE uur
+                 join USER_ROLE ur
+                      on ur.ROLE_ID = uur.ROLE_ID
+                          and ur.PARENT_ROLE_ID in ('OPT', 'ENG')
+        where uur.USER_ID = #{userId}
     </select>
 
     <select id="getTopUserRole" resultMap="SdUserRoleEntity">
-        select * from USER_ROLE where PARENT_ROLE_ID is null
+        select *
+        from USER_ROLE
+        where PARENT_ROLE_ID is null
     </select>
 
     <select id="getUserRoleByParentRoleId" resultMap="SdUserRoleEntity">
-        select * from USER_ROLE
-        where
-            PARENT_ROLE_ID = #{roleId}
+        select *
+        from USER_ROLE
+        where PARENT_ROLE_ID = #{roleId}
     </select>
+
+    <update id="updateUserUserRoleByUserId">
+        update USER_USER_ROLE set USER_ID = #{newUserId} where USER_ID = #{oldUserId}
+    </update>
 </mapper>

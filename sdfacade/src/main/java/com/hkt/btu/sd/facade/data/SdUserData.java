@@ -11,6 +11,7 @@ public class SdUserData implements DataInterface {
     private String mobile;
     private String email;
     private String ldapDomain;
+    private String domainEmail;
 
     private String status;
     private String passwordModifyDate;
@@ -116,5 +117,13 @@ public class SdUserData implements DataInterface {
 
     public void setLdapDomain(String ldapDomain) {
         this.ldapDomain = ldapDomain;
+    }
+
+    public String getDomainEmail() {
+        return domainEmail;
+    }
+
+    public void setDomainEmail(String domainEmail) {
+        this.domainEmail = domainEmail;
     }
 }
