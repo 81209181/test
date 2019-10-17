@@ -76,9 +76,14 @@
 
     <update id="updateTicketStatus">
         update TICKET_MAS
-        set status = #{status},
-        MODIFYBY= #{userId},
-        MODIFYDATE=sysdate
+        <set >
+            status = #{status},
+            MODIFYBY= #{userId},
+            MODIFYDATE=sysdate,
+            <if test="status == 'CP'">
+                COMPLETE_DATE = sysdate
+            </if>
+        </set>
         where TICKET_MAS_ID =#{ticketMasId}
     </update>
 

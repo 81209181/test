@@ -75,9 +75,12 @@ public class TicketController {
 
     @PostMapping("contact/update")
     public ResponseEntity<?> updateContactInfo(@RequestBody List<SdTicketContactData> contactList) {
-        if (contactList.stream().map(SdTicketContactData::getTicketMasId).findFirst()
-                .filter(ticketMasId -> ticketFacade.isCancel(String.valueOf(ticketMasId))).isPresent()) {
-            return ResponseEntity.badRequest().body("The ticket has been cancelled.");
+        try {
+            contactList.stream().map(SdTicketContactData::getTicketMasId).findFirst().ifPresent(ticketMasId -> {
+                ticketFacade.isAllow(String.valueOf(ticketMasId),SdTicketMasData.ACTION_TYPE.COMPLETE);
+            });
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
         String errorMsg = ticketFacade.updateContactInfo(contactList);
         return ResponseEntity.ok(errorMsg);
@@ -137,9 +140,12 @@ public class TicketController {
 
     @PostMapping("/service/update")
     public ResponseEntity<?> updateServiceInfo(@RequestBody List<RequestTicketServiceData> ticketServiceList) {
-        if (ticketServiceList.stream().map(RequestTicketServiceData::getTicketMasId).findFirst()
-                .filter(ticketMasId -> ticketFacade.isCancel(String.valueOf(ticketMasId))).isPresent()) {
-            return ResponseEntity.badRequest().body("The ticket has been cancelled.");
+        try {
+            ticketServiceList.stream().map(RequestTicketServiceData::getTicketMasId).findFirst().ifPresent(ticketMasId -> {
+                ticketFacade.isAllow(String.valueOf(ticketMasId), StringUtils.EMPTY);
+            });
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
         String errorMsg = ticketFacade.updateServiceInfo(ticketServiceList);
         if (StringUtils.isEmpty(errorMsg)) {
@@ -167,11 +173,10 @@ public class TicketController {
 
     @PostMapping("submit")
     public ResponseEntity<?> submit(Principal principal, WfmRequestDetailsBeanDate wfmRequestDetailsBeanDate) throws JsonProcessingException {
-        if (ticketFacade.isCancel(wfmRequestDetailsBeanDate.getTicketMasId())) {
-            return ResponseEntity.badRequest().body("The ticket has been cancelled.");
-        }
-        if (ticketFacade.getService(Integer.valueOf(wfmRequestDetailsBeanDate.getTicketMasId())).map(SdTicketServiceData::getJobId).isPresent()) {
-            return ResponseEntity.badRequest().body("This ticket has been submitted.");
+        try {
+            ticketFacade.isAllow(wfmRequestDetailsBeanDate.getTicketMasId(), StringUtils.EMPTY);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
         Integer jobId = wfmApiFacade.createJob(wfmRequestDetailsBeanDate, principal.getName());
         if (jobId > 0) {
@@ -200,8 +205,10 @@ public class TicketController {
 
     @PostMapping("/post-create-ticket-remarks")
     public ResponseEntity<?> createTicketRemarks(@RequestParam Integer ticketMasId, @RequestParam String remarks) {
-        if (ticketFacade.isCancel(String.valueOf(ticketMasId))) {
-            return ResponseEntity.badRequest().body("The ticket has been cancelled.");
+        try {
+            ticketFacade.isAllow(String.valueOf(ticketMasId),SdTicketMasData.ACTION_TYPE.COMPLETE);
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
         String errorMsg = ticketFacade.createTicketRemarks(ticketMasId, remarks);
         if (errorMsg == null) {
@@ -229,5 +236,11 @@ public class TicketController {
     public ResponseEntity<?> getTicketInfo(@RequestParam Integer ticketMasId) {
         SdTicketData ticketData = ticketFacade.getTicketInfo(ticketMasId);
         return ResponseEntity.ok(ticketData);
+    }
+
+    @PostMapping("close")
+    public ResponseEntity<?> ticketClose(int ticketMasId,String reasonType,String reasonContent,Principal principal) {
+        ticketFacade.closeTicket(ticketMasId,reasonType,reasonContent,principal.getName());
+        return ResponseEntity.ok(SimpleAjaxResponse.of());
     }
 }

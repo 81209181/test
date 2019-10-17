@@ -6,6 +6,11 @@ import java.time.LocalDateTime;
 
 public class SdTicketMasData implements DataInterface {
 
+    public static class ACTION_TYPE{
+        public static final String WORKING ="WORKING";
+        public static final String COMPLETE ="COMPLETE";
+    }
+
     private int ticketMasId ;
 
     private String custCode;

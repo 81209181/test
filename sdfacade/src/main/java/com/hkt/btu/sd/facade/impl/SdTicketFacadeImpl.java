@@ -20,7 +20,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class SdTicketFacadeImpl implements SdTicketFacade {
@@ -57,7 +60,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         SdTicketMasData ticketMasData = new SdTicketMasData();
         return ticketService.getTicket(ticketId).map(sdTicketMasBean -> {
             ticketMasDataPopulator.populate(sdTicketMasBean, ticketMasData);
-            auditTrailFacade.insertViewTicketAuditTrail(userService.getCurrentUserUserId(),String.valueOf(ticketMasData.getTicketMasId()));
+            auditTrailFacade.insertViewTicketAuditTrail(userService.getCurrentUserUserId(), String.valueOf(ticketMasData.getTicketMasId()));
             return ticketMasData;
         });
     }
@@ -107,7 +110,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             ticketMasId = StringUtils.isEmpty(ticketMasId) ? null : ticketMasId;
             custCode = StringUtils.isEmpty(custCode) ? null : custCode;
 
-            pageBean = ticketService.searchTicketList(pageable, dateFrom, dateTo, status,ticketMasId,custCode);
+            pageBean = ticketService.searchTicketList(pageable, dateFrom, dateTo, status, ticketMasId, custCode);
         } catch (AuthorityNotFoundException e) {
             return new PageData<>(e.getMessage());
         }
@@ -267,7 +270,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
     @Override
     public BesSubFaultData getFaultInfo(String subscriberId) {
-        if(StringUtils.isEmpty(subscriberId)){
+        if (StringUtils.isEmpty(subscriberId)) {
             return BesSubFaultData.MISSING_PARAM;
         }
 
@@ -296,7 +299,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             BesSubFaultData besSubFaultData = new BesSubFaultData();
             besSubFaultData.setList(besFaultInfoDataList);
             return besSubFaultData;
-        } catch (Exception e){
+        } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             return BesSubFaultData.FAIL;
         }
@@ -329,7 +332,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
     @Override
     public void cancelTicket(int ticketMasId, String userId) {
-        ticketService.updateTicketStatus(ticketMasId,SdTicketMasBean.STATUS_TYPE_CODE.CANCEL,userId);
+        ticketService.updateTicketStatus(ticketMasId, SdTicketMasBean.STATUS_TYPE_CODE.CANCEL, userId);
     }
 
     @Override
@@ -351,5 +354,33 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             }
         }
         return dataList;
+    }
+
+    @Override
+    public void closeTicket(int ticketMasId, String reasonType, String reasonContent, String userId) {
+        ticketService.closeTicket(ticketMasId, reasonType, reasonContent, userId);
+    }
+
+    @Override
+    public void isAllow(String ticketMasId, String action) {
+        switch (action) {
+            case SdTicketMasData.ACTION_TYPE.WORKING:
+                ticketService.getTicket(Integer.valueOf(ticketMasId)).map(SdTicketMasBean::getStatus)
+                        .filter(s -> s.equals(SdTicketMasBean.STATUS_TYPE.OPEN)).orElseThrow(() -> new RuntimeException("This ticket has been submitted."));
+                break;
+            case SdTicketMasData.ACTION_TYPE.COMPLETE:
+                ticketService.getTicket(Integer.valueOf(ticketMasId)).map(SdTicketMasBean::getStatus)
+                        .filter(s -> !s.equals(SdTicketMasBean.STATUS_TYPE.COMPLETE)).orElseThrow(() -> new RuntimeException("This ticket has been completed."));
+                break;
+            default:
+                ticketService.getTicket(Integer.valueOf(ticketMasId)).map(SdTicketMasBean::getStatus)
+                        .filter(s -> List.of(SdTicketMasBean.STATUS_TYPE.COMPLETE, SdTicketMasBean.STATUS_TYPE.WORKING).contains(s)).ifPresent(s -> {
+                    if (s.equals(SdTicketMasBean.STATUS_TYPE.COMPLETE)) {
+                        throw new RuntimeException("This ticket has been completed.");
+                    } else {
+                        throw new RuntimeException("This ticket has been submitted.");
+                    }
+                });
+        }
     }
 }

@@ -76,7 +76,7 @@ $().ready(function(){
     //contact
     $.get('/ticket/contact/'+ticketMasId,function(res){
         if (res.length == 0) {
-            if(ticketStatus != 'CANCEL'){
+            if(ticketStatus != "COMPLETE"){
                 let contact =$('#tempContact').children().clone();
                 contact.find('input[name=contactType]').val("On-site Contact");
                 contact.appendTo($('#contact_list'));
@@ -220,20 +220,32 @@ $().ready(function(){
             showErrorMsg(responseError);
         })
     })
-    // cancel button
-    $('#btnTicketCancel').on('click',function(){
-        $.post('/ticket/cancel',{
-            ticketMasId:ticketMasId
-        },function(res){
-            if(res.success){
-               location.reload();
-            }
-        })
+    // close button
+    $('#btnTicketClose').on('click',function(){
+        $('.modal').modal('show');
     })
 
-    if(ticketStatus=='CANCEL'){
-        $('.card').find('button').attr('disabled',true);
-    }
+    $('#btnReasonSubmit').on('click',function(){
+        let form =$('.needs-validation').get(0);
+        if(form.checkValidity()){
+            $.post('/ticket/close',{
+                ticketMasId:ticketMasId,
+                reasonType:$('select[name=reasonType]').val(),
+                reasonContent:$('textarea[name=reasonContent]').val()
+            },function(res){
+                if(res.success){
+                    location.reload();
+                }
+            }).fail(function(e){
+                var responseError = e.responseText ? e.responseText : "Get failed.";
+                console.log("ERROR : ", responseError);
+                showErrorMsg(responseError);
+            })
+        }
+        $(form).addClass("was-validated");
+    })
+
+
 })
 
 

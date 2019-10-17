@@ -317,4 +317,12 @@ public class SdTicketServiceImpl implements SdTicketService {
 
         return beanList;
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void closeTicket(int ticketMasId, String reasonType, String reasonContent, String userId) {
+        ticketMasMapper.updateTicketStatus(ticketMasId,SdTicketMasBean.STATUS_TYPE_CODE.COMPLETE,userId);
+        ticketRemarkMapper.insertTicketRemarks(ticketMasId, SdTicketRemarkEntity.REMARKS_TYPE.SYSTEM,
+                String.format("ticket status update to close, reason: %s - %s",reasonType,reasonContent), userId);
+    }
 }
