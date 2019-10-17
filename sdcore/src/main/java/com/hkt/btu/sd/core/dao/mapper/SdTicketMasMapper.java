@@ -31,4 +31,6 @@ public interface SdTicketMasMapper {
     void updateTicketStatus(@Param("ticketMasId") int ticketMasId,
                             @Param("status") String status,
                             @Param("userId") String userId);
+
+    List<SdTicketMasEntity> getTicketByServiceNo(@Param("serviceNo")String serviceNo, @Param("status")String status);
 }

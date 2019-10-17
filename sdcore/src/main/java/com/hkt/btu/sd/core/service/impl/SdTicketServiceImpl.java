@@ -300,4 +300,20 @@ public class SdTicketServiceImpl implements SdTicketService {
 
         ticketServiceMapper.insertFaults(ticketDetId, faults, createBy, createBy);
     }
+
+    @Override
+    public List<SdTicketMasBean> getTicketByServiceNo(String serviceNo, String status) {
+        List<SdTicketMasEntity> entityList = ticketMasMapper.getTicketByServiceNo(serviceNo, status);
+        if (CollectionUtils.isEmpty(entityList)) {
+            return null;
+        }
+        List<SdTicketMasBean> beanList = new LinkedList<>();
+        for (SdTicketMasEntity entity : entityList) {
+            SdTicketMasBean bean = new SdTicketMasBean();
+            ticketMasBeanPopulator.populate(entity, bean);
+            beanList.add(bean);
+        }
+
+        return beanList;
+    }
 }

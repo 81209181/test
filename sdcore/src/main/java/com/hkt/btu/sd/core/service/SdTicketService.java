@@ -49,4 +49,6 @@ public interface SdTicketService {
     List<SdTicketServiceBean> findServiceBySubscriberId(String subscriberId);
 
     void updateTicketStatus(int ticketMasId, String status, String userId);
+
+    List<SdTicketMasBean> getTicketByServiceNo(String serviceNom, String status);
 }
