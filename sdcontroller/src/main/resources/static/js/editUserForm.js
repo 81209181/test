@@ -28,6 +28,7 @@ function ajaxGetUser(){
                 $("label.ldapUserInfo").hide();
                 $("#edit-ldap-domain").hide();
                 $("#edit-domain-email").hide();
+                $("#dropdownMenu1").show();
             }
         },
         error: function (e) {
@@ -166,7 +167,7 @@ $(document).ready(function() {
     $("label.ldapUserInfo").show();
     $("#edit-ldap-domain").show();
     $("#edit-domain-email").show();
-
+    $("#dropdownMenu1").hide();
     // load user
     ajaxGetUser();
 });
