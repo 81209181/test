@@ -55,7 +55,11 @@ public class TicketController {
         if (StringUtils.isEmpty(serviceNo) || StringUtils.isEmpty(serviceType)) {
             return ResponseEntity.badRequest().body("Service No. / Service Type is empty.");
         }
-        return ResponseEntity.ok(ticketFacade.createQueryTicket(custCode, serviceNo, serviceType, subsId));
+        List<SdTicketMasData> dataList = ticketFacade.getTicketByServiceNo(serviceNo);
+        if (CollectionUtils.isNotEmpty(dataList)) {
+            return ResponseEntity.ok(ResponseTicketData.of(false, dataList));
+        }
+        return ResponseEntity.ok(ResponseTicketData.of(true, ticketFacade.createQueryTicket(custCode, serviceNo, serviceType, subsId)));
     }
 
     @GetMapping("")

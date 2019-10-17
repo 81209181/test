@@ -338,4 +338,18 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                 .map(SdTicketMasBean::getStatus)
                 .filter(s -> s.equals(SdTicketMasBean.STATUS_TYPE.CANCEL)).isPresent();
     }
+
+    @Override
+    public List<SdTicketMasData> getTicketByServiceNo(String serviceNo) {
+        List<SdTicketMasBean> beanList = ticketService.getTicketByServiceNo(serviceNo, SdTicketMasBean.STATUS_TYPE_CODE.COMPLETE);
+        List<SdTicketMasData> dataList = new LinkedList<>();
+        if (!CollectionUtils.isEmpty(beanList)) {
+            for (SdTicketMasBean bean : beanList) {
+                SdTicketMasData data = new SdTicketMasData();
+                ticketMasDataPopulator.populate(bean, data);
+                dataList.add(data);
+            }
+        }
+        return dataList;
+    }
 }

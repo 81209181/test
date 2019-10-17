@@ -16,7 +16,19 @@ $().ready(function(){
             return;
         }
         $.post('/ticket/query/create',$('form').serialize(),function(res){
-            $(location).attr('href',ctx+'/ticket?ticketMasId='+ res);
+            if (res.success) {
+                $(location).attr('href',ctx+'/ticket?ticketMasId='+ res.data);
+            } else {
+                var responseError = "The service number already exists in Ticket-";
+                let ticketMasIds = res.data;
+                $.each(ticketMasIds,function(index,j){
+                    if (index > 0) {
+                        responseError += "/ ";
+                    }
+                    responseError += "<a href='"+ctx+"/ticket?ticketMasId="+j.ticketMasId+"'>"+j.ticketMasId+"</a> ";
+                });
+                showErrorMsg(responseError);
+            }
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";
             console.log("ERROR : ", responseError);
