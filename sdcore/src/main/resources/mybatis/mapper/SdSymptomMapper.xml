@@ -15,16 +15,6 @@
         <result column="MODIFYBY" property="modifyby" />
     </resultMap>
 
-    <resultMap id="ServiceTypeEntity" type="com.hkt.btu.sd.core.dao.entity.SdServiceTypeEntity" >
-        <result column="SERVICE_TYPE_CODE" property="serviceTypeCode" />
-        <result column="SERVICE_TYPE_NAME" property="serviceTypeName" />
-
-        <result column="CREATEDATE" property="createdate" />
-        <result column="CREATEBY" property="createby" />
-        <result column="MODIFYDATE" property="modifydate" />
-        <result column="MODIFYBY" property="modifyby" />
-    </resultMap>
-
     <resultMap id="SymptomMappingEntity" type="com.hkt.btu.sd.core.dao.entity.SdSymptomMappingEntity" >
         <result column="SERVICE_TYPE_CODE" property="serviceTypeCode" />
         <result column="SYMPTOM_GROUP_CODE" property="symptomGroupCode" />
@@ -44,13 +34,6 @@
         insert into symptom (SYMPTOM_CODE,SYMPTOM_DESCRIPTION,SYMPTOM_GROUP_CODE,CREATEBY,MODIFYBY)
         values (#{symptomCode},#{symptomDescription},#{symptomGroupCode},#{createby},#{createby})
     </insert>
-
-    <select id="getServiceTypeList" resultMap="ServiceTypeEntity">
-        SELECT SERVICE_TYPE_CODE,SERVICE_TYPE_NAME
-        FROM SERVICE_TYPE
-        GROUP BY SERVICE_TYPE_CODE,SERVICE_TYPE_NAME
-        ORDER BY SERVICE_TYPE_CODE
-    </select>
 
     <insert id="createSymptomMapping">
         INSERT ALL

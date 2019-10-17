@@ -9,8 +9,5 @@ public class SdTicketContactBeanPopulator extends AbstractBeanPopulator<SdTicket
     public void populate(SdTicketContactEntity source, SdTicketContactBean target) {
         target.setContactType(source.getContactTypeDesc());
         target.setContactName(source.getContactName());
-        target.setContactEmail(source.getContactEmail());
-        target.setContactNumber(source.getContactNumber());
-        target.setContactMobile(source.getContactMobile());
     }
 }

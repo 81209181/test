@@ -49,9 +49,9 @@ CREATE TABLE TICKET_CONTACT
 
     CONTACT_TYPE            varchar2(5), -- {Customer: 'CUST', Office Admin: 'ADMIN', On-site Contact: 'SITE', Caller: 'CALL'}
     CONTACT_NAME            varchar2(100),
-    CONTACT_NUMBER          varchar2(100),
-    CONTACT_MOBILE          varchar2(100),
-    CONTACT_EMAIL           varchar2(100),
+    CONTACT_NUMBER          BLOB,
+    CONTACT_MOBILE          BLOB,
+    CONTACT_EMAIL           BLOB,
 
     CREATEDATE         date                    default SYSDATE not null,
     CREATEBY           varchar2(10)            not null,
@@ -137,6 +137,16 @@ CREATE TABLE SERVICE_TYPE
     MODIFYDATE                    date                     default SYSDATE not null,
     MODIFYBY                      varchar2(10)             not null,
     CONSTRAINT PK_SERVICE_TYPE PRIMARY KEY (SERVICE_TYPE_CODE)
+);
+
+--------------------------------------------------------------------------------------------------
+CREATE TABLE SERVICE_TYPE_OFFER_MAPPING
+(
+    SERVICE_TYPE_CODE             varchar2(10)             not null,
+    OFFER_NAME                    varchar2(40)             not null,
+
+    CREATEDATE                    date                     default SYSDATE not null,
+    CREATEBY                      varchar2(10)             not null
 );
 --------------------------------------------------------------------------------------------------
 CREATE TABLE SYMPTOM_GROUP

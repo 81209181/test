@@ -9,10 +9,7 @@ import com.hkt.btu.sd.facade.SdAuditTrailFacade;
 import com.hkt.btu.sd.facade.SdRequestCreateFacade;
 import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.data.*;
-import com.hkt.btu.sd.facade.populator.SdTicketContactDataPopulator;
-import com.hkt.btu.sd.facade.populator.SdTicketMasDataPopulator;
-import com.hkt.btu.sd.facade.populator.SdTicketRemarkDataPopulator;
-import com.hkt.btu.sd.facade.populator.SdTicketServiceDataPopulator;
+import com.hkt.btu.sd.facade.populator.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -23,7 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -48,6 +44,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     SdTicketServiceDataPopulator ticketServiceDataPopulator;
     @Resource(name = "ticketRemarkDataPopulator")
     SdTicketRemarkDataPopulator ticketRemarkDataPopulator;
+    @Resource(name = "faultInfoDataPopulator")
+    BesFaultInfoDataPopulator faultInfoDataPopulator;
 
     @Override
     public int createQueryTicket(String custCode, String serviceNo, String serviceType, String subsId) {
@@ -269,53 +267,38 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
     @Override
     public BesSubFaultData getFaultInfo(String subscriberId) {
-        BesSubFaultData faultData = new BesSubFaultData();
+        if(StringUtils.isEmpty(subscriberId)){
+            return BesSubFaultData.MISSING_PARAM;
+        }
+
         try {
-            return Optional.ofNullable(subscriberId).filter(StringUtils::isNotBlank).map(s -> {
-                faultData.setList(ticketService.findServiceBySubscriberId(s).stream().map(sdTicketServiceBean -> {
-                    BesFaultInfoData info = requestCreateFacade.getCustomerInfo(sdTicketServiceBean.getServiceId());
-                    info.setSubscriberName(sdTicketServiceBean.getSubsId());
-                    info.setRequestId(sdTicketServiceBean.getTicketMasId());
-                    info.setRepeatedGroupIdCount(0);
-                    info.setRepeatedSubscriberIdCount(0);
-                    info.setSubFaultId(String.valueOf(sdTicketServiceBean.getTicketDetId()));
-                    Optional.ofNullable(sdTicketServiceBean.getFaultsList()).ifPresent(list -> list.forEach(sdSymptomBean -> {
-                        info.setFaultId(sdSymptomBean.getSymptomCode());
-                        info.setSymptom(sdSymptomBean.getSymptomDescription());
-                        info.setMainFaultCode(sdSymptomBean.getSymptomGroupName());
-                        info.setSubFaultId(sdSymptomBean.getSymptomCode());
-                    }));
-                    Optional.ofNullable(getTicketMas(sdTicketServiceBean.getTicketMasId())).ifPresent(ticketMasData -> {
-                        info.setSubFaultStatus(ticketMasData.getStatus());
-                        info.setCreatedBy(ticketMasData.getCreateBy());
-                        info.setCreatedDate(ticketMasData.getCreateDate().toString());
-                        String modifyDate = Optional.ofNullable(ticketMasData.getModifyDate()).map(LocalDateTime::toString).orElse(StringUtils.EMPTY);
-                        info.setLastUpdatedDate(modifyDate);
-                        info.setLastUpdatedBy(ticketMasData.getModifyBy());
-                        info.setClosedDate(String.format("%s - %s", ticketMasData.getStatus(), modifyDate));
-                    });
-                    return info;
-                }).collect(Collectors.toList()));
-                if (faultData.getList().isEmpty()) {
-                    faultData.setMsgCode("CD0001");
-                    faultData.setDescription("No Fault History Found");
-                } else {
-                    faultData.setMsgCode("CD0000");
-                    faultData.setDescription("SUCCESS");
-                }
-                return faultData;
-            }).orElseGet(() -> {
-                faultData.setMsgCode("CD0002");
-                faultData.setDescription("Missing Parameter");
-                faultData.setList(Collections.emptyList());
-                return faultData;
-            });
-        } catch (Exception e) {
+            // get ticket det list
+            List<SdTicketServiceBean> sdTicketServiceBeanList = ticketService.findServiceBySubscriberId(subscriberId);
+            if (CollectionUtils.isEmpty(sdTicketServiceBeanList)) {
+                return BesSubFaultData.NOT_FOUND;
+            }
+
+            // get all ticket info list
+            List<SdTicketData> sdTicketDataList = new ArrayList<>();
+            for (SdTicketServiceBean sdTicketServiceBean : sdTicketServiceBeanList) {
+                SdTicketData sdTicketData = getTicketInfo(sdTicketServiceBean.getTicketMasId());
+                sdTicketDataList.add(sdTicketData);
+            }
+
+            // transform SdTicketData to BesFaultInfoData
+            List<BesFaultInfoData> besFaultInfoDataList = new ArrayList<>();
+            for (SdTicketData sdTicketData : sdTicketDataList) {
+                BesFaultInfoData besFaultInfoData = new BesFaultInfoData();
+                faultInfoDataPopulator.populate(sdTicketData, besFaultInfoData);
+                besFaultInfoDataList.add(besFaultInfoData);
+            }
+
+            BesSubFaultData besSubFaultData = new BesSubFaultData();
+            besSubFaultData.setList(besFaultInfoDataList);
+            return besSubFaultData;
+        } catch (Exception e){
             LOG.error(e.getMessage(), e);
-            faultData.setMsgCode("CD0003");
-            faultData.setDescription("General System Failure");
-            faultData.setList(Collections.emptyList());
-            return faultData;
+            return BesSubFaultData.FAIL;
         }
     }
 

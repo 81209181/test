@@ -6,10 +6,8 @@ import com.hkt.btu.sd.core.dao.entity.SdSymptomMappingEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdSymptomMapper;
 import com.hkt.btu.sd.core.service.SdSymptomService;
 import com.hkt.btu.sd.core.service.SdUserService;
-import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
 import com.hkt.btu.sd.core.service.bean.SdSymptomBean;
 import com.hkt.btu.sd.core.service.bean.SdSymptomMappingBean;
-import com.hkt.btu.sd.core.service.populator.SdServiceTypeBeanPopulator;
 import com.hkt.btu.sd.core.service.populator.SdSymptomBeanPopulator;
 import com.hkt.btu.sd.core.service.populator.SdSymptomMappingBeanPopulator;
 import org.apache.commons.collections4.CollectionUtils;
@@ -36,8 +34,6 @@ public class SdSymptomServiceImpl implements SdSymptomService {
 
     @Resource(name = "symptmBeanPopulator")
     SdSymptomBeanPopulator symptomBeanPopulator;
-    @Resource(name = "serviceTypeBeanPopulator")
-    SdServiceTypeBeanPopulator serviceTypeBeanPopulator;
     @Resource(name = "symptmMappingBeanPopulator")
     SdSymptomMappingBeanPopulator symptomMappingBeanPopulator;
 
@@ -63,22 +59,6 @@ public class SdSymptomServiceImpl implements SdSymptomService {
         String createby = userService.getCurrentUserUserId();
         sdSymptomMapper.createSymptom(symptomCode, symptomGroupCode, symptomDescription, createby);
         LOG.info(String.format("Created symptom %s - %s", symptomCode, symptomDescription));
-    }
-
-    @Override
-    public List<SdServiceTypeBean> getServiceTypeList() {
-        List<SdServiceTypeEntity> entityList = sdSymptomMapper.getServiceTypeList();
-        if (CollectionUtils.isEmpty(entityList)) {
-            return null;
-        }
-        List<SdServiceTypeBean> beanList = new LinkedList<>();
-        for (SdServiceTypeEntity entity : entityList) {
-            SdServiceTypeBean bean = new SdServiceTypeBean();
-            serviceTypeBeanPopulator.populate(entity, bean);
-            beanList.add(bean);
-        }
-
-        return beanList;
     }
 
     @Override

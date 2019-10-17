@@ -12,9 +12,9 @@ public interface SdTicketContactMapper {
     void insertTicketContactInfo(@Param("ticketMasId") Integer ticketMasId,
                                  @Param("contactType") String contactType,
                                  @Param("contactName") String contactName,
-                                 @Param("contactMobile") String contactMobile,
-                                 @Param("contactEmail") String contactEmail,
-                                 @Param("contactNumber") String contactNumber,
+                                 @Param("contactMobile") byte[] contactMobile,
+                                 @Param("contactEmail") byte[] contactEmail,
+                                 @Param("contactNumber") byte[] contactNumber,
                                  @Param("createBy") String createBy);
 
     List<SdTicketContactEntity> selectContactInfoByTicketMasId(@Param("ticketMasId") Integer ticketMasId);
