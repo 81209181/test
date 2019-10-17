@@ -83,8 +83,8 @@ public class TicketController {
         return ResponseEntity.ok(errorMsg);
     }
 
-    @GetMapping("/contact/{ticketMasId}")
-    public ResponseEntity<?> getContactInfo(@PathVariable Integer ticketMasId) {
+    @GetMapping("/contact")
+    public ResponseEntity<?> getContactInfo(@RequestParam Integer ticketMasId) {
         List<SdTicketContactData> data = ticketFacade.getContactInfo(ticketMasId);
         return ResponseEntity.ok(data);
     }
@@ -125,14 +125,10 @@ public class TicketController {
         }
     }
 
-    @GetMapping("/service/{ticketMasId}")
-    public ResponseEntity<?> getServiceInfo(@PathVariable Integer ticketMasId) {
+    @GetMapping("/service")
+    public ResponseEntity<?> getServiceInfo(@RequestParam Integer ticketMasId) {
         List<SdTicketServiceData> serviceInfo = ticketFacade.getServiceInfo(ticketMasId);
-        if (CollectionUtils.isEmpty(serviceInfo)) {
-            return ResponseEntity.badRequest().body("Service info not found.");
-        } else {
-            return ResponseEntity.ok(serviceInfo);
-        }
+        return ResponseEntity.ok(serviceInfo);
     }
 
     @PostMapping("/service/update")
@@ -149,8 +145,8 @@ public class TicketController {
         }
     }
 
-    @GetMapping("/service/symptom/{ticketMasId}")
-    public ResponseEntity<?> getSymptom(@PathVariable Integer ticketMasId) {
+    @GetMapping("/service/symptom")
+    public ResponseEntity<?> getSymptom(@RequestParam Integer ticketMasId) {
         List<SdSymptomData> symptomData = ticketFacade.getSymptom(ticketMasId);
         if (CollectionUtils.isEmpty(symptomData)) {
             return ResponseEntity.badRequest().body("Symptom info not found.");

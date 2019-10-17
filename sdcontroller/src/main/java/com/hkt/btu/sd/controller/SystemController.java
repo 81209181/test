@@ -82,8 +82,10 @@ public class SystemController {
 
     }
 
-    @GetMapping("config-param/{configGroup}/{configKey}")
-    public String showEditConfigParam(@PathVariable String configGroup, @PathVariable String configKey, Model model) {
+    @GetMapping("config-param/edit")
+    public String showEditConfigParam(@RequestParam String configGroup, @RequestParam String configKey, Model model) {
+        model.addAttribute("configGroup", configGroup);
+        model.addAttribute("configKey", configKey);
         model.addAttribute("configGroupList", sdConfigParamFacade.getConfigGroupList());
         model.addAttribute("configTypeList", sdConfigParamFacade.getConfigTypeList());
         return "system/configParam/editConfigParam";

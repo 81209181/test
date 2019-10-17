@@ -14,7 +14,7 @@ $().ready(function(){
          $("#ticketStatus").css("color","red");
     }
 
-    $.get('/ticket/service/symptom/'+ticketMasId, function (res) {
+    $.get('/ticket/service/symptom?ticketMasId='+ticketMasId, function (res) {
         for (item of res) {
             $('.selectpicker').append("<option value="+item.symptomCode+">"+item.symptomCode+"---"+item.symptomDescription+"</option>");
         }
@@ -22,20 +22,22 @@ $().ready(function(){
     })
 
 
-    $.get('/ticket/service/'+ticketMasId,function(res){
-        $.each(res,function(index,j){
-            let service =$('#service');
-            $.each(j,function(key,value){
-                service.find('input[name='+key+']').val(value);
-                if (key == 'faultsList') {
-                    for (item of value) {
-                        $('#symptomList').find('option[value='+item.symptomCode+']').attr('selected','selected');
+    $.get('/ticket/service?ticketMasId='+ticketMasId,function(res){
+        if (res.length > 0) {
+            $.each(res,function(index,j){
+                let service =$('#service');
+                $.each(j,function(key,value){
+                    service.find('input[name='+key+']').val(value);
+                    if (key == 'faultsList') {
+                        for (item of value) {
+                            $('#symptomList').find('option[value='+item.symptomCode+']').attr('selected','selected');
+                        }
                     }
-                }
+                })
             })
-        })
-        $('.selectpicker').selectpicker('refresh');
-        $('.selectpicker').selectpicker('render');
+            $('.selectpicker').selectpicker('refresh');
+            $('.selectpicker').selectpicker('render');
+        }
     });
 
     ajaxGetDataTable();
@@ -74,7 +76,7 @@ $().ready(function(){
 
 
     //contact
-    $.get('/ticket/contact/'+ticketMasId,function(res){
+    $.get('/ticket/contact?ticketMasId='+ticketMasId,function(res){
         if (res.length == 0) {
             if(ticketStatus != 'CANCEL'){
                 let contact =$('#tempContact').children().clone();

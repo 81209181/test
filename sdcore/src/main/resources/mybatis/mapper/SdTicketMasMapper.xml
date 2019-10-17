@@ -91,5 +91,6 @@
         <if test="status != null">
             AND tm.STATUS <![CDATA[ <> ]]> #{status}
         </if>
+        ORDER BY tm.TICKET_MAS_ID DESC
     </select>
 </mapper>

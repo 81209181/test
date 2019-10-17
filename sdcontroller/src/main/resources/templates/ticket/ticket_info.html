@@ -11,6 +11,7 @@
         var customerCode = '[[${ticketInfo.custCode}]]';
         var ticketMasId = '[[${ticketInfo.ticketMasId}]]';
         var ticketStatus = '[[${ticketInfo.ticketStatus}]]';
+        var itsmUrl = '[[${ticketInfo.itsmUrl}]]';
     </script>
     <div class="card" style="margin-bottom: 75px;" th:object="${ticketInfo}">
         <div class="card-header bg-primary text-white">Ticket - <span th:text="*{ticketMasId}"></span></div>
