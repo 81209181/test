@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.core.service.impl;
 
+import com.hkt.btu.sd.core.dao.entity.SdServiceTypeEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdServiceTypeMapper;
 import com.hkt.btu.sd.core.service.SdServiceTypeService;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
@@ -46,7 +47,7 @@ public class SdServiceTypeServiceImpl implements SdServiceTypeService {
         }).stream().filter(bean -> StringUtils.containsIgnoreCase(offerName,bean.getOfferName())).findFirst().flatMap(bean -> getServiceTypeList().stream()
                 .filter(sdServiceTypeBean -> sdServiceTypeBean.getServiceTypeCode().equals(bean.getServiceTypeCode()))
                 .findFirst().map(SdServiceTypeBean::getServiceTypeName)
-        ).orElse("Unknown");
+        ).orElse(SdServiceTypeEntity.SERVICE_TYPE.UNKNOWN);
     }
 
     private void reloadServiceTypeOfferMapping() {

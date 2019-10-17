@@ -159,16 +159,10 @@ $().ready(function(){
 
     readyForTicketService();
 
-    // for test
-//    itsmUrl = 'https://10.111.7.32/itsm/info/ResourcePoolTab.action?resourceId=309033';
-
-    if(itsmUrl ==''){
-        $('.itsm_link').addClass("disabled");
-    }
-    $('.itsm_link').on('click',function(){
-        window.open(itsmUrl,'Profile','scrollbars=yes,height=600,width=800');
+    // service link button
+    $('#btnServiceLink').on('click',function(){
+        window.open($(this).data('url'),'Profile','scrollbars=yes,height=600,width=800');
     })
-
 
     // appointment
     $('#asap_checkbox').change(function(){
@@ -218,10 +212,9 @@ $().ready(function(){
             dataType: 'json',
             data: ticket,
             success:function(res){
-                $.each(res,function(key,val){
-                    $('input[name='+ key +']').val(val);
-                })
-                $('#btnTicketSubmit').attr('disabled',true);
+                if(res.success){
+                    location.reload();
+                }
             }
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";
@@ -229,7 +222,7 @@ $().ready(function(){
             showErrorMsg(responseError);
         })
     })
-    // cancel ticket
+    // cancel button
     $('#btnTicketCancel').on('click',function(){
         $.post('/ticket/cancel',{
             ticketMasId:ticketMasId
