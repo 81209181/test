@@ -26,7 +26,9 @@ $(document).ready(function() {
             },{
                 targets: 5,
                 render:function(data, type, full, meta){
-                    return '<a class="btn btn-info" href="'+full.configGroup+'/'+full.configKey+'" role="button"><i class="fas fa-edit"></i> Edit</a>';
+                    var ctx = $("meta[name='_ctx']").attr("content");
+                    var link = ctx + "/system/config-param/edit?configGroup=" + full.configGroup + "&configKey=" + full.configKey;
+                    return '<a class="btn btn-info" href=' + link + ' role="button"><i class="fas fa-edit"></i> Edit</a>';
                 }
             }
         ]
