@@ -26,6 +26,8 @@ public class SdTicketMasData implements DataInterface {
 
     private String asap;
 
+    private int callInCount;
+
     public LocalDateTime getAppointmentDate() {
         return appointmentDate;
     }
@@ -104,5 +106,13 @@ public class SdTicketMasData implements DataInterface {
 
     public void setModifyBy(String modifyBy) {
         this.modifyBy = modifyBy;
+    }
+
+    public int getCallInCount() {
+        return callInCount;
+    }
+
+    public void setCallInCount(int callInCount) {
+        this.callInCount = callInCount;
     }
 }

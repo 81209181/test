@@ -17,6 +17,7 @@ public class SdTicketInfoData {
     private LocalDateTime appointmentDate;
     private String jobId;
     private String jobStatus;
+    private int callInCount;
 
     // service info
     private String serviceType;
@@ -205,5 +206,13 @@ public class SdTicketInfoData {
 
     public void setItsmUrl(String itsmUrl) {
         this.itsmUrl = itsmUrl;
+    }
+
+    public int getCallInCount() {
+        return callInCount;
+    }
+
+    public void setCallInCount(int callInCount) {
+        this.callInCount = callInCount;
     }
 }

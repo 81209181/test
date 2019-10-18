@@ -65,6 +65,7 @@ public class SdTicketServiceImpl implements SdTicketService {
         String userId = userService.getCurrentUserUserId();
         ticketMasEntity.setCustCode(custCode);
         ticketMasEntity.setCreateby(userId);
+        ticketMasEntity.setCallInCount(1);
         ticketMasMapper.insertQueryTicket(ticketMasEntity);
         // service
         SdTicketServiceEntity serviceEntity = new SdTicketServiceEntity();

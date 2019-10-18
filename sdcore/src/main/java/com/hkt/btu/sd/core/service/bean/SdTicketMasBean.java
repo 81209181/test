@@ -31,6 +31,8 @@ public class SdTicketMasBean extends BaseBean {
 
     private String asap;
 
+    private int callInCount;
+
     public LocalDateTime getAppointmentDate() {
         return appointmentDate;
     }
@@ -77,5 +79,13 @@ public class SdTicketMasBean extends BaseBean {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public int getCallInCount() {
+        return callInCount;
+    }
+
+    public void setCallInCount(int callInCount) {
+        this.callInCount = callInCount;
     }
 }
