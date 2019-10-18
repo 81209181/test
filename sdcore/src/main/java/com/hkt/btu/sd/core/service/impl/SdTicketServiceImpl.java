@@ -65,6 +65,7 @@ public class SdTicketServiceImpl implements SdTicketService {
         String userId = userService.getCurrentUserUserId();
         ticketMasEntity.setCustCode(custCode);
         ticketMasEntity.setCreateby(userId);
+        ticketMasEntity.setCallInCount(1);
         ticketMasMapper.insertQueryTicket(ticketMasEntity);
         // service
         SdTicketServiceEntity serviceEntity = new SdTicketServiceEntity();
@@ -170,6 +171,7 @@ public class SdTicketServiceImpl implements SdTicketService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public void createTicketRemarks(Integer ticketMasId, String remarksType, String remarks) {
         String createby = userService.getCurrentUserUserId();
         ticketRemarkMapper.insertTicketRemarks(ticketMasId, remarksType, remarks, createby);
@@ -238,6 +240,13 @@ public class SdTicketServiceImpl implements SdTicketService {
     public void updateTicketStatus(int ticketMasId, String status, String userId) {
         ticketMasMapper.updateTicketStatus(ticketMasId, status, userId);
         ticketRemarkMapper.insertTicketRemarks(ticketMasId, SdTicketRemarkEntity.REMARKS_TYPE.CUSTOMER, "Cancel ticket.", userId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    public void increaseCallInCount(Integer ticketMasId) {
+        String userId = userService.getCurrentUserBean().getUserId();
+        ticketMasMapper.updateTicketCallInCount(ticketMasId, userId);
     }
 
     @Override

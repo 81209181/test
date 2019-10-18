@@ -51,4 +51,6 @@ public interface SdTicketFacade {
     void closeTicket(int ticketMasId,String reasonType, String reasonContent,String userId);
 
     void isAllow(String ticketMasId,String action);
+
+    boolean increaseCallInCount(Integer ticketMasId);
 }

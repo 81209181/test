@@ -29,6 +29,13 @@
                     <font class="form-control-plaintext col-md-3" th:text="*{ticketStatus}" id="ticketStatus"></font>
                     <button type="button" class="btn btn-success" id="btnTicketClose" th:unless="*{ticketStatus} eq 'COMPLETE'">Close</button>
                 </div>
+                <div class="col-md-3 form-inline pt-2">
+                    <label class="col-form-label justify-content-end">Call-in Count:</label>
+                    <font class="form-control-plaintext col-md-7" th:text="*{callInCount}"></font>
+                </div>
+                <div class="col-md-3 form-inline pt-2">
+                    <button type="button" class="btn btn-primary mt-2" id="btnCallInCount">Customer Re-call</button>
+                </div>
             </div>
             <hr>
             <form id="customer" class="row" >

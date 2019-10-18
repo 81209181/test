@@ -177,15 +177,11 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
     @Override
     public String updateServiceInfo(List<RequestTicketServiceData> serviceList) {
-
         if (CollectionUtils.isEmpty(serviceList)) {
             return "update service info failed.";
         }
 
-        Integer ticketMasId = serviceList.get(0).getTicketMasId();
         try {
-            //ticketService.removeServiceInfoByTicketMasId(ticketMasId);
-
             List<SdTicketServiceBean> serviceInfoList = serviceList.stream().map(requestData -> {
                 SdTicketServiceBean bean = new SdTicketServiceBean();
                 bean.setTicketMasId(requestData.getTicketMasId());
@@ -381,6 +377,23 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                         throw new RuntimeException("This ticket has been submitted.");
                     }
                 });
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean increaseCallInCount(Integer ticketMasId) {
+        if (ticketMasId == null) {
+            return false;
+        }
+
+        try {
+            ticketService.increaseCallInCount(ticketMasId);
+            ticketService.createTicketRemarks(ticketMasId, SdTicketRemarkData.Type.SYSTEM, "Call In Count has been increase 1.");
+            return true;
+        } catch (Exception e) {
+            LOG.warn(e);
+            return false;
         }
     }
 }

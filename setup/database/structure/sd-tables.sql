@@ -10,6 +10,7 @@ CREATE TABLE TICKET_MAS
     CREATEBY           varchar2(10)            not null,
     MODIFYDATE         date                    default SYSDATE not null,
     MODIFYBY           varchar2(10)            not null,
+    CALL_IN_COUNT      number,
     CONSTRAINT PK_TICKET_MAS PRIMARY KEY (TICKET_MAS_ID)
 );
 CREATE INDEX IDX_TICKET_MAS_1 ON TICKET_MAS (CUST_CODE);

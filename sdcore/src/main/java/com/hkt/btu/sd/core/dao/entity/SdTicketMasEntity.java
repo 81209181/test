@@ -18,6 +18,8 @@ public class SdTicketMasEntity extends BaseEntity {
 
     private String asap;
 
+    private int callInCount;
+
     public LocalDateTime getAppointmentDate() {
         return appointmentDate;
     }
@@ -66,4 +68,11 @@ public class SdTicketMasEntity extends BaseEntity {
         this.status = status;
     }
 
+    public int getCallInCount() {
+        return callInCount;
+    }
+
+    public void setCallInCount(int callInCount) {
+        this.callInCount = callInCount;
+    }
 }

@@ -239,4 +239,15 @@ public class TicketController {
         ticketFacade.closeTicket(ticketMasId,reasonType,reasonContent,principal.getName());
         return ResponseEntity.ok(SimpleAjaxResponse.of());
     }
+
+    @ResponseBody
+    @PostMapping("callInCount")
+    public SimpleAjaxResponse callInCount(@RequestParam Integer ticketMasId) {
+        boolean result = ticketFacade.increaseCallInCount(ticketMasId);
+        if (result) {
+            return SimpleAjaxResponse.of(true, "call in count success.");
+        } else {
+            return SimpleAjaxResponse.of(false, "increase call in count failed.");
+        }
+    }
 }

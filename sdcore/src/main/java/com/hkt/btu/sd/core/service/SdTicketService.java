@@ -50,6 +50,8 @@ public interface SdTicketService {
 
     void updateTicketStatus(int ticketMasId, String status, String userId);
 
+    void increaseCallInCount(Integer ticketMasId);
+
     List<SdTicketMasBean> getTicketByServiceNo(String serviceNom, String status);
 
     void closeTicket(int ticketMasId, String reasonType, String reasonContent, String userId);

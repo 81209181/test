@@ -10,6 +10,7 @@
         <result column="STATUS" property="status" />
         <result column="APPOINTMENT_DATE" property="appointmentDate" />
         <result column="ASAP" property="asap" />
+        <result column="CALL_IN_COUNT" property="callInCount"/>
 
         <result column="CREATEDATE" property="createdate" />
         <result column="CREATEBY" property="createby" />
@@ -21,8 +22,8 @@
         <selectKey keyProperty="ticketMasId" order="BEFORE" resultType="Integer">
             select SEQ_TICKET_MAS_ID.NEXTVAL from dual
         </selectKey>
-        insert into TICKET_MAS (TICKET_MAS_ID,CUST_CODE,TICKET_TYPE,STATUS,CREATEBY,MODIFYBY)
-        values(#{ticketMasId},#{custCode},'QUERY','O',#{createby},#{createby})
+        insert into TICKET_MAS (TICKET_MAS_ID,CUST_CODE,TICKET_TYPE,STATUS,CREATEBY,MODIFYBY,CALL_IN_COUNT)
+        values(#{ticketMasId},#{custCode},'QUERY','O',#{createby},#{createby},#{callInCount})
     </insert>
 
     <select id="findTicketById" resultMap="TicketMasEntity">
@@ -98,4 +99,13 @@
         </if>
         ORDER BY tm.TICKET_MAS_ID DESC
     </select>
+
+    <update id="updateTicketCallInCount">
+        update TICKET_MAS
+        set    CALL_IN_COUNT = CALL_IN_COUNT + 1,
+               MODIFYBY = #{userId},
+               MODIFYDATE = sysdate
+        where  TICKET_MAS_ID = #{ticketMasId}
+    </update>
+
 </mapper>
