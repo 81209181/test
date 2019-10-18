@@ -29,7 +29,7 @@ public class SdServiceTypeServiceImpl implements SdServiceTypeService {
     @Resource(name = "serviceTypeBeanPopulator")
     SdServiceTypeBeanPopulator serviceTypeBeanPopulator;
     @Resource(name = "serviceTypeOfferMappingBeanPopulator")
-    SdServiceTypeOfferMappingBeanPopulator  serviceTypeOfferMappingBeanPopulator;
+    SdServiceTypeOfferMappingBeanPopulator serviceTypeOfferMappingBeanPopulator;
 
     @Override
     public List<SdServiceTypeBean> getServiceTypeList() {
@@ -46,10 +46,10 @@ public class SdServiceTypeServiceImpl implements SdServiceTypeService {
                     .filter(sdServiceTypeBean -> sdServiceTypeBean.getServiceTypeCode().equals("BN"))
                     .findFirst().map(SdServiceTypeBean::getServiceTypeName).orElse(SdServiceTypeEntity.SERVICE_TYPE_NAME.UNKNOWN_SERVICE_TYPE);
         } else {
-            return  Optional.ofNullable(SERVICE_TYPE_OFFER_MAPPING).orElseGet(() -> {
+            return Optional.ofNullable(SERVICE_TYPE_OFFER_MAPPING).orElseGet(() -> {
                 reloadServiceTypeOfferMapping();
                 return SERVICE_TYPE_OFFER_MAPPING;
-            }).stream().filter(bean -> StringUtils.equals(offerName,bean.getOfferName()))
+            }).stream().filter(bean -> StringUtils.equals(offerName, bean.getOfferName()))
                     .findFirst().flatMap(bean -> getServiceTypeList().stream()
                             .filter(sdServiceTypeBean -> sdServiceTypeBean.getServiceTypeCode().equals(bean.getServiceTypeCode()))
                             .findFirst().map(SdServiceTypeBean::getServiceTypeName)
@@ -67,7 +67,7 @@ public class SdServiceTypeServiceImpl implements SdServiceTypeService {
         LOG.info("reload service type offer mapping.");
         SERVICE_TYPE_OFFER_MAPPING = serviceTypeMapper.getServiceTypeOfferMapping().stream().map(entity -> {
             SdServiceTypeOfferMappingBean bean = new SdServiceTypeOfferMappingBean();
-            serviceTypeOfferMappingBeanPopulator.populate(entity,bean);
+            serviceTypeOfferMappingBeanPopulator.populate(entity, bean);
             return bean;
         }).collect(Collectors.toList());
     }
