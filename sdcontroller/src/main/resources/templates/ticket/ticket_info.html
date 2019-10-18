@@ -11,6 +11,7 @@
         var customerCode = '[[${ticketInfo.custCode}]]';
         var ticketMasId = '[[${ticketInfo.ticketMasId}]]';
         var ticketStatus = '[[${ticketInfo.ticketStatus}]]';
+        var itsmUrl = '[[${ticketInfo.itsmUrl}]]';
     </script>
     <div class="card" style="margin-bottom: 75px;" th:object="${ticketInfo}">
         <div class="card-header bg-primary text-white">Ticket - <span th:text="*{ticketMasId}"></span></div>
@@ -25,7 +26,8 @@
                 </div>
                 <div class="col-md-3 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Ticket Status:</label>
-                    <font class="form-control-plaintext col-md-7" th:text="*{ticketStatus}" id="ticketStatus"></font>
+                    <font class="form-control-plaintext col-md-3" th:text="*{ticketStatus}" id="ticketStatus"></font>
+                    <button type="button" class="btn btn-success" id="btnTicketClose" th:unless="*{ticketStatus} eq 'COMPLETE'">Close</button>
                 </div>
                 <div class="col-md-3 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Call-in Count:</label>
@@ -75,13 +77,13 @@
                             <option value="SITE">On-site Contact</option>
                             <option value="CALL">Caller</option>
                         </select>
-                        <button type="button" class="btn btn-light ml-2" id="btnAddContact"><i class="fa fa-plus" aria-hidden="true"></i>
+                        <button type="button" class="btn btn-light ml-2" id="btnAddContact" th:disabled="*{ticketStatus} eq 'COMPLETE'"><i class="fa fa-plus" aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>
                 <div id="contact_list" style="width:100%"></div>
                 <div class="offset-md-11">
-                    <button type="button" class="btn btn-primary mt-2" id="btnUpdateContact" disabled="disabled">Update</button>
+                    <button type="button" class="btn btn-primary mt-2" id="btnUpdateContact" disabled="disabled" th:disabled="*{ticketStatus} eq 'COMPLETE'">Update</button>
                 </div>
             </div>
             <hr>
@@ -96,17 +98,16 @@
                     <div class="form-row">
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Service Number: </label>
-                            <input type="text" class="form-control col-md-6" name="serviceCode" readonly/>
+                            <input type="text" class="form-control col-md-6" name="serviceCode" readonly th:value="*{serviceNo}"/>
                         </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Service Type: </label>
-                            <input type="text" class="form-control col-md-6" name="serviceType" readonly/>
+                            <input type="text" class="form-control col-md-6" name="serviceType" readonly th:value="*{serviceType}">
                         </div>
                         <div class="temp_faults col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Symptom: </label>
                             <select name="symptom" id="symptomList" class="selectpicker form-control col-md-6" data-width="500px" data-live-search="true"></select>
                         </div>
-<!--                        <div class="form-row faults_list"></div>-->
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Subscriber ID: </label>
                             <input type="text" class="form-control col-md-6" name="subsId" th:value="*{subsId}" readonly/>
@@ -142,7 +143,7 @@
                     </div>
                 </div>
                 <div class="offset-md-11">
-                    <button type="button" class="btn btn-primary mt-2" id="btnUpdateService" >
+                    <button type="button" class="btn btn-primary mt-2" id="btnUpdateService" th:disabled="*{ticketStatus} ne 'OPEN'">
                         Update
                     </button>
                 </div>
@@ -191,7 +192,7 @@
                     </div>
                 </form>
                 <div class="offset-md-11">
-                    <button type="button" class="btn btn-primary mt-2" id="btnCreateTicketRemarks">
+                    <button type="button" class="btn btn-primary mt-2" id="btnCreateTicketRemarks" th:disabled="*{ticketStatus} eq 'COMPLETE'">
                         <i class="far fa-save"></i> Save
                     </button>
                 </div>
@@ -219,42 +220,10 @@
         </div>
         <div class="card-footer">
             <div class="float-right">
-                <button type="button" class="btn btn-danger" id="btnTicketCancel">Cancel</button>
-                <button type="button" class="btn btn-primary " id="btnTicketSubmit" th:disabled="*{not #strings.isEmpty(jobId)}">Submit</button>
+                <button type="button" class="btn btn-primary " id="btnTicketSubmit" th:disabled="*{ticketStatus} ne 'OPEN'">Submit</button>
             </div>
         </div>
     </div>
-
-    <!--<div id="tempFaults" hidden="hidden">
-        <div class="temp_faults col-md-6 form-inline pt-2">
-            <label class="col-form-label col-md-3 justify-content-end">Symptom: </label>
-            <select id="symptomList" class="selectpicker form-control col-md-6" data-width="500px" data-live-search="true">
-            </select>
-            <button type="button" class="btn btn-light md-2" onclick="removeFaults(this)"><i class="fa fa-times"
-                                                                                             aria-hidden="true"></i>
-            </button>
-        </div>
-    </div>-->
-
-    <!--<div id="tempService" hidden="hidden">
-        <form class="col-md-12 form">
-            <div class="form-row">
-                    <div class="col-md-6 form-inline pt-2">
-                        <label class="col-form-label col-md-3 justify-content-end">Service Code: </label>
-                        <input type="text" class="form-control col-md-6" name="serviceCode"/>
-                    </div>
-                    <div class="col-md-6 form-inline pt-2">
-                        <label class="col-form-label col-md-3 justify-content-end">Service Type: </label>
-                        <input type="text" class="form-control col-md-6" name="serviceType"/>
-                        <button type="button" class="btn btn-light" onclick="addFaults(this);"><i
-                                class="fa fa-plus" aria-hidden="true"></i></button>
-                        <button type="button" class="btn btn-light" onclick="removeService(this)"><i
-                                class="fa fa-times" aria-hidden="true"></i></button>
-                    </div>
-            </div>
-            <div class="form-row faults_list"></div>
-        </form>
-    </div>-->
 
     <div id="tempContact" hidden="hidden">
         <form class="col-md-12">
@@ -283,7 +252,37 @@
             </div>
         </form>
     </div>
-
+    <div class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-white bg-secondary h-80">
+                    <h6 class="modal-title">Reason</h6>
+                    <button type="button" class="close text-white" data-dismiss="modal">x</button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation" novalidate>
+                        <div class="form-row">
+                            <select class="custom-select" required name="reasonType">
+                                <option value="" hidden>Please select</option>
+                                <option value="Customer Request Close">Customer Request Close</option>
+                                <option value="Invalid Input">Invalid Input</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select on reason.
+                            </div>
+                            <textarea class="form-control col-md-12 mt-2" required name="reasonContent"></textarea>
+                            <div class="invalid-feedback">
+                                Please enter a message in the textarea.
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary float-right" id="btnReasonSubmit">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script type="text/javascript" th:src="@{/js/ticket_info.js}"></script>
 </div>
 </body>

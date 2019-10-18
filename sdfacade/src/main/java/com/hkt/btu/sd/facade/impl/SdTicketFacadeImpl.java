@@ -20,7 +20,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class SdTicketFacadeImpl implements SdTicketFacade {
@@ -333,6 +336,48 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         return ticketService.getTicket(Integer.valueOf(ticketMasId))
                 .map(SdTicketMasBean::getStatus)
                 .filter(s -> s.equals(SdTicketMasBean.STATUS_TYPE.CANCEL)).isPresent();
+    }
+
+    @Override
+    public List<SdTicketMasData> getTicketByServiceNo(String serviceNo) {
+        List<SdTicketMasBean> beanList = ticketService.getTicketByServiceNo(serviceNo, SdTicketMasBean.STATUS_TYPE_CODE.COMPLETE);
+        List<SdTicketMasData> dataList = new LinkedList<>();
+        if (!CollectionUtils.isEmpty(beanList)) {
+            for (SdTicketMasBean bean : beanList) {
+                SdTicketMasData data = new SdTicketMasData();
+                ticketMasDataPopulator.populate(bean, data);
+                dataList.add(data);
+            }
+        }
+        return dataList;
+    }
+
+    @Override
+    public void closeTicket(int ticketMasId, String reasonType, String reasonContent, String userId) {
+        ticketService.closeTicket(ticketMasId, reasonType, reasonContent, userId);
+    }
+
+    @Override
+    public void isAllow(String ticketMasId, String action) {
+        switch (action) {
+            case SdTicketMasData.ACTION_TYPE.WORKING:
+                ticketService.getTicket(Integer.valueOf(ticketMasId)).map(SdTicketMasBean::getStatus)
+                        .filter(s -> s.equals(SdTicketMasBean.STATUS_TYPE.OPEN)).orElseThrow(() -> new RuntimeException("This ticket has been submitted."));
+                break;
+            case SdTicketMasData.ACTION_TYPE.COMPLETE:
+                ticketService.getTicket(Integer.valueOf(ticketMasId)).map(SdTicketMasBean::getStatus)
+                        .filter(s -> !s.equals(SdTicketMasBean.STATUS_TYPE.COMPLETE)).orElseThrow(() -> new RuntimeException("This ticket has been completed."));
+                break;
+            default:
+                ticketService.getTicket(Integer.valueOf(ticketMasId)).map(SdTicketMasBean::getStatus)
+                        .filter(s -> List.of(SdTicketMasBean.STATUS_TYPE.COMPLETE, SdTicketMasBean.STATUS_TYPE.WORKING).contains(s)).ifPresent(s -> {
+                    if (s.equals(SdTicketMasBean.STATUS_TYPE.COMPLETE)) {
+                        throw new RuntimeException("This ticket has been completed.");
+                    } else {
+                        throw new RuntimeException("This ticket has been submitted.");
+                    }
+                });
+        }
     }
 
     @Override

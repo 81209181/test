@@ -310,4 +310,28 @@ public class SdTicketServiceImpl implements SdTicketService {
 
         ticketServiceMapper.insertFaults(ticketDetId, faults, createBy, createBy);
     }
+
+    @Override
+    public List<SdTicketMasBean> getTicketByServiceNo(String serviceNo, String status) {
+        List<SdTicketMasEntity> entityList = ticketMasMapper.getTicketByServiceNo(serviceNo, status);
+        if (CollectionUtils.isEmpty(entityList)) {
+            return null;
+        }
+        List<SdTicketMasBean> beanList = new LinkedList<>();
+        for (SdTicketMasEntity entity : entityList) {
+            SdTicketMasBean bean = new SdTicketMasBean();
+            ticketMasBeanPopulator.populate(entity, bean);
+            beanList.add(bean);
+        }
+
+        return beanList;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void closeTicket(int ticketMasId, String reasonType, String reasonContent, String userId) {
+        ticketMasMapper.updateTicketStatus(ticketMasId,SdTicketMasBean.STATUS_TYPE_CODE.COMPLETE,userId);
+        ticketRemarkMapper.insertTicketRemarks(ticketMasId, SdTicketRemarkEntity.REMARKS_TYPE.SYSTEM,
+                String.format("ticket status update to close, reason: %s - %s",reasonType,reasonContent), userId);
+    }
 }

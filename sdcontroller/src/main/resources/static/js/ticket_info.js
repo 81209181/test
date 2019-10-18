@@ -14,7 +14,7 @@ $().ready(function(){
          $("#ticketStatus").css("color","red");
     }
 
-    $.get('/ticket/service/symptom/'+ticketMasId, function (res) {
+    $.get('/ticket/service/symptom?ticketMasId='+ticketMasId, function (res) {
         for (item of res) {
             $('.selectpicker').append("<option value="+item.symptomCode+">"+item.symptomCode+"---"+item.symptomDescription+"</option>");
         }
@@ -22,20 +22,22 @@ $().ready(function(){
     })
 
 
-    $.get('/ticket/service/'+ticketMasId,function(res){
-        $.each(res,function(index,j){
-            let service =$('#service');
-            $.each(j,function(key,value){
-                service.find('input[name='+key+']').val(value);
-                if (key == 'faultsList') {
-                    for (item of value) {
-                        $('#symptomList').find('option[value='+item.symptomCode+']').attr('selected','selected');
+    $.get('/ticket/service?ticketMasId='+ticketMasId,function(res){
+        if (res.length > 0) {
+            $.each(res,function(index,j){
+                let service =$('#service');
+                $.each(j,function(key,value){
+                    service.find('input[name='+key+']').val(value);
+                    if (key == 'faultsList') {
+                        for (item of value) {
+                            $('#symptomList').find('option[value='+item.symptomCode+']').attr('selected','selected');
+                        }
                     }
-                }
+                })
             })
-        })
-        $('.selectpicker').selectpicker('refresh');
-        $('.selectpicker').selectpicker('render');
+            $('.selectpicker').selectpicker('refresh');
+            $('.selectpicker').selectpicker('render');
+        }
     });
 
     ajaxGetDataTable();
@@ -87,9 +89,9 @@ $().ready(function(){
 
 
     //contact
-    $.get('/ticket/contact/'+ticketMasId,function(res){
+    $.get('/ticket/contact?ticketMasId='+ticketMasId,function(res){
         if (res.length == 0) {
-            if(ticketStatus != 'CANCEL'){
+            if(ticketStatus != "COMPLETE"){
                 let contact =$('#tempContact').children().clone();
                 contact.find('input[name=contactType]').val("On-site Contact");
                 contact.appendTo($('#contact_list'));
@@ -170,16 +172,10 @@ $().ready(function(){
 
     readyForTicketService();
 
-    // for test
-//    itsmUrl = 'https://10.111.7.32/itsm/info/ResourcePoolTab.action?resourceId=309033';
-
-    if(itsmUrl ==''){
-        $('.itsm_link').addClass("disabled");
-    }
-    $('.itsm_link').on('click',function(){
-        window.open(itsmUrl,'Profile','scrollbars=yes,height=600,width=800');
+    // service link button
+    $('#btnServiceLink').on('click',function(){
+        window.open($(this).data('url'),'Profile','scrollbars=yes,height=600,width=800');
     })
-
 
     // appointment
     $('#asap_checkbox').change(function(){
@@ -229,10 +225,9 @@ $().ready(function(){
             dataType: 'json',
             data: ticket,
             success:function(res){
-                $.each(res,function(key,val){
-                    $('input[name='+ key +']').val(val);
-                })
-                $('#btnTicketSubmit').attr('disabled',true);
+                if(res.success){
+                    location.reload();
+                }
             }
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";
@@ -240,20 +235,32 @@ $().ready(function(){
             showErrorMsg(responseError);
         })
     })
-    // cancel ticket
-    $('#btnTicketCancel').on('click',function(){
-        $.post('/ticket/cancel',{
-            ticketMasId:ticketMasId
-        },function(res){
-            if(res.success){
-               location.reload();
-            }
-        })
+    // close button
+    $('#btnTicketClose').on('click',function(){
+        $('.modal').modal('show');
     })
 
-    if(ticketStatus=='CANCEL'){
-        $('.card').find('button').attr('disabled',true);
-    }
+    $('#btnReasonSubmit').on('click',function(){
+        let form =$('.needs-validation').get(0);
+        if(form.checkValidity()){
+            $.post('/ticket/close',{
+                ticketMasId:ticketMasId,
+                reasonType:$('select[name=reasonType]').val(),
+                reasonContent:$('textarea[name=reasonContent]').val()
+            },function(res){
+                if(res.success){
+                    location.reload();
+                }
+            }).fail(function(e){
+                var responseError = e.responseText ? e.responseText : "Get failed.";
+                console.log("ERROR : ", responseError);
+                showErrorMsg(responseError);
+            })
+        }
+        $(form).addClass("was-validated");
+    })
+
+
 })
 
 

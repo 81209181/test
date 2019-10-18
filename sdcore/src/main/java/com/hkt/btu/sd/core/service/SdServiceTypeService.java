@@ -9,4 +9,6 @@ public interface SdServiceTypeService {
     List<SdServiceTypeBean> getServiceTypeList();
 
     String getServiceTypeByOfferName(String offerName);
+
+    void reload();
 }

@@ -151,10 +151,10 @@ public class ManageUserController {
         return "admin/manageUser/editUserForm";
     }
 
-    @GetMapping("/edit-user/changeUserType/{userType}")
+    @GetMapping("/edit-user/changeUserType")
     public String changeUserType(final Model model,
                                  String userId,
-                                 @PathVariable("userType") String userType,
+                                 @RequestParam String userType,
                                  @ModelAttribute("changeUserTypeFormData") ChangeUserTypeFormData changeUserTypeFormData) {
         model.addAttribute("oldUserId", userId);
         if (ChangeUserTypeFormData.PCCW_HKT_USER.equals(userType)) {
@@ -178,7 +178,7 @@ public class ManageUserController {
         if (newUserId == null) {
             redirectAttributes.addFlashAttribute(PageMsgController.ERROR_MSG, errorMsg);
             redirectAttributes.addFlashAttribute("createUserFormData", changeUserTypeResultData);
-            return "redirect:/admin/manage-user/edit-user/changeUserType/pccw-hkt-user?userId=" + changeUserTypeFormData.getUserId();
+            return "redirect:/admin/manage-user/edit-user/changeUserType?userType=" + ChangeUserTypeFormData.PCCW_HKT_USER + "&userId=" + changeUserTypeFormData.getUserId();
         } else {
             redirectAttributes.addFlashAttribute(PageMsgController.INFO_MSG, "Change user.");
             return "redirect:/admin/manage-user/edit-user?userId=" + newUserId;
@@ -195,7 +195,7 @@ public class ManageUserController {
         if (newUserId == null) {
             redirectAttributes.addFlashAttribute(PageMsgController.ERROR_MSG, errorMsg);
             redirectAttributes.addFlashAttribute("createUserFormData", changeUserTypeResultData);
-            return "redirect:/admin/manage-user/edit-user/changeUserType/non-pccw-hkt-user?userId=" + changeUserTypeFormData.getUserId();
+            return "redirect:/admin/manage-user/edit-user/changeUserType?userType=" + ChangeUserTypeFormData.NON_PCCW_HKT_USER + "&userId=" + changeUserTypeFormData.getUserId();
         } else {
             redirectAttributes.addFlashAttribute(PageMsgController.INFO_MSG, "Change user.");
             return "redirect:/admin/manage-user/edit-user?userId=" + newUserId;
@@ -213,7 +213,7 @@ public class ManageUserController {
         if (newUserId == null) {
             redirectAttributes.addFlashAttribute(PageMsgController.ERROR_MSG, errorMsg);
             redirectAttributes.addFlashAttribute("createUserFormData", changeUserTypeResultData);
-            return "redirect:/admin/manage-user/edit-user/changeUserType/ldap-user?userId=" + changeUserTypeFormData.getUserId();
+            return "redirect:/admin/manage-user/edit-user/changeUserType?userType=" + ChangeUserTypeFormData.LDAP_USER + "&userId=" + changeUserTypeFormData.getUserId();
         } else {
             redirectAttributes.addFlashAttribute(PageMsgController.INFO_MSG, "Change user.");
             return "redirect:/admin/manage-user/edit-user?userId=" + newUserId;
@@ -291,8 +291,8 @@ public class ManageUserController {
         return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
     }
 
-    @GetMapping("expireUserSession/{userId}")
-    public ResponseEntity<?> expireUserSession(@PathVariable String userId, Principal p) {
+    @GetMapping("/expireUserSession")
+    public ResponseEntity<?> expireUserSession(@RequestParam String userId, Principal p) {
         SdUserData user = userFacade.getUserByUserId(userId);
         if (ObjectUtils.isEmpty(user)) {
             ResponseEntity.badRequest().body("User not found.");

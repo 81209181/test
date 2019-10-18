@@ -77,11 +77,28 @@
 
     <update id="updateTicketStatus">
         update TICKET_MAS
-        set status = #{status},
-        MODIFYBY= #{userId},
-        MODIFYDATE=sysdate
+        <set >
+            status = #{status},
+            MODIFYBY= #{userId},
+            MODIFYDATE=sysdate,
+            <if test="status == 'CP'">
+                COMPLETE_DATE = sysdate
+            </if>
+        </set>
         where TICKET_MAS_ID =#{ticketMasId}
     </update>
+
+    <select id="getTicketByServiceNo" resultMap="TicketMasEntity">
+        SELECT tm.TICKET_MAS_ID,tm.STATUS
+        FROM TICKET_MAS tm
+        INNER JOIN TICKET_DET td
+        ON tm.TICKET_MAS_ID = td.TICKET_MAS_ID
+        WHERE td.SERVICE_ID = #{serviceNo}
+        <if test="status != null">
+            AND tm.STATUS <![CDATA[ <> ]]> #{status}
+        </if>
+        ORDER BY tm.TICKET_MAS_ID DESC
+    </select>
 
     <update id="updateTicketCallInCount">
         update TICKET_MAS
