@@ -10,6 +10,7 @@ import com.hkt.btu.sd.core.service.populator.SdServiceTypeOfferMappingBeanPopula
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -61,6 +62,14 @@ public class SdServiceTypeServiceImpl implements SdServiceTypeService {
     public void reload() {
         reloadServiceTypeList();
         reloadServiceTypeOfferMapping();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateServiceTypeOfferMapping(List<SdServiceTypeOfferMappingBean> serviceTypeOfferMapping) {
+        serviceTypeMapper.removeAll();
+        serviceTypeOfferMapping.forEach(bean -> serviceTypeMapper.insertServiceTypeOfferMapping(bean.getServiceTypeCode(),bean.getOfferName()));
+        reload();
     }
 
     private void reloadServiceTypeOfferMapping() {

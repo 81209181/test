@@ -33,4 +33,13 @@
         select service_type_code,offer_name from service_type_offer_mapping order by service_type_code
     </select>
 
+    <delete id="removeAll">
+        delete from service_type_offer_mapping
+    </delete>
+
+    <insert id="insertServiceTypeOfferMapping">
+        insert into service_type_offer_mapping (SERVICE_TYPE_CODE,OFFER_NAME,CREATEBY)
+        values (#{serviceTypeCode},#{offerName},'system')
+    </insert>
+
 </mapper>

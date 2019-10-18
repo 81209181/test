@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hkt.btu.common.facade.data.DataInterface;
 import com.hkt.btu.sd.core.service.SdApiService;
+import com.hkt.btu.sd.core.service.bean.SdServiceTypeOfferMappingBean;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.WfmApiFacade;
@@ -19,9 +20,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApiFacade {
     private static final Logger LOG = LogManager.getLogger(WfmApiFacadeImpl.class);
@@ -84,6 +83,14 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
                     }.getType());
             return wfmResponseData.getData();
         }).orElse(new WfmJobDetailsData());
+    }
+
+    @Override
+    public List<SdServiceTypeOfferMappingBean> getServiceTypeOfferMapping() {
+        return Optional.ofNullable(getData("/api/v1/sd/GetServiceTypeOfferMapping", null)).map(s -> {
+            List<SdServiceTypeOfferMappingBean> list = new ArrayList<>();
+            return list;
+        }).orElseThrow(() -> new RuntimeException("Service type offer mapping not found."));
     }
 
     private <T extends DataInterface> WfmResponseData<T> populateWfmResponseData(String wfmResponseDataJsonString, Type type) {
