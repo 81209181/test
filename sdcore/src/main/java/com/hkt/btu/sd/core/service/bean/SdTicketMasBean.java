@@ -10,13 +10,12 @@ public class SdTicketMasBean extends BaseBean {
         public static final String OPEN = "OPEN";
         public static final String WORKING = "WORKING";
         public static final String COMPLETE = "COMPLETE";
-        public static final String CANCEL = "CANCEL";
     }
+
     public static class STATUS_TYPE_CODE {
         public static final String OPEN = "O";
         public static final String WORKING = "W";
         public static final String COMPLETE = "CP";
-        public static final String CANCEL = "CX";
     }
 
     private int ticketMasId ;

@@ -186,13 +186,6 @@ public class TicketController {
         }
     }
 
-    @ResponseBody
-    @PostMapping("cancel")
-    public SimpleAjaxResponse cancel(Principal principal, int ticketMasId) {
-        ticketFacade.cancelTicket(ticketMasId, principal.getName());
-        return SimpleAjaxResponse.of();
-    }
-
     @GetMapping("ajax-search-ticket-remarks")
     public ResponseEntity<?> ajaxSearchTicketRemarks(@RequestParam Integer ticketMasId) {
         List<SdTicketRemarkData> dataList = ticketFacade.getTicketRemarksByTicketId(ticketMasId);
@@ -216,9 +209,6 @@ public class TicketController {
 
     @PostMapping("appointment/update")
     public ResponseEntity<?> updateAppointment(String appointmentDate, boolean asap, Principal principal, String ticketMasId) {
-        if (ticketFacade.isCancel(ticketMasId)) {
-            return ResponseEntity.badRequest().body("The ticket has been cancelled.");
-        }
         if (!asap) {
             if (!ticketFacade.checkAppointmentDate(appointmentDate)) {
                 return ResponseEntity.badRequest().body("The appointment time must be two hours later.");

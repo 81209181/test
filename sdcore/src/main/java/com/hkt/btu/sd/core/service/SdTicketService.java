@@ -34,7 +34,8 @@ public interface SdTicketService {
 
     List<SdTicketRemarkBean> getTicketRemarksByTicketId(Integer ticketMasId);
 
-    void createTicketRemarks(Integer ticketMasId, String remarksType, String remarks);
+    void createTicketCustRemarks(Integer ticketMasId, String remarks);
+    void createTicketSysRemarks(Integer ticketMasId, String remarks);
 
     void updateJobIdInService(Integer jobId, String ticketMasId, String userId);
 

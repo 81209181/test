@@ -42,10 +42,6 @@ public interface SdTicketFacade {
 
     SdTicketData getTicketInfo(Integer ticketMasId);
 
-    void cancelTicket(int ticketMasId, String name);
-
-    boolean isCancel(String ticketMasId);
-
     List<SdTicketMasData> getTicketByServiceNo(String serviceNo);
 
     void closeTicket(int ticketMasId,String reasonType, String reasonContent,String userId);

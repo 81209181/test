@@ -14,18 +14,6 @@ public class SdTicketRemarkEntity extends BaseEntity {
     private Integer ticketMasId;
     private String remarksType;
 
-    public String getRemarksTypeDesc(){
-        switch (remarksType) {
-            case "CUST":
-                return "Customer";
-            case "FIELD":
-                return "Field";
-            case "SYS":
-                return "System";
-        }
-        return "Not found match remarks type";
-    }
-
     public Integer getTicketRemarksId() {
         return ticketRemarksId;
     }
