@@ -5,12 +5,15 @@ CREATE TABLE TICKET_MAS
     CUST_CODE          varchar2(40),
     TICKET_TYPE        varchar2(5), -- {'QUERY', 'FAULT'}
     STATUS             varchar2(2), -- {OPEN: 'O', CANCEL: 'CX', COMPLETE: 'CP'}
+    COMPLETE_DATE      date,
+    CALL_IN_COUNT      number,
+    SEARCH_KEY         varchar2(20),
+    SEARCH_VALUE       varchar2(30),
 
     CREATEDATE         date                    default SYSDATE not null,
     CREATEBY           varchar2(10)            not null,
     MODIFYDATE         date                    default SYSDATE not null,
     MODIFYBY           varchar2(10)            not null,
-    CALL_IN_COUNT      number,
     CONSTRAINT PK_TICKET_MAS PRIMARY KEY (TICKET_MAS_ID)
 );
 CREATE INDEX IDX_TICKET_MAS_1 ON TICKET_MAS (CUST_CODE);
