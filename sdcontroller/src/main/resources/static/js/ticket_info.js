@@ -72,6 +72,19 @@ $().ready(function(){
         })
     })
 
+    // call in count
+    $('#btnCallInCount').on('click', function(){
+        $.post('/ticket/callInCount', {
+            ticketMasId:ticketMasId
+        }, function (res) {
+            if (res.success) {
+                location.reload();
+            } else {
+                showErrorMsg(res.feedback);
+            }
+        })
+    })
+
 
     //contact
     $.get('/ticket/contact/'+ticketMasId,function(res){

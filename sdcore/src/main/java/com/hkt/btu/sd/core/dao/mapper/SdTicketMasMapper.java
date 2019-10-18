@@ -31,4 +31,6 @@ public interface SdTicketMasMapper {
     void updateTicketStatus(@Param("ticketMasId") int ticketMasId,
                             @Param("status") String status,
                             @Param("userId") String userId);
+
+    void updateTicketCallInCount(@Param("ticketMasId") Integer ticketMasId, @Param("userId") String userId);
 }

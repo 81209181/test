@@ -57,7 +57,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         SdTicketMasData ticketMasData = new SdTicketMasData();
         return ticketService.getTicket(ticketId).map(sdTicketMasBean -> {
             ticketMasDataPopulator.populate(sdTicketMasBean, ticketMasData);
-            auditTrailFacade.insertViewTicketAuditTrail(userService.getCurrentUserUserId(),String.valueOf(ticketMasData.getTicketMasId()));
+            auditTrailFacade.insertViewTicketAuditTrail(userService.getCurrentUserUserId(), String.valueOf(ticketMasData.getTicketMasId()));
             return ticketMasData;
         });
     }
@@ -107,7 +107,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             ticketMasId = StringUtils.isEmpty(ticketMasId) ? null : ticketMasId;
             custCode = StringUtils.isEmpty(custCode) ? null : custCode;
 
-            pageBean = ticketService.searchTicketList(pageable, dateFrom, dateTo, status,ticketMasId,custCode);
+            pageBean = ticketService.searchTicketList(pageable, dateFrom, dateTo, status, ticketMasId, custCode);
         } catch (AuthorityNotFoundException e) {
             return new PageData<>(e.getMessage());
         }
@@ -263,7 +263,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
     @Override
     public BesSubFaultData getFaultInfo(String subscriberId) {
-        if(StringUtils.isEmpty(subscriberId)){
+        if (StringUtils.isEmpty(subscriberId)) {
             return BesSubFaultData.MISSING_PARAM;
         }
 
@@ -292,7 +292,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             BesSubFaultData besSubFaultData = new BesSubFaultData();
             besSubFaultData.setList(besFaultInfoDataList);
             return besSubFaultData;
-        } catch (Exception e){
+        } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             return BesSubFaultData.FAIL;
         }
@@ -325,7 +325,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
     @Override
     public void cancelTicket(int ticketMasId, String userId) {
-        ticketService.updateTicketStatus(ticketMasId,SdTicketMasBean.STATUS_TYPE_CODE.CANCEL,userId);
+        ticketService.updateTicketStatus(ticketMasId, SdTicketMasBean.STATUS_TYPE_CODE.CANCEL, userId);
     }
 
     @Override
@@ -333,5 +333,22 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         return ticketService.getTicket(Integer.valueOf(ticketMasId))
                 .map(SdTicketMasBean::getStatus)
                 .filter(s -> s.equals(SdTicketMasBean.STATUS_TYPE.CANCEL)).isPresent();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean increaseCallInCount(Integer ticketMasId) {
+        if (ticketMasId == null) {
+            return false;
+        }
+
+        try {
+            ticketService.increaseCallInCount(ticketMasId);
+            ticketService.createTicketRemarks(ticketMasId, SdTicketRemarkData.Type.SYSTEM, "Call In Count has been increase 1.");
+            return true;
+        } catch (Exception e) {
+            LOG.warn(e);
+            return false;
+        }
     }
 }

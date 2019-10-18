@@ -82,4 +82,13 @@
         MODIFYDATE=sysdate
         where TICKET_MAS_ID =#{ticketMasId}
     </update>
+
+    <update id="updateTicketCallInCount">
+        update TICKET_MAS
+        set    CALL_IN_COUNT = CALL_IN_COUNT + 1,
+               MODIFYBY = #{userId},
+               MODIFYDATE = sysdate
+        where  TICKET_MAS_ID = #{ticketMasId}
+    </update>
+
 </mapper>

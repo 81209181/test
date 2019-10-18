@@ -226,4 +226,15 @@ public class TicketController {
         SdTicketData ticketData = ticketFacade.getTicketInfo(ticketMasId);
         return ResponseEntity.ok(ticketData);
     }
+
+    @ResponseBody
+    @PostMapping("callInCount")
+    public SimpleAjaxResponse callInCount(@RequestParam Integer ticketMasId) {
+        boolean result = ticketFacade.increaseCallInCount(ticketMasId);
+        if (result) {
+            return SimpleAjaxResponse.of(true, "call in count success.");
+        } else {
+            return SimpleAjaxResponse.of(false, "increase call in count failed.");
+        }
+    }
 }
