@@ -174,15 +174,11 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
     @Override
     public String updateServiceInfo(List<RequestTicketServiceData> serviceList) {
-
         if (CollectionUtils.isEmpty(serviceList)) {
             return "update service info failed.";
         }
 
-        Integer ticketMasId = serviceList.get(0).getTicketMasId();
         try {
-            //ticketService.removeServiceInfoByTicketMasId(ticketMasId);
-
             List<SdTicketServiceBean> serviceInfoList = serviceList.stream().map(requestData -> {
                 SdTicketServiceBean bean = new SdTicketServiceBean();
                 bean.setTicketMasId(requestData.getTicketMasId());
