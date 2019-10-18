@@ -125,7 +125,7 @@ public class SdTicketServiceImpl implements SdTicketService {
 
         List<SdTicketMasEntity> entityList = ticketMasMapper.searchTicketList(
                 offset, pageSize, dateFrom, dateTo, status, ticketMasId, custCode, null);
-        Integer totalCount = ticketMasMapper.searchTicketCount(dateFrom, dateTo, status, ticketMasId, custCode);
+        Integer totalCount = ticketMasMapper.searchTicketCount(dateFrom, dateTo, status, ticketMasId, custCode, null);
 
         List<SdTicketMasBean> beanList = new LinkedList<>();
         for (SdTicketMasEntity entity : entityList) {
@@ -245,6 +245,8 @@ public class SdTicketServiceImpl implements SdTicketService {
     public void increaseCallInCount(Integer ticketMasId) {
         String userId = userService.getCurrentUserBean().getUserId();
         ticketMasMapper.updateTicketCallInCount(ticketMasId, userId);
+
+
     }
 
     @Override
