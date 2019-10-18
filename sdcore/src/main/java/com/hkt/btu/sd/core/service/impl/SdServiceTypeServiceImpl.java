@@ -41,13 +41,26 @@ public class SdServiceTypeServiceImpl implements SdServiceTypeService {
 
     @Override
     public String getServiceTypeByOfferName(String offerName) {
-        return Optional.ofNullable(SERVICE_TYPE_OFFER_MAPPING).orElseGet(() -> {
-            reloadServiceTypeOfferMapping();
-            return SERVICE_TYPE_OFFER_MAPPING;
-        }).stream().filter(bean -> StringUtils.containsIgnoreCase(offerName,bean.getOfferName())).findFirst().flatMap(bean -> getServiceTypeList().stream()
-                .filter(sdServiceTypeBean -> sdServiceTypeBean.getServiceTypeCode().equals(bean.getServiceTypeCode()))
-                .findFirst().map(SdServiceTypeBean::getServiceTypeName)
-        ).orElse(SdServiceTypeEntity.SERVICE_TYPE.UNKNOWN);
+        if (StringUtils.containsIgnoreCase(offerName, "broadband")) {
+            return getServiceTypeList().stream()
+                    .filter(sdServiceTypeBean -> sdServiceTypeBean.getServiceTypeCode().equals("BN"))
+                    .findFirst().map(SdServiceTypeBean::getServiceTypeName).orElse(SdServiceTypeEntity.SERVICE_TYPE_NAME.UNKNOWN_SERVICE_TYPE);
+        } else {
+            return  Optional.ofNullable(SERVICE_TYPE_OFFER_MAPPING).orElseGet(() -> {
+                reloadServiceTypeOfferMapping();
+                return SERVICE_TYPE_OFFER_MAPPING;
+            }).stream().filter(bean -> StringUtils.equals(offerName,bean.getOfferName()))
+                    .findFirst().flatMap(bean -> getServiceTypeList().stream()
+                            .filter(sdServiceTypeBean -> sdServiceTypeBean.getServiceTypeCode().equals(bean.getServiceTypeCode()))
+                            .findFirst().map(SdServiceTypeBean::getServiceTypeName)
+                    ).orElse(SdServiceTypeEntity.SERVICE_TYPE_NAME.UNKNOWN_SERVICE_TYPE);
+        }
+    }
+
+    @Override
+    public void reload() {
+        reloadServiceTypeList();
+        reloadServiceTypeOfferMapping();
     }
 
     private void reloadServiceTypeOfferMapping() {

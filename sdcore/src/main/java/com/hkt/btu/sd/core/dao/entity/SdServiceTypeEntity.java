@@ -7,6 +7,9 @@ public class SdServiceTypeEntity extends BaseEntity {
     public static class SERVICE_TYPE{
         public static final String UNKNOWN = "UNKNOWN";
     }
+    public static class SERVICE_TYPE_NAME{
+        public static final String UNKNOWN_SERVICE_TYPE = "Unknown Service Type";
+    }
 
     private String serviceTypeCode;
     private String serviceTypeName;
