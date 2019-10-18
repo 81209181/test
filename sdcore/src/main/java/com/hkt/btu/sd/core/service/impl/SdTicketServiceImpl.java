@@ -23,7 +23,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Base64Utils;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -124,7 +123,8 @@ public class SdTicketServiceImpl implements SdTicketService {
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
 
-        List<SdTicketMasEntity> entityList = ticketMasMapper.searchTicketList(offset, pageSize, dateFrom, dateTo, status, ticketMasId, custCode);
+        List<SdTicketMasEntity> entityList = ticketMasMapper.searchTicketList(
+                offset, pageSize, dateFrom, dateTo, status, ticketMasId, custCode, null);
         Integer totalCount = ticketMasMapper.searchTicketCount(dateFrom, dateTo, status, ticketMasId, custCode);
 
         List<SdTicketMasBean> beanList = new LinkedList<>();
@@ -217,13 +217,11 @@ public class SdTicketServiceImpl implements SdTicketService {
             }
         }
 
-        List<SdSymptomBean> beanList = symptomEntities.stream().map(entity -> {
+        return symptomEntities.stream().map(entity -> {
             SdSymptomBean bean = new SdSymptomBean();
             ticketServiceBeanPopulator.populate(entity, bean);
             return bean;
         }).collect(Collectors.toList());
-
-        return beanList;
     }
 
     @Override
@@ -289,8 +287,7 @@ public class SdTicketServiceImpl implements SdTicketService {
         entity.setServiceTypeCode(bean.getServiceTypeCode());
 
         ticketServiceMapper.insertServiceInfo(entity);
-        int ticketDetId = entity.getTicketDetId();
-        return ticketDetId;
+        return entity.getTicketDetId();
     }
 
     @Override

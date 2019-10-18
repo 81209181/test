@@ -48,6 +48,9 @@
         <if test="custCode != null">
             and cust_code =#{custCode}
         </if>
+        <if test="createBy != null">
+            and CREATEBY = #{createBy}
+        </if>
     </sql>
 
     <select id="searchTicketList" resultMap="TicketMasEntity">
@@ -63,7 +66,9 @@
     </select>
 
     <select id="getMyTicket" resultMap="TicketMasEntity">
-        select * from TICKET_MAS where CREATEBY = #{createBy} order by TICKET_MAS_ID
+        select * from TICKET_MAS
+        where CREATEBY = #{createBy}
+        order by TICKET_MAS_ID desc
     </select>
 
     <update id="updateAppointmentInMas">
