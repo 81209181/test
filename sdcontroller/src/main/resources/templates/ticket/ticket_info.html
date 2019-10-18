@@ -27,6 +27,13 @@
                     <label class="col-form-label justify-content-end">Ticket Status:</label>
                     <font class="form-control-plaintext col-md-7" th:text="*{ticketStatus}" id="ticketStatus"></font>
                 </div>
+                <div class="col-md-3 form-inline pt-2">
+                    <label class="col-form-label justify-content-end">Call-in Count:</label>
+                    <font class="form-control-plaintext col-md-7" th:text="*{callInCount}"></font>
+                </div>
+                <div class="col-md-3 form-inline pt-2">
+                    <button type="button" class="btn btn-primary mt-2">Customer Re-call</button>
+                </div>
             </div>
             <hr>
             <form id="customer" class="row" >
