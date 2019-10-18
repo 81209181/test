@@ -112,8 +112,6 @@ public class RequestCreateSearchResultDataPopulator extends AbstractDataPopulato
             default:
                 target.setLanguagePreference("Unknown");
         }
-        target.setServiceType("Unknown");
-
     }
 
     private void populateFromBesContactPersonInfoData(BesContactPersonInfoData source, RequestCreateSearchResultData target) {
