@@ -37,7 +37,7 @@ public class TicketController {
 
     @GetMapping("service-identity")
     public String serviceIdentity() {
-        return "ticket/service_identity";
+        return "ticket/serviceIdentity";
     }
 
     @PostMapping("search-service")
@@ -71,7 +71,7 @@ public class TicketController {
         return ticketFacade.getTicket(ticketMasId)
                 .filter(sdTicketMasData -> userRoleFacade.checkSameTeamRole(principal.getName(), sdTicketMasData.getCreateBy()))
                 .map(sdTicketMasData -> {
-                    ModelAndView modelAndView = new ModelAndView("ticket/ticket_info");
+                    ModelAndView modelAndView = new ModelAndView("ticket/ticketInfo");
                     modelAndView.addObject("ticketInfo", requestCreateFacade.getTicketInfo(sdTicketMasData));
                     return modelAndView;
                 }).orElse(new ModelAndView("redirect:/ticket/search-ticket"));
