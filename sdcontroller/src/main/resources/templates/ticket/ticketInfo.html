@@ -106,7 +106,7 @@
                         </div>
                         <div class="temp_faults col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Symptom: </label>
-                            <select name="symptom" id="symptomList" class="selectpicker form-control col-md-6" data-width="500px" data-live-search="true"></select>
+                            <select name="symptom" id="symptomList" class="selectpicker form-control col-md-6" data-width="500px" data-live-search="true" th:disabled="*{ticketStatus}"></select>
                         </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Subscriber ID: </label>
