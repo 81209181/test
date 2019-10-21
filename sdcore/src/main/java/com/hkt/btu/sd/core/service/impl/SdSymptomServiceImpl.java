@@ -67,7 +67,7 @@ public class SdSymptomServiceImpl implements SdSymptomService {
         int pageSize = pageable.getPageSize();
 
         List<SdSymptomEntity> entityList = sdSymptomMapper.searchSymptomList(offset, pageSize, symptomGroupCode, symptomDescription);
-        Integer totalCount = entityList.size();
+        Integer totalCount = sdSymptomMapper.searchSymptomCount(symptomGroupCode, symptomDescription);
 
         List<SdSymptomBean> beanList = new LinkedList<>();
         for (SdSymptomEntity entity : entityList) {
