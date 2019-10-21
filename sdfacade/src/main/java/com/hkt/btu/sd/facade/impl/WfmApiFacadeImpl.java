@@ -104,4 +104,17 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
         });
         return wfmResponseData;
     }
+
+    @Override
+    public String getPendingOrder(String serviceNo) {
+        return Optional.ofNullable(serviceNo).map(bsn -> {
+            Map<String, String> queryParamMap = new HashMap<>();
+            queryParamMap.put("bsn", bsn);
+            String wfmResponseDataJsonString = getData("/", queryParamMap);
+            if (wfmResponseDataJsonString == null) {
+                LOG.warn("WFM Error: Cannot check pending order from WFM of BSN " + bsn + ".");
+            }
+            return "";
+        }).orElse(null);
+    }
 }

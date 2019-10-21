@@ -55,6 +55,10 @@ public class TicketController {
         if (StringUtils.isEmpty(serviceNo) || StringUtils.isEmpty(serviceType)) {
             return ResponseEntity.badRequest().body("Service No. / Service Type is empty.");
         }
+        String returnCode = wfmApiFacade.getPendingOrder(serviceNo);
+        if (StringUtils.isNotEmpty(returnCode)) {
+            return ResponseEntity.badRequest().body("There is pending order of the service " + returnCode + " in WFM.");
+        }
         List<SdTicketMasData> dataList = ticketFacade.getTicketByServiceNo(serviceNo);
         if (CollectionUtils.isNotEmpty(dataList)) {
             return ResponseEntity.ok(ResponseTicketData.of(false, dataList));
