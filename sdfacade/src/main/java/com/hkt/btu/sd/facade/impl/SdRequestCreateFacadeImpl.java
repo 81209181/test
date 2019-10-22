@@ -84,11 +84,11 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
                 infoData.setCustStatus(requestCreateSearchResultData.getCustStatus());
                 infoData.setLanguagePreference(requestCreateSearchResultData.getLanguagePreference());
                 infoData.setServiceStatus(requestCreateSearchResultData.getServiceStatus());
-                infoData.setServiceType(serviceTypeFacade.getServiceTypeByOfferName(requestCreateSearchResultData.getOfferName()));
                 infoData.setSubsId(requestCreateSearchResultData.getSubsId());
                 infoData.setOfferName(requestCreateSearchResultData.getOfferName());
                 infoData.setItsmUrl(requestCreateSearchResultData.getUrl());
             });
+            infoData.setServiceType(sdTicketServiceData.getServiceType());
             infoData.setServiceNo(sdTicketServiceData.getServiceCode());
 
         });
@@ -152,7 +152,10 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         }));*/
         // fill in customer data
         if (CollectionUtils.isNotEmpty(resultDataList)) {
-            besCustomerData.ifPresent(bes -> resultDataList.forEach(resultData -> requestCreateSearchResultDataPopulator.populateFromBesCustomerDataData(bes, resultData)));
+            besCustomerData.ifPresent(bes -> resultDataList.forEach(resultData -> {
+                requestCreateSearchResultDataPopulator.populateFromBesCustomerDataData(bes, resultData);
+                resultData.setServiceType(serviceTypeFacade.getServiceTypeByOfferName(resultData.getOfferName()));
+            }));
         } else {
             resultsData.setErrorMsg(String.format("Service(s) not found with %s .", bsn));
         }
