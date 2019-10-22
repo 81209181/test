@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SdTicketFacade {
-    int createQueryTicket(String custCode, String serviceNo, String serviceType, String subsId);
+    int createQueryTicket(QueryTicketRequestData queryTicketRequestData);
 
     Optional<SdTicketMasData> getTicket(Integer ticketId);
 

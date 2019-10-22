@@ -48,8 +48,13 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     BesFaultInfoDataPopulator faultInfoDataPopulator;
 
     @Override
-    public int createQueryTicket(String custCode, String serviceNo, String serviceType, String subsId) {
-        return ticketService.createQueryTicket(custCode, serviceNo, serviceType, subsId);
+    public int createQueryTicket(QueryTicketRequestData queryTicketRequestData) {
+        return ticketService.createQueryTicket(queryTicketRequestData.getCustCode(),
+                queryTicketRequestData.getServiceNo(),
+                queryTicketRequestData.getServiceType(),
+                queryTicketRequestData.getSubsId(),
+                queryTicketRequestData.getSearchKey(),
+                queryTicketRequestData.getSearchValue());
     }
 
     @Override

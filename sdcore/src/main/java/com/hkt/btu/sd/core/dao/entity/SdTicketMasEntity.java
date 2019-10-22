@@ -20,6 +20,10 @@ public class SdTicketMasEntity extends BaseEntity {
 
     private int callInCount;
 
+    private String searchKey;
+
+    private String searchValue;
+
     public LocalDateTime getAppointmentDate() {
         return appointmentDate;
     }
@@ -74,5 +78,21 @@ public class SdTicketMasEntity extends BaseEntity {
 
     public void setCallInCount(int callInCount) {
         this.callInCount = callInCount;
+    }
+
+    public String getSearchKey() {
+        return searchKey;
+    }
+
+    public void setSearchKey(String searchKey) {
+        this.searchKey = searchKey;
+    }
+
+    public String getSearchValue() {
+        return searchValue;
+    }
+
+    public void setSearchValue(String searchValue) {
+        this.searchValue = searchValue;
     }
 }

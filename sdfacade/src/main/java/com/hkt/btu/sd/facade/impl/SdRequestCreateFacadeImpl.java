@@ -70,6 +70,8 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         infoData.setTicketStatus(sdTicketMasData.getStatus());
         infoData.setAsap(sdTicketMasData.getAsap());
         infoData.setCallInCount(sdTicketMasData.getCallInCount());
+        infoData.setSearchKey(sdTicketMasData.getSearchKey());
+        infoData.setSearchValue(sdTicketMasData.getSearchValue());
         infoData.setAppointmentDate(sdTicketMasData.getAppointmentDate());
         ticketFacade.getService(sdTicketMasData.getTicketMasId()).ifPresent(sdTicketServiceData -> {
             Optional.ofNullable(sdTicketServiceData.getJobId()).ifPresent(s -> {

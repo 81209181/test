@@ -13,4 +13,6 @@ public interface WfmApiFacade {
     WfmJobDetailsData getJobDetails(Integer jobId);
 
     List<SdServiceTypeOfferMappingBean> getServiceTypeOfferMapping();
+
+
 }

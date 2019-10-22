@@ -56,13 +56,17 @@ public class SdTicketServiceImpl implements SdTicketService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int createQueryTicket(String custCode, String serviceNo, String serviceType, String subsId) {
+    public int createQueryTicket(String custCode, String serviceNo, String serviceType, String subsId,
+                                 String searchKey, String searchValue) {
         SdTicketMasEntity ticketMasEntity = new SdTicketMasEntity();
         String userId = userService.getCurrentUserUserId();
         ticketMasEntity.setCustCode(custCode);
         ticketMasEntity.setCreateby(userId);
         ticketMasEntity.setCallInCount(1);
+        ticketMasEntity.setSearchKey(searchKey);
+        ticketMasEntity.setSearchValue(searchValue);
         ticketMasMapper.insertQueryTicket(ticketMasEntity);
+
         // service
         SdTicketServiceEntity serviceEntity = new SdTicketServiceEntity();
         serviceEntity.setCreateby(userId);

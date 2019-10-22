@@ -51,15 +51,15 @@ public class TicketController {
     }
 
     @PostMapping("query/create")
-    public ResponseEntity<?> createQueryTicket(String custCode, String serviceNo, String serviceType, String subsId) {
-        if (StringUtils.isEmpty(serviceNo) || StringUtils.isEmpty(serviceType)) {
+    public ResponseEntity<?> createQueryTicket(QueryTicketRequestData queryTicketRequestData) {
+        if (StringUtils.isEmpty(queryTicketRequestData.getServiceNo()) || StringUtils.isEmpty(queryTicketRequestData.getServiceType())) {
             return ResponseEntity.badRequest().body("Service No. / Service Type is empty.");
         }
-        List<SdTicketMasData> dataList = ticketFacade.getTicketByServiceNo(serviceNo);
+        List<SdTicketMasData> dataList = ticketFacade.getTicketByServiceNo(queryTicketRequestData.getServiceNo());
         if (CollectionUtils.isNotEmpty(dataList)) {
             return ResponseEntity.ok(ResponseTicketData.of(false, dataList));
         }
-        return ResponseEntity.ok(ResponseTicketData.of(true, ticketFacade.createQueryTicket(custCode, serviceNo, serviceType, subsId)));
+        return ResponseEntity.ok(ResponseTicketData.of(true, ticketFacade.createQueryTicket(queryTicketRequestData)));
     }
 
     @GetMapping("")
@@ -230,14 +230,13 @@ public class TicketController {
         return ResponseEntity.ok(SimpleAjaxResponse.of());
     }
 
-    @ResponseBody
     @PostMapping("callInCount")
-    public SimpleAjaxResponse callInCount(@RequestParam Integer ticketMasId) {
+    public ResponseEntity<?> callInCount(@RequestParam Integer ticketMasId) {
         boolean result = ticketFacade.increaseCallInCount(ticketMasId);
         if (result) {
-            return SimpleAjaxResponse.of(true, "call in count success.");
+            return ResponseEntity.ok(SimpleAjaxResponse.of());
         } else {
-            return SimpleAjaxResponse.of(false, "increase call in count failed.");
+            return ResponseEntity.ok(SimpleAjaxResponse.of(false, "increase call in count failed."));
         }
     }
 }
