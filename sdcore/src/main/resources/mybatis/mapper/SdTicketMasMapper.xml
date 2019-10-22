@@ -11,6 +11,8 @@
         <result column="APPOINTMENT_DATE" property="appointmentDate" />
         <result column="ASAP" property="asap" />
         <result column="CALL_IN_COUNT" property="callInCount"/>
+        <result column="SEARCH_KEY" property="searchKey"/>
+        <result column="SEARCH_VALUE" property="searchValue"/>
 
         <result column="CREATEDATE" property="createdate" />
         <result column="CREATEBY" property="createby" />
@@ -22,8 +24,8 @@
         <selectKey keyProperty="ticketMasId" order="BEFORE" resultType="Integer">
             select SEQ_TICKET_MAS_ID.NEXTVAL from dual
         </selectKey>
-        insert into TICKET_MAS (TICKET_MAS_ID,CUST_CODE,TICKET_TYPE,STATUS,CREATEBY,MODIFYBY,CALL_IN_COUNT)
-        values(#{ticketMasId},#{custCode},'QUERY','O',#{createby},#{createby},#{callInCount})
+        insert into TICKET_MAS (TICKET_MAS_ID,CUST_CODE,TICKET_TYPE,STATUS,CREATEBY,MODIFYBY,CALL_IN_COUNT,SEARCH_KEY,SEARCH_VALUE)
+        values(#{ticketMasId},#{custCode},'QUERY','O',#{createby},#{createby},#{callInCount},#{searchKey},#{searchValue})
     </insert>
 
     <select id="findTicketById" resultMap="TicketMasEntity">
@@ -48,6 +50,9 @@
         <if test="custCode != null">
             and cust_code =#{custCode}
         </if>
+        <if test="createBy != null">
+            and CREATEBY = #{createBy}
+        </if>
     </sql>
 
     <select id="searchTicketList" resultMap="TicketMasEntity">
@@ -63,7 +68,9 @@
     </select>
 
     <select id="getMyTicket" resultMap="TicketMasEntity">
-        select * from TICKET_MAS where CREATEBY = #{createBy} order by TICKET_MAS_ID
+        select * from TICKET_MAS
+        where CREATEBY = #{createBy}
+        order by TICKET_MAS_ID desc
     </select>
 
     <update id="updateAppointmentInMas">

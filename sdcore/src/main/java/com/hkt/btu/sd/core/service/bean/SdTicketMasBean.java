@@ -10,13 +10,12 @@ public class SdTicketMasBean extends BaseBean {
         public static final String OPEN = "OPEN";
         public static final String WORKING = "WORKING";
         public static final String COMPLETE = "COMPLETE";
-        public static final String CANCEL = "CANCEL";
     }
+
     public static class STATUS_TYPE_CODE {
         public static final String OPEN = "O";
         public static final String WORKING = "W";
         public static final String COMPLETE = "CP";
-        public static final String CANCEL = "CX";
     }
 
     private int ticketMasId ;
@@ -32,6 +31,10 @@ public class SdTicketMasBean extends BaseBean {
     private String asap;
 
     private int callInCount;
+
+    private String searchKey;
+
+    private String searchValue;
 
     public LocalDateTime getAppointmentDate() {
         return appointmentDate;
@@ -87,5 +90,21 @@ public class SdTicketMasBean extends BaseBean {
 
     public void setCallInCount(int callInCount) {
         this.callInCount = callInCount;
+    }
+
+    public String getSearchKey() {
+        return searchKey;
+    }
+
+    public void setSearchKey(String searchKey) {
+        this.searchKey = searchKey;
+    }
+
+    public String getSearchValue() {
+        return searchValue;
+    }
+
+    public void setSearchValue(String searchValue) {
+        this.searchValue = searchValue;
     }
 }

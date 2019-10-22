@@ -37,7 +37,7 @@ public class TicketController {
 
     @GetMapping("service-identity")
     public String serviceIdentity() {
-        return "ticket/service_identity";
+        return "ticket/serviceIdentity";
     }
 
     @PostMapping("search-service")
@@ -51,15 +51,19 @@ public class TicketController {
     }
 
     @PostMapping("query/create")
-    public ResponseEntity<?> createQueryTicket(String custCode, String serviceNo, String serviceType, String subsId) {
-        if (StringUtils.isEmpty(serviceNo) || StringUtils.isEmpty(serviceType)) {
+    public ResponseEntity<?> createQueryTicket(QueryTicketRequestData queryTicketRequestData) {
+        if (StringUtils.isEmpty(queryTicketRequestData.getServiceNo()) || StringUtils.isEmpty(queryTicketRequestData.getServiceType())) {
             return ResponseEntity.badRequest().body("Service No. / Service Type is empty.");
         }
-        List<SdTicketMasData> dataList = ticketFacade.getTicketByServiceNo(serviceNo);
+        String returnCode = wfmApiFacade.getPendingOrder(queryTicketRequestData.getServiceNo());
+        if (StringUtils.isNotEmpty(returnCode)) {
+            return ResponseEntity.badRequest().body("There is pending order of the service " + returnCode + " in WFM.");
+        }
+        List<SdTicketMasData> dataList = ticketFacade.getTicketByServiceNo(queryTicketRequestData.getServiceNo());
         if (CollectionUtils.isNotEmpty(dataList)) {
             return ResponseEntity.ok(ResponseTicketData.of(false, dataList));
         }
-        return ResponseEntity.ok(ResponseTicketData.of(true, ticketFacade.createQueryTicket(custCode, serviceNo, serviceType, subsId)));
+        return ResponseEntity.ok(ResponseTicketData.of(true, ticketFacade.createQueryTicket(queryTicketRequestData)));
     }
 
     @GetMapping("")
@@ -67,7 +71,7 @@ public class TicketController {
         return ticketFacade.getTicket(ticketMasId)
                 .filter(sdTicketMasData -> userRoleFacade.checkSameTeamRole(principal.getName(), sdTicketMasData.getCreateBy()))
                 .map(sdTicketMasData -> {
-                    ModelAndView modelAndView = new ModelAndView("ticket/ticket_info");
+                    ModelAndView modelAndView = new ModelAndView("ticket/ticketInfo");
                     modelAndView.addObject("ticketInfo", requestCreateFacade.getTicketInfo(sdTicketMasData));
                     return modelAndView;
                 }).orElse(new ModelAndView("redirect:/ticket/search-ticket"));
@@ -186,13 +190,6 @@ public class TicketController {
         }
     }
 
-    @ResponseBody
-    @PostMapping("cancel")
-    public SimpleAjaxResponse cancel(Principal principal, int ticketMasId) {
-        ticketFacade.cancelTicket(ticketMasId, principal.getName());
-        return SimpleAjaxResponse.of();
-    }
-
     @GetMapping("ajax-search-ticket-remarks")
     public ResponseEntity<?> ajaxSearchTicketRemarks(@RequestParam Integer ticketMasId) {
         List<SdTicketRemarkData> dataList = ticketFacade.getTicketRemarksByTicketId(ticketMasId);
@@ -216,9 +213,6 @@ public class TicketController {
 
     @PostMapping("appointment/update")
     public ResponseEntity<?> updateAppointment(String appointmentDate, boolean asap, Principal principal, String ticketMasId) {
-        if (ticketFacade.isCancel(ticketMasId)) {
-            return ResponseEntity.badRequest().body("The ticket has been cancelled.");
-        }
         if (!asap) {
             if (!ticketFacade.checkAppointmentDate(appointmentDate)) {
                 return ResponseEntity.badRequest().body("The appointment time must be two hours later.");
@@ -240,14 +234,13 @@ public class TicketController {
         return ResponseEntity.ok(SimpleAjaxResponse.of());
     }
 
-    @ResponseBody
     @PostMapping("callInCount")
-    public SimpleAjaxResponse callInCount(@RequestParam Integer ticketMasId) {
+    public ResponseEntity<?> callInCount(@RequestParam Integer ticketMasId) {
         boolean result = ticketFacade.increaseCallInCount(ticketMasId);
         if (result) {
-            return SimpleAjaxResponse.of(true, "call in count success.");
+            return ResponseEntity.ok(SimpleAjaxResponse.of());
         } else {
-            return SimpleAjaxResponse.of(false, "increase call in count failed.");
+            return ResponseEntity.ok(SimpleAjaxResponse.of(false, "increase call in count failed."));
         }
     }
 }

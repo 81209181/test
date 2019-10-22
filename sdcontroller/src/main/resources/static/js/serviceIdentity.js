@@ -9,6 +9,7 @@ $().ready(function(){
     })
 
     $('#btnSearchCustomerNext').on('click',function(){
+        console.log($('form').serialize());
         clearAllMsg();
         let custCode =$('input[name=custCode]').val();
         if(custCode.length < 1){
@@ -47,6 +48,8 @@ $().ready(function(){
         clearAllMsg();
         $('tbody').empty();
         $('form').get(0).reset();
+        $('input[name=searchKey]').val(searchKey.val());
+        $('input[name=searchValue]').val(searchValue.val());
         $('.itsm').attr('disabled',true);
         if(searchKey.val().trim().length <1){
             searchKey.attr('class','custom-select is-invalid');

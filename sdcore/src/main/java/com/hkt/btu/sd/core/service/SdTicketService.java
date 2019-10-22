@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SdTicketService {
-    int createQueryTicket(String custCode, String serviceNo, String serviceType, String subsId);
+    int createQueryTicket(String custCode, String serviceNo, String serviceType, String subsId, String searchKey, String searchValue);
 
     Optional<SdTicketMasBean> getTicket(Integer ticketId);
 
@@ -34,7 +34,8 @@ public interface SdTicketService {
 
     List<SdTicketRemarkBean> getTicketRemarksByTicketId(Integer ticketMasId);
 
-    void createTicketRemarks(Integer ticketMasId, String remarksType, String remarks);
+    void createTicketCustRemarks(Integer ticketMasId, String remarks);
+    void createTicketSysRemarks(Integer ticketMasId, String remarks);
 
     void updateJobIdInService(Integer jobId, String ticketMasId, String userId);
 

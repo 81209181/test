@@ -3,7 +3,7 @@
       layout:decorate="~{fragments/layout-fluid}"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Ticket Create</title>
+    <title>Ticket Info</title>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
@@ -29,12 +29,18 @@
                     <font class="form-control-plaintext col-md-3" th:text="*{ticketStatus}" id="ticketStatus"></font>
                     <button type="button" class="btn btn-success" id="btnTicketClose" th:unless="*{ticketStatus} eq 'COMPLETE'">Close</button>
                 </div>
-                <div class="col-md-3 form-inline pt-2">
+                <div class="col-md-4 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Call-in Count:</label>
-                    <font class="form-control-plaintext col-md-7" th:text="*{callInCount}"></font>
+                    <font class="form-control-plaintext col-md-3" th:text="*{callInCount}"></font>
+                    <button type="button" class="btn btn-primary" id="btnCallInCount">Customer Re-call</button>
                 </div>
                 <div class="col-md-3 form-inline pt-2">
-                    <button type="button" class="btn btn-primary mt-2" id="btnCallInCount">Customer Re-call</button>
+                    <label class="col-form-label justify-content-end">Search Key:</label>
+                    <font class="form-control-plaintext col-md-3" th:text="*{searchKey}"></font>
+                </div>
+                <div class="col-md-3 form-inline pt-2">
+                    <label class="col-form-label justify-content-end">Search Value:</label>
+                    <font class="form-control-plaintext col-md-5" th:text="*{searchValue}"></font>
                 </div>
             </div>
             <hr>
@@ -106,7 +112,7 @@
                         </div>
                         <div class="temp_faults col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Symptom: </label>
-                            <select name="symptom" id="symptomList" class="selectpicker form-control col-md-6" data-width="500px" data-live-search="true"></select>
+                            <select name="symptom" id="symptomList" class="selectpicker form-control col-md-6" data-width="500px" data-live-search="true" th:disabled="*{ticketStatus} ne 'OPEN'"></select>
                         </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Subscriber ID: </label>
@@ -118,7 +124,7 @@
                         </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Status: </label>
-                            <input type="text" class="form-control col-md-6" name="serviceStatus" th:value="*{serviceStatus}" readonly/>
+                            <input type="text" class="form-control col-md-6" name="serviceStatusDesc" th:value="*{serviceStatusDesc}" readonly/>
                         </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Service Address: </label>
@@ -283,7 +289,7 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript" th:src="@{/js/ticket_info.js}"></script>
+    <script type="text/javascript" th:src="@{/js/ticketInfo.js}"></script>
 </div>
 </body>
 </html>

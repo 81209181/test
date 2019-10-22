@@ -54,19 +54,19 @@ public class RequestCreateSearchResultDataPopulator extends AbstractDataPopulato
 
         String status = source.getStatus();
         if (StringUtils.equals(status, BesSubscriberBasicData.STATUS.TO_BE_ACTIVATED)) {
-            target.setStatusDesc("To Be Activated");
+            target.setServiceStatusDesc(BesSubscriberBasicData.STATUS_DESC.TO_BE_ACTIVATED);
         } else if (StringUtils.equals(status, BesSubscriberBasicData.STATUS.VALID)) {
-            target.setStatusDesc("Valid");
+            target.setServiceStatusDesc(BesSubscriberBasicData.STATUS_DESC.VALID);
         } else if (StringUtils.equals(status, BesSubscriberBasicData.STATUS.BARRED)) {
-            target.setStatusDesc("Barred");
+            target.setServiceStatusDesc(BesSubscriberBasicData.STATUS_DESC.BARRED);
         } else if (StringUtils.equals(status, BesSubscriberBasicData.STATUS.SUSPENDED)) {
-            target.setStatusDesc("Suspended");
+            target.setServiceStatusDesc(BesSubscriberBasicData.STATUS_DESC.SUSPENDED);
         } else if (StringUtils.equals(status, BesSubscriberBasicData.STATUS.PRE_DEREGISTERED)) {
-            target.setStatusDesc("Pre-deregistered");
+            target.setServiceStatusDesc(BesSubscriberBasicData.STATUS_DESC.PRE_DEREGISTERED);
         } else if (StringUtils.equals(status, BesSubscriberBasicData.STATUS.DEREGISTERED)) {
-            target.setStatusDesc("Deregistered");
+            target.setServiceStatusDesc(BesSubscriberBasicData.STATUS_DESC.DEREGISTERED);
         } else {
-            target.setStatusDesc("Unknown");
+            target.setServiceStatusDesc(BesSubscriberBasicData.STATUS_DESC.UNDEFINED);
         }
     }
 
@@ -112,8 +112,7 @@ public class RequestCreateSearchResultDataPopulator extends AbstractDataPopulato
             default:
                 target.setLanguagePreference("Unknown");
         }
-        target.setServiceType("Unknown");
-
+        target.setServiceType("Unknown"); // todo: SERVDESK-133 need to be removed, will solve serviceType with SdServiceTypeService.getServiceTypeByOfferName() mapping in service/facade layer
     }
 
     private void populateFromBesContactPersonInfoData(BesContactPersonInfoData source, RequestCreateSearchResultData target) {
@@ -152,7 +151,7 @@ public class RequestCreateSearchResultDataPopulator extends AbstractDataPopulato
         target.setServiceNo(source.getServiceNo());
 
         target.setStatus(source.getStatus());
-        target.setStatusDesc(source.getStatusDesc());
+//        target.setStatusDesc(source.getStatusDesc());
         target.setStb(source.getStb());
 
         target.setTenantId(source.getTenantId());

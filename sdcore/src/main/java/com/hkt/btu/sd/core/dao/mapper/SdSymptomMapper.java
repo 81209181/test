@@ -25,6 +25,9 @@ public interface SdSymptomMapper {
                                             @Param("symptomGroupCode") String symptomGroupCode,
                                             @Param("symptomDescription") String symptomDescription);
 
+    Integer searchSymptomCount(@Param("symptomGroupCode") String symptomGroupCode,
+                               @Param("symptomDescription") String symptomDescription);
+
     void deleteSymptomMapping(@Param("symptomCode")String symptomCode, List<String> serviceTypeList);
 
     void createSymptomMapping(List<String> serviceTypeList,

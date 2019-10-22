@@ -6,7 +6,6 @@ import com.hkt.btu.sd.core.service.SdTicketService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.*;
 import com.hkt.btu.sd.facade.SdAuditTrailFacade;
-import com.hkt.btu.sd.facade.SdRequestCreateFacade;
 import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.populator.*;
@@ -32,8 +31,6 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
     @Resource(name = "ticketService")
     SdTicketService ticketService;
-    @Resource(name = "requestCreateFacade")
-    SdRequestCreateFacade requestCreateFacade;
     @Resource(name = "auditTrailFacade")
     SdAuditTrailFacade auditTrailFacade;
     @Resource(name = "userService")
@@ -51,8 +48,13 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     BesFaultInfoDataPopulator faultInfoDataPopulator;
 
     @Override
-    public int createQueryTicket(String custCode, String serviceNo, String serviceType, String subsId) {
-        return ticketService.createQueryTicket(custCode, serviceNo, serviceType, subsId);
+    public int createQueryTicket(QueryTicketRequestData queryTicketRequestData) {
+        return ticketService.createQueryTicket(queryTicketRequestData.getCustCode(),
+                queryTicketRequestData.getServiceNo(),
+                queryTicketRequestData.getServiceType(),
+                queryTicketRequestData.getSubsId(),
+                queryTicketRequestData.getSearchKey(),
+                queryTicketRequestData.getSearchValue());
     }
 
     @Override
@@ -66,7 +68,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class) // todo: Transactional best be in service layer
     public String updateContactInfo(List<SdTicketContactData> contactList) {
 
         for (SdTicketContactData data : contactList) {
@@ -215,7 +217,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         }
 
         try {
-            ticketService.createTicketRemarks(ticketMasId, SdTicketRemarkData.Type.CUSTOMER, remarks);
+            ticketService.createTicketCustRemarks(ticketMasId, remarks);
         } catch (DuplicateKeyException e) {
             return "Duplicate data already exists.";
         }
@@ -255,13 +257,11 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             return null;
         }
 
-        List<SdSymptomData> dataList = beanList.stream().map(bean -> {
+        return beanList.stream().map(bean -> {
             SdSymptomData data = new SdSymptomData();
             ticketServiceDataPopulator.populate(bean, data);
             return data;
         }).collect(Collectors.toList());
-
-        return dataList;
     }
 
     @Override
@@ -320,22 +320,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     public SdTicketMasData getTicketMas(Integer ticketMasId) {
         SdTicketMasData sdticketMasData = new SdTicketMasData();
         Optional<SdTicketMasBean> sdTicketMasBean = ticketService.getTicket(ticketMasId);
-        if (sdTicketMasBean.isPresent()) {
-            ticketMasDataPopulator.populate(sdTicketMasBean.get(), sdticketMasData);
-        }
+        sdTicketMasBean.ifPresent(ticketMasBean -> ticketMasDataPopulator.populate(ticketMasBean, sdticketMasData));
         return sdticketMasData;
-    }
-
-    @Override
-    public void cancelTicket(int ticketMasId, String userId) {
-        ticketService.updateTicketStatus(ticketMasId, SdTicketMasBean.STATUS_TYPE_CODE.CANCEL, userId);
-    }
-
-    @Override
-    public boolean isCancel(String ticketMasId) {
-        return ticketService.getTicket(Integer.valueOf(ticketMasId))
-                .map(SdTicketMasBean::getStatus)
-                .filter(s -> s.equals(SdTicketMasBean.STATUS_TYPE.CANCEL)).isPresent();
     }
 
     @Override
@@ -362,11 +348,11 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         switch (action) {
             case SdTicketMasData.ACTION_TYPE.WORKING:
                 ticketService.getTicket(Integer.valueOf(ticketMasId)).map(SdTicketMasBean::getStatus)
-                        .filter(s -> s.equals(SdTicketMasBean.STATUS_TYPE.OPEN)).orElseThrow(() -> new RuntimeException("This ticket has been submitted."));
+                        .filter(s -> s.equals(SdTicketMasBean.STATUS_TYPE.OPEN)).orElseThrow(() -> new RuntimeException("Cannot update. This ticket has been passed to working parties."));
                 break;
             case SdTicketMasData.ACTION_TYPE.COMPLETE:
                 ticketService.getTicket(Integer.valueOf(ticketMasId)).map(SdTicketMasBean::getStatus)
-                        .filter(s -> !s.equals(SdTicketMasBean.STATUS_TYPE.COMPLETE)).orElseThrow(() -> new RuntimeException("This ticket has been completed."));
+                        .filter(s -> !s.equals(SdTicketMasBean.STATUS_TYPE.COMPLETE)).orElseThrow(() -> new RuntimeException("Cannot update. This ticket has been completed."));
                 break;
             default:
                 ticketService.getTicket(Integer.valueOf(ticketMasId)).map(SdTicketMasBean::getStatus)
@@ -381,7 +367,6 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public boolean increaseCallInCount(Integer ticketMasId) {
         if (ticketMasId == null) {
             return false;
@@ -389,10 +374,9 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
         try {
             ticketService.increaseCallInCount(ticketMasId);
-            ticketService.createTicketRemarks(ticketMasId, SdTicketRemarkData.Type.SYSTEM, "Call In Count has been increase 1.");
             return true;
         } catch (Exception e) {
-            LOG.warn(e);
+            LOG.error(e.getMessage(), e);
             return false;
         }
     }

@@ -71,6 +71,18 @@
         order by sy.SYMPTOM_CODE
     </select>
 
+    <sql id="searchSymptomSql">
+        from SYMPTOM sy
+        inner join SYMPTOM_GROUP sg on sy.SYMPTOM_GROUP_CODE = sg.SYMPTOM_GROUP_CODE
+        where 1=1
+        <if test="symptomGroupCode != null and symptomGroupCode != ''">
+            and lower(sy.SYMPTOM_GROUP_CODE) like '%' || lower(#{symptomGroupCode}) || '%'
+        </if>
+        <if test="symptomDescription != null and symptomDescription != ''">
+            and lower(sy.SYMPTOM_DESCRIPTION) like '%' || lower(#{symptomDescription}) || '%'
+        </if>
+    </sql>
+
     <select id="searchSymptomList" resultMap="SymptomEntity">
         select
         sy.SYMPTOM_CODE,
@@ -81,17 +93,14 @@
         sy.CREATEBY,
         sy.MODIFYDATE,
         sy.MODIFYBY
-        from SYMPTOM sy
-        inner join SYMPTOM_GROUP sg on sy.SYMPTOM_GROUP_CODE = sg.SYMPTOM_GROUP_CODE
-        where 1=1
-        <if test="symptomGroupCode != null and symptomGroupCode != ''">
-            and lower(sy.SYMPTOM_GROUP_CODE) like '%' || lower(#{symptomGroupCode}) || '%'
-        </if>
-        <if test="symptomDescription != null and symptomDescription != ''">
-            and lower(sy.SYMPTOM_DESCRIPTION) like '%' || lower(#{symptomDescription}) || '%'
-        </if>
+        <include refid="searchSymptomSql"/>
         order by sy.SYMPTOM_CODE
         OFFSET #{offset} ROWS FETCH NEXT #{pageSize} ROWS ONLY
+    </select>
+
+    <select id="searchSymptomCount" resultType="Integer">
+        select count(1)
+        <include refid="searchSymptomSql"/>
     </select>
 
     <update id="updateSymptom">

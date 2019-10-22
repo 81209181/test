@@ -2,10 +2,7 @@ package com.hkt.btu.sd.core.service.impl;
 
 import com.hkt.btu.common.core.service.BtuSensitiveDataService;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
-import com.hkt.btu.sd.core.dao.entity.SdSymptomEntity;
-import com.hkt.btu.sd.core.dao.entity.SdTicketMasEntity;
-import com.hkt.btu.sd.core.dao.entity.SdTicketRemarkEntity;
-import com.hkt.btu.sd.core.dao.entity.SdTicketServiceEntity;
+import com.hkt.btu.sd.core.dao.entity.*;
 import com.hkt.btu.sd.core.dao.mapper.SdTicketContactMapper;
 import com.hkt.btu.sd.core.dao.mapper.SdTicketMasMapper;
 import com.hkt.btu.sd.core.dao.mapper.SdTicketRemarkMapper;
@@ -23,7 +20,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Base64Utils;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -60,13 +56,17 @@ public class SdTicketServiceImpl implements SdTicketService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int createQueryTicket(String custCode, String serviceNo, String serviceType, String subsId) {
+    public int createQueryTicket(String custCode, String serviceNo, String serviceType, String subsId,
+                                 String searchKey, String searchValue) {
         SdTicketMasEntity ticketMasEntity = new SdTicketMasEntity();
         String userId = userService.getCurrentUserUserId();
         ticketMasEntity.setCustCode(custCode);
         ticketMasEntity.setCreateby(userId);
         ticketMasEntity.setCallInCount(1);
+        ticketMasEntity.setSearchKey(searchKey);
+        ticketMasEntity.setSearchValue(searchValue);
         ticketMasMapper.insertQueryTicket(ticketMasEntity);
+
         // service
         SdTicketServiceEntity serviceEntity = new SdTicketServiceEntity();
         serviceEntity.setCreateby(userId);
@@ -77,7 +77,7 @@ public class SdTicketServiceImpl implements SdTicketService {
         serviceEntity.setSubsId(subsId);
         ticketServiceMapper.insertServiceInfo(serviceEntity);
         // remark
-        ticketRemarkMapper.insertTicketRemarks(ticketMasEntity.getTicketMasId(), SdTicketRemarkEntity.REMARKS_TYPE.SYSTEM, "Created ticket.", userId);
+        createTicketSysRemarks(ticketMasEntity.getTicketMasId(), SdTicketRemarkBean.REMARKS.STATUS_TO_OPEN);
         return ticketMasEntity.getTicketMasId();
     }
 
@@ -124,8 +124,9 @@ public class SdTicketServiceImpl implements SdTicketService {
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
 
-        List<SdTicketMasEntity> entityList = ticketMasMapper.searchTicketList(offset, pageSize, dateFrom, dateTo, status, ticketMasId, custCode);
-        Integer totalCount = ticketMasMapper.searchTicketCount(dateFrom, dateTo, status, ticketMasId, custCode);
+        List<SdTicketMasEntity> entityList = ticketMasMapper.searchTicketList(
+                offset, pageSize, dateFrom, dateTo, status, ticketMasId, custCode, null);
+        Integer totalCount = ticketMasMapper.searchTicketCount(dateFrom, dateTo, status, ticketMasId, custCode, null);
 
         List<SdTicketMasBean> beanList = new LinkedList<>();
         for (SdTicketMasEntity entity : entityList) {
@@ -170,19 +171,27 @@ public class SdTicketServiceImpl implements SdTicketService {
         return beanList;
     }
 
-    @Override
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
-    public void createTicketRemarks(Integer ticketMasId, String remarksType, String remarks) {
+    public void createTicketCustRemarks(Integer ticketMasId, String remarks) {
         String createby = userService.getCurrentUserUserId();
+        createTicketRemarks(ticketMasId, SdTicketRemarkEntity.REMARKS_TYPE.CUSTOMER, remarks, createby);
+    }
+
+    public void createTicketSysRemarks(Integer ticketMasId, String remarks) {
+        createTicketRemarks(ticketMasId, SdTicketRemarkEntity.REMARKS_TYPE.SYSTEM, remarks, SdUserEntity.SYSTEM.USER_ID);
+    }
+
+    private void createTicketRemarks(Integer ticketMasId, String remarksType, String remarks, String createby) {
         ticketRemarkMapper.insertTicketRemarks(ticketMasId, remarksType, remarks, createby);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateJobIdInService(Integer jobId, String ticketMasId, String userId) {
+        int iTicketMasId = Integer.parseInt(ticketMasId);
+
         ticketServiceMapper.updateTicketServiceByJobId(jobId, ticketMasId, userId);
-        ticketMasMapper.updateTicketStatus(Integer.parseInt(ticketMasId), SdTicketMasBean.STATUS_TYPE_CODE.WORKING, userId);
-        ticketRemarkMapper.insertTicketRemarks(Integer.valueOf(ticketMasId), SdTicketRemarkEntity.REMARKS_TYPE.CUSTOMER, "ticket status update to working.", userId);
+        ticketMasMapper.updateTicketStatus(iTicketMasId, SdTicketMasBean.STATUS_TYPE_CODE.WORKING, userId);
+        createTicketSysRemarks(iTicketMasId, SdTicketRemarkBean.REMARKS.STATUS_TO_WORKING);
     }
 
     @Override
@@ -217,13 +226,11 @@ public class SdTicketServiceImpl implements SdTicketService {
             }
         }
 
-        List<SdSymptomBean> beanList = symptomEntities.stream().map(entity -> {
+        return symptomEntities.stream().map(entity -> {
             SdSymptomBean bean = new SdSymptomBean();
             ticketServiceBeanPopulator.populate(entity, bean);
             return bean;
         }).collect(Collectors.toList());
-
-        return beanList;
     }
 
     @Override
@@ -239,14 +246,18 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Transactional(rollbackFor = Exception.class)
     public void updateTicketStatus(int ticketMasId, String status, String userId) {
         ticketMasMapper.updateTicketStatus(ticketMasId, status, userId);
-        ticketRemarkMapper.insertTicketRemarks(ticketMasId, SdTicketRemarkEntity.REMARKS_TYPE.CUSTOMER, "Cancel ticket.", userId);
+        createTicketSysRemarks(ticketMasId, "Cancel ticket.");
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public void increaseCallInCount(Integer ticketMasId) {
+        // update count
         String userId = userService.getCurrentUserBean().getUserId();
         ticketMasMapper.updateTicketCallInCount(ticketMasId, userId);
+
+        // add remarks
+        createTicketCustRemarks(ticketMasId, SdTicketRemarkBean.REMARKS.CUSTOMER_CALL_IN);
     }
 
     @Override
@@ -289,8 +300,7 @@ public class SdTicketServiceImpl implements SdTicketService {
         entity.setServiceTypeCode(bean.getServiceTypeCode());
 
         ticketServiceMapper.insertServiceInfo(entity);
-        int ticketDetId = entity.getTicketDetId();
-        return ticketDetId;
+        return entity.getTicketDetId();
     }
 
     @Override
@@ -331,7 +341,6 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Transactional(rollbackFor = Exception.class)
     public void closeTicket(int ticketMasId, String reasonType, String reasonContent, String userId) {
         ticketMasMapper.updateTicketStatus(ticketMasId,SdTicketMasBean.STATUS_TYPE_CODE.COMPLETE,userId);
-        ticketRemarkMapper.insertTicketRemarks(ticketMasId, SdTicketRemarkEntity.REMARKS_TYPE.SYSTEM,
-                String.format("ticket status update to close, reason: %s - %s",reasonType,reasonContent), userId);
+        createTicketSysRemarks(ticketMasId, String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_CLOSE, reasonType, reasonContent));
     }
 }

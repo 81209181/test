@@ -18,6 +18,8 @@ public class SdTicketInfoData {
     private String jobId;
     private String jobStatus;
     private int callInCount;
+    private String searchKey;
+    private String searchValue;
 
     // service info
     private String serviceType;
@@ -25,6 +27,7 @@ public class SdTicketInfoData {
     private Long subsId;
     private String offerName;
     private String serviceStatus;
+    private String serviceStatusDesc;
     private String serviceAddress;
     private String pendingOrder;
     private String supplementaryOffer;
@@ -160,6 +163,14 @@ public class SdTicketInfoData {
         this.serviceStatus = serviceStatus;
     }
 
+    public String getServiceStatusDesc() {
+        return serviceStatusDesc;
+    }
+
+    public void setServiceStatusDesc(String serviceStatusDesc) {
+        this.serviceStatusDesc = serviceStatusDesc;
+    }
+
     public String getServiceAddress() {
         return serviceAddress;
     }
@@ -214,5 +225,21 @@ public class SdTicketInfoData {
 
     public void setCallInCount(int callInCount) {
         this.callInCount = callInCount;
+    }
+
+    public String getSearchKey() {
+        return searchKey;
+    }
+
+    public void setSearchKey(String searchKey) {
+        this.searchKey = searchKey;
+    }
+
+    public String getSearchValue() {
+        return searchValue;
+    }
+
+    public void setSearchValue(String searchValue) {
+        this.searchValue = searchValue;
     }
 }
