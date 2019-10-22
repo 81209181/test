@@ -46,6 +46,16 @@ public class BesSubscriberBasicData implements DataInterface {
         public static final String DEREGISTERED = "9";
     }
 
+    public class STATUS_DESC {
+        public static final String TO_BE_ACTIVATED = "To Be Activated";
+        public static final String VALID = "Valid";
+        public static final String BARRED = "Barred";
+        public static final String SUSPENDED = "Suspended";
+        public static final String PRE_DEREGISTERED = "Pre-deregistered";
+        public static final String DEREGISTERED = "Deregistered";
+        public static final String UNDEFINED = "Undefined";
+    }
+
     public class SUB_TYPE_FLAG {
         public static final String COPE_USER = "C";
         public static final String BYOD_USER = "B";

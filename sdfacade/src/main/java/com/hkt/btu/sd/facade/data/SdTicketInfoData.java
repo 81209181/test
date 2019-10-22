@@ -27,6 +27,7 @@ public class SdTicketInfoData {
     private Long subsId;
     private String offerName;
     private String serviceStatus;
+    private String serviceStatusDesc;
     private String serviceAddress;
     private String pendingOrder;
     private String supplementaryOffer;
@@ -160,6 +161,14 @@ public class SdTicketInfoData {
 
     public void setServiceStatus(String serviceStatus) {
         this.serviceStatus = serviceStatus;
+    }
+
+    public String getServiceStatusDesc() {
+        return serviceStatusDesc;
+    }
+
+    public void setServiceStatusDesc(String serviceStatusDesc) {
+        this.serviceStatusDesc = serviceStatusDesc;
     }
 
     public String getServiceAddress() {

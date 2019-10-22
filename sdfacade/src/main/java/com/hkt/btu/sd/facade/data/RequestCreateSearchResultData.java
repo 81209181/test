@@ -25,7 +25,6 @@ public class RequestCreateSearchResultData implements DataInterface {
     private String resourceId;
     private String resourceName;
     private String status;
-    private String statusDesc;
     private String stb;
     private int type;
     private String userName;
@@ -45,6 +44,7 @@ public class RequestCreateSearchResultData implements DataInterface {
     private Long subsId;
     private String offerName;
     private String serviceStatus;
+    private String serviceStatusDesc;
 
 
     public String getServiceStatus() {
@@ -287,12 +287,12 @@ public class RequestCreateSearchResultData implements DataInterface {
         this.status = status;
     }
 
-    public String getStatusDesc() {
-        return statusDesc;
+    public String getServiceStatusDesc() {
+        return serviceStatusDesc;
     }
 
-    public void setStatusDesc(String statusDesc) {
-        this.statusDesc = statusDesc;
+    public void setServiceStatusDesc(String serviceStatusDesc) {
+        this.serviceStatusDesc = serviceStatusDesc;
     }
 
     public String getStb() {

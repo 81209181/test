@@ -37,7 +37,7 @@ public class TicketController {
 
     @GetMapping("service-identity")
     public String serviceIdentity() {
-        return "ticket/service_identity";
+        return "ticket/serviceIdentity";
     }
 
     @PostMapping("search-service")
@@ -55,6 +55,11 @@ public class TicketController {
         if (StringUtils.isEmpty(queryTicketRequestData.getServiceNo()) || StringUtils.isEmpty(queryTicketRequestData.getServiceType())) {
             return ResponseEntity.badRequest().body("Service No. / Service Type is empty.");
         }
+        String returnCode = wfmApiFacade.getPendingOrder(serviceNo);
+        if (StringUtils.isNotEmpty(returnCode)) {
+            return ResponseEntity.badRequest().body("There is pending order of the service " + returnCode + " in WFM.");
+        }
+        List<SdTicketMasData> dataList = ticketFacade.getTicketByServiceNo(serviceNo);
         List<SdTicketMasData> dataList = ticketFacade.getTicketByServiceNo(queryTicketRequestData.getServiceNo());
         if (CollectionUtils.isNotEmpty(dataList)) {
             return ResponseEntity.ok(ResponseTicketData.of(false, dataList));
@@ -67,7 +72,7 @@ public class TicketController {
         return ticketFacade.getTicket(ticketMasId)
                 .filter(sdTicketMasData -> userRoleFacade.checkSameTeamRole(principal.getName(), sdTicketMasData.getCreateBy()))
                 .map(sdTicketMasData -> {
-                    ModelAndView modelAndView = new ModelAndView("ticket/ticket_info");
+                    ModelAndView modelAndView = new ModelAndView("ticket/ticketInfo");
                     modelAndView.addObject("ticketInfo", requestCreateFacade.getTicketInfo(sdTicketMasData));
                     return modelAndView;
                 }).orElse(new ModelAndView("redirect:/ticket/search-ticket"));

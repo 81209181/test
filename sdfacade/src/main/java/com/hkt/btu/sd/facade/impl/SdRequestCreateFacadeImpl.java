@@ -86,6 +86,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
                 infoData.setCustStatus(requestCreateSearchResultData.getCustStatus());
                 infoData.setLanguagePreference(requestCreateSearchResultData.getLanguagePreference());
                 infoData.setServiceStatus(requestCreateSearchResultData.getServiceStatus());
+                infoData.setServiceStatusDesc(requestCreateSearchResultData.getServiceStatusDesc());
                 infoData.setServiceType(serviceTypeFacade.getServiceTypeByOfferName(requestCreateSearchResultData.getOfferName()));
                 infoData.setSubsId(requestCreateSearchResultData.getSubsId());
                 infoData.setOfferName(requestCreateSearchResultData.getOfferName());

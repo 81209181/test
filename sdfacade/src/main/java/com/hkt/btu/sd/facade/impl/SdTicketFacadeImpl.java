@@ -348,11 +348,11 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         switch (action) {
             case SdTicketMasData.ACTION_TYPE.WORKING:
                 ticketService.getTicket(Integer.valueOf(ticketMasId)).map(SdTicketMasBean::getStatus)
-                        .filter(s -> s.equals(SdTicketMasBean.STATUS_TYPE.OPEN)).orElseThrow(() -> new RuntimeException("This ticket has been submitted."));
+                        .filter(s -> s.equals(SdTicketMasBean.STATUS_TYPE.OPEN)).orElseThrow(() -> new RuntimeException("Cannot update. This ticket has been passed to working parties."));
                 break;
             case SdTicketMasData.ACTION_TYPE.COMPLETE:
                 ticketService.getTicket(Integer.valueOf(ticketMasId)).map(SdTicketMasBean::getStatus)
-                        .filter(s -> !s.equals(SdTicketMasBean.STATUS_TYPE.COMPLETE)).orElseThrow(() -> new RuntimeException("This ticket has been completed."));
+                        .filter(s -> !s.equals(SdTicketMasBean.STATUS_TYPE.COMPLETE)).orElseThrow(() -> new RuntimeException("Cannot update. This ticket has been completed."));
                 break;
             default:
                 ticketService.getTicket(Integer.valueOf(ticketMasId)).map(SdTicketMasBean::getStatus)
