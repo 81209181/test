@@ -30,11 +30,10 @@ public class OfferNameServiceTypeUpdateJob extends QuartzJobBean {
         try {
             serviceTypeService.updateServiceTypeOfferMapping(wfmApiFacade.getServiceTypeOfferMapping());
         } catch (Exception e) {
-            LOG.info(e.getMessage());
             try {
                 emailService.sendErrorStackTrace("", "", e);
             } catch (MessagingException ex) {
-                LOG.warn(e);
+                LOG.error(ex.getMessage(),ex);
             }
         }
     }
