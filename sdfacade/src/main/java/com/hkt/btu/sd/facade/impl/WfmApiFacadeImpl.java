@@ -9,6 +9,8 @@ import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.WfmApiFacade;
 import com.hkt.btu.sd.facade.data.*;
+import com.hkt.btu.sd.facade.data.wfm.WfmOfferNameProductTypeData;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,10 +22,8 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApiFacade {
     private static final Logger LOG = LogManager.getLogger(WfmApiFacadeImpl.class);
@@ -44,19 +44,11 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
     }
 
     @Override
-    public Integer createJob(WfmRequestDetailsBeanDate wfmRequestDetailsBeanDate, String createdBy) {
-        WfmCreateSdFaultReqData wfmCreateSdFaultReqData = new WfmCreateSdFaultReqData();
-        wfmCreateSdFaultReqData.setRequestDetailsBean(wfmRequestDetailsBeanDate);
-        wfmCreateSdFaultReqData.setStaffId(createdBy);
-        Entity<WfmCreateSdFaultReqData> postBody = Entity.entity(wfmCreateSdFaultReqData, MediaType.APPLICATION_JSON);
-        String wfmResponseDataJsonString = postData("/api/v1/sd/FaultCreate", null, postBody);
-        WfmResponseData<WfmJobCreateResponseData> wfmResponseData = populateWfmResponseData(
-                wfmResponseDataJsonString, new TypeToken<WfmResponseData<WfmJobCreateResponseData>>() {
-                }.getType());
-        return Optional.ofNullable(wfmResponseData)
-                .map(WfmResponseData::getData)
-                .map(WfmJobCreateResponseData::getJobId)
-                .orElse(1137876);   //demo 1137876
+    public Integer createJob(SdTicketMasData ticketMasData, String createdBy) {
+        Entity<SdTicketMasData> postBody = Entity.entity(ticketMasData, MediaType.APPLICATION_JSON);
+        return Optional.ofNullable(postData("/api/v1/sd/FaultCreate", null, postBody)).flatMap(json ->
+                Optional.ofNullable(new Gson().<WfmResponseData<WfmJobCreateResponseData>>fromJson(json, new TypeToken<WfmResponseData<WfmJobCreateResponseData>>() {
+                }.getType())).map(WfmResponseData::getData).map(WfmJobCreateResponseData::getJobId)).orElse(0);
     }
 
     @Override
@@ -90,9 +82,14 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
 
     @Override
     public List<SdServiceTypeOfferMappingBean> getServiceTypeOfferMapping() {
-        return Optional.ofNullable(getData("/api/v1/sd/GetOfferNameProductTypeMapping", null)).map(json ->
-            new Gson().<List<SdServiceTypeOfferMappingBean>>fromJson(json,new TypeToken<List<SdServiceTypeOfferMappingBean>>(){}.getType())
-        ).orElseThrow(() -> new RuntimeException("Service type offer mapping not found."));
+        return Optional.ofNullable(new Gson().<List<WfmOfferNameProductTypeData>>fromJson(getData("/api/v1/sd/GetOfferNameProductTypeMapping", null),
+                new TypeToken<List<WfmOfferNameProductTypeData>>() {}.getType()))
+                .filter(CollectionUtils::isNotEmpty).map(list -> list.stream().map(data -> {
+                    SdServiceTypeOfferMappingBean bean = new SdServiceTypeOfferMappingBean();
+                    bean.setOfferName(data.getServiceName());
+                    bean.setServiceTypeCode(data.getProductType());
+                    return bean;
+                }).collect(Collectors.toList())).orElseThrow(() -> new RuntimeException("Service type offer mapping not found."));
     }
 
     private <T extends DataInterface> WfmResponseData<T> populateWfmResponseData(String wfmResponseDataJsonString, Type type) {

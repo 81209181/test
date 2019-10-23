@@ -176,21 +176,21 @@ public class TicketController {
     }
 
     @PostMapping("submit")
-    public ResponseEntity<?> submit(Principal principal, WfmRequestDetailsBeanDate wfmRequestDetailsBeanDate) throws JsonProcessingException {
+    public ResponseEntity<?> submit(Principal principal, SdTicketMasData ticketMasData) throws JsonProcessingException {
         try {
-            ticketFacade.isAllow(wfmRequestDetailsBeanDate.getTicketMasId(), StringUtils.EMPTY);
+            ticketFacade.isAllow(String.valueOf(ticketMasData.getTicketMasId()), StringUtils.EMPTY);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-        Integer jobId = wfmApiFacade.createJob(wfmRequestDetailsBeanDate, principal.getName());
+        Integer jobId = wfmApiFacade.createJob(ticketMasData, principal.getName());
         if (jobId > 0) {
-            ticketFacade.updateJobIdInService(jobId, wfmRequestDetailsBeanDate.getTicketMasId(), principal.getName());
+            ticketFacade.updateJobIdInService(jobId, String.valueOf(ticketMasData.getTicketMasId()), principal.getName());
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode node = mapper.createObjectNode();
             node.put("success", true);
             return ResponseEntity.ok(mapper.writeValueAsString(node));
         } else {
-            return ResponseEntity.badRequest().body("Submit fail.");
+            return ResponseEntity.badRequest().body(String.format("WFM Error: Cannot create job for ticket mas id %s.",ticketMasData.getTicketMasId()));
         }
     }
 
