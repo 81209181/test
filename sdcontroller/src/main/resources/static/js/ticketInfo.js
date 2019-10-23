@@ -260,7 +260,7 @@ $().ready(function(){
         $(form).addClass("was-validated");
     })
 
-
+    ajaxGetJobInfo(ticketMasId);
 })
 
 
@@ -299,6 +299,43 @@ function removeContact(btn){
         $('#btnUpdateContact').attr('disabled',false);
     }
 }
+
+function makeAppointment(ticketMasId, ticketDetId) {
+    AppointmentSDObj.make({
+        data : {
+            ticketMasId : 100001,
+            ticketDetId : 1001,
+            serviceType: "Broadband",
+            userName : "sd",
+            password : "Ki6=rEDs47*^5"
+        }
+        //}, 'https://10.252.15.158/wfm');
+    }, "https://10.252.15.158/wfm");
+}
+
+function ajaxGetJobInfo(ticketMasId){
+    $.ajax({
+        url:'/ticket/getJobInfo',
+        type : 'POST',
+        dataType: 'json',
+        data: {ticketMasId:ticketMasId},
+        success:function(res){
+            let jobList = res.wfmJobInfoDataList;
+            for (jobInfo of jobList) {
+                let jobItem = $('.jobItem').children().clone();
+                jobItem.find('input[name=jobId]').val(jobInfo.jobId);
+                jobItem.find('input[name=handler]').val(jobInfo.handler);
+                jobItem.find('input[name=jobStatus]').val(jobInfo.jobStatus);
+                jobItem.appendTo($('#jobList'));
+            }
+        }
+    }).fail(function(e){
+        var responseError = e.responseText ? e.responseText : "Get failed.";
+        console.log("ERROR : ", responseError);
+        showErrorMsg(responseError);
+    })
+}
+
 
 function ajaxGetDataTable(){
     $('#searchTicketRemarksTable').DataTable({

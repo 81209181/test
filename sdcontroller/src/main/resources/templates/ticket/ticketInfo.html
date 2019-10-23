@@ -157,9 +157,14 @@
             <hr>
             <form id="appointment" class="row">
                 <div class="col-md-12">
-                    <h3>Job</h3>
+                    <h3>Job <button type="button" class="btn btn-info ml-3" onclick="makeAppointment(ticketMasId,123123);">Make Appointment</button></h3>
+                    <!--<a href="#" class="btn btn-default"
+                       onClick="javascript:makeAppointment();">MakeAppointment </a>-->
                 </div>
-                <div class="col-md-12">
+                <div id="jobList">
+
+                </div>
+                <div class="col-md-12 jobItem" hidden="hidden">
                     <div class="form-row">
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Job Id:</label>
@@ -170,6 +175,10 @@
                             <input type="text" class="form-control col-md-6" name="jobStatus" th:value="*{jobStatus}" readonly>
                         </div>
                         <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Handler:</label>
+                            <input type="text" class="form-control col-md-6" name="handler" th:value="*{jobId}" readonly>
+                        </div>
+                        <!--<div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Appointment Date:</label>
                             <input type="datetime-local" class="form-control col-md-6"
                                    name="appointmentDate" placeholder="1900-01-01T01:00"
@@ -179,7 +188,7 @@
                                 <input type="checkbox" class="form-check-input" id="asap_checkbox" th:checked="${asap}">
                                 <label class="form-check-label" for="asap_checkbox">ASAP</label>
                             </div>
-                        </div>
+                        </div>-->
                     </div>
                 </div>
                 <div class="offset-md-11">
@@ -290,6 +299,7 @@
         </div>
     </div>
     <script type="text/javascript" th:src="@{/js/ticketInfo.js}"></script>
+    <script th:src="@{/js/appointment_sd_util.js}" type="text/javascript"></script>
 </div>
 </body>
 </html>

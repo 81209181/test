@@ -117,4 +117,14 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
             return "";
         }).orElse(null);
     }
+
+    @Override
+    public WfmJobInfoResponseData getJobInfo(Integer ticketMasId) {
+        return Optional.ofNullable(ticketMasId).map(id -> {
+            Map<String, String> queryParamMap = new HashMap<>(1);
+            queryParamMap.put("ticketMasId", String.valueOf(ticketMasId));
+            WfmJobInfoResponseData data = getData("/api/v1/sd/getJobInfo", WfmJobInfoResponseData.class, queryParamMap);
+            return data;
+        }).orElse(null);
+    }
 }

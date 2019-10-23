@@ -6,7 +6,7 @@ CREATE TABLE TICKET_MAS
     TICKET_TYPE        varchar2(5), -- {'QUERY', 'FAULT'}
     STATUS             varchar2(2), -- {OPEN: 'O', CANCEL: 'CX', COMPLETE: 'CP'}
     COMPLETE_DATE      date,
-    CALL_IN_COUNT      number,
+    CALL_IN_COUNT      number                  default 0,
     SEARCH_KEY         varchar2(20),
     SEARCH_VALUE       varchar2(30),
 

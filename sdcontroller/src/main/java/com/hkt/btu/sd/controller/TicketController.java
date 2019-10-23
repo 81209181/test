@@ -6,7 +6,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
-import com.hkt.btu.sd.facade.*;
+import com.hkt.btu.sd.facade.SdRequestCreateFacade;
+import com.hkt.btu.sd.facade.SdTicketFacade;
+import com.hkt.btu.sd.facade.SdUserRoleFacade;
+import com.hkt.btu.sd.facade.WfmApiFacade;
 import com.hkt.btu.sd.facade.data.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -19,8 +22,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @RequestMapping("ticket")
 @Controller
@@ -81,9 +85,9 @@ public class TicketController {
     public ResponseEntity<?> updateContactInfo(@RequestBody List<SdTicketContactData> contactList) {
         try {
             contactList.stream().map(SdTicketContactData::getTicketMasId).findFirst().ifPresent(ticketMasId -> {
-                ticketFacade.isAllow(String.valueOf(ticketMasId),SdTicketMasData.ACTION_TYPE.COMPLETE);
+                ticketFacade.isAllow(String.valueOf(ticketMasId), SdTicketMasData.ACTION_TYPE.COMPLETE);
             });
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         String errorMsg = ticketFacade.updateContactInfo(contactList);
@@ -199,8 +203,8 @@ public class TicketController {
     @PostMapping("/post-create-ticket-remarks")
     public ResponseEntity<?> createTicketRemarks(@RequestParam Integer ticketMasId, @RequestParam String remarks) {
         try {
-            ticketFacade.isAllow(String.valueOf(ticketMasId),SdTicketMasData.ACTION_TYPE.COMPLETE);
-        }catch (Exception e) {
+            ticketFacade.isAllow(String.valueOf(ticketMasId), SdTicketMasData.ACTION_TYPE.COMPLETE);
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         String errorMsg = ticketFacade.createTicketRemarks(ticketMasId, remarks);
@@ -229,8 +233,8 @@ public class TicketController {
     }
 
     @PostMapping("close")
-    public ResponseEntity<?> ticketClose(int ticketMasId,String reasonType,String reasonContent,Principal principal) {
-        ticketFacade.closeTicket(ticketMasId,reasonType,reasonContent,principal.getName());
+    public ResponseEntity<?> ticketClose(int ticketMasId, String reasonType, String reasonContent, Principal principal) {
+        ticketFacade.closeTicket(ticketMasId, reasonType, reasonContent, principal.getName());
         return ResponseEntity.ok(SimpleAjaxResponse.of());
     }
 
@@ -241,6 +245,16 @@ public class TicketController {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         } else {
             return ResponseEntity.ok(SimpleAjaxResponse.of(false, "increase call in count failed."));
+        }
+    }
+
+    @PostMapping("getJobInfo")
+    public ResponseEntity<?> getJobInfo(@RequestParam Integer ticketMasId) {
+        WfmJobInfoResponseData jobInfo = wfmApiFacade.getJobInfo(ticketMasId);
+        if (jobInfo == null) {
+            return ResponseEntity.badRequest().body("WFM Error: Cannot get job data for ticket mas id :" + ticketMasId);
+        } else {
+            return ResponseEntity.ok(jobInfo);
         }
     }
 }
