@@ -18,7 +18,7 @@ public class SdTicketInfoData {
     private String jobId;
     private String jobStatus;
     private int callInCount;
-    private String searchKey;
+    private String searchKeyDesc;
     private String searchValue;
 
     // service info
@@ -227,12 +227,12 @@ public class SdTicketInfoData {
         this.callInCount = callInCount;
     }
 
-    public String getSearchKey() {
-        return searchKey;
+    public String getSearchKeyDesc() {
+        return searchKeyDesc;
     }
 
-    public void setSearchKey(String searchKey) {
-        this.searchKey = searchKey;
+    public void setSearchKeyDesc(String searchKeyDesc) {
+        this.searchKeyDesc = searchKeyDesc;
     }
 
     public String getSearchValue() {

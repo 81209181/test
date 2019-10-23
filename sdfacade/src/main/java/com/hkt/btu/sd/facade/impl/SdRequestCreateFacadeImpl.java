@@ -2,6 +2,7 @@ package com.hkt.btu.sd.facade.impl;
 
 import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.sd.facade.*;
+import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.populator.RequestCreateSearchResultDataPopulator;
 import org.apache.commons.collections4.CollectionUtils;
@@ -11,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,19 +36,32 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     RequestCreateSearchResultDataPopulator requestCreateSearchResultDataPopulator;
 
     @Override
+    public List<ServiceSearchEnum> getSearchKeyEnumList() {
+        return Arrays.asList(ServiceSearchEnum.values());
+    }
+
+    @Override
     public RequestCreateSearchResultsData searchProductList(String searchKey, String searchValue) {
         RequestCreateSearchResultsData resultsData = new RequestCreateSearchResultsData();
+        ServiceSearchEnum serviceSearchEnum = ServiceSearchEnum.getEnum(searchKey);
+        if(serviceSearchEnum==null){
+            String errorMsg = "Unknown search key: " + searchKey + ", search value: " + searchValue;
+            LOG.warn(errorMsg);
+            resultsData.setErrorMsg(errorMsg);
+            return resultsData;
+        }
+
         try {
-            switch (searchKey) {
-                case "sn":
-                case "bsn":
+            switch (serviceSearchEnum) {
+                case SERVICE_NUMBER:
+                case BSN:
                     return findData4Bsn(searchValue);
-                case "tenantId":
+                case TENANT_ID:
                     return findData4Tenant(searchValue);
-                case "dn":
+                case DN:
                     return findData4Dn(searchValue);
                 default:
-                    String errorMsg = "Unknown search key: " + searchKey + ", search value: " + searchValue;
+                    String errorMsg = "Unexpected search key: " + searchKey + ", search value: " + searchValue;
                     LOG.warn(errorMsg);
                     resultsData.setErrorMsg(errorMsg);
                     return resultsData;
@@ -70,7 +85,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         infoData.setTicketStatus(sdTicketMasData.getStatus());
         infoData.setAsap(sdTicketMasData.getAsap());
         infoData.setCallInCount(sdTicketMasData.getCallInCount());
-        infoData.setSearchKey(sdTicketMasData.getSearchKey());
+        infoData.setSearchKeyDesc(sdTicketMasData.getSearchKeyDesc());
         infoData.setSearchValue(sdTicketMasData.getSearchValue());
         infoData.setAppointmentDate(sdTicketMasData.getAppointmentDate());
         ticketFacade.getService(sdTicketMasData.getTicketMasId()).ifPresent(sdTicketServiceData -> {

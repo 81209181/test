@@ -20,7 +20,10 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApiFacade {
     private static final Logger LOG = LogManager.getLogger(WfmApiFacadeImpl.class);
@@ -87,10 +90,9 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
 
     @Override
     public List<SdServiceTypeOfferMappingBean> getServiceTypeOfferMapping() {
-        return Optional.ofNullable(getData("/api/v1/sd/GetServiceTypeOfferMapping", null)).map(s -> {
-            List<SdServiceTypeOfferMappingBean> list = new ArrayList<>();
-            return list;
-        }).orElseThrow(() -> new RuntimeException("Service type offer mapping not found."));
+        return Optional.ofNullable(getData("/api/v1/sd/GetOfferNameProductTypeMapping", null)).map(json ->
+            new Gson().<List<SdServiceTypeOfferMappingBean>>fromJson(json,new TypeToken<List<SdServiceTypeOfferMappingBean>>(){}.getType())
+        ).orElseThrow(() -> new RuntimeException("Service type offer mapping not found."));
     }
 
     private <T extends DataInterface> WfmResponseData<T> populateWfmResponseData(String wfmResponseDataJsonString, Type type) {

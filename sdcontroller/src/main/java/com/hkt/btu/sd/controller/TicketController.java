@@ -14,13 +14,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @RequestMapping("ticket")
@@ -40,7 +39,8 @@ public class TicketController {
     NorarsApiFacade norarsApiFacade;
 
     @GetMapping("service-identity")
-    public String serviceIdentity() {
+    public String serviceIdentity(Model model ) {
+        model.addAttribute("serviceSearchKeyList", requestCreateFacade.getSearchKeyEnumList() );
         return "ticket/serviceIdentity";
     }
 

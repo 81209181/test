@@ -2,6 +2,7 @@ package com.hkt.btu.sd.facade.populator;
 
 import com.hkt.btu.common.facade.populator.AbstractDataPopulator;
 import com.hkt.btu.sd.core.service.bean.SdTicketMasBean;
+import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
 import com.hkt.btu.sd.facade.data.SdTicketMasData;
 
 public class SdTicketMasDataPopulator extends AbstractDataPopulator<SdTicketMasData> {
@@ -20,5 +21,10 @@ public class SdTicketMasDataPopulator extends AbstractDataPopulator<SdTicketMasD
         target.setCallInCount(source.getCallInCount());
         target.setSearchKey(source.getSearchKey());
         target.setSearchValue(source.getSearchValue());
+
+        ServiceSearchEnum serviceSearchEnum = ServiceSearchEnum.getEnum(source.getSearchKey());
+        if(serviceSearchEnum!=null){
+            target.setSearchKeyDesc(serviceSearchEnum.getKeyDesc());
+        }
     }
 }

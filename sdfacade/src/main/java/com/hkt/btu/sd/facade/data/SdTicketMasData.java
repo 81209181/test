@@ -34,6 +34,7 @@ public class SdTicketMasData implements DataInterface {
     private int callInCount;
 
     private String searchKey;
+    private String searchKeyDesc;
 
     private String searchValue;
 
@@ -43,6 +44,14 @@ public class SdTicketMasData implements DataInterface {
 
     public void setSearchKey(String searchKey) {
         this.searchKey = searchKey;
+    }
+
+    public String getSearchKeyDesc() {
+        return searchKeyDesc;
+    }
+
+    public void setSearchKeyDesc(String searchKeyDesc) {
+        this.searchKeyDesc = searchKeyDesc;
     }
 
     public String getSearchValue() {
