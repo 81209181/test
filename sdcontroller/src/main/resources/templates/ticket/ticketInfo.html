@@ -12,6 +12,7 @@
         var ticketMasId = '[[${ticketInfo.ticketMasId}]]';
         var ticketStatus = '[[${ticketInfo.ticketStatus}]]';
         var itsmUrl = '[[${ticketInfo.itsmUrl}]]';
+        var bsn = '[[${ticketInfo.serviceNo}]]';
     </script>
     <div class="card" style="margin-bottom: 75px;" th:object="${ticketInfo}">
         <div class="card-header bg-primary text-white">Ticket - <span th:text="*{ticketMasId}"></span></div>
@@ -109,6 +110,10 @@
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Service Type: </label>
                             <input type="text" class="form-control col-md-6" name="serviceType" readonly th:value="*{serviceType}">
+                        </div>
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end"></label>
+                            <button type="button" class="btn btn-info col-md-3" onclick='getInventory(bsn);'>Get Inventory</button>
                         </div>
                         <div class="temp_faults col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Symptom: </label>

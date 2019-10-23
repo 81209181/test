@@ -21,7 +21,6 @@ $().ready(function(){
         $('.selectpicker').selectpicker('refresh');
     })
 
-
     $.get('/ticket/service?ticketMasId='+ticketMasId,function(res){
         if (res.length > 0) {
             $.each(res,function(index,j){
@@ -312,6 +311,25 @@ function makeAppointment(ticketMasId, ticketDetId) {
         //}, 'https://10.252.15.158/wfm');
     }, "https://10.252.15.158/wfm");
 }
+
+function getInventory(bsn) {
+    $.ajax({
+        url: '/ticket/getInventory',
+        type: 'POST',
+        data: {bsn:bsn},
+        dataType: 'text',
+        success: function (res) {
+            let inventoryWindow= window.open('','Inventory','scrollbars=yes,height=600,width=800');
+            inventoryWindow.document.write(res);
+            inventoryWindow.focus();
+        }
+    }).fail(function (e) {
+        var responseError = e.responseText ? e.responseText : "Get failed.";
+        console.log("ERROR : ", responseError);
+        showErrorMsg(responseError);
+    })
+}
+
 
 function ajaxGetJobInfo(ticketMasId){
     $.ajax({

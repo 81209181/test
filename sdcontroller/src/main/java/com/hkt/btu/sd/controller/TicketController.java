@@ -6,10 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
-import com.hkt.btu.sd.facade.SdRequestCreateFacade;
-import com.hkt.btu.sd.facade.SdTicketFacade;
-import com.hkt.btu.sd.facade.SdUserRoleFacade;
-import com.hkt.btu.sd.facade.WfmApiFacade;
+import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.data.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -37,6 +34,9 @@ public class TicketController {
     SdUserRoleFacade userRoleFacade;
     @Resource(name = "wfmApiFacade")
     WfmApiFacade wfmApiFacade;
+
+    @Resource(name = "norarsApiFacade")
+    NorarsApiFacade norarsApiFacade;
 
     @GetMapping("service-identity")
     public String serviceIdentity(Model model ) {
@@ -256,5 +256,14 @@ public class TicketController {
         } else {
             return ResponseEntity.ok(jobInfo);
         }
+    }
+
+    @PostMapping("getInventory")
+    public ResponseEntity<?> getInventory(@RequestParam String bsn) {
+        String inventory = norarsApiFacade.getInventory(bsn);
+        if (StringUtils.isNotEmpty(inventory)) {
+            return ResponseEntity.ok(inventory);
+        }
+        return ResponseEntity.badRequest().body("Nora Error: Cannot get Inventory for bsn :" + bsn);
     }
 }

@@ -11,6 +11,9 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements NorarsApiFacade {
 
@@ -22,6 +25,13 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
         String apiPath = "/norars/api/v1/onecomm/dn/" + dn;
 
         return getData(apiPath, NorarsBsnData.class, null);
+    }
+
+    @Override
+    public String getInventory(String bsn) {
+        String apiPath = "/norars/api/v1/getInventory/bsn/" + bsn;
+
+        return Optional.ofNullable(getData(apiPath, null)).orElse("<h1>Test</h1>");
     }
 
     @Override

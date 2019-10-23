@@ -4,4 +4,6 @@ import com.hkt.btu.sd.facade.data.NorarsBsnData;
 
 public interface NorarsApiFacade {
     NorarsBsnData getBsnByDn(String dn);
+
+    String getInventory(String bsn);
 }
