@@ -341,16 +341,17 @@ public class SdTicketServiceImpl implements SdTicketService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void closeTicket(int ticketMasId, String reasonType, String reasonContent, String userId) throws InvalidInputException {
+    public void closeTicket(int ticketMasId, String reasonType, String reasonContent, String closeby) throws InvalidInputException {
         if (StringUtils.isEmpty(reasonType)) {
             throw new InvalidInputException("Empty reasonType.");
         } else if(StringUtils.isEmpty(reasonContent)) {
             throw new InvalidInputException("Empty reasonContent.");
-        } else if (StringUtils.isEmpty(userId)) {
-            throw new InvalidInputException("Empty userId.");
+        } else if (StringUtils.isEmpty(closeby)) {
+            throw new InvalidInputException("Empty closeBy.");
         }
 
-        ticketMasMapper.updateTicketStatus(ticketMasId,SdTicketMasBean.STATUS_TYPE_CODE.COMPLETE,userId);
-        createTicketSysRemarks(ticketMasId, String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_CLOSE, reasonType, reasonContent));
+        String modifyby = userService.getCurrentUserUserId();
+        ticketMasMapper.updateTicketStatus(ticketMasId, SdTicketMasBean.STATUS_TYPE_CODE.COMPLETE, modifyby);
+        createTicketSysRemarks(ticketMasId, String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_CLOSE, reasonType, reasonContent, closeby));
     }
 }

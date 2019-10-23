@@ -44,7 +44,8 @@ public interface SdTicketFacade {
 
     List<SdTicketMasData> getTicketByServiceNo(String serviceNo);
 
-    String closeTicket(int ticketMasId, String reasonType, String reasonContent, String userId);
+    String closeTicketByApi(int ticketMasId, String reasonType, String reasonContent, String closeby);
+    String closeTicket(int ticketMasId, String reasonType, String reasonContent);
 
     void isAllow(String ticketMasId,String action);
 

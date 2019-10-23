@@ -20,7 +20,7 @@ public class WfmApiController {
 
     @PostMapping("/close-ticket")
     public ResponseEntity<?> ticketClose(int ticketMasId, String reasonType, String reasonContent, String username) {
-        String errorMsg = ticketFacade.closeTicket(ticketMasId, reasonType, reasonContent, username);
+        String errorMsg = ticketFacade.closeTicketByApi(ticketMasId, reasonType, reasonContent, username);
         if(StringUtils.isEmpty(errorMsg)){
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         }else {
