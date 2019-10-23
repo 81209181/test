@@ -234,8 +234,12 @@ public class TicketController {
 
     @PostMapping("close")
     public ResponseEntity<?> ticketClose(int ticketMasId, String reasonType, String reasonContent, Principal principal) {
-        ticketFacade.closeTicket(ticketMasId, reasonType, reasonContent, principal.getName());
-        return ResponseEntity.ok(SimpleAjaxResponse.of());
+        String errorMsg = ticketFacade.closeTicket(ticketMasId, reasonType, reasonContent, principal.getName());
+        if(StringUtils.isEmpty(errorMsg)){
+            return ResponseEntity.ok(SimpleAjaxResponse.of());
+        }else {
+            return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
+        }
     }
 
     @PostMapping("callInCount")

@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.facade.impl;
 
+import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
 import com.hkt.btu.sd.core.service.SdTicketService;
@@ -339,8 +340,14 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public void closeTicket(int ticketMasId, String reasonType, String reasonContent, String userId) {
-        ticketService.closeTicket(ticketMasId, reasonType, reasonContent, userId);
+    public String closeTicket(int ticketMasId, String reasonType, String reasonContent, String userId) {
+        try{
+            ticketService.closeTicket(ticketMasId, reasonType, reasonContent, userId);
+            return null;
+        }catch (InvalidInputException e){
+            LOG.warn(e.getMessage());
+            return e.getMessage();
+        }
     }
 
     @Override

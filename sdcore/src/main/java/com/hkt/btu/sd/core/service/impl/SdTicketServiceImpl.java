@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.core.service.impl;
 
+import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.core.service.BtuSensitiveDataService;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.sd.core.dao.entity.*;
@@ -15,6 +16,7 @@ import com.hkt.btu.sd.core.service.populator.SdTicketMasBeanPopulator;
 import com.hkt.btu.sd.core.service.populator.SdTicketRemarkBeanPopulator;
 import com.hkt.btu.sd.core.service.populator.SdTicketServiceBeanPopulator;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -339,7 +341,15 @@ public class SdTicketServiceImpl implements SdTicketService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void closeTicket(int ticketMasId, String reasonType, String reasonContent, String userId) {
+    public void closeTicket(int ticketMasId, String reasonType, String reasonContent, String userId) throws InvalidInputException {
+        if (StringUtils.isEmpty(reasonType)) {
+            throw new InvalidInputException("Empty reasonType.");
+        } else if(StringUtils.isEmpty(reasonContent)) {
+            throw new InvalidInputException("Empty reasonContent.");
+        } else if (StringUtils.isEmpty(userId)) {
+            throw new InvalidInputException("Empty userId.");
+        }
+
         ticketMasMapper.updateTicketStatus(ticketMasId,SdTicketMasBean.STATUS_TYPE_CODE.COMPLETE,userId);
         createTicketSysRemarks(ticketMasId, String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_CLOSE, reasonType, reasonContent));
     }

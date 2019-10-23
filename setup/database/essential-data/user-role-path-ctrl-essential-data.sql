@@ -10,3 +10,6 @@ values('TEAM_HEAD', 3, '81149189', 'Manager User');
 
 insert into USER_ROLE_PATH_CTRL (ROLE_ID, PATH_CTRL_ID, CREATEBY, REMARKS)
 values('CS_AGENT', 4, '81149189', 'Fault Page');
+
+insert into USER_ROLE_PATH_CTRL (ROLE_ID, PATH_CTRL_ID, CREATEBY, REMARKS)
+values('API_WFM', 7, '01634476', null);
