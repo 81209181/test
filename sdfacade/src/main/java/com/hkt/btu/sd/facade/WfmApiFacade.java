@@ -10,7 +10,7 @@ import java.util.List;
 public interface WfmApiFacade {
 
     Integer createJob(SdTicketMasData wfmRequestDetailsBeanDate, String createdBy);
-    Integer completeJob(Integer jobId, String completeDateTime, String remark, String createdBy);
+    boolean closeTicket(Integer ticketMasId);
     WfmJobDetailsData getJobDetails(Integer jobId);
 
     List<SdServiceTypeOfferMappingBean> getServiceTypeOfferMapping();

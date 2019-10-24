@@ -234,12 +234,17 @@ public class TicketController {
 
     @PostMapping("close")
     public ResponseEntity<?> ticketClose(int ticketMasId, String reasonType, String reasonContent) {
-        String errorMsg = ticketFacade.closeTicket(ticketMasId, reasonType, reasonContent);
-        if(StringUtils.isEmpty(errorMsg)){
-            return ResponseEntity.ok(SimpleAjaxResponse.of());
-        }else {
-            return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
+        if (wfmApiFacade.closeTicket(ticketMasId)) {
+            String errorMsg = ticketFacade.closeTicket(ticketMasId, reasonType, reasonContent);
+            if (StringUtils.isEmpty(errorMsg)) {
+                return ResponseEntity.ok(SimpleAjaxResponse.of());
+            } else {
+                return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
+            }
+        } else {
+            return ResponseEntity.badRequest().body(String.format("WFM Error: Cannot notify WFM to close ticket for ticket mas id %s", ticketMasId));
         }
+
     }
 
     @PostMapping("callInCount")
