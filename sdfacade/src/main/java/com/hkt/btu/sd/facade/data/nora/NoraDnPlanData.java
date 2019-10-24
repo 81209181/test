@@ -1,22 +1,19 @@
 package com.hkt.btu.sd.facade.data.nora;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class DnPlanBean
-{
-	@JsonProperty("param")
-	private String dn = "";
+public class NoraDnPlanData {
+	private String param = "";
 	private String plan = "";
 	private String action = "";
 
-	public String getDn()
+	public String getParam()
 	{
-		return dn;
+		return param;
 	}
 
-	public void setDn(String dn)
+	public void setParam(String param)
 	{
-		this.dn = dn;
+		this.param = param;
 	}
 
 	public String getPlan()

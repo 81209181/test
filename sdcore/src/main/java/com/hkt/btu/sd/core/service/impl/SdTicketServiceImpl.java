@@ -81,7 +81,7 @@ public class SdTicketServiceImpl implements SdTicketService {
 
         // remark
         createTicketSysRemarks(ticketMasEntity.getTicketMasId(),
-                String.format("%s (by %s)", SdTicketRemarkBean.REMARKS.STATUS_TO_OPEN, userId));
+                String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_OPEN, userId));
         return ticketMasEntity.getTicketMasId();
     }
 
@@ -195,7 +195,7 @@ public class SdTicketServiceImpl implements SdTicketService {
 
         ticketServiceMapper.updateTicketServiceByJobId(jobId, ticketMasId, userId);
         ticketMasMapper.updateTicketStatus(iTicketMasId, SdTicketMasBean.STATUS_TYPE_CODE.WORKING, userId);
-        createTicketSysRemarks(iTicketMasId, String.format("%s (by %s)", SdTicketRemarkBean.REMARKS.STATUS_TO_WORKING, userId));
+        createTicketSysRemarks(iTicketMasId, String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_WORKING, userId));
     }
 
     @Override

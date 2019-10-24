@@ -45,11 +45,21 @@ $().ready(function(){
     })
 
     $('#btnGetInventory').on('click', function () {
-        if (bsn == '') {
+        if (bsn === '') {
             showErrorMsg('No service number!');
             return;
         }
         getInventory(bsn);
+    })
+
+    $('#btnOfferDetail').on('click', function () {
+        if (bsn === '') {
+            showErrorMsg('No service number!');
+            return;
+        }
+
+        let ctx = $("meta[name='_ctx']").attr("content");
+        window.open(ctx+'/ticket/offer-detail?bsn='+bsn,'OfferDetail','scrollbars=yes,height=400,width=500');
     })
 
     $('#btnSearchInfo').on('click',function(){
@@ -75,6 +85,7 @@ $().ready(function(){
         }else{
             searchValue.attr('class','form-control');
         }
+
         $.post('/ticket/search-service',{
             searchKey : searchKey.val().trim(),
             searchValue : searchValue.val().trim()
