@@ -6,7 +6,6 @@ import com.hkt.btu.sd.core.service.SdApiService;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.NorarsApiFacade;
-import com.hkt.btu.sd.facade.data.NorarsBsnData;
 import com.hkt.btu.sd.facade.data.nora.AddressInfoBean;
 import com.hkt.btu.sd.facade.data.nora.PidInfoBean;
 import com.hkt.btu.sd.facade.data.nora.NoraDnGroupData;
