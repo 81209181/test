@@ -32,6 +32,9 @@ $().ready(function(){
                             $('#symptomList').find('option[value='+item.symptomCode+']').attr('selected','selected');
                         }
                     }
+                    if (key == 'ticketDetId') {
+                        ticketDetId = value;
+                    }
                 })
             })
             $('.selectpicker').selectpicker('refresh');
@@ -86,6 +89,18 @@ $().ready(function(){
         })
     })
 
+    // make appointment
+    $('#btnMakeAppointment').on('click', function () {
+        if (ticketMasId == '') {
+            showErrorMsg('No ticket mas Id');
+            return;
+        }
+        if (ticketDetId == '') {
+            showErrorMsg('No ticket detail Id.');
+            return;
+        }
+        makeAppointment(ticketMasId, ticketDetId);
+    })
 
     //contact
     $.get('/ticket/contact?ticketMasId='+ticketMasId,function(res){
@@ -302,8 +317,8 @@ function removeContact(btn){
 function makeAppointment(ticketMasId, ticketDetId) {
     AppointmentSDObj.make({
         data : {
-            ticketMasId : 100001,
-            ticketDetId : 1001,
+            ticketMasId : ticketMasId,
+            ticketDetId : ticketDetId,
             serviceType: "Broadband",
             userName : "sd",
             password : "Ki6=rEDs47*^5"
