@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.core.service;
 
+import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.sd.core.service.bean.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -55,5 +56,5 @@ public interface SdTicketService {
 
     List<SdTicketMasBean> getTicketByServiceNo(String serviceNom, String status);
 
-    void closeTicket(int ticketMasId, String reasonType, String reasonContent, String userId);
+    void closeTicket(int ticketMasId, String reasonType, String reasonContent, String userId) throws InvalidInputException;
 }

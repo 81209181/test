@@ -1,5 +1,7 @@
 package com.hkt.btu.sd.facade.impl;
 
+import com.hkt.btu.common.core.exception.InvalidInputException;
+import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
 import com.hkt.btu.sd.core.service.SdTicketService;
@@ -339,8 +341,27 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public void closeTicket(int ticketMasId, String reasonType, String reasonContent, String userId) {
-        ticketService.closeTicket(ticketMasId, reasonType, reasonContent, userId);
+    public String closeTicketByApi(int ticketMasId, String reasonType, String reasonContent, String userId) {
+        String systemId = userService.getCurrentUserUserId();
+        if(StringUtils.isNotEmpty(userId)){
+            userId = systemId + " - " + userId;
+        }
+        return closeTicket(ticketMasId, reasonType, reasonContent, userId);
+    }
+    @Override
+    public String closeTicket(int ticketMasId, String reasonType, String reasonContent) {
+        String currentUserId = userService.getCurrentUserUserId();
+        return closeTicket(ticketMasId, reasonType, reasonContent, currentUserId);
+    }
+
+    private String closeTicket(int ticketMasId, String reasonType, String reasonContent, String closeby) {
+        try{
+            ticketService.closeTicket(ticketMasId, reasonType, reasonContent, closeby);
+            return null;
+        }catch (InvalidInputException e){
+            LOG.warn(e.getMessage());
+            return e.getMessage();
+        }
     }
 
     @Override
@@ -348,11 +369,13 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         switch (action) {
             case SdTicketMasData.ACTION_TYPE.WORKING:
                 ticketService.getTicket(Integer.valueOf(ticketMasId)).map(SdTicketMasBean::getStatus)
-                        .filter(s -> s.equals(SdTicketMasBean.STATUS_TYPE.OPEN)).orElseThrow(() -> new RuntimeException("Cannot update. This ticket has been passed to working parties."));
+                        .filter(s -> s.equals(SdTicketMasBean.STATUS_TYPE.OPEN))
+                        .orElseThrow(() -> new RuntimeException("Cannot update. This ticket has been passed to working parties."));
                 break;
             case SdTicketMasData.ACTION_TYPE.COMPLETE:
                 ticketService.getTicket(Integer.valueOf(ticketMasId)).map(SdTicketMasBean::getStatus)
-                        .filter(s -> !s.equals(SdTicketMasBean.STATUS_TYPE.COMPLETE)).orElseThrow(() -> new RuntimeException("Cannot update. This ticket has been completed."));
+                        .filter(s -> !s.equals(SdTicketMasBean.STATUS_TYPE.COMPLETE))
+                        .orElseThrow(() -> new RuntimeException("Cannot update. This ticket has been completed."));
                 break;
             default:
                 ticketService.getTicket(Integer.valueOf(ticketMasId)).map(SdTicketMasBean::getStatus)

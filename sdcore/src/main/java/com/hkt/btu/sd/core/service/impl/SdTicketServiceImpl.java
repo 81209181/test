@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.core.service.impl;
 
+import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.core.service.BtuSensitiveDataService;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.sd.core.dao.entity.*;
@@ -15,6 +16,7 @@ import com.hkt.btu.sd.core.service.populator.SdTicketMasBeanPopulator;
 import com.hkt.btu.sd.core.service.populator.SdTicketRemarkBeanPopulator;
 import com.hkt.btu.sd.core.service.populator.SdTicketServiceBeanPopulator;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -76,8 +78,10 @@ public class SdTicketServiceImpl implements SdTicketService {
         serviceEntity.setServiceTypeCode(serviceType);
         serviceEntity.setSubsId(subsId);
         ticketServiceMapper.insertServiceInfo(serviceEntity);
+
         // remark
-        createTicketSysRemarks(ticketMasEntity.getTicketMasId(), SdTicketRemarkBean.REMARKS.STATUS_TO_OPEN);
+        createTicketSysRemarks(ticketMasEntity.getTicketMasId(),
+                String.format("%s (by %s)", SdTicketRemarkBean.REMARKS.STATUS_TO_OPEN, userId));
         return ticketMasEntity.getTicketMasId();
     }
 
@@ -191,7 +195,7 @@ public class SdTicketServiceImpl implements SdTicketService {
 
         ticketServiceMapper.updateTicketServiceByJobId(jobId, ticketMasId, userId);
         ticketMasMapper.updateTicketStatus(iTicketMasId, SdTicketMasBean.STATUS_TYPE_CODE.WORKING, userId);
-        createTicketSysRemarks(iTicketMasId, SdTicketRemarkBean.REMARKS.STATUS_TO_WORKING);
+        createTicketSysRemarks(iTicketMasId, String.format("%s (by %s)", SdTicketRemarkBean.REMARKS.STATUS_TO_WORKING, userId));
     }
 
     @Override
@@ -339,8 +343,33 @@ public class SdTicketServiceImpl implements SdTicketService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void closeTicket(int ticketMasId, String reasonType, String reasonContent, String userId) {
-        ticketMasMapper.updateTicketStatus(ticketMasId,SdTicketMasBean.STATUS_TYPE_CODE.COMPLETE,userId);
-        createTicketSysRemarks(ticketMasId, String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_CLOSE, reasonType, reasonContent));
+    public void closeTicket(int ticketMasId, String reasonType, String reasonContent, String closeby) throws InvalidInputException {
+        if (StringUtils.isEmpty(reasonType)) {
+            throw new InvalidInputException("Empty reasonType.");
+        } else if(StringUtils.isEmpty(reasonContent)) {
+            throw new InvalidInputException("Empty reasonContent.");
+        } else if (StringUtils.isEmpty(closeby)) {
+            throw new InvalidInputException("Empty closeBy.");
+        }
+
+        // check status
+        Optional<SdTicketMasBean> ticketMasBeanOptional = getTicket(ticketMasId);
+        if(ticketMasBeanOptional.isPresent()){
+            SdTicketMasBean sdTicketMasBean = ticketMasBeanOptional.get();
+            String ticketStatus = sdTicketMasBean.getStatus();
+            if( StringUtils.isEmpty(ticketStatus) ){
+                throw new InvalidInputException("Ticket status not found.");
+            } else if( SdTicketMasBean.STATUS_TYPE.COMPLETE.equals(ticketStatus) ){
+                throw new InvalidInputException("Ticket already closed.");
+            }
+        } else {
+            throw new InvalidInputException(String.format("Ticket not found. (ticketMasId: %d)", ticketMasId));
+        }
+
+
+        // close ticket and add remarks
+        String modifyby = userService.getCurrentUserUserId();
+        ticketMasMapper.updateTicketStatus(ticketMasId, SdTicketMasBean.STATUS_TYPE_CODE.COMPLETE, modifyby);
+        createTicketSysRemarks(ticketMasId, String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_CLOSE, reasonType, reasonContent, closeby));
     }
 }
