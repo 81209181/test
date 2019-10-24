@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="headerFragment">
+    <!--/*@thymesVar id="siteConfigAppName" type="java.lang.String"*/-->
+    <title><th:block th:if="${!#strings.isEmpty(siteConfigAppName)}" th:text="${siteConfigAppName}"> </th:block></title>
+
+    <link rel="icon" th:href="@{/img/favicon.png}" type="image/x-icon">
+    <link rel="shortcut icon" th:href="@{/img/favicon.png}" type="image/x-icon">
+
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header"  th:content="${_csrf.headerName}"/>
+
+    <meta name="_ctx" th:content="${#httpServletRequest.getContextPath()}" />
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/font-awesome/5.7.2/css/all.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/lib/DataTables/datatables.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/lib/bootstrap-select/bootstrap-select.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+
+
+    <script type="text/javascript" th:src="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/popper.js/1.14.3/umd/popper.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/4.1.3/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/lib/DataTables/datatables.min.js}"></script>
+    <script type="text/javascript" th:src="@{/lib/bootstrap-select/bootstrap-select.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common.js}"></script>
+</head>
+<body class="bg-light">
+<!--    <th:block th:replace="fragments/header :: header"/>-->
+
+    <div class="container-fluid">
+        <th:block th:replace="fragments/pageMsg :: pageMsg"/>
+        <th:block layout:fragment="content"/>
+    </div>
+
+<!--    <th:block th:replace="fragments/footer :: footer"/>-->
+</body>
+</html>

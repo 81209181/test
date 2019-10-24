@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout-fluid-content-only}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Offer Detail</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <div class="card" style="height:700px">
+        <div class="card-header bg-primary text-white">Offer Detail</div>
+        <div class="card-body">
+            <h2>Offer Group Info</h2>
+            <div class="row col-md-10">
+                <form class="col-md-12" th:object="${noraDnGroupData}">
+                    <div class="form-row">
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">AS Cluster:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="asCluster" th:field="*{asCluster}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Admin Portal ID:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="adminPortalId" th:field="*{adminPortalId}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Admin Portal Password:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="adminPortalPassword" th:field="*{adminPortalPassword}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">CLI Number:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="cliNumber" th:field="*{cliNumber}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Provision Method:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="recordingProvisionMethod" th:field="*{recordingProvisionMethod}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">DOD:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="dod" th:field="*{dod}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">CAC:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="adminPortalId" th:field="*{cac}" readonly>
+                        </div>
+                    </div>
+
+                    <h2>User Plan List</h2>
+                    <div class="col-md-12">
+                        <table class="table table-sm table-hover">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th>DN</th>
+                                <th>Plan</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody class="table-striped">
+                            <tr th:each="visitor, itemStat : *{userPlanList}">
+                                <td><span th:text="*{userPlanList[__${itemStat.index}__].param}" /></td>
+                                <td><span th:text="*{userPlanList[__${itemStat.index}__].plan}" /></td>
+                                <td><span th:text="*{userPlanList[__${itemStat.index}__].action}" /></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
