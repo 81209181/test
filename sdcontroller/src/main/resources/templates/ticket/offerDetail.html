@@ -3,15 +3,15 @@
       layout:decorate="~{fragments/layout-fluid-content-only}"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Offer Detail</title>
+    <title>Related Offer Info</title>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
 
     <div class="card" style="height:700px">
-        <div class="card-header bg-primary text-white">Offer Detail</div>
+        <div class="card-header bg-primary text-white">Related Offer Info</div>
         <div class="card-body">
-            <h2>Offer Group Info</h2>
+            <h2>Group Info</h2>
             <div class="row col-md-10">
                 <form class="col-md-12" th:object="${noraDnGroupData}">
                     <div class="form-row">
