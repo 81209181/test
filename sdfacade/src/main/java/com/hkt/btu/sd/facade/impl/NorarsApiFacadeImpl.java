@@ -14,8 +14,11 @@ import javax.ws.rs.core.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.StringJoiner;
 
 public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements NorarsApiFacade {
+
+    private final static String STATUS = "W";
 
     @Resource(name = "apiService")
     SdApiService apiService;
@@ -29,9 +32,13 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
 
     @Override
     public String getInventory(String bsn) {
-        String apiPath = "/norars/api/v1/getInventory/bsn/" + bsn;
+        String apiPath = "nora/wfm/Profile.action";
 
-        return Optional.ofNullable(getData(apiPath, null)).orElse("<h1>Test</h1>");
+        Map<String, String> queryParam = new HashMap<>(2);
+        queryParam.put("bsn", bsn);
+        queryParam.put("status", STATUS);
+
+        return Optional.ofNullable(getData(apiPath, queryParam)).orElse("<h1>Test</h1>");
     }
 
     @Override
