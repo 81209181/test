@@ -78,8 +78,10 @@ public class SdTicketServiceImpl implements SdTicketService {
         serviceEntity.setServiceTypeCode(serviceType);
         serviceEntity.setSubsId(subsId);
         ticketServiceMapper.insertServiceInfo(serviceEntity);
+
         // remark
-        createTicketSysRemarks(ticketMasEntity.getTicketMasId(), SdTicketRemarkBean.REMARKS.STATUS_TO_OPEN);
+        createTicketSysRemarks(ticketMasEntity.getTicketMasId(),
+                String.format("%s (by %s)", SdTicketRemarkBean.REMARKS.STATUS_TO_OPEN, userId));
         return ticketMasEntity.getTicketMasId();
     }
 
@@ -193,7 +195,7 @@ public class SdTicketServiceImpl implements SdTicketService {
 
         ticketServiceMapper.updateTicketServiceByJobId(jobId, ticketMasId, userId);
         ticketMasMapper.updateTicketStatus(iTicketMasId, SdTicketMasBean.STATUS_TYPE_CODE.WORKING, userId);
-        createTicketSysRemarks(iTicketMasId, SdTicketRemarkBean.REMARKS.STATUS_TO_WORKING);
+        createTicketSysRemarks(iTicketMasId, String.format("%s (by %s)", SdTicketRemarkBean.REMARKS.STATUS_TO_WORKING, userId));
     }
 
     @Override
@@ -350,6 +352,22 @@ public class SdTicketServiceImpl implements SdTicketService {
             throw new InvalidInputException("Empty closeBy.");
         }
 
+        // check status
+        Optional<SdTicketMasBean> ticketMasBeanOptional = getTicket(ticketMasId);
+        if(ticketMasBeanOptional.isPresent()){
+            SdTicketMasBean sdTicketMasBean = ticketMasBeanOptional.get();
+            String ticketStatus = sdTicketMasBean.getStatus();
+            if( StringUtils.isEmpty(ticketStatus) ){
+                throw new InvalidInputException("Ticket status not found.");
+            } else if( SdTicketMasBean.STATUS_TYPE.COMPLETE.equals(ticketStatus) ){
+                throw new InvalidInputException("Ticket already closed.");
+            }
+        } else {
+            throw new InvalidInputException(String.format("Ticket not found. (ticketMasId: %d)", ticketMasId));
+        }
+
+
+        // close ticket and add remarks
         String modifyby = userService.getCurrentUserUserId();
         ticketMasMapper.updateTicketStatus(ticketMasId, SdTicketMasBean.STATUS_TYPE_CODE.COMPLETE, modifyby);
         createTicketSysRemarks(ticketMasId, String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_CLOSE, reasonType, reasonContent, closeby));
