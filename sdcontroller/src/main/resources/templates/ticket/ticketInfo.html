@@ -99,6 +99,7 @@
                     <h3>
                         Service
                         <button type="button" class="btn btn-info ml-3" th:attr="data-url=*{itsmUrl}" th:disabled="not *{itsmUrl}" id="btnServiceLink">Link</button>
+                        <button type="button" class="btn btn-info ml-3" onclick='getInventory(bsn);'>Get Inventory</button>
                     </h3>
                 </div>
                 <div class="col-md-12">
@@ -110,10 +111,6 @@
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Service Type: </label>
                             <input type="text" class="form-control col-md-6" name="serviceType" readonly th:value="*{serviceType}">
-                        </div>
-                        <div class="col-md-6 form-inline pt-2">
-                            <label class="col-form-label col-md-3 justify-content-end"></label>
-                            <button type="button" class="btn btn-info col-md-3" onclick='getInventory(bsn);'>Get Inventory</button>
                         </div>
                         <div class="temp_faults col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Symptom: </label>

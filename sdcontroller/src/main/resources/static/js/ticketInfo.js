@@ -319,7 +319,7 @@ function getInventory(bsn) {
         data: {bsn:bsn},
         dataType: 'text',
         success: function (res) {
-            let inventoryWindow= window.open('','Inventory','scrollbars=yes,height=600,width=800');
+            let inventoryWindow= window.open('','Inventory','scrollbars=yes,width=800, height=800');
             inventoryWindow.document.write(res);
             inventoryWindow.focus();
         }

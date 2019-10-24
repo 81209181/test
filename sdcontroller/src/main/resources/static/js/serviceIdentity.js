@@ -2,6 +2,8 @@ $().ready(function(){
 
     let ctx = $("meta[name='_ctx']").attr("content");
 
+    let bsn = "";
+
     $('#btnSearchReset').on('click',function(){
         $('#searchKey').val('');
         $('#searchValue').val('');
@@ -40,6 +42,14 @@ $().ready(function(){
 
     $('.itsm').on('click',function(){
         window.open($(this).data('url'),'Profile','scrollbars=yes,height=600,width=800');
+    })
+
+    $('#btnGetInventory').on('click', function () {
+        if (bsn == '') {
+            showErrorMsg('No service number!');
+            return;
+        }
+        getInventory(bsn);
     })
 
     $('#btnSearchInfo').on('click',function(){
@@ -84,6 +94,12 @@ $().ready(function(){
             }else{
                 $.each(res.pop(),function(key,val){
                      $('form').find('input[name='+ key +']').val(val);
+                     if (key == 'serviceNo') {
+                         if (val != null) {
+                             bsn = val;
+                             $('.nora').removeAttr('disabled');
+                         }
+                     }
                 })
             }
         }).fail(function(e){
@@ -100,6 +116,11 @@ $().ready(function(){
                             $('.itsm').removeAttr('disabled');
                         }
                     }
+                    if(i == 'serviceNo') {
+                        if(val !=null) {
+                            $('.nora').removeAttr('disabled');
+                        }
+                    }
                 })
                 $('.modal').modal('hide');
             })
@@ -107,3 +128,21 @@ $().ready(function(){
     })
 
 })
+
+function getInventory(bsn) {
+    $.ajax({
+        url: '/ticket/getInventory',
+        type: 'POST',
+        data: {bsn:bsn},
+        dataType: 'text',
+        success: function (res) {
+            let inventoryWindow= window.open('','Inventory','scrollbars=yes,width=800, height=800');
+            inventoryWindow.document.write(res);
+            inventoryWindow.focus();
+        }
+    }).fail(function (e) {
+        var responseError = e.responseText ? e.responseText : "Get failed.";
+        console.log("ERROR : ", responseError);
+        showErrorMsg(responseError);
+    })
+}
