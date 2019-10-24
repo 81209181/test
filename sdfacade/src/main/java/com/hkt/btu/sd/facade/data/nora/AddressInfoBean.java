@@ -1,8 +1,6 @@
 package com.hkt.btu.sd.facade.data.nora;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.pccw.dwfm.util.UtilBase;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AddressInfoBean
@@ -41,65 +39,7 @@ public class AddressInfoBean
 	// 2: The address blacklist check is not available at this moment but the order is still submitted to NOSS
 	private String blacklistCheck = "";
 
-	@JsonIgnore
-	public String getAddressString1()
-	{
-		String result = UtilBase.appendStringWithDelimiter("", addr1, ", ", "FLAT %s");
-		result = UtilBase.appendStringWithDelimiter(result, addr2, ", ", "LOT %s");
-		result = UtilBase.appendStringWithDelimiter(result, addr3, ", ", "%s/F");
-		result = UtilBase.appendStringWithDelimiter(result, addr4, ", ", "BLOCK %s");
 
-		result = UtilBase.appendStringWithDelimiter(result, addr5, ", ", "%s");
-		result = UtilBase.appendStringWithDelimiter(result, addr6, ", ", "%s");
-		result = UtilBase.appendStringWithDelimiter(result, addr7, ", ", "%s");
-		result = UtilBase.appendStringWithDelimiter(result, addr8, ", ", "%s");
-
-		return result;
-	}
-
-	@JsonIgnore
-	public String getAddressString2()
-	{
-		// Street number and name
-		String street = UtilBase.appendStringWithDelimiter("", addr9, "", "%s");
-		street = UtilBase.appendStringWithDelimiter(street, addr10, " ", "- %s");
-		street = UtilBase.appendStringWithDelimiter(street, addr11, " ", "%s");
-		return UtilBase.appendStringWithDelimiter("", street, ", ", "%s");
-	}
-
-	@JsonIgnore
-	public String getAddressString3()
-	{
-		String result = UtilBase.appendStringWithDelimiter("", addr12, ", ", "%s");
-		result = UtilBase.appendStringWithDelimiter(result, addr13, ", ", "%s");
-
-		return result;
-	}
-
-	@JsonIgnore
-	public String getAddressString()
-	{
-		String result = UtilBase.appendStringWithDelimiter("", addr1, ", ", "FLAT %s");
-		result = UtilBase.appendStringWithDelimiter(result, addr2, ", ", "LOT %s");
-		result = UtilBase.appendStringWithDelimiter(result, addr3, ", ", "%s/F");
-		result = UtilBase.appendStringWithDelimiter(result, addr4, ", ", "BLOCK %s");
-
-		result = UtilBase.appendStringWithDelimiter(result, addr5, ", ", "%s");
-		result = UtilBase.appendStringWithDelimiter(result, addr6, ", ", "%s");
-		result = UtilBase.appendStringWithDelimiter(result, addr7, ", ", "%s");
-		result = UtilBase.appendStringWithDelimiter(result, addr8, ", ", "%s");
-
-		// Street number and name
-		String street = UtilBase.appendStringWithDelimiter("", addr9, "", "%s");
-		street = UtilBase.appendStringWithDelimiter(street, addr10, " ", "- %s");
-		street = UtilBase.appendStringWithDelimiter(street, addr11, " ", "%s");
-		result = UtilBase.appendStringWithDelimiter(result, street, ", ", "%s");
-
-		result = UtilBase.appendStringWithDelimiter(result, addr12, ", ", "%s");
-		result = UtilBase.appendStringWithDelimiter(result, addr13, ", ", "%s");
-
-		return result;
-	}
 
 	public String getAddrId()
 	{
@@ -391,35 +331,6 @@ public class AddressInfoBean
 		this.blacklistCheck = blacklistCheck;
 	}
 
-	public boolean isSameAddress(AddressInfoBean otherAddressInfoBean)
-	{
-		if (otherAddressInfoBean == null) return false;
 
-		if (UtilBase.isNotEmptyValue(addrId) && addrId.equals(otherAddressInfoBean.getAddrId()))
-			return true;
-		else if (addr1.equals(otherAddressInfoBean.getAddr1()) && addr2.equals(otherAddressInfoBean.getAddr2()) && addr3.equals(otherAddressInfoBean.getAddr3())
-		        && addr4.equals(otherAddressInfoBean.getAddr4()) && addr5.equals(otherAddressInfoBean.getAddr5())
-		        && addr6.equals(otherAddressInfoBean.getAddr6()) && addr7.equals(otherAddressInfoBean.getAddr7())
-		        && addr8.equals(otherAddressInfoBean.getAddr8()) && addr9.equals(otherAddressInfoBean.getAddr9())
-		        && addr10.equals(otherAddressInfoBean.getAddr10()) && addr11.equals(otherAddressInfoBean.getAddr11())
-		        && addr12.equals(otherAddressInfoBean.getAddr12()) && addr13.equals(otherAddressInfoBean.getAddr13())
-		        && addr14.equals(otherAddressInfoBean.getAddr14()))
-		    return true;
 
-		return false;
-	}
-
-	// UIM only look for SB (addr17), flat (addr1) and floor (addr3).
-	public boolean isSameAddressForUim(AddressInfoBean otherAddressInfoBean)
-	{
-		if (otherAddressInfoBean == null) return false;
-
-		if (UtilBase.isNotEmptyValue(addrId) && addrId.equals(otherAddressInfoBean.getAddrId()))
-			return true;
-		else if (addr1.equals(otherAddressInfoBean.getAddr1()) && addr3.equals(otherAddressInfoBean.getAddr3())
-		        && addr17.equals(otherAddressInfoBean.getAddr17()))
-		    return true;
-
-		return false;
-	}
 }
