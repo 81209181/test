@@ -324,10 +324,20 @@ function getInventory(bsn) {
             inventoryWindow.focus();
         }
     }).fail(function (e) {
-        var responseError = e.responseText ? e.responseText : "Get failed.";
+        let responseError = e.responseText ? e.responseText : "Get failed.";
         console.log("ERROR : ", responseError);
         showErrorMsg(responseError);
     })
+}
+
+function getOfferDetail(bsn) {
+    if (bsn === '') {
+        showErrorMsg('No service number!');
+        return;
+    }
+
+    let ctx = $("meta[name='_ctx']").attr("content");
+    window.open(ctx+'/ticket/offer-detail?bsn='+bsn,'OfferDetail','scrollbars=yes,height=400,width=500');
 }
 
 

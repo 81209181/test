@@ -59,7 +59,7 @@ $().ready(function(){
         }
 
         let ctx = $("meta[name='_ctx']").attr("content");
-        window.open(ctx+'/ticket/offer-detail?bsn='+bsn,'OfferDetail','scrollbars=yes,height=400,width=400');
+        window.open(ctx+'/ticket/offer-detail?bsn='+bsn,'OfferDetail','scrollbars=yes,height=400,width=500');
     })
 
     $('#btnSearchInfo').on('click',function(){
