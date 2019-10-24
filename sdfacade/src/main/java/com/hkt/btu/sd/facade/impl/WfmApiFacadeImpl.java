@@ -105,16 +105,21 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
     }
 
     @Override
-    public String getPendingOrder(String serviceNo) {
-        return Optional.ofNullable(serviceNo).map(bsn -> {
-            Map<String, String> queryParamMap = new HashMap<>();
-            queryParamMap.put("bsn", bsn);
-            String wfmResponseDataJsonString = getData("/", queryParamMap);
-            if (wfmResponseDataJsonString == null) {
-                LOG.warn("WFM Error: Cannot check pending order from WFM of BSN " + bsn + ".");
-            }
-            return "";
-        }).orElse(null);
+    public String getPendingOrderByBsn(String bsn) {
+        String wfmResponseDataJsonString = null;
+        try {
+            wfmResponseDataJsonString = getData("/api/v1/sd/GetPendingOrderByBsn/" + bsn, null);
+        } catch (RuntimeException e) {
+            LOG.warn("WFM Error: Cannot check pending order from WFM of BSN " + bsn + ".");
+            return null;
+        }
+
+        List<String> responseDataList = new Gson().<List<String>>fromJson(wfmResponseDataJsonString, new TypeToken<List<String>>(){}.getType());
+        if (CollectionUtils.isNotEmpty(responseDataList)) {
+            String[] arr = responseDataList.toArray(new String[responseDataList.size()]);
+            return StringUtils.join(arr, ",");
+        }
+        return null;
     }
 
     @Override
