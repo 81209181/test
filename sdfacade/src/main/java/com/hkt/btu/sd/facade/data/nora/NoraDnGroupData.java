@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DnGroupBean
+public class NoraDnGroupData
 {
 	private String asCluster = "";
 	private String adminPortalId = "";
@@ -14,7 +14,7 @@ public class DnGroupBean
 	private String recordingProvisionMethod = "";
 	private String dod = "";
 	private int cac = 0;
-	ArrayList<DnPlanBean> userPlanList = new ArrayList<DnPlanBean>();
+	ArrayList<NoraDnPlanData> userPlanList = new ArrayList<NoraDnPlanData>();
 
 	public String getAsCluster()
 	{
@@ -86,12 +86,12 @@ public class DnGroupBean
 		this.cac = cac;
 	}
 
-	public ArrayList<DnPlanBean> getUserPlanList()
+	public ArrayList<NoraDnPlanData> getUserPlanList()
 	{
 		return userPlanList;
 	}
 
-	public void setUserPlanList(ArrayList<DnPlanBean> userPlanList)
+	public void setUserPlanList(ArrayList<NoraDnPlanData> userPlanList)
 	{
 		this.userPlanList = userPlanList;
 	}
