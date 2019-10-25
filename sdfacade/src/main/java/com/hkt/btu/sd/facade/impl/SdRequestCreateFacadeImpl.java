@@ -106,6 +106,8 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
                 infoData.setSubsId(requestCreateSearchResultData.getSubsId());
                 infoData.setOfferName(requestCreateSearchResultData.getOfferName());
                 infoData.setItsmUrl(requestCreateSearchResultData.getUrl());
+                infoData.setGridId(requestCreateSearchResultData.getGridId());
+                infoData.setExchangeBuildingId(requestCreateSearchResultData.getExchangeBuildingId());
             });
             infoData.setServiceType(sdTicketServiceData.getServiceType());
             infoData.setServiceNo(sdTicketServiceData.getServiceCode());
@@ -174,9 +176,19 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
             besCustomerData.ifPresent(bes -> resultDataList.forEach(resultData -> {
                 requestCreateSearchResultDataPopulator.populateFromBesCustomerDataData(bes, resultData);
                 resultData.setServiceType(serviceTypeFacade.getServiceTypeByOfferName(resultData.getOfferName()));
-                resultData.setServiceAddress(norarsApiFacade.getServiceAddressByBsn(bsn));
+
+                //find in NORA API
+                Optional.ofNullable(norarsApiFacade.getServiceAddressByBsn(bsn)).ifPresent(serviceAddressData -> {
+                    resultData.setServiceAddress(serviceAddressData.getServiceAddress());
+                    resultData.setGridId(serviceAddressData.getGridId());
+                    resultData.setExchangeBuildingId(serviceAddressData.getExchangeBuildingId());
+                });
                 resultData.setDescription(norarsApiFacade.getL1InfoByBsn(bsn));
-                resultData.setPendingOrder(wfmApiFacade.getPendingOrderByBsn(bsn));
+
+                //find in WFM API
+                Optional.ofNullable(wfmApiFacade.getPendingOrderByBsn(bsn)).ifPresent(pendingOrderData -> {
+                    resultData.setPendingOrder(pendingOrderData.getPendingOrder());
+                });
             }));
         } else {
             resultsData.setErrorMsg(String.format("Service(s) not found with %s .", bsn));

@@ -6,6 +6,7 @@ import com.hkt.btu.sd.core.service.SdApiService;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.NorarsApiFacade;
+import com.hkt.btu.sd.facade.data.ServiceAddressData;
 import com.hkt.btu.sd.facade.data.nora.NoraBroadbandInfoData;
 import com.hkt.btu.sd.facade.data.nora.NoraAddressInfoData;
 import com.hkt.btu.sd.facade.data.nora.NoraPidInfoData;
@@ -96,15 +97,17 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
     }
 
     @Override
-    public String getServiceAddressByBsn(String bsn){
+    public ServiceAddressData getServiceAddressByBsn(String bsn){
         String apiPath = "/norars/api/v1/onecomm/address/" + bsn;
         NoraAddressInfoData noraAddressInfoData = getData(apiPath, NoraAddressInfoData.class, null);
         if (noraAddressInfoData != null) {
-            return noraAddressInfoData.getAddressString();
+            ServiceAddressData data = new ServiceAddressData();
+            data.setServiceAddress(getAddressString(noraAddressInfoData));
+            data.setGridId(noraAddressInfoData.getAddr14());
+            data.setExchangeBuildingId(noraAddressInfoData.getAddr15());
+            return data;
         }
         return null;
-
-        // todo [RICO]: return ServiceAddressData
     }
 
     @Override
@@ -115,5 +118,41 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
             return noraPidInfoData.getPid() + "/" + noraPidInfoData.getStb() + "/" + noraPidInfoData.getDescription();
         }
         return null;
+    }
+
+    private String getAddressString(NoraAddressInfoData noraAddressInfoData) {
+        String result = appendStringWithDelimiter("", noraAddressInfoData.getAddr1(), ", ", "FLAT %s");
+        result = appendStringWithDelimiter(result, noraAddressInfoData.getAddr2(), ", ", "LOT %s");
+        result = appendStringWithDelimiter(result, noraAddressInfoData.getAddr3(), ", ", "%s/F");
+        result = appendStringWithDelimiter(result, noraAddressInfoData.getAddr4(), ", ", "BLOCK %s");
+
+        result = appendStringWithDelimiter(result, noraAddressInfoData.getAddr5(), ", ", "%s");
+        result = appendStringWithDelimiter(result, noraAddressInfoData.getAddr6(), ", ", "%s");
+        result = appendStringWithDelimiter(result, noraAddressInfoData.getAddr7(), ", ", "%s");
+        result = appendStringWithDelimiter(result, noraAddressInfoData.getAddr8(), ", ", "%s");
+
+        // Street number and name
+        String street = appendStringWithDelimiter("", noraAddressInfoData.getAddr9(), "", "%s");
+        street = appendStringWithDelimiter(street, noraAddressInfoData.getAddr10(), " ", "- %s");
+        street = appendStringWithDelimiter(street, noraAddressInfoData.getAddr11(), " ", "%s");
+        result = appendStringWithDelimiter(result, street, ", ", "%s");
+
+        result = appendStringWithDelimiter(result, noraAddressInfoData.getAddr12(), ", ", "%s");
+        result = appendStringWithDelimiter(result, noraAddressInfoData.getAddr13(), ", ", "%s");
+
+        return result;
+    }
+
+    private String appendStringWithDelimiter(String result, String addr, String str1, String str2){
+        if (StringUtils.isEmpty(result)) {
+            if (StringUtils.isNotEmpty(addr)) {
+                result = String.format(result+str2,addr);
+            }
+        } else {
+            if (StringUtils.isNotEmpty(addr)) {
+                result = String.format(result+str1+str2,addr);
+            }
+        }
+        return result;
     }
 }
