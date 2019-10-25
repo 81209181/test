@@ -29,9 +29,8 @@
                td.TICKET_DET_ID,
                td.SERVICE_ID,
                td.SYMPTOM_CODE,
-               st.SERVICE_TYPE_NAME as SERVICE_TYPE_CODE
+               td.SERVICE_TYPE_CODE
         from TICKET_DET td
-                 inner join SERVICE_TYPE st on st.SERVICE_TYPE_CODE = td.SERVICE_TYPE_CODE
         where td.TICKET_MAS_ID = #{ticketMasId}
     </select>
 

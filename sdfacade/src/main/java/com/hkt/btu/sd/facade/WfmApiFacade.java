@@ -14,7 +14,7 @@ public interface WfmApiFacade {
     WfmJobDetailsData getJobDetails(Integer jobId);
 
     List<SdServiceTypeOfferMappingBean> getServiceTypeOfferMapping();
-    String getPendingOrder(String serviceNo);
+    String getPendingOrderByBsn(String bsn);
 
     WfmJobInfoResponseData getJobInfo(Integer ticketMasId);
 }

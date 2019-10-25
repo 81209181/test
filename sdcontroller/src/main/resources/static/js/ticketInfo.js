@@ -32,6 +32,9 @@ $().ready(function(){
                             $('#symptomList').find('option[value='+item.symptomCode+']').attr('selected','selected');
                         }
                     }
+                    if (key == 'ticketDetId') {
+                        ticketDetId = value;
+                    }
                 })
             })
             $('.selectpicker').selectpicker('refresh');
@@ -86,6 +89,18 @@ $().ready(function(){
         })
     })
 
+    // make appointment
+    $('#btnMakeAppointment').on('click', function () {
+        if (ticketMasId == '') {
+            showErrorMsg('No ticket mas Id');
+            return;
+        }
+        if (ticketDetId == '') {
+            showErrorMsg('No ticket detail Id.');
+            return;
+        }
+        makeAppointment(ticketMasId, ticketDetId);
+    })
 
     //contact
     $.get('/ticket/contact?ticketMasId='+ticketMasId,function(res){
@@ -302,8 +317,8 @@ function removeContact(btn){
 function makeAppointment(ticketMasId, ticketDetId) {
     AppointmentSDObj.make({
         data : {
-            ticketMasId : 100001,
-            ticketDetId : 1001,
+            ticketMasId : ticketMasId,
+            ticketDetId : ticketDetId,
             serviceType: "Broadband",
             userName : "sd",
             password : "Ki6=rEDs47*^5"
@@ -319,15 +334,35 @@ function getInventory(bsn) {
         data: {bsn:bsn},
         dataType: 'text',
         success: function (res) {
-            let inventoryWindow= window.open('','Inventory','scrollbars=yes,height=600,width=800');
+            let inventoryWindow= window.open('','Inventory','scrollbars=yes,width=800, height=800');
             inventoryWindow.document.write(res);
             inventoryWindow.focus();
         }
     }).fail(function (e) {
-        var responseError = e.responseText ? e.responseText : "Get failed.";
+        let responseError = e.responseText ? e.responseText : "Get failed.";
         console.log("ERROR : ", responseError);
         showErrorMsg(responseError);
     })
+}
+
+function getRelatedOfferInfo(bsn) {
+    if (bsn === '') {
+        showErrorMsg('No service number!');
+        return;
+    }
+
+    let ctx = $("meta[name='_ctx']").attr("content");
+    window.open(ctx+'/ticket/offer-detail?bsn='+bsn,'RelatedOfferInfo','scrollbars=yes,height=400,width=500');
+}
+
+function getOfferDetailList(bsn) {
+    if (bsn === '') {
+        showErrorMsg('No service number!');
+        return;
+    }
+
+    let ctx = $("meta[name='_ctx']").attr("content");
+    window.open(ctx+'/ticket/offer-detail?bsn='+bsn,'OfferDetailList','scrollbars=yes,height=400,width=500');
 }
 
 

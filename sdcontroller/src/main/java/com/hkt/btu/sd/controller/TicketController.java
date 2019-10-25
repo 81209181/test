@@ -8,6 +8,7 @@ import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
 import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.data.*;
+import com.hkt.btu.sd.facade.data.nora.NoraDnGroupData;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +23,7 @@ import javax.annotation.Resource;
 import java.security.Principal;
 import java.util.List;
 
-@RequestMapping("ticket")
+@RequestMapping("/ticket")
 @Controller
 public class TicketController {
 
@@ -59,9 +60,9 @@ public class TicketController {
         if (StringUtils.isEmpty(queryTicketRequestData.getServiceNo()) || StringUtils.isEmpty(queryTicketRequestData.getServiceType())) {
             return ResponseEntity.badRequest().body("Service No. / Service Type is empty.");
         }
-        String returnCode = wfmApiFacade.getPendingOrder(queryTicketRequestData.getServiceNo());
-        if (StringUtils.isNotEmpty(returnCode)) {
-            return ResponseEntity.badRequest().body("There is pending order of the service " + returnCode + " in WFM.");
+        String pendingOrder = wfmApiFacade.getPendingOrderByBsn(queryTicketRequestData.getServiceNo());
+        if (StringUtils.isNotEmpty(pendingOrder)) {
+            return ResponseEntity.badRequest().body("There is pending order of the service " + pendingOrder + " in WFM.");
         }
         List<SdTicketMasData> dataList = ticketFacade.getTicketByServiceNo(queryTicketRequestData.getServiceNo());
         if (CollectionUtils.isNotEmpty(dataList)) {
@@ -274,5 +275,16 @@ public class TicketController {
             return ResponseEntity.ok(inventory);
         }
         return ResponseEntity.badRequest().body("Nora Error: Cannot get Inventory for bsn :" + bsn);
+    }
+
+    @GetMapping("/offer-detail")
+    public String getOfferInfo( final Model model,
+                                @RequestParam String bsn,
+                                @ModelAttribute("noraDnGroupData") NoraDnGroupData noraDnGroupData) {
+        noraDnGroupData = norarsApiFacade.getRelatedOfferInfoListByBsn(bsn);
+        if(noraDnGroupData !=null){
+            model.addAttribute("noraDnGroupData", noraDnGroupData);
+        }
+        return "ticket/offerDetail";
     }
 }

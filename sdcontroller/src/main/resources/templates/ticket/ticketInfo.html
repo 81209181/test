@@ -99,6 +99,8 @@
                     <h3>
                         Service
                         <button type="button" class="btn btn-info ml-3" th:attr="data-url=*{itsmUrl}" th:disabled="not *{itsmUrl}" id="btnServiceLink">Link</button>
+                        <button type="button" class="btn btn-info ml-3" onclick='getInventory(bsn);'>Get Inventory</button>
+                        <button type="button" class="btn btn-info ml-3" onclick='getRelatedOfferInfo(bsn);'>Related Offer Info</button>
                     </h3>
                 </div>
                 <div class="col-md-12">
@@ -110,10 +112,6 @@
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Service Type: </label>
                             <input type="text" class="form-control col-md-6" name="serviceType" readonly th:value="*{serviceType}">
-                        </div>
-                        <div class="col-md-6 form-inline pt-2">
-                            <label class="col-form-label col-md-3 justify-content-end"></label>
-                            <button type="button" class="btn btn-info col-md-3" onclick='getInventory(bsn);'>Get Inventory</button>
                         </div>
                         <div class="temp_faults col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Symptom: </label>
@@ -144,10 +142,6 @@
                             <input type="text" class="form-control col-md-6" name="supplementaryOffer" th:value="*{supplementaryOffer}" readonly/>
                         </div>
                         <div class="col-md-6 form-inline pt-2">
-                            <label class="col-form-label col-md-3 justify-content-end">Offer Detail: </label>
-                            <input type="text" class="form-control col-md-6" name="offerDetail" th:value="*{offerDetail}" readonly/>
-                        </div>
-                        <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">L1 PID/STB/Description: </label>
                             <input type="text" class="form-control col-md-6" name="description" th:value="*{description}" readonly/>
                         </div>
@@ -162,7 +156,7 @@
             <hr>
             <form id="appointment" class="row">
                 <div class="col-md-12">
-                    <h3>Job <button type="button" class="btn btn-info ml-3" onclick="makeAppointment(ticketMasId,123123);">Make Appointment</button></h3>
+                    <h3>Job <button type="button" class="btn btn-info ml-3" id="btnMakeAppointment">Make Appointment</button></h3>
                     <!--<a href="#" class="btn btn-default"
                        onClick="javascript:makeAppointment();">MakeAppointment </a>-->
                 </div>
