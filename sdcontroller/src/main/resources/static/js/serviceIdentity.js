@@ -52,14 +52,14 @@ $().ready(function(){
         getInventory(bsn);
     })
 
-    $('#btnOfferDetail').on('click', function () {
+    $('#btnRelatedOfferInfo').on('click', function () {
         if (bsn === '') {
             showErrorMsg('No service number!');
             return;
         }
 
         let ctx = $("meta[name='_ctx']").attr("content");
-        window.open(ctx+'/ticket/offer-detail?bsn='+bsn,'OfferDetail','scrollbars=yes,height=400,width=500');
+        window.open(ctx+'/ticket/offer-detail?bsn='+bsn,'RelatedOfferInfo','scrollbars=yes,height=400,width=500');
     })
 
     $('#btnSearchInfo').on('click',function(){

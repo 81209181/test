@@ -345,14 +345,24 @@ function getInventory(bsn) {
     })
 }
 
-function getOfferDetail(bsn) {
+function getRelatedOfferInfo(bsn) {
     if (bsn === '') {
         showErrorMsg('No service number!');
         return;
     }
 
     let ctx = $("meta[name='_ctx']").attr("content");
-    window.open(ctx+'/ticket/offer-detail?bsn='+bsn,'OfferDetail','scrollbars=yes,height=400,width=500');
+    window.open(ctx+'/ticket/offer-detail?bsn='+bsn,'RelatedOfferInfo','scrollbars=yes,height=400,width=500');
+}
+
+function getOfferDetailList(bsn) {
+    if (bsn === '') {
+        showErrorMsg('No service number!');
+        return;
+    }
+
+    let ctx = $("meta[name='_ctx']").attr("content");
+    window.open(ctx+'/ticket/offer-detail?bsn='+bsn,'OfferDetailList','scrollbars=yes,height=400,width=500');
 }
 
 

@@ -6,6 +6,7 @@ import com.hkt.btu.sd.core.service.SdApiService;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.NorarsApiFacade;
+import com.hkt.btu.sd.facade.data.nora.NoraBroadbandInfoData;
 import com.hkt.btu.sd.facade.data.nora.NoraDnGroupData;
 import com.hkt.btu.sd.facade.data.nora.NorarsBsnData;
 import org.apache.commons.lang3.StringUtils;
@@ -31,6 +32,21 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
         String apiPath = "/norars/api/v1/onecomm/dn/" + dn;
 
         return getData(apiPath, NorarsBsnData.class, null);
+    }
+
+    @Override
+    public NoraBroadbandInfoData getOfferDetailListByBsn(String bsn) {
+        if(StringUtils.isEmpty(bsn)){
+            throw new InvalidInputException("Empty BSN.");
+        }
+
+        String apiPath = "/norars/api/v1/onecomm/bsn/" + bsn + "/detail";
+        String responseString = getData(apiPath, null);
+        if(StringUtils.isEmpty(responseString)){
+            return null;
+        } else {
+            return new Gson().fromJson(responseString, NoraBroadbandInfoData.class);
+        }
     }
 
     @Override

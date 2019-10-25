@@ -2,7 +2,7 @@ package com.hkt.btu.sd.facade.data.nora;
 
 import java.sql.Timestamp;
 
-public class BroadbandInfoBean {
+public class NoraBroadbandInfoData {
 	
 	private long broadbandSeqId = 0;
 	
@@ -20,13 +20,13 @@ public class BroadbandInfoBean {
 	private String phoneStartIp = "";
 	private String needReassign = "";
 	
-	private long itemId = 0l;
+	private long itemId = 0L;
 	
 	private String itemCode = "";
 	
 	private String itemName = "";
 	
-	private long offerId = 0l;
+	private long offerId = 0L;
 	
 	private String offerName = "";
 	
