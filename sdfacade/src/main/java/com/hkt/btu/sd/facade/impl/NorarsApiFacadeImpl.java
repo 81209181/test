@@ -103,6 +103,8 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
             return noraAddressInfoData.getAddressString();
         }
         return null;
+
+        // todo [RICO]: return ServiceAddressData
     }
 
     @Override
