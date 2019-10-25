@@ -1,9 +1,7 @@
 package com.hkt.btu.sd.facade.data.nora;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hkt.btu.common.facade.data.DataInterface;
-import org.apache.commons.lang3.StringUtils;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NoraAddressInfoData implements DataInterface
@@ -41,45 +39,6 @@ public class NoraAddressInfoData implements DataInterface
 	// 1: This address is in blacklist but the order is still submitted to NOSS;
 	// 2: The address blacklist check is not available at this moment but the order is still submitted to NOSS
 	private String blacklistCheck = "";
-
-	@JsonIgnore
-	public String getAddressString()
-	{
-		String result = appendStringWithDelimiter("", addr1, ", ", "FLAT %s");
-		result = appendStringWithDelimiter(result, addr2, ", ", "LOT %s");
-		result = appendStringWithDelimiter(result, addr3, ", ", "%s/F");
-		result = appendStringWithDelimiter(result, addr4, ", ", "BLOCK %s");
-
-		result = appendStringWithDelimiter(result, addr5, ", ", "%s");
-		result = appendStringWithDelimiter(result, addr6, ", ", "%s");
-		result = appendStringWithDelimiter(result, addr7, ", ", "%s");
-		result = appendStringWithDelimiter(result, addr8, ", ", "%s");
-
-		// Street number and name
-		String street = appendStringWithDelimiter("", addr9, "", "%s");
-		street = appendStringWithDelimiter(street, addr10, " ", "- %s");
-		street = appendStringWithDelimiter(street, addr11, " ", "%s");
-		result = appendStringWithDelimiter(result, street, ", ", "%s");
-
-		result = appendStringWithDelimiter(result, addr12, ", ", "%s");
-		result = appendStringWithDelimiter(result, addr13, ", ", "%s");
-
-		return result;
-	}
-
-	private String appendStringWithDelimiter(String result, String addr, String str1, String str2){
-		StringBuffer sb = new StringBuffer();
-		if (StringUtils.isEmpty(result)) {
-			if (StringUtils.isNotEmpty(addr)) {
-				sb.append(String.format(result+str2,addr));
-			}
-		} else {
-			if (StringUtils.isNotEmpty(addr)) {
-				sb.append(String.format(result+str1+str2,addr));
-			}
-		}
-		return sb.toString();
-	}
 
 	public String getAddrId()
 	{

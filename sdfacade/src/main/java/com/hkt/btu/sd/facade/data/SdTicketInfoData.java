@@ -34,6 +34,8 @@ public class SdTicketInfoData {
     private String offerDetail;
     private String description;
     private String itsmUrl;
+    private String gridId;
+    private String exchangeBuildingId;
 
     public int getTicketMasId() {
         return ticketMasId;
@@ -241,5 +243,21 @@ public class SdTicketInfoData {
 
     public void setSearchValue(String searchValue) {
         this.searchValue = searchValue;
+    }
+
+    public String getGridId() {
+        return gridId;
+    }
+
+    public void setGridId(String gridId) {
+        this.gridId = gridId;
+    }
+
+    public String getExchangeBuildingId() {
+        return exchangeBuildingId;
+    }
+
+    public void setExchangeBuildingId(String exchangeBuildingId) {
+        this.exchangeBuildingId = exchangeBuildingId;
     }
 }

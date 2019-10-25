@@ -47,6 +47,8 @@ public class RequestCreateSearchResultData implements DataInterface {
     private String serviceStatus;
     private String serviceStatusDesc;
     private String serviceAddress;
+    private String gridId;
+    private String exchangeBuildingId;
     private String offerDetail;
     private String description;
     private String pendingOrder;
@@ -361,6 +363,22 @@ public class RequestCreateSearchResultData implements DataInterface {
 
     public void setServiceAddress(String serviceAddress) {
         this.serviceAddress = serviceAddress;
+    }
+
+    public String getGridId() {
+        return gridId;
+    }
+
+    public void setGridId(String gridId) {
+        this.gridId = gridId;
+    }
+
+    public String getExchangeBuildingId() {
+        return exchangeBuildingId;
+    }
+
+    public void setExchangeBuildingId(String exchangeBuildingId) {
+        this.exchangeBuildingId = exchangeBuildingId;
     }
 
     public String getOfferDetail() {

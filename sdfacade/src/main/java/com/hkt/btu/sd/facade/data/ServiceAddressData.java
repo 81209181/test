@@ -2,17 +2,16 @@ package com.hkt.btu.sd.facade.data;
 
 public class ServiceAddressData {
 
-    private String serviceAddresss;
+    private String serviceAddress;
     private String gridId;
     private String exchangeBuildingId;
 
-
-    public String getServiceAddresss() {
-        return serviceAddresss;
+    public String getServiceAddress() {
+        return serviceAddress;
     }
 
-    public void setServiceAddresss(String serviceAddresss) {
-        this.serviceAddresss = serviceAddresss;
+    public void setServiceAddress(String serviceAddress) {
+        this.serviceAddress = serviceAddress;
     }
 
     public String getGridId() {
