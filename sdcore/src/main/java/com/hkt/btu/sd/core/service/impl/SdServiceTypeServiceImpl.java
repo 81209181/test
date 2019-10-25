@@ -41,21 +41,19 @@ public class SdServiceTypeServiceImpl implements SdServiceTypeService {
     }
 
     @Override
-    public String getServiceTypeByOfferName(String offerName) {
+    public SdServiceTypeBean getServiceTypeByOfferName(String offerName) {
         return Optional.ofNullable(SERVICE_TYPE_OFFER_MAPPING).orElseGet(() -> {
             reloadServiceTypeOfferMapping();
             return SERVICE_TYPE_OFFER_MAPPING;
         }).stream().filter(bean -> StringUtils.equals(offerName, bean.getOfferName()))
                 .findFirst().flatMap(bean -> getServiceTypeList().stream()
-                        .filter(sdServiceTypeBean -> sdServiceTypeBean.getServiceTypeCode().equals(bean.getServiceTypeCode()))
-                        .findFirst().map(SdServiceTypeBean::getServiceTypeName)
+                        .filter(sdServiceTypeBean -> sdServiceTypeBean.getServiceTypeCode().equals(bean.getServiceTypeCode())).findFirst()
                 ).orElseGet(() -> {
                     if (StringUtils.containsIgnoreCase(offerName, "broadband")) {
-                        return getServiceTypeList().stream()
-                                .filter(sdServiceTypeBean -> sdServiceTypeBean.getServiceTypeCode().equals("BN"))
-                                .findFirst().map(SdServiceTypeBean::getServiceTypeName).orElse(SdServiceTypeEntity.SERVICE_TYPE_NAME.UNKNOWN_SERVICE_TYPE);
+                        return getServiceTypeList().stream().filter(sdServiceTypeBean -> sdServiceTypeBean.getServiceTypeCode().equals("BN")).findFirst()
+                                .orElse(new SdServiceTypeBean(SdServiceTypeEntity.SERVICE_TYPE.UNKNOWN, SdServiceTypeEntity.SERVICE_TYPE_NAME.UNKNOWN_SERVICE_TYPE));
                     } else {
-                        return SdServiceTypeEntity.SERVICE_TYPE_NAME.UNKNOWN_SERVICE_TYPE;
+                        return new SdServiceTypeBean(SdServiceTypeEntity.SERVICE_TYPE.UNKNOWN, SdServiceTypeEntity.SERVICE_TYPE_NAME.UNKNOWN_SERVICE_TYPE);
                     }
                 });
     }

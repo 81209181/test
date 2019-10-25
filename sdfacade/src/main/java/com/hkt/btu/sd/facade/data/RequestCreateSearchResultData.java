@@ -40,6 +40,7 @@ public class RequestCreateSearchResultData implements DataInterface {
 
     // service info
     private String serviceType;
+    private String serviceTypeDesc;
     private String serviceNo;
     private Long subsId;
     private String offerName;
@@ -52,52 +53,12 @@ public class RequestCreateSearchResultData implements DataInterface {
     private String description;
     private String pendingOrder;
 
-    public String getServiceStatus() {
-        return serviceStatus;
-    }
-
-    public void setServiceStatus(String serviceStatus) {
-        this.serviceStatus = serviceStatus;
-    }
-
-    public String getCustStatus() {
-        return custStatus;
-    }
-
-    public void setCustStatus(String custStatus) {
-        this.custStatus = custStatus;
-    }
-
-    public String getLanguagePreference() {
-        return languagePreference;
-    }
-
-    public void setLanguagePreference(String languagePreference) {
-        this.languagePreference = languagePreference;
-    }
-
-    public Long getSubsId() {
-        return subsId;
-    }
-
-    public void setSubsId(Long subsId) {
-        this.subsId = subsId;
-    }
-
     public String getAdminId() {
         return adminId;
     }
 
     public void setAdminId(String adminId) {
         this.adminId = adminId;
-    }
-
-    public String getCustCode() {
-        return custCode;
-    }
-
-    public void setCustCode(String custCode) {
-        this.custCode = custCode;
     }
 
     public long getCustId() {
@@ -108,14 +69,6 @@ public class RequestCreateSearchResultData implements DataInterface {
         this.custId = custId;
     }
 
-    public String getCustName() {
-        return custName;
-    }
-
-    public void setCustName(String custName) {
-        this.custName = custName;
-    }
-
     public String getCustomer() {
         return customer;
     }
@@ -124,12 +77,28 @@ public class RequestCreateSearchResultData implements DataInterface {
         this.customer = customer;
     }
 
-    public String getDomainName() {
-        return domainName;
+    public String getEmail() {
+        return email;
     }
 
-    public void setDomainName(String domainName) {
-        this.domainName = domainName;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getMobileNo() {
+        return mobileNo;
+    }
+
+    public void setMobileNo(String mobileNo) {
+        this.mobileNo = mobileNo;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getContactName() {
@@ -156,22 +125,6 @@ public class RequestCreateSearchResultData implements DataInterface {
         this.contactNumber = contactNumber;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getMobileNo() {
-        return mobileNo;
-    }
-
-    public void setMobileNo(String mobileNo) {
-        this.mobileNo = mobileNo;
-    }
-
     public String getJmsOrderNum() {
         return jmsOrderNum;
     }
@@ -194,14 +147,6 @@ public class RequestCreateSearchResultData implements DataInterface {
 
     public void setLastUpdId(String lastUpdId) {
         this.lastUpdId = lastUpdId;
-    }
-
-    public String getOfferName() {
-        return offerName;
-    }
-
-    public void setOfferName(String offerName) {
-        this.offerName = offerName;
     }
 
     public int getPackageType() {
@@ -268,36 +213,12 @@ public class RequestCreateSearchResultData implements DataInterface {
         this.resourceName = resourceName;
     }
 
-    public String getServiceNo() {
-        return serviceNo;
-    }
-
-    public void setServiceNo(String serviceNo) {
-        this.serviceNo = serviceNo;
-    }
-
-    public String getServiceType() {
-        return serviceType;
-    }
-
-    public void setServiceType(String serviceType) {
-        this.serviceType = serviceType;
-    }
-
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public String getServiceStatusDesc() {
-        return serviceStatusDesc;
-    }
-
-    public void setServiceStatusDesc(String serviceStatusDesc) {
-        this.serviceStatusDesc = serviceStatusDesc;
     }
 
     public String getStb() {
@@ -308,6 +229,22 @@ public class RequestCreateSearchResultData implements DataInterface {
         this.stb = stb;
     }
 
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     public int getTenantId() {
         return tenantId;
     }
@@ -316,8 +253,28 @@ public class RequestCreateSearchResultData implements DataInterface {
         this.tenantId = tenantId;
     }
 
-    public int getType() {
-        return type;
+    public String getDomainName() {
+        return domainName;
+    }
+
+    public void setDomainName(String domainName) {
+        this.domainName = domainName;
+    }
+
+    public String getCustCode() {
+        return custCode;
+    }
+
+    public void setCustCode(String custCode) {
+        this.custCode = custCode;
+    }
+
+    public String getCustName() {
+        return custName;
+    }
+
+    public void setCustName(String custName) {
+        this.custName = custName;
     }
 
     public String getCustType() {
@@ -328,24 +285,76 @@ public class RequestCreateSearchResultData implements DataInterface {
         this.custType = custType;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public String getCustStatus() {
+        return custStatus;
     }
 
-    public String getUrl() {
-        return url;
+    public void setCustStatus(String custStatus) {
+        this.custStatus = custStatus;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public String getLanguagePreference() {
+        return languagePreference;
     }
 
-    public String getUserName() {
-        return userName;
+    public void setLanguagePreference(String languagePreference) {
+        this.languagePreference = languagePreference;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public String getServiceType() {
+        return serviceType;
+    }
+
+    public void setServiceType(String serviceType) {
+        this.serviceType = serviceType;
+    }
+
+    public String getServiceTypeDesc() {
+        return serviceTypeDesc;
+    }
+
+    public void setServiceTypeDesc(String serviceTypeDesc) {
+        this.serviceTypeDesc = serviceTypeDesc;
+    }
+
+    public String getServiceNo() {
+        return serviceNo;
+    }
+
+    public void setServiceNo(String serviceNo) {
+        this.serviceNo = serviceNo;
+    }
+
+    public Long getSubsId() {
+        return subsId;
+    }
+
+    public void setSubsId(Long subsId) {
+        this.subsId = subsId;
+    }
+
+    public String getOfferName() {
+        return offerName;
+    }
+
+    public void setOfferName(String offerName) {
+        this.offerName = offerName;
+    }
+
+    public String getServiceStatus() {
+        return serviceStatus;
+    }
+
+    public void setServiceStatus(String serviceStatus) {
+        this.serviceStatus = serviceStatus;
+    }
+
+    public String getServiceStatusDesc() {
+        return serviceStatusDesc;
+    }
+
+    public void setServiceStatusDesc(String serviceStatusDesc) {
+        this.serviceStatusDesc = serviceStatusDesc;
     }
 
     public String getServiceAddress() {

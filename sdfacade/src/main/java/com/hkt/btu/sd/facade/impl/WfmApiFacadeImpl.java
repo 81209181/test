@@ -44,27 +44,18 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
     }
 
     @Override
-    public Integer createJob(SdTicketMasData ticketMasData, String createdBy) {
-        Entity<SdTicketMasData> postBody = Entity.entity(ticketMasData, MediaType.APPLICATION_JSON);
+    public Integer createJob(SdTicketData ticketData, String createdBy) {
+        Entity<SdTicketData> postBody = Entity.entity(ticketData, MediaType.APPLICATION_JSON);
         return Optional.ofNullable(postData("/api/v1/sd/FaultCreate", null, postBody)).flatMap(json ->
                 Optional.ofNullable(new Gson().<WfmResponseData<WfmJobCreateResponseData>>fromJson(json, new TypeToken<WfmResponseData<WfmJobCreateResponseData>>() {
-                }.getType())).map(WfmResponseData::getData).map(WfmJobCreateResponseData::getJobId)).orElse(0);
+        }.getType())).map(WfmResponseData::getData).map(WfmJobCreateResponseData::getJobId)).orElse(0);
     }
 
     @Override
-    public Integer completeJob(Integer jobId, String completeDateTime, String remark, String createdBy) {
-        return Optional.ofNullable(jobId).map(id -> {
-            WfmSdJobCompleteBeanData wfmSdJobCompleteBeanData = new WfmSdJobCompleteBeanData();
-            wfmSdJobCompleteBeanData.setJobId(id);
-            wfmSdJobCompleteBeanData.setCompleteDateTime(completeDateTime);
-            wfmSdJobCompleteBeanData.setRemark(StringUtils.isEmpty(remark) ? StringUtils.EMPTY : remark);
-            wfmSdJobCompleteBeanData.setStaffId(StringUtils.isEmpty(createdBy) ? StringUtils.EMPTY : createdBy);
-            Entity<WfmSdJobCompleteBeanData> postBody = Entity.entity(wfmSdJobCompleteBeanData, MediaType.APPLICATION_JSON);
-            WfmOrderResponseData wfmOrderResponseData = postData("/api/v1/sd/CompleteJob", WfmOrderResponseData.class, null, postBody);
-            return Optional.ofNullable(wfmOrderResponseData)
-                    .filter(responseData -> StringUtils.equals(responseData.getResultCode(), "0"))
-                    .map(responseData -> id).orElse(0);
-        }).orElse(0);
+    public boolean closeTicket(Integer ticketMasId) {
+        return Optional.ofNullable(ticketMasId).flatMap(id -> Optional.ofNullable(postData("/api/v1/sd/CloseTicket/"+id,null, null))
+                .filter(StringUtils::isNotBlank)
+                .map(s -> StringUtils.containsIgnoreCase(s,"Success"))).orElse(false);
     }
 
     @Override
