@@ -9,6 +9,7 @@ import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.WfmApiFacade;
 import com.hkt.btu.sd.facade.data.*;
+import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
 import com.hkt.btu.sd.facade.data.wfm.WfmOfferNameProductTypeData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -74,7 +75,8 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
     @Override
     public List<SdServiceTypeOfferMappingBean> getServiceTypeOfferMapping() {
         return Optional.ofNullable(new Gson().<List<WfmOfferNameProductTypeData>>fromJson(getData("/api/v1/sd/GetOfferNameProductTypeMapping", null),
-                new TypeToken<List<WfmOfferNameProductTypeData>>() {}.getType()))
+                new TypeToken<List<WfmOfferNameProductTypeData>>() {
+                }.getType()))
                 .filter(CollectionUtils::isNotEmpty).map(list -> list.stream().map(data -> {
                     SdServiceTypeOfferMappingBean bean = new SdServiceTypeOfferMappingBean();
                     bean.setOfferName(data.getServiceName());
@@ -107,7 +109,8 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
             LOG.error(errorMsg);
         }
 
-        List<String> responseDataList = new Gson().<List<String>>fromJson(wfmResponseDataJsonString, new TypeToken<List<String>>(){}.getType());
+        List<String> responseDataList = new Gson().<List<String>>fromJson(wfmResponseDataJsonString, new TypeToken<List<String>>() {
+        }.getType());
         if (CollectionUtils.isNotEmpty(responseDataList)) {
             String[] arr = responseDataList.toArray(new String[responseDataList.size()]);
             data.setPendingOrder(StringUtils.join(arr, ","));
@@ -116,12 +119,10 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
     }
 
     @Override
-    public WfmJobInfoResponseData getJobInfo(Integer ticketMasId) {
+    public List<WfmJobData> getJobInfo(Integer ticketMasId) {
         return Optional.ofNullable(ticketMasId).map(id -> {
-            Map<String, String> queryParamMap = new HashMap<>(1);
-            queryParamMap.put("ticketMasId", String.valueOf(ticketMasId));
-            WfmJobInfoResponseData data = getData("/api/v1/sd/getJobInfo", WfmJobInfoResponseData.class, queryParamMap);
-            return data;
+            List<WfmJobData> dataList = getDataListTest("/api/v1/sd/GetJobListByTicketId/" + ticketMasId, null);
+            return dataList;
         }).orElse(null);
     }
 }

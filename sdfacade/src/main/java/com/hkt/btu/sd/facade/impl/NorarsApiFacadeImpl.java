@@ -48,12 +48,9 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
         }
 
         String apiPath = "/norars/api/v1/onecomm/bsn/" + bsn + "/detail";
-        String responseString = getData(apiPath, null);
-        if(StringUtils.isEmpty(responseString)){
-            return null;
-        } else {
-            return new Gson().fromJson(responseString, NoraBroadbandInfoData.class);
-        }
+        NoraBroadbandInfoData data = getData(apiPath, NoraBroadbandInfoData.class, null);
+
+        return data;
     }
 
     @Override
