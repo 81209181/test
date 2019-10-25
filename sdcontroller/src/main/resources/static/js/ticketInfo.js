@@ -352,7 +352,7 @@ function getRelatedOfferInfo(bsn) {
     }
 
     let ctx = $("meta[name='_ctx']").attr("content");
-    window.open(ctx+'/ticket/offer-detail?bsn='+bsn,'RelatedOfferInfo','scrollbars=yes,height=400,width=500');
+    window.open(ctx+'/ticket/offer-info?bsn='+bsn,'RelatedOfferInfo','scrollbars=yes,height=400,width=500');
 }
 
 function getOfferDetailList(bsn) {
@@ -362,7 +362,7 @@ function getOfferDetailList(bsn) {
     }
 
     let ctx = $("meta[name='_ctx']").attr("content");
-    window.open(ctx+'/ticket/offer-detail?bsn='+bsn,'OfferDetailList','scrollbars=yes,height=400,width=500');
+    window.open(ctx+'/ticket/offer-detail?bsn='+bsn,'OfferDetailList','scrollbars=yes,height=800,width=1200');
 }
 
 
@@ -373,12 +373,25 @@ function ajaxGetJobInfo(ticketMasId){
         dataType: 'json',
         data: {ticketMasId:ticketMasId},
         success:function(res){
-            let jobList = res.wfmJobInfoDataList;
-            for (jobInfo of jobList) {
+            for (jobInfo of res) {
                 let jobItem = $('.jobItem').children().clone();
                 jobItem.find('input[name=jobId]').val(jobInfo.jobId);
-                jobItem.find('input[name=handler]').val(jobInfo.handler);
-                jobItem.find('input[name=jobStatus]').val(jobInfo.jobStatus);
+                jobItem.find('input[name=deptId]').val(jobInfo.deptId);
+                jobItem.find('input[name=sysId]').val(jobInfo.sysId);
+                jobItem.find('input[name=status]').val(jobInfo.status);
+                jobItem.find('input[name=assignTech]').val(jobInfo.assignTech);
+                jobItem.find('input[name=actionDate]').val(jobInfo.actionDate);
+                jobItem.find('input[name=srDate]').val(jobInfo.srDate);
+                jobItem.find('input[name=apptDate]').val(jobInfo.apptDate);
+                jobItem.find('input[name=apptSTime]').val(jobInfo.apptSTime);
+                jobItem.find('input[name=apptETime]').val(jobInfo.apptETime);
+
+                jobItem.find('input[name=lastUpdateDate]').val(jobInfo.lastUpdateDate);
+                jobItem.find('input[name=fieldInd]').val(jobInfo.fieldInd);
+                jobItem.find('input[name=lastJobInd]').val(jobInfo.lastJobInd);
+                jobItem.find('input[name=alertFieldRemark]').val(jobInfo.alertFieldRemark);
+                jobItem.find('input[name=workgroup]').val(jobInfo.workgroup);
+                jobItem.find('input[name=resolver]').val(jobInfo.resolver);
                 jobItem.appendTo($('#jobList'));
             }
         }

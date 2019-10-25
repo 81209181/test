@@ -1,8 +1,11 @@
 package com.hkt.btu.sd.facade.data.nora;
 
-import java.sql.Timestamp;
 
-public class NoraBroadbandInfoData {
+import com.hkt.btu.common.facade.data.DataInterface;
+
+import java.util.Date;
+
+public class NoraBroadbandInfoData implements DataInterface {
 	
 	private long broadbandSeqId = 0;
 	
@@ -77,8 +80,8 @@ public class NoraBroadbandInfoData {
 	private String transmissionMode = "";
 	
 	private String trueIp = "";
-	
-	private Timestamp lastUpdatedDate;
+
+	private Date lastUpdatedDate;
 	private String lastUpdatedBy = "";
 	
 	private String actionType = "";
@@ -323,10 +326,10 @@ public class NoraBroadbandInfoData {
 	public void setTrueIp(String trueIp) {
 		this.trueIp = trueIp;
 	}
-	public Timestamp getLastUpdatedDate() {
+	public Date getLastUpdatedDate() {
 		return lastUpdatedDate;
 	}
-	public void setLastUpdatedDate(Timestamp lastUpdatedDate) {
+	public void setLastUpdatedDate(Date lastUpdatedDate) {
 		this.lastUpdatedDate = lastUpdatedDate;
 	}
 	public String getLastUpdatedBy() {

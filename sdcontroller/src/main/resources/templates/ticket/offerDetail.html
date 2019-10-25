@@ -3,68 +3,224 @@
       layout:decorate="~{fragments/layout-fluid-content-only}"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Related Offer Info</title>
+    <title>Offer Detail</title>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
 
-    <div class="card" style="height:700px">
+    <div class="card" style="height:1070px">
         <div class="card-header bg-primary text-white">Related Offer Info</div>
         <div class="card-body">
-            <h2>Group Info</h2>
+            <h2>Offer Detail</h2>
             <div class="row col-md-10">
-                <form class="col-md-12" th:object="${noraDnGroupData}">
+                <form class="col-md-12" th:object="${noraBroadbandInfoData}">
                     <div class="form-row">
                         <div class="col-md-4 form-inline pt-2">
-                            <label class="col-form-label col-md-5 justify-content-end">AS Cluster:</label>
-                            <input type="text" class="form-control-plaintext col-md-7" name="asCluster" th:field="*{asCluster}" readonly>
+                            <label class="col-form-label col-md-5 justify-content-end">Broadband SeqId:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="broadbandSeqId"
+                                   th:field="*{broadbandSeqId}" readonly>
                         </div>
                         <div class="col-md-4 form-inline pt-2">
-                            <label class="col-form-label col-md-5 justify-content-end">Admin Portal ID:</label>
-                            <input type="text" class="form-control-plaintext col-md-7" name="adminPortalId" th:field="*{adminPortalId}" readonly>
+                            <label class="col-form-label col-md-5 justify-content-end">Broadband Status:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="broadbandStatus"
+                                   th:field="*{broadbandStatus}" readonly>
                         </div>
                         <div class="col-md-4 form-inline pt-2">
-                            <label class="col-form-label col-md-5 justify-content-end">Admin Portal Password:</label>
-                            <input type="text" class="form-control-plaintext col-md-7" name="adminPortalPassword" th:field="*{adminPortalPassword}" readonly>
+                            <label class="col-form-label col-md-5 justify-content-end">Company ID:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="companyId"
+                                   th:field="*{companyId}" readonly>
                         </div>
                         <div class="col-md-4 form-inline pt-2">
-                            <label class="col-form-label col-md-5 justify-content-end">CLI Number:</label>
-                            <input type="text" class="form-control-plaintext col-md-7" name="cliNumber" th:field="*{cliNumber}" readonly>
+                            <label class="col-form-label col-md-5 justify-content-end">Group ID:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="groupId"
+                                   th:field="*{groupId}" readonly>
                         </div>
                         <div class="col-md-4 form-inline pt-2">
-                            <label class="col-form-label col-md-5 justify-content-end">Provision Method:</label>
-                            <input type="text" class="form-control-plaintext col-md-7" name="recordingProvisionMethod" th:field="*{recordingProvisionMethod}" readonly>
+                            <label class="col-form-label col-md-5 justify-content-end">Identity ID:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="identityId"
+                                   th:field="*{identityId}" readonly>
                         </div>
                         <div class="col-md-4 form-inline pt-2">
-                            <label class="col-form-label col-md-5 justify-content-end">DOD:</label>
-                            <input type="text" class="form-control-plaintext col-md-7" name="dod" th:field="*{dod}" readonly>
+                            <label class="col-form-label col-md-5 justify-content-end">Subnet Size:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="subnetSize"
+                                   th:field="*{subnetSize}" readonly>
                         </div>
                         <div class="col-md-4 form-inline pt-2">
-                            <label class="col-form-label col-md-5 justify-content-end">CAC:</label>
-                            <input type="text" class="form-control-plaintext col-md-7" name="adminPortalId" th:field="*{cac}" readonly>
+                            <label class="col-form-label col-md-5 justify-content-end">Gateway IP:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="gatewayIp"
+                                   th:field="*{gatewayIp}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Subnet Mask:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="subnetMask"
+                                   th:field="*{subnetMask}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Phone Start IP:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="phoneStartIp"
+                                   th:field="*{phoneStartIp}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Need Reassign:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="needReassign"
+                                   th:field="*{needReassign}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Item ID:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="itemId"
+                                   th:field="*{itemId}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Item Code:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="itemCode"
+                                   th:field="*{itemCode}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Offer ID:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="offerId"
+                                   th:field="*{offerId}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Offer Name:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="offerName"
+                                   th:field="*{offerName}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">BandWidth:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="bandwidth"
+                                   th:field="*{bandwidth}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Class Type:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="classType"
+                                   th:field="*{classType}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Deployment Method:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="deploymentMethod"
+                                   th:field="*{deploymentMethod}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Domain:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="domain"
+                                   th:field="*{domain}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Equipment1:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="equipment1"
+                                   th:field="*{equipment1}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Equipment2:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="equipment2"
+                                   th:field="*{equipment2}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Fixed IP:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="fixedIp"
+                                   th:field="*{fixedIp}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">HKT Wan:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="hktWan"
+                                   th:field="*{hktWan}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">IP Mode:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="ipMode"
+                                   th:field="*{ipMode}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Internet Access:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="internetAccess"
+                                   th:field="*{internetAccess}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Need Installation Address:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="needInstallationAddress"
+                                   th:field="*{needInstallationAddress}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Fix IP No:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="fixIpNo"
+                                   th:field="*{fixIpNo}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Old Fsa:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="oldFsa"
+                                   th:field="*{oldFsa}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">PPPOE Login ID:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="pppoeLoginID"
+                                   th:field="*{pppoeLoginID}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">PPPOE Password:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="pppoePassword"
+                                   th:field="*{pppoePassword}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Product Type:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="productType"
+                                   th:field="*{productType}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Relative Duration:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="relativeDuration"
+                                   th:field="*{relativeDuration}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">SLA Period:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="slaPeriod"
+                                   th:field="*{slaPeriod}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Signal Flag:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="signalFlag"
+                                   th:field="*{signalFlag}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Temp Bsn:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="tempBsn"
+                                   th:field="*{tempBsn}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Temp Service:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="tempService"
+                                   th:field="*{tempService}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Signal Flag:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="signalFlag"
+                                   th:field="*{signalFlag}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Transmission Mode:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="transmissionMode"
+                                   th:field="*{transmissionMode}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">True IP:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="trueIp"
+                                   th:field="*{trueIp}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Last Updated Date:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="lastUpdatedDate"
+                                   th:field="*{lastUpdatedDate}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Last Updated By:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="lastUpdatedBy"
+                                   th:field="*{lastUpdatedBy}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Action Type:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="actionType"
+                                   th:field="*{actionType}" readonly>
                         </div>
                     </div>
-
-                    <h2>User Plan List</h2>
-                    <div class="col-md-12">
-                        <table class="table table-sm table-hover">
-                            <thead class="thead-dark">
-                            <tr>
-                                <th>DN</th>
-                                <th>Plan</th>
-                                <th>Action</th>
-                            </tr>
-                            </thead>
-                            <tbody class="table-striped">
-                            <tr th:each="visitor, itemStat : *{userPlanList}">
-                                <td><span th:text="*{userPlanList[__${itemStat.index}__].param}" /></td>
-                                <td><span th:text="*{userPlanList[__${itemStat.index}__].plan}" /></td>
-                                <td><span th:text="*{userPlanList[__${itemStat.index}__].action}" /></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
                 </form>
             </div>
         </div>

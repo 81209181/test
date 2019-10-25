@@ -1,9 +1,13 @@
 package com.hkt.btu.sd.facade;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import com.hkt.btu.common.facade.data.DataInterface;
 import com.hkt.btu.sd.core.service.SdSiteService;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
+import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
 import org.apache.commons.collections.MapUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,11 +19,12 @@ import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.*;
+import javax.xml.crypto.Data;
+import java.lang.reflect.Type;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
-import java.util.Base64;
-import java.util.Map;
+import java.util.*;
 
 public abstract class AbstractRestfulApiFacade {
 
@@ -27,6 +32,8 @@ public abstract class AbstractRestfulApiFacade {
 
     @Resource(name = "siteService")
     SdSiteService siteService;
+
+    private Gson gson;
 
     // API dependent methods
     protected abstract SiteInterfaceBean getTargetApiSiteInterfaceBean();
@@ -115,13 +122,51 @@ public abstract class AbstractRestfulApiFacade {
         String jsonString = getData(path, queryParamMap);
         try {
             // using gson here with purpose for easier debugging (better exception for stack trace)
-            return new Gson().fromJson(jsonString, responseType);
+            if (gson == null) {
+                gson = getGson();
+            }
+            return gson.fromJson(jsonString, responseType);
         } catch (ProcessingException | WebApplicationException e) {
             LOG.error(e.getMessage(), e);
             LOG.debug(jsonString);
             return null;
         }
     }
+
+    protected List getDataList(String path, TypeToken token, Map<String, String> queryParamMap) {
+        String jsonString = getData(path, queryParamMap);
+        try {
+            // using gson here with purpose for easier debugging (better exception for stack trace)
+            if (gson == null) {
+                gson = getGson();
+            }
+
+            return gson.fromJson(jsonString, token.getType());
+        } catch (ProcessingException | WebApplicationException e) {
+            LOG.error(e.getMessage(), e);
+            LOG.debug(jsonString);
+            return null;
+        }
+    }
+
+    protected <T extends DataInterface> List<T> getDataListTest(String path, Map<String, String> queryParamMap) {
+        String jsonString = getData(path, queryParamMap);
+        try {
+            // using gson here with purpose for easier debugging (better exception for stack trace)
+            if (gson == null) {
+                gson = getGson();
+            }
+
+            Type type = new TypeToken<List<T>>(){}.getType();
+
+            return gson.fromJson(jsonString, type);
+        } catch (ProcessingException | WebApplicationException e) {
+            LOG.error(e.getMessage(), e);
+            LOG.debug(jsonString);
+            return null;
+        }
+    }
+
 
     protected String postData(String path, Map<String, String> queryParamMap, Entity<?> entity) {
         LOG.info("Posting to API: " + path);
@@ -146,5 +191,18 @@ public abstract class AbstractRestfulApiFacade {
             LOG.debug(jsonString);
             return null;
         }
+    }
+
+    private Gson getGson() {
+        GsonBuilder builder = new GsonBuilder();
+
+        builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+            @Override
+            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                return new Date(json.getAsJsonPrimitive().getAsLong());
+            }
+        });
+
+        return builder.create();
     }
 }

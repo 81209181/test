@@ -38,22 +38,19 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
 
     @Override
     public NoraBroadbandInfoData getOfferDetailListByBsn(String bsn) {
-        if(StringUtils.isEmpty(bsn)){
+        if (StringUtils.isEmpty(bsn)) {
             throw new InvalidInputException("Empty BSN.");
         }
 
         String apiPath = "/norars/api/v1/onecomm/bsn/" + bsn + "/detail";
-        String responseString = getData(apiPath, null);
-        if(StringUtils.isEmpty(responseString)){
-            return null;
-        } else {
-            return new Gson().fromJson(responseString, NoraBroadbandInfoData.class);
-        }
+        NoraBroadbandInfoData data = getData(apiPath, NoraBroadbandInfoData.class, null);
+
+        return data;
     }
 
     @Override
     public String getInventory(String bsn) {
-        if(StringUtils.isEmpty(bsn)){
+        if (StringUtils.isEmpty(bsn)) {
             throw new InvalidInputException("Empty BSN.");
         }
 
@@ -68,13 +65,13 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
 
     @Override
     public NoraDnGroupData getRelatedOfferInfoListByBsn(String bsn) {
-        if(StringUtils.isEmpty(bsn)){
+        if (StringUtils.isEmpty(bsn)) {
             throw new InvalidInputException("Empty BSN.");
         }
 
-        String apiPath = "/norars/api/v1/ec/groupids/sr/"+bsn;
+        String apiPath = "/norars/api/v1/ec/groupids/sr/" + bsn;
         String responseString = getData(apiPath, null);
-        if(StringUtils.isEmpty(responseString)){
+        if (StringUtils.isEmpty(responseString)) {
             return null;
         } else {
             return new Gson().fromJson(responseString, NoraDnGroupData.class);
@@ -96,7 +93,7 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
     }
 
     @Override
-    public String getServiceAddressByBsn(String bsn){
+    public String getServiceAddressByBsn(String bsn) {
         String apiPath = "/norars/api/v1/onecomm/address/" + bsn;
         NoraAddressInfoData noraAddressInfoData = getData(apiPath, NoraAddressInfoData.class, null);
         if (noraAddressInfoData != null) {
@@ -106,7 +103,7 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
     }
 
     @Override
-    public String getL1InfoByBsn(String bsn){
+    public String getL1InfoByBsn(String bsn) {
         String apiPath = "/norars/api/v1/onecomm/pid/" + bsn;
         NoraPidInfoData noraPidInfoData = getData(apiPath, NoraPidInfoData.class, null);
         if (noraPidInfoData != null) {

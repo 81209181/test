@@ -59,7 +59,17 @@ $().ready(function(){
         }
 
         let ctx = $("meta[name='_ctx']").attr("content");
-        window.open(ctx+'/ticket/offer-detail?bsn='+bsn,'RelatedOfferInfo','scrollbars=yes,height=400,width=500');
+        window.open(ctx+'/ticket/offer-info?bsn='+bsn,'RelatedOfferInfo','scrollbars=yes,height=400,width=500');
+    })
+
+    $('#btnOfferDetailList').on('click', function () {
+        if (bsn === '') {
+            showErrorMsg('No service number!');
+            return;
+        }
+
+        let ctx = $("meta[name='_ctx']").attr("content");
+        window.open(ctx+'/ticket/offer-detail?bsn='+bsn,'Offer Detail','scrollbars=yes,height=800,width=1200');
     })
 
     $('#btnSearchInfo').on('click',function(){

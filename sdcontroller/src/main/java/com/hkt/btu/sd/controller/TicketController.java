@@ -8,7 +8,9 @@ import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
 import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.data.*;
+import com.hkt.btu.sd.facade.data.nora.NoraBroadbandInfoData;
 import com.hkt.btu.sd.facade.data.nora.NoraDnGroupData;
+import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
@@ -40,8 +42,8 @@ public class TicketController {
     NorarsApiFacade norarsApiFacade;
 
     @GetMapping("service-identity")
-    public String serviceIdentity(Model model ) {
-        model.addAttribute("serviceSearchKeyList", requestCreateFacade.getSearchKeyEnumList() );
+    public String serviceIdentity(Model model) {
+        model.addAttribute("serviceSearchKeyList", requestCreateFacade.getSearchKeyEnumList());
         return "ticket/serviceIdentity";
     }
 
@@ -191,7 +193,7 @@ public class TicketController {
             node.put("success", true);
             return ResponseEntity.ok(mapper.writeValueAsString(node));
         } else {
-            return ResponseEntity.badRequest().body(String.format("WFM Error: Cannot create job for ticket mas id %s.",ticketMasData.getTicketMasId()));
+            return ResponseEntity.badRequest().body(String.format("WFM Error: Cannot create job for ticket mas id %s.", ticketMasData.getTicketMasId()));
         }
     }
 
@@ -236,9 +238,9 @@ public class TicketController {
     @PostMapping("close")
     public ResponseEntity<?> ticketClose(int ticketMasId, String reasonType, String reasonContent) {
         String errorMsg = ticketFacade.closeTicket(ticketMasId, reasonType, reasonContent);
-        if(StringUtils.isEmpty(errorMsg)){
+        if (StringUtils.isEmpty(errorMsg)) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
-        }else {
+        } else {
             return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
         }
     }
@@ -255,7 +257,8 @@ public class TicketController {
 
     @PostMapping("getJobInfo")
     public ResponseEntity<?> getJobInfo(@RequestParam Integer ticketMasId) {
-        WfmJobInfoResponseData jobInfo = wfmApiFacade.getJobInfo(ticketMasId);
+        //344
+        List<WfmJobData> jobInfo = wfmApiFacade.getJobInfo(344);
         if (jobInfo == null) {
             return ResponseEntity.badRequest().body("WFM Error: Cannot get job data for ticket mas id :" + ticketMasId);
         } else {
@@ -272,13 +275,24 @@ public class TicketController {
         return ResponseEntity.badRequest().body("Nora Error: Cannot get Inventory for bsn :" + bsn);
     }
 
-    @GetMapping("/offer-detail")
-    public String getOfferInfo( final Model model,
-                                @RequestParam String bsn,
-                                @ModelAttribute("noraDnGroupData") NoraDnGroupData noraDnGroupData) {
+    @GetMapping("/offer-info")
+    public String getOfferInfo(final Model model,
+                               @RequestParam String bsn,
+                               @ModelAttribute("noraDnGroupData") NoraDnGroupData noraDnGroupData) {
         noraDnGroupData = norarsApiFacade.getRelatedOfferInfoListByBsn(bsn);
-        if(noraDnGroupData !=null){
+        if (noraDnGroupData != null) {
             model.addAttribute("noraDnGroupData", noraDnGroupData);
+        }
+        return "ticket/offerInfo";
+    }
+
+    @GetMapping("/offer-detail")
+    public String getOfferInfo(final Model model,
+                               @RequestParam String bsn,
+                               @ModelAttribute("noraBroadbandInfoData") NoraBroadbandInfoData noraBroadbandInfoData) {
+        noraBroadbandInfoData = norarsApiFacade.getOfferDetailListByBsn(bsn);
+        if (noraBroadbandInfoData != null) {
+            model.addAttribute("noraBroadbandInfoData", noraBroadbandInfoData);
         }
         return "ticket/offerDetail";
     }
