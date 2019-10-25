@@ -30,16 +30,21 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
     SdApiService apiService;
 
     @Override
-    public NorarsBsnData getBsnByDn(String dn) {
-        String apiPath = "/norars/api/v1/onecomm/dn/" + dn;
+    public String getBsnByDn(String dn) {
+        String apiPath = "/norars/api/v1/onecomm/bsn/" + dn;
 
-        return getData(apiPath, NorarsBsnData.class, null);
+        return getData(apiPath, null);
     }
 
     @Override
     public NoraBroadbandInfoData getOfferDetailListByBsn(String bsn) {
         if(StringUtils.isEmpty(bsn)){
             throw new InvalidInputException("Empty BSN.");
+        }
+
+        // find parent bsn for dn input
+        if(StringUtils.length(bsn)==8){
+            bsn = getBsnByDn(bsn);
         }
 
         String apiPath = "/norars/api/v1/onecomm/bsn/" + bsn + "/detail";
@@ -57,6 +62,11 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
             throw new InvalidInputException("Empty BSN.");
         }
 
+        // find parent bsn for dn input
+        if(StringUtils.length(bsn)==8){
+            bsn = getBsnByDn(bsn);
+        }
+
         String apiPath = "nora/wfm/Profile.action";
 
         Map<String, String> queryParam = new HashMap<>(2);
@@ -70,6 +80,11 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
     public NoraDnGroupData getRelatedOfferInfoListByBsn(String bsn) {
         if(StringUtils.isEmpty(bsn)){
             throw new InvalidInputException("Empty BSN.");
+        }
+
+        // find parent bsn for dn input
+        if(StringUtils.length(bsn)==8){
+            bsn = getBsnByDn(bsn);
         }
 
         String apiPath = "/norars/api/v1/ec/groupids/sr/"+bsn;

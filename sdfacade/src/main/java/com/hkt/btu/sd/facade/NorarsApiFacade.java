@@ -5,7 +5,7 @@ import com.hkt.btu.sd.facade.data.nora.NoraDnGroupData;
 import com.hkt.btu.sd.facade.data.nora.NorarsBsnData;
 
 public interface NorarsApiFacade {
-    NorarsBsnData getBsnByDn(String dn);
+    String getBsnByDn(String dn);
     NoraBroadbandInfoData getOfferDetailListByBsn(String bsn);
     NoraDnGroupData getRelatedOfferInfoListByBsn(String bsn);
 

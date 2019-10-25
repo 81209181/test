@@ -54,12 +54,11 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         try {
             switch (serviceSearchEnum) {
                 case SERVICE_NUMBER:
+                case DN:
                 case BSN:
                     return findData4Bsn(searchValue);
                 case TENANT_ID:
                     return findData4Tenant(searchValue);
-                case DN:
-                    return findData4Dn(searchValue);
                 default:
                     String errorMsg = "Unexpected search key: " + searchKey + ", search value: " + searchValue;
                     LOG.warn(errorMsg);
@@ -125,7 +124,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
 
     private RequestCreateSearchResultsData findData4Dn(String dn) {
         return Optional.ofNullable(norarsApiFacade.getBsnByDn(dn))
-                .map(NorarsBsnData::getBsn)
+//                .map(NorarsBsnData::getBsn)
                 .map(this::findData4Bsn).get();
     }
 
