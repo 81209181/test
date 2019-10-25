@@ -42,8 +42,8 @@ public class TicketController {
     NorarsApiFacade norarsApiFacade;
 
     @GetMapping("service-identity")
-    public String serviceIdentity(Model model) {
-        model.addAttribute("serviceSearchKeyList", requestCreateFacade.getSearchKeyEnumList());
+    public String serviceIdentity(Model model ) {
+        model.addAttribute("serviceSearchKeyList", requestCreateFacade.getSearchKeyEnumList() );
         return "ticket/serviceIdentity";
     }
 
@@ -62,9 +62,9 @@ public class TicketController {
         if (StringUtils.isEmpty(queryTicketRequestData.getServiceNo()) || StringUtils.isEmpty(queryTicketRequestData.getServiceType())) {
             return ResponseEntity.badRequest().body("Service No. / Service Type is empty.");
         }
-        String pendingOrder = wfmApiFacade.getPendingOrderByBsn(queryTicketRequestData.getServiceNo());
-        if (StringUtils.isNotEmpty(pendingOrder)) {
-            return ResponseEntity.badRequest().body("There is pending order of the service " + pendingOrder + " in WFM.");
+        WfmPendingOrderData pendingOrderData = wfmApiFacade.getPendingOrderByBsn(queryTicketRequestData.getServiceNo());
+        if (StringUtils.isNotEmpty(pendingOrderData.getErrorMsg())) {
+            return ResponseEntity.badRequest().body("There is pending order (" + pendingOrderData.getPendingOrder() + ") of the service in WFM.");
         }
         List<SdTicketMasData> dataList = ticketFacade.getTicketByServiceNo(queryTicketRequestData.getServiceNo());
         if (CollectionUtils.isNotEmpty(dataList)) {
@@ -185,7 +185,7 @@ public class TicketController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-        Integer jobId = wfmApiFacade.createJob(ticketMasData, principal.getName());
+        Integer jobId = wfmApiFacade.createJob(ticketFacade.getTicketInfo(ticketMasData.getTicketMasId()), principal.getName());
         if (jobId > 0) {
             ticketFacade.updateJobIdInService(jobId, String.valueOf(ticketMasData.getTicketMasId()), principal.getName());
             ObjectMapper mapper = new ObjectMapper();
@@ -193,7 +193,7 @@ public class TicketController {
             node.put("success", true);
             return ResponseEntity.ok(mapper.writeValueAsString(node));
         } else {
-            return ResponseEntity.badRequest().body(String.format("WFM Error: Cannot create job for ticket mas id %s.", ticketMasData.getTicketMasId()));
+            return ResponseEntity.badRequest().body(String.format("WFM Error: Cannot create job for ticket mas id %s.",ticketMasData.getTicketMasId()));
         }
     }
 
@@ -237,11 +237,15 @@ public class TicketController {
 
     @PostMapping("close")
     public ResponseEntity<?> ticketClose(int ticketMasId, String reasonType, String reasonContent) {
-        String errorMsg = ticketFacade.closeTicket(ticketMasId, reasonType, reasonContent);
-        if (StringUtils.isEmpty(errorMsg)) {
-            return ResponseEntity.ok(SimpleAjaxResponse.of());
+        if (wfmApiFacade.closeTicket(ticketMasId)) {
+            String errorMsg = ticketFacade.closeTicket(ticketMasId, reasonType, reasonContent);
+            if (StringUtils.isEmpty(errorMsg)) {
+                return ResponseEntity.ok(SimpleAjaxResponse.of());
+            } else {
+                return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
+            }
         } else {
-            return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
+            return ResponseEntity.badRequest().body(String.format("WFM Error: Cannot notify WFM to close ticket for ticket mas id %s", ticketMasId));
         }
     }
 
@@ -280,7 +284,7 @@ public class TicketController {
                                @RequestParam String bsn,
                                @ModelAttribute("noraDnGroupData") NoraDnGroupData noraDnGroupData) {
         noraDnGroupData = norarsApiFacade.getRelatedOfferInfoListByBsn(bsn);
-        if (noraDnGroupData != null) {
+        if(noraDnGroupData !=null){
             model.addAttribute("noraDnGroupData", noraDnGroupData);
         }
         return "ticket/offerInfo";

@@ -6,6 +6,7 @@ import com.hkt.btu.sd.core.service.SdApiService;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.NorarsApiFacade;
+import com.hkt.btu.sd.facade.data.ServiceAddressData;
 import com.hkt.btu.sd.facade.data.nora.NoraBroadbandInfoData;
 import com.hkt.btu.sd.facade.data.nora.NoraAddressInfoData;
 import com.hkt.btu.sd.facade.data.nora.NoraPidInfoData;
@@ -30,16 +31,21 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
     SdApiService apiService;
 
     @Override
-    public NorarsBsnData getBsnByDn(String dn) {
-        String apiPath = "/norars/api/v1/onecomm/dn/" + dn;
+    public String getBsnByDn(String dn) {
+        String apiPath = "/norars/api/v1/onecomm/bsn/" + dn;
 
-        return getData(apiPath, NorarsBsnData.class, null);
+        return getData(apiPath, null);
     }
 
     @Override
     public NoraBroadbandInfoData getOfferDetailListByBsn(String bsn) {
-        if (StringUtils.isEmpty(bsn)) {
+        if(StringUtils.isEmpty(bsn)){
             throw new InvalidInputException("Empty BSN.");
+        }
+
+        // find parent bsn for dn input
+        if(StringUtils.length(bsn)==8){
+            bsn = getBsnByDn(bsn);
         }
 
         String apiPath = "/norars/api/v1/onecomm/bsn/" + bsn + "/detail";
@@ -50,8 +56,13 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
 
     @Override
     public String getInventory(String bsn) {
-        if (StringUtils.isEmpty(bsn)) {
+        if(StringUtils.isEmpty(bsn)){
             throw new InvalidInputException("Empty BSN.");
+        }
+
+        // find parent bsn for dn input
+        if(StringUtils.length(bsn)==8){
+            bsn = getBsnByDn(bsn);
         }
 
         String apiPath = "nora/wfm/Profile.action";
@@ -65,13 +76,18 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
 
     @Override
     public NoraDnGroupData getRelatedOfferInfoListByBsn(String bsn) {
-        if (StringUtils.isEmpty(bsn)) {
+        if(StringUtils.isEmpty(bsn)){
             throw new InvalidInputException("Empty BSN.");
         }
 
-        String apiPath = "/norars/api/v1/ec/groupids/sr/" + bsn;
+        // find parent bsn for dn input
+        if(StringUtils.length(bsn)==8){
+            bsn = getBsnByDn(bsn);
+        }
+
+        String apiPath = "/norars/api/v1/ec/groupids/sr/"+bsn;
         String responseString = getData(apiPath, null);
-        if (StringUtils.isEmpty(responseString)) {
+        if(StringUtils.isEmpty(responseString)){
             return null;
         } else {
             return new Gson().fromJson(responseString, NoraDnGroupData.class);
@@ -93,22 +109,72 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
     }
 
     @Override
-    public String getServiceAddressByBsn(String bsn) {
+    public ServiceAddressData getServiceAddressByBsn(String bsn){
+        // find parent bsn for dn input
+        if(StringUtils.length(bsn)==8){
+            bsn = getBsnByDn(bsn);
+        }
+
         String apiPath = "/norars/api/v1/onecomm/address/" + bsn;
         NoraAddressInfoData noraAddressInfoData = getData(apiPath, NoraAddressInfoData.class, null);
         if (noraAddressInfoData != null) {
-            return noraAddressInfoData.getAddressString();
+            ServiceAddressData data = new ServiceAddressData();
+            data.setServiceAddress(getAddressString(noraAddressInfoData));
+            data.setGridId(noraAddressInfoData.getAddr14());
+            data.setExchangeBuildingId(noraAddressInfoData.getAddr15());
+            return data;
         }
         return null;
     }
 
     @Override
-    public String getL1InfoByBsn(String bsn) {
+    public String getL1InfoByBsn(String bsn){
+        // find parent bsn for dn input
+        if(StringUtils.length(bsn)==8){
+            bsn = getBsnByDn(bsn);
+        }
+
         String apiPath = "/norars/api/v1/onecomm/pid/" + bsn;
         NoraPidInfoData noraPidInfoData = getData(apiPath, NoraPidInfoData.class, null);
         if (noraPidInfoData != null) {
             return noraPidInfoData.getPid() + "/" + noraPidInfoData.getStb() + "/" + noraPidInfoData.getDescription();
         }
         return null;
+    }
+
+    private String getAddressString(NoraAddressInfoData noraAddressInfoData) {
+        String result = appendStringWithDelimiter("", noraAddressInfoData.getAddr1(), ", ", "FLAT %s");
+        result = appendStringWithDelimiter(result, noraAddressInfoData.getAddr2(), ", ", "LOT %s");
+        result = appendStringWithDelimiter(result, noraAddressInfoData.getAddr3(), ", ", "%s/F");
+        result = appendStringWithDelimiter(result, noraAddressInfoData.getAddr4(), ", ", "BLOCK %s");
+
+        result = appendStringWithDelimiter(result, noraAddressInfoData.getAddr5(), ", ", "%s");
+        result = appendStringWithDelimiter(result, noraAddressInfoData.getAddr6(), ", ", "%s");
+        result = appendStringWithDelimiter(result, noraAddressInfoData.getAddr7(), ", ", "%s");
+        result = appendStringWithDelimiter(result, noraAddressInfoData.getAddr8(), ", ", "%s");
+
+        // Street number and name
+        String street = appendStringWithDelimiter("", noraAddressInfoData.getAddr9(), "", "%s");
+        street = appendStringWithDelimiter(street, noraAddressInfoData.getAddr10(), " ", "- %s");
+        street = appendStringWithDelimiter(street, noraAddressInfoData.getAddr11(), " ", "%s");
+        result = appendStringWithDelimiter(result, street, ", ", "%s");
+
+        result = appendStringWithDelimiter(result, noraAddressInfoData.getAddr12(), ", ", "%s");
+        result = appendStringWithDelimiter(result, noraAddressInfoData.getAddr13(), ", ", "%s");
+
+        return result;
+    }
+
+    private String appendStringWithDelimiter(String result, String addr, String str1, String str2){
+        if (StringUtils.isEmpty(result)) {
+            if (StringUtils.isNotEmpty(addr)) {
+                result = String.format(result+str2,addr);
+            }
+        } else {
+            if (StringUtils.isNotEmpty(addr)) {
+                result = String.format(result+str1+str2,addr);
+            }
+        }
+        return result;
     }
 }

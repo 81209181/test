@@ -1,20 +1,22 @@
 package com.hkt.btu.sd.facade;
 
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeOfferMappingBean;
-import com.hkt.btu.sd.facade.data.SdTicketMasData;
+import com.hkt.btu.sd.facade.data.SdTicketData;
 import com.hkt.btu.sd.facade.data.WfmJobDetailsData;
+import com.hkt.btu.sd.facade.data.WfmJobInfoResponseData;
+import com.hkt.btu.sd.facade.data.WfmPendingOrderData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
 
 import java.util.List;
 
 public interface WfmApiFacade {
 
-    Integer createJob(SdTicketMasData wfmRequestDetailsBeanDate, String createdBy);
-    Integer completeJob(Integer jobId, String completeDateTime, String remark, String createdBy);
+    Integer createJob(SdTicketData sdTicketData, String createdBy);
+    boolean closeTicket(Integer ticketMasId);
     WfmJobDetailsData getJobDetails(Integer jobId);
 
     List<SdServiceTypeOfferMappingBean> getServiceTypeOfferMapping();
-    String getPendingOrderByBsn(String bsn);
+    WfmPendingOrderData getPendingOrderByBsn(String bsn);
 
     List<WfmJobData> getJobInfo(Integer ticketMasId);
 }

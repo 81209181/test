@@ -7,6 +7,14 @@ public class SdServiceTypeBean extends BaseBean {
     private String serviceTypeCode;
     private String serviceTypeName;
 
+    public SdServiceTypeBean() {
+    }
+
+    public SdServiceTypeBean(String serviceTypeCode, String serviceTypeName) {
+        this.serviceTypeCode = serviceTypeCode;
+        this.serviceTypeName = serviceTypeName;
+    }
+
     public String getServiceTypeCode() {
         return serviceTypeCode;
     }

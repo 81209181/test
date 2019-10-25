@@ -112,7 +112,6 @@ public class RequestCreateSearchResultDataPopulator extends AbstractDataPopulato
             default:
                 target.setLanguagePreference("Unknown");
         }
-        target.setServiceType("Unknown"); // todo: SERVDESK-133 need to be removed, will solve serviceType with SdServiceTypeService.getServiceTypeByOfferName() mapping in service/facade layer
     }
 
     private void populateFromBesContactPersonInfoData(BesContactPersonInfoData source, RequestCreateSearchResultData target) {

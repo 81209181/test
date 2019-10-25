@@ -51,16 +51,14 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
             resultsData.setErrorMsg(errorMsg);
             return resultsData;
         }
-
         try {
             switch (serviceSearchEnum) {
                 case SERVICE_NUMBER:
+                case DN:
                 case BSN:
                     return findData4Bsn(searchValue);
                 case TENANT_ID:
                     return findData4Tenant(searchValue);
-                case DN:
-                    return findData4Dn(searchValue);
                 default:
                     String errorMsg = "Unexpected search key: " + searchKey + ", search value: " + searchValue;
                     LOG.warn(errorMsg);
@@ -106,10 +104,11 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
                 infoData.setSubsId(requestCreateSearchResultData.getSubsId());
                 infoData.setOfferName(requestCreateSearchResultData.getOfferName());
                 infoData.setItsmUrl(requestCreateSearchResultData.getUrl());
+                infoData.setGridId(requestCreateSearchResultData.getGridId());
+                infoData.setExchangeBuildingId(requestCreateSearchResultData.getExchangeBuildingId());
             });
             infoData.setServiceType(sdTicketServiceData.getServiceType());
             infoData.setServiceNo(sdTicketServiceData.getServiceCode());
-
         });
         return infoData;
     }
@@ -127,7 +126,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
 
     private RequestCreateSearchResultsData findData4Dn(String dn) {
         return Optional.ofNullable(norarsApiFacade.getBsnByDn(dn))
-                .map(NorarsBsnData::getBsn)
+//                .map(NorarsBsnData::getBsn)
                 .map(this::findData4Bsn).get();
     }
 
@@ -173,10 +172,22 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         if (CollectionUtils.isNotEmpty(resultDataList)) {
             besCustomerData.ifPresent(bes -> resultDataList.forEach(resultData -> {
                 requestCreateSearchResultDataPopulator.populateFromBesCustomerDataData(bes, resultData);
-                resultData.setServiceType(serviceTypeFacade.getServiceTypeByOfferName(resultData.getOfferName()));
-                resultData.setServiceAddress(norarsApiFacade.getServiceAddressByBsn(bsn));
+                SdServiceTypeData serviceTypeByOfferName = serviceTypeFacade.getServiceTypeByOfferName(resultData.getOfferName());
+                resultData.setServiceType(serviceTypeByOfferName.getServiceTypeCode());
+                resultData.setServiceTypeDesc(serviceTypeByOfferName.getServiceTypeName());
+
+                //find in NORA API
+                Optional.ofNullable(norarsApiFacade.getServiceAddressByBsn(bsn)).ifPresent(serviceAddressData -> {
+                    resultData.setServiceAddress(serviceAddressData.getServiceAddress());
+                    resultData.setGridId(serviceAddressData.getGridId());
+                    resultData.setExchangeBuildingId(serviceAddressData.getExchangeBuildingId());
+                });
                 resultData.setDescription(norarsApiFacade.getL1InfoByBsn(bsn));
-                resultData.setPendingOrder(wfmApiFacade.getPendingOrderByBsn(bsn));
+
+                //find in WFM API
+                Optional.ofNullable(wfmApiFacade.getPendingOrderByBsn(bsn)).ifPresent(pendingOrderData -> {
+                    resultData.setPendingOrder(pendingOrderData.getPendingOrder());
+                });
             }));
         } else {
             resultsData.setErrorMsg(String.format("Service(s) not found with %s .", bsn));
