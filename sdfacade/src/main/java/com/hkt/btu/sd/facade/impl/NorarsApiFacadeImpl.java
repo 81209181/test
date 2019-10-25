@@ -11,7 +11,6 @@ import com.hkt.btu.sd.facade.data.nora.NoraBroadbandInfoData;
 import com.hkt.btu.sd.facade.data.nora.NoraAddressInfoData;
 import com.hkt.btu.sd.facade.data.nora.NoraPidInfoData;
 import com.hkt.btu.sd.facade.data.nora.NoraDnGroupData;
-import com.hkt.btu.sd.facade.data.nora.NorarsBsnData;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Resource;
