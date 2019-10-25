@@ -238,15 +238,11 @@ public class TicketController {
 
     @PostMapping("close")
     public ResponseEntity<?> ticketClose(int ticketMasId, String reasonType, String reasonContent) {
-        if (wfmApiFacade.closeTicket(ticketMasId)) {
-            String errorMsg = ticketFacade.closeTicket(ticketMasId, reasonType, reasonContent);
-            if (StringUtils.isEmpty(errorMsg)) {
-                return ResponseEntity.ok(SimpleAjaxResponse.of());
-            } else {
-                return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
-            }
+        String errorMsg = ticketFacade.closeTicket(ticketMasId, reasonType, reasonContent);
+        if (StringUtils.isEmpty(errorMsg)) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of());
         } else {
-            return ResponseEntity.badRequest().body(String.format("WFM Error: Cannot notify WFM to close ticket for ticket mas id %s", ticketMasId));
+            return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
         }
     }
 
@@ -262,7 +258,6 @@ public class TicketController {
 
     @PostMapping("getJobInfo")
     public ResponseEntity<?> getJobInfo(@RequestParam Integer ticketMasId) {
-        // Test ticket mas id: 344
         List<WfmJobData> jobInfo = wfmApiFacade.getJobInfo(ticketMasId);
         if (jobInfo == null) {
             return ResponseEntity.badRequest().body("WFM Error: Cannot get job data for ticket mas id :" + ticketMasId);

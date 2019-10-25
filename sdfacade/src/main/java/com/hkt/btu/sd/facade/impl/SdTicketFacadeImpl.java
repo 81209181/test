@@ -9,6 +9,7 @@ import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.*;
 import com.hkt.btu.sd.facade.SdAuditTrailFacade;
 import com.hkt.btu.sd.facade.SdTicketFacade;
+import com.hkt.btu.sd.facade.WfmApiFacade;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.populator.*;
 import org.apache.commons.collections.CollectionUtils;
@@ -37,6 +38,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     SdAuditTrailFacade auditTrailFacade;
     @Resource(name = "userService")
     SdUserService userService;
+    @Resource(name = "wfmApiFacade")
+    WfmApiFacade wfmApiFacade;
 
     @Resource(name = "ticketMasDataPopulator")
     SdTicketMasDataPopulator ticketMasDataPopulator;
@@ -356,13 +359,24 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     private String closeTicket(int ticketMasId, String reasonType, String reasonContent, String closeby) {
+        // close ticket in servicedesk
         try{
             ticketService.closeTicket(ticketMasId, reasonType, reasonContent, closeby);
-            return null;
+            LOG.info("Closed ticket in servicedesk. (ticketMasId: " + ticketMasId + ")");
         }catch (InvalidInputException e){
             LOG.warn(e.getMessage());
             return e.getMessage();
         }
+
+        // notify wfm to close ticket
+        boolean isClosedInWfm = wfmApiFacade.closeTicket(ticketMasId);
+        if(!isClosedInWfm){
+            String wfmFail = "Cannot notify WFM to close ticket! (ticketMasId: " + ticketMasId+")";
+            LOG.warn(wfmFail);
+            return wfmFail;
+        }
+
+        return null;
     }
 
     @Override

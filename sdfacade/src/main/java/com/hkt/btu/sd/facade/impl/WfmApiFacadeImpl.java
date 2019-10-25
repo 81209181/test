@@ -51,13 +51,13 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
     public Integer createJob(SdTicketData ticketData) {
         Entity<SdTicketData> postBody = Entity.entity(ticketData, MediaType.APPLICATION_JSON);
 
-        String jsonResponseString = postData("/api/v1/sd/FaultCreate", null, postBody);
-        if(StringUtils.isEmpty(jsonResponseString)) {
-            return null;
-        }
-
-        WfmResponseData wfmResponseData = new Gson().<WfmResponseData<WfmJobCreateResponseData>>fromJson(
-                jsonResponseString, new TypeToken<WfmResponseData<WfmJobCreateResponseData>>(){}.getType());
+//        String jsonResponseString = postData("/api/v1/sd/FaultCreate", null, postBody);
+//        if(StringUtils.isEmpty(jsonResponseString)) {
+//            return null;
+//        }
+//
+//        WfmResponseData wfmResponseData = new Gson().<WfmResponseData<WfmJobCreateResponseData>>fromJson(
+//                jsonResponseString, new TypeToken<WfmResponseData<WfmJobCreateResponseData>>(){}.getType());
 //        WfmJobCreateResponseData wfmJobCreateResponseData = wfmResponseData.getData();
 
         return Optional.ofNullable(postData("/api/v1/sd/FaultCreate", null, postBody)).flatMap(json ->
@@ -67,9 +67,14 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
 
     @Override
     public boolean closeTicket(Integer ticketMasId) {
-        return Optional.ofNullable(ticketMasId).flatMap(id -> Optional.ofNullable(postData("/api/v1/sd/CloseTicket/"+id,null, null))
-                .filter(StringUtils::isNotBlank)
-                .map(s -> StringUtils.containsIgnoreCase(s,"Success"))).orElse(false);
+        try {
+            return Optional.ofNullable(ticketMasId).flatMap(id -> Optional.ofNullable(postData("/api/v1/sd/CloseTicket/" + id, null, null))
+                    .filter(StringUtils::isNotBlank)
+                    .map(s -> StringUtils.containsIgnoreCase(s, "Success"))).orElse(false);
+        }catch (Exception e){
+            LOG.error(e.getMessage(), e);
+            return false;
+        }
     }
 
     @Override
