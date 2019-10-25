@@ -51,7 +51,6 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
             resultsData.setErrorMsg(errorMsg);
             return resultsData;
         }
-
         try {
             switch (serviceSearchEnum) {
                 case SERVICE_NUMBER:
@@ -109,7 +108,6 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
             });
             infoData.setServiceType(sdTicketServiceData.getServiceType());
             infoData.setServiceNo(sdTicketServiceData.getServiceCode());
-
         });
         return infoData;
     }
@@ -175,7 +173,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
                 requestCreateSearchResultDataPopulator.populateFromBesCustomerDataData(bes, resultData);
                 SdServiceTypeData serviceTypeByOfferName = serviceTypeFacade.getServiceTypeByOfferName(resultData.getOfferName());
                 resultData.setServiceType(serviceTypeByOfferName.getServiceTypeCode());
-                resultData.setServiceTypeDesc(serviceTypeByOfferName.getServiceTypeName());               resultData.setServiceAddress(norarsApiFacade.getServiceAddressByBsn(bsn));
+                resultData.setServiceTypeDesc(serviceTypeByOfferName.getServiceTypeName());
                 resultData.setServiceAddress(norarsApiFacade.getServiceAddressByBsn(bsn));
                 resultData.setDescription(norarsApiFacade.getL1InfoByBsn(bsn));
                 resultData.setPendingOrder(wfmApiFacade.getPendingOrderByBsn(bsn));

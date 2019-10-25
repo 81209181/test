@@ -354,6 +354,7 @@ public class RequestCreateSearchResultData implements DataInterface {
     public void setServiceStatusDesc(String serviceStatusDesc) {
         this.serviceStatusDesc = serviceStatusDesc;
     }
+
     public String getServiceAddress() {
         return serviceAddress;
     }
