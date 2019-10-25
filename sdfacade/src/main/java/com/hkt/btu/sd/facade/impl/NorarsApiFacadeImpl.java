@@ -113,6 +113,11 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
 
     @Override
     public ServiceAddressData getServiceAddressByBsn(String bsn){
+        // find parent bsn for dn input
+        if(StringUtils.length(bsn)==8){
+            bsn = getBsnByDn(bsn);
+        }
+
         String apiPath = "/norars/api/v1/onecomm/address/" + bsn;
         NoraAddressInfoData noraAddressInfoData = getData(apiPath, NoraAddressInfoData.class, null);
         if (noraAddressInfoData != null) {
@@ -127,6 +132,11 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
 
     @Override
     public String getL1InfoByBsn(String bsn){
+        // find parent bsn for dn input
+        if(StringUtils.length(bsn)==8){
+            bsn = getBsnByDn(bsn);
+        }
+
         String apiPath = "/norars/api/v1/onecomm/pid/" + bsn;
         NoraPidInfoData noraPidInfoData = getData(apiPath, NoraPidInfoData.class, null);
         if (noraPidInfoData != null) {
