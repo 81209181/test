@@ -7,6 +7,8 @@ import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.NorarsApiFacade;
 import com.hkt.btu.sd.facade.data.nora.NoraBroadbandInfoData;
+import com.hkt.btu.sd.facade.data.nora.AddressInfoBean;
+import com.hkt.btu.sd.facade.data.nora.PidInfoBean;
 import com.hkt.btu.sd.facade.data.nora.NoraDnGroupData;
 import com.hkt.btu.sd.facade.data.nora.NorarsBsnData;
 import org.apache.commons.lang3.StringUtils;
@@ -91,5 +93,31 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
         return webTarget
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, headerAuth);
+    }
+
+    @Override
+    public String getServiceAddressByBsn(String bsn){
+        String apiPath = "/norars/api/v1/onecomm/address/" + bsn;
+        AddressInfoBean addressInfoBean = getData(apiPath, AddressInfoBean.class, null);
+        if (addressInfoBean != null) {
+            return addressInfoBean.getAddressString();
+        }
+        return null;
+    }
+
+    @Override
+    public String getL1InfoByBsn(String bsn){
+        String apiPath = "/norars/api/v1/onecomm/pid/" + bsn;
+        PidInfoBean pidInfoBean = getData(apiPath, PidInfoBean.class, null);
+        if (pidInfoBean != null) {
+            return pidInfoBean.getPid() + "/" + pidInfoBean.getStb() + "/" + pidInfoBean.getDescription();
+        }
+        return null;
+    }
+
+    @Override
+    public String getOfferDetailListByBsn(String bsn){
+        String apiPath = "/norars/api/v1/onecomm/bsn/" + bsn + "/detail";
+        return Optional.ofNullable(getData(apiPath, null)).orElse(null);
     }
 }

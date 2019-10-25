@@ -10,4 +10,10 @@ public interface NorarsApiFacade {
     NoraDnGroupData getRelatedOfferInfoListByBsn(String bsn);
 
     String getInventory(String bsn);
+
+    String getServiceAddressByBsn(String bsn);
+
+    String getL1InfoByBsn(String bsn);
+
+    String getOfferDetailListByBsn(String bsn);
 }

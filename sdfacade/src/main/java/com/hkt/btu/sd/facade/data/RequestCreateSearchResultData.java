@@ -45,7 +45,10 @@ public class RequestCreateSearchResultData implements DataInterface {
     private String offerName;
     private String serviceStatus;
     private String serviceStatusDesc;
-
+    private String serviceAddress;
+    private String offerDetail;
+    private String description;
+    private String pendingOrder;
 
     public String getServiceStatus() {
         return serviceStatus;
@@ -343,4 +346,35 @@ public class RequestCreateSearchResultData implements DataInterface {
         this.userName = userName;
     }
 
+    public String getServiceAddress() {
+        return serviceAddress;
+    }
+
+    public void setServiceAddress(String serviceAddress) {
+        this.serviceAddress = serviceAddress;
+    }
+
+    public String getOfferDetail() {
+        return offerDetail;
+    }
+
+    public void setOfferDetail(String offerDetail) {
+        this.offerDetail = offerDetail;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getPendingOrder() {
+        return pendingOrder;
+    }
+
+    public void setPendingOrder(String pendingOrder) {
+        this.pendingOrder = pendingOrder;
+    }
 }
