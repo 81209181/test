@@ -7,5 +7,5 @@ import java.util.List;
 public interface SdServiceTypeFacade {
     List<SdServiceTypeData> getServiceTypeList();
 
-    String getServiceTypeByOfferName(String offerName);
+    SdServiceTypeData getServiceTypeByOfferName(String offerName);
 }

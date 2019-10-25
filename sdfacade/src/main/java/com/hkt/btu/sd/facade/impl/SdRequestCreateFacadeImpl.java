@@ -172,7 +172,9 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         if (CollectionUtils.isNotEmpty(resultDataList)) {
             besCustomerData.ifPresent(bes -> resultDataList.forEach(resultData -> {
                 requestCreateSearchResultDataPopulator.populateFromBesCustomerDataData(bes, resultData);
-                resultData.setServiceType(serviceTypeFacade.getServiceTypeByOfferName(resultData.getOfferName()));
+                SdServiceTypeData serviceTypeByOfferName = serviceTypeFacade.getServiceTypeByOfferName(resultData.getOfferName());
+                resultData.setServiceType(serviceTypeByOfferName.getServiceTypeCode());
+                resultData.setServiceTypeDesc(serviceTypeByOfferName.getServiceTypeName());
             }));
         } else {
             resultsData.setErrorMsg(String.format("Service(s) not found with %s .", bsn));

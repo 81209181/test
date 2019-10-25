@@ -182,7 +182,7 @@ public class TicketController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-        Integer jobId = wfmApiFacade.createJob(ticketMasData, principal.getName());
+        Integer jobId = wfmApiFacade.createJob(ticketFacade.getTicketInfo(ticketMasData.getTicketMasId()), principal.getName());
         if (jobId > 0) {
             ticketFacade.updateJobIdInService(jobId, String.valueOf(ticketMasData.getTicketMasId()), principal.getName());
             ObjectMapper mapper = new ObjectMapper();

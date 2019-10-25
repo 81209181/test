@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.facade.impl;
 
 import com.hkt.btu.sd.core.service.SdServiceTypeService;
+import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
 import com.hkt.btu.sd.facade.SdServiceTypeFacade;
 import com.hkt.btu.sd.facade.data.SdServiceTypeData;
 import com.hkt.btu.sd.facade.populator.SdServiceTypeDataPopulator;
@@ -27,7 +28,10 @@ public class SdServiceTypeFacadeImpl implements SdServiceTypeFacade {
     }
 
     @Override
-    public String getServiceTypeByOfferName(String offerName) {
-        return serviceTypeService.getServiceTypeByOfferName(offerName);
+    public SdServiceTypeData getServiceTypeByOfferName(String offerName) {
+        SdServiceTypeData data = new SdServiceTypeData();
+        SdServiceTypeBean bean = serviceTypeService.getServiceTypeByOfferName(offerName);
+        serviceTypeDataPopulator.populate(bean,data);
+        return data;
     }
 }

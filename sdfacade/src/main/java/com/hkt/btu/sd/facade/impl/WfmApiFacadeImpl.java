@@ -44,11 +44,11 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
     }
 
     @Override
-    public Integer createJob(SdTicketMasData ticketMasData, String createdBy) {
-        Entity<SdTicketMasData> postBody = Entity.entity(ticketMasData, MediaType.APPLICATION_JSON);
+    public Integer createJob(SdTicketData ticketData, String createdBy) {
+        Entity<SdTicketData> postBody = Entity.entity(ticketData, MediaType.APPLICATION_JSON);
         return Optional.ofNullable(postData("/api/v1/sd/FaultCreate", null, postBody)).flatMap(json ->
                 Optional.ofNullable(new Gson().<WfmResponseData<WfmJobCreateResponseData>>fromJson(json, new TypeToken<WfmResponseData<WfmJobCreateResponseData>>() {
-                }.getType())).map(WfmResponseData::getData).map(WfmJobCreateResponseData::getJobId)).orElse(0);
+        }.getType())).map(WfmResponseData::getData).map(WfmJobCreateResponseData::getJobId)).orElse(0);
     }
 
     @Override
