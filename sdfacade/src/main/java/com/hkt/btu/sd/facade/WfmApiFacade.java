@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface WfmApiFacade {
 
-    Integer createJob(SdTicketData sdTicketData, String createdBy);
+    Integer createJob(SdTicketData sdTicketData);
     boolean closeTicket(Integer ticketMasId);
     WfmJobDetailsData getJobDetails(Integer jobId);
 

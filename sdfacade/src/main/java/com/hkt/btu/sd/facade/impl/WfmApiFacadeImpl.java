@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hkt.btu.common.facade.data.DataInterface;
 import com.hkt.btu.sd.core.service.SdApiService;
+import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeOfferMappingBean;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
@@ -31,6 +32,8 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
 
     @Resource(name = "apiService")
     SdApiService apiService;
+    @Resource(name = "userService")
+    SdUserService userService;
 
     @Override
     protected SiteInterfaceBean getTargetApiSiteInterfaceBean() {
@@ -45,8 +48,18 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
     }
 
     @Override
-    public Integer createJob(SdTicketData ticketData, String createdBy) {
+    public Integer createJob(SdTicketData ticketData) {
         Entity<SdTicketData> postBody = Entity.entity(ticketData, MediaType.APPLICATION_JSON);
+
+        String jsonResponseString = postData("/api/v1/sd/FaultCreate", null, postBody);
+        if(StringUtils.isEmpty(jsonResponseString)) {
+            return null;
+        }
+
+        WfmResponseData wfmResponseData = new Gson().<WfmResponseData<WfmJobCreateResponseData>>fromJson(
+                jsonResponseString, new TypeToken<WfmResponseData<WfmJobCreateResponseData>>(){}.getType());
+//        WfmJobCreateResponseData wfmJobCreateResponseData = wfmResponseData.getData();
+
         return Optional.ofNullable(postData("/api/v1/sd/FaultCreate", null, postBody)).flatMap(json ->
                 Optional.ofNullable(new Gson().<WfmResponseData<WfmJobCreateResponseData>>fromJson(json, new TypeToken<WfmResponseData<WfmJobCreateResponseData>>() {
         }.getType())).map(WfmResponseData::getData).map(WfmJobCreateResponseData::getJobId)).orElse(0);

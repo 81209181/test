@@ -228,8 +228,9 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public void updateJobIdInService(Integer jobId, String ticketMasId, String userId) {
-        ticketService.updateJobIdInService(jobId, ticketMasId, userId);
+    public void updateJobIdInService(Integer jobId, String ticketMasId) {
+        String createby = userService.getCurrentUserUserId();
+        ticketService.updateJobIdInService(jobId, ticketMasId, createby);
     }
 
     @Override

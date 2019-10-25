@@ -179,15 +179,16 @@ public class TicketController {
     }
 
     @PostMapping("submit")
-    public ResponseEntity<?> submit(Principal principal, SdTicketMasData ticketMasData) throws JsonProcessingException {
+    public ResponseEntity<?> submit(SdTicketMasData ticketMasData) throws JsonProcessingException {
         try {
             ticketFacade.isAllow(String.valueOf(ticketMasData.getTicketMasId()), StringUtils.EMPTY);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-        Integer jobId = wfmApiFacade.createJob(ticketFacade.getTicketInfo(ticketMasData.getTicketMasId()), principal.getName());
+        SdTicketData ticketData = ticketFacade.getTicketInfo(ticketMasData.getTicketMasId());
+        Integer jobId = wfmApiFacade.createJob(ticketData);
         if (jobId > 0) {
-            ticketFacade.updateJobIdInService(jobId, String.valueOf(ticketMasData.getTicketMasId()), principal.getName());
+            ticketFacade.updateJobIdInService(jobId, String.valueOf(ticketMasData.getTicketMasId()));
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode node = mapper.createObjectNode();
             node.put("success", true);
