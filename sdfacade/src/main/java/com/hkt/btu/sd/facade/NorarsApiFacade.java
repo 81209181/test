@@ -14,6 +14,4 @@ public interface NorarsApiFacade {
     String getServiceAddressByBsn(String bsn);
 
     String getL1InfoByBsn(String bsn);
-
-    String getOfferDetailListByBsn(String bsn);
 }

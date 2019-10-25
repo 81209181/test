@@ -6,7 +6,7 @@ import com.hkt.btu.common.facade.data.DataInterface;
 import org.apache.commons.lang3.StringUtils;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AddressInfoBean implements DataInterface
+public class NoraAddressInfoData implements DataInterface
 {
 	private String addrId = ""; // The unique address ID of the address which is provided by TSMS
 	private String addr1 = ""; // Flat/room/house no

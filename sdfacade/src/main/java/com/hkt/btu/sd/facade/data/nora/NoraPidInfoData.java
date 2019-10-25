@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hkt.btu.common.facade.data.DataInterface;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PidInfoBean implements DataInterface
+public class NoraPidInfoData implements DataInterface
 {
 	private int pid = 0;
 	private String stb = null;

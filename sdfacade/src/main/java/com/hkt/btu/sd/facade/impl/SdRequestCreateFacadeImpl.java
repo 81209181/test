@@ -175,7 +175,6 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
                 requestCreateSearchResultDataPopulator.populateFromBesCustomerDataData(bes, resultData);
                 resultData.setServiceType(serviceTypeFacade.getServiceTypeByOfferName(resultData.getOfferName()));
                 resultData.setServiceAddress(norarsApiFacade.getServiceAddressByBsn(bsn));
-                resultData.setOfferDetail(norarsApiFacade.getOfferDetailListByBsn(bsn));
                 resultData.setDescription(norarsApiFacade.getL1InfoByBsn(bsn));
                 resultData.setPendingOrder(wfmApiFacade.getPendingOrderByBsn(bsn));
             }));

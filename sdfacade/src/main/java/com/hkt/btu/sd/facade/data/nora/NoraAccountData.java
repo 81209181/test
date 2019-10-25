@@ -1,6 +1,6 @@
 package com.hkt.btu.sd.facade.data.nora;
 
-public class AccountBean
+public class NoraAccountData
 {
 	private String accountId = "";
 	private String password = "";

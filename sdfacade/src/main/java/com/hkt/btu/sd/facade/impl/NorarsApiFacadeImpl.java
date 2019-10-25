@@ -7,8 +7,8 @@ import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.NorarsApiFacade;
 import com.hkt.btu.sd.facade.data.nora.NoraBroadbandInfoData;
-import com.hkt.btu.sd.facade.data.nora.AddressInfoBean;
-import com.hkt.btu.sd.facade.data.nora.PidInfoBean;
+import com.hkt.btu.sd.facade.data.nora.NoraAddressInfoData;
+import com.hkt.btu.sd.facade.data.nora.NoraPidInfoData;
 import com.hkt.btu.sd.facade.data.nora.NoraDnGroupData;
 import com.hkt.btu.sd.facade.data.nora.NorarsBsnData;
 import org.apache.commons.lang3.StringUtils;
@@ -98,9 +98,9 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
     @Override
     public String getServiceAddressByBsn(String bsn){
         String apiPath = "/norars/api/v1/onecomm/address/" + bsn;
-        AddressInfoBean addressInfoBean = getData(apiPath, AddressInfoBean.class, null);
-        if (addressInfoBean != null) {
-            return addressInfoBean.getAddressString();
+        NoraAddressInfoData noraAddressInfoData = getData(apiPath, NoraAddressInfoData.class, null);
+        if (noraAddressInfoData != null) {
+            return noraAddressInfoData.getAddressString();
         }
         return null;
     }
@@ -108,16 +108,10 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
     @Override
     public String getL1InfoByBsn(String bsn){
         String apiPath = "/norars/api/v1/onecomm/pid/" + bsn;
-        PidInfoBean pidInfoBean = getData(apiPath, PidInfoBean.class, null);
-        if (pidInfoBean != null) {
-            return pidInfoBean.getPid() + "/" + pidInfoBean.getStb() + "/" + pidInfoBean.getDescription();
+        NoraPidInfoData noraPidInfoData = getData(apiPath, NoraPidInfoData.class, null);
+        if (noraPidInfoData != null) {
+            return noraPidInfoData.getPid() + "/" + noraPidInfoData.getStb() + "/" + noraPidInfoData.getDescription();
         }
         return null;
-    }
-
-    @Override
-    public String getOfferDetailListByBsn(String bsn){
-        String apiPath = "/norars/api/v1/onecomm/bsn/" + bsn + "/detail";
-        return Optional.ofNullable(getData(apiPath, null)).orElse(null);
     }
 }
