@@ -257,8 +257,8 @@ public class TicketController {
 
     @PostMapping("getJobInfo")
     public ResponseEntity<?> getJobInfo(@RequestParam Integer ticketMasId) {
-        //344
-        List<WfmJobData> jobInfo = wfmApiFacade.getJobInfo(344);
+        // Test ticket mas id: 344
+        List<WfmJobData> jobInfo = wfmApiFacade.getJobInfo(ticketMasId);
         if (jobInfo == null) {
             return ResponseEntity.badRequest().body("WFM Error: Cannot get job data for ticket mas id :" + ticketMasId);
         } else {
