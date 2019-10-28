@@ -11,7 +11,6 @@ import com.hkt.btu.sd.facade.data.nora.NoraBroadbandInfoData;
 import com.hkt.btu.sd.facade.data.nora.NoraAddressInfoData;
 import com.hkt.btu.sd.facade.data.nora.NoraPidInfoData;
 import com.hkt.btu.sd.facade.data.nora.NoraDnGroupData;
-import com.hkt.btu.sd.facade.data.nora.NorarsBsnData;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Resource;
@@ -49,12 +48,9 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
         }
 
         String apiPath = "/norars/api/v1/onecomm/bsn/" + bsn + "/detail";
-        String responseString = getData(apiPath, null);
-        if(StringUtils.isEmpty(responseString)){
-            return null;
-        } else {
-            return new Gson().fromJson(responseString, NoraBroadbandInfoData.class);
-        }
+        NoraBroadbandInfoData data = getData(apiPath, NoraBroadbandInfoData.class, null);
+
+        return data;
     }
 
     @Override

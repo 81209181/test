@@ -28,7 +28,7 @@ public interface SdTicketFacade {
 
     String createTicketRemarks(Integer ticketMasId, String remarks);
 
-    void updateJobIdInService(Integer jobId, String ticketMasId, String name);
+    void updateJobIdInService(Integer jobId, String ticketMasId);
 
     Optional<SdTicketServiceData> getService(Integer ticketId);
 

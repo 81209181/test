@@ -8,7 +8,9 @@ import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
 import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.data.*;
+import com.hkt.btu.sd.facade.data.nora.NoraBroadbandInfoData;
 import com.hkt.btu.sd.facade.data.nora.NoraDnGroupData;
+import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
@@ -177,15 +179,16 @@ public class TicketController {
     }
 
     @PostMapping("submit")
-    public ResponseEntity<?> submit(Principal principal, SdTicketMasData ticketMasData) throws JsonProcessingException {
+    public ResponseEntity<?> submit(SdTicketMasData ticketMasData) throws JsonProcessingException {
         try {
             ticketFacade.isAllow(String.valueOf(ticketMasData.getTicketMasId()), StringUtils.EMPTY);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-        Integer jobId = wfmApiFacade.createJob(ticketFacade.getTicketInfo(ticketMasData.getTicketMasId()), principal.getName());
+        SdTicketData ticketData = ticketFacade.getTicketInfo(ticketMasData.getTicketMasId());
+        Integer jobId = wfmApiFacade.createJob(ticketData);
         if (jobId > 0) {
-            ticketFacade.updateJobIdInService(jobId, String.valueOf(ticketMasData.getTicketMasId()), principal.getName());
+            ticketFacade.updateJobIdInService(jobId, String.valueOf(ticketMasData.getTicketMasId()));
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode node = mapper.createObjectNode();
             node.put("success", true);
@@ -235,17 +238,12 @@ public class TicketController {
 
     @PostMapping("close")
     public ResponseEntity<?> ticketClose(int ticketMasId, String reasonType, String reasonContent) {
-        if (wfmApiFacade.closeTicket(ticketMasId)) {
-            String errorMsg = ticketFacade.closeTicket(ticketMasId, reasonType, reasonContent);
-            if (StringUtils.isEmpty(errorMsg)) {
-                return ResponseEntity.ok(SimpleAjaxResponse.of());
-            } else {
-                return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
-            }
+        String errorMsg = ticketFacade.closeTicket(ticketMasId, reasonType, reasonContent);
+        if (StringUtils.isEmpty(errorMsg)) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of());
         } else {
-            return ResponseEntity.badRequest().body(String.format("WFM Error: Cannot notify WFM to close ticket for ticket mas id %s", ticketMasId));
+            return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
         }
-
     }
 
     @PostMapping("callInCount")
@@ -260,7 +258,7 @@ public class TicketController {
 
     @PostMapping("getJobInfo")
     public ResponseEntity<?> getJobInfo(@RequestParam Integer ticketMasId) {
-        WfmJobInfoResponseData jobInfo = wfmApiFacade.getJobInfo(ticketMasId);
+        List<WfmJobData> jobInfo = wfmApiFacade.getJobInfo(ticketMasId);
         if (jobInfo == null) {
             return ResponseEntity.badRequest().body("WFM Error: Cannot get job data for ticket mas id :" + ticketMasId);
         } else {
@@ -277,13 +275,24 @@ public class TicketController {
         return ResponseEntity.badRequest().body("Nora Error: Cannot get Inventory for bsn :" + bsn);
     }
 
-    @GetMapping("/offer-detail")
-    public String getOfferInfo( final Model model,
-                                @RequestParam String bsn,
-                                @ModelAttribute("noraDnGroupData") NoraDnGroupData noraDnGroupData) {
+    @GetMapping("/offer-info")
+    public String getOfferInfo(final Model model,
+                               @RequestParam String bsn,
+                               @ModelAttribute("noraDnGroupData") NoraDnGroupData noraDnGroupData) {
         noraDnGroupData = norarsApiFacade.getRelatedOfferInfoListByBsn(bsn);
         if(noraDnGroupData !=null){
             model.addAttribute("noraDnGroupData", noraDnGroupData);
+        }
+        return "ticket/offerInfo";
+    }
+
+    @GetMapping("/offer-detail")
+    public String getOfferInfo(final Model model,
+                               @RequestParam String bsn,
+                               @ModelAttribute("noraBroadbandInfoData") NoraBroadbandInfoData noraBroadbandInfoData) {
+        noraBroadbandInfoData = norarsApiFacade.getOfferDetailListByBsn(bsn);
+        if (noraBroadbandInfoData != null) {
+            model.addAttribute("noraBroadbandInfoData", noraBroadbandInfoData);
         }
         return "ticket/offerDetail";
     }

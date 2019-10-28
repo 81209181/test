@@ -4,7 +4,6 @@ import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
 import com.hkt.btu.sd.facade.data.*;
-import com.hkt.btu.sd.facade.data.nora.NorarsBsnData;
 import com.hkt.btu.sd.facade.populator.RequestCreateSearchResultDataPopulator;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;

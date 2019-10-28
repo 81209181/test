@@ -4,11 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hkt.btu.common.facade.data.DataInterface;
 import com.hkt.btu.sd.core.service.SdApiService;
+import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeOfferMappingBean;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.WfmApiFacade;
 import com.hkt.btu.sd.facade.data.*;
+import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
 import com.hkt.btu.sd.facade.data.wfm.WfmOfferNameProductTypeData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -30,6 +32,8 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
 
     @Resource(name = "apiService")
     SdApiService apiService;
+    @Resource(name = "userService")
+    SdUserService userService;
 
     @Override
     protected SiteInterfaceBean getTargetApiSiteInterfaceBean() {
@@ -44,8 +48,18 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
     }
 
     @Override
-    public Integer createJob(SdTicketData ticketData, String createdBy) {
+    public Integer createJob(SdTicketData ticketData) {
         Entity<SdTicketData> postBody = Entity.entity(ticketData, MediaType.APPLICATION_JSON);
+
+//        String jsonResponseString = postData("/api/v1/sd/FaultCreate", null, postBody);
+//        if(StringUtils.isEmpty(jsonResponseString)) {
+//            return null;
+//        }
+//
+//        WfmResponseData wfmResponseData = new Gson().<WfmResponseData<WfmJobCreateResponseData>>fromJson(
+//                jsonResponseString, new TypeToken<WfmResponseData<WfmJobCreateResponseData>>(){}.getType());
+//        WfmJobCreateResponseData wfmJobCreateResponseData = wfmResponseData.getData();
+
         return Optional.ofNullable(postData("/api/v1/sd/FaultCreate", null, postBody)).flatMap(json ->
                 Optional.ofNullable(new Gson().<WfmResponseData<WfmJobCreateResponseData>>fromJson(json, new TypeToken<WfmResponseData<WfmJobCreateResponseData>>() {
         }.getType())).map(WfmResponseData::getData).map(WfmJobCreateResponseData::getJobId)).orElse(0);
@@ -53,9 +67,14 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
 
     @Override
     public boolean closeTicket(Integer ticketMasId) {
-        return Optional.ofNullable(ticketMasId).flatMap(id -> Optional.ofNullable(postData("/api/v1/sd/CloseTicket/"+id,null, null))
-                .filter(StringUtils::isNotBlank)
-                .map(s -> StringUtils.containsIgnoreCase(s,"Success"))).orElse(false);
+        try {
+            return Optional.ofNullable(ticketMasId).flatMap(id -> Optional.ofNullable(postData("/api/v1/sd/CloseTicket/" + id, null, null))
+                    .filter(StringUtils::isNotBlank)
+                    .map(s -> StringUtils.containsIgnoreCase(s, "Success"))).orElse(false);
+        }catch (Exception e){
+            LOG.error(e.getMessage(), e);
+            return false;
+        }
     }
 
     @Override
@@ -74,7 +93,8 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
     @Override
     public List<SdServiceTypeOfferMappingBean> getServiceTypeOfferMapping() {
         return Optional.ofNullable(new Gson().<List<WfmOfferNameProductTypeData>>fromJson(getData("/api/v1/sd/GetOfferNameProductTypeMapping", null),
-                new TypeToken<List<WfmOfferNameProductTypeData>>() {}.getType()))
+                new TypeToken<List<WfmOfferNameProductTypeData>>() {
+                }.getType()))
                 .filter(CollectionUtils::isNotEmpty).map(list -> list.stream().map(data -> {
                     SdServiceTypeOfferMappingBean bean = new SdServiceTypeOfferMappingBean();
                     bean.setOfferName(data.getServiceName());
@@ -107,7 +127,8 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
             LOG.error(errorMsg);
         }
 
-        List<String> responseDataList = new Gson().<List<String>>fromJson(wfmResponseDataJsonString, new TypeToken<List<String>>(){}.getType());
+        List<String> responseDataList = new Gson().<List<String>>fromJson(wfmResponseDataJsonString, new TypeToken<List<String>>() {
+        }.getType());
         if (CollectionUtils.isNotEmpty(responseDataList)) {
             String[] arr = responseDataList.toArray(new String[responseDataList.size()]);
             data.setPendingOrder(StringUtils.join(arr, ","));
@@ -116,12 +137,10 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
     }
 
     @Override
-    public WfmJobInfoResponseData getJobInfo(Integer ticketMasId) {
+    public List<WfmJobData> getJobInfo(Integer ticketMasId) {
         return Optional.ofNullable(ticketMasId).map(id -> {
-            Map<String, String> queryParamMap = new HashMap<>(1);
-            queryParamMap.put("ticketMasId", String.valueOf(ticketMasId));
-            WfmJobInfoResponseData data = getData("/api/v1/sd/getJobInfo", WfmJobInfoResponseData.class, queryParamMap);
-            return data;
+            List<WfmJobData> dataList = getDataListTest("/api/v1/sd/GetJobListByTicketId/" + ticketMasId, null);
+            return dataList;
         }).orElse(null);
     }
 }
