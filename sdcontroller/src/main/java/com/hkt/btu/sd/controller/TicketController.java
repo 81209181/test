@@ -8,6 +8,7 @@ import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
 import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.data.*;
+import com.hkt.btu.sd.facade.data.nora.NoraAccountData;
 import com.hkt.btu.sd.facade.data.nora.NoraBroadbandInfoData;
 import com.hkt.btu.sd.facade.data.nora.NoraDnGroupData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
@@ -42,8 +43,8 @@ public class TicketController {
     NorarsApiFacade norarsApiFacade;
 
     @GetMapping("service-identity")
-    public String serviceIdentity(Model model ) {
-        model.addAttribute("serviceSearchKeyList", requestCreateFacade.getSearchKeyEnumList() );
+    public String serviceIdentity(Model model) {
+        model.addAttribute("serviceSearchKeyList", requestCreateFacade.getSearchKeyEnumList());
         return "ticket/serviceIdentity";
     }
 
@@ -194,7 +195,7 @@ public class TicketController {
             node.put("success", true);
             return ResponseEntity.ok(mapper.writeValueAsString(node));
         } else {
-            return ResponseEntity.badRequest().body(String.format("WFM Error: Cannot create job for ticket mas id %s.",ticketMasData.getTicketMasId()));
+            return ResponseEntity.badRequest().body(String.format("WFM Error: Cannot create job for ticket mas id %s.", ticketMasData.getTicketMasId()));
         }
     }
 
@@ -280,7 +281,7 @@ public class TicketController {
                                @RequestParam String bsn,
                                @ModelAttribute("noraDnGroupData") NoraDnGroupData noraDnGroupData) {
         noraDnGroupData = norarsApiFacade.getRelatedOfferInfoListByBsn(bsn);
-        if(noraDnGroupData !=null){
+        if (noraDnGroupData != null) {
             model.addAttribute("noraDnGroupData", noraDnGroupData);
         }
         return "ticket/offerInfo";
@@ -295,5 +296,17 @@ public class TicketController {
             model.addAttribute("noraBroadbandInfoData", noraBroadbandInfoData);
         }
         return "ticket/offerDetail";
+    }
+
+    @GetMapping("/getNGN3OneDayAdminAccount")
+    public String getNGN3OneDayAdminAccount(final Model model,
+                                            @RequestParam String bsn,
+                                            @ModelAttribute("noraAccountData") NoraAccountData accountData) {
+        accountData = norarsApiFacade.getNGN3OneDayAdminAccount(bsn);
+
+        if (accountData != null) {
+            model.addAttribute("noraAccountData", accountData);
+        }
+        return "ticket/accountInfo";
     }
 }

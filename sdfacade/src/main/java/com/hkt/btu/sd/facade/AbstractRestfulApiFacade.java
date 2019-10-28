@@ -196,12 +196,7 @@ public abstract class AbstractRestfulApiFacade {
     private Gson getGson() {
         GsonBuilder builder = new GsonBuilder();
 
-        builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
-            @Override
-            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                return new Date(json.getAsJsonPrimitive().getAsLong());
-            }
-        });
+        builder.registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (json, typeOfT, context) -> new Date(json.getAsJsonPrimitive().getAsLong()));
 
         return builder.create();
     }

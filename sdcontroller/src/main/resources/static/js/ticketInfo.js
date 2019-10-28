@@ -365,6 +365,17 @@ function getOfferDetailList(bsn) {
     window.open(ctx+'/ticket/offer-detail?bsn='+bsn,'OfferDetailList','scrollbars=yes,height=800,width=1200');
 }
 
+function getNGN3OneDayAdminAccount(bsn) {
+    if (bsn === '') {
+        showErrorMsg('No service number!');
+        return;
+    }
+
+    let ctx = $("meta[name='_ctx']").attr("content");
+
+    window.open(ctx + '/ticket/getNGN3OneDayAdminAccount?bsn='+bsn, 'Account Info', 'scrollbars=yes,height=400,width=500');
+}
+
 
 function ajaxGetJobInfo(ticketMasId){
     $.ajax({
