@@ -112,7 +112,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
                         infoData.setServiceAddress(requestCreateSearchResultData.getServiceAddress());
                         infoData.setGridId(requestCreateSearchResultData.getGridId());
                         infoData.setExchangeBuildingId(requestCreateSearchResultData.getExchangeBuildingId());
-                        if (sdTicketMasData.getSearchKey().equals("dn")) {
+                        if (StringUtils.isNotEmpty(sdTicketMasData.getSearchKey())?sdTicketMasData.getSearchKey().equals("dn"):false) {
                             infoData.setRelatedBsn(norarsApiFacade.getBsnByDn(sdTicketServiceData.getServiceCode()));
                         }
                     }
