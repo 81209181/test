@@ -102,7 +102,7 @@
                         <button type="button" class="btn btn-info ml-3" onclick='getInventory(bsn);'>Inventory Detail</button>
                         <button type="button" class="btn btn-info ml-3" onclick="getOfferDetailList(bsn);">BB Detail</button>
                         <button type="button" class="btn btn-info ml-3" onclick='getRelatedOfferInfo(bsn);'>VoIP Detail</button>
-                        <button type="button" class="btn btn-info ml-3" onclick="getNGN3OneDayAdminAccount(bsn);">Get NGN3 One Day Admin Account</button>
+                        <button type="button" class="btn btn-info ml-3" onclick="getNGN3OneDayAdminAccount(bsn);">One Day Admin Account</button>
                     </h3>
                 </div>
                 <div class="col-md-12">
@@ -117,7 +117,7 @@
                         </div>
                         <div class="temp_faults col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Symptom: </label>
-                            <select name="symptom" id="symptomList" class="selectpicker form-control col-md-6" data-width="500px" data-live-search="true" th:disabled="*{ticketStatus} ne 'OPEN'"></select>
+                            <select name="symptom" id="symptomList" class="selectpicker form-control col-md-6" data-width="500px" data-live-search="true" title="Please select symptom..." th:disabled="*{ticketStatus} ne 'OPEN'"></select>
                         </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Subscriber ID: </label>
