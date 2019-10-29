@@ -5,8 +5,6 @@ import com.hkt.btu.sd.core.service.bean.SdServiceTypeOfferMappingBean;
 import com.hkt.btu.sd.facade.data.SdPendingOrderData;
 import com.hkt.btu.sd.facade.data.SdTicketData;
 import com.hkt.btu.sd.facade.data.WfmJobDetailsData;
-import com.hkt.btu.sd.facade.data.WfmJobInfoResponseData;
-import com.hkt.btu.sd.facade.data.WfmPendingOrderData;
 import com.hkt.btu.sd.facade.data.wfm.WfmAppointmentResData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
 
