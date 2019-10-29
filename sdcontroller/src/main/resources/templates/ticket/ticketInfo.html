@@ -167,6 +167,17 @@
             <form id="appointment" class="row">
                 <div class="col-md-12">
                     <h3>Job <button type="button" class="btn btn-info ml-3" id="btnMakeAppointment">Make Appointment</button></h3>
+                    <div class="col-md-6 form-inline pt-2">
+                        <label class="col-form-label col-md-2 justify-content-end">Appointment Date:</label>
+                        <input type="text" class="form-control col-md-2" name="appointmentDate" readonly>
+
+                        <label class="col-form-label col-md-2 justify-content-end">Appointment Start Date Time:</label>
+                        <input type="text" class="form-control col-md-2" name="appointmentStartDateTime" readonly>
+
+                        <label class="col-form-label col-md-2 justify-content-end">Appointment End Date Time:</label>
+                        <input type="text" class="form-control col-md-2" name="appointmentEndDateTime" readonly>
+                    </div>
+                    <hr>
                 </div>
                 <div id="jobList">
 
@@ -233,7 +244,7 @@
                             <label class="col-form-label col-md-3 justify-content-end">Work Group:</label>
                             <input type="text" class="form-control col-md-6" name="workgroup" readonly>
                         </div>
-                        <div class="col-md-6 form-inline pt-2">
+                        <div class="col-md-6 form-inline pt-2 end">
                             <label class="col-form-label col-md-3 justify-content-end">Resolver:</label>
                             <input type="text" class="form-control col-md-6" name="resolver" readonly>
                         </div>

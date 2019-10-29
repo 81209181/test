@@ -105,6 +105,8 @@ $().ready(function(){
         makeAppointment(ticketMasId, ticketDetId);
     })
 
+    getAppointmentInfo(ticketMasId);
+
     //contact
     $.get('/ticket/contact?ticketMasId='+ticketMasId,function(res){
         if (res.length == 0) {
@@ -306,7 +308,6 @@ function makeAppointment(ticketMasId, ticketDetId) {
             userName : "sd",
             password : "Ki6=rEDs47*^5"
         }
-        //}, 'https://10.252.15.158/wfm');
     }, "https://10.252.15.158/wfm");
 }
 
@@ -357,6 +358,24 @@ function getNGN3OneDayAdminAccount(bsn) {
     let ctx = $("meta[name='_ctx']").attr("content");
 
     window.open(ctx + '/ticket/getNGN3OneDayAdminAccount?bsn='+bsn, 'Account Info', 'scrollbars=yes,height=400,width=500');
+}
+
+function getAppointmentInfo(ticketMasId) {
+    $.ajax({
+        url: '/ticket/getAppointmentInfo',
+        type: 'GET',
+        dataType: 'json',
+        data: {ticketMasId:ticketMasId},
+        success: function (res) {
+            $('#appointment').find('input[name=appointmentDate]').val(res.appointmentDate);
+            $('#appointment').find('input[name=appointmentStartDateTime]').val(res.appointmentStartDateTime);
+            $('#appointment').find('input[name=appointmentEndDateTime]').val(res.appointmentEndDateTime);
+        }
+    }).fail(function(e){
+        var responseError = e.responseText ? e.responseText : "Get failed.";
+        console.log("ERROR : ", responseError);
+        showErrorMsg(responseError);
+    })
 }
 
 

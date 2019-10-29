@@ -11,6 +11,7 @@ import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.nora.NoraAccountData;
 import com.hkt.btu.sd.facade.data.nora.NoraBroadbandInfoData;
 import com.hkt.btu.sd.facade.data.nora.NoraDnGroupData;
+import com.hkt.btu.sd.facade.data.wfm.WfmAppointmentResData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -296,5 +297,15 @@ public class TicketController {
             model.addAttribute("noraAccountData", accountData);
         }
         return "ticket/accountInfo";
+    }
+
+    @GetMapping("/getAppointmentInfo")
+    public ResponseEntity<?> getAppointmentInfo(@RequestParam Integer ticketMasId) {
+        WfmAppointmentResData appointmentInfo = wfmApiFacade.getAppointmentInfo(ticketMasId);
+
+        if (appointmentInfo != null) {
+            return ResponseEntity.ok(appointmentInfo);
+        }
+        return ResponseEntity.badRequest().body("WFM Error: Cannot get appointment info for ticketMasId:" + ticketMasId);
     }
 }
