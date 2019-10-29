@@ -29,6 +29,11 @@ public class SdServiceTypeFacadeImpl implements SdServiceTypeFacade {
     }
 
     @Override
+    public String getServiceTypeDescByServiceTypeCode(String code) {
+        return serviceTypeService.getServiceTypeDescByServiceTypeCode(code);
+    }
+
+    @Override
     public SdServiceTypeData getServiceTypeByOfferName(String offerName) {
         SdServiceTypeData data = new SdServiceTypeData();
         SdServiceTypeBean bean = serviceTypeService.getServiceTypeByOfferName(offerName);

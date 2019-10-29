@@ -18,6 +18,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -94,7 +95,16 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
     }
 
     @Override
-    public boolean resetNGN3PWD(String accountId) {
+    public boolean resetNGN3PWD(String bsn) {
+        Optional.ofNullable(getRelatedOfferInfoListByBsn(bsn)).map(NoraDnGroupData::getAdminPortalId).ifPresentOrElse(admin -> {
+            if (admin.contains(",")) {
+                Arrays.stream(admin.split(","));
+            } else {
+
+            }
+        },() -> {
+            throw new RuntimeException("Admin portal Id not found.");
+        });
         return false;
     }
 

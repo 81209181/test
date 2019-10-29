@@ -26,7 +26,7 @@ $().ready(function(){
             $.each(res,function(index,j){
                 let service =$('#service');
                 $.each(j,function(key,value){
-                    service.find('input[name='+key+']').val(value);
+//                    service.find('input[name='+key+']').val(value);    // by Dennis  ref jira 179
                     if (key == 'faultsList') {
                         for (item of value) {
                             $('#symptomList').find('option[value='+item.symptomCode+']').attr('selected','selected');
@@ -275,38 +275,15 @@ $().ready(function(){
     })
 
     $('#btnResetNGN3PWD').on('click',function(){
-//        $('.ngn3').modal('show');
-//        $.confirm({
-//            title:'Re-set NGN3 Account Password',
-//            content:'',
-//            buttons:{
-//                formSubmit:{
-//                    btnClass:'btn-blue',
-//                    action:function(){
-//                        console.log("fasdf");
-//                    }
-//                },
-//                cancel:function(){
-//
-//                }
-//            }
-//        })
-    })
+        $.post('/ticket/resetNGN3PWD',{
+            bsn:bsn
+        },function(res){
 
-    $('#btnResetNGN3PWDSubmit').on('click',function(){
-        let form =$(this).parents('.modal-content').find('form').get(0);
-        if(form.checkValidity()){
-            $.post('/ticket/resetNGN3PWD',{
-                accountId:$(form).find('input[name=accountId]').val()
-            },function(res){
-                if(res.success){
-
-                }else{
-
-                }
-            })
-        }
-        $(form).addClass("was-validated");
+        }).fail(function(e){
+            var responseError = e.responseText ? e.responseText : "Get failed.";
+            console.log("ERROR : ", responseError);
+            showErrorMsg(responseError);
+        })
     })
 
     ajaxGetJobInfo(ticketMasId);
