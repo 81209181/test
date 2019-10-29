@@ -52,6 +52,7 @@ public class RequestCreateSearchResultData implements DataInterface {
     private String offerDetail;
     private String description;
     private String pendingOrder;
+    private String relatedBsn;
 
     public String getAdminId() {
         return adminId;
@@ -403,5 +404,13 @@ public class RequestCreateSearchResultData implements DataInterface {
 
     public void setPendingOrder(String pendingOrder) {
         this.pendingOrder = pendingOrder;
+    }
+
+    public String getRelatedBsn() {
+        return relatedBsn;
+    }
+
+    public void setRelatedBsn(String relatedBsn) {
+        this.relatedBsn = relatedBsn;
     }
 }

@@ -53,9 +53,10 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         try {
             switch (serviceSearchEnum) {
                 case SERVICE_NUMBER:
-                case DN:
                 case BSN:
                     return findData4Bsn(searchValue);
+                case DN:
+                    return findData4Dn(searchValue);
                 case TENANT_ID:
                     return findData4Tenant(searchValue);
                 default:
@@ -111,6 +112,9 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
                         infoData.setServiceAddress(requestCreateSearchResultData.getServiceAddress());
                         infoData.setGridId(requestCreateSearchResultData.getGridId());
                         infoData.setExchangeBuildingId(requestCreateSearchResultData.getExchangeBuildingId());
+                        if (sdTicketMasData.getSearchKey().equals("dn")) {
+                            infoData.setRelatedBsn(norarsApiFacade.getBsnByDn(sdTicketServiceData.getServiceCode()));
+                        }
                     }
                 }
             }
@@ -133,9 +137,11 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     }
 
     private RequestCreateSearchResultsData findData4Dn(String dn) {
-        return Optional.ofNullable(norarsApiFacade.getBsnByDn(dn))
-//                .map(NorarsBsnData::getBsn)
-                .map(this::findData4Bsn).get();
+        RequestCreateSearchResultsData data = findData4Bsn(dn);
+        data.getList().forEach(requestCreateSearchResultData -> {
+            requestCreateSearchResultData.setRelatedBsn(norarsApiFacade.getBsnByDn(dn));
+        });
+        return data;
     }
 
     private RequestCreateSearchResultsData findData4Tenant(String tenantId) {
