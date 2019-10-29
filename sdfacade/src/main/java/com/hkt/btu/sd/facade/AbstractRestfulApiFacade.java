@@ -24,6 +24,10 @@ import java.lang.reflect.Type;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public abstract class AbstractRestfulApiFacade {
@@ -125,6 +129,7 @@ public abstract class AbstractRestfulApiFacade {
             if (gson == null) {
                 gson = getGson();
             }
+
             return gson.fromJson(jsonString, responseType);
         } catch (ProcessingException | WebApplicationException e) {
             LOG.error(e.getMessage(), e);
@@ -133,31 +138,13 @@ public abstract class AbstractRestfulApiFacade {
         }
     }
 
-    protected List getDataList(String path, TypeToken token, Map<String, String> queryParamMap) {
+    protected <T extends DataInterface> List<T> getDataList(String path, Type type, Map<String, String> queryParamMap) {
         String jsonString = getData(path, queryParamMap);
         try {
             // using gson here with purpose for easier debugging (better exception for stack trace)
             if (gson == null) {
                 gson = getGson();
             }
-
-            return gson.fromJson(jsonString, token.getType());
-        } catch (ProcessingException | WebApplicationException e) {
-            LOG.error(e.getMessage(), e);
-            LOG.debug(jsonString);
-            return null;
-        }
-    }
-
-    protected <T extends DataInterface> List<T> getDataListTest(String path, Map<String, String> queryParamMap) {
-        String jsonString = getData(path, queryParamMap);
-        try {
-            // using gson here with purpose for easier debugging (better exception for stack trace)
-            if (gson == null) {
-                gson = getGson();
-            }
-
-            Type type = new TypeToken<List<T>>(){}.getType();
 
             return gson.fromJson(jsonString, type);
         } catch (ProcessingException | WebApplicationException e) {
@@ -166,7 +153,6 @@ public abstract class AbstractRestfulApiFacade {
             return null;
         }
     }
-
 
     protected String postData(String path, Map<String, String> queryParamMap, Entity<?> entity) {
         LOG.info("Posting to API: " + path);
@@ -196,8 +182,18 @@ public abstract class AbstractRestfulApiFacade {
     private Gson getGson() {
         GsonBuilder builder = new GsonBuilder();
 
-        builder.registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (json, typeOfT, context) -> new Date(json.getAsJsonPrimitive().getAsLong()));
-
+        builder.registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (json, typeOfT, context) -> getDate(json));
         return builder.create();
+    }
+
+    private Date getDate(JsonElement json) {
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String dfString = format.format(json.getAsJsonPrimitive().getAsLong());
+        try {
+            return format.parse(dfString);
+        } catch (ParseException e) {
+            LOG.error(e.getMessage(), e);
+        }
+        return null;
     }
 }

@@ -24,6 +24,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -135,7 +136,8 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
     @Override
     public List<WfmJobData> getJobInfo(Integer ticketMasId) {
         return Optional.ofNullable(ticketMasId).map(id -> {
-            List<WfmJobData> dataList = getDataListTest("/api/v1/sd/GetJobListByTicketId/" + ticketMasId, null);
+            Type type = new TypeToken<List<WfmJobData>>(){}.getType();
+            List<WfmJobData> dataList = getDataList("/api/v1/sd/GetJobListByTicketId/" + ticketMasId, type,null);
             return dataList;
         }).orElse(null);
     }
