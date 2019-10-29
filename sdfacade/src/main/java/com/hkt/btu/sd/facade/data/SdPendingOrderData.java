@@ -1,6 +1,8 @@
 package com.hkt.btu.sd.facade.data;
 
-public class SdPendingOrderData {
+import com.hkt.btu.common.facade.data.DataInterface;
+
+public class SdPendingOrderData implements DataInterface {
 
     private String pendingOrder;
     private String errorMsg;
