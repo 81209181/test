@@ -40,6 +40,7 @@ public class BtuSiteConfigBean extends BaseBean {
 
     public class SERVER_TYPE {
         public static final String DEV = "DEV";
+        public static final String VT = "VT";
         public static final String UAT = "UAT";
         public static final String PROD = "PROD";
         public static final String PROD_STANDBY = "PROD_SB";

@@ -37,6 +37,7 @@ public class SdTicketInfoData {
     private String itsmUrl;
     private String gridId;
     private String exchangeBuildingId;
+    private String relatedBsn;
 
     public int getTicketMasId() {
         return ticketMasId;
@@ -268,5 +269,13 @@ public class SdTicketInfoData {
 
     public void setExchangeBuildingId(String exchangeBuildingId) {
         this.exchangeBuildingId = exchangeBuildingId;
+    }
+
+    public String getRelatedBsn() {
+        return relatedBsn;
+    }
+
+    public void setRelatedBsn(String relatedBsn) {
+        this.relatedBsn = relatedBsn;
     }
 }
