@@ -94,6 +94,11 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
     }
 
     @Override
+    public boolean resetNGN3PWD(String accountId) {
+        return false;
+    }
+
+    @Override
     protected SiteInterfaceBean getTargetApiSiteInterfaceBean() {
         return apiService.getSiteInterfaceBean(SiteInterfaceBean.API_NORARS.API_NAME);
     }
