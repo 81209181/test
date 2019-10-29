@@ -91,21 +91,30 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
                 infoData.setJobId(s);
                 Optional.ofNullable(wfmApiFacade.getJobDetails(Integer.valueOf(s)).getJobBean()).map(WfmJobBeanData::getStatus).ifPresent(infoData::setJobStatus);
             });
-            findData4Bsn(sdTicketServiceData.getServiceCode()).getList().stream()
-                    .filter(requestCreateSearchResultData -> requestCreateSearchResultData.getServiceNo().equals(sdTicketServiceData.getServiceCode()))
-                    .findFirst().ifPresent(requestCreateSearchResultData -> {
-                infoData.setCustName(requestCreateSearchResultData.getCustName());
-                infoData.setCustType(requestCreateSearchResultData.getCustType());
-                infoData.setCustStatus(requestCreateSearchResultData.getCustStatus());
-                infoData.setLanguagePreference(requestCreateSearchResultData.getLanguagePreference());
-                infoData.setServiceStatus(requestCreateSearchResultData.getServiceStatus());
-                infoData.setServiceStatusDesc(requestCreateSearchResultData.getServiceStatusDesc());
-                infoData.setSubsId(requestCreateSearchResultData.getSubsId());
-                infoData.setOfferName(requestCreateSearchResultData.getOfferName());
-                infoData.setItsmUrl(requestCreateSearchResultData.getUrl());
-                infoData.setGridId(requestCreateSearchResultData.getGridId());
-                infoData.setExchangeBuildingId(requestCreateSearchResultData.getExchangeBuildingId());
-            });
+
+            List<RequestCreateSearchResultData> resultsDataList = findData4Bsn(sdTicketServiceData.getServiceCode()).getList();
+            if (CollectionUtils.isNotEmpty(resultsDataList)) {
+                RequestCreateSearchResultData requestCreateSearchResultData = resultsDataList.get(0);
+                if (requestCreateSearchResultData != null) {
+                    if (requestCreateSearchResultData.getServiceNo().equals(sdTicketServiceData.getServiceCode())) {
+                        infoData.setCustName(requestCreateSearchResultData.getCustName());
+                        infoData.setCustType(requestCreateSearchResultData.getCustType());
+                        infoData.setCustStatus(requestCreateSearchResultData.getCustStatus());
+                        infoData.setLanguagePreference(requestCreateSearchResultData.getLanguagePreference());
+                        infoData.setServiceStatus(requestCreateSearchResultData.getServiceStatus());
+                        infoData.setServiceStatusDesc(requestCreateSearchResultData.getServiceStatusDesc());
+                        infoData.setSubsId(requestCreateSearchResultData.getSubsId());
+                        infoData.setOfferName(requestCreateSearchResultData.getOfferName());
+                        infoData.setItsmUrl(requestCreateSearchResultData.getUrl());
+                        infoData.setPendingOrder(requestCreateSearchResultData.getPendingOrder());
+                        infoData.setDescription(requestCreateSearchResultData.getDescription());
+                        infoData.setServiceAddress(requestCreateSearchResultData.getServiceAddress());
+                        infoData.setGridId(requestCreateSearchResultData.getGridId());
+                        infoData.setExchangeBuildingId(requestCreateSearchResultData.getExchangeBuildingId());
+                    }
+                }
+            }
+
             infoData.setServiceType(sdTicketServiceData.getServiceType());
             infoData.setServiceNo(sdTicketServiceData.getServiceCode());
         });
@@ -141,7 +150,15 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
                 }));
         if (CollectionUtils.isEmpty(resultDataList)) {
             resultsData.setErrorMsg(String.format("Service(s) not found with %s .", tenantId));
+            return resultsData;
         }
+
+        for(RequestCreateSearchResultData resultData : resultDataList) {
+            SdServiceTypeData serviceTypeByOfferName = serviceTypeFacade.getServiceTypeByOfferName(resultData.getOfferName());
+            resultData.setServiceType(serviceTypeByOfferName.getServiceTypeCode());
+            resultData.setServiceTypeDesc(serviceTypeByOfferName.getServiceTypeName());
+        }
+
         resultsData.setList(resultDataList);
         return resultsData;
     }

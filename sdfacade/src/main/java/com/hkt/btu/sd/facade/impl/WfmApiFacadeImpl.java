@@ -20,6 +20,7 @@ import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
 import com.hkt.btu.sd.facade.data.wfm.WfmOfferNameProductTypeData;
 import com.hkt.btu.sd.facade.data.wfm.WfmResponse;
 import com.hkt.btu.sd.facade.data.wfm.WfmSuccess;
+import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -128,24 +129,24 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
     }
 
     @Override
-    public WfmPendingOrderData getPendingOrderByBsn(String bsn) {
-        WfmPendingOrderData data = new WfmPendingOrderData();
+    public SdPendingOrderData getPendingOrderByBsn(String bsn) {
+        SdPendingOrderData pendingOrderData = new SdPendingOrderData();
         String wfmResponseDataJsonString = null;
         try {
             wfmResponseDataJsonString = getData("/api/v1/sd/GetPendingOrderByBsn/" + bsn, null);
         } catch (RuntimeException e) {
             String errorMsg = "WFM Error: Cannot check pending order from WFM of BSN " + bsn + ".";
-            data.setErrorMsg(errorMsg);
             LOG.error(errorMsg);
         }
 
-        List<String> responseDataList = new Gson().<List<String>>fromJson(wfmResponseDataJsonString, new TypeToken<List<String>>() {
+        WfmPendingOrderData responseData = new Gson().fromJson(wfmResponseDataJsonString, new TypeToken<WfmPendingOrderData>() {
         }.getType());
-        if (CollectionUtils.isNotEmpty(responseDataList)) {
-            String[] arr = responseDataList.toArray(new String[responseDataList.size()]);
-            data.setPendingOrder(StringUtils.join(arr, ","));
+        Long pendingOrderId = responseData==null ? null : responseData.getOrderId();
+        if (pendingOrderId!=null && pendingOrderId!=0) {
+//            String[] arr = responseDataList.toArray(new String[responseDataList.size()]);
+            pendingOrderData.setPendingOrder(String.format("%d", pendingOrderId));
         }
-        return data;
+        return pendingOrderData;
     }
 
     @Override
