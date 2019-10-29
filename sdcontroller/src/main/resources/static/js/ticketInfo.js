@@ -251,7 +251,7 @@ $().ready(function(){
     })
     // close button
     $('#btnTicketClose').on('click',function(){
-        $('.modal').modal('show');
+        $('.reason').modal('show');
     })
 
     $('#btnReasonSubmit').on('click',function(){
@@ -269,6 +269,41 @@ $().ready(function(){
                 var responseError = e.responseText ? e.responseText : "Get failed.";
                 console.log("ERROR : ", responseError);
                 showErrorMsg(responseError);
+            })
+        }
+        $(form).addClass("was-validated");
+    })
+
+    $('#btnResetNGN3PWD').on('click',function(){
+//        $('.ngn3').modal('show');
+//        $.confirm({
+//            title:'Re-set NGN3 Account Password',
+//            content:'',
+//            buttons:{
+//                formSubmit:{
+//                    btnClass:'btn-blue',
+//                    action:function(){
+//                        console.log("fasdf");
+//                    }
+//                },
+//                cancel:function(){
+//
+//                }
+//            }
+//        })
+    })
+
+    $('#btnResetNGN3PWDSubmit').on('click',function(){
+        let form =$(this).parents('.modal-content').find('form').get(0);
+        if(form.checkValidity()){
+            $.post('/ticket/resetNGN3PWD',{
+                accountId:$(form).find('input[name=accountId]').val()
+            },function(res){
+                if(res.success){
+
+                }else{
+
+                }
             })
         }
         $(form).addClass("was-validated");

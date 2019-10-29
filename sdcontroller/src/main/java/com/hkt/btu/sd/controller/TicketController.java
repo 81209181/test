@@ -308,4 +308,13 @@ public class TicketController {
         }
         return "ticket/offerDetail";
     }
+
+    @PostMapping("resetNGN3PWD")
+    public ResponseEntity<?> resetNGN3PWD(String accountId){
+        if (norarsApiFacade.resetNGN3PWD(accountId)) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of());
+        } else {
+            return ResponseEntity.ok(SimpleAjaxResponse.of(false, "Reset password fail."));
+        }
+    }
 }

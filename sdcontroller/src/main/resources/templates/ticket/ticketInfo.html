@@ -11,7 +11,6 @@
         var customerCode = '[[${ticketInfo.custCode}]]';
         var ticketMasId = '[[${ticketInfo.ticketMasId}]]';
         var ticketStatus = '[[${ticketInfo.ticketStatus}]]';
-        var itsmUrl = '[[${ticketInfo.itsmUrl}]]';
         var bsn = '[[${ticketInfo.serviceNo}]]';
     </script>
     <div class="card" style="margin-bottom: 75px;" th:object="${ticketInfo}">
@@ -102,6 +101,7 @@
                         <button type="button" class="btn btn-info ml-3" onclick='getInventory(bsn);'>Inventory Detail</button>
                         <button type="button" class="btn btn-info ml-3" onclick="getOfferDetailList(bsn);">BB Detail</button>
                         <button type="button" class="btn btn-info ml-3" onclick='getRelatedOfferInfo(bsn);'>VoIP Detail</button>
+                        <button type="button" class="btn btn-info ml-3" id="btnResetNGN3PWD">Re-set NGN3 Account Password</button>
                     </h3>
                 </div>
                 <div class="col-md-12">
@@ -314,7 +314,7 @@
             </div>
         </form>
     </div>
-    <div class="modal fade">
+    <div class="modal fade reason">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header text-white bg-secondary h-80">
@@ -341,6 +341,30 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary float-right" id="btnReasonSubmit">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade ngn3">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header text-white bg-info h-60">
+                    <h6 class="modal-title">Re-set NGN3 Account Password</h6>
+                    <button type="button" class="close text-white" data-dismiss="modal">x</button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation" novalidate>
+                        <div class="form-row form-inline">
+                            <label class="form-label col-md-3">Account ID:</label>
+                            <input type="text" class="form-control col-md-8" required name="accountId"/>
+                            <div class="invalid-feedback offset-md-3">
+                                Please enter a account id.
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info float-right" id="btnResetNGN3PWDSubmit">Submit</button>
                 </div>
             </div>
         </div>
