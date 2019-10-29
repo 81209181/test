@@ -6,7 +6,7 @@ insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TY
 values ('SITE', 'appName', 'ServiceDesk', 'String', current_timestamp, 0, current_timestamp, 0);
 
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
-values ('SITE', 'givenDomain', '', 'String', current_timestamp, 0, current_timestamp, 0);
+values ('SITE', 'givenDomain', 'sd.pccw.com', 'String', sysdate, 0, sysdate, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('SITE', 'cronjobHostname', 'yecvm_saapp01', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
