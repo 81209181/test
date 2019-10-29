@@ -99,9 +99,9 @@
                     <h3>
                         Service
                         <button type="button" class="btn btn-info ml-3" th:attr="data-url=*{itsmUrl}" th:disabled="not *{itsmUrl}" id="btnServiceLink">Link</button>
-                        <button type="button" class="btn btn-info ml-3" onclick='getInventory(bsn);'>Get Inventory</button>
-                        <button type="button" class="btn btn-info ml-3" onclick='getRelatedOfferInfo(bsn);'>Related Offer Info</button>
-                        <button type="button" class="btn btn-info ml-3" onclick="getOfferDetailList(bsn);">Offer Detail List</button>
+                        <button type="button" class="btn btn-info ml-3" onclick='getInventory(bsn);'>Inventory Detail</button>
+                        <button type="button" class="btn btn-info ml-3" onclick="getOfferDetailList(bsn);">BB Detail</button>
+                        <button type="button" class="btn btn-info ml-3" onclick='getRelatedOfferInfo(bsn);'>VoIP Detail</button>
                         <button type="button" class="btn btn-info ml-3" onclick="getNGN3OneDayAdminAccount(bsn);">Get NGN3 One Day Admin Account</button>
                     </h3>
                 </div>
@@ -327,8 +327,8 @@
                         <div class="form-row">
                             <select class="custom-select" required name="reasonType">
                                 <option value="" hidden>Please select</option>
-                                <option value="Customer Request Close">Customer Request Close</option>
-                                <option value="Invalid Input">Invalid Input</option>
+                                <option value="CUSTOMER REPORT OK & REQUEST CANCEL">Customer Report OK & Request Cancel</option>
+                                <option value="OTHER SERVICE REPORT">Other Service Report</option>
                             </select>
                             <div class="invalid-feedback">
                                 Please select on reason.
