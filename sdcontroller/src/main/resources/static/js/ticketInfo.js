@@ -26,7 +26,7 @@ $().ready(function(){
             $.each(res,function(index,j){
                 let service =$('#service');
                 $.each(j,function(key,value){
-                    service.find('input[name='+key+']').val(value);
+//                    service.find('input[name='+key+']').val(value);    // by Dennis  ref jira 179
                     if (key == 'faultsList') {
                         if (value == '') {
                             $('#btnMakeAppointment').attr('disabled', true);
@@ -236,7 +236,7 @@ $().ready(function(){
     })
     // close button
     $('#btnTicketClose').on('click',function(){
-        $('.modal').modal('show');
+        $('.reason').modal('show');
     })
 
     $('#btnReasonSubmit').on('click',function(){
@@ -257,6 +257,18 @@ $().ready(function(){
             })
         }
         $(form).addClass("was-validated");
+    })
+
+    $('#btnResetNGN3PWD').on('click',function(){
+        $.post('/ticket/resetNGN3PWD',{
+            bsn:bsn
+        },function(res){
+
+        }).fail(function(e){
+            var responseError = e.responseText ? e.responseText : "Get failed.";
+            console.log("ERROR : ", responseError);
+            showErrorMsg(responseError);
+        })
     })
 
     ajaxGetJobInfo(ticketMasId);

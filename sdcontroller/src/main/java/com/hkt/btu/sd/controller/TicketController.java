@@ -13,6 +13,7 @@ import com.hkt.btu.sd.facade.data.nora.NoraBroadbandInfoData;
 import com.hkt.btu.sd.facade.data.nora.NoraDnGroupData;
 import com.hkt.btu.sd.facade.data.wfm.WfmAppointmentResData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
+import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
@@ -39,13 +40,15 @@ public class TicketController {
     SdUserRoleFacade userRoleFacade;
     @Resource(name = "wfmApiFacade")
     WfmApiFacade wfmApiFacade;
+    @Resource(name = "serviceTypeFacade")
+    SdServiceTypeFacade serviceTypeFacade;
 
     @Resource(name = "norarsApiFacade")
     NorarsApiFacade norarsApiFacade;
 
     @GetMapping("service-identity")
-    public String serviceIdentity(Model model) {
-        model.addAttribute("serviceSearchKeyList", requestCreateFacade.getSearchKeyEnumList());
+    public String serviceIdentity(Model model ) {
+        model.addAttribute("serviceSearchKeyList", requestCreateFacade.getSearchKeyEnumList() );
         return "ticket/serviceIdentity";
     }
 
@@ -64,14 +67,23 @@ public class TicketController {
         if (StringUtils.isEmpty(queryTicketRequestData.getServiceNo()) || StringUtils.isEmpty(queryTicketRequestData.getServiceType())) {
             return ResponseEntity.badRequest().body("Service No. / Service Type is empty.");
         }
-        WfmPendingOrderData pendingOrderData = wfmApiFacade.getPendingOrderByBsn(queryTicketRequestData.getServiceNo());
-        if (StringUtils.isNotEmpty(pendingOrderData.getErrorMsg())) {
-            return ResponseEntity.badRequest().body("There is pending order (" + pendingOrderData.getPendingOrder() + ") of the service in WFM.");
+
+        // check wfm pending order
+        boolean checkPendingOrder = serviceTypeFacade.needCheckPendingOrder(queryTicketRequestData.getServiceType());
+        if(checkPendingOrder) {
+            SdPendingOrderData pendingOrderData = wfmApiFacade.getPendingOrderByBsn(queryTicketRequestData.getServiceNo());
+            if (StringUtils.isNotEmpty(pendingOrderData.getErrorMsg())) {
+                return ResponseEntity.badRequest().body("There is pending order (" + pendingOrderData.getPendingOrder() + ") of the service in WFM.");
+            }
         }
+
+        // check pending ticket of same service number
         List<SdTicketMasData> dataList = ticketFacade.getTicketByServiceNo(queryTicketRequestData.getServiceNo());
         if (CollectionUtils.isNotEmpty(dataList)) {
             return ResponseEntity.ok(ResponseTicketData.of(false, dataList));
         }
+
+        // create ticket
         return ResponseEntity.ok(ResponseTicketData.of(true, ticketFacade.createQueryTicket(queryTicketRequestData)));
     }
 
@@ -174,6 +186,7 @@ public class TicketController {
         }
     }
 
+
     @GetMapping("/ajax-get-fault")
     public ResponseEntity<?> getFaultInfo(@RequestParam String subscriberId) {
         return ResponseEntity.ok(ticketFacade.getFaultInfo(subscriberId));
@@ -195,7 +208,7 @@ public class TicketController {
             node.put("success", true);
             return ResponseEntity.ok(mapper.writeValueAsString(node));
         } else {
-            return ResponseEntity.badRequest().body(String.format("WFM Error: Cannot create job for ticket mas id %s.", ticketMasData.getTicketMasId()));
+            return ResponseEntity.badRequest().body(String.format("WFM Error: Cannot create job for ticket mas id %s.",ticketMasData.getTicketMasId()));
         }
     }
 
@@ -270,7 +283,7 @@ public class TicketController {
                                @RequestParam String bsn,
                                @ModelAttribute("noraDnGroupData") NoraDnGroupData noraDnGroupData) {
         noraDnGroupData = norarsApiFacade.getRelatedOfferInfoListByBsn(bsn);
-        if (noraDnGroupData != null) {
+        if(noraDnGroupData !=null){
             model.addAttribute("noraDnGroupData", noraDnGroupData);
         }
         return "ticket/offerInfo";
@@ -307,5 +320,14 @@ public class TicketController {
             return ResponseEntity.ok(appointmentInfo);
         }
         return ResponseEntity.badRequest().body("WFM Error: Cannot get appointment info for ticketMasId:" + ticketMasId);
+    }
+
+    @PostMapping("resetNGN3PWD")
+    public ResponseEntity<?> resetNGN3PWD(String bsn){
+        if (norarsApiFacade.resetNGN3PWD(bsn)) {
+            return ResponseEntity.ok("Reset password success.");
+        } else {
+            return ResponseEntity.badRequest().body("Reset password fail.");
+        }
     }
 }

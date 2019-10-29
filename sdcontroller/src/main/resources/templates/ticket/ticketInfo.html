@@ -11,7 +11,6 @@
         var customerCode = '[[${ticketInfo.custCode}]]';
         var ticketMasId = '[[${ticketInfo.ticketMasId}]]';
         var ticketStatus = '[[${ticketInfo.ticketStatus}]]';
-        var itsmUrl = '[[${ticketInfo.itsmUrl}]]';
         var bsn = '[[${ticketInfo.serviceNo}]]';
     </script>
     <div class="card" style="margin-bottom: 75px;" th:object="${ticketInfo}">
@@ -102,6 +101,7 @@
                         <button type="button" class="btn btn-info ml-3" onclick='getInventory(bsn);'>Inventory Detail</button>
                         <button type="button" class="btn btn-info ml-3" onclick="getOfferDetailList(bsn);">BB Detail</button>
                         <button type="button" class="btn btn-info ml-3" onclick='getRelatedOfferInfo(bsn);'>VoIP Detail</button>
+                        <button th:if="*{serviceType} eq VOIP" type="button" class="btn btn-info ml-3" id="btnResetNGN3PWD">Re-set NGN3 Account Password</button>
                         <button type="button" class="btn btn-info ml-3" onclick="getNGN3OneDayAdminAccount(bsn);">One Day Admin Account</button>
                     </h3>
                 </div>
@@ -113,7 +113,7 @@
                         </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Service Type: </label>
-                            <input type="text" class="form-control col-md-6" name="serviceType" readonly th:value="*{serviceType}">
+                            <input type="text" class="form-control col-md-6" name="serviceType" readonly th:value="*{serviceTypeDesc}">
                         </div>
                         <div class="temp_faults col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Symptom: </label>
@@ -146,6 +146,10 @@
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">L1 PID/STB/Description: </label>
                             <input type="text" class="form-control col-md-6" name="description" th:value="*{description}" readonly/>
+                        </div>
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Related BSN: </label>
+                            <input type="text" class="form-control col-md-6" name="relatedBsn" th:value="*{relatedBsn}" readonly/>
                         </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Grid ID: </label>
@@ -323,7 +327,7 @@
             </div>
         </form>
     </div>
-    <div class="modal fade">
+    <div class="modal fade reason">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header text-white bg-secondary h-80">

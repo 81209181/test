@@ -109,6 +109,7 @@ public class BtuSiteConfigServiceImpl implements BtuSiteConfigService {
         String prodHostname = MapUtils.getString(map, BtuConfigParamEntity.SITE.CONFIG_KEY_PROD_HOSTNAME);
         String prodStandbyHostname = MapUtils.getString(map, BtuConfigParamEntity.SITE.CONFIG_KEY_PROD_STANDBY_HOSTNAME);
         String uatHostname = MapUtils.getString(map, BtuConfigParamEntity.SITE.CONFIG_KEY_UAT_HOSTNAME);
+        String vtHostname = MapUtils.getString(map, BtuConfigParamEntity.SITE.CONFIG_KEY_VT_HOSTNAME);
 
         String mailHost = MapUtils.getString(map, BtuConfigParamEntity.SITE.CONFIG_KEY_MAIL_HOST);
         Integer mailPort = MapUtils.getInteger(map, BtuConfigParamEntity.SITE.CONFIG_KEY_MAIL_PORT);
@@ -143,6 +144,8 @@ public class BtuSiteConfigServiceImpl implements BtuSiteConfigService {
             siteConfigBean.setServerType(BtuSiteConfigBean.SERVER_TYPE.PROD_STANDBY);
         } else if ( StringUtils.equals(serverHostname, uatHostname) ){
             siteConfigBean.setServerType(BtuSiteConfigBean.SERVER_TYPE.UAT);
+        } else if ( StringUtils.equals(serverHostname, vtHostname) ){
+            siteConfigBean.setServerType(BtuSiteConfigBean.SERVER_TYPE.VT);
         } else {
             siteConfigBean.setServerType(BtuSiteConfigBean.SERVER_TYPE.DEV);
         }

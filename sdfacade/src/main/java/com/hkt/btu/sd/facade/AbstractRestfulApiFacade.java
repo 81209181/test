@@ -1,13 +1,11 @@
 package com.hkt.btu.sd.facade;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.hkt.btu.common.facade.data.DataInterface;
 import com.hkt.btu.sd.core.service.SdSiteService;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
-import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,7 +17,7 @@ import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.*;
-import javax.xml.crypto.Data;
+import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -29,6 +27,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.Base64;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractRestfulApiFacade {
 
@@ -129,7 +131,6 @@ public abstract class AbstractRestfulApiFacade {
             if (gson == null) {
                 gson = getGson();
             }
-
             return gson.fromJson(jsonString, responseType);
         } catch (ProcessingException | WebApplicationException e) {
             LOG.error(e.getMessage(), e);
@@ -152,6 +153,11 @@ public abstract class AbstractRestfulApiFacade {
             LOG.debug(jsonString);
             return null;
         }
+    }
+    protected Response postEntity(String url,Entity<?> entity){
+        WebTarget webTarget = getWebTarget(url, null);
+        Invocation.Builder invocationBuilder = getInvocationBuilder(webTarget);
+        return invocationBuilder.post(entity);
     }
 
     protected String postData(String path, Map<String, String> queryParamMap, Entity<?> entity) {

@@ -7,5 +7,9 @@ import java.util.List;
 public interface SdServiceTypeFacade {
     List<SdServiceTypeData> getServiceTypeList();
 
+    String getServiceTypeDescByServiceTypeCode(String code);
+
     SdServiceTypeData getServiceTypeByOfferName(String offerName);
+
+    boolean needCheckPendingOrder(String serviceType);
 }

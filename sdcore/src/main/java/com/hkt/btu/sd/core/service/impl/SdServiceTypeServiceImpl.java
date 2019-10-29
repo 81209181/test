@@ -72,6 +72,12 @@ public class SdServiceTypeServiceImpl implements SdServiceTypeService {
         reload();
     }
 
+    @Override
+    public String getServiceTypeDescByServiceTypeCode(String code) {
+        return SERVICE_TYPE_LIST.stream().filter(sdServiceTypeBean -> sdServiceTypeBean.getServiceTypeCode().equals(code))
+                .map(SdServiceTypeBean::getServiceTypeName).findFirst().orElse(SdServiceTypeEntity.SERVICE_TYPE_NAME.UNKNOWN_SERVICE_TYPE);
+    }
+
     private void reloadServiceTypeOfferMapping() {
         LOG.info("reload service type offer mapping.");
         SERVICE_TYPE_OFFER_MAPPING = serviceTypeMapper.getServiceTypeOfferMapping().stream().map(entity -> {
