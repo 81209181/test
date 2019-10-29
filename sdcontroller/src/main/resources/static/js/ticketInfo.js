@@ -28,6 +28,9 @@ $().ready(function(){
                 $.each(j,function(key,value){
                     service.find('input[name='+key+']').val(value);
                     if (key == 'faultsList') {
+                        if (value == '') {
+                            $('#btnMakeAppointment').attr('disabled', true);
+                        }
                         for (item of value) {
                             $('#symptomList').find('option[value='+item.symptomCode+']').attr('selected','selected');
                         }
@@ -203,26 +206,6 @@ $().ready(function(){
             input.val('');
             input.attr('disabled',false);
         }
-    })
-
-    $('#btnUpdateAppointment').on('click',function(){
-        clearAllMsg();
-        let appointment =$('input[name=appointmentDate]').val();
-        if(!appointment){
-            showErrorMsg('please input appointment date.');
-            return ;
-        }
-        $.post('/ticket/appointment/update',{
-            appointmentDate:appointment,
-            asap:$(this).parents('form').find('input[type=checkbox]').get(0).checked,
-            ticketMasId:ticketMasId
-        },function(res){
-            showInfoMsg(res);
-        }).fail(function(e){
-            var responseError = e.responseText ? e.responseText : "Get failed.";
-            console.log("ERROR : ", responseError);
-            showErrorMsg(responseError);
-        })
     })
 
     // submit button

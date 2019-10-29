@@ -173,7 +173,6 @@ public class TicketController {
         }
     }
 
-
     @GetMapping("/ajax-get-fault")
     public ResponseEntity<?> getFaultInfo(@RequestParam String subscriberId) {
         return ResponseEntity.ok(ticketFacade.getFaultInfo(subscriberId));
@@ -218,17 +217,6 @@ public class TicketController {
         } else {
             return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
         }
-    }
-
-    @PostMapping("appointment/update")
-    public ResponseEntity<?> updateAppointment(String appointmentDate, boolean asap, Principal principal, String ticketMasId) {
-        if (!asap) {
-            if (!ticketFacade.checkAppointmentDate(appointmentDate)) {
-                return ResponseEntity.badRequest().body("The appointment time must be two hours later.");
-            }
-        }
-        ticketFacade.updateAppointment(appointmentDate, asap, principal.getName(), ticketMasId);
-        return ResponseEntity.ok("Update appointment success.");
     }
 
     @GetMapping("/ajax-get-ticket")
