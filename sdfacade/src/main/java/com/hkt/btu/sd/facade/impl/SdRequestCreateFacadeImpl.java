@@ -150,7 +150,15 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
                 }));
         if (CollectionUtils.isEmpty(resultDataList)) {
             resultsData.setErrorMsg(String.format("Service(s) not found with %s .", tenantId));
+            return resultsData;
         }
+
+        for(RequestCreateSearchResultData resultData : resultDataList) {
+            SdServiceTypeData serviceTypeByOfferName = serviceTypeFacade.getServiceTypeByOfferName(resultData.getOfferName());
+            resultData.setServiceType(serviceTypeByOfferName.getServiceTypeCode());
+            resultData.setServiceTypeDesc(serviceTypeByOfferName.getServiceTypeName());
+        }
+
         resultsData.setList(resultDataList);
         return resultsData;
     }
