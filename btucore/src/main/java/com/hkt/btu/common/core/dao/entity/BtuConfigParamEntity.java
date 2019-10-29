@@ -21,6 +21,7 @@ public class BtuConfigParamEntity extends BaseEntity {
         public static final String CONFIG_KEY_PROD_HOSTNAME = "prodHostname";
         public static final String CONFIG_KEY_PROD_STANDBY_HOSTNAME = "prodStandbyHostname";
         public static final String CONFIG_KEY_UAT_HOSTNAME = "uatHostname";
+        public static final String CONFIG_KEY_VT_HOSTNAME = "vtHostname";
 
         public static final String CONFIG_KEY_MAIL_HOST = "mailHost";
         public static final String CONFIG_KEY_MAIL_PORT = "mailPort";
