@@ -8,4 +8,6 @@ public interface SdServiceTypeFacade {
     List<SdServiceTypeData> getServiceTypeList();
 
     SdServiceTypeData getServiceTypeByOfferName(String offerName);
+
+    boolean needCheckPendingOrder(String serviceType);
 }

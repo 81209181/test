@@ -4,6 +4,12 @@ import com.hkt.btu.common.core.service.bean.BaseBean;
 
 public class SdServiceTypeBean extends BaseBean {
 
+    public class SERVICE_TYPE{
+        public static final String BROADBAND = "BN";
+        public static final String VOIP = "VOIP";
+        public static final String E_CLOUD = "E_CLOUD";
+    }
+
     private String serviceTypeCode;
     private String serviceTypeName;
 

@@ -1,6 +1,6 @@
 package com.hkt.btu.sd.facade.data;
 
-public class WfmPendingOrderData {
+public class SdPendingOrderData {
 
     private String pendingOrder;
     private String errorMsg;

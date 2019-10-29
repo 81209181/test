@@ -11,6 +11,7 @@ import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.nora.NoraBroadbandInfoData;
 import com.hkt.btu.sd.facade.data.nora.NoraDnGroupData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
+import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
@@ -37,6 +38,8 @@ public class TicketController {
     SdUserRoleFacade userRoleFacade;
     @Resource(name = "wfmApiFacade")
     WfmApiFacade wfmApiFacade;
+    @Resource(name = "serviceTypeFacade")
+    SdServiceTypeFacade serviceTypeFacade;
 
     @Resource(name = "norarsApiFacade")
     NorarsApiFacade norarsApiFacade;
@@ -62,14 +65,23 @@ public class TicketController {
         if (StringUtils.isEmpty(queryTicketRequestData.getServiceNo()) || StringUtils.isEmpty(queryTicketRequestData.getServiceType())) {
             return ResponseEntity.badRequest().body("Service No. / Service Type is empty.");
         }
-        WfmPendingOrderData pendingOrderData = wfmApiFacade.getPendingOrderByBsn(queryTicketRequestData.getServiceNo());
-        if (StringUtils.isNotEmpty(pendingOrderData.getErrorMsg())) {
-            return ResponseEntity.badRequest().body("There is pending order (" + pendingOrderData.getPendingOrder() + ") of the service in WFM.");
+
+        // check wfm pending order
+        boolean checkPendingOrder = serviceTypeFacade.needCheckPendingOrder(queryTicketRequestData.getServiceType());
+        if(checkPendingOrder) {
+            SdPendingOrderData pendingOrderData = wfmApiFacade.getPendingOrderByBsn(queryTicketRequestData.getServiceNo());
+            if (StringUtils.isNotEmpty(pendingOrderData.getErrorMsg())) {
+                return ResponseEntity.badRequest().body("There is pending order (" + pendingOrderData.getPendingOrder() + ") of the service in WFM.");
+            }
         }
+
+        // check pending ticket of same service number
         List<SdTicketMasData> dataList = ticketFacade.getTicketByServiceNo(queryTicketRequestData.getServiceNo());
         if (CollectionUtils.isNotEmpty(dataList)) {
             return ResponseEntity.ok(ResponseTicketData.of(false, dataList));
         }
+
+        // create ticket
         return ResponseEntity.ok(ResponseTicketData.of(true, ticketFacade.createQueryTicket(queryTicketRequestData)));
     }
 

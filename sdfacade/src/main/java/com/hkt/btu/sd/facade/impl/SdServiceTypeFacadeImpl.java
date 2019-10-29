@@ -5,6 +5,7 @@ import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
 import com.hkt.btu.sd.facade.SdServiceTypeFacade;
 import com.hkt.btu.sd.facade.data.SdServiceTypeData;
 import com.hkt.btu.sd.facade.populator.SdServiceTypeDataPopulator;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -34,4 +35,21 @@ public class SdServiceTypeFacadeImpl implements SdServiceTypeFacade {
         serviceTypeDataPopulator.populate(bean,data);
         return data;
     }
+
+    @Override
+    public boolean needCheckPendingOrder(String serviceType) {
+        if(StringUtils.isEmpty(serviceType)){
+            return false;
+        }
+
+        switch (serviceType){
+            case SdServiceTypeBean.SERVICE_TYPE.BROADBAND:
+            case SdServiceTypeBean.SERVICE_TYPE.VOIP:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+
 }
