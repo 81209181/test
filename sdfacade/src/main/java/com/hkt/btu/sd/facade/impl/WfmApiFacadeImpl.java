@@ -117,23 +117,19 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
 
     @Override
     public WfmPendingOrderData getPendingOrderByBsn(String bsn) {
-        WfmPendingOrderData data = new WfmPendingOrderData();
-        String wfmResponseDataJsonString = null;
+        WfmPendingOrderData pendingOrderData = new WfmPendingOrderData();
         try {
-            wfmResponseDataJsonString = getData("/api/v1/sd/GetPendingOrderByBsn/" + bsn, null);
+            pendingOrderData = getData("/api/v1/sd/GetPendingOrderByBsn/" + bsn, WfmPendingOrderData.class, null);
         } catch (RuntimeException e) {
             String errorMsg = "WFM Error: Cannot check pending order from WFM of BSN " + bsn + ".";
-            data.setErrorMsg(errorMsg);
+            pendingOrderData.setErrorMsg(errorMsg);
             LOG.error(errorMsg);
         }
 
-        List<String> responseDataList = new Gson().<List<String>>fromJson(wfmResponseDataJsonString, new TypeToken<List<String>>() {
-        }.getType());
-        if (CollectionUtils.isNotEmpty(responseDataList)) {
-            String[] arr = responseDataList.toArray(new String[responseDataList.size()]);
-            data.setPendingOrder(StringUtils.join(arr, ","));
+        if (pendingOrderData != null) {
+            pendingOrderData.setPendingOrder(pendingOrderData.getOrderId());
         }
-        return data;
+        return pendingOrderData;
     }
 
     @Override
