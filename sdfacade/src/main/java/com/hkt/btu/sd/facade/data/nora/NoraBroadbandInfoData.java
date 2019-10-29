@@ -62,9 +62,7 @@ public class NoraBroadbandInfoData implements DataInterface {
 	private String oldFsa = "";
 	
 	private String pppoeLoginID = "";
-	
-	private String pppoePassword = "";
-	
+
 	private String productType = "";
 	
 	private int relativeDuration = 0;
@@ -271,12 +269,6 @@ public class NoraBroadbandInfoData implements DataInterface {
 	}
 	public void setPppoeLoginID(String pppoeLoginID) {
 		this.pppoeLoginID = pppoeLoginID;
-	}
-	public String getPppoePassword() {
-		return pppoePassword;
-	}
-	public void setPppoePassword(String pppoePassword) {
-		this.pppoePassword = pppoePassword;
 	}
 	public String getProductType() {
 		return productType;

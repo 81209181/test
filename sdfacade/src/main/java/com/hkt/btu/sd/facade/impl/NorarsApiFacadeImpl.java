@@ -3,14 +3,12 @@ package com.hkt.btu.sd.facade.impl;
 import com.google.gson.Gson;
 import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.sd.core.service.SdApiService;
+import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.NorarsApiFacade;
 import com.hkt.btu.sd.facade.data.ServiceAddressData;
-import com.hkt.btu.sd.facade.data.nora.NoraBroadbandInfoData;
-import com.hkt.btu.sd.facade.data.nora.NoraAddressInfoData;
-import com.hkt.btu.sd.facade.data.nora.NoraPidInfoData;
-import com.hkt.btu.sd.facade.data.nora.NoraDnGroupData;
+import com.hkt.btu.sd.facade.data.nora.*;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Resource;
@@ -18,6 +16,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -28,6 +27,9 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
 
     @Resource(name = "apiService")
     SdApiService apiService;
+
+    @Resource(name = "userService")
+    SdUserService userService;
 
     @Override
     public String getBsnByDn(String dn) {
@@ -94,8 +96,31 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
     }
 
     @Override
-    public boolean resetNGN3PWD(String accountId) {
+    public boolean resetNGN3PWD(String bsn) {
+        Optional.ofNullable(getRelatedOfferInfoListByBsn(bsn)).map(NoraDnGroupData::getAdminPortalId).ifPresentOrElse(admin -> {
+            if (admin.contains(",")) {
+                Arrays.stream(admin.split(","));
+            } else {
+
+            }
+        },() -> {
+            throw new RuntimeException("Admin portal Id not found.");
+        });
         return false;
+    }
+
+    @Override
+    public NoraAccountData getNGN3OneDayAdminAccount(String bsn) {
+        String requestorId = userService.getCurrentUserBean().getUserId();
+
+        if(StringUtils.length(bsn) == 8) {
+            bsn = getBsnByDn(bsn);
+        }
+
+        String apiPath = "/norars/api/v1/osb/accounts/"+bsn+"/"+ requestorId;
+        NoraAccountData data = postData(apiPath, NoraAccountData.class, null, null);
+
+        return data;
     }
 
     @Override

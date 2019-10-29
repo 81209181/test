@@ -8,8 +8,10 @@ import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
 import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.data.*;
+import com.hkt.btu.sd.facade.data.nora.NoraAccountData;
 import com.hkt.btu.sd.facade.data.nora.NoraBroadbandInfoData;
 import com.hkt.btu.sd.facade.data.nora.NoraDnGroupData;
+import com.hkt.btu.sd.facade.data.wfm.WfmAppointmentResData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
 import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
 import org.apache.commons.collections.CollectionUtils;
@@ -231,17 +233,6 @@ public class TicketController {
         }
     }
 
-    @PostMapping("appointment/update")
-    public ResponseEntity<?> updateAppointment(String appointmentDate, boolean asap, Principal principal, String ticketMasId) {
-        if (!asap) {
-            if (!ticketFacade.checkAppointmentDate(appointmentDate)) {
-                return ResponseEntity.badRequest().body("The appointment time must be two hours later.");
-            }
-        }
-        ticketFacade.updateAppointment(appointmentDate, asap, principal.getName(), ticketMasId);
-        return ResponseEntity.ok("Update appointment success.");
-    }
-
     @GetMapping("/ajax-get-ticket")
     public ResponseEntity<?> getTicketInfo(@RequestParam Integer ticketMasId) {
         SdTicketData ticketData = ticketFacade.getTicketInfo(ticketMasId);
@@ -309,12 +300,34 @@ public class TicketController {
         return "ticket/offerDetail";
     }
 
+    @GetMapping("/getNGN3OneDayAdminAccount")
+    public String getNGN3OneDayAdminAccount(final Model model,
+                                            @RequestParam String bsn,
+                                            @ModelAttribute("noraAccountData") NoraAccountData accountData) {
+        accountData = norarsApiFacade.getNGN3OneDayAdminAccount(bsn);
+
+        if (accountData != null) {
+            model.addAttribute("noraAccountData", accountData);
+        }
+        return "ticket/accountInfo";
+    }
+
+    @GetMapping("/getAppointmentInfo")
+    public ResponseEntity<?> getAppointmentInfo(@RequestParam Integer ticketMasId) {
+        WfmAppointmentResData appointmentInfo = wfmApiFacade.getAppointmentInfo(ticketMasId);
+
+        if (appointmentInfo != null) {
+            return ResponseEntity.ok(appointmentInfo);
+        }
+        return ResponseEntity.badRequest().body("WFM Error: Cannot get appointment info for ticketMasId:" + ticketMasId);
+    }
+
     @PostMapping("resetNGN3PWD")
-    public ResponseEntity<?> resetNGN3PWD(String accountId){
-        if (norarsApiFacade.resetNGN3PWD(accountId)) {
-            return ResponseEntity.ok(SimpleAjaxResponse.of());
+    public ResponseEntity<?> resetNGN3PWD(String bsn){
+        if (norarsApiFacade.resetNGN3PWD(bsn)) {
+            return ResponseEntity.ok("Reset password success.");
         } else {
-            return ResponseEntity.ok(SimpleAjaxResponse.of(false, "Reset password fail."));
+            return ResponseEntity.badRequest().body("Reset password fail.");
         }
     }
 }

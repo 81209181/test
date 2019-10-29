@@ -101,7 +101,8 @@
                         <button type="button" class="btn btn-info ml-3" onclick='getInventory(bsn);'>Inventory Detail</button>
                         <button type="button" class="btn btn-info ml-3" onclick="getOfferDetailList(bsn);">BB Detail</button>
                         <button type="button" class="btn btn-info ml-3" onclick='getRelatedOfferInfo(bsn);'>VoIP Detail</button>
-                        <button type="button" class="btn btn-info ml-3" id="btnResetNGN3PWD">Re-set NGN3 Account Password</button>
+                        <button th:if="*{serviceType} eq VOIP" type="button" class="btn btn-info ml-3" id="btnResetNGN3PWD">Re-set NGN3 Account Password</button>
+                        <button type="button" class="btn btn-info ml-3" onclick="getNGN3OneDayAdminAccount(bsn);">One Day Admin Account</button>
                     </h3>
                 </div>
                 <div class="col-md-12">
@@ -112,11 +113,11 @@
                         </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Service Type: </label>
-                            <input type="text" class="form-control col-md-6" name="serviceType" readonly th:value="*{serviceType}">
+                            <input type="text" class="form-control col-md-6" name="serviceType" readonly th:value="*{serviceTypeDesc}">
                         </div>
                         <div class="temp_faults col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Symptom: </label>
-                            <select name="symptom" id="symptomList" class="selectpicker form-control col-md-6" data-width="500px" data-live-search="true" th:disabled="*{ticketStatus} ne 'OPEN'"></select>
+                            <select name="symptom" id="symptomList" class="selectpicker form-control col-md-6" data-width="500px" data-live-search="true" title="Please select symptom..." th:disabled="*{ticketStatus} ne 'OPEN'"></select>
                         </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Subscriber ID: </label>
@@ -170,6 +171,17 @@
             <form id="appointment" class="row">
                 <div class="col-md-12">
                     <h3>Job <button type="button" class="btn btn-info ml-3" id="btnMakeAppointment">Make Appointment</button></h3>
+                    <div class="col-md-6 form-inline pt-2">
+                        <label class="col-form-label col-md-2 justify-content-end">Appointment Date:</label>
+                        <input type="text" class="form-control col-md-2" name="appointmentDate" readonly>
+
+                        <label class="col-form-label col-md-2 justify-content-end">Appointment Start Date Time:</label>
+                        <input type="text" class="form-control col-md-2" name="appointmentStartDateTime" readonly>
+
+                        <label class="col-form-label col-md-2 justify-content-end">Appointment End Date Time:</label>
+                        <input type="text" class="form-control col-md-2" name="appointmentEndDateTime" readonly>
+                    </div>
+                    <hr>
                 </div>
                 <div id="jobList">
 
@@ -236,14 +248,11 @@
                             <label class="col-form-label col-md-3 justify-content-end">Work Group:</label>
                             <input type="text" class="form-control col-md-6" name="workgroup" readonly>
                         </div>
-                        <div class="col-md-6 form-inline pt-2">
+                        <div class="col-md-6 form-inline pt-2 end">
                             <label class="col-form-label col-md-3 justify-content-end">Resolver:</label>
                             <input type="text" class="form-control col-md-6" name="resolver" readonly>
                         </div>
                     </div>
-                </div>
-                <div class="offset-md-11">
-                    <button type="button" class="btn btn-primary mt-2" id="btnUpdateAppointment">Update</button>
                 </div>
             </form>
             <hr>
@@ -345,30 +354,6 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary float-right" id="btnReasonSubmit">Submit</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade ngn3">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header text-white bg-info h-60">
-                    <h6 class="modal-title">Re-set NGN3 Account Password</h6>
-                    <button type="button" class="close text-white" data-dismiss="modal">x</button>
-                </div>
-                <div class="modal-body">
-                    <form class="needs-validation" novalidate>
-                        <div class="form-row form-inline">
-                            <label class="form-label col-md-3">Account ID:</label>
-                            <input type="text" class="form-control col-md-8" required name="accountId"/>
-                            <div class="invalid-feedback offset-md-3">
-                                Please enter a account id.
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-info float-right" id="btnResetNGN3PWDSubmit">Submit</button>
                 </div>
             </div>
         </div>

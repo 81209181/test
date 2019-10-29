@@ -118,8 +118,8 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
                     }
                 }
             }
-
             infoData.setServiceType(sdTicketServiceData.getServiceType());
+            infoData.setServiceTypeDesc(serviceTypeFacade.getServiceTypeDescByServiceTypeCode(sdTicketServiceData.getServiceType()));
             infoData.setServiceNo(sdTicketServiceData.getServiceCode());
         });
         return infoData;

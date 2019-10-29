@@ -11,12 +11,12 @@ public class WfmJobData implements DataInterface {
     private String sysId = "";
     private String status = "";
     private String assignTech = "";
-    private Timestamp actionDate;
-    private Timestamp srDate;
-    private Timestamp apptDate;
+    private Timestamp actionTimestamp;
+    private Timestamp srTimestamp;
+    private Timestamp apptTimestamp;
     private Timestamp apptSTime;
     private Timestamp apptETime;
-    private Timestamp lastUpdateDate;
+    private Timestamp lastUpTimestampTimestamp;
     private String fieldInd = "";
     private String lastJobInd = "";
     private String alertFieldRemark = "";
@@ -64,28 +64,28 @@ public class WfmJobData implements DataInterface {
         this.assignTech = assignTech;
     }
 
-    public Timestamp getActionDate() {
-        return actionDate;
+    public Timestamp getActionTimestamp() {
+        return actionTimestamp;
     }
 
-    public void setActionDate(Timestamp actionDate) {
-        this.actionDate = actionDate;
+    public void setActionTimestamp(Timestamp actionTimestamp) {
+        this.actionTimestamp = actionTimestamp;
     }
 
-    public Timestamp getSrDate() {
-        return srDate;
+    public Timestamp getSrTimestamp() {
+        return srTimestamp;
     }
 
-    public void setSrDate(Timestamp srDate) {
-        this.srDate = srDate;
+    public void setSrTimestamp(Timestamp srTimestamp) {
+        this.srTimestamp = srTimestamp;
     }
 
-    public Timestamp getApptDate() {
-        return apptDate;
+    public Timestamp getApptTimestamp() {
+        return apptTimestamp;
     }
 
-    public void setApptDate(Timestamp apptDate) {
-        this.apptDate = apptDate;
+    public void setApptTimestamp(Timestamp apptTimestamp) {
+        this.apptTimestamp = apptTimestamp;
     }
 
     public Timestamp getApptSTime() {
@@ -104,12 +104,12 @@ public class WfmJobData implements DataInterface {
         this.apptETime = apptETime;
     }
 
-    public Timestamp getLastUpdateDate() {
-        return lastUpdateDate;
+    public Timestamp getLastUpTimestampTimestamp() {
+        return lastUpTimestampTimestamp;
     }
 
-    public void setLastUpdateDate(Timestamp lastUpdateDate) {
-        this.lastUpdateDate = lastUpdateDate;
+    public void setLastUpTimestampTimestamp(Timestamp lastUpTimestampTimestamp) {
+        this.lastUpTimestampTimestamp = lastUpTimestampTimestamp;
     }
 
     public String getFieldInd() {

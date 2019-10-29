@@ -1,6 +1,8 @@
 package com.hkt.btu.sd.facade.data.nora;
 
-public class NoraAccountData
+import com.hkt.btu.common.facade.data.DataInterface;
+
+public class NoraAccountData implements DataInterface
 {
 	private String accountId = "";
 	private String password = "";

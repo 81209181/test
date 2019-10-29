@@ -26,8 +26,11 @@ $().ready(function(){
             $.each(res,function(index,j){
                 let service =$('#service');
                 $.each(j,function(key,value){
-                    service.find('input[name='+key+']').val(value);
+//                    service.find('input[name='+key+']').val(value);    // by Dennis  ref jira 179
                     if (key == 'faultsList') {
+                        if (value == '') {
+                            $('#btnMakeAppointment').attr('disabled', true);
+                        }
                         for (item of value) {
                             $('#symptomList').find('option[value='+item.symptomCode+']').attr('selected','selected');
                         }
@@ -101,6 +104,8 @@ $().ready(function(){
         }
         makeAppointment(ticketMasId, ticketDetId);
     })
+
+    getAppointmentInfo(ticketMasId);
 
     //contact
     $.get('/ticket/contact?ticketMasId='+ticketMasId,function(res){
@@ -205,26 +210,6 @@ $().ready(function(){
         }
     })
 
-    $('#btnUpdateAppointment').on('click',function(){
-        clearAllMsg();
-        let appointment =$('input[name=appointmentDate]').val();
-        if(!appointment){
-            showErrorMsg('please input appointment date.');
-            return ;
-        }
-        $.post('/ticket/appointment/update',{
-            appointmentDate:appointment,
-            asap:$(this).parents('form').find('input[type=checkbox]').get(0).checked,
-            ticketMasId:ticketMasId
-        },function(res){
-            showInfoMsg(res);
-        }).fail(function(e){
-            var responseError = e.responseText ? e.responseText : "Get failed.";
-            console.log("ERROR : ", responseError);
-            showErrorMsg(responseError);
-        })
-    })
-
     // submit button
     $('#btnTicketSubmit').on('click',function(){
         let ticket ={};
@@ -275,38 +260,15 @@ $().ready(function(){
     })
 
     $('#btnResetNGN3PWD').on('click',function(){
-//        $('.ngn3').modal('show');
-//        $.confirm({
-//            title:'Re-set NGN3 Account Password',
-//            content:'',
-//            buttons:{
-//                formSubmit:{
-//                    btnClass:'btn-blue',
-//                    action:function(){
-//                        console.log("fasdf");
-//                    }
-//                },
-//                cancel:function(){
-//
-//                }
-//            }
-//        })
-    })
+        $.post('/ticket/resetNGN3PWD',{
+            bsn:bsn
+        },function(res){
 
-    $('#btnResetNGN3PWDSubmit').on('click',function(){
-        let form =$(this).parents('.modal-content').find('form').get(0);
-        if(form.checkValidity()){
-            $.post('/ticket/resetNGN3PWD',{
-                accountId:$(form).find('input[name=accountId]').val()
-            },function(res){
-                if(res.success){
-
-                }else{
-
-                }
-            })
-        }
-        $(form).addClass("was-validated");
+        }).fail(function(e){
+            var responseError = e.responseText ? e.responseText : "Get failed.";
+            console.log("ERROR : ", responseError);
+            showErrorMsg(responseError);
+        })
     })
 
     ajaxGetJobInfo(ticketMasId);
@@ -358,7 +320,6 @@ function makeAppointment(ticketMasId, ticketDetId) {
             userName : "sd",
             password : "Ki6=rEDs47*^5"
         }
-        //}, 'https://10.252.15.158/wfm');
     }, "https://10.252.15.158/wfm");
 }
 
@@ -398,6 +359,35 @@ function getOfferDetailList(bsn) {
 
     let ctx = $("meta[name='_ctx']").attr("content");
     window.open(ctx+'/ticket/offer-detail?bsn='+bsn,'OfferDetailList','scrollbars=yes,height=800,width=1200');
+}
+
+function getNGN3OneDayAdminAccount(bsn) {
+    if (bsn === '') {
+        showErrorMsg('No service number!');
+        return;
+    }
+
+    let ctx = $("meta[name='_ctx']").attr("content");
+
+    window.open(ctx + '/ticket/getNGN3OneDayAdminAccount?bsn='+bsn, 'Account Info', 'scrollbars=yes,height=400,width=500');
+}
+
+function getAppointmentInfo(ticketMasId) {
+    $.ajax({
+        url: '/ticket/getAppointmentInfo',
+        type: 'GET',
+        dataType: 'json',
+        data: {ticketMasId:ticketMasId},
+        success: function (res) {
+            $('#appointment').find('input[name=appointmentDate]').val(res.appointmentDate);
+            $('#appointment').find('input[name=appointmentStartDateTime]').val(res.appointmentStartDateTime);
+            $('#appointment').find('input[name=appointmentEndDateTime]').val(res.appointmentEndDateTime);
+        }
+    }).fail(function(e){
+        var responseError = e.responseText ? e.responseText : "Get failed.";
+        console.log("ERROR : ", responseError);
+        showErrorMsg(responseError);
+    })
 }
 
 

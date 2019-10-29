@@ -23,6 +23,7 @@ public class SdTicketInfoData {
 
     // service info
     private String serviceType;
+    private String serviceTypeDesc;
     private String serviceNo;
     private Long subsId;
     private String offerName;
@@ -126,12 +127,44 @@ public class SdTicketInfoData {
         this.jobStatus = jobStatus;
     }
 
+    public int getCallInCount() {
+        return callInCount;
+    }
+
+    public void setCallInCount(int callInCount) {
+        this.callInCount = callInCount;
+    }
+
+    public String getSearchKeyDesc() {
+        return searchKeyDesc;
+    }
+
+    public void setSearchKeyDesc(String searchKeyDesc) {
+        this.searchKeyDesc = searchKeyDesc;
+    }
+
+    public String getSearchValue() {
+        return searchValue;
+    }
+
+    public void setSearchValue(String searchValue) {
+        this.searchValue = searchValue;
+    }
+
     public String getServiceType() {
         return serviceType;
     }
 
     public void setServiceType(String serviceType) {
         this.serviceType = serviceType;
+    }
+
+    public String getServiceTypeDesc() {
+        return serviceTypeDesc;
+    }
+
+    public void setServiceTypeDesc(String serviceTypeDesc) {
+        this.serviceTypeDesc = serviceTypeDesc;
     }
 
     public String getServiceNo() {
@@ -220,30 +253,6 @@ public class SdTicketInfoData {
 
     public void setItsmUrl(String itsmUrl) {
         this.itsmUrl = itsmUrl;
-    }
-
-    public int getCallInCount() {
-        return callInCount;
-    }
-
-    public void setCallInCount(int callInCount) {
-        this.callInCount = callInCount;
-    }
-
-    public String getSearchKeyDesc() {
-        return searchKeyDesc;
-    }
-
-    public void setSearchKeyDesc(String searchKeyDesc) {
-        this.searchKeyDesc = searchKeyDesc;
-    }
-
-    public String getSearchValue() {
-        return searchValue;
-    }
-
-    public void setSearchValue(String searchValue) {
-        this.searchValue = searchValue;
     }
 
     public String getGridId() {
