@@ -1,11 +1,11 @@
 package com.hkt.btu.sd.facade.data.wfm;
 
-public class WfmAppointmentResData {
+import com.hkt.btu.common.facade.data.DataInterface;
+
+public class WfmAppointmentResData implements DataInterface {
     private String appointmentDate;
     private String appointmentStartDateTime;
     private String appointmentEndDateTime;
-
-
 
     public String getAppointmentDate() {
         return appointmentDate;

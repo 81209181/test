@@ -16,6 +16,7 @@ import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.WfmApiFacade;
 import com.hkt.btu.sd.facade.data.*;
+import com.hkt.btu.sd.facade.data.wfm.WfmAppointmentResData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
 import com.hkt.btu.sd.facade.data.wfm.WfmOfferNameProductTypeData;
 import com.hkt.btu.sd.facade.data.wfm.WfmResponse;
@@ -84,7 +85,7 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
             return Optional.ofNullable(ticketMasId).flatMap(id -> Optional.ofNullable(postData("/api/v1/sd/CloseTicket/" + id, null, null))
                     .filter(StringUtils::isNotBlank)
                     .map(s -> StringUtils.containsIgnoreCase(s, "Success"))).orElse(false);
-        } catch (Exception e) {
+        }catch (Exception e){
             LOG.error(e.getMessage(), e);
             return false;
         }
@@ -152,8 +153,18 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
     @Override
     public List<WfmJobData> getJobInfo(Integer ticketMasId) {
         return Optional.ofNullable(ticketMasId).map(id -> {
-            List<WfmJobData> dataList = getDataListTest("/api/v1/sd/GetJobListByTicketId/" + ticketMasId, null);
+            Type type = new TypeToken<List<WfmJobData>>() {
+            }.getType();
+            List<WfmJobData> dataList = getDataList("/api/v1/sd/GetJobListByTicketId/" + ticketMasId, type, null);
             return dataList;
+        }).orElse(null);
+    }
+
+    @Override
+    public WfmAppointmentResData getAppointmentInfo(Integer ticketMasId) {
+        return Optional.ofNullable(ticketMasId).map(id -> {
+            WfmAppointmentResData data = getData("/api/v1/sd/GetAppointmentByTicketMasId/" + ticketMasId, WfmAppointmentResData.class, null);
+            return data;
         }).orElse(null);
     }
 }

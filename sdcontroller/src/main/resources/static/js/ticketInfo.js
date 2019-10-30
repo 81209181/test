@@ -28,6 +28,9 @@ $().ready(function(){
                 $.each(j,function(key,value){
 //                    service.find('input[name='+key+']').val(value);    // by Dennis  ref jira 179
                     if (key == 'faultsList') {
+                        if (value == '') {
+                            $('#btnMakeAppointment').attr('disabled', true);
+                        }
                         for (item of value) {
                             $('#symptomList').find('option[value='+item.symptomCode+']').attr('selected','selected');
                         }
@@ -101,6 +104,8 @@ $().ready(function(){
         }
         makeAppointment(ticketMasId, ticketDetId);
     })
+
+    getAppointmentInfo(ticketMasId);
 
     //contact
     $.get('/ticket/contact?ticketMasId='+ticketMasId,function(res){
@@ -203,26 +208,6 @@ $().ready(function(){
             input.val('');
             input.attr('disabled',false);
         }
-    })
-
-    $('#btnUpdateAppointment').on('click',function(){
-        clearAllMsg();
-        let appointment =$('input[name=appointmentDate]').val();
-        if(!appointment){
-            showErrorMsg('please input appointment date.');
-            return ;
-        }
-        $.post('/ticket/appointment/update',{
-            appointmentDate:appointment,
-            asap:$(this).parents('form').find('input[type=checkbox]').get(0).checked,
-            ticketMasId:ticketMasId
-        },function(res){
-            showInfoMsg(res);
-        }).fail(function(e){
-            var responseError = e.responseText ? e.responseText : "Get failed.";
-            console.log("ERROR : ", responseError);
-            showErrorMsg(responseError);
-        })
     })
 
     // submit button
@@ -335,46 +320,84 @@ function makeAppointment(ticketMasId, ticketDetId) {
             userName : "sd",
             password : "Ki6=rEDs47*^5"
         }
-        //}, 'https://10.252.15.158/wfm');
     }, "https://10.252.15.158/wfm");
 }
 
 function getInventory(bsn) {
-    $.ajax({
-        url: '/ticket/getInventory',
-        type: 'POST',
-        data: {bsn:bsn},
-        dataType: 'text',
-        success: function (res) {
-            let inventoryWindow= window.open('','Inventory','scrollbars=yes,width=800, height=800');
-            inventoryWindow.document.write(res);
-            inventoryWindow.focus();
-        }
-    }).fail(function (e) {
-        let responseError = e.responseText ? e.responseText : "Get failed.";
-        console.log("ERROR : ", responseError);
-        showErrorMsg(responseError);
-    })
+    if (bsn === '') {
+        showErrorMsg('No service number!');
+    }else {
+        let relatedBsn =  $("#relatedBsn").val();
+        let key = relatedBsn=== '' ? bsn : relatedBsn;
+
+        $.ajax({
+            url: '/ticket/getInventory',
+            type: 'POST',
+            data: {bsn: key},
+            dataType: 'text',
+            success: function (res) {
+                let inventoryWindow = window.open('', 'Inventory', 'scrollbars=yes,width=800, height=800');
+                inventoryWindow.document.write(res);
+                inventoryWindow.focus();
+            }
+        }).fail(function (e) {
+            let responseError = e.responseText ? e.responseText : "Get failed.";
+            console.log("ERROR : ", responseError);
+            showErrorMsg(responseError);
+        })
+    }
 }
 
 function getRelatedOfferInfo(bsn) {
     if (bsn === '') {
         showErrorMsg('No service number!');
-        return;
+    }else {
+        let ctx = $("meta[name='_ctx']").attr("content");
+        let relatedBsn =  $("#relatedBsn").val();
+        let key = relatedBsn=== '' ? bsn : relatedBsn;
+        window.open(ctx+'/ticket/offer-info?bsn='+key,'RelatedOfferInfo','scrollbars=yes,height=800,width=1200');
     }
 
-    let ctx = $("meta[name='_ctx']").attr("content");
-    window.open(ctx+'/ticket/offer-info?bsn='+bsn,'RelatedOfferInfo','scrollbars=yes,height=400,width=500');
 }
 
 function getOfferDetailList(bsn) {
+    if (bsn === '') {
+        showErrorMsg('No service number!');
+    }else {
+        let ctx = $("meta[name='_ctx']").attr("content");
+        let relatedBsn =  $("#relatedBsn").val();
+        let key = relatedBsn=== '' ? bsn : relatedBsn;
+        window.open(ctx+'/ticket/offer-detail?bsn='+key,'OfferDetailList','scrollbars=yes,height=800,width=1200');
+    }
+}
+
+function getNGN3OneDayAdminAccount(bsn) {
     if (bsn === '') {
         showErrorMsg('No service number!');
         return;
     }
 
     let ctx = $("meta[name='_ctx']").attr("content");
-    window.open(ctx+'/ticket/offer-detail?bsn='+bsn,'OfferDetailList','scrollbars=yes,height=800,width=1200');
+
+    window.open(ctx + '/ticket/getNGN3OneDayAdminAccount?bsn='+bsn, 'Account Info', 'scrollbars=yes,height=400,width=500');
+}
+
+function getAppointmentInfo(ticketMasId) {
+    $.ajax({
+        url: '/ticket/getAppointmentInfo',
+        type: 'GET',
+        dataType: 'json',
+        data: {ticketMasId:ticketMasId},
+        success: function (res) {
+            $('#appointment').find('input[name=appointmentDate]').val(res.appointmentDate);
+            $('#appointment').find('input[name=appointmentStartDateTime]').val(res.appointmentStartDateTime);
+            $('#appointment').find('input[name=appointmentEndDateTime]').val(res.appointmentEndDateTime);
+        }
+    }).fail(function(e){
+        var responseError = e.responseText ? e.responseText : "Get failed.";
+        console.log("ERROR : ", responseError);
+        showErrorMsg(responseError);
+    })
 }
 
 

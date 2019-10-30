@@ -3,6 +3,8 @@ spring:
     allow-bean-definition-overriding: true
   datasource:
     jndi-name: java:comp/env/jdbc/servdesk
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
 
 mybatis:
   mapperLocations: classpath:mybatis/mapper/*.xml

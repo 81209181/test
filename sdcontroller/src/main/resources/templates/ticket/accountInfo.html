@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout-fluid-content-only}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Account Info</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+    <div class="card" style="height:700px">
+        <div class="card-header bg-primary text-white">Account Info</div>
+        <div class="card-body">
+            <div class="row col-md-10">
+                <form class="col-md-12" th:object="${noraAccountData}">
+                    <div class="form-row">
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Account ID:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="accountId" th:field="*{accountId}" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Password:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="password" th:field="*{password}" readonly>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
