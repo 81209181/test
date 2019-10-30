@@ -1,13 +1,22 @@
 $(document).ready(function() {
-    var table = $('#myTicketTable').DataTable({
+    let table = $('#myTicketTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ordering: false,
         searching: false,
         ajax: {
             type: "GET",
             contentType: "application/json",
             url: "/ticket/myTicket",
-            dataSrc: '',
+            dataSrc: 'data',
+            data: function(d){
+            },
             error: function (e) {
-                showErrorMsg("Cannot load my ticket list.");
+                if(e.responseText){
+                    showErrorMsg(e.responseText);
+                } else {
+                    showErrorMsg("Cannot load result.");
+                }
             }
         },
         columns: [
@@ -16,7 +25,7 @@ $(document).ready(function() {
             { data: 'custCode' },
             { data: 'status' },
             { data: 'createDate' },
-            { data: 'createBy' },
+            { data: 'createBy' }
         ],
         columnDefs: [
             {
@@ -35,6 +44,6 @@ $(document).ready(function() {
     let ctx = $("meta[name='_ctx']").attr("content");
     $('#myTicketTable tbody').on('click','button',function(){
         var data = table.row( $(this).parents('tr') ).data();
-         $(location).attr('href',ctx+'/ticket?ticketMasId='+data.ticketMasId);
+        $(location).attr('href',ctx+'/ticket?ticketMasId='+data.ticketMasId);
     })
 });

@@ -143,13 +143,14 @@ public class TicketController {
     }
 
     @GetMapping("/myTicket")
-    public ResponseEntity<?> getMyTicket() {
-        List<SdTicketMasData> dataList = ticketFacade.getMyTicket();
-        if (CollectionUtils.isEmpty(dataList)) {
-            return ResponseEntity.badRequest().body("Ticket list not found.");
-        } else {
-            return ResponseEntity.ok(dataList);
-        }
+    public ResponseEntity<?> getMyTicket(@RequestParam(defaultValue = "0") int draw,
+                                         @RequestParam(defaultValue = "0") int start,
+                                         @RequestParam(defaultValue = "10") int length) {
+        int page = start / length;
+        Pageable pageable = PageRequest.of(page, length);
+
+        PageData<SdTicketMasData> pageData = ticketFacade.getMyTicket(pageable);
+        return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
     }
 
     @GetMapping("/service")

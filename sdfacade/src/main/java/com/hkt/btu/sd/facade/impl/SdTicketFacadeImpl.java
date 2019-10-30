@@ -122,24 +122,24 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             return new PageData<>(e.getMessage());
         }
 
-        // populate content
         List<SdTicketMasBean> beanList = pageBean.getContent();
-        List<SdTicketMasData> dataList = new LinkedList<>();
-        if (!CollectionUtils.isEmpty(beanList)) {
-            for (SdTicketMasBean bean : beanList) {
-                SdTicketMasData data = new SdTicketMasData();
-                ticketMasDataPopulator.populate(bean, data);
-                dataList.add(data);
-            }
-        }
-
-        return new PageData<>(dataList, pageBean.getPageable(), pageBean.getTotalElements());
+        return new PageData<>(populateDataList(beanList), pageBean.getPageable(), pageBean.getTotalElements());
     }
 
     @Override
-    public List<SdTicketMasData> getMyTicket() {
-        List<SdTicketMasBean> beanList = ticketService.getMyTicket();
+    public PageData<SdTicketMasData> getMyTicket(Pageable pageable) {
+        Page<SdTicketMasBean> pageBean;
+        try {
+            pageBean = ticketService.getMyTicket(pageable);
+        } catch (AuthorityNotFoundException e) {
+            return new PageData<>(e.getMessage());
+        }
 
+        List<SdTicketMasBean> beanList = pageBean.getContent();
+        return new PageData<>(populateDataList(beanList), pageBean.getPageable(), pageBean.getTotalElements());
+    }
+
+    private List<SdTicketMasData> populateDataList(List<SdTicketMasBean> beanList){
         // populate content
         List<SdTicketMasData> dataList = new LinkedList<>();
         if (!CollectionUtils.isEmpty(beanList)) {
@@ -333,15 +333,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     @Override
     public List<SdTicketMasData> getTicketByServiceNo(String serviceNo) {
         List<SdTicketMasBean> beanList = ticketService.getTicketByServiceNo(serviceNo, SdTicketMasBean.STATUS_TYPE_CODE.COMPLETE);
-        List<SdTicketMasData> dataList = new LinkedList<>();
-        if (!CollectionUtils.isEmpty(beanList)) {
-            for (SdTicketMasBean bean : beanList) {
-                SdTicketMasData data = new SdTicketMasData();
-                ticketMasDataPopulator.populate(bean, data);
-                dataList.add(data);
-            }
-        }
-        return dataList;
+        return populateDataList(beanList);
     }
 
     @Override

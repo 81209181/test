@@ -101,6 +101,8 @@
                         <button type="button" class="btn btn-info ml-3" onclick='getInventory(bsn);'>Inventory Detail</button>
                         <button type="button" class="btn btn-info ml-3" onclick="getOfferDetailList(bsn);">BB Detail</button>
                         <button type="button" class="btn btn-info ml-3" onclick='getRelatedOfferInfo(bsn);'>VoIP Detail</button>
+
+<!--                        todo SERVDESK-160 : need to pass a flag from backend to decide showing ngn3 reset buttons or not  -->
                         <button th:if="*{serviceType} eq VOIP" type="button" class="btn btn-info ml-3" id="btnResetNGN3PWD">Re-set NGN3 Account Password</button>
                         <button type="button" class="btn btn-info ml-3" onclick="getNGN3OneDayAdminAccount(bsn);">One Day Admin Account</button>
                     </h3>
@@ -149,11 +151,7 @@
                         </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Related BSN: </label>
-                            <input type="text" class="form-control col-md-6" name="relatedBsn" th:value="*{relatedBsn}" readonly/>
-                        </div>
-                        <div class="col-md-6 form-inline pt-2">
-                            <label class="col-form-label col-md-3 justify-content-end">Grid ID: </label>
-                            <input type="text" class="form-control col-md-6" name="gridId" th:value="*{gridId}" readonly/>
+                            <input type="text" class="form-control col-md-6" name="relatedBsn" th:value="*{relatedBsn}" th:id="relatedBsn" readonly/>
                         </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Exchange: </label>
