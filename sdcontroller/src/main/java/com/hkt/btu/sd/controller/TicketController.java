@@ -23,6 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @RequestMapping("/ticket")
 @Controller
@@ -41,6 +42,8 @@ public class TicketController {
 
     @Resource(name = "norarsApiFacade")
     NorarsApiFacade norarsApiFacade;
+    @Resource(name = "cloudApiFacade")
+    CloudApiFacade cloudApiFacade;
 
     @GetMapping("service-identity")
     public String serviceIdentity(Model model ) {
@@ -310,11 +313,17 @@ public class TicketController {
         return ResponseEntity.badRequest().body("WFM Error: Cannot get appointment info for ticketMasId:" + ticketMasId);
     }
 
-    @PostMapping("resetNGN3PWD")
-    public ResponseEntity<?> resetNGN3PWD(String bsn){
-        if (norarsApiFacade.resetNGN3PWD(bsn)) {
-            return ResponseEntity.ok("Reset password success.");
-        } else {
+    @GetMapping("getNgn3AccountList/{bsn}")
+    @ResponseBody
+    public List<String> getNgn3AccountList(@PathVariable String bsn) {
+        return Optional.ofNullable(norarsApiFacade.getRelatedOfferInfoListByBsn(bsn)).map(NoraDnGroupData::getAdminPortalId).map(s -> List.of(s.split(","))).orElse(List.of());
+    }
+
+    @GetMapping("resetNgn3Pwd/{account}")
+    public ResponseEntity<?> resetNgn3Pwd(@PathVariable String account){
+        try {
+            return ResponseEntity.ok(cloudApiFacade.resetNgn3Pwd(account));
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body("Reset password fail.");
         }
     }

@@ -43,6 +43,9 @@ public class SdTicketInfoData {
     private String exchangeBuildingId;
     private String relatedBsn;
 
+    // other
+    private boolean ngn3reset;
+
     public int getTicketMasId() {
         return ticketMasId;
     }
@@ -289,5 +292,13 @@ public class SdTicketInfoData {
 
     public void setRelatedBsn(String relatedBsn) {
         this.relatedBsn = relatedBsn;
+    }
+
+    public boolean isNgn3reset() {
+        return ngn3reset;
+    }
+
+    public void setNgn3reset(boolean ngn3reset) {
+        this.ngn3reset = ngn3reset;
     }
 }
