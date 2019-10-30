@@ -44,32 +44,6 @@ public class RootController {
         return "login";
     }
 
-    @GetMapping(value = "reset-password")
-    public String resetPassword(final Model model,
-                                @RequestParam(defaultValue = "false") boolean init,
-                                @RequestParam(required = false) String email,
-                                @RequestParam(required = false) String otp,
-                                @ModelAttribute("isInit") String isInit,
-                                @ModelAttribute("otpEmail") String otpEmail,
-                                @ModelAttribute("resetPwdFormData") ResetPwdFormData resetPwdFormData) {
-        if (!StringUtils.isEmpty(otp) && !StringUtils.isEmpty(email)) {
-            LOG.error("[Security Concern] Password init/reset link should not contain both email and OTP!");
-            model.addAttribute(PageMsgController.ERROR_MSG, "Insecure link.");
-            return "login";
-        }
-
-        model.addAttribute("isInit", init);
-
-        if (!StringUtils.isEmpty(otp)) {
-            resetPwdFormData.setResetOtp(otp);
-            model.addAttribute("resetPwdFormData", resetPwdFormData);
-        } else if (!StringUtils.isEmpty(email)) {
-            model.addAttribute("otpEmail", email);
-        }
-
-        return "resetPassword";
-    }
-
     @PostMapping(value = "reset-password")
     public ResponseEntity<?> resetPassword(@Valid ResetPwdFormData resetPwdFormData) {
         String errorMsg = sdUserFacade.resetPassword(resetPwdFormData);

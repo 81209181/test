@@ -96,20 +96,6 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
     }
 
     @Override
-    public boolean resetNGN3PWD(String bsn) {
-        Optional.ofNullable(getRelatedOfferInfoListByBsn(bsn)).map(NoraDnGroupData::getAdminPortalId).ifPresentOrElse(admin -> {
-            if (admin.contains(",")) {
-                Arrays.stream(admin.split(","));
-            } else {
-
-            }
-        },() -> {
-            throw new RuntimeException("Admin portal Id not found.");
-        });
-        return false;
-    }
-
-    @Override
     public NoraAccountData getNGN3OneDayAdminAccount(String bsn) {
         String requestorId = userService.getCurrentUserBean().getUserId();
 

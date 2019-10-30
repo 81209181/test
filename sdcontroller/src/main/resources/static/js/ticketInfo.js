@@ -262,15 +262,29 @@ $().ready(function(){
     });
 
     $('#btnResetNGN3PWD').on('click',function(){
-        $.post('/ticket/resetNGN3PWD',{
-            bsn:bsn
-        },function(res){
-
-        }).fail(function(e){
-            var responseError = e.responseText ? e.responseText : "Get failed.";
-            console.log("ERROR : ", responseError);
-            showErrorMsg(responseError);
+        let accountSelect = $('select[name=ngn3Account]');
+        accountSelect.find('option:not(:first)').remove();
+        $('input[name=ngn3pwd]').val('');
+        $.get('/ticket/getNgn3AccountList/'+bsn,function(res){
+            $.each(res,function(k,v){
+                accountSelect.append('<option>'+v+'</option>');
+            })
+        }).then(function(){
+            $('.ngn3').modal({backdrop: 'static', keyboard: false});
         })
+    })
+
+    $('#btnNgn3Reset').on('click',function(){
+        let account =$('select[name=ngn3Account]').val();
+        if(account){
+            $.get('/ticket/resetNgn3Pwd/'+account,function(res){
+                $('input[name=ngn3pwd]').val(res);
+            }).fail(function(e){
+                alert('ERROR : '+e);
+            })
+        }else{
+            alert("Please select one account.");
+        }
     })
 
     ajaxGetJobInfo(ticketMasId);

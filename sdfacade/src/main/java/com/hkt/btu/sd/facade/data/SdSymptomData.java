@@ -10,6 +10,8 @@ public class SdSymptomData implements DataInterface {
     private String symptomDescription;
     private String symptomGroupCode;
     private String symptomGroupName;
+    private LocalDateTime createdate;
+    private String createby;
     private LocalDateTime modifydate;
     private String modifyby;
 
@@ -43,6 +45,22 @@ public class SdSymptomData implements DataInterface {
 
     public void setSymptomGroupName(String symptomGroupName) {
         this.symptomGroupName = symptomGroupName;
+    }
+
+    public LocalDateTime getCreatedate() {
+        return createdate;
+    }
+
+    public void setCreatedate(LocalDateTime createdate) {
+        this.createdate = createdate;
+    }
+
+    public String getCreateby() {
+        return createby;
+    }
+
+    public void setCreateby(String createby) {
+        this.createby = createby;
     }
 
     public LocalDateTime getModifydate() {

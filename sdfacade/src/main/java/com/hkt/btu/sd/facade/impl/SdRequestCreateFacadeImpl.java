@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.facade.impl;
 
 import com.hkt.btu.common.core.exception.InvalidInputException;
+import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
 import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
 import com.hkt.btu.sd.facade.data.*;
@@ -122,6 +123,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
             infoData.setServiceType(sdTicketServiceData.getServiceType());
             infoData.setServiceTypeDesc(serviceTypeFacade.getServiceTypeDescByServiceTypeCode(sdTicketServiceData.getServiceType()));
             infoData.setServiceNo(sdTicketServiceData.getServiceCode());
+            infoData.setNgn3reset(sdTicketServiceData.getServiceType().equals(SdServiceTypeBean.SERVICE_TYPE.VOIP));
         });
         return infoData;
     }

@@ -44,18 +44,7 @@ public class SdSymptomFacadeImpl implements SdSymptomFacade {
     @Override
     public List<SdSymptomData> getSymptomGroupList() {
         List<SdSymptomBean> beanList = sdSymptomService.getSymptomGroupList();
-        if (CollectionUtils.isEmpty(beanList)) {
-            return null;
-        }
-
-        List<SdSymptomData> dataList = new LinkedList<>();
-        for (SdSymptomBean bean : beanList) {
-            SdSymptomData data = new SdSymptomData();
-            symptomDataPopulator.populate(bean, data);
-            dataList.add(data);
-        }
-
-        return dataList;
+        return populateDataList(beanList);
     }
 
     @Override
@@ -91,16 +80,7 @@ public class SdSymptomFacadeImpl implements SdSymptomFacade {
 
         // populate content
         List<SdSymptomBean> beanList = pageBean.getContent();
-        List<SdSymptomData> dataList = new LinkedList<>();
-        if (!CollectionUtils.isEmpty(beanList)) {
-            for (SdSymptomBean bean : beanList) {
-                SdSymptomData data = new SdSymptomData();
-                symptomDataPopulator.populate(bean, data);
-                dataList.add(data);
-            }
-        }
-
-        return new PageData<>(dataList, pageBean.getPageable(), pageBean.getTotalElements());
+        return new PageData<>(populateDataList(beanList), pageBean.getPageable(), pageBean.getTotalElements());
     }
 
     @Override
@@ -167,5 +147,28 @@ public class SdSymptomFacadeImpl implements SdSymptomFacade {
         }
 
         return EditResultData.dataList(results);
+    }
+
+    @Override
+    public List<SdSymptomData> getAllSymptomList() {
+        List<SdSymptomBean> beanList = sdSymptomService.getAllSymptomList();
+        return populateDataList(beanList);
+    }
+
+    private List<SdSymptomData> populateDataList(List<SdSymptomBean> beanList) {
+        if (CollectionUtils.isEmpty(beanList)) {
+            return null;
+        }
+
+        // populate content
+        List<SdSymptomData> dataList = new LinkedList<>();
+        if (!CollectionUtils.isEmpty(beanList)) {
+            for (SdSymptomBean bean : beanList) {
+                SdSymptomData data = new SdSymptomData();
+                symptomDataPopulator.populate(bean, data);
+                dataList.add(data);
+            }
+        }
+        return dataList;
     }
 }
