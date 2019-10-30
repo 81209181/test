@@ -21,7 +21,7 @@ public interface SdTicketService {
 
     Page<SdTicketMasBean> searchTicketList(Pageable pageable, String dateFrom, String dateTo, String status, String ticketMasId, String custCode);
 
-    List<SdTicketMasBean> getMyTicket();
+    Page<SdTicketMasBean> getMyTicket(Pageable pageable);
 
     List<SdTicketServiceBean> getServiceInfo(Integer ticketMasId);
 
