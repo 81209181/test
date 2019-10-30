@@ -58,19 +58,20 @@
     <select id="searchTicketList" resultMap="TicketMasEntity">
         select *
         <include refid="searchTicketSql"/>
-        order by TICKET_MAS_ID
+        <choose>
+            <when test="createBy != null">
+                order by TICKET_MAS_ID desc
+            </when>
+            <otherwise>
+                order by TICKET_MAS_ID
+            </otherwise>
+        </choose>
         OFFSET #{offset} ROWS FETCH NEXT #{pageSize} ROWS ONLY
     </select>
 
     <select id="searchTicketCount" resultType="Integer">
         select count(1)
         <include refid="searchTicketSql"/>
-    </select>
-
-    <select id="getMyTicket" resultMap="TicketMasEntity">
-        select * from TICKET_MAS
-        where CREATEBY = #{createBy}
-        order by TICKET_MAS_ID desc
     </select>
 
     <update id="updateAppointmentInMas">
@@ -115,4 +116,11 @@
         where  TICKET_MAS_ID = #{ticketMasId}
     </update>
 
+    <update id="updateTicketType">
+        update ticket_mas
+        set ticket_type = #{type} ,
+            modifyby = #{userId},
+            modifydate = sysdate
+        where ticket_mas_id = #{ticketMasId}
+    </update>
 </mapper>

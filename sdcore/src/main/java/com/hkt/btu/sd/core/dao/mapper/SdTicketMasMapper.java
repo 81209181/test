@@ -23,8 +23,6 @@ public interface SdTicketMasMapper {
                               @Param("status") String status, @Param("ticketMasId") String ticketMasId,
                               @Param("custCode") String custCode, @Param("createBy") String createBy);
 
-    List<SdTicketMasEntity> getMyTicket(@Param("createBy") String createBy);
-
     void updateAppointmentInMas(@Param("appointmentDate") LocalDateTime appointmentDate,
                                 @Param("asap") String asap,
                                 @Param("userId") String userId,
@@ -37,4 +35,6 @@ public interface SdTicketMasMapper {
     void updateTicketCallInCount(@Param("ticketMasId") Integer ticketMasId, @Param("userId") String userId);
 
     List<SdTicketMasEntity> getTicketByServiceNo(@Param("serviceNo")String serviceNo, @Param("status")String status);
+
+    void updateTicketType(@Param("ticketMasId")int ticketMasId, @Param("type")String type,  @Param("userId")String userId);
 }

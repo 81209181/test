@@ -132,30 +132,29 @@ public class SdTicketServiceImpl implements SdTicketService {
                 offset, pageSize, dateFrom, dateTo, status, ticketMasId, custCode, null);
         Integer totalCount = ticketMasMapper.searchTicketCount(dateFrom, dateTo, status, ticketMasId, custCode, null);
 
-        List<SdTicketMasBean> beanList = new LinkedList<>();
-        for (SdTicketMasEntity entity : entityList) {
-            SdTicketMasBean bean = new SdTicketMasBean();
-            ticketMasBeanPopulator.populate(entity, bean);
-            beanList.add(bean);
-        }
-
-        return new PageImpl<>(beanList, pageable, totalCount);
+        return new PageImpl<>(populateBeanList(entityList), pageable, totalCount);
     }
 
     @Override
-    public List<SdTicketMasBean> getMyTicket() {
+    public Page<SdTicketMasBean> getMyTicket(Pageable pageable) {
         String createBy = userService.getCurrentUserUserId();
-        List<SdTicketMasEntity> entityList = ticketMasMapper.getMyTicket(createBy);
-        if (CollectionUtils.isEmpty(entityList)) {
-            return null;
-        }
+        long offset = pageable.getOffset();
+        int pageSize = pageable.getPageSize();
+
+        List<SdTicketMasEntity> entityList = ticketMasMapper.searchTicketList(
+                offset, pageSize, null, null, null, null, null, createBy);
+        Integer totalCount = ticketMasMapper.searchTicketCount(null, null, null, null, null, createBy);
+
+        return new PageImpl<>(populateBeanList(entityList), pageable, totalCount);
+    }
+
+    private List<SdTicketMasBean> populateBeanList(List<SdTicketMasEntity> entityList){
         List<SdTicketMasBean> beanList = new LinkedList<>();
         for (SdTicketMasEntity entity : entityList) {
             SdTicketMasBean bean = new SdTicketMasBean();
             ticketMasBeanPopulator.populate(entity, bean);
             beanList.add(bean);
         }
-
         return beanList;
     }
 
@@ -190,12 +189,10 @@ public class SdTicketServiceImpl implements SdTicketService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateJobIdInService(Integer jobId, String ticketMasId, String userId) {
-        int iTicketMasId = Integer.parseInt(ticketMasId);
-
+    public void updateJobIdInService(Integer jobId, int ticketMasId, String userId) {
         ticketServiceMapper.updateTicketServiceByJobId(jobId, ticketMasId, userId);
-        ticketMasMapper.updateTicketStatus(iTicketMasId, SdTicketMasBean.STATUS_TYPE_CODE.WORKING, userId);
-        createTicketSysRemarks(iTicketMasId, String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_WORKING, userId));
+        ticketMasMapper.updateTicketStatus(ticketMasId, SdTicketMasBean.STATUS_TYPE_CODE.WORKING, userId);
+        createTicketSysRemarks(ticketMasId, String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_WORKING, userId));
     }
 
     @Override
@@ -328,17 +325,7 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Override
     public List<SdTicketMasBean> getTicketByServiceNo(String serviceNo, String status) {
         List<SdTicketMasEntity> entityList = ticketMasMapper.getTicketByServiceNo(serviceNo, status);
-        if (CollectionUtils.isEmpty(entityList)) {
-            return null;
-        }
-        List<SdTicketMasBean> beanList = new LinkedList<>();
-        for (SdTicketMasEntity entity : entityList) {
-            SdTicketMasBean bean = new SdTicketMasBean();
-            ticketMasBeanPopulator.populate(entity, bean);
-            beanList.add(bean);
-        }
-
-        return beanList;
+        return CollectionUtils.isEmpty(entityList) ? null : populateBeanList(entityList);
     }
 
     @Override
@@ -371,5 +358,10 @@ public class SdTicketServiceImpl implements SdTicketService {
         String modifyby = userService.getCurrentUserUserId();
         ticketMasMapper.updateTicketStatus(ticketMasId, SdTicketMasBean.STATUS_TYPE_CODE.COMPLETE, modifyby);
         createTicketSysRemarks(ticketMasId, String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_CLOSE, reasonType, reasonContent, closeby));
+    }
+
+    @Override
+    public void updateTicketType(int ticketMasId, String type, String userId) {
+        ticketMasMapper.updateTicketType(ticketMasId,type,userId);
     }
 }
