@@ -16,10 +16,10 @@ import java.util.List;
 public interface SdUserService extends BtuUserService {
 
     SdCreateResultBean createUser(String userId, String name, String mobile, String email, List<String> toGrantRoleIdList)
-            throws DuplicateUserEmailException, UserNotFoundException;
-    String createLdapUser(String name, String mobile, String employeeNumber, String ldapDomain,
+            throws UserNotFoundException;
+    String createLdapUser(String userId, String mobile, String employeeNumber, String ldapDomain,
                           String email,List<String> roleIdList)
-            throws DuplicateUserEmailException, UserNotFoundException;
+            throws UserNotFoundException;
 
 
     String changeUserTypeToPCCWOrHktUser(String oldUserId, String name, String mobile, String employeeNumber, String email)
