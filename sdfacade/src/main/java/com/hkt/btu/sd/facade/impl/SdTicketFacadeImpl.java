@@ -416,7 +416,10 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     @Override
     public void createJob4Wfm(int ticketMasId) {
         try {
-            updateJobIdInService(wfmApiFacade.createJob(getTicketInfo(ticketMasId)), ticketMasId);
+            SdTicketData ticketInfo = getTicketInfo(ticketMasId);
+            ticketInfo.getServiceInfo().get(0).getFaultsList().stream().findFirst().map(SdSymptomData::getSymptomCode).orElseThrow(() ->
+                    new RuntimeException("Please select one symptom code ."));
+            updateJobIdInService(wfmApiFacade.createJob(ticketInfo), ticketMasId);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(String.format("WFM Error: Cannot create job for ticket mas id %s.", ticketMasId));
         } catch (Exception ex) {

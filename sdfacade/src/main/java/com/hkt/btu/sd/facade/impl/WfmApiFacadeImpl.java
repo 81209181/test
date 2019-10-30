@@ -60,7 +60,7 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
         Response res = postEntity("/api/v1/sd/FaultCreate", Entity.entity(JsonUtils.getMapperFormatLocalDateTime2String().writeValueAsString(ticketData), MediaType.APPLICATION_JSON));
         WfmResponse wfmRes = res.readEntity(WfmResponse.class);
         return Optional.ofNullable(wfmRes.getData()).map(WfmSuccess::getJobId).orElseThrow(() ->
-                new RuntimeException(String.format("WFM Error: %s", wfmRes.getErrorMsg())));
+                new RuntimeException(String.format("WFM Error: %s . Please contact WFM Admin.", wfmRes.getErrorMsg())));
     }
 
     @Override
