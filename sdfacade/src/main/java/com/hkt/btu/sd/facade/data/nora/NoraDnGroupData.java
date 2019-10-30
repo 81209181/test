@@ -9,7 +9,6 @@ public class NoraDnGroupData
 {
 	private String asCluster = "";
 	private String adminPortalId = "";
-	private String adminPortalPassword = "";
 	private String cliNumber = "";
 	private String recordingProvisionMethod = "";
 	private String dod = "";
@@ -34,16 +33,6 @@ public class NoraDnGroupData
 	public void setAdminPortalId(String adminPortalId)
 	{
 		this.adminPortalId = adminPortalId;
-	}
-
-	public String getAdminPortalPassword()
-	{
-		return adminPortalPassword;
-	}
-
-	public void setAdminPortalPassword(String adminPortalPassword)
-	{
-		this.adminPortalPassword = adminPortalPassword;
 	}
 
 	public String getCliNumber()

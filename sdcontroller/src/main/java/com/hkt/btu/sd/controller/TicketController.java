@@ -5,8 +5,10 @@ import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
 import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.data.*;
+import com.hkt.btu.sd.facade.data.nora.NoraAccountData;
 import com.hkt.btu.sd.facade.data.nora.NoraBroadbandInfoData;
 import com.hkt.btu.sd.facade.data.nora.NoraDnGroupData;
+import com.hkt.btu.sd.facade.data.wfm.WfmAppointmentResData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -138,13 +140,14 @@ public class TicketController {
     }
 
     @GetMapping("/myTicket")
-    public ResponseEntity<?> getMyTicket() {
-        List<SdTicketMasData> dataList = ticketFacade.getMyTicket();
-        if (CollectionUtils.isEmpty(dataList)) {
-            return ResponseEntity.badRequest().body("Ticket list not found.");
-        } else {
-            return ResponseEntity.ok(dataList);
-        }
+    public ResponseEntity<?> getMyTicket(@RequestParam(defaultValue = "0") int draw,
+                                         @RequestParam(defaultValue = "0") int start,
+                                         @RequestParam(defaultValue = "10") int length) {
+        int page = start / length;
+        Pageable pageable = PageRequest.of(page, length);
+
+        PageData<SdTicketMasData> pageData = ticketFacade.getMyTicket(pageable);
+        return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
     }
 
     @GetMapping("/service")
@@ -218,17 +221,6 @@ public class TicketController {
         }
     }
 
-    @PostMapping("appointment/update")
-    public ResponseEntity<?> updateAppointment(String appointmentDate, boolean asap, Principal principal, String ticketMasId) {
-        if (!asap) {
-            if (!ticketFacade.checkAppointmentDate(appointmentDate)) {
-                return ResponseEntity.badRequest().body("The appointment time must be two hours later.");
-            }
-        }
-        ticketFacade.updateAppointment(appointmentDate, asap, principal.getName(), ticketMasId);
-        return ResponseEntity.ok("Update appointment success.");
-    }
-
     @GetMapping("/ajax-get-ticket")
     public ResponseEntity<?> getTicketInfo(@RequestParam Integer ticketMasId) {
         SdTicketData ticketData = ticketFacade.getTicketInfo(ticketMasId);
@@ -294,6 +286,28 @@ public class TicketController {
             model.addAttribute("noraBroadbandInfoData", noraBroadbandInfoData);
         }
         return "ticket/offerDetail";
+    }
+
+    @GetMapping("/getNGN3OneDayAdminAccount")
+    public String getNGN3OneDayAdminAccount(final Model model,
+                                            @RequestParam String bsn,
+                                            @ModelAttribute("noraAccountData") NoraAccountData accountData) {
+        accountData = norarsApiFacade.getNGN3OneDayAdminAccount(bsn);
+
+        if (accountData != null) {
+            model.addAttribute("noraAccountData", accountData);
+        }
+        return "ticket/accountInfo";
+    }
+
+    @GetMapping("/getAppointmentInfo")
+    public ResponseEntity<?> getAppointmentInfo(@RequestParam Integer ticketMasId) {
+        WfmAppointmentResData appointmentInfo = wfmApiFacade.getAppointmentInfo(ticketMasId);
+
+        if (appointmentInfo != null) {
+            return ResponseEntity.ok(appointmentInfo);
+        }
+        return ResponseEntity.badRequest().body("WFM Error: Cannot get appointment info for ticketMasId:" + ticketMasId);
     }
 
     @PostMapping("resetNGN3PWD")

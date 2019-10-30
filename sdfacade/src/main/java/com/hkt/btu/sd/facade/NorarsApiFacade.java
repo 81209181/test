@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.facade;
 
 import com.hkt.btu.sd.facade.data.ServiceAddressData;
+import com.hkt.btu.sd.facade.data.nora.NoraAccountData;
 import com.hkt.btu.sd.facade.data.nora.NoraBroadbandInfoData;
 import com.hkt.btu.sd.facade.data.nora.NoraDnGroupData;
 
@@ -14,4 +15,5 @@ public interface NorarsApiFacade {
     NoraDnGroupData getRelatedOfferInfoListByBsn(String bsn);
 
     boolean resetNGN3PWD(String accountId);
+    NoraAccountData getNGN3OneDayAdminAccount(String bsn);
 }

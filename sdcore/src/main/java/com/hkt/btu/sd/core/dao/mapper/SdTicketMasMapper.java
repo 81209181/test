@@ -23,8 +23,6 @@ public interface SdTicketMasMapper {
                               @Param("status") String status, @Param("ticketMasId") String ticketMasId,
                               @Param("custCode") String custCode, @Param("createBy") String createBy);
 
-    List<SdTicketMasEntity> getMyTicket(@Param("createBy") String createBy);
-
     void updateAppointmentInMas(@Param("appointmentDate") LocalDateTime appointmentDate,
                                 @Param("asap") String asap,
                                 @Param("userId") String userId,

@@ -105,7 +105,10 @@
                         <button type="button" class="btn btn-info ml-3" onclick='getInventory(bsn);'>Inventory Detail</button>
                         <button type="button" class="btn btn-info ml-3" onclick="getOfferDetailList(bsn);">BB Detail</button>
                         <button type="button" class="btn btn-info ml-3" onclick='getRelatedOfferInfo(bsn);'>VoIP Detail</button>
+
+<!--                        todo SERVDESK-160 : need to pass a flag from backend to decide showing ngn3 reset buttons or not  -->
                         <button th:if="*{serviceType} eq VOIP" type="button" class="btn btn-info ml-3" id="btnResetNGN3PWD">Re-set NGN3 Account Password</button>
+                        <button type="button" class="btn btn-info ml-3" onclick="getNGN3OneDayAdminAccount(bsn);">One Day Admin Account</button>
                     </h3>
                 </div>
                 <div class="col-md-12">
@@ -120,7 +123,7 @@
                         </div>
                         <div class="temp_faults col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Symptom: </label>
-                            <select name="symptom" id="symptomList" class="selectpicker form-control col-md-6" data-width="500px" data-live-search="true" th:disabled="*{ticketStatus} ne 'OPEN'"></select>
+                            <select name="symptom" id="symptomList" class="selectpicker form-control col-md-6" data-width="500px" data-live-search="true" title="Please select symptom..." th:disabled="*{ticketStatus} ne 'OPEN'"></select>
                         </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Subscriber ID: </label>
@@ -152,11 +155,7 @@
                         </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Related BSN: </label>
-                            <input type="text" class="form-control col-md-6" name="relatedBsn" th:value="*{relatedBsn}" readonly/>
-                        </div>
-                        <div class="col-md-6 form-inline pt-2">
-                            <label class="col-form-label col-md-3 justify-content-end">Grid ID: </label>
-                            <input type="text" class="form-control col-md-6" name="gridId" th:value="*{gridId}" readonly/>
+                            <input type="text" class="form-control col-md-6" name="relatedBsn" th:value="*{relatedBsn}" th:id="relatedBsn" readonly/>
                         </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Exchange: </label>
@@ -174,6 +173,17 @@
             <form id="appointment" class="row">
                 <div class="col-md-12">
                     <h3>Job <button type="button" class="btn btn-info ml-3" id="btnMakeAppointment">Make Appointment</button></h3>
+                    <div class="col-md-6 form-inline pt-2">
+                        <label class="col-form-label col-md-2 justify-content-end">Appointment Date:</label>
+                        <input type="text" class="form-control col-md-2" name="appointmentDate" readonly>
+
+                        <label class="col-form-label col-md-2 justify-content-end">Appointment Start Date Time:</label>
+                        <input type="text" class="form-control col-md-2" name="appointmentStartDateTime" readonly>
+
+                        <label class="col-form-label col-md-2 justify-content-end">Appointment End Date Time:</label>
+                        <input type="text" class="form-control col-md-2" name="appointmentEndDateTime" readonly>
+                    </div>
+                    <hr>
                 </div>
                 <div id="jobList">
 
@@ -240,14 +250,11 @@
                             <label class="col-form-label col-md-3 justify-content-end">Work Group:</label>
                             <input type="text" class="form-control col-md-6" name="workgroup" readonly>
                         </div>
-                        <div class="col-md-6 form-inline pt-2">
+                        <div class="col-md-6 form-inline pt-2 end">
                             <label class="col-form-label col-md-3 justify-content-end">Resolver:</label>
                             <input type="text" class="form-control col-md-6" name="resolver" readonly>
                         </div>
                     </div>
-                </div>
-                <div class="offset-md-11">
-                    <button type="button" class="btn btn-primary mt-2" id="btnUpdateAppointment">Update</button>
                 </div>
             </form>
             <hr>
