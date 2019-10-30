@@ -41,4 +41,6 @@ public interface SdSymptomMapper {
                           @Param("symptomGroupCode") String symptomGroupCode,
                           @Param("symptomDescription") String symptomDescription,
                           @Param("createby") String createby);
+
+    List<SdSymptomEntity> getAllSymptomList();
 }

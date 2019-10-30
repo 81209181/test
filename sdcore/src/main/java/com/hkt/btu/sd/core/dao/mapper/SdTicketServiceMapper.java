@@ -32,7 +32,5 @@ public interface SdTicketServiceMapper {
 
     List<SdSymptomEntity> getSymptomListByTicketMasId(Integer ticketMasId);
 
-    List<SdSymptomEntity> getAllSymptomList();
-
     List<SdTicketServiceEntity> getTicketServiceBySubscriberId(@Param("subscriberId") String subscriberId);
 }

@@ -40,18 +40,7 @@ public class SdSymptomServiceImpl implements SdSymptomService {
     @Override
     public List<SdSymptomBean> getSymptomGroupList() {
         List<SdSymptomEntity> entityList = sdSymptomMapper.getSymptomGroupList();
-        if (CollectionUtils.isEmpty(entityList)) {
-            return null;
-        }
-
-        List<SdSymptomBean> beanList = new LinkedList<>();
-        for (SdSymptomEntity entity : entityList) {
-            SdSymptomBean bean = new SdSymptomBean();
-            symptomBeanPopulator.populate(entity, bean);
-            beanList.add(bean);
-        }
-
-        return beanList;
+        return populateBeanList(entityList);
     }
 
     @Override
@@ -69,14 +58,7 @@ public class SdSymptomServiceImpl implements SdSymptomService {
         List<SdSymptomEntity> entityList = sdSymptomMapper.searchSymptomList(offset, pageSize, symptomGroupCode, symptomDescription);
         Integer totalCount = sdSymptomMapper.searchSymptomCount(symptomGroupCode, symptomDescription);
 
-        List<SdSymptomBean> beanList = new LinkedList<>();
-        for (SdSymptomEntity entity : entityList) {
-            SdSymptomBean bean = new SdSymptomBean();
-            symptomBeanPopulator.populate(entity, bean);
-            beanList.add(bean);
-        }
-
-        return new PageImpl<>(beanList, pageable, totalCount);
+        return new PageImpl<>(populateBeanList(entityList), pageable, totalCount);
     }
 
     @Override
@@ -161,5 +143,26 @@ public class SdSymptomServiceImpl implements SdSymptomService {
                 sdSymptomMapper.createSymptomMapping(toInsertServiceTypeList, symptomCode, createby);
             }
         }
+    }
+
+    @Override
+    public List<SdSymptomBean> getAllSymptomList() {
+        List<SdSymptomEntity> entityList = sdSymptomMapper.getAllSymptomList();
+        return populateBeanList(entityList);
+    }
+
+    private List<SdSymptomBean> populateBeanList(List<SdSymptomEntity> entityList) {
+        if (CollectionUtils.isEmpty(entityList)) {
+            return null;
+        }
+
+        List<SdSymptomBean> beanList = new LinkedList<>();
+        for (SdSymptomEntity entity : entityList) {
+            SdSymptomBean bean = new SdSymptomBean();
+            symptomBeanPopulator.populate(entity, bean);
+            beanList.add(bean);
+        }
+
+        return beanList;
     }
 }

@@ -4,10 +4,7 @@ import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.core.service.BtuSensitiveDataService;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.sd.core.dao.entity.*;
-import com.hkt.btu.sd.core.dao.mapper.SdTicketContactMapper;
-import com.hkt.btu.sd.core.dao.mapper.SdTicketMasMapper;
-import com.hkt.btu.sd.core.dao.mapper.SdTicketRemarkMapper;
-import com.hkt.btu.sd.core.dao.mapper.SdTicketServiceMapper;
+import com.hkt.btu.sd.core.dao.mapper.*;
 import com.hkt.btu.sd.core.service.SdTicketService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.*;
@@ -41,6 +38,8 @@ public class SdTicketServiceImpl implements SdTicketService {
     SdTicketServiceMapper ticketServiceMapper;
     @Resource
     SdTicketRemarkMapper ticketRemarkMapper;
+    @Resource
+    private SdSymptomMapper symptomMapper;
 
     @Resource(name = "userService")
     SdUserService userService;
@@ -219,7 +218,7 @@ public class SdTicketServiceImpl implements SdTicketService {
         List<SdSymptomEntity> symptomEntities = ticketServiceMapper.getSymptomListByTicketMasId(ticketMasId);
 
         if (CollectionUtils.isEmpty(symptomEntities)) {
-            List<SdSymptomEntity> allSymptomList = ticketServiceMapper.getAllSymptomList();
+            List<SdSymptomEntity> allSymptomList = symptomMapper.getAllSymptomList();
             if (CollectionUtils.isEmpty(allSymptomList)) {
                 return null;
             } else {

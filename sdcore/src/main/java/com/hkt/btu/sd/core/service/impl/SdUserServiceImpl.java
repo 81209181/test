@@ -162,25 +162,14 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     @Transactional
     public String createLdapUser(String name, String mobile, String employeeNumber,
                                  String ldapDomain, String email, List<String> toGrantRoleIdList)
-            throws DuplicateUserEmailException, UserNotFoundException, InvalidInputException {
+            throws UserNotFoundException, InvalidInputException {
         // get current userId for CreateBy
         String createBy = getCurrentUserUserId();
-        // Check if there is a duplicate name
-        SdUserEntity sdUserEntity = sdUserMapper.getLdapUserByUserId(name);
-        if (sdUserEntity != null) {
-            throw new DuplicateUserEmailException("User already exist.");
-        }
         // check current user has right to create user of user role
         boolean isEligibleUserGroup = userRoleService.isEligibleToGrantUserRole(toGrantRoleIdList);
         if (!isEligibleUserGroup) {
             LOG.warn("Ineligible to create user of selected user role (" + toGrantRoleIdList + ") by user (" + createBy + ").");
             throw new InvalidInputException("Invalid user role.");
-        }
-
-        // check email duplicated
-        SdUserEntity user = sdUserMapper.getUserByEmail(email);
-        if (user != null) {
-            throw new DuplicateUserEmailException("User already exists.");
         }
 
         // Data input
@@ -207,7 +196,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
     @Override
     public SdCreateResultBean createUser(String userId, String name, String mobile, String email, List<String> roleIdList)
-            throws DuplicateUserEmailException, UserNotFoundException {
+            throws UserNotFoundException {
         if (StringUtils.isEmpty(name)) {
             throw new InvalidInputException("Empty user name.");
         }
@@ -220,12 +209,6 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         if (!isEligibleUserGroup) {
             LOG.warn("Ineligible to create user of selected user role (" + roleIdList + ") by user (" + createby + ").");
             throw new InvalidInputException("Invalid user role.");
-        }
-
-        // check email duplicated
-        SdUserEntity userEntity = sdUserMapper.getUserByEmail(email);
-        if (userEntity != null) {
-            throw new DuplicateUserEmailException();
         }
 
         // generate dummy password

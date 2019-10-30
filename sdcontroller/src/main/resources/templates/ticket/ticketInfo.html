@@ -30,7 +30,7 @@
                 </div>
                 <div class="col-md-4 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Ticket Status:</label>
-                    <font class="form-control-plaintext col-md-3" th:text="*{ticketStatus}" id="ticketStatus"></font>
+                    <span class="form-control-plaintext col-md-3" th:text="*{ticketStatus}" id="ticketStatus"></span>
                     <button type="button" class="btn btn-success" id="btnTicketClose" th:unless="*{ticketStatus} eq 'COMPLETE'">Close</button>
                 </div>
                 <div class="col-md-3 form-inline pt-2">
