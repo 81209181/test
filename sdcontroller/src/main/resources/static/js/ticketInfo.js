@@ -312,7 +312,7 @@ function removeContact(btn){
 }
 
 function makeAppointment(ticketMasId, ticketDetId) {
-    AppointmentSDObj.make({
+    let window = AppointmentSDObj.make({
         data : {
             ticketMasId : ticketMasId,
             ticketDetId : ticketDetId,
@@ -321,6 +321,8 @@ function makeAppointment(ticketMasId, ticketDetId) {
             password : "Ki6=rEDs47*^5"
         }
     }, "https://10.252.15.158/wfm");
+
+    checkWindowClose(window);
 }
 
 function getInventory(bsn) {
@@ -459,4 +461,13 @@ function ajaxGetDataTable(){
         ],
         order: [[ 0, "desc" ]]
     });
+}
+
+function checkWindowClose(winObj) {
+    let loop = setInterval(function() {
+        if(winObj.closed) {
+            clearInterval(loop);
+            window.location.reload();
+        }
+    }, 1000);
 }
