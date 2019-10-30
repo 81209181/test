@@ -1,7 +1,7 @@
 package com.hkt.btu.sd.facade.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hkt.btu.common.core.exception.InvalidInputException;
-import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
 import com.hkt.btu.sd.core.service.SdTicketService;
@@ -231,9 +231,11 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public void updateJobIdInService(Integer jobId, String ticketMasId) {
-        String createby = userService.getCurrentUserUserId();
-        ticketService.updateJobIdInService(jobId, ticketMasId, createby);
+    @Transactional(rollbackFor = Exception.class)
+    public void updateJobIdInService(Integer jobId, int ticketMasId) {
+        String userId = userService.getCurrentUserUserId();
+        ticketService.updateJobIdInService(jobId, ticketMasId, userId);
+        ticketService.updateTicketType(ticketMasId,"JOB",userId);
     }
 
     @Override
@@ -396,9 +398,9 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                 ticketService.getTicket(Integer.valueOf(ticketMasId)).map(SdTicketMasBean::getStatus)
                         .filter(s -> List.of(SdTicketMasBean.STATUS_TYPE.COMPLETE, SdTicketMasBean.STATUS_TYPE.WORKING).contains(s)).ifPresent(s -> {
                     if (s.equals(SdTicketMasBean.STATUS_TYPE.COMPLETE)) {
-                        throw new RuntimeException("This ticket has been completed.");
+                        throw new RuntimeException("Cannot update. This ticket has been completed.");
                     } else {
-                        throw new RuntimeException("This ticket has been submitted.");
+                        throw new RuntimeException("Cannot update. This ticket has been passed to working parties.");
                     }
                 });
         }
@@ -416,6 +418,17 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             return false;
+        }
+    }
+
+    @Override
+    public void createJob4Wfm(int ticketMasId) {
+        try {
+            updateJobIdInService(wfmApiFacade.createJob(getTicketInfo(ticketMasId)), ticketMasId);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(String.format("WFM Error: Cannot create job for ticket mas id %s.", ticketMasId));
+        } catch (Exception ex) {
+            throw new RuntimeException(ex.getMessage());
         }
     }
 }

@@ -233,6 +233,7 @@ $().ready(function(){
             ticket[$(input).attr('name')] =$(input).val();
         })
         ticket['ticketMasId'] =ticketMasId;
+        clearAllMsg();
         $.ajax({
             url:'/ticket/submit',
             type : 'POST',

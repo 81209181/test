@@ -1,8 +1,5 @@
 package com.hkt.btu.sd.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
@@ -11,7 +8,6 @@ import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.nora.NoraBroadbandInfoData;
 import com.hkt.btu.sd.facade.data.nora.NoraDnGroupData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
-import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
@@ -191,23 +187,14 @@ public class TicketController {
     }
 
     @PostMapping("submit")
-    public ResponseEntity<?> submit(SdTicketMasData ticketMasData) throws JsonProcessingException {
+    public ResponseEntity<?> submit(SdTicketMasData ticketMasData) {
         try {
             ticketFacade.isAllow(String.valueOf(ticketMasData.getTicketMasId()), StringUtils.EMPTY);
+            ticketFacade.createJob4Wfm(ticketMasData.getTicketMasId());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-        SdTicketData ticketData = ticketFacade.getTicketInfo(ticketMasData.getTicketMasId());
-        Integer jobId = wfmApiFacade.createJob(ticketData);
-        if (jobId > 0) {
-            ticketFacade.updateJobIdInService(jobId, String.valueOf(ticketMasData.getTicketMasId()));
-            ObjectMapper mapper = new ObjectMapper();
-            ObjectNode node = mapper.createObjectNode();
-            node.put("success", true);
-            return ResponseEntity.ok(mapper.writeValueAsString(node));
-        } else {
-            return ResponseEntity.badRequest().body(String.format("WFM Error: Cannot create job for ticket mas id %s.",ticketMasData.getTicketMasId()));
-        }
+        return ResponseEntity.ok(SimpleAjaxResponse.of());
     }
 
     @GetMapping("ajax-search-ticket-remarks")

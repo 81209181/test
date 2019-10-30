@@ -28,7 +28,7 @@ public interface SdTicketFacade {
 
     String createTicketRemarks(Integer ticketMasId, String remarks);
 
-    void updateJobIdInService(Integer jobId, String ticketMasId);
+    void updateJobIdInService(Integer jobId, int ticketMasId);
 
     Optional<SdTicketServiceData> getService(Integer ticketId);
 
@@ -50,4 +50,6 @@ public interface SdTicketFacade {
     void isAllow(String ticketMasId,String action);
 
     boolean increaseCallInCount(Integer ticketMasId);
+
+    void createJob4Wfm(int ticketMasId);
 }
