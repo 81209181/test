@@ -111,4 +111,17 @@
         MODIFYDATE = sysdate
         where SYMPTOM_CODE = #{oldSymptomCode}
     </update>
+
+    <select id="getAllSymptomList" resultMap="SymptomEntity">
+        select
+        sy.SYMPTOM_CODE,
+        sy.SYMPTOM_DESCRIPTION,
+        sy.SYMPTOM_GROUP_CODE,
+        sg.SYMPTOM_GROUP_NAME,
+        sy.CREATEDATE,
+        sy.CREATEBY,
+        sy.MODIFYDATE,
+        sy.MODIFYBY
+        <include refid="searchSymptomSql"/>
+    </select>
 </mapper>

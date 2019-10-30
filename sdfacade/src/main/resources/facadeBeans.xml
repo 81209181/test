@@ -35,6 +35,8 @@
     <bean name="norarsApiFacade" class="com.hkt.btu.sd.facade.impl.NorarsApiFacadeImpl"/>
     <bean name="wfmApiFacade" class="com.hkt.btu.sd.facade.impl.WfmApiFacadeImpl"/>
 
+    <bean name="cloudApiFacade" class="com.hkt.btu.sd.facade.impl.CloudApiFacadeImpl"/>
+
     <alias name="sdTicketFacade" alias="ticketFacade"/>
     <bean id="sdTicketFacade" class="com.hkt.btu.sd.facade.impl.SdTicketFacadeImpl"/>
 

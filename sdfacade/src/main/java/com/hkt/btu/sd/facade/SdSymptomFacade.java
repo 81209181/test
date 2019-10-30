@@ -23,4 +23,6 @@ public interface SdSymptomFacade {
     String editSymptomMapping(UpdateSymptomFormData symptomFormData);
 
     EditResultData getSymptomMapping(String symptomCode);
+
+    List<SdSymptomData> getAllSymptomList();
 }

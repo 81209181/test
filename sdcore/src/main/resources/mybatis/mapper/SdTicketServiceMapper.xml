@@ -96,12 +96,6 @@
         where td.TICKET_MAS_ID = #{ticketMasId}
     </select>
 
-    <select id="getAllSymptomList" resultType="com.hkt.btu.sd.core.dao.entity.SdSymptomEntity">
-        select SYMPTOM_CODE as symptomCode,
-               SYMPTOM_DESCRIPTION as symptomDescription
-        from SYMPTOM
-    </select>
-
     <select id="getTicketServiceBySubscriberId" resultMap="TicketServiceEntity">
         select td.TICKET_MAS_ID,
             td.TICKET_DET_ID,

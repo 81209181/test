@@ -14,6 +14,5 @@ public interface NorarsApiFacade {
     NoraBroadbandInfoData getOfferDetailListByBsn(String bsn);
     NoraDnGroupData getRelatedOfferInfoListByBsn(String bsn);
 
-    boolean resetNGN3PWD(String accountId);
     NoraAccountData getNGN3OneDayAdminAccount(String bsn);
 }
