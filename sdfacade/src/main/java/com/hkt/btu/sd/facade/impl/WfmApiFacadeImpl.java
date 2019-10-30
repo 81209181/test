@@ -1,11 +1,6 @@
 package com.hkt.btu.sd.facade.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hkt.btu.common.facade.data.DataInterface;
@@ -13,15 +8,14 @@ import com.hkt.btu.sd.core.service.SdApiService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeOfferMappingBean;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
+import com.hkt.btu.sd.core.util.JsonUtils;
 import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.WfmApiFacade;
-import com.hkt.btu.sd.facade.data.*;
-import com.hkt.btu.sd.facade.data.wfm.WfmAppointmentResData;
-import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
-import com.hkt.btu.sd.facade.data.wfm.WfmOfferNameProductTypeData;
-import com.hkt.btu.sd.facade.data.wfm.WfmResponse;
-import com.hkt.btu.sd.facade.data.wfm.WfmSuccess;
-import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
+import com.hkt.btu.sd.facade.data.SdPendingOrderData;
+import com.hkt.btu.sd.facade.data.SdTicketData;
+import com.hkt.btu.sd.facade.data.WfmJobDetailsData;
+import com.hkt.btu.sd.facade.data.WfmResponseData;
+import com.hkt.btu.sd.facade.data.wfm.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -35,6 +29,10 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -67,19 +65,10 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
 
     @Override
     public Integer createJob(SdTicketData ticketData) throws JsonProcessingException {
-        ObjectMapper om = new ObjectMapper();
-        JavaTimeModule javaTimeModule = new JavaTimeModule();
-        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-        javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ofPattern("HH:mm:ss")));
-        om.registerModule(javaTimeModule);
-        Response res = postEntity("/api/v1/sd/FaultCreate", Entity.entity(om.writeValueAsString(ticketData), MediaType.APPLICATION_JSON));
-        return Optional.ofNullable(res.readEntity(WfmResponse.class)).map(wfmResponse -> {
-            if (res.getStatus() !=200){
-                LOG.warn("Response code:{},errorMsg:{}",res.getStatus(),wfmResponse.getErrorMsg());
-            }
-            return wfmResponse.getData();
-        }).map(WfmSuccess::getJobId).orElse(0);
+        Response res = postEntity("/api/v1/sd/FaultCreate", Entity.entity(JsonUtils.getMapperFormatLocalDateTime2String().writeValueAsString(ticketData), MediaType.APPLICATION_JSON));
+        WfmResponse wfmRes = res.readEntity(WfmResponse.class);
+        return Optional.ofNullable(wfmRes.getData()).map(WfmSuccess::getJobId).orElseThrow(() ->
+                new RuntimeException(String.format("WFM Error: %s . Please contact WFM Admin.", wfmRes.getErrorMsg())));
     }
 
     @Override
@@ -88,7 +77,7 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
             return Optional.ofNullable(ticketMasId).flatMap(id -> Optional.ofNullable(postData("/api/v1/sd/CloseTicket/" + id, null, null))
                     .filter(StringUtils::isNotBlank)
                     .map(s -> StringUtils.containsIgnoreCase(s, "Success"))).orElse(false);
-        }catch (Exception e){
+        } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             return false;
         }

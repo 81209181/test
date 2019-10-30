@@ -38,7 +38,7 @@ public interface SdTicketService {
     void createTicketCustRemarks(Integer ticketMasId, String remarks);
     void createTicketSysRemarks(Integer ticketMasId, String remarks);
 
-    void updateJobIdInService(Integer jobId, String ticketMasId, String userId);
+    void updateJobIdInService(Integer jobId, int ticketMasId, String userId);
 
     Optional<SdTicketServiceBean> getService(Integer ticketId);
 
@@ -57,4 +57,6 @@ public interface SdTicketService {
     List<SdTicketMasBean> getTicketByServiceNo(String serviceNom, String status);
 
     void closeTicket(int ticketMasId, String reasonType, String reasonContent, String userId) throws InvalidInputException;
+
+    void updateTicketType(int ticketMasId, String job, String userId);
 }

@@ -189,12 +189,10 @@ public class SdTicketServiceImpl implements SdTicketService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateJobIdInService(Integer jobId, String ticketMasId, String userId) {
-        int iTicketMasId = Integer.parseInt(ticketMasId);
-
+    public void updateJobIdInService(Integer jobId, int ticketMasId, String userId) {
         ticketServiceMapper.updateTicketServiceByJobId(jobId, ticketMasId, userId);
-        ticketMasMapper.updateTicketStatus(iTicketMasId, SdTicketMasBean.STATUS_TYPE_CODE.WORKING, userId);
-        createTicketSysRemarks(iTicketMasId, String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_WORKING, userId));
+        ticketMasMapper.updateTicketStatus(ticketMasId, SdTicketMasBean.STATUS_TYPE_CODE.WORKING, userId);
+        createTicketSysRemarks(ticketMasId, String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_WORKING, userId));
     }
 
     @Override
@@ -360,5 +358,10 @@ public class SdTicketServiceImpl implements SdTicketService {
         String modifyby = userService.getCurrentUserUserId();
         ticketMasMapper.updateTicketStatus(ticketMasId, SdTicketMasBean.STATUS_TYPE_CODE.COMPLETE, modifyby);
         createTicketSysRemarks(ticketMasId, String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_CLOSE, reasonType, reasonContent, closeby));
+    }
+
+    @Override
+    public void updateTicketType(int ticketMasId, String type, String userId) {
+        ticketMasMapper.updateTicketType(ticketMasId,type,userId);
     }
 }

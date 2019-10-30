@@ -116,4 +116,11 @@
         where  TICKET_MAS_ID = #{ticketMasId}
     </update>
 
+    <update id="updateTicketType">
+        update ticket_mas
+        set ticket_type = #{type} ,
+            modifyby = #{userId},
+            modifydate = sysdate
+        where ticket_mas_id = #{ticketMasId}
+    </update>
 </mapper>

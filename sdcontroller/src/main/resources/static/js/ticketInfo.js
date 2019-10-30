@@ -4,13 +4,13 @@ $().ready(function(){
 
     $('.selectpicker').selectpicker({});
 
-    if(ticketStatus == "OPEN"){
+    if(ticketStatus === "OPEN"){
         $("#ticketStatus").css("color","blue");
-    } else if(ticketStatus == "WORKING"){
+    } else if(ticketStatus === "WORKING"){
          $("#ticketStatus").css("color","orange");
-    } else if(ticketStatus == "COMPLETE"){
+    } else if(ticketStatus === "COMPLETE"){
          $("#ticketStatus").css("color","green");
-    } else if(ticketStatus == "CANCEL"){
+    } else if(ticketStatus === "CANCEL"){
          $("#ticketStatus").css("color","red");
     }
 
@@ -27,15 +27,15 @@ $().ready(function(){
                 let service =$('#service');
                 $.each(j,function(key,value){
 //                    service.find('input[name='+key+']').val(value);    // by Dennis  ref jira 179
-                    if (key == 'faultsList') {
-                        if (value == '') {
+                    if (key === 'faultsList') {
+                        if (value === '') {
                             $('#btnMakeAppointment').attr('disabled', true);
                         }
                         for (item of value) {
                             $('#symptomList').find('option[value='+item.symptomCode+']').attr('selected','selected');
                         }
                     }
-                    if (key == 'ticketDetId') {
+                    if (key === 'ticketDetId') {
                         ticketDetId = value;
                     }
                 })
@@ -54,7 +54,7 @@ $().ready(function(){
             let faults = new Array();
             let form_json = {};
             $.map(form_arr, function (n, i) {
-                if (n['name'] == 'symptom') {
+                if (n['name'] === 'symptom') {
                     faults.push(n['value']);
                 }
                 form_json[n['name']] = n['value'];
@@ -62,7 +62,7 @@ $().ready(function(){
             form_json['faults'] = faults;
             form_json['ticketMasId']=ticketMasId;
             arr.push(form_json);
-        })
+        });
         $.ajax({
             url:'/ticket/service/update',
             type : 'POST',
@@ -76,8 +76,8 @@ $().ready(function(){
             var responseError = e.responseText ? e.responseText : "Get failed.";
             console.log("ERROR : ", responseError);
             showErrorMsg(responseError);
-        })
-    })
+        });
+    });
 
     // call in count
     $('#btnCallInCount').on('click', function(){
@@ -94,23 +94,23 @@ $().ready(function(){
 
     // make appointment
     $('#btnMakeAppointment').on('click', function () {
-        if (ticketMasId == '') {
+        if (ticketMasId === '') {
             showErrorMsg('No ticket mas Id');
             return;
         }
-        if (ticketDetId == '') {
+        if (ticketDetId === '') {
             showErrorMsg('No ticket detail Id.');
             return;
         }
         makeAppointment(ticketMasId, ticketDetId);
-    })
+    });
 
     getAppointmentInfo(ticketMasId);
 
     //contact
     $.get('/ticket/contact?ticketMasId='+ticketMasId,function(res){
-        if (res.length == 0) {
-            if(ticketStatus != "COMPLETE"){
+        if (res.length === 0) {
+            if(ticketStatus !== "COMPLETE"){
                 let contact =$('#tempContact').children().clone();
                 contact.find('input[name=contactType]').val("On-site Contact");
                 contact.appendTo($('#contact_list'));
@@ -158,7 +158,7 @@ $().ready(function(){
             contentType: "application/json",
             data: JSON.stringify(arr),
             success:function(res){
-                if (res == "") {
+                if (res === "") {
                     showInfoMsg("Update contact info success");
                 } else {
                     showErrorMsg(res);
@@ -218,6 +218,7 @@ $().ready(function(){
             ticket[$(input).attr('name')] =$(input).val();
         })
         ticket['ticketMasId'] =ticketMasId;
+        clearAllMsg();
         $.ajax({
             url:'/ticket/submit',
             type : 'POST',
@@ -233,11 +234,12 @@ $().ready(function(){
             console.log("ERROR : ", responseError);
             showErrorMsg(responseError);
         })
-    })
+    });
+
     // close button
     $('#btnTicketClose').on('click',function(){
         $('.reason').modal('show');
-    })
+    });
 
     $('#btnReasonSubmit').on('click',function(){
         let form =$('.needs-validation').get(0);
@@ -257,7 +259,7 @@ $().ready(function(){
             })
         }
         $(form).addClass("was-validated");
-    })
+    });
 
     $('#btnResetNGN3PWD').on('click',function(){
         $.post('/ticket/resetNGN3PWD',{
@@ -316,12 +318,12 @@ function makeAppointment(ticketMasId, ticketDetId) {
         data : {
             ticketMasId : ticketMasId,
             ticketDetId : ticketDetId,
-            serviceType: "Broadband",
+            serviceType: "Broadband", // todo [SERVDESK-182]: ticket service type
+            symptomCode: "ABC123", // todo [SERVDESK-182]: ticket symptom code
             userName : "sd",
-            password : "Ki6=rEDs47*^5"
+            password : "Ki6=rEDs47*^5" // todo [SERVDESK-182]: need to use config param, and hide in backend
         }
-    }, "https://10.252.15.158/wfm");
-
+    }, "https://10.252.15.158/wfm"); // todo [SERVDESK-182]: need to use config param link
     checkWindowClose(window);
 }
 

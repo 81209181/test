@@ -25,22 +25,26 @@
                     <font class="form-control-plaintext col-md-7" th:text="*{ticketMasId}"></font>
                 </div>
                 <div class="col-md-3 form-inline pt-2">
+                    <label class="col-form-label justify-content-end">Ticket Type:</label>
+                    <font class="form-control-plaintext col-md-3" th:text="*{ticketType}"></font>
+                </div>
+                <div class="col-md-4 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Ticket Status:</label>
-                    <font class="form-control-plaintext col-md-3" th:text="*{ticketStatus}" id="ticketStatus"></font>
+                    <span class="form-control-plaintext col-md-3" th:text="*{ticketStatus}" id="ticketStatus"></span>
                     <button type="button" class="btn btn-success" id="btnTicketClose" th:unless="*{ticketStatus} eq 'COMPLETE'">Close</button>
+                </div>
+                <div class="col-md-3 form-inline pt-2">
+                    <label class="col-form-label justify-content-end">Search Key:</label>
+                    <font class="form-control-plaintext col-md-5" th:text="*{searchKeyDesc}"></font>
+                </div>
+                <div class="col-md-3 form-inline pt-2">
+                    <label class="col-form-label justify-content-end">Search Value:</label>
+                    <font class="form-control-plaintext col-md-5" th:text="*{searchValue}"></font>
                 </div>
                 <div class="col-md-4 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Call-in Count:</label>
                     <font class="form-control-plaintext col-md-3" th:text="*{callInCount}"></font>
                     <button type="button" class="btn btn-primary" id="btnCallInCount">Customer Re-call</button>
-                </div>
-                <div class="col-md-3 form-inline pt-2">
-                    <label class="col-form-label justify-content-end">Search Key:</label>
-                    <font class="form-control-plaintext col-md-3" th:text="*{searchKeyDesc}"></font>
-                </div>
-                <div class="col-md-3 form-inline pt-2">
-                    <label class="col-form-label justify-content-end">Search Value:</label>
-                    <font class="form-control-plaintext col-md-5" th:text="*{searchValue}"></font>
                 </div>
             </div>
             <hr>

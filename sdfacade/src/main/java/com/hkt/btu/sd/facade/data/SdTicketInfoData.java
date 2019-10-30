@@ -4,8 +4,13 @@ import java.time.LocalDateTime;
 
 public class SdTicketInfoData {
 
+    // ticket
     private int ticketMasId;
+    private String ticketType;
     private String ticketStatus;
+    private int callInCount;
+    private String searchKeyDesc;
+    private String searchValue;
 
     // customer info
     private String custCode;
@@ -14,12 +19,11 @@ public class SdTicketInfoData {
     private String custStatus;
     private String languagePreference;
     private String asap;
-    private LocalDateTime appointmentDate;
+
+    // job
     private String jobId;
     private String jobStatus;
-    private int callInCount;
-    private String searchKeyDesc;
-    private String searchValue;
+    private LocalDateTime appointmentDate;
 
     // service info
     private String serviceType;
@@ -47,12 +51,44 @@ public class SdTicketInfoData {
         this.ticketMasId = ticketMasId;
     }
 
+    public String getTicketType() {
+        return ticketType;
+    }
+
+    public void setTicketType(String ticketType) {
+        this.ticketType = ticketType;
+    }
+
     public String getTicketStatus() {
         return ticketStatus;
     }
 
     public void setTicketStatus(String ticketStatus) {
         this.ticketStatus = ticketStatus;
+    }
+
+    public int getCallInCount() {
+        return callInCount;
+    }
+
+    public void setCallInCount(int callInCount) {
+        this.callInCount = callInCount;
+    }
+
+    public String getSearchKeyDesc() {
+        return searchKeyDesc;
+    }
+
+    public void setSearchKeyDesc(String searchKeyDesc) {
+        this.searchKeyDesc = searchKeyDesc;
+    }
+
+    public String getSearchValue() {
+        return searchValue;
+    }
+
+    public void setSearchValue(String searchValue) {
+        this.searchValue = searchValue;
     }
 
     public String getCustCode() {
@@ -103,14 +139,6 @@ public class SdTicketInfoData {
         this.asap = asap;
     }
 
-    public LocalDateTime getAppointmentDate() {
-        return appointmentDate;
-    }
-
-    public void setAppointmentDate(LocalDateTime appointmentDate) {
-        this.appointmentDate = appointmentDate;
-    }
-
     public String getJobId() {
         return jobId;
     }
@@ -127,28 +155,12 @@ public class SdTicketInfoData {
         this.jobStatus = jobStatus;
     }
 
-    public int getCallInCount() {
-        return callInCount;
+    public LocalDateTime getAppointmentDate() {
+        return appointmentDate;
     }
 
-    public void setCallInCount(int callInCount) {
-        this.callInCount = callInCount;
-    }
-
-    public String getSearchKeyDesc() {
-        return searchKeyDesc;
-    }
-
-    public void setSearchKeyDesc(String searchKeyDesc) {
-        this.searchKeyDesc = searchKeyDesc;
-    }
-
-    public String getSearchValue() {
-        return searchValue;
-    }
-
-    public void setSearchValue(String searchValue) {
-        this.searchValue = searchValue;
+    public void setAppointmentDate(LocalDateTime appointmentDate) {
+        this.appointmentDate = appointmentDate;
     }
 
     public String getServiceType() {
