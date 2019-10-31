@@ -51,8 +51,15 @@ public class RequestCreateSearchResultData implements DataInterface {
     private String exchangeBuildingId;
     private String offerDetail;
     private String description;
-    private String pendingOrder;
     private String relatedBsn;
+
+    // pending order info
+    private Long orderId;
+    private String orderType;
+    private Long fulfillmentId;
+    private String fulfillmentType;
+    private String serviceReadyDate;
+    private String appointmentDate;
 
     public String getAdminId() {
         return adminId;
@@ -398,19 +405,59 @@ public class RequestCreateSearchResultData implements DataInterface {
         this.description = description;
     }
 
-    public String getPendingOrder() {
-        return pendingOrder;
-    }
-
-    public void setPendingOrder(String pendingOrder) {
-        this.pendingOrder = pendingOrder;
-    }
-
     public String getRelatedBsn() {
         return relatedBsn;
     }
 
     public void setRelatedBsn(String relatedBsn) {
         this.relatedBsn = relatedBsn;
+    }
+
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
+
+    public String getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(String orderType) {
+        this.orderType = orderType;
+    }
+
+    public Long getFulfillmentId() {
+        return fulfillmentId;
+    }
+
+    public void setFulfillmentId(Long fulfillmentId) {
+        this.fulfillmentId = fulfillmentId;
+    }
+
+    public String getFulfillmentType() {
+        return fulfillmentType;
+    }
+
+    public void setFulfillmentType(String fulfillmentType) {
+        this.fulfillmentType = fulfillmentType;
+    }
+
+    public String getServiceReadyDate() {
+        return serviceReadyDate;
+    }
+
+    public void setServiceReadyDate(String serviceReadyDate) {
+        this.serviceReadyDate = serviceReadyDate;
+    }
+
+    public String getAppointmentDate() {
+        return appointmentDate;
+    }
+
+    public void setAppointmentDate(String appointmentDate) {
+        this.appointmentDate = appointmentDate;
     }
 }

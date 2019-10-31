@@ -8,7 +8,7 @@
 <body>
 <div layout:fragment="content" th:remove="tag">
 
-    <div class="card" style="height:700px">
+    <div class="card" style="height: 900px;">
         <div class="card-header bg-primary text-white">Search Service</div>
         <div class="card-body">
             <div class="row">
@@ -78,10 +78,6 @@
                             <input type="text" class="form-control-plaintext col-md-7" name="serviceStatusDesc" readonly>
                         </div>
                         <div class="col-md-4 form-inline pt-2">
-                            <label class="col-form-label col-md-5 justify-content-end">Pending order:</label>
-                            <input type="text" class="form-control-plaintext col-md-7" name="pendingOrder" readonly>
-                        </div>
-                        <div class="col-md-4 form-inline pt-2">
                             <label class="col-form-label col-md-5 justify-content-end">Related BSN:</label>
                             <input type="text" class="form-control-plaintext col-md-7" name="relatedBsn" id="relatedBsn" readonly>
                         </div>
@@ -98,11 +94,38 @@
                             <input type="text" class="form-control-plaintext col-md-10" name="description" readonly>
                         </div>
                     </div>
-                    <div class="form-row ml-5">
+                    <div class="form-row float-right ml-5">
                         <button type="button" class="btn btn-primary mt-2 ml-5 itsm" disabled>Details</button>
                         <button type="button" id="btnGetInventory" class="btn btn-info mt-2 ml-5 nora" disabled>Inventory Detail</button>
                         <button type="button" id="btnOfferDetailList" class="btn btn-info mt-2 ml-5 nora" disabled>BB Detail</button>
                         <button type="button" id="btnRelatedOfferInfo" class="btn btn-info mt-2 ml-5 nora" disabled>VoIP Detail</button>
+                    </div>
+                    <p class="pb-2" style="border-bottom:1px solid #949494;margin-top:50px">Pending Order</p>
+                    <div class="form-row">
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Order Id:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="orderId" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Order Type:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="orderType" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Service Ready Date:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="serviceReadyDate" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Fulfillment Id:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="fulfillmentId" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Fulfillment Type:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="fulfillmentType" readonly>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label col-md-5 justify-content-end">Appointment Date:</label>
+                            <input type="text" class="form-control-plaintext col-md-7" name="appointmentDate" readonly>
+                        </div>
                     </div>
                     <button type="button" class="btn btn-primary float-right mt-3" id="btnSearchCustomerNext">Create Ticket</button>
                 </form>

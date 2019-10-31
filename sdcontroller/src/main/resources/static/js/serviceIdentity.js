@@ -1,7 +1,6 @@
+let ctx = $("meta[name='_ctx']").attr("content");
+
 $().ready(function(){
-
-    let ctx = $("meta[name='_ctx']").attr("content");
-
     let bsn = "";
 
     $('#btnSearchReset').on('click',function(){
@@ -18,25 +17,17 @@ $().ready(function(){
             showErrorMsg('Please input customer code.');
             return;
         }
-        $.post('/ticket/query/create',$('form').serialize(),function(res){
+        $.post('/ticket/service-identity/checkPendingOrder',$('form').serialize(),function(res){
             if (res.success) {
-                $(location).attr('href',ctx+'/ticket?ticketMasId='+ res.data);
+                createTicket();
             } else {
-                var responseError = "The service number already exists in Ticket-";
-                let ticketMasIds = res.data;
-                $.each(ticketMasIds,function(index,j){
-                    if (index > 0) {
-                        responseError += "/ ";
-                    }
-                    responseError += "<a href='"+ctx+"/ticket?ticketMasId="+j.ticketMasId+"'>"+j.ticketMasId+"</a> ";
-                });
-                showErrorMsg(responseError);
+                showErrorMsg("There is pending order (" + res.data + ") of the service in WFM. Continue to create ticket?<button class='btn btn-primary mt-1 ml-2' onclick='createTicket()'>Yes</button><button class='btn btn-primary mt-1 ml-2' onclick='clearAllMsg()'>No</button>");
             }
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";
             console.log("ERROR : ", responseError);
             showErrorMsg(responseError);
-        })
+        });
     })
 
 
@@ -74,7 +65,6 @@ $().ready(function(){
             showErrorMsg('No service number!');
             return;
         }else {
-            let ctx = $("meta[name='_ctx']").attr("content");
             let relatedBsn =  $("#relatedBsn").val();
             let key = relatedBsn=== '' ? bsn : relatedBsn;
             window.open(ctx+'/ticket/offer-info?bsn='+key,'RelatedOfferInfo','scrollbars=yes,height=800,width=1200');
@@ -85,7 +75,6 @@ $().ready(function(){
         if (bsn === '') {
             showErrorMsg('No service number!');
         } else {
-            let ctx = $("meta[name='_ctx']").attr("content");
             let relatedBsn =  $("#relatedBsn").val();
             let key = relatedBsn=== '' ? bsn : relatedBsn;
             window.open(ctx+'/ticket/offer-detail?bsn='+key,'OfferDetailList','scrollbars=yes,height=800,width=1200');
@@ -169,3 +158,25 @@ $().ready(function(){
     })
 
 })
+
+function createTicket(){
+    $.post('/ticket/service-identity/createQueryTicket',$('form').serialize(),function(res){
+        if (res.success) {
+            $(location).attr('href',ctx+'/ticket?ticketMasId='+ res.data);
+        } else {
+            var responseError = "The service number already exists in Ticket-";
+            let ticketMasIds = res.data;
+            $.each(ticketMasIds,function(index,j){
+                if (index > 0) {
+                    responseError += "/ ";
+                }
+                responseError += "<a href='"+ctx+"/ticket?ticketMasId="+j.ticketMasId+"'>"+j.ticketMasId+"</a> ";
+            });
+            showErrorMsg(responseError);
+        }
+    }).fail(function(e){
+        var responseError = e.responseText ? e.responseText : "Get failed.";
+        console.log("ERROR : ", responseError);
+        showErrorMsg(responseError);
+    })
+}

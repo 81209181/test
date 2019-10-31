@@ -11,7 +11,6 @@ import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.core.util.JsonUtils;
 import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.WfmApiFacade;
-import com.hkt.btu.sd.facade.data.SdPendingOrderData;
 import com.hkt.btu.sd.facade.data.SdTicketData;
 import com.hkt.btu.sd.facade.data.WfmJobDetailsData;
 import com.hkt.btu.sd.facade.data.WfmResponseData;
@@ -29,6 +28,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,24 +115,50 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
     }
 
     @Override
-    public SdPendingOrderData getPendingOrderByBsn(String bsn) {
-        SdPendingOrderData pendingOrderData = new SdPendingOrderData();
-        String wfmResponseDataJsonString = null;
+    public WfmPendingOrderData getPendingOrderByBsn(String bsn) {
+        WfmPendingOrderData responseData = new WfmPendingOrderData();
+        String errorMsg = "";
         try {
-            wfmResponseDataJsonString = getData("/api/v1/sd/GetPendingOrderByBsn/" + bsn, null);
+            responseData = getData("/api/v1/sd/GetPendingOrderByBsn/" + bsn, WfmPendingOrderData.class, null);
         } catch (RuntimeException e) {
-            String errorMsg = "WFM Error: Cannot check pending order from WFM of BSN " + bsn + ".";
+            errorMsg = String.format("WFM Error: Cannot check pending order from WFM of BSN %s.", bsn);
             LOG.error(errorMsg);
         }
 
-        WfmPendingOrderData responseData = new Gson().fromJson(wfmResponseDataJsonString, new TypeToken<WfmPendingOrderData>() {
-        }.getType());
-        Long pendingOrderId = responseData==null ? null : responseData.getOrderId();
-        if (pendingOrderId!=null && pendingOrderId!=0) {
-//            String[] arr = responseDataList.toArray(new String[responseDataList.size()]);
-            pendingOrderData.setPendingOrder(String.format("%d", pendingOrderId));
+        if (responseData != null) {
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
+
+            // serviceReadyDate format
+            String srdDateTime = StringUtils.isEmpty(responseData.getSrdStartDateTime()) ? null :
+                    LocalDateTime.parse(responseData.getSrdStartDateTime(), df).toString().replace("T", " ");
+            String serviceReadyDate = StringUtils.isEmpty(srdDateTime) ? null : srdDateTime.substring(0, 10);
+            String srdStartTime = StringUtils.isEmpty(srdDateTime) ? "" : srdDateTime.substring(11, 16);
+            String srdEndTime = StringUtils.isEmpty(responseData.getSrdEndDateTime()) ? "" :
+                    LocalDateTime.parse(responseData.getSrdEndDateTime(), df).toString().replace("T", " ").substring(11, 16);
+            if (!srdStartTime.equals("00:00") && !srdEndTime.equals("00:00")) {
+                serviceReadyDate = serviceReadyDate == null ? null : serviceReadyDate +
+                        (srdStartTime == "" ? "" : " " + srdStartTime +
+                                (srdEndTime == "" ? "" : "-" + srdEndTime));
+            }
+
+            // appointmentDate format
+            String appointmentDate = StringUtils.isEmpty(responseData.getSrdStartDateTime()) ? null :
+                    LocalDateTime.parse(responseData.getSrdStartDateTime(), df).toString().replace("T", " ").substring(0, 10);
+            String appointmentStartTime = StringUtils.isEmpty(responseData.getAppointmentStartDateTime()) ? "" :
+                    LocalDateTime.parse(responseData.getAppointmentStartDateTime(), df).toString().replace("T", " ").substring(11, 16);
+            String appointmentEndTime = StringUtils.isEmpty(responseData.getAppointmentEndDateTime()) ? "" :
+                    LocalDateTime.parse(responseData.getAppointmentEndDateTime(), df).toString().replace("T", " ").substring(11, 16);
+            if (!appointmentStartTime.equals("00:00") && !appointmentEndTime.equals("00:00")) {
+                appointmentDate = appointmentDate == null ? null : appointmentDate +
+                        (appointmentStartTime == "" ? "" : " " + appointmentStartTime +
+                                (appointmentEndTime == "" ? "" : "-" + appointmentEndTime));
+            }
+
+            responseData.setServiceReadyDate(serviceReadyDate);
+            responseData.setAppointmentDate(appointmentDate);
         }
-        return pendingOrderData;
+        responseData.setErrorMsg(errorMsg);
+        return responseData;
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.hkt.btu.sd.facade.data.nora.NoraBroadbandInfoData;
 import com.hkt.btu.sd.facade.data.nora.NoraDnGroupData;
 import com.hkt.btu.sd.facade.data.wfm.WfmAppointmentResData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
+import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
@@ -61,8 +62,8 @@ public class TicketController {
         }
     }
 
-    @PostMapping("query/create")
-    public ResponseEntity<?> createQueryTicket(QueryTicketRequestData queryTicketRequestData) {
+    @PostMapping("service-identity/checkPendingOrder")
+    public ResponseEntity<?> checkPendingOrder(QueryTicketRequestData queryTicketRequestData) {
         if (StringUtils.isEmpty(queryTicketRequestData.getServiceNo()) || StringUtils.isEmpty(queryTicketRequestData.getServiceType())) {
             return ResponseEntity.badRequest().body("Service No. / Service Type is empty.");
         }
@@ -70,10 +71,23 @@ public class TicketController {
         // check wfm pending order
         boolean checkPendingOrder = serviceTypeFacade.needCheckPendingOrder(queryTicketRequestData.getServiceType());
         if(checkPendingOrder) {
-            SdPendingOrderData pendingOrderData = wfmApiFacade.getPendingOrderByBsn(queryTicketRequestData.getServiceNo());
-            if (StringUtils.isNotEmpty(pendingOrderData.getErrorMsg())) {
-                return ResponseEntity.badRequest().body("There is pending order (" + pendingOrderData.getPendingOrder() + ") of the service in WFM.");
+            WfmPendingOrderData pendingOrderData = wfmApiFacade.getPendingOrderByBsn(queryTicketRequestData.getServiceNo());
+            if (StringUtils.isEmpty(pendingOrderData.getErrorMsg())) {
+                if (pendingOrderData.getOrderId() != null && pendingOrderData.getOrderId() != 0) {
+                    return ResponseEntity.ok(ResponseTicketData.of(false, pendingOrderData.getOrderId()));
+                }
+            } else {
+                return ResponseEntity.badRequest().body(pendingOrderData.getErrorMsg());
             }
+        }
+
+        return ResponseEntity.ok(SimpleAjaxResponse.of());
+    }
+
+    @PostMapping("service-identity/createQueryTicket")
+    public ResponseEntity<?> createQueryTicket(QueryTicketRequestData queryTicketRequestData) {
+        if (StringUtils.isEmpty(queryTicketRequestData.getServiceNo()) || StringUtils.isEmpty(queryTicketRequestData.getServiceType())) {
+            return ResponseEntity.badRequest().body("Service No. / Service Type is empty.");
         }
 
         // check pending ticket of same service number
