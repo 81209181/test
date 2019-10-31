@@ -38,12 +38,14 @@ public class BtuEmailBean {
     public class INIT_PW_EMAIL{
         public static final String TEMPLATE_ID = "initPasswordEmail";
         public static final String OTP = "otp";
+        public static final String NEW_ACCOUNT ="newAccount";
     }
 
     // reset password email
     public class RESET_PW_EMAIL{
         public static final String TEMPLATE_ID = "resetPasswordEmail";
         public static final String OTP = "otp";
+        public static final String ACCOUNT ="account";
     }
 
     // access request customer confirmation email

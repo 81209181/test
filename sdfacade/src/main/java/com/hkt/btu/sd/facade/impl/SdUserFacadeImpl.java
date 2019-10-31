@@ -451,6 +451,11 @@ public class SdUserFacadeImpl implements SdUserFacade {
     }
 
     @Override
+    public void resetPwd4NonLdapUser(String userId) throws MessagingException {
+        sdUserService.requestResetPassword(userId);
+    }
+
+    @Override
     public SdUserData getCurrentUser() {
         SdUserData userData = new SdUserData();
 
