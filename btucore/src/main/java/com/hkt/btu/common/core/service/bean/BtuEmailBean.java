@@ -45,7 +45,7 @@ public class BtuEmailBean {
     public class RESET_PW_EMAIL{
         public static final String TEMPLATE_ID = "resetPasswordEmail";
         public static final String OTP = "otp";
-        public static final String NEW_ACCOUNT ="newAccount";
+        public static final String ACCOUNT ="account";
     }
 
     // access request customer confirmation email
