@@ -6,7 +6,8 @@ public class WfmPendingOrderData {
     private Long fulfillmentId;
     private String orderType;
     private String fulfillmentType;
-    private String srd;
+    private String srdStartDateTime;
+    private String srdEndDateTime;
     private String appointmentDate;
     private String appointmentStartDateTime;
     private String appointmentEndDateTime;
@@ -43,14 +44,6 @@ public class WfmPendingOrderData {
         this.fulfillmentType = fulfillmentType;
     }
 
-    public String getSrd() {
-        return srd;
-    }
-
-    public void setSrd(String srd) {
-        this.srd = srd;
-    }
-
     public String getAppointmentDate() {
         return appointmentDate;
     }
@@ -73,5 +66,21 @@ public class WfmPendingOrderData {
 
     public void setAppointmentEndDateTime(String appointmentEndDateTime) {
         this.appointmentEndDateTime = appointmentEndDateTime;
+    }
+
+    public String getSrdStartDateTime() {
+        return srdStartDateTime;
+    }
+
+    public void setSrdStartDateTime(String srdStartDateTime) {
+        this.srdStartDateTime = srdStartDateTime;
+    }
+
+    public String getSrdEndDateTime() {
+        return srdEndDateTime;
+    }
+
+    public void setSrdEndDateTime(String srdEndDateTime) {
+        this.srdEndDateTime = srdEndDateTime;
     }
 }
