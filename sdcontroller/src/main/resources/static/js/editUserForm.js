@@ -29,6 +29,7 @@ function ajaxGetUser(){
                 $("#edit-ldap-domain").hide();
                 $("#edit-domain-email").hide();
                 $("#dropdownMenu1").show();
+                $("#btnUserResetPwd").show();
             }
         },
         error: function (e) {
@@ -168,6 +169,17 @@ $(document).ready(function() {
     $("#edit-ldap-domain").show();
     $("#edit-domain-email").show();
     $("#dropdownMenu1").hide();
+    $("#btnUserResetPwd").hide();
     // load user
     ajaxGetUser();
+
+    $('#btnUserResetPwd').on('click',function(){
+        $.get('/admin/manage-user/resetUserPwd/'+$("#edit-user-id").val(),function(res){
+            showInfoMsg(res);
+        }).fail(function(e){
+            var responseError = e.responseText ? e.responseText : "Get failed.";
+            console.log("ERROR : ", responseError);
+            showErrorMsg(responseError);
+        })
+    })
 });

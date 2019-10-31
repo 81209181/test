@@ -306,4 +306,10 @@ public class ManageUserController {
         return ResponseEntity.ok("Expire user session successfully.");
 
     }
+
+    @GetMapping("resetUserPwd/{userId}")
+    public ResponseEntity<?> resetUserPwd(@PathVariable String userId) {
+        System.out.println(userId);
+        return ResponseEntity.ok("Reset password email has been sent to your email.");
+    }
 }
