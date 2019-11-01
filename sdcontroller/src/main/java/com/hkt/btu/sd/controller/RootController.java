@@ -44,6 +44,22 @@ public class RootController {
         return "login";
     }
 
+    @GetMapping(value = "reset-password")
+    public String resetPassword(final Model model,
+                                @RequestParam(defaultValue = "false") boolean init,
+                                @RequestParam(required = false) String otp,
+                                @ModelAttribute("isInit") String isInit,
+                                @ModelAttribute("resetPwdFormData") ResetPwdFormData resetPwdFormData) {
+        model.addAttribute("isInit", init);
+
+        if (!StringUtils.isEmpty(otp)) {
+            resetPwdFormData.setResetOtp(otp);
+            model.addAttribute("resetPwdFormData", resetPwdFormData);
+        }
+
+        return "resetPassword";
+    }
+
     @PostMapping(value = "reset-password")
     public ResponseEntity<?> resetPassword(@Valid ResetPwdFormData resetPwdFormData) {
         String errorMsg = sdUserFacade.resetPassword(resetPwdFormData);
