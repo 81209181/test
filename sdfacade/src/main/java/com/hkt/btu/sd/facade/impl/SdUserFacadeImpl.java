@@ -452,6 +452,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
 
     @Override
     public void resetPwd4NonLdapUser(String userId) throws MessagingException {
+        // todo [SERVDESK-186]: check empty userId input
         sdUserService.requestResetPassword(userId);
     }
 

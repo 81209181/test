@@ -574,13 +574,16 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     }
 
     public void requestResetPassword(String username) throws UserNotFoundException, MessagingException {
+        // check requestor rights
+        BtuUserBean currentUser = getCurrentUserBean();
+        // todo [SERVDESK-186]: check requestor rights, need to be TH of the target user
 
         // get user data
+        // todo [SERVDESK-186]: entity should be be used for business logic, use bean instead
         SdUserEntity sdUserEntity = sdUserMapper.getUserByUserId(username);
         if (sdUserEntity == null) {
             throw new UserNotFoundException();
         }
-        BtuUserBean currentUser = getCurrentUserBean();
         String userId = sdUserEntity.getUserId();
 
         // reject LDAP user to reset password
