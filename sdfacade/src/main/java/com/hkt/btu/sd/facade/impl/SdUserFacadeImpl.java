@@ -24,6 +24,7 @@ import javax.mail.MessagingException;
 import java.security.GeneralSecurityException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 public class SdUserFacadeImpl implements SdUserFacade {
     private static final Logger LOG = LogManager.getLogger(SdUserFacadeImpl.class);
@@ -451,9 +452,16 @@ public class SdUserFacadeImpl implements SdUserFacade {
     }
 
     @Override
-    public void resetPwd4NonLdapUser(String userId) throws MessagingException {
-        // todo [SERVDESK-186]: check empty userId input
-        sdUserService.requestResetPassword(userId);
+    public void resetPwd4NonLdapUser(String userId) {
+        Optional.ofNullable(userId).filter(StringUtils::isNotBlank).ifPresentOrElse(s -> {
+            try {
+                sdUserService.requestResetPassword(userId);
+            } catch (MessagingException e) {
+                throw  new RuntimeException(e.getMessage());
+            }
+        },() -> {
+            throw  new RuntimeException("Reset password error: User id is empty.");
+        });
     }
 
     @Override

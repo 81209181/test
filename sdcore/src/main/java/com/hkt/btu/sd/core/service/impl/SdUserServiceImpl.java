@@ -576,23 +576,25 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     public void requestResetPassword(String username) throws UserNotFoundException, MessagingException {
         // check requestor rights
         BtuUserBean currentUser = getCurrentUserBean();
-        // todo [SERVDESK-186]: check requestor rights, need to be TH of the target user
-
         // get user data
-        // todo [SERVDESK-186]: entity should be be used for business logic, use bean instead
-        SdUserEntity sdUserEntity = sdUserMapper.getUserByUserId(username);
-        if (sdUserEntity == null) {
+        SdUserBean resetPwdUser = getUserByUserId(username);
+
+        if (resetPwdUser.getRoles().stream().noneMatch(s -> currentUser.getRoles().contains("TH__" + s))) {
+            throw new RuntimeException("Reset password error: You are not the team head of this user.");
+        }
+
+        if (ObjectUtils.isEmpty(resetPwdUser)) {
             throw new UserNotFoundException();
         }
-        String userId = sdUserEntity.getUserId();
+        String userId = resetPwdUser.getUserId();
 
         // reject LDAP user to reset password
-        String ldapDomain = sdUserEntity.getLdapDomain();
+        String ldapDomain = resetPwdUser.getLdapDomain();
         if (StringUtils.isNotEmpty(ldapDomain)) {
             throw new InvalidUserTypeException("LDAP users are not allowed to reset passwords.");
         }
 
-        boolean isNewlyCreated = sdUserEntity.getPasswordModifydate() == null;
+        boolean isNewlyCreated = resetPwdUser.getPasswordModifydate() == null;
         String recipient = currentUser.getEmail();
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put(SdEmailBean.EMAIL_BASIC_RECIPIENT_NAME, currentUser.getName());
@@ -607,7 +609,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             String otp = sdOtpService.generateOtp(userId, SdOtpEntity.ACTION.INIT_PWD);
             LOG.info("Generated password OTP successfully for user " + username + ".");
             dataMap.put(SdEmailBean.INIT_PW_EMAIL.OTP, otp);
-            dataMap.put(SdEmailBean.INIT_PW_EMAIL.NEW_ACCOUNT, sdUserEntity.getName());
+            dataMap.put(SdEmailBean.INIT_PW_EMAIL.NEW_ACCOUNT, resetPwdUser.getName());
 
             // send otp email
             sdEmailService.send(SdEmailBean.INIT_PW_EMAIL.TEMPLATE_ID, recipient, null, dataMap);
@@ -622,7 +624,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             String otp = sdOtpService.generateOtp(userId, SdOtpEntity.ACTION.RESET_PWD);
             LOG.info("Generated password OTP successfully for user " + username + ".");
             dataMap.put(SdEmailBean.RESET_PW_EMAIL.OTP, otp);
-            dataMap.put(SdEmailBean.RESET_PW_EMAIL.ACCOUNT, sdUserEntity.getName());
+            dataMap.put(SdEmailBean.RESET_PW_EMAIL.ACCOUNT, resetPwdUser.getName());
 
             // send otp email
             sdEmailService.send(SdEmailBean.RESET_PW_EMAIL.TEMPLATE_ID, recipient, null, dataMap);

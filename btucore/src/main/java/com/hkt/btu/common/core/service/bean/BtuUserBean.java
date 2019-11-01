@@ -3,7 +3,9 @@ package com.hkt.btu.common.core.service.bean;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class BtuUserBean extends BaseBean {
 
@@ -26,6 +28,11 @@ public class BtuUserBean extends BaseBean {
 
     private Integer companyId;
     private String companyName;
+
+    // get Roles
+    public List<String> getRoles() {
+        return authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
+    }
 
     public String getUserId() {
         return userId;
