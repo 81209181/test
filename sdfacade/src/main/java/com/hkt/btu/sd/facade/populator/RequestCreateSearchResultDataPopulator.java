@@ -100,7 +100,28 @@ public class RequestCreateSearchResultDataPopulator extends AbstractDataPopulato
     private void populateFromBesCustBasicInfoData(BesCustBasicInfoData source, RequestCreateSearchResultData target) {
         target.setCustCode(source.getCustCode());
         target.setCustName(source.getCustName());
-        target.setCustType(source.getCustType());
+        switch (source.getCustType()) {
+            case "1":
+                target.setCustType("Business Registration");
+                break;
+            case "2":
+                target.setCustType("Passport");
+                break;
+            case "3":
+                target.setCustType("ID Card");
+                break;
+            case "4":
+                target.setCustType("School Certificate");
+                break;
+            case "5":
+                target.setCustType("Certificate of Incorporation");
+                break;
+            case "6":
+                target.setCustType("NO BR Number");
+                break;
+            default:
+                target.setCustType("Unknown");
+        }
         target.setCustStatus(source.getStatus());
         switch (source.getLanguagePreference()) {
             case BesCustBasicInfoData.LANGUAGE_PREFERENCE.CHINESE:
