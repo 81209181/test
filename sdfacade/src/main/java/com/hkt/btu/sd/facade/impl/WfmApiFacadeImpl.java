@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hkt.btu.common.facade.data.DataInterface;
 import com.hkt.btu.sd.core.service.SdApiService;
-import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeOfferMappingBean;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.core.util.JsonUtils;
@@ -41,8 +40,6 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
 
     @Resource(name = "apiService")
     SdApiService apiService;
-    @Resource(name = "userService")
-    SdUserService userService;
 
     @Override
     protected SiteInterfaceBean getTargetApiSiteInterfaceBean() {
@@ -116,48 +113,58 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
 
     @Override
     public WfmPendingOrderData getPendingOrderByBsn(String bsn) {
-        WfmPendingOrderData responseData = new WfmPendingOrderData();
-        String errorMsg = "";
+        final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
+
+        WfmPendingOrderData responseData;
         try {
             responseData = getData("/api/v1/sd/GetPendingOrderByBsn/" + bsn, WfmPendingOrderData.class, null);
         } catch (RuntimeException e) {
-            errorMsg = String.format("WFM Error: Cannot check pending order from WFM of BSN %s.", bsn);
+            String errorMsg = String.format("WFM Error: Cannot check pending order from WFM of BSN %s.", bsn);
             LOG.error(errorMsg);
+
+            responseData = new WfmPendingOrderData();
+            responseData.setErrorMsg(errorMsg);
+            return responseData;
         }
 
-        if (responseData != null) {
-            DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
+        if (responseData == null) {
+            String errorMsg = "WFM Error: No response";
+            LOG.error(errorMsg);
 
-            // serviceReadyDate format
-            String srdDateTime = StringUtils.isEmpty(responseData.getSrdStartDateTime()) ? null :
-                    LocalDateTime.parse(responseData.getSrdStartDateTime(), df).toString().replace("T", " ");
-            String serviceReadyDate = StringUtils.isEmpty(srdDateTime) ? null : srdDateTime.substring(0, 10);
-            String srdStartTime = StringUtils.isEmpty(srdDateTime) ? "" : srdDateTime.substring(11, 16);
-            String srdEndTime = StringUtils.isEmpty(responseData.getSrdEndDateTime()) ? "" :
-                    LocalDateTime.parse(responseData.getSrdEndDateTime(), df).toString().replace("T", " ").substring(11, 16);
-            if (!srdStartTime.equals("00:00") && !srdEndTime.equals("00:00")) {
-                serviceReadyDate = serviceReadyDate == null ? null : serviceReadyDate +
-                        (srdStartTime == "" ? "" : " " + srdStartTime +
-                                (srdEndTime == "" ? "" : "-" + srdEndTime));
-            }
-
-            // appointmentDate format
-            String appointmentDate = StringUtils.isEmpty(responseData.getSrdStartDateTime()) ? null :
-                    LocalDateTime.parse(responseData.getSrdStartDateTime(), df).toString().replace("T", " ").substring(0, 10);
-            String appointmentStartTime = StringUtils.isEmpty(responseData.getAppointmentStartDateTime()) ? "" :
-                    LocalDateTime.parse(responseData.getAppointmentStartDateTime(), df).toString().replace("T", " ").substring(11, 16);
-            String appointmentEndTime = StringUtils.isEmpty(responseData.getAppointmentEndDateTime()) ? "" :
-                    LocalDateTime.parse(responseData.getAppointmentEndDateTime(), df).toString().replace("T", " ").substring(11, 16);
-            if (!appointmentStartTime.equals("00:00") && !appointmentEndTime.equals("00:00")) {
-                appointmentDate = appointmentDate == null ? null : appointmentDate +
-                        (appointmentStartTime == "" ? "" : " " + appointmentStartTime +
-                                (appointmentEndTime == "" ? "" : "-" + appointmentEndTime));
-            }
-
-            responseData.setServiceReadyDate(serviceReadyDate);
-            responseData.setAppointmentDate(appointmentDate);
+            responseData = new WfmPendingOrderData();
+            responseData.setErrorMsg(errorMsg);
+            return responseData;
         }
-        responseData.setErrorMsg(errorMsg);
+
+        // serviceReadyDate format
+        String srdDateTime = StringUtils.isEmpty(responseData.getSrdStartDateTime()) ? null :
+                LocalDateTime.parse(responseData.getSrdStartDateTime(), DATE_TIME_FORMATTER).toString().replace("T", " ");
+        String serviceReadyDate = StringUtils.isEmpty(srdDateTime) ? null : srdDateTime.substring(0, 10);
+        String srdStartTime = StringUtils.isEmpty(srdDateTime) ? "" : srdDateTime.substring(11, 16);
+        String srdEndTime = StringUtils.isEmpty(responseData.getSrdEndDateTime()) ? "" :
+                LocalDateTime.parse(responseData.getSrdEndDateTime(), DATE_TIME_FORMATTER).toString().replace("T", " ").substring(11, 16);
+        if (!srdStartTime.equals("00:00") && !srdEndTime.equals("00:00")) {
+            serviceReadyDate = serviceReadyDate == null ? null : serviceReadyDate +
+                    (StringUtils.isEmpty(srdStartTime) ? StringUtils.EMPTY : StringUtils.SPACE + srdStartTime +
+                            (StringUtils.isEmpty(srdEndTime) ? StringUtils.EMPTY : "-" + srdEndTime));
+        }
+
+        // appointmentDate format
+        String appointmentDate = StringUtils.isEmpty(responseData.getSrdStartDateTime()) ? null :
+                LocalDateTime.parse(responseData.getSrdStartDateTime(), DATE_TIME_FORMATTER).toString().replace("T", " ").substring(0, 10);
+        String appointmentStartTime = StringUtils.isEmpty(responseData.getAppointmentStartDateTime()) ? "" :
+                LocalDateTime.parse(responseData.getAppointmentStartDateTime(), DATE_TIME_FORMATTER).toString().replace("T", " ").substring(11, 16);
+        String appointmentEndTime = StringUtils.isEmpty(responseData.getAppointmentEndDateTime()) ? "" :
+                LocalDateTime.parse(responseData.getAppointmentEndDateTime(), DATE_TIME_FORMATTER).toString().replace("T", " ").substring(11, 16);
+        if (!appointmentStartTime.equals("00:00") && !appointmentEndTime.equals("00:00")) {
+            appointmentDate = appointmentDate == null ? null : appointmentDate +
+                    ( StringUtils.isEmpty(appointmentStartTime) ? StringUtils.EMPTY : StringUtils.SPACE + appointmentStartTime +
+                            (StringUtils.isEmpty(appointmentEndTime) ? StringUtils.EMPTY : "-" + appointmentEndTime));
+        }
+
+        responseData.setServiceReadyDate(serviceReadyDate);
+        responseData.setAppointmentDate(appointmentDate);
+
         return responseData;
     }
 
@@ -166,16 +173,16 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
         return Optional.ofNullable(ticketMasId).map(id -> {
             Type type = new TypeToken<List<WfmJobData>>() {
             }.getType();
-            List<WfmJobData> dataList = getDataList("/api/v1/sd/GetJobListByTicketId/" + ticketMasId, type, null);
-            return dataList;
+            return this.<WfmJobData>getDataList("/api/v1/sd/GetJobListByTicketId/" + ticketMasId, type, null);
         }).orElse(null);
     }
 
     @Override
     public WfmAppointmentResData getAppointmentInfo(Integer ticketMasId) {
-        return Optional.ofNullable(ticketMasId).map(id -> {
-            WfmAppointmentResData data = getData("/api/v1/sd/GetAppointmentByTicketMasId/" + ticketMasId, WfmAppointmentResData.class, null);
-            return data;
-        }).orElse(null);
+        return Optional.ofNullable(ticketMasId).map(
+                id -> getData(
+                        "/api/v1/sd/GetAppointmentByTicketMasId/" + ticketMasId,
+                        WfmAppointmentResData.class, null)
+        ).orElse(null);
     }
 }
