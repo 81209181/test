@@ -607,7 +607,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             String otp = sdOtpService.generateOtp(userId, SdOtpEntity.ACTION.INIT_PWD);
             LOG.info("Generated password OTP successfully for user " + username + ".");
             dataMap.put(SdEmailBean.INIT_PW_EMAIL.OTP, otp);
-            dataMap.put(SdEmailBean.INIT_PW_EMAIL.NEW_ACCOUNT, sdUserEntity.getName());
+            dataMap.put(SdEmailBean.INIT_PW_EMAIL.NAME_OF_NEW_USER, sdUserEntity.getName());
 
             // send otp email
             sdEmailService.send(SdEmailBean.INIT_PW_EMAIL.TEMPLATE_ID, recipient, null, dataMap);
@@ -622,7 +622,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             String otp = sdOtpService.generateOtp(userId, SdOtpEntity.ACTION.RESET_PWD);
             LOG.info("Generated password OTP successfully for user " + username + ".");
             dataMap.put(SdEmailBean.RESET_PW_EMAIL.OTP, otp);
-            dataMap.put(SdEmailBean.RESET_PW_EMAIL.ACCOUNT, sdUserEntity.getName());
+            dataMap.put(SdEmailBean.RESET_PW_EMAIL.NAME_OF_USER, sdUserEntity.getName());
 
             // send otp email
             sdEmailService.send(SdEmailBean.RESET_PW_EMAIL.TEMPLATE_ID, recipient, null, dataMap);
