@@ -4,13 +4,11 @@ import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
 import com.hkt.btu.sd.core.exception.InsufficientAuthorityException;
 import com.hkt.btu.sd.core.service.SdSymptomService;
-import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
 import com.hkt.btu.sd.core.service.bean.SdSymptomBean;
 import com.hkt.btu.sd.core.service.bean.SdSymptomMappingBean;
 import com.hkt.btu.sd.facade.SdServiceTypeFacade;
 import com.hkt.btu.sd.facade.SdSymptomFacade;
 import com.hkt.btu.sd.facade.data.*;
-import com.hkt.btu.sd.facade.populator.SdServiceTypeDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdSymptomDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdSymptomMappingDataPopulator;
 import org.apache.commons.lang3.StringUtils;
@@ -44,7 +42,7 @@ public class SdSymptomFacadeImpl implements SdSymptomFacade {
     @Override
     public List<SdSymptomData> getSymptomGroupList() {
         List<SdSymptomBean> beanList = sdSymptomService.getSymptomGroupList();
-        return populateDataList(beanList);
+        return buildSymptomDataList(beanList);
     }
 
     @Override
@@ -80,7 +78,7 @@ public class SdSymptomFacadeImpl implements SdSymptomFacade {
 
         // populate content
         List<SdSymptomBean> beanList = pageBean.getContent();
-        return new PageData<>(populateDataList(beanList), pageBean.getPageable(), pageBean.getTotalElements());
+        return new PageData<>(buildSymptomDataList(beanList), pageBean.getPageable(), pageBean.getTotalElements());
     }
 
     @Override
@@ -152,10 +150,10 @@ public class SdSymptomFacadeImpl implements SdSymptomFacade {
     @Override
     public List<SdSymptomData> getAllSymptomList() {
         List<SdSymptomBean> beanList = sdSymptomService.getAllSymptomList();
-        return populateDataList(beanList);
+        return buildSymptomDataList(beanList);
     }
 
-    private List<SdSymptomData> populateDataList(List<SdSymptomBean> beanList) {
+    private List<SdSymptomData> buildSymptomDataList(List<SdSymptomBean> beanList) {
         if (CollectionUtils.isEmpty(beanList)) {
             return null;
         }

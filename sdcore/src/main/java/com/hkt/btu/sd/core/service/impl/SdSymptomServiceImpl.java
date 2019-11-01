@@ -40,7 +40,7 @@ public class SdSymptomServiceImpl implements SdSymptomService {
     @Override
     public List<SdSymptomBean> getSymptomGroupList() {
         List<SdSymptomEntity> entityList = sdSymptomMapper.getSymptomGroupList();
-        return populateBeanList(entityList);
+        return buildSymptomBeanList(entityList);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class SdSymptomServiceImpl implements SdSymptomService {
         List<SdSymptomEntity> entityList = sdSymptomMapper.searchSymptomList(offset, pageSize, symptomGroupCode, symptomDescription);
         Integer totalCount = sdSymptomMapper.searchSymptomCount(symptomGroupCode, symptomDescription);
 
-        return new PageImpl<>(populateBeanList(entityList), pageable, totalCount);
+        return new PageImpl<>(buildSymptomBeanList(entityList), pageable, totalCount);
     }
 
     @Override
@@ -148,10 +148,10 @@ public class SdSymptomServiceImpl implements SdSymptomService {
     @Override
     public List<SdSymptomBean> getAllSymptomList() {
         List<SdSymptomEntity> entityList = sdSymptomMapper.getAllSymptomList();
-        return populateBeanList(entityList);
+        return buildSymptomBeanList(entityList);
     }
 
-    private List<SdSymptomBean> populateBeanList(List<SdSymptomEntity> entityList) {
+    private List<SdSymptomBean> buildSymptomBeanList(List<SdSymptomEntity> entityList) {
         if (CollectionUtils.isEmpty(entityList)) {
             return null;
         }
