@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
 import java.security.Principal;
@@ -337,5 +338,12 @@ public class TicketController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Reset password fail.");
         }
+    }
+
+    @CrossOrigin
+    @GetMapping("makeAppointment")
+    public ResponseEntity<?> makeAppointment() {
+        String html = wfmApiFacade.postAppointmentForm();
+        return ResponseEntity.ok(html);
     }
 }

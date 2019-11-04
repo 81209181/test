@@ -22,4 +22,6 @@ public interface WfmApiFacade {
     List<WfmJobData> getJobInfo(Integer ticketMasId);
 
     WfmAppointmentResData getAppointmentInfo(Integer ticketMasId);
+
+    String postAppointmentForm();
 }

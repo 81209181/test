@@ -332,7 +332,19 @@ function removeContact(btn){
 }
 
 function makeAppointment(ticketMasId, ticketDetId) {
-    let window = AppointmentSDObj.make({
+
+    $.ajax({
+        type: 'GET',
+        url: '/ticket/makeAppointment',
+        dataType: 'text',
+        success: function (res) {
+            let inventoryWindow = window.open('', 'Inventory', 'scrollbars=yes,width=800, height=800');
+            inventoryWindow.document.write(res);
+            inventoryWindow.focus();
+        }
+    })
+
+    /*let window = AppointmentSDObj.make({
         data : {
             ticketMasId : ticketMasId,
             ticketDetId : ticketDetId,
@@ -342,7 +354,7 @@ function makeAppointment(ticketMasId, ticketDetId) {
             password : "Ki6=rEDs47*^5" // todo [SERVDESK-182]: need to use config param, and hide in backend
         }
     }, "https://10.252.15.158/wfm"); // todo [SERVDESK-182]: need to use config param link
-    checkWindowClose(window);
+    checkWindowClose(window);*/
 }
 
 function getInventory(bsn) {
