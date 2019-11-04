@@ -105,7 +105,6 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
 
         String apiPath = "/norars/api/v1/osb/accounts/"+bsn+"/"+ requestorId;
         NoraAccountData data = postData(apiPath, NoraAccountData.class, null, null);
-
         return data;
     }
 
