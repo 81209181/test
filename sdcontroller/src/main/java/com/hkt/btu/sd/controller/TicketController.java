@@ -47,8 +47,8 @@ public class TicketController {
     CloudApiFacade cloudApiFacade;
 
     @GetMapping("service-identity")
-    public String serviceIdentity(Model model ) {
-        model.addAttribute("serviceSearchKeyList", requestCreateFacade.getSearchKeyEnumList() );
+    public String serviceIdentity(Model model) {
+        model.addAttribute("serviceSearchKeyList", requestCreateFacade.getSearchKeyEnumList());
         return "ticket/serviceIdentity";
     }
 
@@ -70,7 +70,7 @@ public class TicketController {
 
         // check wfm pending order
         boolean checkPendingOrder = serviceTypeFacade.needCheckPendingOrder(queryTicketRequestData.getServiceType());
-        if(checkPendingOrder) {
+        if (checkPendingOrder) {
             WfmPendingOrderData pendingOrderData = wfmApiFacade.getPendingOrderByBsn(queryTicketRequestData.getServiceNo());
             if (StringUtils.isEmpty(pendingOrderData.getErrorMsg())) {
                 if (pendingOrderData.getOrderId() != null && pendingOrderData.getOrderId() != 0) {
@@ -288,7 +288,7 @@ public class TicketController {
                                @RequestParam String bsn,
                                @ModelAttribute("noraDnGroupData") NoraDnGroupData noraDnGroupData) {
         noraDnGroupData = norarsApiFacade.getRelatedOfferInfoListByBsn(bsn);
-        if(noraDnGroupData !=null){
+        if (noraDnGroupData != null) {
             model.addAttribute("noraDnGroupData", noraDnGroupData);
         }
         return "ticket/offerInfo";
@@ -305,16 +305,13 @@ public class TicketController {
         return "ticket/offerDetail";
     }
 
-    @GetMapping("/getNGN3OneDayAdminAccount")
-    public String getNGN3OneDayAdminAccount(final Model model,
-                                            @RequestParam String bsn,
-                                            @ModelAttribute("noraAccountData") NoraAccountData accountData) {
-        accountData = norarsApiFacade.getNGN3OneDayAdminAccount(bsn);
-
-        if (accountData != null) {
-            model.addAttribute("noraAccountData", accountData);
+    @GetMapping("/getNGN3OneDayAdminAccount/{bsn}")
+    public ResponseEntity<?> getNGN3OneDayAdminAccount(@PathVariable String bsn) {
+        NoraAccountData oneDayAdminAccount = norarsApiFacade.getNGN3OneDayAdminAccount(bsn);
+        if (oneDayAdminAccount == null) {
+            return ResponseEntity.badRequest().body("NGN3 one day admin account not found.");
         }
-        return "ticket/accountInfo";
+        return ResponseEntity.ok(oneDayAdminAccount);
     }
 
     @GetMapping("/getAppointmentInfo")
@@ -334,7 +331,7 @@ public class TicketController {
     }
 
     @GetMapping("resetNgn3Pwd/{account}")
-    public ResponseEntity<?> resetNgn3Pwd(@PathVariable String account){
+    public ResponseEntity<?> resetNgn3Pwd(@PathVariable String account) {
         try {
             return ResponseEntity.ok(cloudApiFacade.resetNgn3Pwd(account));
         } catch (Exception e) {
