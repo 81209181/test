@@ -1,16 +1,21 @@
 package com.hkt.btu.sd.facade.data.wfm;
 
-public class WfmPendingOrderData {
+import com.hkt.btu.common.facade.data.DataInterface;
+
+public class WfmPendingOrderData implements DataInterface {
 
     private Long orderId;
     private Long fulfillmentId;
     private String orderType;
     private String fulfillmentType;
+    private String serviceReadyDate;
     private String srdStartDateTime;
     private String srdEndDateTime;
     private String appointmentDate;
     private String appointmentStartDateTime;
     private String appointmentEndDateTime;
+
+    private String errorMsg;
 
     public Long getOrderId() {
         return orderId;
@@ -82,5 +87,21 @@ public class WfmPendingOrderData {
 
     public void setSrdEndDateTime(String srdEndDateTime) {
         this.srdEndDateTime = srdEndDateTime;
+    }
+
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
+    }
+
+    public String getServiceReadyDate() {
+        return serviceReadyDate;
+    }
+
+    public void setServiceReadyDate(String serviceReadyDate) {
+        this.serviceReadyDate = serviceReadyDate;
     }
 }

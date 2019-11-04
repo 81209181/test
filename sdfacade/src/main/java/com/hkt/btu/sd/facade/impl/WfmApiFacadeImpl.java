@@ -5,13 +5,11 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hkt.btu.common.facade.data.DataInterface;
 import com.hkt.btu.sd.core.service.SdApiService;
-import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeOfferMappingBean;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.core.util.JsonUtils;
 import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.WfmApiFacade;
-import com.hkt.btu.sd.facade.data.SdPendingOrderData;
 import com.hkt.btu.sd.facade.data.SdTicketData;
 import com.hkt.btu.sd.facade.data.WfmJobDetailsData;
 import com.hkt.btu.sd.facade.data.WfmResponseData;
@@ -29,6 +27,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,8 +48,6 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
 
     @Resource(name = "apiService")
     SdApiService apiService;
-    @Resource(name = "userService")
-    SdUserService userService;
 
     @Override
     protected SiteInterfaceBean getTargetApiSiteInterfaceBean() {
@@ -122,24 +120,60 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
     }
 
     @Override
-    public SdPendingOrderData getPendingOrderByBsn(String bsn) {
-        SdPendingOrderData pendingOrderData = new SdPendingOrderData();
-        String wfmResponseDataJsonString = null;
+    public WfmPendingOrderData getPendingOrderByBsn(String bsn) {
+        final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
+
+        WfmPendingOrderData responseData;
         try {
-            wfmResponseDataJsonString = getData("/api/v1/sd/GetPendingOrderByBsn/" + bsn, null);
+            responseData = getData("/api/v1/sd/GetPendingOrderByBsn/" + bsn, WfmPendingOrderData.class, null);
         } catch (RuntimeException e) {
-            String errorMsg = "WFM Error: Cannot check pending order from WFM of BSN " + bsn + ".";
+            String errorMsg = String.format("WFM Error: Cannot check pending order from WFM of BSN %s.", bsn);
             LOG.error(errorMsg);
+
+            responseData = new WfmPendingOrderData();
+            responseData.setErrorMsg(errorMsg);
+            return responseData;
         }
 
-        WfmPendingOrderData responseData = new Gson().fromJson(wfmResponseDataJsonString, new TypeToken<WfmPendingOrderData>() {
-        }.getType());
-        Long pendingOrderId = responseData==null ? null : responseData.getOrderId();
-        if (pendingOrderId!=null && pendingOrderId!=0) {
-//            String[] arr = responseDataList.toArray(new String[responseDataList.size()]);
-            pendingOrderData.setPendingOrder(String.format("%d", pendingOrderId));
+        if (responseData == null) {
+            String errorMsg = "WFM Error: No response";
+            LOG.error(errorMsg);
+
+            responseData = new WfmPendingOrderData();
+            responseData.setErrorMsg(errorMsg);
+            return responseData;
         }
-        return pendingOrderData;
+
+        // serviceReadyDate format
+        String srdDateTime = StringUtils.isEmpty(responseData.getSrdStartDateTime()) ? null :
+                LocalDateTime.parse(responseData.getSrdStartDateTime(), DATE_TIME_FORMATTER).toString().replace("T", " ");
+        String serviceReadyDate = StringUtils.isEmpty(srdDateTime) ? null : srdDateTime.substring(0, 10);
+        String srdStartTime = StringUtils.isEmpty(srdDateTime) ? "" : srdDateTime.substring(11, 16);
+        String srdEndTime = StringUtils.isEmpty(responseData.getSrdEndDateTime()) ? "" :
+                LocalDateTime.parse(responseData.getSrdEndDateTime(), DATE_TIME_FORMATTER).toString().replace("T", " ").substring(11, 16);
+        if (!srdStartTime.equals("00:00") && !srdEndTime.equals("00:00")) {
+            serviceReadyDate = serviceReadyDate == null ? null : serviceReadyDate +
+                    (StringUtils.isEmpty(srdStartTime) ? StringUtils.EMPTY : StringUtils.SPACE + srdStartTime +
+                            (StringUtils.isEmpty(srdEndTime) ? StringUtils.EMPTY : "-" + srdEndTime));
+        }
+
+        // appointmentDate format
+        String appointmentDate = StringUtils.isEmpty(responseData.getSrdStartDateTime()) ? null :
+                LocalDateTime.parse(responseData.getSrdStartDateTime(), DATE_TIME_FORMATTER).toString().replace("T", " ").substring(0, 10);
+        String appointmentStartTime = StringUtils.isEmpty(responseData.getAppointmentStartDateTime()) ? "" :
+                LocalDateTime.parse(responseData.getAppointmentStartDateTime(), DATE_TIME_FORMATTER).toString().replace("T", " ").substring(11, 16);
+        String appointmentEndTime = StringUtils.isEmpty(responseData.getAppointmentEndDateTime()) ? "" :
+                LocalDateTime.parse(responseData.getAppointmentEndDateTime(), DATE_TIME_FORMATTER).toString().replace("T", " ").substring(11, 16);
+        if (!appointmentStartTime.equals("00:00") && !appointmentEndTime.equals("00:00")) {
+            appointmentDate = appointmentDate == null ? null : appointmentDate +
+                    ( StringUtils.isEmpty(appointmentStartTime) ? StringUtils.EMPTY : StringUtils.SPACE + appointmentStartTime +
+                            (StringUtils.isEmpty(appointmentEndTime) ? StringUtils.EMPTY : "-" + appointmentEndTime));
+        }
+
+        responseData.setServiceReadyDate(serviceReadyDate);
+        responseData.setAppointmentDate(appointmentDate);
+
+        return responseData;
     }
 
     @Override
@@ -147,16 +181,16 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
         return Optional.ofNullable(ticketMasId).map(id -> {
             Type type = new TypeToken<List<WfmJobData>>() {
             }.getType();
-            List<WfmJobData> dataList = getDataList("/api/v1/sd/GetJobListByTicketId/" + ticketMasId, type, null);
-            return dataList;
+            return this.<WfmJobData>getDataList("/api/v1/sd/GetJobListByTicketId/" + ticketMasId, type, null);
         }).orElse(null);
     }
 
     @Override
     public WfmAppointmentResData getAppointmentInfo(Integer ticketMasId) {
-        return Optional.ofNullable(ticketMasId).map(id -> {
-            WfmAppointmentResData data = getData("/api/v1/sd/GetAppointmentByTicketMasId/" + ticketMasId, WfmAppointmentResData.class, null);
-            return data;
-        }).orElse(null);
+        return Optional.ofNullable(ticketMasId).map(
+                id -> getData(
+                        "/api/v1/sd/GetAppointmentByTicketMasId/" + ticketMasId,
+                        WfmAppointmentResData.class, null)
+        ).orElse(null);
     }
 }

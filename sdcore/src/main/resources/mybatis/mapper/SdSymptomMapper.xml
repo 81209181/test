@@ -73,14 +73,16 @@
 
     <sql id="searchSymptomSql">
         from SYMPTOM sy
-        inner join SYMPTOM_GROUP sg on sy.SYMPTOM_GROUP_CODE = sg.SYMPTOM_GROUP_CODE
-        where 1=1
-        <if test="symptomGroupCode != null and symptomGroupCode != ''">
-            and lower(sy.SYMPTOM_GROUP_CODE) like '%' || lower(#{symptomGroupCode}) || '%'
-        </if>
-        <if test="symptomDescription != null and symptomDescription != ''">
-            and lower(sy.SYMPTOM_DESCRIPTION) like '%' || lower(#{symptomDescription}) || '%'
-        </if>
+        inner join SYMPTOM_GROUP sg
+            on sy.SYMPTOM_GROUP_CODE = sg.SYMPTOM_GROUP_CODE
+        <where>
+            <if test="symptomGroupCode != null and symptomGroupCode != ''">
+                and lower(sy.SYMPTOM_GROUP_CODE) like '%' || lower(#{symptomGroupCode}) || '%'
+            </if>
+            <if test="symptomDescription != null and symptomDescription != ''">
+                and lower(sy.SYMPTOM_DESCRIPTION) like '%' || lower(#{symptomDescription}) || '%'
+            </if>
+        </where>
     </sql>
 
     <select id="searchSymptomList" resultMap="SymptomEntity">
@@ -113,15 +115,10 @@
     </update>
 
     <select id="getAllSymptomList" resultMap="SymptomEntity">
-        select
-        sy.SYMPTOM_CODE,
-        sy.SYMPTOM_DESCRIPTION,
-        sy.SYMPTOM_GROUP_CODE,
-        sg.SYMPTOM_GROUP_NAME,
-        sy.CREATEDATE,
-        sy.CREATEBY,
-        sy.MODIFYDATE,
-        sy.MODIFYBY
-        <include refid="searchSymptomSql"/>
+        select *
+        from SYMPTOM sy
+        inner join SYMPTOM_GROUP sg
+            on sy.SYMPTOM_GROUP_CODE = sg.SYMPTOM_GROUP_CODE
+        order by sy.SYMPTOM_CODE
     </select>
 </mapper>

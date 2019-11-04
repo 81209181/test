@@ -45,7 +45,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     public RequestCreateSearchResultsData searchProductList(String searchKey, String searchValue) {
         RequestCreateSearchResultsData resultsData = new RequestCreateSearchResultsData();
         ServiceSearchEnum serviceSearchEnum = ServiceSearchEnum.getEnum(searchKey);
-        if(serviceSearchEnum==null){
+        if (serviceSearchEnum == null) {
             String errorMsg = "Unknown search key: " + searchKey + ", search value: " + searchValue;
             LOG.warn(errorMsg);
             resultsData.setErrorMsg(errorMsg);
@@ -109,12 +109,11 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
                         infoData.setSubsId(requestCreateSearchResultData.getSubsId());
                         infoData.setOfferName(requestCreateSearchResultData.getOfferName());
                         infoData.setItsmUrl(requestCreateSearchResultData.getUrl());
-                        infoData.setPendingOrder(requestCreateSearchResultData.getPendingOrder());
                         infoData.setDescription(requestCreateSearchResultData.getDescription());
                         infoData.setServiceAddress(requestCreateSearchResultData.getServiceAddress());
                         infoData.setGridId(requestCreateSearchResultData.getGridId());
                         infoData.setExchangeBuildingId(requestCreateSearchResultData.getExchangeBuildingId());
-                        if (StringUtils.isNotEmpty(sdTicketMasData.getSearchKey())?sdTicketMasData.getSearchKey().equals("dn"):false) {
+                        if (StringUtils.isNotEmpty(sdTicketMasData.getSearchKey()) ? sdTicketMasData.getSearchKey().equals("dn") : false) {
                             infoData.setRelatedBsn(norarsApiFacade.getBsnByDn(sdTicketServiceData.getServiceCode()));
                         }
                     }
@@ -162,7 +161,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
             return resultsData;
         }
 
-        for(RequestCreateSearchResultData resultData : resultDataList) {
+        for (RequestCreateSearchResultData resultData : resultDataList) {
             SdServiceTypeData serviceTypeByOfferName = serviceTypeFacade.getServiceTypeByOfferName(resultData.getOfferName());
             resultData.setServiceType(serviceTypeByOfferName.getServiceTypeCode());
             resultData.setServiceTypeDesc(serviceTypeByOfferName.getServiceTypeName());
@@ -211,7 +210,12 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
 
                 //find in WFM API
                 Optional.ofNullable(wfmApiFacade.getPendingOrderByBsn(bsn)).ifPresent(pendingOrderData -> {
-                    resultData.setPendingOrder(pendingOrderData.getPendingOrder());
+                    resultData.setOrderId(pendingOrderData.getOrderId() == 0 ? null : pendingOrderData.getOrderId());
+                    resultData.setOrderType(pendingOrderData.getOrderType());
+                    resultData.setFulfillmentId(pendingOrderData.getFulfillmentId() == 0 ? null : pendingOrderData.getFulfillmentId());
+                    resultData.setFulfillmentType(pendingOrderData.getFulfillmentType());
+                    resultData.setServiceReadyDate(pendingOrderData.getServiceReadyDate());
+                    resultData.setAppointmentDate(pendingOrderData.getAppointmentDate());
                 });
             }));
         } else {
