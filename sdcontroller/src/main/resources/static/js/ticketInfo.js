@@ -19,31 +19,33 @@ $().ready(function(){
             $('.selectpicker').append("<option value="+item.symptomCode+">"+item.symptomCode+"---"+item.symptomDescription+"</option>");
         }
         $('.selectpicker').selectpicker('refresh');
+
+        $.get('/ticket/service?ticketMasId='+ticketMasId,function(res){
+            if (res.length > 0) {
+                $.each(res,function(index,j){
+                    let service =$('#service');
+                    $.each(j,function(key,value){
+//                    service.find('input[name='+key+']').val(value);    // by Dennis  ref jira 179
+                        if (key === 'faultsList') {
+                            if (value === '') {
+                                $('#btnMakeAppointment').attr('disabled', true);
+                            }
+                            for (item of value) {
+                                $('#symptomList').find('option[value='+item.symptomCode+']').attr('selected','selected');
+                            }
+
+                        }
+                        if (key === 'ticketDetId') {
+                            ticketDetId = value;
+                        }
+                    })
+                })
+                $('.selectpicker').selectpicker('refresh');
+                $('.selectpicker').selectpicker('render');
+            }
+        });
     })
 
-    $.get('/ticket/service?ticketMasId='+ticketMasId,function(res){
-        if (res.length > 0) {
-            $.each(res,function(index,j){
-                let service =$('#service');
-                $.each(j,function(key,value){
-//                    service.find('input[name='+key+']').val(value);    // by Dennis  ref jira 179
-                    if (key === 'faultsList') {
-                        if (value === '') {
-                            $('#btnMakeAppointment').attr('disabled', true);
-                        }
-                        for (item of value) {
-                            $('#symptomList').find('option[value='+item.symptomCode+']').attr('selected','selected');
-                        }
-                    }
-                    if (key === 'ticketDetId') {
-                        ticketDetId = value;
-                    }
-                })
-            })
-            $('.selectpicker').selectpicker('refresh');
-            $('.selectpicker').selectpicker('render');
-        }
-    });
 
     ajaxGetDataTable();
 
@@ -71,6 +73,7 @@ $().ready(function(){
             data: JSON.stringify(arr),
             success:function(res){
                 showInfoMsg(res);
+                window.location.reload();
             }
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";
