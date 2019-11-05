@@ -42,6 +42,8 @@ $().ready(function(){
                 })
                 $('.selectpicker').selectpicker('refresh');
                 $('.selectpicker').selectpicker('render');
+            } else {
+                $('#btnMakeAppointment').attr('disabled', true);
             }
         });
     })
@@ -466,7 +468,6 @@ function ajaxGetJobInfo(ticketMasId){
 
 function ajaxGetDataTable(){
     $('#searchTicketRemarksTable').DataTable({
-        searching: false,
         ajax: {
             type: "GET",
             contentType: "application/json",

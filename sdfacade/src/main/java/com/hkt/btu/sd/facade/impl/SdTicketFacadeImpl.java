@@ -11,6 +11,8 @@ import com.hkt.btu.sd.facade.SdAuditTrailFacade;
 import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.WfmApiFacade;
 import com.hkt.btu.sd.facade.data.*;
+import com.hkt.btu.sd.facade.data.wfm.WfmJobProgressData;
+import com.hkt.btu.sd.facade.data.wfm.WfmJobRemarksData;
 import com.hkt.btu.sd.facade.populator.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -155,7 +157,10 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     @Override
     public List<SdTicketRemarkData> getTicketRemarksByTicketId(Integer ticketMasId) {
         List<SdTicketRemarkBean> beanList = ticketService.getTicketRemarksByTicketId(ticketMasId);
-        if (CollectionUtils.isEmpty(beanList)) {
+        List<WfmJobProgressData> jobProgressDataList = wfmApiFacade.getJobProgessByTicketId(ticketMasId);
+        List<WfmJobRemarksData> jobRemarkDataList = wfmApiFacade.getJobRemarkByTicketId(ticketMasId);
+
+        if (CollectionUtils.isEmpty(beanList) && CollectionUtils.isEmpty(jobProgressDataList) && CollectionUtils.isEmpty(jobRemarkDataList)) {
             return null;
         }
 
@@ -163,6 +168,18 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         for (SdTicketRemarkBean bean : beanList) {
             SdTicketRemarkData data = new SdTicketRemarkData();
             ticketRemarkDataPopulator.populate(bean, data);
+            dataList.add(data);
+        }
+
+        for (WfmJobProgressData bean : jobProgressDataList) {
+            SdTicketRemarkData data = new SdTicketRemarkData();
+            ticketRemarkDataPopulator.populateJobProgressData(bean, data);
+            dataList.add(data);
+        }
+
+        for (WfmJobRemarksData bean : jobRemarkDataList) {
+            SdTicketRemarkData data = new SdTicketRemarkData();
+            ticketRemarkDataPopulator.populateJobRemarkData(bean, data);
             dataList.add(data);
         }
 
