@@ -203,6 +203,13 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             throw new InvalidInputException("Empty user name.");
         }
 
+        if (StringUtils.isNotEmpty(userId)) {
+            SdUserEntity user = sdUserMapper.getLdapUserByUserId(userId);
+            if (user != null) {
+                throw new DuplicateUserEmailException("Duplicate username.");
+            }
+        }
+
         // get current user user id
         String createby = getCurrentUserUserId();
 
@@ -516,6 +523,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     }
 
     @Override
+    @Transactional
     public String changeUserTypeToNonPCCWOrHktUser(String oldUserId, String name, String mobile, String employeeNumber, String email) throws InvalidInputException, UserNotFoundException {
         // Determine if it is already a PCCW/HKT user. UserId starts with T
         if (oldUserId.contains(SdUserBean.CREATE_USER_PREFIX.NON_PCCW_HKT_USER)) {
@@ -595,7 +603,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         }
 
         boolean isNewlyCreated = resetPwdUser.getPasswordModifydate() == null;
-        String recipient = currentUser.getEmail();
+        String recipient = Optional.ofNullable(currentUser.getEmail()).orElseThrow(() -> new UserNotFoundException("Current User not email."));
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put(SdEmailBean.EMAIL_BASIC_RECIPIENT_NAME, currentUser.getName());
         if (isNewlyCreated) {
