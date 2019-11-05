@@ -321,12 +321,23 @@ function removeContact(btn){
 
 function makeAppointment(ticketMasId, ticketDetId) {
 
+    // $.ajax({
+    //     type: 'GET',
+    //     url: '/ticket/makeAppointment',
+    //     dataType: 'text',
+    //     success: function (res) {
+    //         let inventoryWindow = window.open('', 'Inventory', 'scrollbars=yes,width=800, height=800');
+    //         inventoryWindow.document.write(res);
+    //         inventoryWindow.focus();
+    //     }
+    // });
+
     let window = AppointmentSDObj.make({
         data : {
             ticketMasId : ticketMasId,
             ticketDetId : ticketDetId,
-            serviceType: "Broadband", // todo [SERVDESK-182]: ticket service type
-            symptomCode: "ABC123", // todo [SERVDESK-182]: ticket symptom code
+            serviceType: "BN", // todo [SERVDESK-182]: ticket service type
+            symptomCode: "VF002", // todo [SERVDESK-182]: ticket symptom code
             userName : "sd",
             password : "Ki6=rEDs47*^5" // todo [SERVDESK-182]: need to use config param, and hide in backend
         }
