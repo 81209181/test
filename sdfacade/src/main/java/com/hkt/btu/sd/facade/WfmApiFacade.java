@@ -4,9 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeOfferMappingBean;
 import com.hkt.btu.sd.facade.data.SdTicketData;
 import com.hkt.btu.sd.facade.data.WfmJobDetailsData;
-import com.hkt.btu.sd.facade.data.wfm.WfmAppointmentResData;
-import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
-import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
+import com.hkt.btu.sd.facade.data.wfm.*;
 
 import java.util.List;
 
@@ -24,4 +22,8 @@ public interface WfmApiFacade {
     WfmAppointmentResData getAppointmentInfo(Integer ticketMasId);
 
     String postAppointmentForm();
+
+    List<WfmJobProgressData> getJobProgessByTicketId(Integer ticketMasId);
+
+    List<WfmJobRemarksData> getJobRemarkByTicketId(Integer ticketMasId);
 }

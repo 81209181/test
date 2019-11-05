@@ -35,14 +35,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApiFacade {
@@ -147,12 +139,12 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
         }
 
         // serviceReadyDate format
-        String srdDateTime = StringUtils.isEmpty(responseData.getSrdStartDateTime()) ? null :
-                LocalDateTime.parse(responseData.getSrdStartDateTime(), DATE_TIME_FORMATTER).toString().replace("T", " ");
-        String serviceReadyDate = StringUtils.isEmpty(srdDateTime) ? null : srdDateTime.substring(0, 10);
-        String srdStartTime = StringUtils.isEmpty(srdDateTime) ? "" : srdDateTime.substring(11, 16);
+        String serviceReadyDate = StringUtils.isEmpty(responseData.getSrdStartDateTime()) ? null :
+                LocalDateTime.parse(responseData.getSrdStartDateTime(), DATE_TIME_FORMATTER).toLocalDate().toString();
+        String srdStartTime = StringUtils.isEmpty(responseData.getSrdStartDateTime()) ? "" :
+                LocalDateTime.parse(responseData.getSrdStartDateTime(), DATE_TIME_FORMATTER).toLocalTime().toString();
         String srdEndTime = StringUtils.isEmpty(responseData.getSrdEndDateTime()) ? "" :
-                LocalDateTime.parse(responseData.getSrdEndDateTime(), DATE_TIME_FORMATTER).toString().replace("T", " ").substring(11, 16);
+                LocalDateTime.parse(responseData.getSrdEndDateTime(), DATE_TIME_FORMATTER).toLocalTime().toString();
         if (!srdStartTime.equals("00:00") && !srdEndTime.equals("00:00")) {
             serviceReadyDate = serviceReadyDate == null ? null : serviceReadyDate +
                     (StringUtils.isEmpty(srdStartTime) ? StringUtils.EMPTY : StringUtils.SPACE + srdStartTime +
@@ -161,11 +153,11 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
 
         // appointmentDate format
         String appointmentDate = StringUtils.isEmpty(responseData.getSrdStartDateTime()) ? null :
-                LocalDateTime.parse(responseData.getSrdStartDateTime(), DATE_TIME_FORMATTER).toString().replace("T", " ").substring(0, 10);
+                LocalDateTime.parse(responseData.getAppointmentDate(), DATE_TIME_FORMATTER).toLocalDate().toString();
         String appointmentStartTime = StringUtils.isEmpty(responseData.getAppointmentStartDateTime()) ? "" :
-                LocalDateTime.parse(responseData.getAppointmentStartDateTime(), DATE_TIME_FORMATTER).toString().replace("T", " ").substring(11, 16);
+                LocalDateTime.parse(responseData.getAppointmentStartDateTime(), DATE_TIME_FORMATTER).toLocalTime().toString();
         String appointmentEndTime = StringUtils.isEmpty(responseData.getAppointmentEndDateTime()) ? "" :
-                LocalDateTime.parse(responseData.getAppointmentEndDateTime(), DATE_TIME_FORMATTER).toString().replace("T", " ").substring(11, 16);
+                LocalDateTime.parse(responseData.getAppointmentEndDateTime(), DATE_TIME_FORMATTER).toLocalTime().toString();
         if (!appointmentStartTime.equals("00:00") && !appointmentEndTime.equals("00:00")) {
             appointmentDate = appointmentDate == null ? null : appointmentDate +
                     ( StringUtils.isEmpty(appointmentStartTime) ? StringUtils.EMPTY : StringUtils.SPACE + appointmentStartTime +
@@ -189,11 +181,50 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
 
     @Override
     public WfmAppointmentResData getAppointmentInfo(Integer ticketMasId) {
-        return Optional.ofNullable(ticketMasId).map(
-                id -> getData(
-                        "/api/v1/sd/GetAppointmentByTicketMasId/" + ticketMasId,
-                        WfmAppointmentResData.class, null)
-        ).orElse(null);
+        final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
+
+        WfmAppointmentResData responseData;
+        try {
+            responseData = getData("/api/v1/sd/GetAppointmentByTicketMasId/" + ticketMasId, WfmAppointmentResData.class, null);
+        } catch (RuntimeException e) {
+            LOG.error(String.format("WFM Error: Cannot get appointment info from WFM of %s.", ticketMasId));
+            return null;
+        }
+
+        if (responseData == null) {
+            LOG.error("WFM Error: No response");
+            return null;
+        }
+
+        // appointmentDate format
+        String appointmentDate = StringUtils.isEmpty(responseData.getAppointmentDate()) ? null :
+                LocalDateTime.parse(responseData.getAppointmentDate(), DATE_TIME_FORMATTER).toLocalDate().toString();
+        String appointmentStartTime = StringUtils.isEmpty(responseData.getAppointmentStartDateTime()) ? null :
+                LocalDateTime.parse(responseData.getAppointmentStartDateTime(), DATE_TIME_FORMATTER).toLocalTime().toString();
+        String appointmentEndTime = StringUtils.isEmpty(responseData.getAppointmentEndDateTime()) ? null :
+                LocalDateTime.parse(responseData.getAppointmentEndDateTime(), DATE_TIME_FORMATTER).toLocalTime().toString();
+
+        responseData.setAppointmentDate(appointmentDate);
+        responseData.setAppointmentStartDateTime(appointmentStartTime);
+        responseData.setAppointmentEndDateTime(appointmentEndTime);
+
+        return responseData;
+    }
+
+    @Override
+    public List<WfmJobProgressData> getJobProgessByTicketId(Integer ticketMasId) {
+        return Optional.ofNullable(ticketMasId).map(id -> {
+            Type type = new TypeToken<List<WfmJobProgressData>>() {}.getType();
+            return this.<WfmJobProgressData>getDataList("/api/v1/sd/GetJobProgessByTicketId/" + ticketMasId, type, null);
+        }).orElse(null);
+    }
+
+    @Override
+    public List<WfmJobRemarksData> getJobRemarkByTicketId(Integer ticketMasId) {
+        return Optional.ofNullable(ticketMasId).map(id -> {
+            Type type = new TypeToken<List<WfmJobRemarksData>>() {}.getType();
+            return this.<WfmJobRemarksData>getDataList("/api/v1/sd/GetJobRemarkByTicketId/" + ticketMasId, type, null);
+        }).orElse(null);
     }
 
     @Override
