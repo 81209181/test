@@ -32,9 +32,7 @@ public interface SdTicketFacade {
 
     Optional<SdTicketServiceData> getService(Integer ticketId);
 
-    void updateAppointment(String appointmentDate, boolean asap, String name, String ticketMasId);
-
-    boolean checkAppointmentDate(String appointmentDate);
+    AppointmentData getAppointmentData(Integer ticketMasId);
 
     List<SdSymptomData> getSymptom(Integer ticketMasId);
 

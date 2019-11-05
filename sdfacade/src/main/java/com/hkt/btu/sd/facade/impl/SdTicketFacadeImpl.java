@@ -11,6 +11,7 @@ import com.hkt.btu.sd.facade.SdAuditTrailFacade;
 import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.WfmApiFacade;
 import com.hkt.btu.sd.facade.data.*;
+import com.hkt.btu.sd.facade.data.wfm.WfmAppointmentResData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobProgressData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobRemarksData;
 import com.hkt.btu.sd.facade.populator.*;
@@ -24,6 +25,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -265,13 +269,46 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public void updateAppointment(String appointmentDate, boolean asap, String userId, String ticketMasId) {
-        ticketService.updateAppointment(appointmentDate, asap, userId, ticketMasId);
-    }
+    public AppointmentData getAppointmentData(Integer ticketMasId){
+        if(ticketMasId==null){
+            LOG.warn("Empty ticketMasId.");
+            return null;
+        }
 
-    @Override
-    public boolean checkAppointmentDate(String appointmentDate) {
-        return ticketService.checkAppointmentDate(appointmentDate);
+        // call WFM API
+        WfmAppointmentResData wfmAppointmentResData;
+        try {
+            wfmAppointmentResData = wfmApiFacade.getAppointmentInfo(ticketMasId);
+        }catch (Exception e){
+            LOG.error(e.getMessage(), e);
+            wfmAppointmentResData = null;
+        }
+
+        // API error
+        if (wfmAppointmentResData == null) {
+            LOG.error("WFM Error: No response for ticketMasId " + ticketMasId);
+            return null;
+        }
+
+        // transform
+        try {
+            LocalDateTime appointmentStartDateTime = StringUtils.isEmpty(wfmAppointmentResData.getAppointmentStartDateTime()) ?
+                    null : LocalDateTime.parse(wfmAppointmentResData.getAppointmentStartDateTime(), WfmAppointmentResData.DATE_TIME_FORMATTER);
+            LocalDateTime appointmentEndDateTime = StringUtils.isEmpty(wfmAppointmentResData.getAppointmentEndDateTime()) ?
+                    null : LocalDateTime.parse(wfmAppointmentResData.getAppointmentEndDateTime(), WfmAppointmentResData.DATE_TIME_FORMATTER);
+
+            String appointmentStartStr = appointmentStartDateTime==null ? StringUtils.EMPTY :
+                    appointmentStartDateTime.toLocalDate().toString() + StringUtils.SPACE + appointmentStartDateTime.toLocalTime().toString();
+            String appointmentEndStr = appointmentEndDateTime==null ? StringUtils.EMPTY : "-"+appointmentEndDateTime.toLocalTime().toString();
+            String appointmentDateStr = String.format("%s%s", appointmentStartStr, appointmentEndStr);
+
+            AppointmentData appointmentData = new AppointmentData();
+            appointmentData.setAppointmentDateStr(appointmentDateStr);
+            return appointmentData;
+        } catch (DateTimeParseException e){
+            LOG.error(e.getMessage());
+            return null;
+        }
     }
 
     @Override

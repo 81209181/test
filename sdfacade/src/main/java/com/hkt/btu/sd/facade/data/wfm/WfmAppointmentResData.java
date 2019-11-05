@@ -2,7 +2,11 @@ package com.hkt.btu.sd.facade.data.wfm;
 
 import com.hkt.btu.common.facade.data.DataInterface;
 
+import java.time.format.DateTimeFormatter;
+
 public class WfmAppointmentResData implements DataInterface {
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
+
     private String appointmentDate;
     private String appointmentStartDateTime;
     private String appointmentEndDateTime;

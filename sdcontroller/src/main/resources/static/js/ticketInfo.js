@@ -174,7 +174,7 @@ $().ready(function(){
             console.log("ERROR : ", responseError);
             showErrorMsg(responseError);
         })
-    })
+    });
 
     $('#btnCreateTicketRemarks').on('click',function(){
         clearAllMsg();
@@ -192,28 +192,14 @@ $().ready(function(){
             console.log("ERROR : ", responseError);
             showErrorMsg(responseError);
         })
-    })
+    });
 
     readyForTicketService();
 
     // service link button
     $('#btnServiceLink').on('click',function(){
         window.open($(this).data('url'),'Profile','scrollbars=yes,height=600,width=800');
-    })
-
-    // appointment
-    $('#asap_checkbox').change(function(){
-        let input =$('input[name=appointmentDate]');
-        if(this.checked){
-            let tzoffset = (new Date()).getTimezoneOffset() * 60000;
-            let localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 16);
-            input.val(localISOTime);
-            input.attr('disabled',true);
-        }else{
-            input.val('');
-            input.attr('disabled',false);
-        }
-    })
+    });
 
     // submit button
     $('#btnTicketSubmit').on('click',function(){
@@ -429,15 +415,21 @@ function getAppointmentInfo(ticketMasId) {
         dataType: 'json',
         data: {ticketMasId:ticketMasId},
         success: function (res) {
-            $('#appointment').find('input[name=appointmentDate]').val(res.appointmentDate);
-            $('#appointment').find('input[name=appointmentStartDateTime]').val(res.appointmentStartDateTime);
-            $('#appointment').find('input[name=appointmentEndDateTime]').val(res.appointmentEndDateTime);
+            $('#appointment').find('input[name=appointmentDateStr]').val(res.appointmentDateStr);
+            let hasAppointment = !(res.appointmentDateStr === null || res.appointmentDateStr === "");
+            controlSymptomUpdateUi(hasAppointment);
         }
     }).fail(function(e){
         var responseError = e.responseText ? e.responseText : "Get failed.";
         console.log("ERROR : ", responseError);
         showErrorMsg(responseError);
-    })
+        controlSymptomUpdateUi(true);
+    });
+}
+
+function controlSymptomUpdateUi(disable){
+    $("#symptomList").siblings().attr("disabled", disable);
+    $("#btnUpdateService").attr("disabled", disable);
 }
 
 
