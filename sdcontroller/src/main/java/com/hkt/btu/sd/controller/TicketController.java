@@ -317,11 +317,11 @@ public class TicketController {
 
     @GetMapping("/getAppointmentInfo")
     public ResponseEntity<?> getAppointmentInfo(@RequestParam Integer ticketMasId) {
-        WfmAppointmentResData appointmentInfo = wfmApiFacade.getAppointmentInfo(ticketMasId);
-
-        if (appointmentInfo != null) {
-            return ResponseEntity.ok(appointmentInfo);
+        AppointmentData appointmentData = ticketFacade.getAppointmentData(ticketMasId);
+        if (appointmentData != null) {
+            return ResponseEntity.ok(appointmentData);
         }
+
         return ResponseEntity.badRequest().body("WFM Error: Cannot get appointment info for ticketMasId:" + ticketMasId);
     }
 
