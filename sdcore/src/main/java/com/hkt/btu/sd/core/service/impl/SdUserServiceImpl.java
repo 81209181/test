@@ -581,8 +581,10 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         if (ObjectUtils.isEmpty(resetPwdUser)) {
             throw new UserNotFoundException();
         }
-        if (resetPwdUser.getRoles().stream().noneMatch(s -> currentUser.getRoles().contains("TH__" + s))) {
-            throw new RuntimeException("Reset password error: You are not the team head of this user.");
+        if (currentUser.getRoles().stream().noneMatch(s -> StringUtils.equals(s, SdUserRoleEntity.SYS_ADMIN))) {
+            if (resetPwdUser.getRoles().stream().noneMatch(s -> currentUser.getRoles().contains("TH__" + s))) {
+                throw new RuntimeException("Reset password error: You are not the team head of this user.");
+            }
         }
         String userId = resetPwdUser.getUserId();
         // reject LDAP user to reset password
