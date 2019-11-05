@@ -416,12 +416,20 @@ function getAppointmentInfo(ticketMasId) {
         data: {ticketMasId:ticketMasId},
         success: function (res) {
             $('#appointment').find('input[name=appointmentDateStr]').val(res.appointmentDateStr);
+            let hasAppointment = !(res.appointmentDateStr === null || res.appointmentDateStr === "");
+            controlSymptomUpdateUi(hasAppointment);
         }
     }).fail(function(e){
         var responseError = e.responseText ? e.responseText : "Get failed.";
         console.log("ERROR : ", responseError);
         showErrorMsg(responseError);
-    })
+        controlSymptomUpdateUi(true);
+    });
+}
+
+function controlSymptomUpdateUi(disable){
+    $("#symptomList").siblings().attr("disabled", disable);
+    $("#btnUpdateService").attr("disabled", disable);
 }
 
 
