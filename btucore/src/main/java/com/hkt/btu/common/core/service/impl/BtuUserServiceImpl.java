@@ -6,6 +6,7 @@ import com.hkt.btu.common.core.service.BtuUserService;
 import com.hkt.btu.common.core.service.bean.BtuLdapBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
+import com.hkt.btu.common.spring.security.web.authentication.BtuLoginSuccessHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -120,6 +121,12 @@ public class BtuUserServiceImpl implements BtuUserService {
     @Override
     public boolean hasAnyAuthority(String... targetAuthorities){
         return true;
+    }
+
+    @Override
+    public void setLogonPage(BtuLoginSuccessHandler btuLoginSuccessHandler) {
+        btuLoginSuccessHandler.setDefaultTargetUrl("/user/");
+        btuLoginSuccessHandler.setAlwaysUseDefaultTargetUrl(true);
     }
 
     protected boolean hasAnyAuthority(Collection<? extends GrantedAuthority> authorities, String... targetAuthorities) {
