@@ -197,11 +197,17 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     }
 
     @Override
-    @Transactional
     public SdCreateResultBean createUser(String userId, String name, String mobile, String email, List<String> roleIdList)
             throws UserNotFoundException {
         if (StringUtils.isEmpty(name)) {
             throw new InvalidInputException("Empty user name.");
+        }
+
+        if (StringUtils.isNotEmpty(userId)) {
+            SdUserEntity user = sdUserMapper.getLdapUserByUserId(userId);
+            if (user != null) {
+                throw new DuplicateUserEmailException("Duplicate username.");
+            }
         }
 
         // get current user user id
@@ -597,7 +603,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         }
 
         boolean isNewlyCreated = resetPwdUser.getPasswordModifydate() == null;
-        String recipient = currentUser.getEmail();
+        String recipient = Optional.ofNullable(currentUser.getEmail()).orElseThrow(() -> new UserNotFoundException("Current User not email."));
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put(SdEmailBean.EMAIL_BASIC_RECIPIENT_NAME, currentUser.getName());
         if (isNewlyCreated) {
