@@ -20,9 +20,9 @@ CREATE TABLE CONFIG_PARAM(
     ENCRYPT             varchar2(1)             default 'N',
 
     CREATEDATE          date                    default SYSDATE not null,
-    CREATEBY            varchar2(10)            not null,
+    CREATEBY            varchar2(12)            not null,
     MODIFYDATE          date                    default SYSDATE not null,
-    MODIFYBY            varchar2(10)            not null
+    MODIFYBY            varchar2(12)            not null
 );
 CREATE UNIQUE INDEX IDX_CONFIG_PARAM_1 ON CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY);
 CREATE INDEX IDX_CONFIG_PARAM_2 ON CONFIG_PARAM (CONFIG_GROUP);
@@ -72,9 +72,9 @@ CREATE TABLE CRON_JOB(
     MANDATORY           varchar2(1)                          not null,
 
     CREATEDATE          date default SYSDATE not null,
-    CREATEBY            varchar2(10)                         not null,
+    CREATEBY            varchar2(12)                         not null,
     MODIFYDATE          date default SYSDATE not null,
-    MODIFYBY            varchar2(10)                         not null,
+    MODIFYBY            varchar2(12)                         not null,
     REMARKS             varchar2(250),
     CONSTRAINT PK_CRON_JOB PRIMARY KEY (JOB_ID)
 );
@@ -209,7 +209,7 @@ END;
 -- ..MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMO. 7MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 -- User
 CREATE TABLE USER_PROFILE (
-  USER_ID               varchar2(10),
+  USER_ID               varchar2(12),
   NAME                  varchar2(100),
   STATUS                varchar2(2),
 
@@ -251,7 +251,7 @@ END;
 
 
 CREATE TABLE USER_USER_ROLE(
-    USER_ID               varchar2(10)                not null,
+    USER_ID               varchar2(12)                not null,
     ROLE_ID               varchar2(20)                not null
 );
 
@@ -260,7 +260,7 @@ CREATE INDEX IDX_USER_USER_ROLE_2 ON USER_USER_ROLE (ROLE_ID);
 CREATE UNIQUE INDEX IDX_USER_USER_ROLE_3 ON USER_USER_ROLE (USER_ID,ROLE_ID);
 
 CREATE TABLE USER_PWD_HIST(
-  USER_ID               varchar2(10)                not null,
+  USER_ID               varchar2(12)                not null,
   PASSWORD              varchar2(100)               not null,
   CREATEDATE            date    default SYSDATE     not null
 );
@@ -273,7 +273,7 @@ CREATE TABLE OTP(
     EXPIRYDATE          date                        not null,
 
     CREATEDATE          date    default SYSDATE     not null,
-    CREATEBY            varchar2(10)                not null,
+    CREATEBY            varchar2(12)                not null,
     MODIFYDATE          date    default SYSDATE     not null
 );
 CREATE INDEX IDX_OTP_1 ON OTP (USER_ID);
