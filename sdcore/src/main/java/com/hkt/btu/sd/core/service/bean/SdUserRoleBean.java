@@ -6,6 +6,8 @@ import java.util.List;
 
 public class SdUserRoleBean extends BaseBean {
 
+    public static final String OPERATOR = "OPT";
+
     private String roleId;
     private String roleDesc;
     private String parentRoleId;

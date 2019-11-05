@@ -5,6 +5,7 @@ import com.hkt.btu.common.core.service.bean.BtuEmailBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.core.service.impl.BtuUserServiceImpl;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
+import com.hkt.btu.common.spring.security.web.authentication.BtuLoginSuccessHandler;
 import com.hkt.btu.sd.core.dao.entity.SdOtpEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserRoleEntity;
@@ -628,6 +629,19 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             // send otp email
             sdEmailService.send(SdEmailBean.RESET_PW_EMAIL.TEMPLATE_ID, recipient, null, dataMap);
         }
+    }
+
+
+    @Override
+    public void setLogonPage(BtuLoginSuccessHandler btuLoginSuccessHandler) {
+        BtuUserBean currentUserBean = getCurrentUserBean();
+        Set<GrantedAuthority> authorities = currentUserBean.getAuthorities();
+        if (authorities.contains(new SimpleGrantedAuthority(SdUserRoleBean.OPERATOR))) {
+            btuLoginSuccessHandler.setDefaultTargetUrl(SdUserRolePathCtrlBean.OPERATOR_LOGON_PATH);
+        } else {
+            btuLoginSuccessHandler.setDefaultTargetUrl(SdUserRolePathCtrlBean.DEFAULT_LOGON_PATH);
+        }
+        btuLoginSuccessHandler.setAlwaysUseDefaultTargetUrl(true);
     }
 
     private void checkUserEmailDuplicate(String oldUserEmail, String queryEmail) {

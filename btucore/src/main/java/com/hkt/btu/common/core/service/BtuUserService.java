@@ -2,6 +2,7 @@ package com.hkt.btu.common.core.service;
 
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
+import com.hkt.btu.common.spring.security.web.authentication.BtuLoginSuccessHandler;
 
 import javax.naming.NamingException;
 
@@ -21,4 +22,7 @@ public interface BtuUserService {
     boolean isActive(BtuUserBean userDetailBean);
 
     boolean hasAnyAuthority(String... targetAuthorities);
+
+
+    void setLogonPage(BtuLoginSuccessHandler btuLoginSuccessHandler);
 }
