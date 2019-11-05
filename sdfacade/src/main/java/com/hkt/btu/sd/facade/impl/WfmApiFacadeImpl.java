@@ -210,9 +210,9 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
     @Override
     public String postAppointmentForm() {
         Form form = new Form();
-        form.param("sdSystemParam.ticketMasId", "71");
-        form.param("sdSystemParam.ticketDetId", "45");
-        form.param("sdSystemParam.symptomCode", "ABC123");
+        form.param("sdSystemParam.ticketMasId", "1061");
+        form.param("sdSystemParam.ticketDetId", "662");
+        form.param("sdSystemParam.symptomCode", "IF001");
         form.param("sdSystemParam.userName", "sd");
         form.param("sdSystemParam.password", "Ki6=rEDs47*^5");
 
