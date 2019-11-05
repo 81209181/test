@@ -197,6 +197,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     }
 
     @Override
+    @Transactional
     public SdCreateResultBean createUser(String userId, String name, String mobile, String email, List<String> roleIdList)
             throws UserNotFoundException {
         if (StringUtils.isEmpty(name)) {
@@ -516,6 +517,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     }
 
     @Override
+    @Transactional
     public String changeUserTypeToNonPCCWOrHktUser(String oldUserId, String name, String mobile, String employeeNumber, String email) throws InvalidInputException, UserNotFoundException {
         // Determine if it is already a PCCW/HKT user. UserId starts with T
         if (oldUserId.contains(SdUserBean.CREATE_USER_PREFIX.NON_PCCW_HKT_USER)) {
