@@ -21,6 +21,8 @@ public interface WfmApiFacade {
 
     WfmAppointmentResData getAppointmentInfo(Integer ticketMasId);
 
+    String postAppointmentForm();
+
     List<WfmJobProgressData> getJobProgessByTicketId(Integer ticketMasId);
 
     List<WfmJobRemarksData> getJobRemarkByTicketId(Integer ticketMasId);

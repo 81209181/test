@@ -114,12 +114,11 @@ public class BtuSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutRequestMatcher(new AntPathRequestMatcher("/public/logout")) // logout request mapping
                 .logoutSuccessHandler(btuLogoutSuccessHandler)
                 .permitAll()
-
+                .and()
+                .cors()
                 // csrf config
                 .and()
                 .csrf().requireCsrfProtectionMatcher(csrfRequestMatcher())
-
-                // session management
                 .and()
                 .sessionManagement()
                 .invalidSessionUrl(LOGIN_ERROR_PARA_URI + LOGIN_ERROR.FORBIDDEN.name())
