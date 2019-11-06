@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public enum ServiceSearchEnum {
-    SERVICE_NUMBER ("sn", "Service Number"),
     BSN ("bsn", "BSN"),
     TENANT_ID ("tenantId", "Tenant ID"),
     DN ("dn", "DN")
