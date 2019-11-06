@@ -641,15 +641,14 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
 
     @Override
-    public void setLogonPage(BtuLoginSuccessHandler btuLoginSuccessHandler) {
-        BtuUserBean currentUserBean = getCurrentUserBean();
-        Set<GrantedAuthority> authorities = currentUserBean.getAuthorities();
-        if (authorities.contains(new SimpleGrantedAuthority(SdUserRoleBean.OPERATOR))) {
-            btuLoginSuccessHandler.setDefaultTargetUrl(SdUserRolePathCtrlBean.OPERATOR_LOGON_PATH);
+    public String getUserLogonPage() {
+        boolean hasOperatorRole = userRoleService.hasUserRole(SdUserRoleBean.ROLE_ID.OPERATOR);
+
+        if (hasOperatorRole) {
+            return SdUserRolePathCtrlBean.OPERATOR_LOGON_PATH;
         } else {
-            btuLoginSuccessHandler.setDefaultTargetUrl(SdUserRolePathCtrlBean.DEFAULT_LOGON_PATH);
+            return SdUserRolePathCtrlBean.DEFAULT_LOGON_PATH;
         }
-        btuLoginSuccessHandler.setAlwaysUseDefaultTargetUrl(true);
     }
 
     private void checkUserEmailDuplicate(String oldUserEmail, String queryEmail) {

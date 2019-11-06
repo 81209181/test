@@ -2,6 +2,8 @@ package com.hkt.btu.common.core.service.bean;
 
 public class BtuUserRolePathCtrlBean extends BaseBean {
 
+    public static final String DEFAULT_LOGON_PATH = "/user/";
+
     private String path;
     private String status;
 
