@@ -389,18 +389,18 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         if(StringUtils.isNotEmpty(userId)){
             userId = systemId + " - " + userId;
         }
-        return closeTicket(ticketMasId, reasonType, reasonContent, userId);
+        return closeTicket(ticketMasId, reasonType, reasonContent, userId,"","");
     }
     @Override
-    public String closeTicket(int ticketMasId, String reasonType, String reasonContent) {
+    public String closeTicket(int ticketMasId, String reasonType, String reasonContent, String contactName, String contactNumber) {
         String currentUserId = userService.getCurrentUserUserId();
-        return closeTicket(ticketMasId, reasonType, reasonContent, currentUserId);
+        return closeTicket(ticketMasId, reasonType, reasonContent, currentUserId,contactName,contactNumber);
     }
 
-    private String closeTicket(int ticketMasId, String reasonType, String reasonContent, String closeby) {
+    private String closeTicket(int ticketMasId, String reasonType, String reasonContent, String closeby, String contactName, String contactNumber) {
         // close ticket in servicedesk
         try{
-            ticketService.closeTicket(ticketMasId, reasonType, reasonContent, closeby);
+            ticketService.closeTicket(ticketMasId, reasonType, reasonContent, closeby,contactName,contactNumber);
             LOG.info("Closed ticket in servicedesk. (ticketMasId: " + ticketMasId + ")");
         }catch (InvalidInputException e){
             LOG.warn(e.getMessage());
