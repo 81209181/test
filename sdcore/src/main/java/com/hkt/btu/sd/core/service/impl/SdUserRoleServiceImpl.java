@@ -14,7 +14,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.transaction.annotation.Transactional;
@@ -111,7 +110,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     }
 
     @Override
-    public void checkUserRole(Set<GrantedAuthority> authorities, List<String> roleEntityList) throws InsufficientAuthorityException {
+    public void checkUserRole(Set<GrantedAuthority> authorities, List<String> roleList) throws InsufficientAuthorityException {
         if (authorities.contains(new SimpleGrantedAuthority(SdUserRoleEntity.SYS_ADMIN))) {
             return;
         }
@@ -122,7 +121,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
                 String roleId = authority.getAuthority();
                 if (roleId.contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR)) {
                     String th_roleId = StringUtils.substringAfter(roleId, SdUserRoleEntity.TEAM_HEAD_INDICATOR);
-                    boolean flag = roleEntityList.stream().anyMatch(role -> role.equals(th_roleId));
+                    boolean flag = roleList.stream().anyMatch(role -> role.equals(th_roleId));
                     if (flag) {
                         return;
                     }
@@ -186,6 +185,16 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
             }
         }
         return eligibleUserRoleList;
+    }
+
+    @Override
+    public boolean hasUserRole(String roleId) {
+        if(StringUtils.isEmpty(roleId)){
+            LOG.warn("Empty role ID.");
+            return false;
+        }
+
+        return userService.hasAnyAuthority(roleId);
     }
 
 
@@ -296,12 +305,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
         }
     }
 
-    /**
-     * Get all user role from database.
-     *
-     * @param roleId
-     * @return
-     */
+
     private List<SdUserRoleBean> getAllRoleList(String roleId) {
         List<SdUserRoleEntity> roleEntityList = sdUserRoleMapper.getUserRoleByParentRoleId(roleId);
         List<SdUserRoleBean> roleList = populate(roleEntityList);
@@ -316,9 +320,6 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
 
     /**
      * According to roleId, get user role from role tree
-     *
-     * @param roleId
-     * @return
      */
     private List<SdUserRoleBean> getUserRoleByRoleIdInRoleTree(String roleId) {
         List<SdUserRoleBean> userRole = new ArrayList<>();
@@ -354,10 +355,6 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
 
     /**
      * According to roleId, get user role from roleEntityList.
-     *
-     * @param roleEntityList
-     * @param roleId
-     * @return
      */
     private SdUserRoleBean getChildren(List<SdUserRoleBean> roleEntityList, String roleId) {
         if (CollectionUtils.isNotEmpty(roleEntityList)) {
