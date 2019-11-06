@@ -376,4 +376,9 @@ public class SdTicketServiceImpl implements SdTicketService {
     public void updateTicketType(int ticketMasId, String type, String userId) {
         ticketMasMapper.updateTicketType(ticketMasId,type,userId);
     }
+
+    @Override
+    public List<Integer> getTicketByServiceNoAndTypeNotJobAndStatusNotCP(String serviceNo) {
+        return ticketMasMapper.getTicketByServiceNoAndTypeNotJobAndStatusNotCP(serviceNo);
+    }
 }

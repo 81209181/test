@@ -60,4 +60,6 @@ public interface SdTicketService {
     void closeTicket(int ticketMasId, String reasonType, String reasonContent, String userId) throws InvalidInputException;
 
     void updateTicketType(int ticketMasId, String job, String userId);
+
+    List<Integer> getTicketByServiceNoAndTypeNotJobAndStatusNotCP(String serviceNo);
 }

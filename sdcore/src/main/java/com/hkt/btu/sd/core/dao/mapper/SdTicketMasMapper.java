@@ -60,4 +60,6 @@ public interface SdTicketMasMapper {
     List<SdTicketMasEntity> getTicketByServiceNo(@Param("serviceNo")String serviceNo, @Param("status")String status);
 
     void updateTicketType(@Param("ticketMasId")int ticketMasId, @Param("type")String type,  @Param("userId")String userId);
+
+    List<Integer> getTicketByServiceNoAndTypeNotJobAndStatusNotCP(@Param("serviceNo")String serviceNo);
 }

@@ -134,4 +134,12 @@
             modifydate = sysdate
         where ticket_mas_id = #{ticketMasId}
     </update>
+
+    <select id="getTicketByServiceNoAndTypeNotJobAndStatusNotCP" resultType="Integer">
+        SELECT tm.ticket_mas_id FROM
+        ticket_mas tm LEFT JOIN ticket_det td ON tm.ticket_mas_id = td.ticket_mas_id
+        WHERE td.service_id = #{serviceNo}
+        and tm.ticket_type = 'JOB'
+        and tm.status != 'CP'
+    </select>
 </mapper>

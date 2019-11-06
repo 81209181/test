@@ -1,6 +1,13 @@
 let ctx = $("meta[name='_ctx']").attr("content");
 
 $().ready(function(){
+
+    $(document).keydown(function(event){
+        if(event.keyCode==13){
+           $('#btnSearchInfo').click();
+        }
+    })
+
     let bsn = "";
 
     $('#btnSearchReset').on('click',function(){
@@ -104,7 +111,6 @@ $().ready(function(){
         }else{
             searchValue.attr('class','form-control');
         }
-
         $.post('/ticket/search-service',{
             searchKey : searchKey.val().trim(),
             searchValue : searchValue.val().trim()
