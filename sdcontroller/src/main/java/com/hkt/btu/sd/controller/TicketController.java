@@ -104,13 +104,11 @@ public class TicketController {
 
     @GetMapping("")
     public ModelAndView showQueryTicket(Principal principal, int ticketMasId) {
-        return ticketFacade.getTicket(ticketMasId)
-//                .filter(sdTicketMasData -> userRoleFacade.checkSameTeamRole(principal.getName(), sdTicketMasData.getCreateBy()))
-                .map(sdTicketMasData -> {
-                    ModelAndView modelAndView = new ModelAndView("ticket/ticketInfo");
-                    modelAndView.addObject("ticketInfo", requestCreateFacade.getTicketInfo(sdTicketMasData));
-                    return modelAndView;
-                }).orElse(new ModelAndView("redirect:/ticket/search-ticket"));
+        return ticketFacade.getTicket(ticketMasId).map(sdTicketMasData -> {
+            ModelAndView modelAndView = new ModelAndView("ticket/ticketInfo");
+            modelAndView.addObject("ticketInfo", requestCreateFacade.getTicketInfo(sdTicketMasData));
+            return modelAndView;
+        }).orElse(new ModelAndView("redirect:/ticket/search-ticket"));
     }
 
     @PostMapping("contact/update")
