@@ -342,13 +342,15 @@ public class SdTicketServiceImpl implements SdTicketService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void closeTicket(int ticketMasId, String reasonType, String reasonContent, String closeby) throws InvalidInputException {
+    public void closeTicket(int ticketMasId, String reasonType, String reasonContent, String closeby, String contactName, String contactNumber) throws InvalidInputException {
         if (StringUtils.isEmpty(reasonType)) {
             throw new InvalidInputException("Empty reasonType.");
         } else if(StringUtils.isEmpty(reasonContent)) {
             throw new InvalidInputException("Empty reasonContent.");
         } else if (StringUtils.isEmpty(closeby)) {
             throw new InvalidInputException("Empty closeBy.");
+        } else if (StringUtils.isBlank(contactName)) {
+            throw new InvalidInputException("Empty contact name.");
         }
 
         // check status
@@ -365,11 +367,11 @@ public class SdTicketServiceImpl implements SdTicketService {
             throw new InvalidInputException(String.format("Ticket not found. (ticketMasId: %d)", ticketMasId));
         }
 
-
+        String content = reasonContent + String.format(";Contact: %s,%s", contactName,contactNumber);
         // close ticket and add remarks
         String modifyby = userService.getCurrentUserUserId();
         ticketMasMapper.updateTicketStatus(ticketMasId, SdTicketMasBean.STATUS_TYPE_CODE.COMPLETE, modifyby);
-        createTicketSysRemarks(ticketMasId, String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_CLOSE, reasonType, reasonContent, closeby));
+        createTicketSysRemarks(ticketMasId, String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_CLOSE, reasonType, content, closeby));
     }
 
     @Override

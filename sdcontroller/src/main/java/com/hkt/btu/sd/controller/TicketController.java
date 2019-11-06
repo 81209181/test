@@ -247,8 +247,8 @@ public class TicketController {
     }
 
     @PostMapping("close")
-    public ResponseEntity<?> ticketClose(int ticketMasId, String reasonType, String reasonContent) {
-        String errorMsg = ticketFacade.closeTicket(ticketMasId, reasonType, reasonContent);
+    public ResponseEntity<?> ticketClose(int ticketMasId, String reasonType, String reasonContent,String contactNumber,String contactName) {
+        String errorMsg = ticketFacade.closeTicket(ticketMasId, reasonType, reasonContent,contactName,contactNumber);
         if (StringUtils.isEmpty(errorMsg)) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         } else {

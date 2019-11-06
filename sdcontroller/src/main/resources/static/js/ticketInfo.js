@@ -237,8 +237,10 @@ $().ready(function(){
         if(form.checkValidity()){
             $.post('/ticket/close',{
                 ticketMasId:ticketMasId,
-                reasonType:$('select[name=reasonType]').val(),
-                reasonContent:$('textarea[name=reasonContent]').val()
+                reasonType:$(form).find('select[name=reasonType]').val(),
+                reasonContent:$(form).find('textarea[name=reasonContent]').val(),
+                contactName:$(form).find('input[name=contactName]').val(),
+                contactNumber:$(form).find('input[name=contactNumber]').val(),
             },function(res){
                 if(res.success){
                     location.reload();

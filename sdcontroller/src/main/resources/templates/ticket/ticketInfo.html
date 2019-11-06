@@ -31,7 +31,7 @@
                 <div class="col-md-4 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Ticket Status:</label>
                     <span class="form-control-plaintext col-md-3" th:text="*{ticketStatus}" id="ticketStatus"></span>
-                    <button type="button" class="btn btn-success" id="btnTicketClose" th:unless="*{ticketStatus} eq 'COMPLETE'">Close</button>
+                    <button type="button" class="btn btn-info" id="btnTicketClose" th:unless="*{ticketStatus} eq 'COMPLETE'">Close</button>
                 </div>
                 <div class="col-md-3 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Search Key:</label>
@@ -316,30 +316,52 @@
     <div class="modal fade reason">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header text-white bg-secondary h-80">
-                    <h6 class="modal-title">Reason</h6>
+                <div class="modal-header text-white bg-info h-80">
+                    <h6 class="modal-title">Closing Ticket</h6>
                     <button type="button" class="close text-white" data-dismiss="modal">x</button>
                 </div>
                 <div class="modal-body">
                     <form class="needs-validation" novalidate>
                         <div class="form-row">
-                            <select class="custom-select" required name="reasonType">
+                            <div class="col-md-6">
+                                <label>Contact Name:</label>
+                                <input type="text" class="form-control" name="contactName" required>
+                                <div class="invalid-feedback">
+                                    Please input contact name.
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label >Contact Number:</label>
+                                <input type="text" class="form-control" name="contactNumber" pattern="[0-9]{8}">
+                                <div class="invalid-feedback">
+                                    Must be 8 digits.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row mt-3">
+                            <label class="col-md-2 justify-content-end" >Reason:</label>
+                            <select class="custom-select col-md-10" required name="reasonType">
                                 <option value="" hidden>Please select</option>
                                 <option value="CUSTOMER REPORT OK & REQUEST CANCEL">Customer Report OK & Request Cancel</option>
-                                <option value="OTHER SERVICE REPORT">Other Service Report</option>
+                                <option value="Wrong Issue" >Wrong Issue</option>
+                                <option value="Generated 1-day Password - Job Done">Generated 1-day Password - Job Done</option>
+                                <option value="Reset NGN3 Password - Job Done">Reset NGN3 Password - Job Done</option>
                             </select>
-                            <div class="invalid-feedback">
+                            <div class="invalid-feedback offset-md-2">
                                 Please select on reason.
                             </div>
-                            <textarea class="form-control col-md-12 mt-2" required name="reasonContent"></textarea>
-                            <div class="invalid-feedback">
+                        </div>
+                        <div class="form-row">
+                            <label class="col-md-2 justify-content-end">Remark:</label>
+                            <textarea class="form-control col-md-10 mt-2" required name="reasonContent" rows="3"></textarea>
+                            <div class="invalid-feedback offset-md-2">
                                 Please enter a message in the textarea.
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary float-right" id="btnReasonSubmit">Submit</button>
+                    <button type="button" class="btn btn-info float-right" id="btnReasonSubmit">Submit</button>
                 </div>
             </div>
         </div>
