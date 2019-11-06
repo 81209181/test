@@ -386,4 +386,9 @@ public class SdTicketServiceImpl implements SdTicketService {
     public List<Integer> getTicketByServiceNoAndTypeNotJobAndStatusNotCP(String serviceNo) {
         return ticketMasMapper.getTicketByServiceNoAndTypeNotJobAndStatusNotCP(serviceNo);
     }
+
+    @Override
+    public List<TicketStatusEnum> getTicketStatusList() {
+        return Arrays.asList(TicketStatusEnum.values());
+    }
 }

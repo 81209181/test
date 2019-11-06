@@ -58,7 +58,7 @@ function createSearchTicketDataTable(){
             { data: 'ticketType' },
             { data: 'custCode' },
             { data: 'searchValue'},
-            { data: 'status' },
+            { data: 'statusDesc' },
             { data: 'callInCount'},
             { data: 'completeDate'},
             { data: 'createDate' },

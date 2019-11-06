@@ -2,6 +2,7 @@ package com.hkt.btu.sd.core.service;
 
 import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.sd.core.service.bean.*;
+import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -62,4 +63,6 @@ public interface SdTicketService {
     void updateTicketType(int ticketMasId, String job, String userId);
 
     List<Integer> getTicketByServiceNoAndTypeNotJobAndStatusNotCP(String serviceNo);
+
+    List<TicketStatusEnum> getTicketStatusList();
 }

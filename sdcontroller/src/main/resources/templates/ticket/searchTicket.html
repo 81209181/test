@@ -19,9 +19,8 @@
                 <label for="search-status" class="col-form-label col-md-5 justify-content-end">Status：</label>
                 <select id="search-status" class="form-control mb-2 mr-sm-2 col-md-5">
                     <option value=""><!--Please select--></option>
-                    <option value="O">Open</option>
-                    <option value="CX">Cancel</option>
-                    <option value="CP">Complete</option>
+                    <!--/*@thymesVar id="ticketStatusList" type="java.util.List<com.hkt.btu.sd.facade.data.CodeDescData>"*/-->
+                    <option th:each="ticketStatus : ${ticketStatusList}" th:value="${ticketStatus.code}" th:text="${ticketStatus.codeDesc}"></option>
                 </select>
             </div>
             <div class="col-md-6 form-inline pt-2">

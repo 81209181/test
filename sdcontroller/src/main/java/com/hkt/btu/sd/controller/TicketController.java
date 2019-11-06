@@ -137,9 +137,12 @@ public class TicketController {
     }
 
     @GetMapping("/search-ticket")
-    public String searchTicket() {
+    public String searchTicket(Model model) {
+        List<CodeDescData> ticketStatusList = ticketFacade.getTicketStatusList();
+        if(ticketStatusList!=null){
+            model.addAttribute("ticketStatusList", ticketStatusList);
+        }
 
-        // todo [SERVDESK-200]: get status option
         // todo [SERVDESK-200]: get ticket type option (-->SdTicketFacade.getTicketTypeList-->SdTicketService.getTicketTypeList)
         // todo [SERVDESK-200]: get service type option (-->SdServiceTypeFacade.getServiceTypeList)
 

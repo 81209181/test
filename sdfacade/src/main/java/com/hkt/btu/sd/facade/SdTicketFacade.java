@@ -53,4 +53,6 @@ public interface SdTicketFacade {
     void createJob4Wfm(int ticketMasId);
 
     List<Integer> getTicketByServiceNoAndTypeNotJobAndStatusNotCP(String serviceNo);
+
+    List<CodeDescData> getTicketStatusList();
 }

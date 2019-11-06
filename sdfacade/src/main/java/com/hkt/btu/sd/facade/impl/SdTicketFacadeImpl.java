@@ -476,4 +476,21 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     public List<Integer> getTicketByServiceNoAndTypeNotJobAndStatusNotCP(String serviceNo) {
         return ticketService.getTicketByServiceNoAndTypeNotJobAndStatusNotCP(serviceNo);
     }
+
+    @Override
+    public List<CodeDescData> getTicketStatusList() {
+        List<TicketStatusEnum> ticketStatusEnumList = ticketService.getTicketStatusList();
+        if(CollectionUtils.isEmpty(ticketStatusEnumList)){
+            return null;
+        }
+
+        List<CodeDescData> codeDescDataList = new ArrayList<>();
+        for(TicketStatusEnum ticketStatusEnum : ticketStatusEnumList){
+            CodeDescData codeDescData = new CodeDescData();
+            codeDescData.setCode(ticketStatusEnum.getStatusCode());
+            codeDescData.setCodeDesc(ticketStatusEnum.getStatusDesc());
+            codeDescDataList.add(codeDescData);
+        }
+        return codeDescDataList;
+    }
 }
