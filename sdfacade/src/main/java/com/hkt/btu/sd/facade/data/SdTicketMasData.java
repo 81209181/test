@@ -38,6 +38,8 @@ public class SdTicketMasData implements DataInterface {
 
     private String searchValue;
 
+    private LocalDateTime completeDate;
+
     public String getSearchKey() {
         return searchKey;
     }
@@ -148,5 +150,13 @@ public class SdTicketMasData implements DataInterface {
 
     public void setCallInCount(int callInCount) {
         this.callInCount = callInCount;
+    }
+
+    public LocalDateTime getCompleteDate() {
+        return completeDate;
+    }
+
+    public void setCompleteDate(LocalDateTime completeDate) {
+        this.completeDate = completeDate;
     }
 }

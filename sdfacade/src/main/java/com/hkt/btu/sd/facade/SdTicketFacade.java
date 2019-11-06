@@ -5,6 +5,7 @@ import com.hkt.btu.sd.facade.data.*;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface SdTicketFacade {
@@ -16,7 +17,7 @@ public interface SdTicketFacade {
 
     List<SdTicketContactData> getContactInfo(Integer ticketMasId);
 
-    PageData<SdTicketMasData> searchTicketList(Pageable pageable, String dateFrom, String dateTo, String status, String ticketMasId, String custCode);
+    PageData<SdTicketMasData> searchTicketList(Pageable pageable, Map<String, String> searchFormData);
 
     PageData<SdTicketMasData> getMyTicket(Pageable pageable);
 

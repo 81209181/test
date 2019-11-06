@@ -25,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.annotation.Resource;
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RequestMapping("/ticket")
@@ -140,15 +141,11 @@ public class TicketController {
     public ResponseEntity<?> searchTicket(@RequestParam(defaultValue = "0") int draw,
                                           @RequestParam(defaultValue = "0") int start,
                                           @RequestParam(defaultValue = "10") int length,
-                                          @RequestParam(required = false) String dateFrom,
-                                          @RequestParam(required = false) String dateTo,
-                                          @RequestParam(required = false) String status,
-                                          @RequestParam(required = false) String ticketMasId,
-                                          @RequestParam(required = false) String custCode) {
+                                          @RequestParam Map<String, String> searchFormData) {
         int page = start / length;
         Pageable pageable = PageRequest.of(page, length);
 
-        PageData<SdTicketMasData> pageData = ticketFacade.searchTicketList(pageable, dateFrom, dateTo, status, ticketMasId, custCode);
+        PageData<SdTicketMasData> pageData = ticketFacade.searchTicketList(pageable, searchFormData);
         return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
     }
 

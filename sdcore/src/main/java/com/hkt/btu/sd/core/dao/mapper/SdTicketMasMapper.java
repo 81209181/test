@@ -15,13 +15,36 @@ public interface SdTicketMasMapper {
     SdTicketMasEntity findTicketById(@Param("ticketId") Integer ticketId);
 
     List<SdTicketMasEntity> searchTicketList(@Param("offset") long offset, @Param("pageSize") int pageSize,
-                                             @Param("dateFrom") String dateFrom, @Param("dateTo") String dateTo,
-                                             @Param("status") String status, @Param("ticketMasId") String ticketMasId,
-                                             @Param("custCode") String custCode, @Param("createBy") String createBy);
+                                             @Param("createDateFrom") String createDateFrom,
+                                             @Param("createDateTo") String createDateTo,
+                                             @Param("status") String status,
+                                             @Param("completeDateFrom") String completeDateFrom,
+                                             @Param("completeDateTo") String completeDateTo,
+                                             @Param("createBy") String createBy,
+                                             @Param("ticketMasId") String ticketMasId,
+                                             @Param("custCode") String custCode,
+                                             @Param("serviceNumber") String serviceNumber);
 
-    Integer searchTicketCount(@Param("dateFrom") String dateFrom, @Param("dateTo") String dateTo,
-                              @Param("status") String status, @Param("ticketMasId") String ticketMasId,
-                              @Param("custCode") String custCode, @Param("createBy") String createBy);
+    Integer searchTicketCount(@Param("createDateFrom") String createDateFrom,
+                              @Param("createDateTo") String createDateTo,
+                              @Param("status") String status,
+                              @Param("completeDateFrom") String completeDateFrom,
+                              @Param("completeDateTo") String completeDateTo,
+                              @Param("createBy") String createBy,
+                              @Param("ticketMasId") String ticketMasId,
+                              @Param("custCode") String custCode,
+                              @Param("serviceNumber") String serviceNumber);
+
+    List<SdTicketMasEntity> getMyTicket(@Param("offset") long offset, @Param("pageSize") int pageSize,
+                                             @Param("createDateFrom") String createDateFrom,
+                                             @Param("createDateTo") String createDateTo,
+                                             @Param("status") String status,
+                                             @Param("completeDateFrom") String completeDateFrom,
+                                             @Param("completeDateTo") String completeDateTo,
+                                             @Param("createBy") String createBy,
+                                             @Param("ticketMasId") String ticketMasId,
+                                             @Param("custCode") String custCode,
+                                             @Param("serviceNumber") String serviceNumber);
 
     void updateAppointmentInMas(@Param("appointmentDate") LocalDateTime appointmentDate,
                                 @Param("asap") String asap,
