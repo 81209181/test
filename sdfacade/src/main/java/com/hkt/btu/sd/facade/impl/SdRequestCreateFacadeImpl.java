@@ -53,7 +53,6 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         }
         try {
             switch (serviceSearchEnum) {
-                case SERVICE_NUMBER:
                 case BSN:
                     return findData4Bsn(searchValue);
                 case DN:
