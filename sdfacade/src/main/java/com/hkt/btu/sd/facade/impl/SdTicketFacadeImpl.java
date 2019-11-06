@@ -471,4 +471,9 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             throw new RuntimeException(ex.getMessage());
         }
     }
+
+    @Override
+    public List<Integer> getTicketByServiceNoAndTypeNotJobAndStatusNotCP(String serviceNo) {
+        return ticketService.getTicketByServiceNoAndTypeNotJobAndStatusNotCP(serviceNo);
+    }
 }

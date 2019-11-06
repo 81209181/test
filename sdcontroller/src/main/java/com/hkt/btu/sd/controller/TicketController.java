@@ -8,7 +8,6 @@ import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.nora.NoraAccountData;
 import com.hkt.btu.sd.facade.data.nora.NoraBroadbandInfoData;
 import com.hkt.btu.sd.facade.data.nora.NoraDnGroupData;
-import com.hkt.btu.sd.facade.data.wfm.WfmAppointmentResData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
 import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
 import org.apache.commons.collections.CollectionUtils;
@@ -20,9 +19,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +54,14 @@ public class TicketController {
     }
 
     @PostMapping("search-service")
-    public ResponseEntity<?> searchService(String searchKey, String searchValue) {
+    public ResponseEntity<?> searchService(String searchKey, String searchValue, HttpServletRequest request) {
+        try {
+            ticketFacade.getTicketByServiceNoAndTypeNotJobAndStatusNotCP(searchValue).stream().findFirst().ifPresent(ticketId -> {
+                throw new RuntimeException(String.format("The service number already exists in Ticket- <a href='" + request.getContextPath() + "/ticket?ticketMasId=%s'>%s</a>", ticketId, ticketId));
+            });
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
         RequestCreateSearchResultsData resultsData = requestCreateFacade.searchProductList(searchKey, searchValue);
         if (!StringUtils.isEmpty(resultsData.getErrorMsg())) {
             return ResponseEntity.badRequest().body(resultsData.getErrorMsg());
