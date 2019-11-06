@@ -246,7 +246,7 @@ $().ready(function(){
             }).fail(function(e){
                 var responseError = e.responseText ? e.responseText : "Get failed.";
                 console.log("ERROR : ", responseError);
-                showErrorMsg(responseError);
+                alert(responseError);
             })
         }
         $(form).addClass("was-validated");

@@ -104,7 +104,7 @@ public class TicketController {
     @GetMapping("")
     public ModelAndView showQueryTicket(Principal principal, int ticketMasId) {
         return ticketFacade.getTicket(ticketMasId)
-                .filter(sdTicketMasData -> userRoleFacade.checkSameTeamRole(principal.getName(), sdTicketMasData.getCreateBy()))
+//                .filter(sdTicketMasData -> userRoleFacade.checkSameTeamRole(principal.getName(), sdTicketMasData.getCreateBy()))
                 .map(sdTicketMasData -> {
                     ModelAndView modelAndView = new ModelAndView("ticket/ticketInfo");
                     modelAndView.addObject("ticketInfo", requestCreateFacade.getTicketInfo(sdTicketMasData));
@@ -251,7 +251,7 @@ public class TicketController {
         if (StringUtils.isEmpty(errorMsg)) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         } else {
-            return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
+            return ResponseEntity.badRequest().body(errorMsg);
         }
     }
 
