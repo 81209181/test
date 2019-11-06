@@ -26,6 +26,7 @@ function createSearchTicketDataTable(){
     let table = $('#searchTicketTable').DataTable({
         processing: true,
         serverSide: true,
+        ordering: false,
         searching: false,
         ajax: {
             type: "GET",

@@ -12,24 +12,12 @@
     <form th:id="search-ticket-form" class="form-inline ml-3">
         <div class="form-row">
             <div class="col-md-6 form-inline pt-2">
-                <label class="col-form-label col-md-5 justify-content-end">Create Date From：</label>
-                <input th:id="createDateFrom" type="date" class="form-control mb-2 mr-sm-2 col-md-5" placeholder="Create Date From">
+                <label for="ticket_mas_id" class="col-form-label col-md-5 justify-content-end">Ticket Mas Id：</label>
+                <input type="text" id="ticket_mas_id" class="form-control mb-2 mr-sm-2 col-md-5">
             </div>
             <div class="col-md-6 form-inline pt-2">
-                <label class="col-form-label col-md-5 justify-content-end">Create Date To：</label>
-                <input th:id="createDateTo" type="date" class="form-control mb-2 mr-sm-2 col-md-5" placeholder="Create Date To">
-            </div>
-            <div class="col-md-6 form-inline pt-2">
-                <label class="col-form-label col-md-5 justify-content-end">Complete Date From：</label>
-                <input th:id="completeDateFrom" type="date" class="form-control mb-2 mr-sm-2 col-md-5" placeholder="Complete Date From">
-            </div>
-            <div class="col-md-6 form-inline pt-2">
-                <label class="col-form-label col-md-5 justify-content-end">Complete Date To：</label>
-                <input th:id="completeDateTo" type="date" class="form-control mb-2 mr-sm-2 col-md-5" placeholder="Complete Date To">
-            </div>
-            <div class="col-md-6 form-inline pt-2">
-                <label class="col-form-label col-md-5 justify-content-end">Status：</label>
-                <select th:id="search-status" class="form-control mb-2 mr-sm-2 col-md-5">
+                <label for="search-status" class="col-form-label col-md-5 justify-content-end">Status：</label>
+                <select id="search-status" class="form-control mb-2 mr-sm-2 col-md-5">
                     <option value=""><!--Please select--></option>
                     <option value="O">Open</option>
                     <option value="CX">Cancel</option>
@@ -37,19 +25,31 @@
                 </select>
             </div>
             <div class="col-md-6 form-inline pt-2">
-                <label class="col-form-label col-md-5 justify-content-end">Create By：</label>
+                <label for="createDateFrom" class="col-form-label col-md-5 justify-content-end">Create Date From：</label>
+                <input id="createDateFrom" type="date" class="form-control mb-2 mr-sm-2 col-md-5" placeholder="Create Date From">
+            </div>
+            <div class="col-md-6 form-inline pt-2">
+                <label for="createDateTo" class="col-form-label col-md-5 justify-content-end">Create Date To：</label>
+                <input id="createDateTo" type="date" class="form-control mb-2 mr-sm-2 col-md-5" placeholder="Create Date To">
+            </div>
+            <div class="col-md-6 form-inline pt-2">
+                <label for="completeDateFrom" class="col-form-label col-md-5 justify-content-end">Complete Date From：</label>
+                <input id="completeDateFrom" type="date" class="form-control mb-2 mr-sm-2 col-md-5" placeholder="Complete Date From">
+            </div>
+            <div class="col-md-6 form-inline pt-2">
+                <label for="completeDateTo" class="col-form-label col-md-5 justify-content-end">Complete Date To：</label>
+                <input id="completeDateTo" type="date" class="form-control mb-2 mr-sm-2 col-md-5" placeholder="Complete Date To">
+            </div>
+            <div class="col-md-6 form-inline pt-2">
+                <label for="createBy" class="col-form-label col-md-5 justify-content-end">Create By：</label>
                 <input type="text" id="createBy" class="form-control mb-2 mr-sm-2 col-md-5">
             </div>
             <div class="col-md-6 form-inline pt-2">
-                <label class="col-form-label col-md-5 justify-content-end">Ticket Mas Id：</label>
-                <input type="text" id="ticket_mas_id" class="form-control mb-2 mr-sm-2 col-md-5">
-            </div>
-            <div class="col-md-6 form-inline pt-2">
-                <label class="col-form-label col-md-5 justify-content-end">Customer Code：</label>
+                <label for="customer_code" class="col-form-label col-md-5 justify-content-end">Customer Code：</label>
                 <input type="text" id="customer_code" class="form-control mb-2 mr-sm-2 col-md-5">
             </div>
             <div class="col-md-6 form-inline pt-2">
-                <label class="col-form-label col-md-5 justify-content-end">Service Number：</label>
+                <label for="serviceNumber" class="col-form-label col-md-5 justify-content-end">Service Number：</label>
                 <input type="text" id="serviceNumber" class="form-control mb-2 mr-sm-2 col-md-5">
             </div>
             <div class="col-md-6 form-inline pt-2">
