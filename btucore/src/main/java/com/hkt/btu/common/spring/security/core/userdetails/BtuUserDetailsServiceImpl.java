@@ -60,7 +60,7 @@ public class BtuUserDetailsServiceImpl implements UserDetailsService {
 
         // create spring security user
         return BtuUser.of(
-                userBean.getUsername(),
+                userBean.getUserId(),
                 userBean.getPassword(),
                 enabled,
                 true,
@@ -68,11 +68,5 @@ public class BtuUserDetailsServiceImpl implements UserDetailsService {
                 accountNonLocked,
                 userBean.getAuthorities(),
                 userBean);
-    }
-
-    public static void main(String[] args) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String encode = passwordEncoder.encode("123456");
-        System.out.println(encode);
     }
 }

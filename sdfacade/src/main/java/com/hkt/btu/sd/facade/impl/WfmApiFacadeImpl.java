@@ -181,34 +181,14 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
 
     @Override
     public WfmAppointmentResData getAppointmentInfo(Integer ticketMasId) {
-        final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
-
-        WfmAppointmentResData responseData;
         try {
-            responseData = getData("/api/v1/sd/GetAppointmentByTicketMasId/" + ticketMasId, WfmAppointmentResData.class, null);
+            return getData("/api/v1/sd/GetAppointmentByTicketMasId/" + ticketMasId,
+                    WfmAppointmentResData.class, null);
         } catch (RuntimeException e) {
             LOG.error(String.format("WFM Error: Cannot get appointment info from WFM of %s.", ticketMasId));
+            LOG.error(e.getMessage());
             return null;
         }
-
-        if (responseData == null) {
-            LOG.error("WFM Error: No response");
-            return null;
-        }
-
-        // appointmentDate format
-        String appointmentDate = StringUtils.isEmpty(responseData.getAppointmentDate()) ? null :
-                LocalDateTime.parse(responseData.getAppointmentDate(), DATE_TIME_FORMATTER).toLocalDate().toString();
-        String appointmentStartTime = StringUtils.isEmpty(responseData.getAppointmentStartDateTime()) ? null :
-                LocalDateTime.parse(responseData.getAppointmentStartDateTime(), DATE_TIME_FORMATTER).toLocalTime().toString();
-        String appointmentEndTime = StringUtils.isEmpty(responseData.getAppointmentEndDateTime()) ? null :
-                LocalDateTime.parse(responseData.getAppointmentEndDateTime(), DATE_TIME_FORMATTER).toLocalTime().toString();
-
-        responseData.setAppointmentDate(appointmentDate);
-        responseData.setAppointmentStartDateTime(appointmentStartTime);
-        responseData.setAppointmentEndDateTime(appointmentEndTime);
-
-        return responseData;
     }
 
     @Override
@@ -230,9 +210,9 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
     @Override
     public String postAppointmentForm() {
         Form form = new Form();
-        form.param("sdSystemParam.ticketMasId", "71");
-        form.param("sdSystemParam.ticketDetId", "45");
-        form.param("sdSystemParam.symptomCode", "ABC123");
+        form.param("sdSystemParam.ticketMasId", "1061");
+        form.param("sdSystemParam.ticketDetId", "662");
+        form.param("sdSystemParam.symptomCode", "IF001");
         form.param("sdSystemParam.userName", "sd");
         form.param("sdSystemParam.password", "Ki6=rEDs47*^5");
 

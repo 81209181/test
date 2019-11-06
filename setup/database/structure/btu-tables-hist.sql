@@ -340,7 +340,7 @@ end before statement;
     END;
 -------------------------------------------------------------------------------------------------
 CREATE TABLE USER_USER_ROLE_HIST(
-    USER_ID               varchar2(10)                not null,
+    USER_ID               varchar2(12)                not null,
     ROLE_ID               varchar2(20)                not null,
     ACTION                VARCHAR2(1)                 not null,
     CREATEDATE            DATE                        default SYSDATE not null

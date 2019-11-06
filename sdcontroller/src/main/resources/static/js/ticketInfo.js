@@ -174,7 +174,7 @@ $().ready(function(){
             console.log("ERROR : ", responseError);
             showErrorMsg(responseError);
         })
-    })
+    });
 
     $('#btnCreateTicketRemarks').on('click',function(){
         clearAllMsg();
@@ -192,28 +192,14 @@ $().ready(function(){
             console.log("ERROR : ", responseError);
             showErrorMsg(responseError);
         })
-    })
+    });
 
     readyForTicketService();
 
     // service link button
     $('#btnServiceLink').on('click',function(){
         window.open($(this).data('url'),'Profile','scrollbars=yes,height=600,width=800');
-    })
-
-    // appointment
-    $('#asap_checkbox').change(function(){
-        let input =$('input[name=appointmentDate]');
-        if(this.checked){
-            let tzoffset = (new Date()).getTimezoneOffset() * 60000;
-            let localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 16);
-            input.val(localISOTime);
-            input.attr('disabled',true);
-        }else{
-            input.val('');
-            input.attr('disabled',false);
-        }
-    })
+    });
 
     // submit button
     $('#btnTicketSubmit').on('click',function(){
@@ -335,28 +321,28 @@ function removeContact(btn){
 
 function makeAppointment(ticketMasId, ticketDetId) {
 
-    $.ajax({
-        type: 'GET',
-        url: '/ticket/makeAppointment',
-        dataType: 'text',
-        success: function (res) {
-            let inventoryWindow = window.open('', 'Inventory', 'scrollbars=yes,width=800, height=800');
-            inventoryWindow.document.write(res);
-            inventoryWindow.focus();
-        }
-    })
+    // $.ajax({
+    //     type: 'GET',
+    //     url: '/ticket/makeAppointment',
+    //     dataType: 'text',
+    //     success: function (res) {
+    //         let inventoryWindow = window.open('', 'Inventory', 'scrollbars=yes,width=800, height=800');
+    //         inventoryWindow.document.write(res);
+    //         inventoryWindow.focus();
+    //     }
+    // });
 
-    /*let window = AppointmentSDObj.make({
+    let window = AppointmentSDObj.make({
         data : {
             ticketMasId : ticketMasId,
             ticketDetId : ticketDetId,
-            serviceType: "Broadband", // todo [SERVDESK-182]: ticket service type
-            symptomCode: "ABC123", // todo [SERVDESK-182]: ticket symptom code
+            serviceType: "BN", // todo [SERVDESK-182]: ticket service type
+            symptomCode: "VF002", // todo [SERVDESK-182]: ticket symptom code
             userName : "sd",
             password : "Ki6=rEDs47*^5" // todo [SERVDESK-182]: need to use config param, and hide in backend
         }
     }, "https://10.252.15.158/wfm"); // todo [SERVDESK-182]: need to use config param link
-    checkWindowClose(window);*/
+    checkWindowClose(window);
 }
 
 function getInventory(bsn) {
@@ -429,15 +415,21 @@ function getAppointmentInfo(ticketMasId) {
         dataType: 'json',
         data: {ticketMasId:ticketMasId},
         success: function (res) {
-            $('#appointment').find('input[name=appointmentDate]').val(res.appointmentDate);
-            $('#appointment').find('input[name=appointmentStartDateTime]').val(res.appointmentStartDateTime);
-            $('#appointment').find('input[name=appointmentEndDateTime]').val(res.appointmentEndDateTime);
+            $('#appointment').find('input[name=appointmentDateStr]').val(res.appointmentDateStr);
+            let hasAppointment = !(res.appointmentDateStr === null || res.appointmentDateStr === "");
+            controlSymptomUpdateUi(hasAppointment);
         }
     }).fail(function(e){
         var responseError = e.responseText ? e.responseText : "Get failed.";
         console.log("ERROR : ", responseError);
         showErrorMsg(responseError);
-    })
+        controlSymptomUpdateUi(true);
+    });
+}
+
+function controlSymptomUpdateUi(disable){
+    $("#symptomList").siblings().attr("disabled", disable);
+    $("#btnUpdateService").attr("disabled", disable);
 }
 
 

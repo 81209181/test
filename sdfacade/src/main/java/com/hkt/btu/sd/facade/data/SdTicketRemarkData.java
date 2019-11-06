@@ -6,34 +6,20 @@ import java.time.LocalDateTime;
 
 public class SdTicketRemarkData implements DataInterface {
 
+    public class REMARKS_TYPE {
+        public static final String WFM_PROGRESS = "WFM Progress";
+        public static final String WFM_REMARKS = "WFM Remark";
+    }
+
     private Integer ticketMasId;
-
     private String remarksType;
-
     private String remarks;
 
     private LocalDateTime createdate;
-
     private String createby;
 
-    public static class TYPE {
-        public static final String CUSTOMER = "CUST";
-        public static final String FIELD = "FIELD";
-        public static final String SYSTEM = "SYS";
-    }
 
-    public String getRemarksTypeValue() {
-        switch (remarksType) {
-            case "Customer":
-                return "CUST";
-            case "Field":
-                return "FIELD";
-            case "System":
-                return "SYS";
-            default:
-                return "Not found match remarks type";
-        }
-    }
+
 
     public Integer getTicketMasId() {
         return ticketMasId;

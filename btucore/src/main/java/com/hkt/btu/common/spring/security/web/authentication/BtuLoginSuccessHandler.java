@@ -6,7 +6,6 @@ import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -24,12 +23,6 @@ public class BtuLoginSuccessHandler extends SavedRequestAwareAuthenticationSucce
     @Resource(name = "auditTrailService")
     BtuAuditTrailService auditTrailService;
 
-    public BtuLoginSuccessHandler() {
-        super();
-        this.setDefaultTargetUrl("/user/");
-        this.setAlwaysUseDefaultTargetUrl(true);
-    }
-
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
         // log user login
@@ -46,11 +39,13 @@ public class BtuLoginSuccessHandler extends SavedRequestAwareAuthenticationSucce
         // set timeout for inactive session
         HttpSession session = httpServletRequest.getSession(false);
         if (session != null) {
-            session.setMaxInactiveInterval(900); // 15 min
+            // 15 min
+            session.setMaxInactiveInterval(900);
         }
         clearAuthenticationAttributes(httpServletRequest);
 
-        // redirect to defaultTargetUrl
+        btuUserService.setLogonPage(this);
+
         super.onAuthenticationSuccess(httpServletRequest, httpServletResponse, authentication);
     }
 }

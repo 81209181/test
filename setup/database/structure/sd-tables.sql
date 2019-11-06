@@ -11,9 +11,9 @@ CREATE TABLE TICKET_MAS
     SEARCH_VALUE       varchar2(30),
 
     CREATEDATE         date                    default SYSDATE not null,
-    CREATEBY           varchar2(10)            not null,
+    CREATEBY           varchar2(12)            not null,
     MODIFYDATE         date                    default SYSDATE not null,
-    MODIFYBY           varchar2(10)            not null,
+    MODIFYBY           varchar2(12)            not null,
     CONSTRAINT PK_TICKET_MAS PRIMARY KEY (TICKET_MAS_ID)
 );
 CREATE INDEX IDX_TICKET_MAS_1 ON TICKET_MAS (CUST_CODE);
@@ -33,9 +33,9 @@ CREATE TABLE TICKET_DET
     JOB_ID              varchar2(20),
 
     CREATEDATE         date                     default SYSDATE not null,
-    CREATEBY           varchar2(10)             not null,
+    CREATEBY           varchar2(12)             not null,
     MODIFYDATE         date                     default SYSDATE not null,
-    MODIFYBY           varchar2(10)             not null,
+    MODIFYBY           varchar2(12)             not null,
     CONSTRAINT PK_TICKET_DET PRIMARY KEY (TICKET_DET_ID)
 );
 CREATE INDEX IDX_TICKET_DET_1 ON TICKET_DET (TICKET_MAS_ID);
@@ -58,9 +58,9 @@ CREATE TABLE TICKET_CONTACT
     CONTACT_EMAIL           BLOB,
 
     CREATEDATE         date                    default SYSDATE not null,
-    CREATEBY           varchar2(10)            not null,
+    CREATEBY           varchar2(12)            not null,
     MODIFYDATE         date                    default SYSDATE not null,
-    MODIFYBY           varchar2(10)            not null,
+    MODIFYBY           varchar2(12)            not null,
     CONSTRAINT PK_TICKET_CONTACT PRIMARY KEY (TICKET_CONTACT_ID)
 );
 CREATE INDEX IDX_TICKET_CONTACT_1 ON TICKET_CONTACT (TICKET_MAS_ID);

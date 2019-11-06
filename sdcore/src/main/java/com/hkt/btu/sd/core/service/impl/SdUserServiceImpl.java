@@ -5,6 +5,7 @@ import com.hkt.btu.common.core.service.bean.BtuEmailBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.core.service.impl.BtuUserServiceImpl;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
+import com.hkt.btu.common.spring.security.web.authentication.BtuLoginSuccessHandler;
 import com.hkt.btu.sd.core.dao.entity.SdOtpEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserRoleEntity;
@@ -200,6 +201,13 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             throws UserNotFoundException {
         if (StringUtils.isEmpty(name)) {
             throw new InvalidInputException("Empty user name.");
+        }
+
+        if (StringUtils.isNotEmpty(userId)) {
+            SdUserEntity user = sdUserMapper.getLdapUserByUserId(userId);
+            if (user != null) {
+                throw new DuplicateUserEmailException("Duplicate username.");
+            }
         }
 
         // get current user user id
@@ -515,6 +523,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     }
 
     @Override
+    @Transactional
     public String changeUserTypeToNonPCCWOrHktUser(String oldUserId, String name, String mobile, String employeeNumber, String email) throws InvalidInputException, UserNotFoundException {
         // Determine if it is already a PCCW/HKT user. UserId starts with T
         if (oldUserId.contains(SdUserBean.CREATE_USER_PREFIX.NON_PCCW_HKT_USER)) {
@@ -581,8 +590,10 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         if (ObjectUtils.isEmpty(resetPwdUser)) {
             throw new UserNotFoundException();
         }
-        if (resetPwdUser.getRoles().stream().noneMatch(s -> currentUser.getRoles().contains("TH__" + s))) {
-            throw new RuntimeException("Reset password error: You are not the team head of this user.");
+        if (currentUser.getRoles().stream().noneMatch(s -> StringUtils.equals(s, SdUserRoleEntity.SYS_ADMIN))) {
+            if (resetPwdUser.getRoles().stream().noneMatch(s -> currentUser.getRoles().contains("TH__" + s))) {
+                throw new RuntimeException("Reset password error: You are not the team head of this user.");
+            }
         }
         String userId = resetPwdUser.getUserId();
         // reject LDAP user to reset password
@@ -592,7 +603,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         }
 
         boolean isNewlyCreated = resetPwdUser.getPasswordModifydate() == null;
-        String recipient = currentUser.getEmail();
+        String recipient = Optional.ofNullable(currentUser.getEmail()).orElseThrow(() -> new UserNotFoundException("Current User not email."));
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put(SdEmailBean.EMAIL_BASIC_RECIPIENT_NAME, currentUser.getName());
         if (isNewlyCreated) {
@@ -626,6 +637,19 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             // send otp email
             sdEmailService.send(SdEmailBean.RESET_PW_EMAIL.TEMPLATE_ID, recipient, null, dataMap);
         }
+    }
+
+
+    @Override
+    public void setLogonPage(BtuLoginSuccessHandler btuLoginSuccessHandler) {
+        BtuUserBean currentUserBean = getCurrentUserBean();
+        Set<GrantedAuthority> authorities = currentUserBean.getAuthorities();
+        if (authorities.contains(new SimpleGrantedAuthority(SdUserRoleBean.OPERATOR))) {
+            btuLoginSuccessHandler.setDefaultTargetUrl(SdUserRolePathCtrlBean.OPERATOR_LOGON_PATH);
+        } else {
+            btuLoginSuccessHandler.setDefaultTargetUrl(SdUserRolePathCtrlBean.DEFAULT_LOGON_PATH);
+        }
+        btuLoginSuccessHandler.setAlwaysUseDefaultTargetUrl(true);
     }
 
     private void checkUserEmailDuplicate(String oldUserEmail, String queryEmail) {
