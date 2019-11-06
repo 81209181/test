@@ -21,6 +21,7 @@ public class SdTicketMasBeanPopulator extends AbstractBeanPopulator<SdTicketMasB
         target.setCallInCount(source.getCallInCount());
         target.setSearchKey(source.getSearchKey());
         target.setSearchValue(source.getSearchValue());
+        target.setCompleteDate(source.getCompleteDate());
 
         switch (source.getStatus()) {
             case STATUS_TYPE_CODE.OPEN:

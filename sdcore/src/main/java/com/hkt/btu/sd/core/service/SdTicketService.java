@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface SdTicketService {
@@ -19,7 +20,7 @@ public interface SdTicketService {
 
     void removeContactInfoByTicketMasId(Integer ticketMasId);
 
-    Page<SdTicketMasBean> searchTicketList(Pageable pageable, String dateFrom, String dateTo, String status, String ticketMasId, String custCode);
+    Page<SdTicketMasBean> searchTicketList(Pageable pageable, Map<String, String> searchFormData);
 
     Page<SdTicketMasBean> getMyTicket(Pageable pageable);
 

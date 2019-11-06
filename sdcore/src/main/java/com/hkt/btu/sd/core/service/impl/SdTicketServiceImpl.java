@@ -22,10 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class SdTicketServiceImpl implements SdTicketService {
@@ -123,15 +120,31 @@ public class SdTicketServiceImpl implements SdTicketService {
     }
 
     @Override
-    public Page<SdTicketMasBean> searchTicketList(Pageable pageable, String dateFrom, String dateTo, String status, String ticketMasId, String custCode) {
+    public Page<SdTicketMasBean> searchTicketList(Pageable pageable, Map<String, String> searchFormData) {
+        List<SdTicketMasEntity> entityList;
+        Integer totalCount;
+
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
+        String createDateFrom = !searchFormData.containsKey("createDateFrom") ? null :searchFormData.get("createDateFrom");
+        String createDateTo = !searchFormData.containsKey("createDateTo") ? null :searchFormData.get("createDateTo");
+        String status = !searchFormData.containsKey("status") ? null :searchFormData.get("status");
+        String completeDateFrom = !searchFormData.containsKey("completeDateFrom") ? null :searchFormData.get("completeDateFrom");
+        String completeDateTo = !searchFormData.containsKey("completeDateTo") ? null :searchFormData.get("completeDateTo");
+        String createBy = !searchFormData.containsKey("createBy") ? null :searchFormData.get("createBy");
+        String ticketMasId = !searchFormData.containsKey("ticketMasId") ? null :searchFormData.get("ticketMasId");
+        String custCode = !searchFormData.containsKey("custCode") ? null :searchFormData.get("custCode");
+        String serviceNumber = !searchFormData.containsKey("serviceNumber") ? null :searchFormData.get("serviceNumber");
 
-        List<SdTicketMasEntity> entityList = ticketMasMapper.searchTicketList(
-                offset, pageSize, dateFrom, dateTo, status, ticketMasId, custCode, null);
-        Integer totalCount = ticketMasMapper.searchTicketCount(dateFrom, dateTo, status, ticketMasId, custCode, null);
+        if (StringUtils.isNotEmpty(ticketMasId)) {
+            entityList = ticketMasMapper.searchTicketList(offset, pageSize, null, null, null, null, null, null, ticketMasId, null, null);
+            totalCount = ticketMasMapper.searchTicketCount(null, null, null, null, null, null, ticketMasId, null, null);
+        } else {
+            entityList = ticketMasMapper.searchTicketList(offset, pageSize, createDateFrom, createDateTo, status, completeDateFrom, completeDateTo, createBy, ticketMasId, custCode, serviceNumber);
+            totalCount = ticketMasMapper.searchTicketCount(createDateFrom, createDateTo, status, completeDateFrom, completeDateTo, createBy, ticketMasId, custCode, serviceNumber);
+        }
 
-        return new PageImpl<>(populateBeanList(entityList), pageable, totalCount);
+        return new PageImpl<>(buildTicketBeanList(entityList), pageable, totalCount);
     }
 
     @Override
@@ -140,14 +153,14 @@ public class SdTicketServiceImpl implements SdTicketService {
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
 
-        List<SdTicketMasEntity> entityList = ticketMasMapper.searchTicketList(
-                offset, pageSize, null, null, null, null, null, createBy);
-        Integer totalCount = ticketMasMapper.searchTicketCount(null, null, null, null, null, createBy);
+        List<SdTicketMasEntity> entityList = ticketMasMapper.getMyTicket(
+                offset, pageSize, null, null, null, null, null, createBy, null, null, null);
+        Integer totalCount = ticketMasMapper.searchTicketCount(null, null, null, null, null, createBy, null, null, null);
 
-        return new PageImpl<>(populateBeanList(entityList), pageable, totalCount);
+        return new PageImpl<>(buildTicketBeanList(entityList), pageable, totalCount);
     }
 
-    private List<SdTicketMasBean> populateBeanList(List<SdTicketMasEntity> entityList){
+    private List<SdTicketMasBean> buildTicketBeanList(List<SdTicketMasEntity> entityList){
         List<SdTicketMasBean> beanList = new LinkedList<>();
         for (SdTicketMasEntity entity : entityList) {
             SdTicketMasBean bean = new SdTicketMasBean();
@@ -324,7 +337,7 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Override
     public List<SdTicketMasBean> getTicketByServiceNo(String serviceNo, String status) {
         List<SdTicketMasEntity> entityList = ticketMasMapper.getTicketByServiceNo(serviceNo, status);
-        return CollectionUtils.isEmpty(entityList) ? null : populateBeanList(entityList);
+        return CollectionUtils.isEmpty(entityList) ? null : buildTicketBeanList(entityList);
     }
 
     @Override

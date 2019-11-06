@@ -28,10 +28,7 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class SdTicketFacadeImpl implements SdTicketFacade {
@@ -114,22 +111,16 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public PageData<SdTicketMasData> searchTicketList(Pageable pageable, String dateFrom, String dateTo, String status, String ticketMasId, String custCode) {
+    public PageData<SdTicketMasData> searchTicketList(Pageable pageable, Map<String, String> searchFormData) {
         Page<SdTicketMasBean> pageBean;
         try {
-            dateFrom = StringUtils.isEmpty(dateFrom) ? null : dateFrom;
-            dateTo = StringUtils.isEmpty(dateTo) ? null : dateTo;
-            status = StringUtils.isEmpty(status) ? null : status;
-            ticketMasId = StringUtils.isEmpty(ticketMasId) ? null : ticketMasId;
-            custCode = StringUtils.isEmpty(custCode) ? null : custCode;
-
-            pageBean = ticketService.searchTicketList(pageable, dateFrom, dateTo, status, ticketMasId, custCode);
+            pageBean = ticketService.searchTicketList(pageable, searchFormData);
         } catch (AuthorityNotFoundException e) {
             return new PageData<>(e.getMessage());
         }
 
         List<SdTicketMasBean> beanList = pageBean.getContent();
-        return new PageData<>(populateDataList(beanList), pageBean.getPageable(), pageBean.getTotalElements());
+        return new PageData<>(buildTicketDataList(beanList), pageBean.getPageable(), pageBean.getTotalElements());
     }
 
     @Override
@@ -142,10 +133,10 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         }
 
         List<SdTicketMasBean> beanList = pageBean.getContent();
-        return new PageData<>(populateDataList(beanList), pageBean.getPageable(), pageBean.getTotalElements());
+        return new PageData<>(buildTicketDataList(beanList), pageBean.getPageable(), pageBean.getTotalElements());
     }
 
-    private List<SdTicketMasData> populateDataList(List<SdTicketMasBean> beanList){
+    private List<SdTicketMasData> buildTicketDataList(List<SdTicketMasBean> beanList){
         // populate content
         List<SdTicketMasData> dataList = new LinkedList<>();
         if (!CollectionUtils.isEmpty(beanList)) {
@@ -389,7 +380,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     @Override
     public List<SdTicketMasData> getTicketByServiceNo(String serviceNo) {
         List<SdTicketMasBean> beanList = ticketService.getTicketByServiceNo(serviceNo, SdTicketMasBean.STATUS_TYPE_CODE.COMPLETE);
-        return populateDataList(beanList);
+        return buildTicketDataList(beanList);
     }
 
     @Override
