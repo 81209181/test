@@ -10,7 +10,7 @@
     <script>
         var customerCode = '[[${ticketInfo.custCode}]]';
         var ticketMasId = '[[${ticketInfo.ticketMasId}]]';
-        var ticketStatus = '[[${ticketInfo.ticketStatus}]]';
+        var ticketStatusDesc = '[[${ticketInfo.ticketStatusDesc}]]';
         var bsn = '[[${ticketInfo.serviceNo}]]';
     </script>
     <div class="card" style="margin-bottom: 75px;" th:object="${ticketInfo}">
@@ -30,8 +30,8 @@
                 </div>
                 <div class="col-md-4 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Ticket Status:</label>
-                    <span class="form-control-plaintext col-md-3" th:text="*{ticketStatus}" id="ticketStatus"></span>
-                    <button type="button" class="btn btn-success" id="btnTicketClose" th:unless="*{ticketStatus} eq 'COMPLETE'">Close</button>
+                    <span class="form-control-plaintext col-md-3" th:text="*{ticketStatusDesc}" id="ticketStatusDesc"></span>
+                    <button type="button" class="btn btn-success" id="btnTicketClose" th:unless="*{ticketStatusDesc} eq 'COMPLETE'">Close</button>
                 </div>
                 <div class="col-md-3 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Search Key:</label>
@@ -87,13 +87,13 @@
                             <option value="SITE">On-site Contact</option>
                             <option value="CALL">Caller</option>
                         </select>
-                        <button type="button" class="btn btn-light ml-2" id="btnAddContact" th:disabled="*{ticketStatus} eq 'COMPLETE'"><i class="fa fa-plus" aria-hidden="true"></i>
+                        <button type="button" class="btn btn-light ml-2" id="btnAddContact" th:disabled="*{ticketStatusDesc} eq 'COMPLETE'"><i class="fa fa-plus" aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>
                 <div id="contact_list" style="width:100%"></div>
                 <div class="offset-md-11">
-                    <button type="button" class="btn btn-primary mt-2" id="btnUpdateContact" disabled="disabled" th:disabled="*{ticketStatus} eq 'COMPLETE'">Update</button>
+                    <button type="button" class="btn btn-primary mt-2" id="btnUpdateContact" disabled="disabled" th:disabled="*{ticketStatusDesc} eq 'COMPLETE'">Update</button>
                 </div>
             </div>
             <hr>
@@ -121,7 +121,7 @@
                         </div>
                         <div class="temp_faults col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Symptom: </label>
-                            <select name="symptom" id="symptomList" class="selectpicker form-control col-md-6" data-width="500px" data-live-search="true" title="Please select symptom..." th:disabled="*{ticketStatus} ne 'OPEN'"></select>
+                            <select name="symptom" id="symptomList" class="selectpicker form-control col-md-6" data-width="500px" data-live-search="true" title="Please select symptom..." th:disabled="*{ticketStatusDesc} ne 'OPEN'"></select>
                         </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Subscriber ID: </label>
@@ -154,7 +154,7 @@
                     </div>
                 </div>
                 <div class="offset-md-11">
-                    <button type="button" class="btn btn-primary mt-2" id="btnUpdateService" th:disabled="*{ticketStatus} ne 'OPEN'">
+                    <button type="button" class="btn btn-primary mt-2" id="btnUpdateService" th:disabled="*{ticketStatusDesc} ne 'OPEN'">
                         Update
                     </button>
                 </div>
@@ -253,7 +253,7 @@
                     </div>
                 </form>
                 <div class="offset-md-11">
-                    <button type="button" class="btn btn-primary mt-2 mb-md-2" id="btnCreateTicketRemarks" th:disabled="*{ticketStatus} eq 'COMPLETE'">
+                    <button type="button" class="btn btn-primary mt-2 mb-md-2" id="btnCreateTicketRemarks" th:disabled="*{ticketStatusDesc} eq 'COMPLETE'">
                         <i class="far fa-save"></i> Save
                     </button>
                 </div>
@@ -281,7 +281,7 @@
         </div>
         <div class="card-footer">
             <div class="float-right">
-                <button type="button" class="btn btn-primary " id="btnTicketSubmit" th:disabled="*{ticketStatus} ne 'OPEN'">Submit</button>
+                <button type="button" class="btn btn-primary " id="btnTicketSubmit" th:disabled="*{ticketStatusDesc} ne 'OPEN'">Submit</button>
             </div>
         </div>
     </div>

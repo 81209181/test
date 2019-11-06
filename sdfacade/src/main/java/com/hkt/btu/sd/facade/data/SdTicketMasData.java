@@ -18,6 +18,7 @@ public class SdTicketMasData implements DataInterface {
     private String ticketType;
 
     private String status;
+    private String statusDesc;
 
     private LocalDateTime createDate;
 
@@ -110,6 +111,14 @@ public class SdTicketMasData implements DataInterface {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getStatusDesc() {
+        return statusDesc;
+    }
+
+    public void setStatusDesc(String statusDesc) {
+        this.statusDesc = statusDesc;
     }
 
     public LocalDateTime getCreateDate() {

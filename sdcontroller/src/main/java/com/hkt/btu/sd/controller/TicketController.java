@@ -138,6 +138,11 @@ public class TicketController {
 
     @GetMapping("/search-ticket")
     public String searchTicket() {
+
+        // todo [SERVDESK-200]: get status option
+        // todo [SERVDESK-200]: get ticket type option (-->SdTicketFacade.getTicketTypeList-->SdTicketService.getTicketTypeList)
+        // todo [SERVDESK-200]: get service type option (-->SdServiceTypeFacade.getServiceTypeList)
+
         return "ticket/searchTicket";
     }
 

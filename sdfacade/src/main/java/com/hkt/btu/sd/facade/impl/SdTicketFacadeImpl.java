@@ -7,6 +7,7 @@ import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
 import com.hkt.btu.sd.core.service.SdTicketService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.*;
+import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
 import com.hkt.btu.sd.facade.SdAuditTrailFacade;
 import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.WfmApiFacade;
@@ -26,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -423,18 +423,18 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         switch (action) {
             case SdTicketMasData.ACTION_TYPE.WORKING:
                 ticketService.getTicket(Integer.valueOf(ticketMasId)).map(SdTicketMasBean::getStatus)
-                        .filter(s -> s.equals(SdTicketMasBean.STATUS_TYPE.OPEN))
+                        .filter(s -> s.equals(TicketStatusEnum.OPEN))
                         .orElseThrow(() -> new RuntimeException("Cannot update. This ticket has been passed to working parties."));
                 break;
             case SdTicketMasData.ACTION_TYPE.COMPLETE:
                 ticketService.getTicket(Integer.valueOf(ticketMasId)).map(SdTicketMasBean::getStatus)
-                        .filter(s -> !s.equals(SdTicketMasBean.STATUS_TYPE.COMPLETE))
+                        .filter(s -> !s.equals(TicketStatusEnum.COMPLETE))
                         .orElseThrow(() -> new RuntimeException("Cannot update. This ticket has been completed."));
                 break;
             default:
                 ticketService.getTicket(Integer.valueOf(ticketMasId)).map(SdTicketMasBean::getStatus)
-                        .filter(s -> List.of(SdTicketMasBean.STATUS_TYPE.COMPLETE, SdTicketMasBean.STATUS_TYPE.WORKING).contains(s)).ifPresent(s -> {
-                    if (s.equals(SdTicketMasBean.STATUS_TYPE.COMPLETE)) {
+                        .filter(s -> (s==TicketStatusEnum.WORKING || s==TicketStatusEnum.COMPLETE) ).ifPresent(s -> {
+                    if (s.equals(TicketStatusEnum.COMPLETE)) {
                         throw new RuntimeException("Cannot update. This ticket has been completed.");
                     } else {
                         throw new RuntimeException("Cannot update. This ticket has been passed to working parties.");

@@ -6,6 +6,12 @@ import java.time.LocalDateTime;
 
 public class SdTicketMasEntity extends BaseEntity {
 
+    public static class STATUS {
+        public static final String OPEN = "O";
+        public static final String WORKING = "W";
+        public static final String COMPLETE = "CP";
+    }
+
     private int ticketMasId ;
 
     private String custCode;

@@ -4,14 +4,14 @@ $().ready(function(){
 
     $('.selectpicker').selectpicker({});
 
-    if(ticketStatus === "OPEN"){
-        $("#ticketStatus").css("color","blue");
-    } else if(ticketStatus === "WORKING"){
-         $("#ticketStatus").css("color","orange");
-    } else if(ticketStatus === "COMPLETE"){
-         $("#ticketStatus").css("color","green");
-    } else if(ticketStatus === "CANCEL"){
-         $("#ticketStatus").css("color","red");
+    if(ticketStatusDesc === "OPEN"){
+        $("#ticketStatusDesc").css("color","blue");
+    } else if(ticketStatusDesc === "WORKING"){
+         $("#ticketStatusDesc").css("color","orange");
+    } else if(ticketStatusDesc === "COMPLETE"){
+         $("#ticketStatusDesc").css("color","green");
+    } else if(ticketStatusDesc === "CANCEL"){
+         $("#ticketStatusDesc").css("color","red");
     }
 
     $.get('/ticket/service/symptom?ticketMasId='+ticketMasId, function (res) {

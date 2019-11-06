@@ -15,11 +15,11 @@ public interface SdTicketMasMapper {
     SdTicketMasEntity findTicketById(@Param("ticketId") Integer ticketId);
 
     List<SdTicketMasEntity> searchTicketList(@Param("offset") long offset, @Param("pageSize") int pageSize,
-                                             @Param("createDateFrom") String createDateFrom,
-                                             @Param("createDateTo") String createDateTo,
+                                             @Param("createDateFrom") String createDateFrom, // todo [SERVDESK-200]: use LocalDate instead of String
+                                             @Param("createDateTo") String createDateTo, // todo [SERVDESK-200]: use LocalDate instead of String
                                              @Param("status") String status,
-                                             @Param("completeDateFrom") String completeDateFrom,
-                                             @Param("completeDateTo") String completeDateTo,
+                                             @Param("completeDateFrom") String completeDateFrom, // todo [SERVDESK-200]: use LocalDate instead of String
+                                             @Param("completeDateTo") String completeDateTo, // todo [SERVDESK-200]: use LocalDate instead of String
                                              @Param("createBy") String createBy,
                                              @Param("ticketMasId") String ticketMasId,
                                              @Param("custCode") String custCode,

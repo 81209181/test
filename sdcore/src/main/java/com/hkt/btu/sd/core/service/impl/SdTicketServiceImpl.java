@@ -8,6 +8,7 @@ import com.hkt.btu.sd.core.dao.mapper.*;
 import com.hkt.btu.sd.core.service.SdTicketService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.*;
+import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
 import com.hkt.btu.sd.core.service.populator.SdTicketContactBeanPopulator;
 import com.hkt.btu.sd.core.service.populator.SdTicketMasBeanPopulator;
 import com.hkt.btu.sd.core.service.populator.SdTicketRemarkBeanPopulator;
@@ -120,15 +121,17 @@ public class SdTicketServiceImpl implements SdTicketService {
     }
 
     @Override
-    public Page<SdTicketMasBean> searchTicketList(Pageable pageable, Map<String, String> searchFormData) {
+    public Page<SdTicketMasBean> searchTicketList(Pageable pageable, Map<String, String> searchFormData) { // todo [SERVDESK-200]: Map cannot be param
         List<SdTicketMasEntity> entityList;
         Integer totalCount;
 
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
+
+        // todo [SERVDESK-200]: extract data in facade layer
         String createDateFrom = !searchFormData.containsKey("createDateFrom") ? null :searchFormData.get("createDateFrom");
         String createDateTo = !searchFormData.containsKey("createDateTo") ? null :searchFormData.get("createDateTo");
-        String status = !searchFormData.containsKey("status") ? null :searchFormData.get("status");
+        String status = !searchFormData.containsKey("status") ? null :searchFormData.get("status"); // todo [SERVDESK-200]: align with page option
         String completeDateFrom = !searchFormData.containsKey("completeDateFrom") ? null :searchFormData.get("completeDateFrom");
         String completeDateTo = !searchFormData.containsKey("completeDateTo") ? null :searchFormData.get("completeDateTo");
         String createBy = !searchFormData.containsKey("createBy") ? null :searchFormData.get("createBy");
@@ -355,10 +358,10 @@ public class SdTicketServiceImpl implements SdTicketService {
         Optional<SdTicketMasBean> ticketMasBeanOptional = getTicket(ticketMasId);
         if(ticketMasBeanOptional.isPresent()){
             SdTicketMasBean sdTicketMasBean = ticketMasBeanOptional.get();
-            String ticketStatus = sdTicketMasBean.getStatus();
-            if( StringUtils.isEmpty(ticketStatus) ){
+            TicketStatusEnum ticketStatus = sdTicketMasBean.getStatus();
+            if( ticketStatus==null ){
                 throw new InvalidInputException("Ticket status not found.");
-            } else if( SdTicketMasBean.STATUS_TYPE.COMPLETE.equals(ticketStatus) ){
+            } else if( ticketStatus==TicketStatusEnum.COMPLETE ){
                 throw new InvalidInputException("Ticket already closed.");
             }
         } else {
