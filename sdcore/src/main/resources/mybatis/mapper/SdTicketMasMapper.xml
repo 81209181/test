@@ -14,6 +14,7 @@
         <result column="SEARCH_KEY" property="searchKey"/>
         <result column="SEARCH_VALUE" property="searchValue"/>
         <result column="COMPLETE_DATE" property="completeDate"/>
+        <result column="SERVICE_TYPE_NAME" property="serviceType"/>
 
         <result column="CREATEDATE" property="createdate" />
         <result column="CREATEBY" property="createby" />
@@ -34,55 +35,58 @@
     </select>
 
     <sql id="searchTicketSql">
-        from TICKET_MAS
+        from TICKET_MAS tm
+        INNER JOIN TICKET_DET td
+        ON tm.TICKET_MAS_ID = td.TICKET_MAS_ID
+        INNER JOIN SERVICE_TYPE st
+        ON td.SERVICE_TYPE_CODE = st.SERVICE_TYPE_CODE
         <where>
-            <if test="createDateFrom != null and createDateFrom != ''">
-                and trunc(createdate) &gt;= to_date(#{createDateFrom},'yyyy-MM-dd')
+            <if test="createDateFrom != null">
+                and trunc(tm.createdate) &gt;= trunc(#{createDateFrom})
             </if>
-            <if test="createDateTo != null and createDateTo != ''">
-                and to_date(#{createDateTo},'yyyy-MM-dd') >= trunc(createdate)
+            <if test="createDateTo != null">
+                and trunc(#{createDateTo}) &gt;= trunc(tm.createdate)
             </if>
             <if test="status != null and status != ''">
-                and status = #{status}
+                and tm.status = #{status}
             </if>
-            <if test="completeDateFrom != null and completeDateFrom != ''">
-                and trunc(complete_date) &gt;= to_date(#{completeDateFrom},'yyyy-MM-dd')
+            <if test="completeDateFrom != null">
+                and tm.trunc(complete_date) &gt;= trunc(#{completeDateFrom})
             </if>
-            <if test="completeDateTo != null and completeDateTo != ''">
-                and to_date(#{completeDateTo},'yyyy-MM-dd') >= trunc(complete_date)
+            <if test="completeDateTo != null">
+                and trunc(#{completeDateTo}) &gt;= trunc(tm.complete_date)
             </if>
             <if test="createBy != null and createBy != ''">
-                and CREATEBY = #{createBy}
+                and tm.createby = #{createBy}
             </if>
             <if test="ticketMasId != null and ticketMasId != ''">
-                and ticket_mas_id = #{ticketMasId}
+                and tm.ticket_mas_id = #{ticketMasId}
             </if>
             <if test="custCode != null and custCode != ''">
-                and lower(cust_code) like '%' || lower(#{custCode}) || '%'
+                and lower(tm.cust_code) like '%' || lower(#{custCode}) || '%'
             </if>
             <if test="serviceNumber != null and serviceNumber != ''">
-                and lower(SEARCH_VALUE) like '%' || lower(#{serviceNumber}) || '%'
+                and lower(tm.search_value) like '%' || lower(#{serviceNumber}) || '%'
+            </if>
+            <if test="ticketType != null and ticketType != ''">
+                and tm.ticket_type = #{ticketType}
+            </if>
+            <if test="serviceType != null and serviceType != ''">
+                and td.service_type_code = #{serviceType}
             </if>
         </where>
     </sql>
 
     <select id="searchTicketList" resultMap="TicketMasEntity">
-        select *
+        select tm.*,st.SERVICE_TYPE_NAME
         <include refid="searchTicketSql"/>
-        order by TICKET_MAS_ID
+        order by tm.TICKET_MAS_ID desc
         OFFSET #{offset} ROWS FETCH NEXT #{pageSize} ROWS ONLY
     </select>
 
     <select id="searchTicketCount" resultType="Integer">
         select count(1)
         <include refid="searchTicketSql"/>
-    </select>
-
-    <select id="getMyTicket" resultMap="TicketMasEntity">
-        select *
-        <include refid="searchTicketSql"/>
-        order by TICKET_MAS_ID desc
-        OFFSET #{offset} ROWS FETCH NEXT #{pageSize} ROWS ONLY
     </select>
 
     <update id="updateAppointmentInMas">

@@ -20,6 +20,15 @@ public class SdUserData implements DataInterface {
     private Integer companyId;
     private String companyName;
     private String staffId;
+    private String primaryRoleId;
+
+    public String getPrimaryRoleId() {
+        return primaryRoleId;
+    }
+
+    public void setPrimaryRoleId(String primaryRoleId) {
+        this.primaryRoleId = primaryRoleId;
+    }
 
     private List<String> userRoleList;
 

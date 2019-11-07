@@ -13,6 +13,7 @@
         <result column="STAFF_ID" property="staffId"/>
         <result column="LDAP_DOMAIN" property="ldapDomain"/>
         <result column="DOMAIN_EMAIL" property="domainEmail"/>
+        <result column="PRIMARY_ROLE_ID" property="primaryRoleId"/>
 
         <result column="PASSWORD" property="password"/>
         <result column="PASSWORD_MODIFYDATE" property="passwordModifydate"/>
@@ -75,9 +76,9 @@
 
     <insert id="insertUser" parameterType="com.hkt.btu.sd.core.dao.entity.SdUserEntity">
         insert into USER_PROFILE (USER_ID, NAME, STATUS, MOBILE, LDAP_DOMAIN, EMAIL, STAFF_ID, PASSWORD,
-                                  PASSWORD_MODIFYDATE,
+                                  PASSWORD_MODIFYDATE,PRIMARY_ROLE_ID,
                                   CREATEBY, MODIFYBY)
-        values (#{userId}, #{name}, #{status}, #{mobile}, #{ldapDomain}, #{email}, #{staffId}, #{password}, null,
+        values (#{userId}, #{name}, #{status}, #{mobile}, #{ldapDomain}, #{email}, #{staffId}, #{password}, null,#{primaryRoleId},
                 #{createby},
                 #{createby})
     </insert>
@@ -88,6 +89,7 @@
             <if test="name != null">NAME=#{name},</if>
             <if test="mobile != null">MOBILE=#{mobile},</if>
             <if test="email != null">EMAIL=#{email},</if>
+            <if test="primaryRoleId !=null">PRIMARY_ROLE_ID = #{primaryRoleId},</if>
             MODIFYDATE = CURRENT_TIMESTAMP, MODIFYBY = #{modifyby}
         </set>
         where USER_ID = #{userId}

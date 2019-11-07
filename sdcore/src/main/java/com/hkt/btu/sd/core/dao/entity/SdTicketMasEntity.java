@@ -32,6 +32,8 @@ public class SdTicketMasEntity extends BaseEntity {
 
     private LocalDateTime completeDate;
 
+    private String serviceType;
+
     public LocalDateTime getAppointmentDate() {
         return appointmentDate;
     }
@@ -110,5 +112,13 @@ public class SdTicketMasEntity extends BaseEntity {
 
     public void setCompleteDate(LocalDateTime completeDate) {
         this.completeDate = completeDate;
+    }
+
+    public String getServiceType() {
+        return serviceType;
+    }
+
+    public void setServiceType(String serviceType) {
+        this.serviceType = serviceType;
     }
 }

@@ -142,12 +142,19 @@ public class TicketController {
     @GetMapping("/search-ticket")
     public String searchTicket(Model model) {
         List<CodeDescData> ticketStatusList = ticketFacade.getTicketStatusList();
-        if(ticketStatusList!=null){
+        if(CollectionUtils.isNotEmpty(ticketStatusList)){
             model.addAttribute("ticketStatusList", ticketStatusList);
         }
 
-        // todo [SERVDESK-200]: get ticket type option (-->SdTicketFacade.getTicketTypeList-->SdTicketService.getTicketTypeList)
-        // todo [SERVDESK-200]: get service type option (-->SdServiceTypeFacade.getServiceTypeList)
+        List<CodeDescData> ticketTypeList = ticketFacade.getTicketTypeList();
+        if(CollectionUtils.isNotEmpty(ticketTypeList)){
+            model.addAttribute("ticketTypeList", ticketTypeList);
+        }
+
+        List<SdServiceTypeData> serviceTypeList = serviceTypeFacade.getServiceTypeList();
+        if (CollectionUtils.isNotEmpty(serviceTypeList)) {
+            model.addAttribute("serviceTypeList", serviceTypeList);
+        }
 
         return "ticket/searchTicket";
     }

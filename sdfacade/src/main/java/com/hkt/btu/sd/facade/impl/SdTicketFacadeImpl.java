@@ -8,6 +8,7 @@ import com.hkt.btu.sd.core.service.SdTicketService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.*;
 import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
+import com.hkt.btu.sd.core.service.constant.TicketTypeEnum;
 import com.hkt.btu.sd.facade.SdAuditTrailFacade;
 import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.WfmApiFacade;
@@ -26,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.*;
@@ -114,7 +116,19 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     public PageData<SdTicketMasData> searchTicketList(Pageable pageable, Map<String, String> searchFormData) {
         Page<SdTicketMasBean> pageBean;
         try {
-            pageBean = ticketService.searchTicketList(pageable, searchFormData);
+            LocalDate createDateFrom = StringUtils.isEmpty(searchFormData.get("createDateFrom")) ? null : LocalDate.parse(searchFormData.get("createDateFrom"));
+            LocalDate createDateTo = StringUtils.isEmpty(searchFormData.get("createDateTo")) ? null : LocalDate.parse(searchFormData.get("createDateTo"));
+            String status = StringUtils.isEmpty(searchFormData.get("status")) ? null : searchFormData.get("status");
+            LocalDate completeDateFrom = StringUtils.isEmpty(searchFormData.get("completeDateFrom")) ? null : LocalDate.parse(searchFormData.get("completeDateFrom"));
+            LocalDate completeDateTo = StringUtils.isEmpty(searchFormData.get("completeDateTo")) ? null : LocalDate.parse(searchFormData.get("completeDateTo"));
+            String createBy = StringUtils.isEmpty(searchFormData.get("createBy")) ? null : searchFormData.get("createBy");
+            String ticketMasId = StringUtils.isEmpty(searchFormData.get("ticketMasId")) ? null : searchFormData.get("ticketMasId");
+            String custCode = StringUtils.isEmpty(searchFormData.get("custCode")) ? null : searchFormData.get("custCode");
+            String serviceNumber = StringUtils.isEmpty(searchFormData.get("serviceNumber")) ? null : searchFormData.get("serviceNumber");
+            String ticketType = StringUtils.isEmpty(searchFormData.get("ticketType")) ? null : searchFormData.get("ticketType");
+            String serviceType = StringUtils.isEmpty(searchFormData.get("serviceType")) ? null : searchFormData.get("serviceType");
+
+            pageBean = ticketService.searchTicketList(pageable, createDateFrom, createDateTo, status, completeDateFrom, completeDateTo, createBy, ticketMasId, custCode, serviceNumber, ticketType, serviceType);
         } catch (AuthorityNotFoundException e) {
             return new PageData<>(e.getMessage());
         }
@@ -136,7 +150,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         return new PageData<>(buildTicketDataList(beanList), pageBean.getPageable(), pageBean.getTotalElements());
     }
 
-    private List<SdTicketMasData> buildTicketDataList(List<SdTicketMasBean> beanList){
+    private List<SdTicketMasData> buildTicketDataList(List<SdTicketMasBean> beanList) {
         // populate content
         List<SdTicketMasData> dataList = new LinkedList<>();
         if (!CollectionUtils.isEmpty(beanList)) {
@@ -247,7 +261,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     public void updateJobIdInService(Integer jobId, int ticketMasId) {
         String userId = userService.getCurrentUserUserId();
         ticketService.updateJobIdInService(jobId, ticketMasId, userId);
-        ticketService.updateTicketType(ticketMasId,"JOB",userId);
+        ticketService.updateTicketType(ticketMasId, "JOB", userId);
     }
 
     @Override
@@ -260,8 +274,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public AppointmentData getAppointmentData(Integer ticketMasId){
-        if(ticketMasId==null){
+    public AppointmentData getAppointmentData(Integer ticketMasId) {
+        if (ticketMasId == null) {
             LOG.warn("Empty ticketMasId.");
             return null;
         }
@@ -270,7 +284,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         WfmAppointmentResData wfmAppointmentResData;
         try {
             wfmAppointmentResData = wfmApiFacade.getAppointmentInfo(ticketMasId);
-        }catch (Exception e){
+        } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             wfmAppointmentResData = null;
         }
@@ -288,15 +302,15 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             LocalDateTime appointmentEndDateTime = StringUtils.isEmpty(wfmAppointmentResData.getAppointmentEndDateTime()) ?
                     null : LocalDateTime.parse(wfmAppointmentResData.getAppointmentEndDateTime(), WfmAppointmentResData.DATE_TIME_FORMATTER);
 
-            String appointmentStartStr = appointmentStartDateTime==null ? StringUtils.EMPTY :
+            String appointmentStartStr = appointmentStartDateTime == null ? StringUtils.EMPTY :
                     appointmentStartDateTime.toLocalDate().toString() + StringUtils.SPACE + appointmentStartDateTime.toLocalTime().toString();
-            String appointmentEndStr = appointmentEndDateTime==null ? StringUtils.EMPTY : "-"+appointmentEndDateTime.toLocalTime().toString();
+            String appointmentEndStr = appointmentEndDateTime == null ? StringUtils.EMPTY : "-" + appointmentEndDateTime.toLocalTime().toString();
             String appointmentDateStr = String.format("%s%s", appointmentStartStr, appointmentEndStr);
 
             AppointmentData appointmentData = new AppointmentData();
             appointmentData.setAppointmentDateStr(appointmentDateStr);
             return appointmentData;
-        } catch (DateTimeParseException e){
+        } catch (DateTimeParseException e) {
             LOG.error(e.getMessage());
             return null;
         }
@@ -386,31 +400,32 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     @Override
     public String closeTicketByApi(int ticketMasId, String reasonType, String reasonContent, String userId) {
         String systemId = userService.getCurrentUserUserId();
-        if(StringUtils.isNotEmpty(userId)){
+        if (StringUtils.isNotEmpty(userId)) {
             userId = systemId + " - " + userId;
         }
-        return closeTicket(ticketMasId, reasonType, reasonContent, userId,"","");
+        return closeTicket(ticketMasId, reasonType, reasonContent, userId, "", "");
     }
+
     @Override
     public String closeTicket(int ticketMasId, String reasonType, String reasonContent, String contactName, String contactNumber) {
         String currentUserId = userService.getCurrentUserUserId();
-        return closeTicket(ticketMasId, reasonType, reasonContent, currentUserId,contactName,contactNumber);
+        return closeTicket(ticketMasId, reasonType, reasonContent, currentUserId, contactName, contactNumber);
     }
 
     private String closeTicket(int ticketMasId, String reasonType, String reasonContent, String closeby, String contactName, String contactNumber) {
         // close ticket in servicedesk
-        try{
-            ticketService.closeTicket(ticketMasId, reasonType, reasonContent, closeby,contactName,contactNumber);
+        try {
+            ticketService.closeTicket(ticketMasId, reasonType, reasonContent, closeby, contactName, contactNumber);
             LOG.info("Closed ticket in servicedesk. (ticketMasId: " + ticketMasId + ")");
-        }catch (InvalidInputException e){
+        } catch (InvalidInputException e) {
             LOG.warn(e.getMessage());
             return e.getMessage();
         }
 
         // notify wfm to close ticket
         boolean isClosedInWfm = wfmApiFacade.closeTicket(ticketMasId);
-        if(!isClosedInWfm){
-            String wfmFail = "Cannot notify WFM to close ticket! (ticketMasId: " + ticketMasId+")";
+        if (!isClosedInWfm) {
+            String wfmFail = "Cannot notify WFM to close ticket! (ticketMasId: " + ticketMasId + ")";
             LOG.warn(wfmFail);
             return wfmFail;
         }
@@ -433,7 +448,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                 break;
             default:
                 ticketService.getTicket(Integer.valueOf(ticketMasId)).map(SdTicketMasBean::getStatus)
-                        .filter(s -> (s==TicketStatusEnum.WORKING || s==TicketStatusEnum.COMPLETE) ).ifPresent(s -> {
+                        .filter(s -> (s == TicketStatusEnum.WORKING || s == TicketStatusEnum.COMPLETE)).ifPresent(s -> {
                     if (s.equals(TicketStatusEnum.COMPLETE)) {
                         throw new RuntimeException("Cannot update. This ticket has been completed.");
                     } else {
@@ -480,15 +495,32 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     @Override
     public List<CodeDescData> getTicketStatusList() {
         List<TicketStatusEnum> ticketStatusEnumList = ticketService.getTicketStatusList();
-        if(CollectionUtils.isEmpty(ticketStatusEnumList)){
+        if (CollectionUtils.isEmpty(ticketStatusEnumList)) {
             return null;
         }
 
         List<CodeDescData> codeDescDataList = new ArrayList<>();
-        for(TicketStatusEnum ticketStatusEnum : ticketStatusEnumList){
+        for (TicketStatusEnum ticketStatusEnum : ticketStatusEnumList) {
             CodeDescData codeDescData = new CodeDescData();
             codeDescData.setCode(ticketStatusEnum.getStatusCode());
             codeDescData.setCodeDesc(ticketStatusEnum.getStatusDesc());
+            codeDescDataList.add(codeDescData);
+        }
+        return codeDescDataList;
+    }
+
+    @Override
+    public List<CodeDescData> getTicketTypeList() {
+        List<TicketTypeEnum> ticketTypeEnumList = ticketService.getTicketTypeList();
+        if (CollectionUtils.isEmpty(ticketTypeEnumList)) {
+            return null;
+        }
+
+        List<CodeDescData> codeDescDataList = new ArrayList<>();
+        for (TicketTypeEnum ticketTypeEnum : ticketTypeEnumList) {
+            CodeDescData codeDescData = new CodeDescData();
+            codeDescData.setCode(ticketTypeEnum.getTypeCode());
+            codeDescData.setCodeDesc(ticketTypeEnum.getTypeDesc());
             codeDescDataList.add(codeDescData);
         }
         return codeDescDataList;

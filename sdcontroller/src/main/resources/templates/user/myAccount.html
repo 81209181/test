@@ -41,10 +41,19 @@
                 <label class="ldapUserInfo">Domain Email</label>
                 <input th:id="my-domain-email" type="text" class="form-control" readonly>
             </div>
-
-            <div class="d-inline-block col-md-5 form-group">
-                <label>User Role</label>
-                <select th:id="my-user-role" class="form-control" readonly multiple></select>
+            <div class="form-row">
+                <div class="col-md-5">
+                    <div class="col-md-12">
+                        <label>User Role</label>
+                        <select th:id="my-user-role" class="form-control" readonly multiple></select>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="col-md-12">
+                        <label class="form-label ">Primary Role</label>
+                        <input name="primaryRoleId" class="form-control" readonly>
+                    </div>
+                </div>
             </div>
         </div>
     </form>
