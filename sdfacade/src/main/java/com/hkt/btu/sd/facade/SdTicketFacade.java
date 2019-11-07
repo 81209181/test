@@ -55,4 +55,6 @@ public interface SdTicketFacade {
     List<Integer> getTicketByServiceNoAndTypeNotJobAndStatusNotCP(String serviceNo);
 
     List<CodeDescData> getTicketStatusList();
+
+    List<CodeDescData> getTicketTypeList();
 }

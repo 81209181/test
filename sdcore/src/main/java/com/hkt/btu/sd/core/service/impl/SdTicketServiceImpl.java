@@ -9,6 +9,7 @@ import com.hkt.btu.sd.core.service.SdTicketService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.*;
 import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
+import com.hkt.btu.sd.core.service.constant.TicketTypeEnum;
 import com.hkt.btu.sd.core.service.populator.SdTicketContactBeanPopulator;
 import com.hkt.btu.sd.core.service.populator.SdTicketMasBeanPopulator;
 import com.hkt.btu.sd.core.service.populator.SdTicketRemarkBeanPopulator;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -121,30 +123,22 @@ public class SdTicketServiceImpl implements SdTicketService {
     }
 
     @Override
-    public Page<SdTicketMasBean> searchTicketList(Pageable pageable, Map<String, String> searchFormData) { // todo [SERVDESK-200]: Map cannot be param
+    public Page<SdTicketMasBean> searchTicketList(Pageable pageable, LocalDate createDateFrom, LocalDate createDateTo,
+                                                  String status, LocalDate completeDateFrom, LocalDate completeDateTo,
+                                                  String createBy, String ticketMasId, String custCode,
+                                                  String serviceNumber, String ticketType, String serviceType) {
         List<SdTicketMasEntity> entityList;
         Integer totalCount;
 
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
 
-        // todo [SERVDESK-200]: extract data in facade layer
-        String createDateFrom = !searchFormData.containsKey("createDateFrom") ? null :searchFormData.get("createDateFrom");
-        String createDateTo = !searchFormData.containsKey("createDateTo") ? null :searchFormData.get("createDateTo");
-        String status = !searchFormData.containsKey("status") ? null :searchFormData.get("status"); // todo [SERVDESK-200]: align with page option
-        String completeDateFrom = !searchFormData.containsKey("completeDateFrom") ? null :searchFormData.get("completeDateFrom");
-        String completeDateTo = !searchFormData.containsKey("completeDateTo") ? null :searchFormData.get("completeDateTo");
-        String createBy = !searchFormData.containsKey("createBy") ? null :searchFormData.get("createBy");
-        String ticketMasId = !searchFormData.containsKey("ticketMasId") ? null :searchFormData.get("ticketMasId");
-        String custCode = !searchFormData.containsKey("custCode") ? null :searchFormData.get("custCode");
-        String serviceNumber = !searchFormData.containsKey("serviceNumber") ? null :searchFormData.get("serviceNumber");
-
         if (StringUtils.isNotEmpty(ticketMasId)) {
-            entityList = ticketMasMapper.searchTicketList(offset, pageSize, null, null, null, null, null, null, ticketMasId, null, null);
-            totalCount = ticketMasMapper.searchTicketCount(null, null, null, null, null, null, ticketMasId, null, null);
+            entityList = ticketMasMapper.searchTicketList(offset, pageSize, null, null, null, null, null, null, ticketMasId, null, null, null, null);
+            totalCount = ticketMasMapper.searchTicketCount(null, null, null, null, null, null, ticketMasId, null, null, null, null);
         } else {
-            entityList = ticketMasMapper.searchTicketList(offset, pageSize, createDateFrom, createDateTo, status, completeDateFrom, completeDateTo, createBy, ticketMasId, custCode, serviceNumber);
-            totalCount = ticketMasMapper.searchTicketCount(createDateFrom, createDateTo, status, completeDateFrom, completeDateTo, createBy, ticketMasId, custCode, serviceNumber);
+            entityList = ticketMasMapper.searchTicketList(offset, pageSize, createDateFrom, createDateTo, status, completeDateFrom, completeDateTo, createBy, ticketMasId, custCode, serviceNumber, ticketType, serviceType);
+            totalCount = ticketMasMapper.searchTicketCount(createDateFrom, createDateTo, status, completeDateFrom, completeDateTo, createBy, ticketMasId, custCode, serviceNumber, ticketType, serviceType);
         }
 
         return new PageImpl<>(buildTicketBeanList(entityList), pageable, totalCount);
@@ -156,9 +150,9 @@ public class SdTicketServiceImpl implements SdTicketService {
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
 
-        List<SdTicketMasEntity> entityList = ticketMasMapper.getMyTicket(
-                offset, pageSize, null, null, null, null, null, createBy, null, null, null);
-        Integer totalCount = ticketMasMapper.searchTicketCount(null, null, null, null, null, createBy, null, null, null);
+        List<SdTicketMasEntity> entityList = ticketMasMapper.searchTicketList(
+                offset, pageSize, null, null, null, null, null, createBy, null, null, null, null,null);
+        Integer totalCount = ticketMasMapper.searchTicketCount(null, null, null, null, null, createBy, null, null, null, null,null);
 
         return new PageImpl<>(buildTicketBeanList(entityList), pageable, totalCount);
     }
@@ -390,5 +384,10 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Override
     public List<TicketStatusEnum> getTicketStatusList() {
         return Arrays.asList(TicketStatusEnum.values());
+    }
+
+    @Override
+    public List<TicketTypeEnum> getTicketTypeList() {
+        return Arrays.asList(TicketTypeEnum.values());
     }
 }

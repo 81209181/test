@@ -1,12 +1,18 @@
 $(document).ready(function() {
     $('#createDateFrom').attr('pattern','[0-9]{4}-[0-9]{2}-[0-9]{2}');
-    $('#createDateFrom').attr('placeholder','1900-01-01');
     $('#createDateTo').attr('pattern','[0-9]{4}-[0-9]{2}-[0-9]{2}');
-    $('#createDateTo').attr('placeholder','1900-01-01');
     $('#completeDateFrom').attr('pattern','[0-9]{4}-[0-9]{2}-[0-9]{2}');
-    $('#completeDateFrom').attr('placeholder','1900-01-01');
     $('#completeDateTo').attr('pattern','[0-9]{4}-[0-9]{2}-[0-9]{2}');
+    $('#createDateFrom').attr('placeholder','1900-01-01');
+    $('#createDateTo').attr('placeholder','1900-01-01');
+    $('#completeDateFrom').attr('placeholder','1900-01-01');
     $('#completeDateTo').attr('placeholder','1900-01-01');
+    let date = new Date();
+    let day = ("0" + date.getDate()).slice(-2);
+    let month = ("0" + (date.getMonth() + 1)).slice(-2);
+    let localeDate = date.getFullYear() + "-" + (month) + "-" + (day);
+    $('#createDateFrom').val(localeDate);
+    $('#createDateTo').val(localeDate);
 
     createSearchTicketDataTable();
 
@@ -57,6 +63,7 @@ function createSearchTicketDataTable(){
             { data: 'ticketMasId' },
             { data: 'ticketType' },
             { data: 'custCode' },
+            { data: 'serviceType' },
             { data: 'searchValue'},
             { data: 'statusDesc' },
             { data: 'callInCount'},
@@ -66,29 +73,28 @@ function createSearchTicketDataTable(){
         ],
         columnDefs: [
             {
-                targets: 6,
+                targets: 7,
                 data: "completeDate",
                 render: function (nextRunTime, type, row, meta) {
                     return nextRunTime==null ? null : nextRunTime.replace('T', ' ');
                 }
             },
             {
-                targets: 7,
+                targets: 8,
                 data: "createDate",
                 render: function (nextRunTime, type, row, meta) {
                      return nextRunTime==null ? null : nextRunTime.replace('T', ' ');
                 }
             },
             {
-                  targets:9,
-                  data:null,
-                  defaultContent:'<button class="btn btn-info">Detail</button>'
-              }
+                targets: 10,
+                data: "ticketMasId",
+                render: function ( ticketMasId, type, row, meta ) {
+                    var ctx = $("meta[name='_ctx']").attr("content");
+                    var link = ctx + "/ticket?ticketMasId=" + ticketMasId;
+                    return '<a class="btn btn-info" href=' + link + ' role="button">Detail</a>';
+                }
+            }
         ]
     });
-    let ctx = $("meta[name='_ctx']").attr("content");
-    $('#searchTicketTable tbody').on('click','button',function(){
-        var data = table.row( $(this).parents('tr') ).data();
-         $(location).attr('href',ctx+'/ticket?ticketMasId='+data.ticketMasId);
-    })
 }
