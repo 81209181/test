@@ -139,17 +139,17 @@ public class TicketController {
     @GetMapping("/search-ticket")
     public String searchTicket(Model model) {
         List<CodeDescData> ticketStatusList = ticketFacade.getTicketStatusList();
-        if(CollectionUtils.isEmpty(ticketStatusList)){
+        if(CollectionUtils.isNotEmpty(ticketStatusList)){
             model.addAttribute("ticketStatusList", ticketStatusList);
         }
 
         List<CodeDescData> ticketTypeList = ticketFacade.getTicketTypeList();
-        if(CollectionUtils.isEmpty(ticketTypeList)){
+        if(CollectionUtils.isNotEmpty(ticketTypeList)){
             model.addAttribute("ticketTypeList", ticketTypeList);
         }
 
         List<SdServiceTypeData> serviceTypeList = serviceTypeFacade.getServiceTypeList();
-        if (CollectionUtils.isEmpty(serviceTypeList)) {
+        if (CollectionUtils.isNotEmpty(serviceTypeList)) {
             model.addAttribute("serviceTypeList", serviceTypeList);
         }
 

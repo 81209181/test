@@ -50,6 +50,8 @@ function createSearchTicketDataTable(){
                 d.ticketMasId = $('#ticket_mas_id').val();
                 d.custCode = $('#customer_code').val();
                 d.serviceNumber = $("#serviceNumber").val();
+                d.ticketType = $('#ticketType').val();
+                d.serviceType = $("#serviceType").val();
             },
             error: function (e) {
                 if(e.responseText){

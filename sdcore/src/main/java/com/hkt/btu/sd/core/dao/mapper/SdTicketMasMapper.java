@@ -25,8 +25,8 @@ public interface SdTicketMasMapper {
                                              @Param("ticketMasId") String ticketMasId,
                                              @Param("custCode") String custCode,
                                              @Param("serviceNumber") String serviceNumber,
-                                             @Param("custCode") String ticketType,
-                                             @Param("serviceNumber") String serviceType);
+                                             @Param("ticketType") String ticketType,
+                                             @Param("serviceType") String serviceType);
 
     Integer searchTicketCount(@Param("createDateFrom") LocalDate createDateFrom,
                               @Param("createDateTo") LocalDate createDateTo,
@@ -37,8 +37,8 @@ public interface SdTicketMasMapper {
                               @Param("ticketMasId") String ticketMasId,
                               @Param("custCode") String custCode,
                               @Param("serviceNumber") String serviceNumber,
-                              @Param("custCode") String ticketType,
-                              @Param("serviceNumber") String serviceType);
+                              @Param("ticketType") String ticketType,
+                              @Param("serviceType") String serviceType);
 
     void updateAppointmentInMas(@Param("appointmentDate") LocalDateTime appointmentDate,
                                 @Param("asap") String asap,

@@ -48,17 +48,17 @@
                 <input type="text" id="customer_code" class="form-control mb-2 mr-sm-2 col-md-5">
             </div>
             <div class="col-md-6 form-inline pt-2">
-                <label for="ticketType" class="col-form-label col-md-5 justify-content-end">Ticket Type：</label>
-                <select id="ticketType" class="form-control mb-2 mr-sm-2 col-md-5">
-                    <option value=""><!--Please select--></option>
-                    <option th:each="ticketType : ${ticketTypeList}" th:value="${ticketType.code}" th:text="${ticketType.codeDesc}"></option>
-                </select>
-            </div>
-            <div class="col-md-6 form-inline pt-2">
                 <label for="serviceType" class="col-form-label col-md-5 justify-content-end">Service Type：</label>
                 <select id="serviceType" class="form-control mb-2 mr-sm-2 col-md-5">
                     <option value=""><!--Please select--></option>
                     <option th:each="serviceType : ${serviceTypeList}" th:value="${serviceType.serviceTypeCode}" th:text="${serviceType.serviceTypeName}"></option>
+                </select>
+            </div>
+            <div class="col-md-6 form-inline pt-2">
+                <label for="ticketType" class="col-form-label col-md-5 justify-content-end">Ticket Type：</label>
+                <select id="ticketType" class="form-control mb-2 mr-sm-2 col-md-5">
+                    <option value=""><!--Please select--></option>
+                    <option th:each="ticketType : ${ticketTypeList}" th:value="${ticketType.code}" th:text="${ticketType.codeDesc}"></option>
                 </select>
             </div>
             <div class="col-md-6 form-inline pt-2">

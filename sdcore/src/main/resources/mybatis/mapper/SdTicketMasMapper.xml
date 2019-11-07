@@ -68,6 +68,12 @@
             <if test="serviceNumber != null and serviceNumber != ''">
                 and lower(tm.search_value) like '%' || lower(#{serviceNumber}) || '%'
             </if>
+            <if test="ticketType != null and ticketType != ''">
+                and tm.ticket_type = #{ticketType}
+            </if>
+            <if test="serviceType != null and serviceType != ''">
+                and td.service_type_code = #{serviceType}
+            </if>
         </where>
     </sql>
 
