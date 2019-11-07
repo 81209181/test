@@ -60,7 +60,8 @@ public class ManageUserController {
         if (!MapUtils.isEmpty(userRoleOptionDataMap)) {
             model.addAttribute("userRoleOptionDataMap", userRoleOptionDataMap);
         }
-
+        model.addAttribute("primaryRoleList", userRoleFacade.listAllUserRole().stream().filter(roles -> !ObjectUtils.isEmpty(roles.getParentRoleId()))
+                .filter(roles -> roles.getParentRoleId().equals("OPT")).collect(Collectors.toList()));
         String servletPath = request.getServletPath();
         return CreateUserPathEnum.getValue(servletPath);
     }
@@ -130,6 +131,7 @@ public class ManageUserController {
                                final RedirectAttributes redirectAttributes,
                                @ModelAttribute("editUserId") String editUserId,
                                @ModelAttribute("userRoleDataMap") HashMap<String, SdUserRoleData> userRoleDataMap) {
+        List<SdUserRoleData> allUserRoles = userRoleFacade.listAllUserRole();
         if (userId != null) {
             model.addAttribute("editUserId", userId);
             EditResultData result = userRoleFacade.getUserRoleByUserId(userId);
@@ -137,12 +139,16 @@ public class ManageUserController {
             List<String> userRole = result == null ? null : (List<String>) result.getList();
             if (CollectionUtils.isNotEmpty(userRole)) {
                 model.addAttribute("userRoleList", userRole);
+                model.addAttribute("primaryRoleList", allUserRoles.stream()
+                        .filter(roles -> !ObjectUtils.isEmpty(roles.getParentRoleId()))
+                        .filter(roles -> roles.getParentRoleId().equals("OPT"))
+                        .filter(roles -> userRole.contains(roles.getRoleId())).collect(Collectors.toList()));
             } else {
                 redirectAttributes.addFlashAttribute(PageMsgController.ERROR_MSG, errorMsg);
                 return "redirect:search-user";
             }
         }
-        model.addAttribute("allUserRole", userRoleFacade.listAllUserRole().stream()
+        model.addAttribute("allUserRole", allUserRoles.stream()
                 .filter(sdUserRoleData -> !BooleanUtils.toBoolean(sdUserRoleData.getAbstractFlag()))
                 .filter(sdUserRoleData -> sdUserRoleData.getStatus().equals("A"))
                 .collect(Collectors.toList()));

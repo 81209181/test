@@ -17,7 +17,15 @@ public class SdUserBean extends BtuUserBean {
     private String staffId;
     private String ldapDomain;
     private String domainEmail;
+    private String primaryRoleId;
 
+    public String getPrimaryRoleId() {
+        return primaryRoleId;
+    }
+
+    public void setPrimaryRoleId(String primaryRoleId) {
+        this.primaryRoleId = primaryRoleId;
+    }
 
     public String getUserId() {
         return userId;

@@ -2,11 +2,9 @@ package com.hkt.btu.sd.core.dao.mapper;
 
 import com.hkt.btu.sd.core.dao.entity.SdUserEntity;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public interface SdUserMapper {
@@ -34,7 +32,7 @@ public interface SdUserMapper {
 
 
     void updateUser(@Param("userId") String userId,
-                    @Param("name") String name, @Param("mobile") String mobile, @Param("email") String email, @Param("modifyby") String modifyby);
+                    @Param("name") String name, @Param("mobile") String mobile, @Param("email") String email,@Param("primaryRoleId") String primaryRoleId, @Param("modifyby") String modifyby);
 
     void updateLdapUser(@Param("userId") String userId,
                         @Param("name") String name,

@@ -8,7 +8,6 @@ import com.hkt.btu.sd.core.service.SdUserRoleService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdCreateResultBean;
 import com.hkt.btu.sd.core.service.bean.SdUserBean;
-import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
 import com.hkt.btu.sd.facade.SdUserFacade;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.populator.SdUserDataPopulator;
@@ -18,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
@@ -73,10 +73,11 @@ public class SdUserFacadeImpl implements SdUserFacade {
             sdInputCheckService.checkMobile(mobile);
             sdInputCheckService.checkEmployeeNumber(employeeNumber);
             sdInputCheckService.checkAssignRoleByDomain(userRoleIdList, null);
+            String primaryRoleId = checkPrimaryRole(createUserFormData.getPrimaryRoleId(), userRoleIdList);
             // PCCW / HKT user will use T prefix
             String userId = SdUserBean.CREATE_USER_PREFIX.PCCW_HKT_USER + employeeNumber;
             // create new user
-            resultBean = sdUserService.createUser(userId, name, mobile, email, userRoleIdList);
+            resultBean = sdUserService.createUser(userId, name, mobile, email, primaryRoleId, userRoleIdList);
         } catch (InvalidInputException | UserNotFoundException | DuplicateUserEmailException e) {
             LOG.warn(e.getMessage());
             return CreateResultData.of(e.getMessage());
@@ -115,17 +116,28 @@ public class SdUserFacadeImpl implements SdUserFacade {
             sdInputCheckService.checkMobile(mobile);
             sdInputCheckService.checkUserName(employeeNumber);
             sdInputCheckService.checkAssignRoleByDomain(userRoleIdList, null);
+            String primaryRoleId = checkPrimaryRole(createUserFormData.getPrimaryRoleId(),userRoleIdList);
             // if user not have userId, wiil use X prefix.
             // create new user.
             // Non PCCW / HKT user will use X prefix
             String userId = SdUserBean.CREATE_USER_PREFIX.NON_PCCW_HKT_USER + employeeNumber;
-            resultBean = sdUserService.createUser(userId, name, mobile, email, userRoleIdList);
+            resultBean = sdUserService.createUser(userId, name, mobile, email,primaryRoleId, userRoleIdList);
         } catch (InvalidInputException | UserNotFoundException | DuplicateUserEmailException e) {
             LOG.warn(e.getMessage());
             return CreateResultData.of(e.getMessage());
         }
 
         return new CreateResultData(resultBean.getUserId(), null, resultBean.getPassword(), null);
+    }
+
+    private String checkPrimaryRole(String primaryRoleId, List<String> userRoleIdList) {
+        return Optional.ofNullable(primaryRoleId).filter(StringUtils::isNotBlank)
+                .filter(s -> userRoleService.getAllUserRole().stream()
+                        .filter(sdUserRoleBean -> !ObjectUtils.isEmpty(sdUserRoleBean.getParentRoleId()))
+                        .filter(sdUserRoleBean -> sdUserRoleBean.getParentRoleId().equals("OPT"))
+                        .anyMatch(sdUserRoleBean -> sdUserRoleBean.getRoleId().equals(s)))
+                .filter(userRoleIdList::contains)
+                .orElseThrow(() -> new InvalidInputException("Empty input primary role / Primary role not match user role."));
     }
 
     /**
@@ -156,8 +168,9 @@ public class SdUserFacadeImpl implements SdUserFacade {
             sdInputCheckService.checkEmail(email);
             sdInputCheckService.checkMobile(mobile);
             sdInputCheckService.checkEmployeeNumber(employeeNumber);
+            String primaryRoleId = checkPrimaryRole(createUserFormData.getPrimaryRoleId(), userRoleIdList);
             // create new LDAP user.
-            newUserId = sdUserService.createLdapUser(name, mobile, employeeNumber, ldapDomain, email, userRoleIdList);
+            newUserId = sdUserService.createLdapUser(name, mobile, employeeNumber, ldapDomain, email,primaryRoleId, userRoleIdList);
         } catch (DuplicateUserEmailException | UserNotFoundException | InvalidInputException e) {
             LOG.warn(e.getMessage());
             return CreateResultData.of(e.getMessage());
@@ -174,6 +187,8 @@ public class SdUserFacadeImpl implements SdUserFacade {
             return "Empty user ID.";
         } else if (CollectionUtils.isEmpty(updateUserFormData.getUserRoleIdList())) {
             return "Empty authority";
+        } else if (StringUtils.isBlank(updateUserFormData.getPrimaryRoleId())) {
+            return "Empty Primary Role";
         }
 
         String userId = updateUserFormData.getUserId();
@@ -201,7 +216,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
         }
 
         try {
-            sdUserService.updateUser(userId, name, mobile, email, userRoleIdList);
+            sdUserService.updateUser(userId, name, mobile, email,updateUserFormData.getPrimaryRoleId(), userRoleIdList);
         } catch (UserNotFoundException | InsufficientAuthorityException | InvalidInputException e) {
             LOG.warn(e.getMessage());
             return e.getMessage();

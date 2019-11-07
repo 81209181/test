@@ -16,9 +16,17 @@ public class UpdateUserFormData implements DataInterface {
     private Boolean userGroupUser;
     private Boolean userGroupCAdmin;
     private Boolean userGroupCUser;
+    private String primaryRoleId;
 
     private List<String> userRoleIdList;
 
+    public String getPrimaryRoleId() {
+        return primaryRoleId;
+    }
+
+    public void setPrimaryRoleId(String primaryRoleId) {
+        this.primaryRoleId = primaryRoleId;
+    }
 
     public String getUserId() {
         return userId;
