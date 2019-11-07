@@ -15,10 +15,10 @@ import java.util.List;
 
 public interface SdUserService extends BtuUserService {
 
-    SdCreateResultBean createUser(String userId, String name, String mobile, String email, List<String> toGrantRoleIdList)
+    SdCreateResultBean createUser(String userId, String name, String mobile, String email, String primaryRoleId, List<String> toGrantRoleIdList)
             throws UserNotFoundException;
     String createLdapUser(String userId, String mobile, String employeeNumber, String ldapDomain,
-                          String email,List<String> roleIdList)
+                          String email, String primaryRoleId, List<String> roleIdList)
             throws UserNotFoundException;
 
 
@@ -36,7 +36,7 @@ public interface SdUserService extends BtuUserService {
             throws UserNotFoundException, InvalidPasswordException, InvalidInputException;
     void requestResetPassword(String username) throws UserNotFoundException, MessagingException;
     void disableUserByUsername(String username) throws UserNotFoundException, InvalidInputException;
-    void updateUser(String userId, String newName, String newMobile, String email, List<String> userRoleIdList)
+    void updateUser(String userId, String newName, String newMobile, String email, String primaryRoleId, List<String> userRoleIdList)
             throws UserNotFoundException, InsufficientAuthorityException, GeneralSecurityException;
 
 

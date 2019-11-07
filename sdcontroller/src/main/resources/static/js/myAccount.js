@@ -83,6 +83,7 @@ function ajaxGetCurrentUser(){
                 $("#my-domain-email").hide();
             }
             populateSelectOptions($("#my-user-role"), data.userRoleList);
+            $('input[name=primaryRoleId]').val(data.primaryRoleId);
         },
         error: function (e) {
             let responseError = e.responseText ? e.responseText : "Get failed.";

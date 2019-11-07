@@ -1,11 +1,9 @@
 package com.hkt.btu.sd.core.service.impl;
 
 import com.hkt.btu.common.core.exception.UserNotFoundException;
-import com.hkt.btu.common.core.service.bean.BtuEmailBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.core.service.impl.BtuUserServiceImpl;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
-import com.hkt.btu.common.spring.security.web.authentication.BtuLoginSuccessHandler;
 import com.hkt.btu.sd.core.dao.entity.SdOtpEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserRoleEntity;
@@ -163,7 +161,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
     @Transactional
     public String createLdapUser(String name, String mobile, String employeeNumber,
-                                 String ldapDomain, String email, List<String> toGrantRoleIdList)
+                                 String ldapDomain, String email, String primaryRoleId, List<String> toGrantRoleIdList)
             throws UserNotFoundException, InvalidInputException {
         // get current userId for CreateBy
         String createBy = getCurrentUserUserId();
@@ -183,6 +181,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         userEntity.setMobile(mobile);
         userEntity.setStatus(SdUserEntity.STATUS.ACTIVE);
         userEntity.setLdapDomain(ldapDomain);
+        userEntity.setPrimaryRoleId(primaryRoleId);
 
         // create user in db
         sdUserMapper.insertUser(userEntity);
@@ -197,7 +196,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     }
 
     @Override
-    public SdCreateResultBean createUser(String userId, String name, String mobile, String email, List<String> roleIdList)
+    public SdCreateResultBean createUser(String userId, String name, String mobile, String email, String primaryRoleId, List<String> roleIdList)
             throws UserNotFoundException {
         if (StringUtils.isEmpty(name)) {
             throw new InvalidInputException("Empty user name.");
@@ -236,6 +235,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         sdUserEntity.setEmail(email);
         sdUserEntity.setPassword(encodedPassword);
         sdUserEntity.setCreateby(createby);
+        sdUserEntity.setPrimaryRoleId(primaryRoleId);
 
         // create user in db
         sdUserMapper.insertUser(sdUserEntity);
@@ -263,7 +263,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
     @Override
     @Transactional
-    public void updateUser(String userId, String newName, String newMobile, String email, List<String> userRoleIdList)
+    public void updateUser(String userId, String newName, String newMobile, String email, String primaryRoleId, List<String> userRoleIdList)
             throws UserNotFoundException, InsufficientAuthorityException {
         SdUserBean currentUser = (SdUserBean) this.getCurrentUserBean();
         if (currentUser.getUserId().equals(userId)) {
@@ -277,7 +277,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         String mobile = StringUtils.equals(newMobile, targetUserBean.getMobile()) ? null : newMobile;
         String encryptedMobile = StringUtils.isEmpty(mobile) ? null : mobile;
 
-        sdUserMapper.updateUser(userId, name, encryptedMobile, email, modifier.getUserId());
+        sdUserMapper.updateUser(userId, name, encryptedMobile, email,primaryRoleId, modifier.getUserId());
 
         // update user role
         userRoleService.updateUserRoleByUserId(userId, userRoleIdList);

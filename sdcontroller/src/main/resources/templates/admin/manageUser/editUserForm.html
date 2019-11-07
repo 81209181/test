@@ -43,6 +43,15 @@
                 <input th:id="edit-domain-email" type="text" class="form-control" readonly>
             </div>
 
+            <div class="form-row col-md-12">
+                <div class="col-md-6 offset-md-5">
+                    <label class="form-label col-md-12">Primary Role</label>
+                    <select class="custom-select col-md-10 ml-3" name="primaryRoleId">
+                        <option th:each="list:${primaryRoleList}" th:value="${list.roleId}" th:text="${list.roleDesc}" ></option>
+                    </select>
+                </div>
+            </div>
+
             <div class="d-inline-block col-md-5 form-group">
                 <div class="dropdown">
                     <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1"
@@ -84,6 +93,8 @@
                 </div>-->
             </div>
         </div>
+
+
 
         <div class="col-md-12">
             <div class="d-inline-block col-md-10 form-group">
