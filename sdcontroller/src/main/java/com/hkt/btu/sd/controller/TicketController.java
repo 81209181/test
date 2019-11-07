@@ -55,6 +55,7 @@ public class TicketController {
 
     @PostMapping("search-service")
     public ResponseEntity<?> searchService(String searchKey, String searchValue, HttpServletRequest request) {
+        // check pending ticket
         try {
             ticketFacade.getTicketByServiceNoAndTypeNotJobAndStatusNotCP(searchValue).stream().findFirst().ifPresent(ticketId -> {
                 throw new RuntimeException(String.format("The service number already exists in Ticket- <a href='" + request.getContextPath() + "/ticket?ticketMasId=%s'>%s</a>", ticketId, ticketId));
@@ -62,6 +63,8 @@ public class TicketController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+
+        // search service
         RequestCreateSearchResultsData resultsData = requestCreateFacade.searchProductList(searchKey, searchValue);
         if (!StringUtils.isEmpty(resultsData.getErrorMsg())) {
             return ResponseEntity.badRequest().body(resultsData.getErrorMsg());
@@ -109,7 +112,7 @@ public class TicketController {
     }
 
     @GetMapping("")
-    public ModelAndView showQueryTicket(Principal principal, int ticketMasId) {
+    public ModelAndView showQueryTicket(int ticketMasId) {
         return ticketFacade.getTicket(ticketMasId).map(sdTicketMasData -> {
             ModelAndView modelAndView = new ModelAndView("ticket/ticketInfo");
             modelAndView.addObject("ticketInfo", requestCreateFacade.getTicketInfo(sdTicketMasData));
