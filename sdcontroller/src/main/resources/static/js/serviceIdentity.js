@@ -115,8 +115,9 @@ $().ready(function(){
             searchKey : searchKey.val().trim(),
             searchValue : searchValue.val().trim()
         },function(res){
-            if(res.length > 1){
-                $.each(res,function(i,val){
+            let service_list = res.list;
+            if(service_list.length > 1){
+                $.each(service_list,function(i,val){
                     let tr ='<tr class="text-center"></tr>';
                     $('tbody').append(tr);
                     $('tbody tr:last').data('info',val);
@@ -128,7 +129,7 @@ $().ready(function(){
                 });
                 $('.modal').modal('show');
             }else{
-                $.each(res.pop(),function(key,val){
+                $.each(service_list.pop(),function(key,val){
                      $('form').find('input[name='+ key +']').val(val);
                      if (key == 'serviceNo') {
                          if (val != null) {
@@ -137,6 +138,9 @@ $().ready(function(){
                          }
                      }
                 })
+            }
+            if(res.errorMsg){
+               showErrorMsg(res.errorMsg);
             }
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";

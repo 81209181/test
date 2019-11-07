@@ -55,18 +55,15 @@ public class TicketController {
 
     @PostMapping("search-service")
     public ResponseEntity<?> searchService(String searchKey, String searchValue, HttpServletRequest request) {
-        try {
-            ticketFacade.getTicketByServiceNoAndTypeNotJobAndStatusNotCP(searchValue).stream().findFirst().ifPresent(ticketId -> {
-                throw new RuntimeException(String.format("The service number already exists in Ticket- <a href='" + request.getContextPath() + "/ticket?ticketMasId=%s'>%s</a>", ticketId, ticketId));
-            });
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
         RequestCreateSearchResultsData resultsData = requestCreateFacade.searchProductList(searchKey, searchValue);
         if (!StringUtils.isEmpty(resultsData.getErrorMsg())) {
             return ResponseEntity.badRequest().body(resultsData.getErrorMsg());
         } else {
-            return ResponseEntity.ok(resultsData.getList());
+            ticketFacade.getTicketByServiceNoAndTypeNotJobAndStatusNotCP(searchValue).stream().findFirst().ifPresent(ticketId -> {
+                String error = String.format("The service number already exists in Ticket- <a href='" + request.getContextPath() + "/ticket?ticketMasId=%s'>%s</a>", ticketId, ticketId);
+                resultsData.setErrorMsg(error);
+            });
+            return ResponseEntity.ok(resultsData);
         }
     }
 
@@ -93,15 +90,17 @@ public class TicketController {
     }
 
     @PostMapping("service-identity/createQueryTicket")
-    public ResponseEntity<?> createQueryTicket(QueryTicketRequestData queryTicketRequestData) {
+    public ResponseEntity<?> createQueryTicket(QueryTicketRequestData queryTicketRequestData, HttpServletRequest request) {
         if (StringUtils.isEmpty(queryTicketRequestData.getServiceNo()) || StringUtils.isEmpty(queryTicketRequestData.getServiceType())) {
             return ResponseEntity.badRequest().body("Service No. / Service Type is empty.");
         }
 
-        // check pending ticket of same service number
-        List<SdTicketMasData> dataList = ticketFacade.getTicketByServiceNo(queryTicketRequestData.getServiceNo());
-        if (CollectionUtils.isNotEmpty(dataList)) {
-            return ResponseEntity.ok(ResponseTicketData.of(false, dataList));
+        try {
+            ticketFacade.getTicketByServiceNoAndTypeNotJobAndStatusNotCP(queryTicketRequestData.getServiceNo()).stream().findFirst().ifPresent(ticketId -> {
+                throw new RuntimeException(String.format("The service number already exists in Ticket- <a href='" + request.getContextPath() + "/ticket?ticketMasId=%s'>%s</a>", ticketId, ticketId));
+            });
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
 
         // create ticket
@@ -139,7 +138,7 @@ public class TicketController {
     @GetMapping("/search-ticket")
     public String searchTicket(Model model) {
         List<CodeDescData> ticketStatusList = ticketFacade.getTicketStatusList();
-        if(ticketStatusList!=null){
+        if (ticketStatusList != null) {
             model.addAttribute("ticketStatusList", ticketStatusList);
         }
 
@@ -255,8 +254,8 @@ public class TicketController {
     }
 
     @PostMapping("close")
-    public ResponseEntity<?> ticketClose(int ticketMasId, String reasonType, String reasonContent,String contactNumber,String contactName) {
-        String errorMsg = ticketFacade.closeTicket(ticketMasId, reasonType, reasonContent,contactName,contactNumber);
+    public ResponseEntity<?> ticketClose(int ticketMasId, String reasonType, String reasonContent, String contactNumber, String contactName) {
+        String errorMsg = ticketFacade.closeTicket(ticketMasId, reasonType, reasonContent, contactName, contactNumber);
         if (StringUtils.isEmpty(errorMsg)) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         } else {
