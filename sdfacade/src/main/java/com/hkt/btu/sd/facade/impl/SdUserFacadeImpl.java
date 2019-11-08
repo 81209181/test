@@ -71,7 +71,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
             sdInputCheckService.checkName(name);
             sdInputCheckService.checkEmail(email);
             sdInputCheckService.checkMobile(mobile);
-            sdInputCheckService.checkEmployeeNumber(employeeNumber);
+            sdInputCheckService.checkLoginID(employeeNumber);
             sdInputCheckService.checkAssignRoleByDomain(userRoleIdList, null);
             String primaryRoleId = checkPrimaryRole(createUserFormData.getPrimaryRoleId(), userRoleIdList);
             // PCCW / HKT user will use T prefix
@@ -247,7 +247,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
             // check input
             sdInputCheckService.checkName(name);
             sdInputCheckService.checkMobile(mobile);
-            sdInputCheckService.checkUserName(employeeNumber);
+            sdInputCheckService.checkLoginID(employeeNumber);
             sdInputCheckService.checkEmail(email);
             // change user type
             userId = sdUserService.changeUserTypeToPCCWOrHktUser(oldUserId, name, mobile, employeeNumber, email);
@@ -312,7 +312,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
             sdInputCheckService.checkEmail(email);
             sdInputCheckService.checkMobile(mobile);
             sdInputCheckService.checkLdapDomain(ldapDomain);
-            sdInputCheckService.checkUserName(employeeNumber);
+            sdInputCheckService.checkEmployeeNumber(employeeNumber);
             // oldUserId, name , mobile, employeeNumber , ldapDomain.
             userId = sdUserService.changeUserTypeToLdapUser(oldUserId, name, mobile, employeeNumber, ldapDomain, email);
         } catch (InvalidInputException | UserNotFoundException e) {

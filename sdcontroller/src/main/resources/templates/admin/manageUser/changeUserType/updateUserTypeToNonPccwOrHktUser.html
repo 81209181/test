@@ -15,8 +15,8 @@
         <div class="col-md-12">
             <div class="d-inline-block col-md-5 form-group align-top">
                 <input type="hidden" th:value="${oldUserId}" name="userId">
-                <label>User Name(Login ID)</label>
-                <input type="text" th:field="*{newUserId}" class="form-control" placeholder="Your LoginID" maxlength="8"
+                <label>Login ID</label>
+                <input type="text" th:field="*{newUserId}" id="nonLoginId" onchange="addNonHktPrefix('X')" class="form-control" placeholder="Your LoginID" maxlength="8"
                        required>
 
                 <label>Email</label>
@@ -27,7 +27,7 @@
                 <input type="text" th:field="*{name}" class="form-control" placeholder="Your Name" maxlength="100"
                        required>
 
-                <label>Mobile</label>
+                <label>Contact Number</label>
                 <input type="tel" th:field="*{mobile}" class="form-control" placeholder="28832299" maxlength="15"
                        required>
             </div>
@@ -41,6 +41,7 @@
             </div>
         </div>
     </form>
+    <script type="text/javascript" th:src="@{/js/createUser.js}"></script>
 </div>
 </body>
 </html>
