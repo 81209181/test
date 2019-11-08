@@ -3,6 +3,7 @@ package com.hkt.btu.sd.facade.data;
 import com.hkt.btu.common.facade.data.DataInterface;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class SdUserData implements DataInterface {
@@ -114,7 +115,7 @@ public class SdUserData implements DataInterface {
     }
 
     public List<String> getUserRoleList() {
-        return userRoleList.stream().sorted(String::compareTo).collect(Collectors.toList());
+        return Optional.ofNullable(userRoleList).map(list -> list.stream().sorted(String::compareTo).collect(Collectors.toList())).orElse(null);
     }
 
     public void setUserRoleList(List<String> userRoleList) {
