@@ -51,9 +51,9 @@ public interface SdTicketMasMapper {
 
     void updateTicketCallInCount(@Param("ticketMasId") Integer ticketMasId, @Param("userId") String userId);
 
-    List<SdTicketMasEntity> getTicketByServiceNo(@Param("serviceNo")String serviceNo, @Param("status")String status);
+    List<SdTicketMasEntity> getTicketByServiceNo(@Param("serviceNo")String serviceNo,
+                                                 @Param("ticketType")String ticketType,
+                                                 @Param("excludeStatus")String excludeStatus);
 
     void updateTicketType(@Param("ticketMasId")int ticketMasId, @Param("type")String type,  @Param("userId")String userId);
-
-    List<Integer> getTicketByServiceNoAndTypeNotJobAndStatusNotCP(@Param("serviceNo")String serviceNo);
 }

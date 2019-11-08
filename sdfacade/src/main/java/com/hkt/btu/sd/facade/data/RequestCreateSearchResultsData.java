@@ -6,6 +6,7 @@ public class RequestCreateSearchResultsData {
 
     private List<RequestCreateSearchResultData> list;
     private String errorMsg;
+    private String warningMsg;
 
 
 
@@ -23,5 +24,13 @@ public class RequestCreateSearchResultsData {
 
     public void setErrorMsg(String errorMsg) {
         this.errorMsg = errorMsg;
+    }
+
+    public String getWarningMsg() {
+        return warningMsg;
+    }
+
+    public void setWarningMsg(String warningMsg) {
+        this.warningMsg = warningMsg;
     }
 }

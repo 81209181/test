@@ -31,7 +31,7 @@ public interface SdTicketFacade {
 
     void updateJobIdInService(Integer jobId, int ticketMasId);
 
-    Optional<SdTicketServiceData> getService(Integer ticketId);
+    SdTicketServiceData getService(Integer ticketId);
 
     AppointmentData getAppointmentData(Integer ticketMasId);
 
@@ -41,7 +41,7 @@ public interface SdTicketFacade {
 
     SdTicketData getTicketInfo(Integer ticketMasId);
 
-    List<SdTicketMasData> getTicketByServiceNo(String serviceNo);
+    List<SdTicketMasData> getPendingTicketList(String serviceNo);
 
     String closeTicketByApi(int ticketMasId, String reasonType, String reasonContent, String closeby);
     String closeTicket(int ticketMasId, String reasonType, String reasonContent, String contactName, String contactNumber);
@@ -51,8 +51,6 @@ public interface SdTicketFacade {
     boolean increaseCallInCount(Integer ticketMasId);
 
     void createJob4Wfm(int ticketMasId);
-
-    List<Integer> getTicketByServiceNoAndTypeNotJobAndStatusNotCP(String serviceNo);
 
     List<CodeDescData> getTicketStatusList();
 

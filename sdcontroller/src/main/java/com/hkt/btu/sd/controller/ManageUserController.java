@@ -28,10 +28,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @SuppressWarnings({"ParameterCanBeLocal", "SameReturnValue"})
@@ -61,7 +58,7 @@ public class ManageUserController {
             model.addAttribute("userRoleOptionDataMap", userRoleOptionDataMap);
         }
         model.addAttribute("primaryRoleList", userRoleFacade.listAllUserRole().stream().filter(roles -> !ObjectUtils.isEmpty(roles.getParentRoleId()))
-                .filter(roles -> roles.getParentRoleId().equals("OPT")).collect(Collectors.toList()));
+                .filter(roles -> List.of("OPT","ENG").contains(roles.getParentRoleId())).sorted(Comparator.comparing(SdUserRoleData::getRoleDesc)).collect(Collectors.toList()));
         String servletPath = request.getServletPath();
         return CreateUserPathEnum.getValue(servletPath);
     }
@@ -141,8 +138,9 @@ public class ManageUserController {
                 model.addAttribute("userRoleList", userRole);
                 model.addAttribute("primaryRoleList", allUserRoles.stream()
                         .filter(roles -> !ObjectUtils.isEmpty(roles.getParentRoleId()))
-                        .filter(roles -> roles.getParentRoleId().equals("OPT"))
-                        .filter(roles -> userRole.contains(roles.getRoleId())).collect(Collectors.toList()));
+                        .filter(roles -> List.of("OPT","ENG").contains(roles.getParentRoleId()))
+//                        .filter(roles -> userRole.contains(roles.getRoleId()))
+                        .sorted(Comparator.comparing(SdUserRoleData::getRoleDesc)).collect(Collectors.toList()));
             } else {
                 redirectAttributes.addFlashAttribute(PageMsgController.ERROR_MSG, errorMsg);
                 return "redirect:search-user";
