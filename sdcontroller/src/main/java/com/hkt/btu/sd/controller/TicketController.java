@@ -9,6 +9,7 @@ import com.hkt.btu.sd.facade.data.nora.NoraAccountData;
 import com.hkt.btu.sd.facade.data.nora.NoraBroadbandInfoData;
 import com.hkt.btu.sd.facade.data.nora.NoraDnGroupData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
+import com.hkt.btu.sd.facade.data.wfm.WfmMakeApptData;
 import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -17,12 +18,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -56,20 +58,19 @@ public class TicketController {
     @PostMapping("search-service")
     public ResponseEntity<?> searchService(String searchKey, String searchValue, HttpServletRequest request) {
         // check pending ticket
-        try {
-            ticketFacade.getTicketByServiceNoAndTypeNotJobAndStatusNotCP(searchValue).stream().findFirst().ifPresent(ticketId -> {
-                throw new RuntimeException(String.format("The service number already exists in Ticket- <a href='" + request.getContextPath() + "/ticket?ticketMasId=%s'>%s</a>", ticketId, ticketId));
-            });
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        List<SdTicketMasData> pendingTicketDataList = ticketFacade.getPendingTicketList(searchValue);
 
         // search service
         RequestCreateSearchResultsData resultsData = requestCreateFacade.searchProductList(searchKey, searchValue);
-        if (!StringUtils.isEmpty(resultsData.getErrorMsg())) {
+        if (StringUtils.isNotEmpty(resultsData.getErrorMsg())) {
             return ResponseEntity.badRequest().body(resultsData.getErrorMsg());
         } else {
-            return ResponseEntity.ok(resultsData.getList());
+            if(CollectionUtils.isNotEmpty(pendingTicketDataList)){
+                String warningMsg = String.format("The service number already exists in Ticket - <a href='%s/ticket?ticketMasId=%d'>%d</a>",
+                        request.getContextPath(), pendingTicketDataList.get(0).getTicketMasId(), pendingTicketDataList.get(0).getTicketMasId());
+                resultsData.setWarningMsg(warningMsg);
+            }
+            return ResponseEntity.ok(resultsData);
         }
     }
 
@@ -102,7 +103,7 @@ public class TicketController {
         }
 
         // check pending ticket of same service number
-        List<SdTicketMasData> dataList = ticketFacade.getTicketByServiceNo(queryTicketRequestData.getServiceNo());
+        List<SdTicketMasData> dataList = ticketFacade.getPendingTicketList(queryTicketRequestData.getServiceNo());
         if (CollectionUtils.isNotEmpty(dataList)) {
             return ResponseEntity.ok(ResponseTicketData.of(false, dataList));
         }
@@ -359,10 +360,18 @@ public class TicketController {
         }
     }
 
-    @CrossOrigin
-    @GetMapping("makeAppointment")
-    public ResponseEntity<?> makeAppointment() {
-        String html = wfmApiFacade.postAppointmentForm();
-        return ResponseEntity.ok(html);
+    @GetMapping("token")
+    public ResponseEntity<?> getToken(@Validated WfmMakeApptData makeApptData,
+                                      BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body("Cannot input invalid parameters");
+        }
+
+        String jwt = wfmApiFacade.getToken(makeApptData);
+        if (StringUtils.isNotEmpty(jwt)) {
+            return ResponseEntity.ok(jwt);
+        } else {
+            return ResponseEntity.badRequest().body("Can't not get the token to make appointment.");
+        }
     }
 }

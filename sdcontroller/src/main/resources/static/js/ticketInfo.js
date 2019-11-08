@@ -2,6 +2,8 @@ $().ready(function(){
 
     var ticketDetId = "";
 
+    let symptomCode = "";
+
     $('.selectpicker').selectpicker({});
 
     if(ticketStatusDesc === "OPEN"){
@@ -27,11 +29,12 @@ $().ready(function(){
                     $.each(j,function(key,value){
 //                    service.find('input[name='+key+']').val(value);    // by Dennis  ref jira 179
                         if (key === 'faultsList') {
-                            if (value === '') {
+                            if (value == '') {
                                 $('#btnMakeAppointment').attr('disabled', true);
                             }
                             for (item of value) {
-                                $('#symptomList').find('option[value='+item.symptomCode+']').attr('selected','selected');
+                                $('#symptomList').find('option[value=' + item.symptomCode + ']').attr('selected', 'selected');
+                                symptomCode = item.symptomCode;
                             }
 
                         }
@@ -107,7 +110,7 @@ $().ready(function(){
             showErrorMsg('No ticket detail Id.');
             return;
         }
-        makeAppointment(ticketMasId, ticketDetId);
+        makeAppointment(ticketMasId, ticketDetId, symptomCode);
     });
 
     getAppointmentInfo(ticketMasId);
@@ -321,30 +324,29 @@ function removeContact(btn){
     }
 }
 
-function makeAppointment(ticketMasId, ticketDetId) {
+function makeAppointment(ticketMasId, ticketDetId, symptomCode) {
 
-    // $.ajax({
-    //     type: 'GET',
-    //     url: '/ticket/makeAppointment',
-    //     dataType: 'text',
-    //     success: function (res) {
-    //         let inventoryWindow = window.open('', 'Inventory', 'scrollbars=yes,width=800, height=800');
-    //         inventoryWindow.document.write(res);
-    //         inventoryWindow.focus();
-    //     }
-    // });
+    let bsn = $("#service").find('input[name=relatedBsn]').val();
+    if (bsn === '') {
+        bsn = $("#service").find('input[name=serviceCode]').val();
+    }
+    let serviceType = $("#service").find('input[name=serviceType]').val();
 
-    let window = AppointmentSDObj.make({
-        data : {
-            ticketMasId : ticketMasId,
-            ticketDetId : ticketDetId,
-            serviceType: "BN", // todo [SERVDESK-182]: ticket service type
-            symptomCode: "VF002", // todo [SERVDESK-182]: ticket symptom code
-            userName : "sd",
-            password : "Ki6=rEDs47*^5" // todo [SERVDESK-182]: need to use config param, and hide in backend
-        }
-    }, "https://10.252.15.158/wfm"); // todo [SERVDESK-182]: need to use config param link
-    checkWindowClose(window);
+    $.get('/ticket/token', {
+        bsn : bsn,
+        ticketMasId: ticketMasId,
+        ticketDetId: ticketDetId,
+        symptomCode: symptomCode,
+        serviceType: serviceType
+    }, function (res) {
+        let window = AppointmentSDObj.make({
+            data: {
+                sdToken: res,
+            }
+        }, "https://10.252.15.158/wfm"); // todo [SERVDESK-182]: need to use config param link
+        //}, "http://localhost:8082/wfm");
+        checkWindowClose(window);
+    })
 }
 
 function getInventory(bsn) {
