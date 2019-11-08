@@ -384,7 +384,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         return ticketData;
     }
 
-    public SdTicketMasData getTicketMas(Integer ticketMasId) {
+    private SdTicketMasData getTicketMas(Integer ticketMasId) {
         SdTicketMasData sdticketMasData = new SdTicketMasData();
         Optional<SdTicketMasBean> sdTicketMasBean = ticketService.getTicket(ticketMasId);
         sdTicketMasBean.ifPresent(ticketMasBean -> ticketMasDataPopulator.populate(ticketMasBean, sdticketMasData));
@@ -392,8 +392,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public List<SdTicketMasData> getTicketByServiceNo(String serviceNo) {
-        List<SdTicketMasBean> beanList = ticketService.getTicketByServiceNo(serviceNo, SdTicketMasBean.STATUS_TYPE_CODE.COMPLETE);
+    public List<SdTicketMasData> getPendingTicketList(String serviceNo) {
+        List<SdTicketMasBean> beanList = ticketService.getPendingTicketList(serviceNo);
         return buildTicketDataList(beanList);
     }
 
@@ -485,11 +485,6 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         } catch (Exception ex) {
             throw new RuntimeException(ex.getMessage());
         }
-    }
-
-    @Override
-    public List<Integer> getTicketByServiceNoAndTypeNotJobAndStatusNotCP(String serviceNo) {
-        return ticketService.getTicketByServiceNoAndTypeNotJobAndStatusNotCP(serviceNo);
     }
 
     @Override

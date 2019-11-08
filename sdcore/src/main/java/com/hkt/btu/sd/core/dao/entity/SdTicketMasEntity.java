@@ -12,6 +12,11 @@ public class SdTicketMasEntity extends BaseEntity {
         public static final String COMPLETE = "CP";
     }
 
+    public static class TICKET_TYPE {
+        public static final String QUERY = "QUERY";
+        public static final String JOB = "JOB";
+    }
+
     private int ticketMasId ;
 
     private String custCode;

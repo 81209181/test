@@ -332,9 +332,14 @@ public class SdTicketServiceImpl implements SdTicketService {
     }
 
     @Override
-    public List<SdTicketMasBean> getTicketByServiceNo(String serviceNo, String status) {
-        List<SdTicketMasEntity> entityList = ticketMasMapper.getTicketByServiceNo(serviceNo, status);
+    public List<SdTicketMasBean> getTicketByServiceNo(String serviceNo, String ticketType, String excludeStatus) {
+        List<SdTicketMasEntity> entityList = ticketMasMapper.getTicketByServiceNo(serviceNo, ticketType, excludeStatus);
         return CollectionUtils.isEmpty(entityList) ? null : buildTicketBeanList(entityList);
+    }
+
+    @Override
+    public List<SdTicketMasBean> getPendingTicketList(String serviceNo) {
+        return getTicketByServiceNo(serviceNo, SdTicketMasEntity.TICKET_TYPE.JOB, SdTicketMasEntity.STATUS.COMPLETE);
     }
 
     @Override
@@ -374,11 +379,6 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Override
     public void updateTicketType(int ticketMasId, String type, String userId) {
         ticketMasMapper.updateTicketType(ticketMasId,type,userId);
-    }
-
-    @Override
-    public List<Integer> getTicketByServiceNoAndTypeNotJobAndStatusNotCP(String serviceNo) {
-        return ticketMasMapper.getTicketByServiceNoAndTypeNotJobAndStatusNotCP(serviceNo);
     }
 
     @Override

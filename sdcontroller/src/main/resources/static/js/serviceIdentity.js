@@ -114,29 +114,34 @@ $().ready(function(){
         $.post('/ticket/search-service',{
             searchKey : searchKey.val().trim(),
             searchValue : searchValue.val().trim()
-        },function(res){
-            if(res.length > 1){
-                $.each(res,function(i,val){
-                    let tr ='<tr class="text-center"></tr>';
+        }, function(response){
+            let res = response.list;
+            if(res.length === 1){
+                $.each(res.pop(),function(key,val){
+                    $('form').find('input[name='+ key +']').val(val);
+                    if (key === 'serviceNo') {
+                        if (val != null) {
+                            bsn = val;
+                            $('.nora').removeAttr('disabled');
+                        }
+                    }
+                });
+            } else {
+                $.each(res, function (i, val) {
+                    let tr = '<tr class="text-center"></tr>';
                     $('tbody').append(tr);
-                    $('tbody tr:last').data('info',val);
+                    $('tbody tr:last').data('info', val);
                     $('tbody tr:last').append('<td><input type="radio"></td>')
-                        .append('<td>'+val.custCode+'</td>')
-                        .append('<td>'+val.custName+'</td>')
-                        .append('<td>'+val.serviceType+'</td>')
-                        .append('<td>'+val.serviceNo+'</td>')
+                        .append('<td>' + val.custCode + '</td>')
+                        .append('<td>' + val.custName + '</td>')
+                        .append('<td>' + val.serviceType + '</td>')
+                        .append('<td>' + val.serviceNo + '</td>')
                 });
                 $('.modal').modal('show');
-            }else{
-                $.each(res.pop(),function(key,val){
-                     $('form').find('input[name='+ key +']').val(val);
-                     if (key == 'serviceNo') {
-                         if (val != null) {
-                             bsn = val;
-                             $('.nora').removeAttr('disabled');
-                         }
-                     }
-                })
+            }
+
+            if(response.warningMsg){
+                showErrorMsg(response.warningMsg);
             }
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";
@@ -146,13 +151,13 @@ $().ready(function(){
             $('#btnApplyProduct').on('click',function(){
                 $.each($('tbody').find('input:checked').parent().parent().data('info'),function(i,val){
                     $('form').find('input[name='+i+']').val(val);
-                    if(i == 'url'){
+                    if(i === 'url'){
                         if(val !=null){
                             $('.itsm').data('url',val);
                             $('.itsm').removeAttr('disabled');
                         }
                     }
-                    if(i == 'serviceNo') {
+                    if(i === 'serviceNo') {
                         if(val !=null) {
                             $('.nora').removeAttr('disabled');
                         }
@@ -170,7 +175,7 @@ function createTicket(){
         if (res.success) {
             $(location).attr('href',ctx+'/ticket?ticketMasId='+ res.data);
         } else {
-            var responseError = "The service number already exists in Ticket-";
+            var responseError = "The service number already exists in Ticket -";
             let ticketMasIds = res.data;
             $.each(ticketMasIds,function(index,j){
                 if (index > 0) {

@@ -117,8 +117,11 @@
         INNER JOIN TICKET_DET td
         ON tm.TICKET_MAS_ID = td.TICKET_MAS_ID
         WHERE td.SERVICE_ID = #{serviceNo}
-        <if test="status != null">
-            AND tm.STATUS <![CDATA[ <> ]]> #{status}
+        <if test="ticketType != null">
+            AND tm.TICKET_TYPE = #{ticketType}
+        </if>
+        <if test="excludeStatus != null">
+            AND tm.STATUS != #{excludeStatus}
         </if>
         ORDER BY tm.TICKET_MAS_ID DESC
     </select>
@@ -138,12 +141,4 @@
             modifydate = sysdate
         where ticket_mas_id = #{ticketMasId}
     </update>
-
-    <select id="getTicketByServiceNoAndTypeNotJobAndStatusNotCP" resultType="Integer">
-        SELECT tm.ticket_mas_id FROM
-        ticket_mas tm LEFT JOIN ticket_det td ON tm.ticket_mas_id = td.ticket_mas_id
-        WHERE td.service_id = #{serviceNo}
-        and tm.ticket_type = 'JOB'
-        and tm.status != 'CP'
-    </select>
 </mapper>
