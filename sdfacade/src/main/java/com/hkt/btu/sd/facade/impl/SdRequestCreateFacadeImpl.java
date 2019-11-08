@@ -90,17 +90,26 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         infoData.setSearchKeyDesc(sdTicketMasData.getSearchKeyDesc());
         infoData.setSearchValue(sdTicketMasData.getSearchValue());
         infoData.setAppointmentDate(sdTicketMasData.getAppointmentDate());
-        ticketFacade.getService(sdTicketMasData.getTicketMasId()).ifPresent(sdTicketServiceData -> {
-            Optional.ofNullable(sdTicketServiceData.getJobId()).ifPresent(s -> {
-                infoData.setJobId(s);
-                Optional.ofNullable(wfmApiFacade.getJobDetails(Integer.valueOf(s)).getJobBean()).map(WfmJobBeanData::getStatus).ifPresent(infoData::setJobStatus);
-            });
-
-            List<RequestCreateSearchResultData> resultsDataList = findData4Bsn(sdTicketServiceData.getServiceCode()).getList();
+        SdTicketServiceData serviceData = ticketFacade.getService(sdTicketMasData.getTicketMasId());
+        if (serviceData != null) {
+            String jobId = serviceData.getJobId();
+            if (StringUtils.isNotBlank(jobId)) {
+                infoData.setJobId(jobId);
+                WfmJobBeanData wfmJobBeanData = wfmApiFacade.getJobDetails(Integer.valueOf(jobId)).getJobBean();
+                if (wfmJobBeanData != null) {
+                    infoData.setJobStatus(wfmJobBeanData.getStatus());
+                }
+            }
+            List<RequestCreateSearchResultData> resultsDataList;
+            if (infoData.getSearchKeyDesc().equals("DN")) {
+                resultsDataList = findData4Dn(serviceData.getServiceCode()).getList();
+            } else {
+                resultsDataList = findData4Bsn(serviceData.getServiceCode()).getList();
+            }
             if (CollectionUtils.isNotEmpty(resultsDataList)) {
                 RequestCreateSearchResultData requestCreateSearchResultData = resultsDataList.get(0);
                 if (requestCreateSearchResultData != null) {
-                    if (requestCreateSearchResultData.getServiceNo().equals(sdTicketServiceData.getServiceCode())) {
+                    if (requestCreateSearchResultData.getServiceNo().equals(serviceData.getServiceCode())) {
                         infoData.setCustName(requestCreateSearchResultData.getCustName());
                         infoData.setCustType(requestCreateSearchResultData.getCustType());
                         infoData.setCustStatus(requestCreateSearchResultData.getCustStatus());
@@ -114,17 +123,15 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
                         infoData.setServiceAddress(requestCreateSearchResultData.getServiceAddress());
                         infoData.setGridId(requestCreateSearchResultData.getGridId());
                         infoData.setExchangeBuildingId(requestCreateSearchResultData.getExchangeBuildingId());
-                        if (StringUtils.isNotEmpty(sdTicketMasData.getSearchKey()) ? sdTicketMasData.getSearchKey().equals("dn") : false) {
-                            infoData.setRelatedBsn(norarsApiFacade.getBsnByDn(sdTicketServiceData.getServiceCode()));
-                        }
+                        infoData.setRelatedBsn(requestCreateSearchResultData.getRelatedBsn());
                     }
                 }
             }
-            infoData.setServiceType(sdTicketServiceData.getServiceType());
-            infoData.setServiceTypeDesc(serviceTypeFacade.getServiceTypeDescByServiceTypeCode(sdTicketServiceData.getServiceType()));
-            infoData.setServiceNo(sdTicketServiceData.getServiceCode());
-            infoData.setNgn3reset(sdTicketServiceData.getServiceType().equals(SdServiceTypeBean.SERVICE_TYPE.VOIP));
-        });
+            infoData.setServiceType(serviceData.getServiceType());
+            infoData.setServiceTypeDesc(serviceTypeFacade.getServiceTypeDescByServiceTypeCode(serviceData.getServiceType()));
+            infoData.setServiceNo(serviceData.getServiceCode());
+            infoData.setNgn3reset(serviceData.getServiceType().equals(SdServiceTypeBean.SERVICE_TYPE.VOIP));
+        }
         return infoData;
     }
 

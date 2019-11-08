@@ -265,12 +265,12 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public Optional<SdTicketServiceData> getService(Integer ticketId) {
+    public SdTicketServiceData getService(Integer ticketId) {
         return ticketService.getService(ticketId).map(sdTicketServiceBean -> {
             SdTicketServiceData data = new SdTicketServiceData();
             ticketServiceDataPopulator.populate(sdTicketServiceBean, data);
             return data;
-        });
+        }).orElse(null);
     }
 
     @Override

@@ -31,7 +31,7 @@ public interface SdTicketFacade {
 
     void updateJobIdInService(Integer jobId, int ticketMasId);
 
-    Optional<SdTicketServiceData> getService(Integer ticketId);
+    SdTicketServiceData getService(Integer ticketId);
 
     AppointmentData getAppointmentData(Integer ticketMasId);
 
