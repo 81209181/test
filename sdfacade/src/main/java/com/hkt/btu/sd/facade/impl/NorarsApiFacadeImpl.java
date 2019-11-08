@@ -39,7 +39,7 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
 
     @Override
     public NoraBroadbandInfoData getOfferDetailListByBsn(String bsn) {
-        if(StringUtils.isEmpty(bsn)){
+        if (StringUtils.isEmpty(bsn)) {
             throw new InvalidInputException("Empty BSN.");
         }
 
@@ -51,7 +51,7 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
 
     @Override
     public String getInventory(String bsn) {
-        if(StringUtils.isEmpty(bsn)){
+        if (StringUtils.isEmpty(bsn)) {
             throw new InvalidInputException("Empty BSN.");
         }
 
@@ -66,13 +66,13 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
 
     @Override
     public NoraDnGroupData getRelatedOfferInfoListByBsn(String bsn) {
-        if(StringUtils.isEmpty(bsn)){
+        if (StringUtils.isEmpty(bsn)) {
             throw new InvalidInputException("Empty BSN.");
         }
 
-        String apiPath = "/norars/api/v1/ec/groupids/sr/"+bsn;
+        String apiPath = "/norars/api/v1/ec/groupids/sr/" + bsn;
         String responseString = getData(apiPath, null);
-        if(StringUtils.isEmpty(responseString)){
+        if (StringUtils.isEmpty(responseString)) {
             return null;
         } else {
             return new Gson().fromJson(responseString, NoraDnGroupData.class);
@@ -83,7 +83,7 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
     public NoraAccountData getNGN3OneDayAdminAccount(String bsn) {
         String requestorId = userService.getCurrentUserBean().getUserId();
 
-        String apiPath = "/norars/api/v1/osb/accounts/"+bsn+"/"+ requestorId;
+        String apiPath = "/norars/api/v1/osb/accounts/" + bsn + "/" + requestorId;
         NoraAccountData data = postData(apiPath, NoraAccountData.class, null, null);
         return data;
     }
@@ -103,7 +103,7 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
     }
 
     @Override
-    public ServiceAddressData getServiceAddressByBsn(String bsn){
+    public ServiceAddressData getServiceAddressByBsn(String bsn) {
         String apiPath = "/norars/api/v1/onecomm/address/" + bsn;
         NoraAddressInfoData noraAddressInfoData = getData(apiPath, NoraAddressInfoData.class, null);
         if (noraAddressInfoData != null) {
@@ -117,7 +117,7 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
     }
 
     @Override
-    public String getL1InfoByBsn(String bsn){
+    public String getL1InfoByBsn(String bsn) {
         String apiPath = "/norars/api/v1/onecomm/pid/" + bsn;
         NoraPidInfoData noraPidInfoData = getData(apiPath, NoraPidInfoData.class, null);
         if (noraPidInfoData != null) {
@@ -149,14 +149,14 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
         return result;
     }
 
-    private String appendStringWithDelimiter(String result, String addr, String str1, String str2){
+    private String appendStringWithDelimiter(String result, String addr, String str1, String str2) {
         if (StringUtils.isEmpty(result)) {
             if (StringUtils.isNotEmpty(addr)) {
-                result = String.format(result+str2,addr);
+                result = String.format(result + str2, addr);
             }
         } else {
             if (StringUtils.isNotEmpty(addr)) {
-                result = String.format(result+str1+str2,addr);
+                result = String.format(result + str1 + str2, addr);
             }
         }
         return result;
