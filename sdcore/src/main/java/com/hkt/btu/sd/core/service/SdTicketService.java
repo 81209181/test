@@ -61,13 +61,12 @@ public interface SdTicketService {
 
     void increaseCallInCount(Integer ticketMasId);
 
-    List<SdTicketMasBean> getTicketByServiceNo(String serviceNom, String status);
+    List<SdTicketMasBean> getTicketByServiceNo(String serviceNom, String ticketType, String excludeStatus);
+    List<SdTicketMasBean> getPendingTicketList(String serviceNo);
 
     void closeTicket(int ticketMasId, String reasonType, String reasonContent, String userId, String contactName, String contactNumber) throws InvalidInputException;
 
     void updateTicketType(int ticketMasId, String job, String userId);
-
-    List<Integer> getTicketByServiceNoAndTypeNotJobAndStatusNotCP(String serviceNo);
 
     List<TicketStatusEnum> getTicketStatusList();
 

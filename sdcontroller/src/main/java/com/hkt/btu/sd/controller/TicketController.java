@@ -25,7 +25,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -59,20 +58,19 @@ public class TicketController {
     @PostMapping("search-service")
     public ResponseEntity<?> searchService(String searchKey, String searchValue, HttpServletRequest request) {
         // check pending ticket
-        try {
-            ticketFacade.getTicketByServiceNoAndTypeNotJobAndStatusNotCP(searchValue).stream().findFirst().ifPresent(ticketId -> {
-                throw new RuntimeException(String.format("The service number already exists in Ticket- <a href='" + request.getContextPath() + "/ticket?ticketMasId=%s'>%s</a>", ticketId, ticketId));
-            });
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        List<SdTicketMasData> pendingTicketDataList = ticketFacade.getPendingTicketList(searchValue);
 
         // search service
         RequestCreateSearchResultsData resultsData = requestCreateFacade.searchProductList(searchKey, searchValue);
-        if (!StringUtils.isEmpty(resultsData.getErrorMsg())) {
+        if (StringUtils.isNotEmpty(resultsData.getErrorMsg())) {
             return ResponseEntity.badRequest().body(resultsData.getErrorMsg());
         } else {
-            return ResponseEntity.ok(resultsData.getList());
+            if(CollectionUtils.isNotEmpty(pendingTicketDataList)){
+                String warningMsg = String.format("The service number already exists in Ticket - <a href='%s/ticket?ticketMasId=%d'>%d</a>",
+                        request.getContextPath(), pendingTicketDataList.get(0).getTicketMasId(), pendingTicketDataList.get(0).getTicketMasId());
+                resultsData.setWarningMsg(warningMsg);
+            }
+            return ResponseEntity.ok(resultsData);
         }
     }
 
@@ -105,7 +103,7 @@ public class TicketController {
         }
 
         // check pending ticket of same service number
-        List<SdTicketMasData> dataList = ticketFacade.getTicketByServiceNo(queryTicketRequestData.getServiceNo());
+        List<SdTicketMasData> dataList = ticketFacade.getPendingTicketList(queryTicketRequestData.getServiceNo());
         if (CollectionUtils.isNotEmpty(dataList)) {
             return ResponseEntity.ok(ResponseTicketData.of(false, dataList));
         }
