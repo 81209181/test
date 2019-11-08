@@ -35,15 +35,14 @@ $(document).ready(function() {
                     return nextRunTime==null ? null : nextRunTime.replace('T', ' ');
                 }
             },{
-                targets:6,
-                data:null,
-                defaultContent:'<button class="btn btn-info">Detail</button>'
+                targets: 6,
+                data: "ticketMasId",
+                render: function ( ticketMasId, type, row, meta ) {
+                    var ctx = $("meta[name='_ctx']").attr("content");
+                    var link = ctx + "/ticket?ticketMasId=" + ticketMasId;
+                    return '<a class="btn btn-info" href=' + link + ' role="button">Detail</a>';
+                }
             }
         ]
     });
-    let ctx = $("meta[name='_ctx']").attr("content");
-    $('#myTicketTable tbody').on('click','button',function(){
-        var data = table.row( $(this).parents('tr') ).data();
-        $(location).attr('href',ctx+'/ticket?ticketMasId='+data.ticketMasId);
-    })
 });

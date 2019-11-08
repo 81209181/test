@@ -2,10 +2,14 @@ package com.hkt.btu.sd.core.service;
 
 import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.sd.core.service.bean.*;
+import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
+import com.hkt.btu.sd.core.service.constant.TicketTypeEnum;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface SdTicketService {
@@ -19,7 +23,10 @@ public interface SdTicketService {
 
     void removeContactInfoByTicketMasId(Integer ticketMasId);
 
-    Page<SdTicketMasBean> searchTicketList(Pageable pageable, String dateFrom, String dateTo, String status, String ticketMasId, String custCode);
+    Page<SdTicketMasBean> searchTicketList(Pageable pageable, LocalDate createDateFrom, LocalDate createDateTo,
+                                           String status, LocalDate completeDateFrom, LocalDate completeDateTo,
+                                           String createBy, String ticketMasId, String custCode,
+                                           String serviceNumber, String ticketType, String serviceType);
 
     Page<SdTicketMasBean> getMyTicket(Pageable pageable);
 
@@ -56,7 +63,13 @@ public interface SdTicketService {
 
     List<SdTicketMasBean> getTicketByServiceNo(String serviceNom, String status);
 
-    void closeTicket(int ticketMasId, String reasonType, String reasonContent, String userId) throws InvalidInputException;
+    void closeTicket(int ticketMasId, String reasonType, String reasonContent, String userId, String contactName, String contactNumber) throws InvalidInputException;
 
     void updateTicketType(int ticketMasId, String job, String userId);
+
+    List<Integer> getTicketByServiceNoAndTypeNotJobAndStatusNotCP(String serviceNo);
+
+    List<TicketStatusEnum> getTicketStatusList();
+
+    List<TicketTypeEnum> getTicketTypeList();
 }

@@ -18,6 +18,7 @@ function ajaxGetUser(){
             $("#edit-company-name").val(data.companyName);
             $("#edit-company-id").val(data.companyId);
             $("#edit-staff-id").val(data.staffId);
+            $('select[name=primaryRoleId]').val(data.primaryRoleId);
 
             if (data.ldapDomain == null) {
                 $("#btnActivateUser").show();
@@ -47,6 +48,7 @@ function ajaxUpdateUser() {
     input["mobile"] = $("#edit-mobile").val();
     input["staffId"] = $("#edit-staff-id").val();
     input["email"] = $("#edit-email").val();
+    input['primaryRoleId'] =$('select[name=primaryRoleId]').val();
 
     input["userGroupAdmin"] = $("#edit-user-group-admin").val() ? ($("#edit-user-group-admin").prop("checked") ? true : false) : null;
     input["userGroupUser"] = $("#edit-user-group-user").val() ? ($("#edit-user-group-user").prop("checked") ? true : false) : null;

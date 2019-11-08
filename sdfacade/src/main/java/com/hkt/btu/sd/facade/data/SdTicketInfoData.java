@@ -8,6 +8,7 @@ public class SdTicketInfoData {
     private int ticketMasId;
     private String ticketType;
     private String ticketStatus;
+    private String ticketStatusDesc;
     private int callInCount;
     private String searchKeyDesc;
     private String searchValue;
@@ -68,6 +69,14 @@ public class SdTicketInfoData {
 
     public void setTicketStatus(String ticketStatus) {
         this.ticketStatus = ticketStatus;
+    }
+
+    public String getTicketStatusDesc() {
+        return ticketStatusDesc;
+    }
+
+    public void setTicketStatusDesc(String ticketStatusDesc) {
+        this.ticketStatusDesc = ticketStatusDesc;
     }
 
     public int getCallInCount() {

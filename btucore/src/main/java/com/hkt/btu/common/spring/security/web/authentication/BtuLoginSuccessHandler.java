@@ -1,6 +1,5 @@
 package com.hkt.btu.common.spring.security.web.authentication;
 
-import com.hkt.btu.common.core.service.BtuAuditTrailService;
 import com.hkt.btu.common.core.service.BtuUserService;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
@@ -14,25 +13,24 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-//@Service
 public class BtuLoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
     @Resource(name = "userService")
-    BtuUserService btuUserService;
-
-    @Resource(name = "auditTrailService")
-    BtuAuditTrailService auditTrailService;
+    BtuUserService userService;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
+                                        Authentication authentication) throws IOException, ServletException {
         // log user login
         BtuUser user = (authentication == null || !(authentication.getPrincipal() instanceof BtuUser)) ?
                 null : (BtuUser) authentication.getPrincipal();
+        BtuUserBean userBean = user==null ? null : user.getUserBean();
+        if(userBean==null){
+            throw new ServletException("Incoming user profile not found.");
+        }
 
-        BtuUserBean userBean = user.getUserBean();
-
-        btuUserService.verifyLdapUser(user, userBean);
-
+        // login ldap
+        userService.verifyLdapUser(user, userBean);
         // erase user ldapPassword
         user.setLdapPassword(null);
 
@@ -44,7 +42,10 @@ public class BtuLoginSuccessHandler extends SavedRequestAwareAuthenticationSucce
         }
         clearAuthenticationAttributes(httpServletRequest);
 
-        btuUserService.setLogonPage(this);
+        // set logon page
+        String logonPage = userService.getUserLogonPage();
+        setDefaultTargetUrl(logonPage);
+        setAlwaysUseDefaultTargetUrl(true);
 
         super.onAuthenticationSuccess(httpServletRequest, httpServletResponse, authentication);
     }

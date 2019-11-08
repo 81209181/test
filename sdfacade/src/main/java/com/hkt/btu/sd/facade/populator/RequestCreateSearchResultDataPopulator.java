@@ -2,6 +2,7 @@ package com.hkt.btu.sd.facade.populator;
 
 import com.hkt.btu.common.facade.populator.AbstractDataPopulator;
 import com.hkt.btu.sd.facade.data.*;
+import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -10,17 +11,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 
 public class RequestCreateSearchResultDataPopulator extends AbstractDataPopulator<RequestCreateSearchResultData> {
-
     private static final Logger LOG = LogManager.getLogger(RequestCreateSearchResultDataPopulator.class);
-
-    private static RequestCreateSearchResultDataPopulator instance;
-
-    public static synchronized RequestCreateSearchResultDataPopulator getInstance() {
-        if (instance == null) {
-            instance = new RequestCreateSearchResultDataPopulator();
-        }
-        return instance;
-    }
 
     public void populateFromBesSubscriberInfoResourceData(BesSubscriberInfoResourceData source, RequestCreateSearchResultData target) {
         BesSubscriberBasicData besSubscriberBasicData = source.getSubInfo();
@@ -35,20 +26,19 @@ public class RequestCreateSearchResultDataPopulator extends AbstractDataPopulato
         }
     }
 
-    public void populateFromBesPrimaryOfferData(BesOfferingInstDetailInfoData source, RequestCreateSearchResultData target) {
+    private void populateFromBesPrimaryOfferData(BesOfferingInstDetailInfoData source, RequestCreateSearchResultData target) {
         BesOfferingInstData besOfferingInstData = source.getOfferingBasic();
         if (besOfferingInstData != null) {
             populateFromBesOfferingInstData(besOfferingInstData, target);
         }
     }
 
-    public void populateFromBesOfferingInstData(BesOfferingInstData source, RequestCreateSearchResultData target) {
+    private void populateFromBesOfferingInstData(BesOfferingInstData source, RequestCreateSearchResultData target) {
         target.setOfferName(source.getOfferingName());
         target.setServiceStatus(source.getStatus());
     }
 
     private void populateFromBesSubscriberBasicTypeData(BesSubscriberBasicData source, RequestCreateSearchResultData target) {
-
         target.setServiceNo(source.getServiceNumber());
         target.setSubsId(source.getSubsId());
 
@@ -180,6 +170,21 @@ public class RequestCreateSearchResultDataPopulator extends AbstractDataPopulato
         target.setUserName(source.getUserName());
 
         target.setServiceType(source.getServiceType());
+    }
+
+    public void populateFromServiceAddressData (ServiceAddressData source, RequestCreateSearchResultData target){
+        target.setServiceAddress(source.getServiceAddress());
+        target.setGridId(source.getGridId());
+        target.setExchangeBuildingId(source.getExchangeBuildingId());
+    }
+
+    public void populateFromWfmPendingOrderData (WfmPendingOrderData source, RequestCreateSearchResultData target){
+        target.setOrderId(source.getOrderId() == 0 ? null : source.getOrderId());
+        target.setOrderType(source.getOrderType());
+        target.setFulfillmentId(source.getFulfillmentId() == 0 ? null : source.getFulfillmentId());
+        target.setFulfillmentType(source.getFulfillmentType());
+        target.setServiceReadyDate(source.getServiceReadyDate());
+        target.setAppointmentDate(source.getAppointmentDate());
     }
 
 }

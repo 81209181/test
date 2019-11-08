@@ -11,34 +11,64 @@
     <h1>Search Ticket</h1>
     <form th:id="search-ticket-form" class="form-inline ml-3">
         <div class="form-row">
-            <div class="form-group">
-                <label>  Date From：</label>
-                <input th:id="search-date-from" type="date" class="form-control mb-2 mr-sm-2" placeholder="Date From">
+            <div class="col-md-6 form-inline pt-2">
+                <label for="ticket_mas_id" class="col-form-label col-md-5 justify-content-end">Ticket Mas Id：</label>
+                <input type="text" id="ticket_mas_id" class="form-control mb-2 mr-sm-2 col-md-5">
             </div>
-            <div class="form-group">
-                <label>  Date To：</label>
-                <input th:id="search-date-to" type="date" class="form-control mb-2 mr-sm-2" placeholder="Date To">
-            </div>
-            <div class="form-group">
-                <label>  Status：</label>
-                <select th:id="search-status" class="form-control mb-2 mr-sm-2">
+            <div class="col-md-6 form-inline pt-2">
+                <label for="search-status" class="col-form-label col-md-5 justify-content-end">Status：</label>
+                <select id="search-status" class="form-control mb-2 mr-sm-2 col-md-5">
                     <option value=""><!--Please select--></option>
-                    <option value="O">Open</option>
-                    <option value="CX">Cancel</option>
-                    <option value="CP">Complete</option>
+                    <!--/*@thymesVar id="ticketStatusList" type="java.util.List<com.hkt.btu.sd.facade.data.CodeDescData>"*/-->
+                    <option th:each="ticketStatus : ${ticketStatusList}" th:value="${ticketStatus.code}" th:text="${ticketStatus.codeDesc}"></option>
                 </select>
             </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label for="ticket_mas_id" class="form-label mr-2">Ticket Mas Id:</label>
-                <input type="text" id="ticket_mas_id" class="form-control">
+            <div class="col-md-6 form-inline pt-2">
+                <label for="createDateFrom" class="col-form-label col-md-5 justify-content-end">Create Date From：</label>
+                <input id="createDateFrom" type="date" class="form-control mb-2 mr-sm-2 col-md-5" placeholder="Create Date From">
             </div>
-            <div class="form-group ml-2">
-                <label for="customer_code" class="form-label mr-2">Customer Code:</label>
-                <input type="text" id="customer_code" class="form-control">
+            <div class="col-md-6 form-inline pt-2">
+                <label for="createDateTo" class="col-form-label col-md-5 justify-content-end">Create Date To：</label>
+                <input id="createDateTo" type="date" class="form-control mb-2 mr-sm-2 col-md-5" placeholder="Create Date To">
             </div>
-            <button type="submit" class="btn btn-lg btn-primary ml-2"><i class="fas fa-search"></i> Search</button>
+            <div class="col-md-6 form-inline pt-2">
+                <label for="completeDateFrom" class="col-form-label col-md-5 justify-content-end">Complete Date From：</label>
+                <input id="completeDateFrom" type="date" class="form-control mb-2 mr-sm-2 col-md-5" placeholder="Complete Date From">
+            </div>
+            <div class="col-md-6 form-inline pt-2">
+                <label for="completeDateTo" class="col-form-label col-md-5 justify-content-end">Complete Date To：</label>
+                <input id="completeDateTo" type="date" class="form-control mb-2 mr-sm-2 col-md-5" placeholder="Complete Date To">
+            </div>
+            <div class="col-md-6 form-inline pt-2">
+                <label for="createBy" class="col-form-label col-md-5 justify-content-end">Create By：</label>
+                <input type="text" id="createBy" class="form-control mb-2 mr-sm-2 col-md-5">
+            </div>
+            <div class="col-md-6 form-inline pt-2">
+                <label for="customer_code" class="col-form-label col-md-5 justify-content-end">Customer Code：</label>
+                <input type="text" id="customer_code" class="form-control mb-2 mr-sm-2 col-md-5">
+            </div>
+            <div class="col-md-6 form-inline pt-2">
+                <label for="serviceType" class="col-form-label col-md-5 justify-content-end">Service Type：</label>
+                <select id="serviceType" class="form-control mb-2 mr-sm-2 col-md-5">
+                    <option value=""><!--Please select--></option>
+                    <option th:each="serviceType : ${serviceTypeList}" th:value="${serviceType.serviceTypeCode}" th:text="${serviceType.serviceTypeName}"></option>
+                </select>
+            </div>
+            <div class="col-md-6 form-inline pt-2">
+                <label for="ticketType" class="col-form-label col-md-5 justify-content-end">Ticket Type：</label>
+                <select id="ticketType" class="form-control mb-2 mr-sm-2 col-md-5">
+                    <option value=""><!--Please select--></option>
+                    <option th:each="ticketType : ${ticketTypeList}" th:value="${ticketType.code}" th:text="${ticketType.codeDesc}"></option>
+                </select>
+            </div>
+            <div class="col-md-6 form-inline pt-2">
+                <label for="serviceNumber" class="col-form-label col-md-5 justify-content-end">Service Number：</label>
+                <input type="text" id="serviceNumber" class="form-control mb-2 mr-sm-2 col-md-5">
+            </div>
+            <div class="col-md-6 form-inline pt-2">
+                <button type="submit" class="btn btn-lg btn-primary my-md-2" style="margin-left: 220px;"><i class="fas fa-search"></i> Search</button>
+                <button class="btn btn-lg btn-primary ml-2 my-md-2" id="btnSearchReset"><i class="fas fa-sync"></i> Reset</button>
+            </div>
         </div>
     </form>
     <table id="searchTicketTable" class="display" cellspacing="0" width="100%">
@@ -47,7 +77,11 @@
             <th>Ticket ID</th>
             <th>Ticket Type</th>
             <th>Customer Code</th>
+            <th>Service Type</th>
+            <th>Service Number</th>
             <th>Status</th>
+            <th>Call-in Count</th>
+            <th>Complete Date</th>
             <th>Create Date</th>
             <th>Create By</th>
             <th></th>
@@ -60,7 +94,11 @@
             <th>Ticket ID</th>
             <th>Ticket Type</th>
             <th>Customer Code</th>
+            <th>Service Type</th>
+            <th>Service Number</th>
             <th>Status</th>
+            <th>Call-in Count</th>
+            <th>Complete Date</th>
             <th>Create Date</th>
             <th>Create By</th>
             <th></th>

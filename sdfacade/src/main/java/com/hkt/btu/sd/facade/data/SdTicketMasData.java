@@ -18,6 +18,7 @@ public class SdTicketMasData implements DataInterface {
     private String ticketType;
 
     private String status;
+    private String statusDesc;
 
     private LocalDateTime createDate;
 
@@ -37,6 +38,10 @@ public class SdTicketMasData implements DataInterface {
     private String searchKeyDesc;
 
     private String searchValue;
+
+    private LocalDateTime completeDate;
+
+    private String serviceType;
 
     public String getSearchKey() {
         return searchKey;
@@ -110,6 +115,14 @@ public class SdTicketMasData implements DataInterface {
         this.status = status;
     }
 
+    public String getStatusDesc() {
+        return statusDesc;
+    }
+
+    public void setStatusDesc(String statusDesc) {
+        this.statusDesc = statusDesc;
+    }
+
     public LocalDateTime getCreateDate() {
         return createDate;
     }
@@ -148,5 +161,21 @@ public class SdTicketMasData implements DataInterface {
 
     public void setCallInCount(int callInCount) {
         this.callInCount = callInCount;
+    }
+
+    public LocalDateTime getCompleteDate() {
+        return completeDate;
+    }
+
+    public void setCompleteDate(LocalDateTime completeDate) {
+        this.completeDate = completeDate;
+    }
+
+    public String getServiceType() {
+        return serviceType;
+    }
+
+    public void setServiceType(String serviceType) {
+        this.serviceType = serviceType;
     }
 }

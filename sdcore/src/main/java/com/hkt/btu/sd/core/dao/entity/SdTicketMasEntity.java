@@ -6,6 +6,12 @@ import java.time.LocalDateTime;
 
 public class SdTicketMasEntity extends BaseEntity {
 
+    public static class STATUS {
+        public static final String OPEN = "O";
+        public static final String WORKING = "W";
+        public static final String COMPLETE = "CP";
+    }
+
     private int ticketMasId ;
 
     private String custCode;
@@ -23,6 +29,10 @@ public class SdTicketMasEntity extends BaseEntity {
     private String searchKey;
 
     private String searchValue;
+
+    private LocalDateTime completeDate;
+
+    private String serviceType;
 
     public LocalDateTime getAppointmentDate() {
         return appointmentDate;
@@ -94,5 +104,21 @@ public class SdTicketMasEntity extends BaseEntity {
 
     public void setSearchValue(String searchValue) {
         this.searchValue = searchValue;
+    }
+
+    public LocalDateTime getCompleteDate() {
+        return completeDate;
+    }
+
+    public void setCompleteDate(LocalDateTime completeDate) {
+        this.completeDate = completeDate;
+    }
+
+    public String getServiceType() {
+        return serviceType;
+    }
+
+    public void setServiceType(String serviceType) {
+        this.serviceType = serviceType;
     }
 }

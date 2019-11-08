@@ -33,6 +33,8 @@ public class SdUserEntity extends BaseEntity {
     private LocalDateTime passwordModifydate;
     private Integer loginTried;
 
+    private String primaryRoleId;
+
 
     public String getUserId() {
         return userId;
@@ -128,6 +130,14 @@ public class SdUserEntity extends BaseEntity {
 
     public void setDomainEmail(String domainEmail) {
         this.domainEmail = domainEmail;
+    }
+
+    public String getPrimaryRoleId() {
+        return primaryRoleId;
+    }
+
+    public void setPrimaryRoleId(String primaryRoleId) {
+        this.primaryRoleId = primaryRoleId;
     }
 
     @Override

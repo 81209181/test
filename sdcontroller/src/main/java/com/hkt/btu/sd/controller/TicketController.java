@@ -24,8 +24,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RequestMapping("/ticket")
@@ -55,7 +57,17 @@ public class TicketController {
     }
 
     @PostMapping("search-service")
-    public ResponseEntity<?> searchService(String searchKey, String searchValue) {
+    public ResponseEntity<?> searchService(String searchKey, String searchValue, HttpServletRequest request) {
+        // check pending ticket
+        try {
+            ticketFacade.getTicketByServiceNoAndTypeNotJobAndStatusNotCP(searchValue).stream().findFirst().ifPresent(ticketId -> {
+                throw new RuntimeException(String.format("The service number already exists in Ticket- <a href='" + request.getContextPath() + "/ticket?ticketMasId=%s'>%s</a>", ticketId, ticketId));
+            });
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+        // search service
         RequestCreateSearchResultsData resultsData = requestCreateFacade.searchProductList(searchKey, searchValue);
         if (!StringUtils.isEmpty(resultsData.getErrorMsg())) {
             return ResponseEntity.badRequest().body(resultsData.getErrorMsg());
@@ -103,14 +115,12 @@ public class TicketController {
     }
 
     @GetMapping("")
-    public ModelAndView showQueryTicket(Principal principal, int ticketMasId) {
-        return ticketFacade.getTicket(ticketMasId)
-                .filter(sdTicketMasData -> userRoleFacade.checkSameTeamRole(principal.getName(), sdTicketMasData.getCreateBy()))
-                .map(sdTicketMasData -> {
-                    ModelAndView modelAndView = new ModelAndView("ticket/ticketInfo");
-                    modelAndView.addObject("ticketInfo", requestCreateFacade.getTicketInfo(sdTicketMasData));
-                    return modelAndView;
-                }).orElse(new ModelAndView("redirect:/ticket/search-ticket"));
+    public ModelAndView showQueryTicket(int ticketMasId) {
+        return ticketFacade.getTicket(ticketMasId).map(sdTicketMasData -> {
+            ModelAndView modelAndView = new ModelAndView("ticket/ticketInfo");
+            modelAndView.addObject("ticketInfo", requestCreateFacade.getTicketInfo(sdTicketMasData));
+            return modelAndView;
+        }).orElse(new ModelAndView("redirect:/ticket/search-ticket"));
     }
 
     @PostMapping("contact/update")
@@ -133,7 +143,22 @@ public class TicketController {
     }
 
     @GetMapping("/search-ticket")
-    public String searchTicket() {
+    public String searchTicket(Model model) {
+        List<CodeDescData> ticketStatusList = ticketFacade.getTicketStatusList();
+        if(CollectionUtils.isNotEmpty(ticketStatusList)){
+            model.addAttribute("ticketStatusList", ticketStatusList);
+        }
+
+        List<CodeDescData> ticketTypeList = ticketFacade.getTicketTypeList();
+        if(CollectionUtils.isNotEmpty(ticketTypeList)){
+            model.addAttribute("ticketTypeList", ticketTypeList);
+        }
+
+        List<SdServiceTypeData> serviceTypeList = serviceTypeFacade.getServiceTypeList();
+        if (CollectionUtils.isNotEmpty(serviceTypeList)) {
+            model.addAttribute("serviceTypeList", serviceTypeList);
+        }
+
         return "ticket/searchTicket";
     }
 
@@ -141,15 +166,11 @@ public class TicketController {
     public ResponseEntity<?> searchTicket(@RequestParam(defaultValue = "0") int draw,
                                           @RequestParam(defaultValue = "0") int start,
                                           @RequestParam(defaultValue = "10") int length,
-                                          @RequestParam(required = false) String dateFrom,
-                                          @RequestParam(required = false) String dateTo,
-                                          @RequestParam(required = false) String status,
-                                          @RequestParam(required = false) String ticketMasId,
-                                          @RequestParam(required = false) String custCode) {
+                                          @RequestParam Map<String, String> searchFormData) {
         int page = start / length;
         Pageable pageable = PageRequest.of(page, length);
 
-        PageData<SdTicketMasData> pageData = ticketFacade.searchTicketList(pageable, dateFrom, dateTo, status, ticketMasId, custCode);
+        PageData<SdTicketMasData> pageData = ticketFacade.searchTicketList(pageable, searchFormData);
         return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
     }
 
@@ -247,12 +268,12 @@ public class TicketController {
     }
 
     @PostMapping("close")
-    public ResponseEntity<?> ticketClose(int ticketMasId, String reasonType, String reasonContent) {
-        String errorMsg = ticketFacade.closeTicket(ticketMasId, reasonType, reasonContent);
+    public ResponseEntity<?> ticketClose(int ticketMasId, String reasonType, String reasonContent,String contactNumber,String contactName) {
+        String errorMsg = ticketFacade.closeTicket(ticketMasId, reasonType, reasonContent,contactName,contactNumber);
         if (StringUtils.isEmpty(errorMsg)) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         } else {
-            return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
+            return ResponseEntity.badRequest().body(errorMsg);
         }
     }
 

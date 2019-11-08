@@ -5,8 +5,10 @@ import com.hkt.btu.common.core.service.BtuLdapService;
 import com.hkt.btu.common.core.service.BtuUserService;
 import com.hkt.btu.common.core.service.bean.BtuLdapBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
+import com.hkt.btu.common.core.service.bean.BtuUserRolePathCtrlBean;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
 import com.hkt.btu.common.spring.security.web.authentication.BtuLoginSuccessHandler;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -99,8 +101,8 @@ public class BtuUserServiceImpl implements BtuUserService {
     public BtuUserBean verifyLdapUser(BtuUser user, BtuUserBean userDetailBean){
         try {
             BtuLdapBean ldapInfo = ldapService.getBtuLdapBean(userDetailBean.getLdapDomain());
-            BtuUserBean btuUserBean = ldapService.searchUser(ldapInfo, userDetailBean.getUserId(), user.getLdapPassword(), userDetailBean.getUserId());
-            return btuUserBean;
+            return ldapService.searchUser(
+                    ldapInfo, userDetailBean.getUserId(), user.getLdapPassword(), userDetailBean.getUserId());
         } catch (NamingException e) {
             LOG.warn("User" + userDetailBean.getUserId() + "not found");
             throw new UserNotFoundException();
@@ -118,18 +120,21 @@ public class BtuUserServiceImpl implements BtuUserService {
 
     public boolean isActive(BtuUserBean btuUserBean){return true;}
 
+
     @Override
-    public boolean hasAnyAuthority(String... targetAuthorities){
-        return true;
+    public String getUserLogonPage() {
+        return BtuUserRolePathCtrlBean.DEFAULT_LOGON_PATH;
     }
 
     @Override
-    public void setLogonPage(BtuLoginSuccessHandler btuLoginSuccessHandler) {
-        btuLoginSuccessHandler.setDefaultTargetUrl("/user/");
-        btuLoginSuccessHandler.setAlwaysUseDefaultTargetUrl(true);
-    }
+    public boolean hasAnyAuthority(String... targetAuthorities) {
+        BtuUserBean currentUserBean = getCurrentUserBean();
+        Set<GrantedAuthority> authorities = currentUserBean==null ? null : currentUserBean.getAuthorities();
+        if(CollectionUtils.isEmpty(authorities)){
+            LOG.warn("Authorities of user not found.");
+            return false;
+        }
 
-    protected boolean hasAnyAuthority(Collection<? extends GrantedAuthority> authorities, String... targetAuthorities) {
         // find matching auth
         for(String targetAuth : targetAuthorities){
             for(GrantedAuthority grantedAuthority : authorities){

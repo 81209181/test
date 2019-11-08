@@ -34,7 +34,6 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
     @Override
     public String getBsnByDn(String dn) {
         String apiPath = "/norars/api/v1/onecomm/bsn/" + dn;
-
         return getData(apiPath, null);
     }
 
@@ -42,11 +41,6 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
     public NoraBroadbandInfoData getOfferDetailListByBsn(String bsn) {
         if(StringUtils.isEmpty(bsn)){
             throw new InvalidInputException("Empty BSN.");
-        }
-
-        // find parent bsn for dn input
-        if(StringUtils.length(bsn)==8){
-            bsn = getBsnByDn(bsn);
         }
 
         String apiPath = "/norars/api/v1/onecomm/bsn/" + bsn + "/detail";
@@ -59,11 +53,6 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
     public String getInventory(String bsn) {
         if(StringUtils.isEmpty(bsn)){
             throw new InvalidInputException("Empty BSN.");
-        }
-
-        // find parent bsn for dn input
-        if(StringUtils.length(bsn)==8){
-            bsn = getBsnByDn(bsn);
         }
 
         String apiPath = "nora/wfm/Profile.action";
@@ -81,11 +70,6 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
             throw new InvalidInputException("Empty BSN.");
         }
 
-        // find parent bsn for dn input
-        if(StringUtils.length(bsn)==8){
-            bsn = getBsnByDn(bsn);
-        }
-
         String apiPath = "/norars/api/v1/ec/groupids/sr/"+bsn;
         String responseString = getData(apiPath, null);
         if(StringUtils.isEmpty(responseString)){
@@ -98,10 +82,6 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
     @Override
     public NoraAccountData getNGN3OneDayAdminAccount(String bsn) {
         String requestorId = userService.getCurrentUserBean().getUserId();
-
-        if(StringUtils.length(bsn) == 8) {
-            bsn = getBsnByDn(bsn);
-        }
 
         String apiPath = "/norars/api/v1/osb/accounts/"+bsn+"/"+ requestorId;
         NoraAccountData data = postData(apiPath, NoraAccountData.class, null, null);
@@ -124,11 +104,6 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
 
     @Override
     public ServiceAddressData getServiceAddressByBsn(String bsn){
-        // find parent bsn for dn input
-        if(StringUtils.length(bsn)==8){
-            bsn = getBsnByDn(bsn);
-        }
-
         String apiPath = "/norars/api/v1/onecomm/address/" + bsn;
         NoraAddressInfoData noraAddressInfoData = getData(apiPath, NoraAddressInfoData.class, null);
         if (noraAddressInfoData != null) {
@@ -143,11 +118,6 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
 
     @Override
     public String getL1InfoByBsn(String bsn){
-        // find parent bsn for dn input
-        if(StringUtils.length(bsn)==8){
-            bsn = getBsnByDn(bsn);
-        }
-
         String apiPath = "/norars/api/v1/onecomm/pid/" + bsn;
         NoraPidInfoData noraPidInfoData = getData(apiPath, NoraPidInfoData.class, null);
         if (noraPidInfoData != null) {

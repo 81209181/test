@@ -3,8 +3,10 @@ package com.hkt.btu.common.core.service;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
 import com.hkt.btu.common.spring.security.web.authentication.BtuLoginSuccessHandler;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.naming.NamingException;
+import java.util.Collection;
 
 public interface BtuUserService {
 
@@ -21,8 +23,6 @@ public interface BtuUserService {
     boolean isNonLocked(BtuUserBean userDetailBean);
     boolean isActive(BtuUserBean userDetailBean);
 
+    String getUserLogonPage();
     boolean hasAnyAuthority(String... targetAuthorities);
-
-
-    void setLogonPage(BtuLoginSuccessHandler btuLoginSuccessHandler);
 }

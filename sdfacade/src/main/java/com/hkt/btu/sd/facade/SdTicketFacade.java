@@ -5,6 +5,7 @@ import com.hkt.btu.sd.facade.data.*;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface SdTicketFacade {
@@ -16,7 +17,7 @@ public interface SdTicketFacade {
 
     List<SdTicketContactData> getContactInfo(Integer ticketMasId);
 
-    PageData<SdTicketMasData> searchTicketList(Pageable pageable, String dateFrom, String dateTo, String status, String ticketMasId, String custCode);
+    PageData<SdTicketMasData> searchTicketList(Pageable pageable, Map<String, String> searchFormData);
 
     PageData<SdTicketMasData> getMyTicket(Pageable pageable);
 
@@ -43,11 +44,17 @@ public interface SdTicketFacade {
     List<SdTicketMasData> getTicketByServiceNo(String serviceNo);
 
     String closeTicketByApi(int ticketMasId, String reasonType, String reasonContent, String closeby);
-    String closeTicket(int ticketMasId, String reasonType, String reasonContent);
+    String closeTicket(int ticketMasId, String reasonType, String reasonContent, String contactName, String contactNumber);
 
     void isAllow(String ticketMasId,String action);
 
     boolean increaseCallInCount(Integer ticketMasId);
 
     void createJob4Wfm(int ticketMasId);
+
+    List<Integer> getTicketByServiceNoAndTypeNotJobAndStatusNotCP(String serviceNo);
+
+    List<CodeDescData> getTicketStatusList();
+
+    List<CodeDescData> getTicketTypeList();
 }

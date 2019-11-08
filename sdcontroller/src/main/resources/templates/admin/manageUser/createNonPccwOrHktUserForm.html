@@ -25,6 +25,12 @@
                 <label>Mobile</label>
                 <input type="tel" th:field="*{mobile}" class="form-control" placeholder="28832299" maxlength="15" required>
 
+                <label>Primary Role</label>
+                <select class="custom-select" name="primaryRoleId">
+                    <option hidden>Please select primary role</option>
+                    <option th:each="list:${primaryRoleList}" th:value="${list.roleId}" th:text="${list.roleDesc}" ></option>
+                </select>
+
                 <label>User Role</label>
                 <div class="d-block">
                     <div class="form-check form-check-inline" th:each="userRole : ${userRoleOptionDataMap}" >

@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.core.service.bean;
 
 import com.hkt.btu.common.core.service.bean.BaseBean;
+import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
 
 import java.time.LocalDateTime;
 
@@ -24,7 +25,7 @@ public class SdTicketMasBean extends BaseBean {
 
     private String ticketType;
 
-    private String status;
+    private TicketStatusEnum status;
 
     private LocalDateTime appointmentDate;
 
@@ -35,6 +36,10 @@ public class SdTicketMasBean extends BaseBean {
     private String searchKey;
 
     private String searchValue;
+
+    private LocalDateTime completeDate;
+
+    private String serviceType;
 
     public LocalDateTime getAppointmentDate() {
         return appointmentDate;
@@ -76,11 +81,11 @@ public class SdTicketMasBean extends BaseBean {
         this.ticketType = ticketType;
     }
 
-    public String getStatus() {
+    public TicketStatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(TicketStatusEnum status) {
         this.status = status;
     }
 
@@ -106,5 +111,21 @@ public class SdTicketMasBean extends BaseBean {
 
     public void setSearchValue(String searchValue) {
         this.searchValue = searchValue;
+    }
+
+    public LocalDateTime getCompleteDate() {
+        return completeDate;
+    }
+
+    public void setCompleteDate(LocalDateTime completeDate) {
+        this.completeDate = completeDate;
+    }
+
+    public String getServiceType() {
+        return serviceType;
+    }
+
+    public void setServiceType(String serviceType) {
+        this.serviceType = serviceType;
     }
 }

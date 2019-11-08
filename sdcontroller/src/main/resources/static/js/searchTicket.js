@@ -1,8 +1,18 @@
 $(document).ready(function() {
-    $('#search-date-from').attr('pattern','[0-9]{4}-[0-9]{2}-[0-9]{2}');
-    $('#search-date-from').attr('placeholder','1900-01-01');
-    $('#search-date-to').attr('pattern','[0-9]{4}-[0-9]{2}-[0-9]{2}');
-    $('#search-date-to').attr('placeholder','1900-01-01');
+    $('#createDateFrom').attr('pattern','[0-9]{4}-[0-9]{2}-[0-9]{2}');
+    $('#createDateTo').attr('pattern','[0-9]{4}-[0-9]{2}-[0-9]{2}');
+    $('#completeDateFrom').attr('pattern','[0-9]{4}-[0-9]{2}-[0-9]{2}');
+    $('#completeDateTo').attr('pattern','[0-9]{4}-[0-9]{2}-[0-9]{2}');
+    $('#createDateFrom').attr('placeholder','1900-01-01');
+    $('#createDateTo').attr('placeholder','1900-01-01');
+    $('#completeDateFrom').attr('placeholder','1900-01-01');
+    $('#completeDateTo').attr('placeholder','1900-01-01');
+    let date = new Date();
+    let day = ("0" + date.getDate()).slice(-2);
+    let month = ("0" + (date.getMonth() + 1)).slice(-2);
+    let localeDate = date.getFullYear() + "-" + (month) + "-" + (day);
+    $('#createDateFrom').val(localeDate);
+    $('#createDateTo').val(localeDate);
 
     createSearchTicketDataTable();
 
@@ -11,6 +21,10 @@ $(document).ready(function() {
         event.preventDefault();
         clearAllMsg();
         $('#searchTicketTable').DataTable().ajax.reload();
+    });
+
+    $('#btnSearchReset').on('click',function(){
+        $("#search-ticket-form")[0].reset();
     });
 });
 
@@ -27,11 +41,17 @@ function createSearchTicketDataTable(){
             dataSrc: 'data',
             data: function(d){
                 // search input
-                d.dateFrom = $("#search-date-from").val();
-                d.dateTo = $("#search-date-to").val();
+                d.createDateFrom = $("#createDateFrom").val();
+                d.createDateTo = $("#createDateTo").val();
                 d.status = $("#search-status").val();
-                d.ticketMasId =$('#ticket_mas_id').val();
-                d.custCode =$('#customer_code').val();
+                d.completeDateFrom = $("#completeDateFrom").val();
+                d.completeDateTo = $("#completeDateTo").val();
+                d.createBy = $("#createBy").val();
+                d.ticketMasId = $('#ticket_mas_id').val();
+                d.custCode = $('#customer_code').val();
+                d.serviceNumber = $("#serviceNumber").val();
+                d.ticketType = $('#ticketType').val();
+                d.serviceType = $("#serviceType").val();
             },
             error: function (e) {
                 if(e.responseText){
@@ -45,27 +65,38 @@ function createSearchTicketDataTable(){
             { data: 'ticketMasId' },
             { data: 'ticketType' },
             { data: 'custCode' },
-            { data: 'status' },
+            { data: 'serviceType' },
+            { data: 'searchValue'},
+            { data: 'statusDesc' },
+            { data: 'callInCount'},
+            { data: 'completeDate'},
             { data: 'createDate' },
             { data: 'createBy' }
         ],
         columnDefs: [
             {
-                targets: 4,
+                targets: 7,
+                data: "completeDate",
+                render: function (nextRunTime, type, row, meta) {
+                    return nextRunTime==null ? null : nextRunTime.replace('T', ' ');
+                }
+            },
+            {
+                targets: 8,
                 data: "createDate",
                 render: function (nextRunTime, type, row, meta) {
                      return nextRunTime==null ? null : nextRunTime.replace('T', ' ');
                 }
-            },{
-                  targets:6,
-                  data:null,
-                  defaultContent:'<button class="btn btn-info">Detail</button>'
-              }
+            },
+            {
+                targets: 10,
+                data: "ticketMasId",
+                render: function ( ticketMasId, type, row, meta ) {
+                    var ctx = $("meta[name='_ctx']").attr("content");
+                    var link = ctx + "/ticket?ticketMasId=" + ticketMasId;
+                    return '<a class="btn btn-info" href=' + link + ' role="button">Detail</a>';
+                }
+            }
         ]
     });
-    let ctx = $("meta[name='_ctx']").attr("content");
-    $('#searchTicketTable tbody').on('click','button',function(){
-        var data = table.row( $(this).parents('tr') ).data();
-         $(location).attr('href',ctx+'/ticket?ticketMasId='+data.ticketMasId);
-    })
 }
