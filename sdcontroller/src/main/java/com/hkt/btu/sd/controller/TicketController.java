@@ -8,8 +8,8 @@ import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.nora.NoraAccountData;
 import com.hkt.btu.sd.facade.data.nora.NoraBroadbandInfoData;
 import com.hkt.btu.sd.facade.data.nora.NoraDnGroupData;
-import com.hkt.btu.sd.facade.data.wfm.WfmAppointmentResData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
+import com.hkt.btu.sd.facade.data.wfm.WfmMakeApptData;
 import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -18,9 +18,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
 import java.security.Principal;
@@ -340,10 +341,18 @@ public class TicketController {
         }
     }
 
-    @CrossOrigin
-    @GetMapping("makeAppointment")
-    public ResponseEntity<?> makeAppointment() {
-        String html = wfmApiFacade.postAppointmentForm();
-        return ResponseEntity.ok(html);
+    @GetMapping("token")
+    public ResponseEntity<?> getToken(@Validated WfmMakeApptData makeApptData,
+                                      BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body("Cannot input invalid parameters");
+        }
+
+        String jwt = wfmApiFacade.getToken(makeApptData);
+        if (StringUtils.isNotEmpty(jwt)) {
+            return ResponseEntity.ok(jwt);
+        } else {
+            return ResponseEntity.badRequest().body("Can't not get the token to make appointment.");
+        }
     }
 }
