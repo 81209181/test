@@ -213,6 +213,8 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
             queryParam.put("ticketMasId", String.valueOf(data.getTicketMasId()));
             queryParam.put("ticketDetId", String.valueOf(data.getTicketDetId()));
             queryParam.put("symptomCode", data.getSymptomCode());
+            queryParam.put("serviceType", data.getServiceType());
+            queryParam.put("bsn", String.valueOf(data.getBsn()));
             return getData("/api/v1/sd/token", queryParam);
         }).orElse(null);
     }

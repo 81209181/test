@@ -326,10 +326,18 @@ function removeContact(btn){
 
 function makeAppointment(ticketMasId, ticketDetId, symptomCode) {
 
+    let bsn = $("#service").find('input[name=relatedBsn]').val();
+    if (bsn === '') {
+        bsn = $("#service").find('input[name=serviceCode]').val();
+    }
+    let serviceType = $("#service").find('input[name=serviceType]').val();
+
     $.get('/ticket/token', {
+        bsn : bsn,
         ticketMasId: ticketMasId,
         ticketDetId: ticketDetId,
-        symptomCode: symptomCode
+        symptomCode: symptomCode,
+        serviceType: serviceType
     }, function (res) {
         let window = AppointmentSDObj.make({
             data: {
