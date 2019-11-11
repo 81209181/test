@@ -3,7 +3,6 @@ package com.hkt.btu.sd.facade.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.hkt.btu.common.facade.data.DataInterface;
 import com.hkt.btu.sd.core.service.SdApiService;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeOfferMappingBean;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
@@ -11,8 +10,6 @@ import com.hkt.btu.sd.core.util.JsonUtils;
 import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.WfmApiFacade;
 import com.hkt.btu.sd.facade.data.SdTicketData;
-import com.hkt.btu.sd.facade.data.WfmJobDetailsData;
-import com.hkt.btu.sd.facade.data.WfmResponseData;
 import com.hkt.btu.sd.facade.data.wfm.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -23,7 +20,6 @@ import javax.annotation.Resource;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Form;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -75,19 +71,6 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
     }
 
     @Override
-    public WfmJobDetailsData getJobDetails(Integer jobId) {
-        return Optional.ofNullable(jobId).map(id -> {
-            Map<String, String> queryParamMap = new HashMap<>();
-            queryParamMap.put("jobId", id.toString());
-            String wfmResponseDataJsonString = getData("/api/v1/sd/FaultView", queryParamMap);
-            WfmResponseData<WfmJobDetailsData> wfmResponseData = populateWfmResponseData(
-                    wfmResponseDataJsonString, new TypeToken<WfmResponseData<WfmJobDetailsData>>() {
-                    }.getType());
-            return wfmResponseData.getData();
-        }).orElse(new WfmJobDetailsData());
-    }
-
-    @Override
     public List<SdServiceTypeOfferMappingBean> getServiceTypeOfferMapping() {
         return Optional.ofNullable(new Gson().<List<WfmOfferNameProductTypeData>>fromJson(getData("/api/v1/sd/GetOfferNameProductTypeMapping", null),
                 new TypeToken<List<WfmOfferNameProductTypeData>>() {
@@ -98,18 +81,6 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
                     bean.setServiceTypeCode(data.getProductType());
                     return bean;
                 }).collect(Collectors.toList())).orElseThrow(() -> new RuntimeException("Service type offer mapping not found."));
-    }
-
-    private <T extends DataInterface> WfmResponseData<T> populateWfmResponseData(String wfmResponseDataJsonString, Type type) {
-        WfmResponseData<T> wfmResponseData = new Gson().fromJson(wfmResponseDataJsonString, type);
-        Optional.ofNullable(wfmResponseData).ifPresent(data -> {
-            LOG.info("Response type: " + data.getType());
-            if (StringUtils.isNotEmpty(data.getErrorMsg())) {
-                LOG.error("Response status: " + data.getCode());
-                LOG.error("Error message: " + data.getErrorMsg());
-            }
-        });
-        return wfmResponseData;
     }
 
     @Override

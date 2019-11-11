@@ -1,6 +1,5 @@
 package com.hkt.btu.sd.facade.data;
 
-import java.time.LocalDateTime;
 
 public class SdTicketInfoData {
 
@@ -21,12 +20,11 @@ public class SdTicketInfoData {
     private String languagePreference;
     private String asap;
 
-    // job
-    private String jobId;
-    private String jobStatus;
-    private LocalDateTime appointmentDate;
-
     // service info
+    // todo [SERVDESK-208] Detach Service Info from Ticket Page: reflect database record of service on ticket
+//    List<SdTicketDetData> ticketDetDataList;
+
+    // todo [SERVDESK-208] Detach Service Info from Ticket Page: remove service api get data
     private String serviceType;
     private String serviceTypeDesc;
     private String serviceNo;
@@ -43,8 +41,6 @@ public class SdTicketInfoData {
     private String gridId;
     private String exchangeBuildingId;
     private String relatedBsn;
-
-    // other
     private boolean ngn3reset;
 
     public int getTicketMasId() {
@@ -149,30 +145,6 @@ public class SdTicketInfoData {
 
     public void setAsap(String asap) {
         this.asap = asap;
-    }
-
-    public String getJobId() {
-        return jobId;
-    }
-
-    public void setJobId(String jobId) {
-        this.jobId = jobId;
-    }
-
-    public String getJobStatus() {
-        return jobStatus;
-    }
-
-    public void setJobStatus(String jobStatus) {
-        this.jobStatus = jobStatus;
-    }
-
-    public LocalDateTime getAppointmentDate() {
-        return appointmentDate;
-    }
-
-    public void setAppointmentDate(LocalDateTime appointmentDate) {
-        this.appointmentDate = appointmentDate;
     }
 
     public String getServiceType() {
