@@ -1,7 +1,9 @@
 package com.hkt.btu.sd.facade.data;
 
 
-public class SdTicketInfoData {
+import com.hkt.btu.common.facade.data.DataInterface;
+
+public class SdTicketInfoData implements DataInterface {
 
     // ticket
     private int ticketMasId;
@@ -11,6 +13,7 @@ public class SdTicketInfoData {
     private int callInCount;
     private String searchKeyDesc;
     private String searchValue;
+    private String owningRole;
 
     // customer info
     private String custCode;
@@ -281,5 +284,13 @@ public class SdTicketInfoData {
 
     public void setNgn3reset(boolean ngn3reset) {
         this.ngn3reset = ngn3reset;
+    }
+
+    public String getOwningRole() {
+        return owningRole;
+    }
+
+    public void setOwningRole(String owningRole) {
+        this.owningRole = owningRole;
     }
 }

@@ -16,6 +16,8 @@ import com.hkt.btu.sd.core.service.populator.SdTicketRemarkBeanPopulator;
 import com.hkt.btu.sd.core.service.populator.SdTicketServiceBeanPopulator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +31,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class SdTicketServiceImpl implements SdTicketService {
+
+    private static final Logger LOG = LogManager.getLogger(SdTicketServiceImpl.class);
 
     @Resource
     SdTicketMasMapper ticketMasMapper;
@@ -60,12 +64,15 @@ public class SdTicketServiceImpl implements SdTicketService {
     public int createQueryTicket(String custCode, String serviceNo, String serviceType, String subsId,
                                  String searchKey, String searchValue) {
         SdTicketMasEntity ticketMasEntity = new SdTicketMasEntity();
-        String userId = userService.getCurrentUserUserId();
+        SdUserBean currentUserBean = (SdUserBean) userService.getCurrentUserBean();
+        String userId = currentUserBean.getUserId();
+        String primaryRoleId = currentUserBean.getPrimaryRoleId();
         ticketMasEntity.setCustCode(custCode);
         ticketMasEntity.setCreateby(userId);
         ticketMasEntity.setCallInCount(1);
         ticketMasEntity.setSearchKey(searchKey);
         ticketMasEntity.setSearchValue(searchValue);
+        ticketMasEntity.setOwningRole(primaryRoleId);
         ticketMasMapper.insertQueryTicket(ticketMasEntity);
 
         // service
@@ -357,6 +364,7 @@ public class SdTicketServiceImpl implements SdTicketService {
 
         // check status
         Optional<SdTicketMasBean> ticketMasBeanOptional = getTicket(ticketMasId);
+        SdUserBean currentUserBean = (SdUserBean) userService.getCurrentUserBean();
         if(ticketMasBeanOptional.isPresent()){
             SdTicketMasBean sdTicketMasBean = ticketMasBeanOptional.get();
             TicketStatusEnum ticketStatus = sdTicketMasBean.getStatus();
@@ -365,13 +373,19 @@ public class SdTicketServiceImpl implements SdTicketService {
             } else if( ticketStatus==TicketStatusEnum.COMPLETE ){
                 throw new InvalidInputException("Ticket already closed.");
             }
+
+            // check primary role
+            String primaryRoleId = currentUserBean.getPrimaryRoleId();
+            if (!primaryRoleId.equals(sdTicketMasBean.getOwningRole())) {
+                throw new InvalidInputException("This ticket does not belong to your team.");
+            }
         } else {
             throw new InvalidInputException(String.format("Ticket not found. (ticketMasId: %d)", ticketMasId));
         }
 
         String content = reasonContent + String.format(";Contact: %s,%s", contactName,contactNumber);
         // close ticket and add remarks
-        String modifyby = userService.getCurrentUserUserId();
+        String modifyby = currentUserBean.getUserId();
         ticketMasMapper.updateTicketStatus(ticketMasId, SdTicketMasBean.STATUS_TYPE_CODE.COMPLETE, modifyby);
         createTicketSysRemarks(ticketMasId, String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_CLOSE, reasonType, content, closeby));
     }
