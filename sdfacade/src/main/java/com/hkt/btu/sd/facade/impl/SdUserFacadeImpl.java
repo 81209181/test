@@ -74,10 +74,8 @@ public class SdUserFacadeImpl implements SdUserFacade {
             sdInputCheckService.checkLoginID(employeeNumber);
             sdInputCheckService.checkAssignRoleByDomain(userRoleIdList, null);
             String primaryRoleId = checkPrimaryRole(createUserFormData.getPrimaryRoleId(), userRoleIdList);
-            // PCCW / HKT user will use T prefix
-            String userId = SdUserBean.CREATE_USER_PREFIX.PCCW_HKT_USER + employeeNumber;
             // create new user
-            resultBean = sdUserService.createUser(userId, name, mobile, email, primaryRoleId, userRoleIdList);
+            resultBean = sdUserService.createUser(employeeNumber, name, mobile, email, primaryRoleId, userRoleIdList);
         } catch (InvalidInputException | UserNotFoundException | DuplicateUserEmailException e) {
             LOG.warn(e.getMessage());
             return CreateResultData.of(e.getMessage());
@@ -117,11 +115,9 @@ public class SdUserFacadeImpl implements SdUserFacade {
             sdInputCheckService.checkUserName(employeeNumber);
             sdInputCheckService.checkAssignRoleByDomain(userRoleIdList, null);
             String primaryRoleId = checkPrimaryRole(createUserFormData.getPrimaryRoleId(),userRoleIdList);
-            // if user not have userId, wiil use X prefix.
             // create new user.
             // Non PCCW / HKT user will use X prefix
-            String userId = SdUserBean.CREATE_USER_PREFIX.NON_PCCW_HKT_USER + employeeNumber;
-            resultBean = sdUserService.createUser(userId, name, mobile, email,primaryRoleId, userRoleIdList);
+            resultBean = sdUserService.createUser(employeeNumber, name, mobile, email,primaryRoleId, userRoleIdList);
         } catch (InvalidInputException | UserNotFoundException | DuplicateUserEmailException e) {
             LOG.warn(e.getMessage());
             return CreateResultData.of(e.getMessage());
