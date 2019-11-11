@@ -26,8 +26,8 @@
         <selectKey keyProperty="ticketMasId" order="BEFORE" resultType="Integer">
             select SEQ_TICKET_MAS_ID.NEXTVAL from dual
         </selectKey>
-        insert into TICKET_MAS (TICKET_MAS_ID,CUST_CODE,TICKET_TYPE,STATUS,CREATEBY,MODIFYBY,CALL_IN_COUNT,SEARCH_KEY,SEARCH_VALUE)
-        values(#{ticketMasId},#{custCode},'QUERY','O',#{createby},#{createby},#{callInCount},#{searchKey},#{searchValue})
+        insert into TICKET_MAS (TICKET_MAS_ID,CUST_CODE,TICKET_TYPE,STATUS,CREATEBY,MODIFYBY,CALL_IN_COUNT,SEARCH_KEY,SEARCH_VALUE,OWNING_ROLE)
+        values(#{ticketMasId},#{custCode},'QUERY','O',#{createby},#{createby},#{callInCount},#{searchKey},#{searchValue},#{owningRole})
     </insert>
 
     <select id="findTicketById" resultMap="TicketMasEntity">
