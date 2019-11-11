@@ -364,6 +364,7 @@ public class SdTicketServiceImpl implements SdTicketService {
 
         // check status
         Optional<SdTicketMasBean> ticketMasBeanOptional = getTicket(ticketMasId);
+        SdUserBean currentUserBean = (SdUserBean) userService.getCurrentUserBean();
         if(ticketMasBeanOptional.isPresent()){
             SdTicketMasBean sdTicketMasBean = ticketMasBeanOptional.get();
             TicketStatusEnum ticketStatus = sdTicketMasBean.getStatus();
@@ -372,13 +373,19 @@ public class SdTicketServiceImpl implements SdTicketService {
             } else if( ticketStatus==TicketStatusEnum.COMPLETE ){
                 throw new InvalidInputException("Ticket already closed.");
             }
+
+            // check primary role
+            String primaryRoleId = currentUserBean.getPrimaryRoleId();
+            if (!primaryRoleId.equals(sdTicketMasBean.getOwningRole())) {
+                throw new InvalidInputException("This ticket does not belong to your team.");
+            }
         } else {
             throw new InvalidInputException(String.format("Ticket not found. (ticketMasId: %d)", ticketMasId));
         }
 
         String content = reasonContent + String.format(";Contact: %s,%s", contactName,contactNumber);
         // close ticket and add remarks
-        String modifyby = userService.getCurrentUserUserId();
+        String modifyby = currentUserBean.getUserId();
         ticketMasMapper.updateTicketStatus(ticketMasId, SdTicketMasBean.STATUS_TYPE_CODE.COMPLETE, modifyby);
         createTicketSysRemarks(ticketMasId, String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_CLOSE, reasonType, content, closeby));
     }
