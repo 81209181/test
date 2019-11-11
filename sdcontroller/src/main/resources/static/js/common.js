@@ -1,5 +1,15 @@
 $(document).ready(function () {
     prepareAjax();
+
+    $('#session-expire-warning-modal').find('button').on('click',function(){
+        $.get('/public/contact-us',function(res){});
+    })
+
+    $('#session-expire-warning-modal').on('show.bs.modal',function(){
+        setTimeout(function(){
+            location.reload();
+        },30000)
+    })
 });
 
 function prepareAjax(){
@@ -11,6 +21,9 @@ function prepareAjax(){
             if (header && token) {
                 xhr.setRequestHeader(header, token);
             }
+            setTimeout(function(){
+                $('#session-expire-warning-modal').modal('show');
+            }, 60000 * 14 + 30000)
         }
     });
 
