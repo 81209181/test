@@ -26,8 +26,8 @@
         <selectKey keyProperty="ticketMasId" order="BEFORE" resultType="Integer">
             select SEQ_TICKET_MAS_ID.NEXTVAL from dual
         </selectKey>
-        insert into TICKET_MAS (TICKET_MAS_ID,CUST_CODE,TICKET_TYPE,STATUS,CREATEBY,MODIFYBY,CALL_IN_COUNT,SEARCH_KEY,SEARCH_VALUE)
-        values(#{ticketMasId},#{custCode},'QUERY','O',#{createby},#{createby},#{callInCount},#{searchKey},#{searchValue})
+        insert into TICKET_MAS (TICKET_MAS_ID,CUST_CODE,TICKET_TYPE,STATUS,CREATEBY,MODIFYBY,CALL_IN_COUNT,SEARCH_KEY,SEARCH_VALUE,OWNING_ROLE)
+        values(#{ticketMasId},#{custCode},'QUERY','O',#{createby},#{createby},#{callInCount},#{searchKey},#{searchValue},#{owningRole})
     </insert>
 
     <select id="findTicketById" resultMap="TicketMasEntity">
@@ -47,7 +47,7 @@
             <if test="createDateTo != null">
                 and trunc(#{createDateTo}) &gt;= trunc(tm.createdate)
             </if>
-            <if test="status != null and status != ''">
+            <if test="status != null">
                 and tm.status = #{status}
             </if>
             <if test="completeDateFrom != null">
@@ -56,22 +56,22 @@
             <if test="completeDateTo != null">
                 and trunc(#{completeDateTo}) &gt;= trunc(tm.complete_date)
             </if>
-            <if test="createBy != null and createBy != ''">
+            <if test="createBy != null">
                 and tm.createby = #{createBy}
             </if>
-            <if test="ticketMasId != null and ticketMasId != ''">
+            <if test="ticketMasId != null">
                 and tm.ticket_mas_id = #{ticketMasId}
             </if>
-            <if test="custCode != null and custCode != ''">
+            <if test="custCode != null">
                 and lower(tm.cust_code) like '%' || lower(#{custCode}) || '%'
             </if>
-            <if test="serviceNumber != null and serviceNumber != ''">
+            <if test="serviceNumber != null">
                 and lower(tm.search_value) like '%' || lower(#{serviceNumber}) || '%'
             </if>
-            <if test="ticketType != null and ticketType != ''">
+            <if test="ticketType != null">
                 and tm.ticket_type = #{ticketType}
             </if>
-            <if test="serviceType != null and serviceType != ''">
+            <if test="serviceType != null">
                 and td.service_type_code = #{serviceType}
             </if>
         </where>

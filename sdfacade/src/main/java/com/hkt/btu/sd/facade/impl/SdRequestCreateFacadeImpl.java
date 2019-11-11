@@ -80,6 +80,9 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     @Override
     public SdTicketInfoData getTicketInfo(SdTicketMasData sdTicketMasData) {
         SdTicketInfoData infoData = new SdTicketInfoData();
+
+        // get ticket info from db
+        // todo [SERVDESK-204]: add SdTicketInfoDataPopulator.populateFromSdTicketMasData(SdTicketMasData, SdTicketInfoData)
         infoData.setCustCode(sdTicketMasData.getCustCode());
         infoData.setTicketMasId(sdTicketMasData.getTicketMasId());
         infoData.setTicketStatus(sdTicketMasData.getStatus());
@@ -89,17 +92,21 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         infoData.setCallInCount(sdTicketMasData.getCallInCount());
         infoData.setSearchKeyDesc(sdTicketMasData.getSearchKeyDesc());
         infoData.setSearchValue(sdTicketMasData.getSearchValue());
-        infoData.setAppointmentDate(sdTicketMasData.getAppointmentDate());
+
+        // get customer info from BES
+        BesCustomerData besCustomerData = besApiFacade.queryCustomerByCustomerCode(sdTicketMasData.getCustCode());
+        // todo [SERVDESK-204]: use BesCustomerData besCustomerData
+        //  add SdTicketInfoDataPopulator.populateFromBesCustomerData(BesCustomerData, SdTicketInfoData)
+
         SdTicketServiceData serviceData = ticketFacade.getService(sdTicketMasData.getTicketMasId());
         if (serviceData != null) {
-            String jobId = serviceData.getJobId();
-            if (StringUtils.isNotBlank(jobId)) {
-                infoData.setJobId(jobId);
-                WfmJobBeanData wfmJobBeanData = wfmApiFacade.getJobDetails(Integer.valueOf(jobId)).getJobBean();
-                if (wfmJobBeanData != null) {
-                    infoData.setJobStatus(wfmJobBeanData.getStatus());
-                }
-            }
+            // todo [SERVDESK-208] Detach Service Info from Ticket Page: service should be a list
+            //  0. remove below service data
+            //  1. frontend loop all serviceNumber+serviceType from ajax return of TicketController.getServiceInfo
+            //  2. call API to fill-in data
+            //  3. reflect API data on frontend
+
+            // find service data
             List<RequestCreateSearchResultData> resultsDataList;
             if (infoData.getSearchKeyDesc().equals("DN")) {
                 resultsDataList = findData4Dn(serviceData.getServiceCode()).getList();
@@ -110,10 +117,15 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
                 RequestCreateSearchResultData requestCreateSearchResultData = resultsDataList.get(0);
                 if (requestCreateSearchResultData != null) {
                     if (requestCreateSearchResultData.getServiceNo().equals(serviceData.getServiceCode())) {
+                        // todo [SERVDESK-204]: use BesCustomerData besCustomerData
+                        //  remove below customer data
                         infoData.setCustName(requestCreateSearchResultData.getCustName());
                         infoData.setCustType(requestCreateSearchResultData.getCustType());
                         infoData.setCustStatus(requestCreateSearchResultData.getCustStatus());
                         infoData.setLanguagePreference(requestCreateSearchResultData.getLanguagePreference());
+
+                        // todo [SERVDESK-208] Detach Service Info from Ticket Page
+                        //  0. remove below service data
                         infoData.setServiceStatus(requestCreateSearchResultData.getServiceStatus());
                         infoData.setServiceStatusDesc(requestCreateSearchResultData.getServiceStatusDesc());
                         infoData.setSubsId(requestCreateSearchResultData.getSubsId());
@@ -127,10 +139,15 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
                     }
                 }
             }
+
+            // translate service type code to name
+            String serviceTypeDesc = serviceTypeFacade.getServiceTypeDescByServiceTypeCode(serviceData.getServiceType());
+            infoData.setServiceTypeDesc(serviceTypeDesc);
+
+            // todo [SERVDESK-204]: add SdTicketInfoDataPopulator.populateFromSdTicketServiceData(SdTicketServiceData, SdTicketInfoData)
             infoData.setServiceType(serviceData.getServiceType());
-            infoData.setServiceTypeDesc(serviceTypeFacade.getServiceTypeDescByServiceTypeCode(serviceData.getServiceType()));
             infoData.setServiceNo(serviceData.getServiceCode());
-            infoData.setNgn3reset(serviceData.getServiceType().equals(SdServiceTypeBean.SERVICE_TYPE.VOIP));
+            infoData.setNgn3reset(SdServiceTypeBean.SERVICE_TYPE.VOIP.equals(serviceData.getServiceType()));
         }
         return infoData;
     }

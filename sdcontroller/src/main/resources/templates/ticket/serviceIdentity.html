@@ -8,7 +8,7 @@
 <body>
 <div layout:fragment="content" th:remove="tag">
 
-    <div class="card" style="height: 900px;">
+    <div class="card" style="margin-bottom: 75px;">
         <div class="card-header bg-primary text-white">Search Service</div>
         <div class="card-body">
             <div class="row">
@@ -129,6 +129,38 @@
                     </div>
                     <button type="button" class="btn btn-primary float-right mt-3" id="btnSearchCustomerNext">Create Ticket</button>
                 </form>
+
+                <div class="col-md-12">
+                    <details>
+                        <summary class="py-2">Related Ticket</summary>
+                        <table id="relatedTicketTable" class="display" cellspacing="0" width="100%">
+                            <thead>
+                            <tr>
+                                <th>Ticket Id</th>
+                                <th>Ticket Type</th>
+                                <th>Status</th>
+                                <th>Call-in Count</th>
+                                <th>Create Date</th>
+                                <th>Complete Date</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th>Ticket Id</th>
+                                <th>Ticket Type</th>
+                                <th>Status</th>
+                                <th>Call-in Count</th>
+                                <th>Create Date</th>
+                                <th>Complete Date</th>
+                                <th></th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </details>
+                </div>
             </div>
         </div>
     </div>

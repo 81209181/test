@@ -16,6 +16,7 @@ public interface SdInputCheckService {
     String checkLdapDomain(String input) throws  InvalidInputException;
     String checkUserName(String input) throws InvalidInputException;
     String checkAssignRoleByDomain(List<String> roleList, String domain) throws InvalidInputException;
+    String checkLoginID(String input) throws InvalidInputException;
 
     void checkUserRole(List<String> userRoleIdList, List<SdUserRoleBean> eligibleUserRoleGrantList, List<SdUserRoleBean> userRoleByUserId);
 }

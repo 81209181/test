@@ -102,10 +102,11 @@ public class SdInputCheckServiceImpl implements SdInputCheckService {
 
     @Override
     public String checkUserName(String input) throws InvalidInputException {
+        String pattern = "^[X][a-zA-Z0-9_]{0,9}$";
         input = Optional.ofNullable(input)
                 .orElseThrow(() -> new InvalidInputException("Empty input UserName."));
-        if (input.length() >= 9) {
-            throw new InvalidInputException("Please input a username of no less than 9 characters");
+        if (input.matches(pattern)) {
+            throw new InvalidInputException("Please input a username of no more than 9 characters");
         }
         return null;
     }
@@ -117,6 +118,17 @@ public class SdInputCheckServiceImpl implements SdInputCheckService {
             domain = Optional.ofNullable(domain)
                     .orElseThrow(() -> new InvalidInputException("Only LDAP users can chosen Team head permissions."));
             checkLdapDomain(domain);
+        }
+        return null;
+    }
+
+    @Override
+    public String checkLoginID(String input) throws InvalidInputException {
+        String pattern = "^[T][0-9]{0,8}$";
+        input = Optional.ofNullable(input)
+                .orElseThrow(() -> new InvalidInputException("Empty input UserName."));
+        if (input.matches(pattern)) {
+            throw new InvalidInputException("Please input a username of no more than 9 characters");
         }
         return null;
     }

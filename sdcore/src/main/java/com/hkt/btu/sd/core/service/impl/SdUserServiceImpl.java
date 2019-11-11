@@ -513,13 +513,12 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         // Check User Email
         checkUserEmailDuplicate(user.getEmail(), userByEmail.getEmail());
 
-        String userId = SdUserBean.CREATE_USER_PREFIX.PCCW_HKT_USER + employeeNumber;
         List<SdUserRoleEntity> userRoleByUserId = sdUserRoleMapper.getUserRoleByUserId(oldUserId);
 
-        sdUserMapper.changeUserType(oldUserId, name, mobile, userId, null, email, currentUserBean.getUserId());
-        userRoleService.changeUserIdInUserUserRole(oldUserId, userId, userRoleByUserId);
+        sdUserMapper.changeUserType(oldUserId, name, mobile, employeeNumber, null, email, currentUserBean.getUserId());
+        userRoleService.changeUserIdInUserUserRole(oldUserId, employeeNumber, userRoleByUserId);
 
-        return userId;
+        return employeeNumber;
     }
 
     @Override
@@ -541,15 +540,14 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             checkUserEmailDuplicate(user.getEmail(), userByEmail.getEmail());
         }
 
-        String userId = SdUserBean.CREATE_USER_PREFIX.NON_PCCW_HKT_USER + employeeNumber;
         List<SdUserRoleEntity> userRoleByUserId = sdUserRoleMapper.getUserRoleByUserId(oldUserId);
 
-        sdUserMapper.changeUserType(oldUserId, name, mobile, userId, null, email, currentUserBean.getUserId());
+        sdUserMapper.changeUserType(oldUserId, name, mobile, employeeNumber, null, email, currentUserBean.getUserId());
 
         // Change USER_ID IN USER_USER_ROLE
-        userRoleService.changeUserIdInUserUserRole(oldUserId, userId, userRoleByUserId);
+        userRoleService.changeUserIdInUserUserRole(oldUserId, employeeNumber, userRoleByUserId);
 
-        return userId;
+        return employeeNumber;
     }
 
     @Override

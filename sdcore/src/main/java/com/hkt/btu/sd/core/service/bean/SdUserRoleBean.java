@@ -8,6 +8,7 @@ public class SdUserRoleBean extends BaseBean {
 
     public static class ROLE_ID{
         public static final String OPERATOR = "OPT";
+        public static final String ENGINEER = "ENG";
     }
 
     private String roleId;
