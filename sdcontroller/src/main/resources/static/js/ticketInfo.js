@@ -546,7 +546,7 @@ function createRelatedTicketDataTable(){
             columns: [
                 { data: 'ticketMasId' },
                 { data: 'ticketType' },
-                { data: 'status' },
+                { data: 'statusDesc' },
                 { data: 'callInCount'},
                 { data: 'createDate' },
                 { data: 'completeDate'}

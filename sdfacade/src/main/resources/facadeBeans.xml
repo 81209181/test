@@ -100,4 +100,7 @@
 
     <alias alias="faultInfoDataPopulator" name="besFaultInfoDataPopulator"/>
     <bean class="com.hkt.btu.sd.facade.populator.BesFaultInfoDataPopulator" id="besFaultInfoDataPopulator"/>
+
+    <alias name="sdTicketInfoDataPopulator" alias="ticketInfoDataPopulator"/>
+    <bean class="com.hkt.btu.sd.facade.populator.SdTicketInfoDataPopulator" id="sdTicketInfoDataPopulator"/>
 </beans>
