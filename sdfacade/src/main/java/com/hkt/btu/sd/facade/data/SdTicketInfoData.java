@@ -13,6 +13,7 @@ public class SdTicketInfoData implements DataInterface {
     private int callInCount;
     private String searchKeyDesc;
     private String searchValue;
+    private String owningRole;
 
     // customer info
     private String custCode;
@@ -283,5 +284,13 @@ public class SdTicketInfoData implements DataInterface {
 
     public void setNgn3reset(boolean ngn3reset) {
         this.ngn3reset = ngn3reset;
+    }
+
+    public String getOwningRole() {
+        return owningRole;
+    }
+
+    public void setOwningRole(String owningRole) {
+        this.owningRole = owningRole;
     }
 }
