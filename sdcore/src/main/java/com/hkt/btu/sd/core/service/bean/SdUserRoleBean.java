@@ -21,6 +21,10 @@ public class SdUserRoleBean extends BaseBean {
     private boolean isActive;
     private boolean isAbstract;
 
+    public static List<String> getPrimaryRoleParentRoleIdList() {
+        return List.of(ROLE_ID.OPERATOR,ROLE_ID.ENGINEER);
+    }
+
     public String getRoleId() {
         return roleId;
     }

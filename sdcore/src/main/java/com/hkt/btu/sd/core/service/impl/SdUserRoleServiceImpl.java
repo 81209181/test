@@ -233,7 +233,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
         List<SdUserRoleBean> eligibleUserRoleGrantList = getEligibleUserRoleGrantList();
         List<SdUserRoleBean> primaryRoleList = new ArrayList<>();
         eligibleUserRoleGrantList.forEach(sdUserRoleBean -> {
-            if (List.of(SdUserRoleBean.ROLE_ID.OPERATOR,SdUserRoleBean.ROLE_ID.ENGINEER).contains(sdUserRoleBean.getParentRoleId())) {
+            if (SdUserRoleBean.getPrimaryRoleParentRoleIdList().contains(sdUserRoleBean.getParentRoleId())) {
                 primaryRoleList.add(sdUserRoleBean);
             }
         });
