@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Set;
 
 public interface SdUserRoleService {
+    List<String> getPrimaryRoles();
+
     void updateUserRoleByUserId(String userId, List<String> roleIdList);
     void updateUserRole(String roleId, String roleDesc, String status, Boolean isAbstract);
     void reloadCachedRoleTree();
@@ -27,4 +29,6 @@ public interface SdUserRoleService {
     boolean isEligibleToGrantUserRole(List<String> roleIdList);
 
     void changeUserIdInUserUserRole(String oldUserId, String userId, List<SdUserRoleEntity> userRoleByUserId);
+
+    List<SdUserRoleBean> getPrimaryRoleList();
 }

@@ -229,6 +229,23 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     }
 
     @Override
+    public List<SdUserRoleBean> getPrimaryRoleList() {
+        List<SdUserRoleBean> eligibleUserRoleGrantList = getEligibleUserRoleGrantList();
+        List<SdUserRoleBean> primaryRoleList = new ArrayList<>();
+        eligibleUserRoleGrantList.forEach(sdUserRoleBean -> {
+            if (List.of(SdUserRoleBean.ROLE_ID.OPERATOR,SdUserRoleBean.ROLE_ID.ENGINEER).contains(sdUserRoleBean.getParentRoleId())) {
+                primaryRoleList.add(sdUserRoleBean);
+            }
+        });
+        return primaryRoleList.stream().sorted(Comparator.comparing(SdUserRoleBean::getRoleDesc)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<String> getPrimaryRoles() {
+        return getPrimaryRoleList().stream().map(SdUserRoleBean::getRoleId).collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateUserRoleByUserId(String userId, List<String> roleIdList) {
         if (StringUtils.isEmpty(userId)) {

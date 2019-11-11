@@ -1,12 +1,12 @@
 package com.hkt.btu.sd.facade;
 
 
+import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
 import com.hkt.btu.sd.facade.data.EditResultData;
 import com.hkt.btu.sd.facade.data.SdUserPathCtrlData;
 import com.hkt.btu.sd.facade.data.SdUserRoleData;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 public interface SdUserRoleFacade {
@@ -26,4 +26,6 @@ public interface SdUserRoleFacade {
     boolean checkSameTeamRole(String name, String createBy);
 
     void reloadUserRole();
+
+    List<SdUserRoleBean> getPrimaryRoleList();
 }

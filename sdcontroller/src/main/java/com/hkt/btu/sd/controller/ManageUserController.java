@@ -4,6 +4,7 @@ import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.controller.constant.CreateUserPathEnum;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
+import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
 import com.hkt.btu.sd.facade.SdAuditTrailFacade;
 import com.hkt.btu.sd.facade.SdUserFacade;
 import com.hkt.btu.sd.facade.SdUserRoleFacade;
@@ -57,8 +58,8 @@ public class ManageUserController {
         if (!MapUtils.isEmpty(userRoleOptionDataMap)) {
             model.addAttribute("userRoleOptionDataMap", userRoleOptionDataMap);
         }
-        model.addAttribute("primaryRoleList", userRoleFacade.listAllUserRole().stream().filter(roles -> !ObjectUtils.isEmpty(roles.getParentRoleId()))
-                .filter(roles -> List.of("OPT","ENG").contains(roles.getParentRoleId())).sorted(Comparator.comparing(SdUserRoleData::getRoleDesc)).collect(Collectors.toList()));
+        List<SdUserRoleBean> primaryRoleList = userRoleFacade.getPrimaryRoleList();
+        model.addAttribute("primaryRoleList",primaryRoleList);
         String servletPath = request.getServletPath();
         return CreateUserPathEnum.getValue(servletPath);
     }
@@ -136,11 +137,8 @@ public class ManageUserController {
             List<String> userRole = result == null ? null : (List<String>) result.getList();
             if (CollectionUtils.isNotEmpty(userRole)) {
                 model.addAttribute("userRoleList", userRole);
-                model.addAttribute("primaryRoleList", allUserRoles.stream()
-                        .filter(roles -> !ObjectUtils.isEmpty(roles.getParentRoleId()))
-                        .filter(roles -> List.of("OPT","ENG").contains(roles.getParentRoleId()))
-//                        .filter(roles -> userRole.contains(roles.getRoleId()))
-                        .sorted(Comparator.comparing(SdUserRoleData::getRoleDesc)).collect(Collectors.toList()));
+                List<SdUserRoleBean> primaryRoleList = userRoleFacade.getPrimaryRoleList();
+                model.addAttribute("primaryRoleList",primaryRoleList);
             } else {
                 redirectAttributes.addFlashAttribute(PageMsgController.ERROR_MSG, errorMsg);
                 return "redirect:search-user";
