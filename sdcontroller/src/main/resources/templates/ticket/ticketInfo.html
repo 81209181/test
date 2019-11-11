@@ -46,6 +46,10 @@
                     <font class="form-control-plaintext col-md-3" th:text="*{callInCount}"></font>
                     <button type="button" class="btn btn-primary" id="btnCallInCount">Customer Re-call</button>
                 </div>
+                <div class="col-md-3 form-inline pt-2">
+                    <label class="col-form-label justify-content-end">Team:</label>
+                    <font class="form-control-plaintext col-md-5" th:text="*{owningRole}"></font>
+                </div>
             </div>
             <hr>
             <form id="customer" class="row" >

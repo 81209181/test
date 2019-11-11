@@ -11,8 +11,8 @@ public class SdTicketMasDataPopulator extends AbstractDataPopulator<SdTicketMasD
         target.setTicketMasId(source.getTicketMasId());
         target.setCustCode(source.getCustCode());
         target.setTicketType(source.getTicketType());
-        target.setStatus(source.getStatus()==null ? null : source.getStatus().getStatusCode());
-        target.setStatusDesc(source.getStatus()==null ? null : source.getStatus().getStatusDesc());
+        target.setStatus(source.getStatus() == null ? null : source.getStatus().getStatusCode());
+        target.setStatusDesc(source.getStatus() == null ? null : source.getStatus().getStatusDesc());
         target.setCreateBy(source.getCreateby());
         target.setCreateDate(source.getCreatedate());
         target.setModifyBy(source.getModifyby());
@@ -24,9 +24,10 @@ public class SdTicketMasDataPopulator extends AbstractDataPopulator<SdTicketMasD
         target.setSearchValue(source.getSearchValue());
         target.setCompleteDate(source.getCompleteDate());
         target.setServiceType(source.getServiceType());
+        target.setOwningRole(source.getOwningRole());
 
         ServiceSearchEnum serviceSearchEnum = ServiceSearchEnum.getEnum(source.getSearchKey());
-        if(serviceSearchEnum!=null){
+        if (serviceSearchEnum != null) {
             target.setSearchKeyDesc(serviceSearchEnum.getKeyDesc());
         }
     }

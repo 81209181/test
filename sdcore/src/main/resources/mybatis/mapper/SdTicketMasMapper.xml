@@ -15,6 +15,7 @@
         <result column="SEARCH_VALUE" property="searchValue"/>
         <result column="COMPLETE_DATE" property="completeDate"/>
         <result column="SERVICE_TYPE_NAME" property="serviceType"/>
+        <result column="OWNING_ROLE" property="owningRole"/>
 
         <result column="CREATEDATE" property="createdate" />
         <result column="CREATEBY" property="createby" />

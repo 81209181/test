@@ -43,6 +43,16 @@ public class SdTicketMasData implements DataInterface {
 
     private String serviceType;
 
+    private String owningRole;
+
+    public String getOwningRole() {
+        return owningRole;
+    }
+
+    public void setOwningRole(String owningRole) {
+        this.owningRole = owningRole;
+    }
+
     public String getSearchKey() {
         return searchKey;
     }

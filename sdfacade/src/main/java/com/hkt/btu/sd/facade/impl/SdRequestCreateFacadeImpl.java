@@ -92,6 +92,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         infoData.setCallInCount(sdTicketMasData.getCallInCount());
         infoData.setSearchKeyDesc(sdTicketMasData.getSearchKeyDesc());
         infoData.setSearchValue(sdTicketMasData.getSearchValue());
+        infoData.setOwningRole(sdTicketMasData.getOwningRole());
 
         // get customer info from BES
         BesCustomerData besCustomerData = besApiFacade.queryCustomerByCustomerCode(sdTicketMasData.getCustCode());
