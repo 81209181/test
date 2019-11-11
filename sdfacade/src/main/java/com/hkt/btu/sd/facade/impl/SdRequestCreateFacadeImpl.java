@@ -1,12 +1,12 @@
 package com.hkt.btu.sd.facade.impl;
 
 import com.hkt.btu.common.core.exception.InvalidInputException;
-import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
 import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
 import com.hkt.btu.sd.facade.populator.RequestCreateSearchResultDataPopulator;
+import com.hkt.btu.sd.facade.populator.SdTicketInfoDataPopulator;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -36,6 +36,8 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
 
     @Resource(name = "requestCreateSearchResultDataPopulator")
     RequestCreateSearchResultDataPopulator requestCreateSearchResultDataPopulator;
+    @Resource(name = "ticketInfoDataPopulator")
+    SdTicketInfoDataPopulator ticketInfoDataPopulator;
 
     @Override
     public List<ServiceSearchEnum> getSearchKeyEnumList() {
@@ -78,28 +80,18 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     }
 
     @Override
-    public SdTicketInfoData getTicketInfo(SdTicketMasData sdTicketMasData) {
-        SdTicketInfoData infoData = new SdTicketInfoData();
+    public SdTicketInfoData getTicketInfo(SdTicketMasData ticketMasData) {
+        SdTicketInfoData ticketInfoData = new SdTicketInfoData();
 
         // get ticket info from db
-        // todo [SERVDESK-204]: add SdTicketInfoDataPopulator.populateFromSdTicketMasData(SdTicketMasData, SdTicketInfoData)
-        infoData.setCustCode(sdTicketMasData.getCustCode());
-        infoData.setTicketMasId(sdTicketMasData.getTicketMasId());
-        infoData.setTicketStatus(sdTicketMasData.getStatus());
-        infoData.setTicketStatusDesc(sdTicketMasData.getStatusDesc());
-        infoData.setTicketType(sdTicketMasData.getTicketType());
-        infoData.setAsap(sdTicketMasData.getAsap());
-        infoData.setCallInCount(sdTicketMasData.getCallInCount());
-        infoData.setSearchKeyDesc(sdTicketMasData.getSearchKeyDesc());
-        infoData.setSearchValue(sdTicketMasData.getSearchValue());
+        ticketInfoDataPopulator.populateFromSdTicketMasData(ticketMasData,ticketInfoData);
 
         // get customer info from BES
-        BesCustomerData besCustomerData = besApiFacade.queryCustomerByCustomerCode(sdTicketMasData.getCustCode());
-        // todo [SERVDESK-204]: use BesCustomerData besCustomerData
-        //  add SdTicketInfoDataPopulator.populateFromBesCustomerData(BesCustomerData, SdTicketInfoData)
+        BesCustomerData besCustomerData = besApiFacade.queryCustomerByCustomerCode(ticketMasData.getCustCode());
+        ticketInfoDataPopulator.populateFromBesCustomerData(besCustomerData, ticketInfoData);
 
-        SdTicketServiceData serviceData = ticketFacade.getService(sdTicketMasData.getTicketMasId());
-        if (serviceData != null) {
+        SdTicketServiceData ticketServiceData = ticketFacade.getService(ticketMasData.getTicketMasId());
+        if (ticketServiceData != null) {
             // todo [SERVDESK-208] Detach Service Info from Ticket Page: service should be a list
             //  0. remove below service data
             //  1. frontend loop all serviceNumber+serviceType from ajax return of TicketController.getServiceInfo
@@ -108,48 +100,38 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
 
             // find service data
             List<RequestCreateSearchResultData> resultsDataList;
-            if (infoData.getSearchKeyDesc().equals("DN")) {
-                resultsDataList = findData4Dn(serviceData.getServiceCode()).getList();
+            if (ticketInfoData.getSearchKeyDesc().equals("DN")) {
+                resultsDataList = findData4Dn(ticketServiceData.getServiceCode()).getList();
             } else {
-                resultsDataList = findData4Bsn(serviceData.getServiceCode()).getList();
+                resultsDataList = findData4Bsn(ticketServiceData.getServiceCode()).getList();
             }
             if (CollectionUtils.isNotEmpty(resultsDataList)) {
                 RequestCreateSearchResultData requestCreateSearchResultData = resultsDataList.get(0);
                 if (requestCreateSearchResultData != null) {
-                    if (requestCreateSearchResultData.getServiceNo().equals(serviceData.getServiceCode())) {
-                        // todo [SERVDESK-204]: use BesCustomerData besCustomerData
-                        //  remove below customer data
-                        infoData.setCustName(requestCreateSearchResultData.getCustName());
-                        infoData.setCustType(requestCreateSearchResultData.getCustType());
-                        infoData.setCustStatus(requestCreateSearchResultData.getCustStatus());
-                        infoData.setLanguagePreference(requestCreateSearchResultData.getLanguagePreference());
-
+                    if (requestCreateSearchResultData.getServiceNo().equals(ticketServiceData.getServiceCode())) {
                         // todo [SERVDESK-208] Detach Service Info from Ticket Page
                         //  0. remove below service data
-                        infoData.setServiceStatus(requestCreateSearchResultData.getServiceStatus());
-                        infoData.setServiceStatusDesc(requestCreateSearchResultData.getServiceStatusDesc());
-                        infoData.setSubsId(requestCreateSearchResultData.getSubsId());
-                        infoData.setOfferName(requestCreateSearchResultData.getOfferName());
-                        infoData.setItsmUrl(requestCreateSearchResultData.getUrl());
-                        infoData.setDescription(requestCreateSearchResultData.getDescription());
-                        infoData.setServiceAddress(requestCreateSearchResultData.getServiceAddress());
-                        infoData.setGridId(requestCreateSearchResultData.getGridId());
-                        infoData.setExchangeBuildingId(requestCreateSearchResultData.getExchangeBuildingId());
-                        infoData.setRelatedBsn(requestCreateSearchResultData.getRelatedBsn());
+                        ticketInfoData.setServiceStatus(requestCreateSearchResultData.getServiceStatus());
+                        ticketInfoData.setServiceStatusDesc(requestCreateSearchResultData.getServiceStatusDesc());
+                        ticketInfoData.setSubsId(requestCreateSearchResultData.getSubsId());
+                        ticketInfoData.setOfferName(requestCreateSearchResultData.getOfferName());
+                        ticketInfoData.setItsmUrl(requestCreateSearchResultData.getUrl());
+                        ticketInfoData.setDescription(requestCreateSearchResultData.getDescription());
+                        ticketInfoData.setServiceAddress(requestCreateSearchResultData.getServiceAddress());
+                        ticketInfoData.setGridId(requestCreateSearchResultData.getGridId());
+                        ticketInfoData.setExchangeBuildingId(requestCreateSearchResultData.getExchangeBuildingId());
+                        ticketInfoData.setRelatedBsn(requestCreateSearchResultData.getRelatedBsn());
                     }
                 }
             }
 
             // translate service type code to name
-            String serviceTypeDesc = serviceTypeFacade.getServiceTypeDescByServiceTypeCode(serviceData.getServiceType());
-            infoData.setServiceTypeDesc(serviceTypeDesc);
+            String serviceTypeDesc = serviceTypeFacade.getServiceTypeDescByServiceTypeCode(ticketServiceData.getServiceType());
+            ticketInfoData.setServiceTypeDesc(serviceTypeDesc);
 
-            // todo [SERVDESK-204]: add SdTicketInfoDataPopulator.populateFromSdTicketServiceData(SdTicketServiceData, SdTicketInfoData)
-            infoData.setServiceType(serviceData.getServiceType());
-            infoData.setServiceNo(serviceData.getServiceCode());
-            infoData.setNgn3reset(SdServiceTypeBean.SERVICE_TYPE.VOIP.equals(serviceData.getServiceType()));
+            ticketInfoDataPopulator.populateFromSdTicketServiceData(ticketServiceData, ticketInfoData);
         }
-        return infoData;
+        return ticketInfoData;
     }
 
     @Override

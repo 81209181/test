@@ -1,7 +1,9 @@
 package com.hkt.btu.sd.facade.data;
 
 
-public class SdTicketInfoData {
+import com.hkt.btu.common.facade.data.DataInterface;
+
+public class SdTicketInfoData implements DataInterface {
 
     // ticket
     private int ticketMasId;
