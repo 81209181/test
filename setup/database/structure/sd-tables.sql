@@ -9,6 +9,7 @@ CREATE TABLE TICKET_MAS
     CALL_IN_COUNT      number                  default 0,
     SEARCH_KEY         varchar2(20),
     SEARCH_VALUE       varchar2(30),
+    OWNING_ROLE        varchar2(20),
 
     CREATEDATE         date                    default SYSDATE not null,
     CREATEBY           varchar2(12)            not null,
