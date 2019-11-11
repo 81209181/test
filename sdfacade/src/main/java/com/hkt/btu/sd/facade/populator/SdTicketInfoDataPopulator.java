@@ -18,6 +18,7 @@ public class SdTicketInfoDataPopulator extends AbstractDataPopulator<SdTicketInf
         target.setCallInCount(source.getCallInCount());
         target.setSearchKeyDesc(source.getSearchKeyDesc());
         target.setSearchValue(source.getSearchValue());
+        target.setOwningRole(source.getOwningRole());
     }
 
     public void populateFromBesCustomerData(BesCustomerData source, SdTicketInfoData target) {
