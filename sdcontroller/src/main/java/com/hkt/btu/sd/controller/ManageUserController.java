@@ -58,7 +58,7 @@ public class ManageUserController {
         if (!MapUtils.isEmpty(userRoleOptionDataMap)) {
             model.addAttribute("userRoleOptionDataMap", userRoleOptionDataMap);
         }
-        model.addAttribute("primaryRoleList",userRoleFacade.getPrimaryRoleList(userRoleDataList));
+        model.addAttribute("primaryRoleList",userRoleFacade.getPrimaryRoleList(userRoleDataList)); // todo SERVDESK-203: remove this model attribute
         String servletPath = request.getServletPath();
         return CreateUserPathEnum.getValue(servletPath);
     }
