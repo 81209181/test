@@ -48,10 +48,10 @@ public class ManageUserController {
     SessionRegistry sessionRegistry;
 
     @GetMapping({"create-ldap-user", "create-user", "create-non-pccw-hkt-user"})
-    public String createUserForm(final Model model,
-                                 final HttpServletRequest request,
-                                 @ModelAttribute("createUserFormData") CreateUserFormData createUserFormData,
-                                 @ModelAttribute("userRoleOptionDataMap") HashMap<String, SdUserRoleData> userRoleOptionDataMap) {
+    public String createPccwOrHktUser(final Model model,
+                                      final HttpServletRequest request,
+                                      @ModelAttribute("createUserFormData") CreateUserFormData createUserFormData,
+                                      @ModelAttribute("userRoleOptionDataMap") HashMap<String, SdUserRoleData> userRoleOptionDataMap) {
         // user role info
         List<SdUserRoleData> userRoleDataList = userRoleFacade.getEligibleUserRoleList();
         userRoleOptionDataMap = userRoleFacade.getUserRoleMap(userRoleDataList);
@@ -66,9 +66,9 @@ public class ManageUserController {
 
 
     @PostMapping("/create-pccw-hkt-user")
-    public String createUserForm(final RedirectAttributes redirectAttributes,
-                                 @ModelAttribute("inputUserData") CreateUserFormData createUserFormData) {
-        CreateResultData createResultData = userFacade.createUser(createUserFormData);
+    public String createPccwOrHktUser(final RedirectAttributes redirectAttributes,
+                                      @ModelAttribute("inputUserData") CreateUserFormData createUserFormData) {
+        CreateResultData createResultData = userFacade.createPccwHktUser(createUserFormData);
         String newUserId = createResultData == null ? null : createResultData.getNewId();
         String errorMsg = createResultData == null ? "No create result." : createResultData.getErrorMsg();
         if (newUserId == null) {
@@ -77,10 +77,8 @@ public class ManageUserController {
             return "redirect:create-user";
         } else {
             String passwordMsg = null;
-            if (createResultData != null) {
-                passwordMsg = StringUtils.isNotEmpty(createResultData.getPasswordMsg()) ?
-                        "Create User.OTP is " + createResultData.getPasswordMsg() : "Create User.";
-            }
+            passwordMsg = StringUtils.isNotEmpty(createResultData.getPasswordMsg()) ?
+                    "Create User.OTP is " + createResultData.getPasswordMsg() : "Create User.";
             redirectAttributes.addFlashAttribute(PageMsgController.INFO_MSG, passwordMsg);
             return "redirect:edit-user?userId=" + newUserId;
         }
@@ -97,11 +95,8 @@ public class ManageUserController {
             redirectAttributes.addFlashAttribute("createUserFormData", createUserFormData);
             return "redirect:create-non-pccw-hkt-user";
         } else {
-            String passwordMsg = null;
-            if (createResultData != null) {
-                passwordMsg = StringUtils.isNotEmpty(createResultData.getPasswordMsg()) ?
-                        "Create User.OTP is " + createResultData.getPasswordMsg() : "Create User.";
-            }
+            String passwordMsg = StringUtils.isNotEmpty(createResultData.getPasswordMsg()) ?
+                    "Create User.OTP is " + createResultData.getPasswordMsg() : "Create User.";
             redirectAttributes.addFlashAttribute(PageMsgController.INFO_MSG, passwordMsg);
             return "redirect:edit-user?userId=" + newUserId;
         }
