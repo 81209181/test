@@ -14,18 +14,8 @@
         <div class="col-md-12">
             <div class="d-inline-block col-md-5 form-group align-top">
                 <input type="hidden" th:value="${oldUserId}" name="userId">
-                <label>Employee Number(Login ID)</label>
+                <label>Login ID (Employee Number)</label>
                 <input type="text" th:field="*{newUserId}" class="form-control" placeholder="Your StaffId" maxlength="8" required>
-
-                <label>Name</label>
-                <input type="text" th:field="*{name}" class="form-control" placeholder="Your Name" maxlength="100" required>
-
-                <label>Email</label>
-                <input type="email" th:field="*{email}" class="form-control" placeholder="your-email@pccw.com"
-                       maxlength="50" required>
-
-                <label>Mobile</label>
-                <input type="tel" th:field="*{mobile}" class="form-control" placeholder="28832299" maxlength="15" required>
 
                 <label>LDAP Domain</label>
                 <select th:field="*{ldapDomain}" class="form-control" required>
@@ -35,8 +25,15 @@
                     <option value="@corp.root">CORP</option>
                 </select>
 
-            </div>
+                <label>Name</label>
+                <input type="text" th:field="*{name}" class="form-control" placeholder="Your Name" maxlength="100" required>
 
+                <label>Contact Number</label>
+                <input type="tel" th:field="*{mobile}" class="form-control" placeholder="28832299" maxlength="15" required>
+
+                <label>Email</label>
+                <input type="email" th:field="*{email}" class="form-control" placeholder="your-email@pccw.com" maxlength="50" required>
+            </div>
         </div>
 
         <div class="col-md-12">

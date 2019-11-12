@@ -1,7 +1,6 @@
 package com.hkt.btu.sd.facade;
 
 
-import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
 import com.hkt.btu.sd.facade.data.EditResultData;
 import com.hkt.btu.sd.facade.data.SdUserPathCtrlData;
 import com.hkt.btu.sd.facade.data.SdUserRoleData;
@@ -27,5 +26,5 @@ public interface SdUserRoleFacade {
 
     void reloadUserRole();
 
-    List<SdUserRoleBean> getPrimaryRoleList();
+    List<SdUserRoleData> getPrimaryRoleList(List<SdUserRoleData> userRoleDataList);
 }

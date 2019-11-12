@@ -48,27 +48,26 @@ public class ManageUserController {
     SessionRegistry sessionRegistry;
 
     @GetMapping({"create-ldap-user", "create-user", "create-non-pccw-hkt-user"})
-    public String createUserForm(final Model model,
-                                 final HttpServletRequest request,
-                                 @ModelAttribute("createUserFormData") CreateUserFormData createUserFormData,
-                                 @ModelAttribute("userRoleOptionDataMap") HashMap<String, SdUserRoleData> userRoleOptionDataMap) {
+    public String createPccwOrHktUser(final Model model,
+                                      final HttpServletRequest request,
+                                      @ModelAttribute("createUserFormData") CreateUserFormData createUserFormData,
+                                      @ModelAttribute("userRoleOptionDataMap") HashMap<String, SdUserRoleData> userRoleOptionDataMap) {
         // user role info
         List<SdUserRoleData> userRoleDataList = userRoleFacade.getEligibleUserRoleList();
         userRoleOptionDataMap = userRoleFacade.getUserRoleMap(userRoleDataList);
         if (!MapUtils.isEmpty(userRoleOptionDataMap)) {
             model.addAttribute("userRoleOptionDataMap", userRoleOptionDataMap);
         }
-        List<SdUserRoleBean> primaryRoleList = userRoleFacade.getPrimaryRoleList();
-        model.addAttribute("primaryRoleList",primaryRoleList);
+        model.addAttribute("primaryRoleList",userRoleFacade.getPrimaryRoleList(userRoleDataList)); // todo SERVDESK-203: remove this model attribute
         String servletPath = request.getServletPath();
         return CreateUserPathEnum.getValue(servletPath);
     }
 
 
     @PostMapping("/create-pccw-hkt-user")
-    public String createUserForm(final RedirectAttributes redirectAttributes,
-                                 @ModelAttribute("inputUserData") CreateUserFormData createUserFormData) {
-        CreateResultData createResultData = userFacade.createUser(createUserFormData);
+    public String createPccwOrHktUser(final RedirectAttributes redirectAttributes,
+                                      @ModelAttribute("inputUserData") CreateUserFormData createUserFormData) {
+        CreateResultData createResultData = userFacade.createPccwHktUser(createUserFormData);
         String newUserId = createResultData == null ? null : createResultData.getNewId();
         String errorMsg = createResultData == null ? "No create result." : createResultData.getErrorMsg();
         if (newUserId == null) {
@@ -77,10 +76,8 @@ public class ManageUserController {
             return "redirect:create-user";
         } else {
             String passwordMsg = null;
-            if (createResultData != null) {
-                passwordMsg = StringUtils.isNotEmpty(createResultData.getPasswordMsg()) ?
-                        "Create User.OTP is " + createResultData.getPasswordMsg() : "Create User.";
-            }
+            passwordMsg = StringUtils.isNotEmpty(createResultData.getPasswordMsg()) ?
+                    "Create User.OTP is " + createResultData.getPasswordMsg() : "Create User.";
             redirectAttributes.addFlashAttribute(PageMsgController.INFO_MSG, passwordMsg);
             return "redirect:edit-user?userId=" + newUserId;
         }
@@ -97,11 +94,8 @@ public class ManageUserController {
             redirectAttributes.addFlashAttribute("createUserFormData", createUserFormData);
             return "redirect:create-non-pccw-hkt-user";
         } else {
-            String passwordMsg = null;
-            if (createResultData != null) {
-                passwordMsg = StringUtils.isNotEmpty(createResultData.getPasswordMsg()) ?
-                        "Create User.OTP is " + createResultData.getPasswordMsg() : "Create User.";
-            }
+            String passwordMsg = StringUtils.isNotEmpty(createResultData.getPasswordMsg()) ?
+                    "Create User.OTP is " + createResultData.getPasswordMsg() : "Create User.";
             redirectAttributes.addFlashAttribute(PageMsgController.INFO_MSG, passwordMsg);
             return "redirect:edit-user?userId=" + newUserId;
         }
@@ -137,8 +131,6 @@ public class ManageUserController {
             List<String> userRole = result == null ? null : (List<String>) result.getList();
             if (CollectionUtils.isNotEmpty(userRole)) {
                 model.addAttribute("userRoleList", userRole);
-                List<SdUserRoleBean> primaryRoleList = userRoleFacade.getPrimaryRoleList();
-                model.addAttribute("primaryRoleList",primaryRoleList);
             } else {
                 redirectAttributes.addFlashAttribute(PageMsgController.ERROR_MSG, errorMsg);
                 return "redirect:search-user";
@@ -148,7 +140,9 @@ public class ManageUserController {
                 .filter(sdUserRoleData -> !BooleanUtils.toBoolean(sdUserRoleData.getAbstractFlag()))
                 .filter(sdUserRoleData -> sdUserRoleData.getStatus().equals("A"))
                 .collect(Collectors.toList()));
-        model.addAttribute("eligibleUserRole", userRoleFacade.getEligibleUserRoleList().stream().map(SdUserRoleData::getRoleId).collect(Collectors.toList()));
+        List<SdUserRoleData> eligibleUserRoleList = userRoleFacade.getEligibleUserRoleList();
+        model.addAttribute("eligibleUserRole", eligibleUserRoleList.stream().map(SdUserRoleData::getRoleId).collect(Collectors.toList()));
+        model.addAttribute("primaryRoleList",userRoleFacade.getPrimaryRoleList(eligibleUserRoleList));
 
         return "admin/manageUser/editUserForm";
     }

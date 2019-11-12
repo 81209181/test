@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout-fluid}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Team Summary</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+    <div class="card" style="height:700px">
+        <div class="card-header bg-info text-white h5">Team Summary</div>
+        <div class="card-body">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#tab-team-summary" role="tab" aria-controls="tab-team-summary" aria-selected="true">Team Summary</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#tab-ticket-myTeam" role="tab" aria-controls="tab-ticket-myTeam" aria-selected="false">Tickets of My Team</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab-team-summary" role="tabpanel" aria-labelledby="tab-team-summary">
+                    <table class="table table-bordered table-striped mt-2 col-md-6">
+                        <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Query Ticket</th>
+                            <th>Job Ticket</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Open</td>
+                            <td>12</td>
+                            <td>20</td>
+                        </tr>
+                        <tr>
+                            <td>Work</td>
+                            <td>12</td>
+                            <td>13</td>
+                        </tr>
+                        <tr>
+                            <td>Complete</td>
+                            <td>143</td>
+                            <td>144</td>
+                        </tr>
+                        <tr>
+                            <td>total</td>
+                            <td>1313</td>
+                            <td>1212</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane" id="tab-ticket-myTeam" role="tabpanel" aria-labelledby="tab-ticket-myTeam">Tickets of My Team</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

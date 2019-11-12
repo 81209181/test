@@ -29,6 +29,9 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
 
     private static final SdUserRoleBean ROLE_TREE = new SdUserRoleBean();
 
+    private static List<String> ELIGIBLE_PARENT_ROLE_ID_LIST_OF_PRIMARY_ROLE =
+            List.of(SdUserRoleBean.ROLE_ID.OPERATOR, SdUserRoleBean.ROLE_ID.ENGINEER);
+
     @Resource
     SdUserRoleMapper sdUserRoleMapper;
 
@@ -233,11 +236,16 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
         List<SdUserRoleBean> eligibleUserRoleGrantList = getEligibleUserRoleGrantList();
         List<SdUserRoleBean> primaryRoleList = new ArrayList<>();
         eligibleUserRoleGrantList.forEach(sdUserRoleBean -> {
-            if (SdUserRoleBean.getPrimaryRoleParentRoleIdList().contains(sdUserRoleBean.getParentRoleId())) {
+            if (ELIGIBLE_PARENT_ROLE_ID_LIST_OF_PRIMARY_ROLE.contains(sdUserRoleBean.getParentRoleId())) {
                 primaryRoleList.add(sdUserRoleBean);
             }
         });
         return primaryRoleList.stream().sorted(Comparator.comparing(SdUserRoleBean::getRoleDesc)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<String> getPrimaryRoleParentRoleIdList() {
+        return ELIGIBLE_PARENT_ROLE_ID_LIST_OF_PRIMARY_ROLE;
     }
 
     @Override

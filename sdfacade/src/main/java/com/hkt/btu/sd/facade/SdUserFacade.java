@@ -12,7 +12,7 @@ public interface SdUserFacade {
 
     SdUserData getUserByUserId(String userId);
 
-    CreateResultData createUser(CreateUserFormData createUserFormData);
+    CreateResultData createPccwHktUser(CreateUserFormData createUserFormData);
 
     CreateResultData createNonPccwHktUser(CreateUserFormData createUserFormData);
 

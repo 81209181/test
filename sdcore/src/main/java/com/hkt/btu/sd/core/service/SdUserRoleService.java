@@ -31,4 +31,6 @@ public interface SdUserRoleService {
     void changeUserIdInUserUserRole(String oldUserId, String userId, List<SdUserRoleEntity> userRoleByUserId);
 
     List<SdUserRoleBean> getPrimaryRoleList();
+
+    List<String> getPrimaryRoleParentRoleIdList();
 }

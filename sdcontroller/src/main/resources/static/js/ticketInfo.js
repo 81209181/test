@@ -118,7 +118,7 @@ $().ready(function(){
     //contact
     $.get('/ticket/contact?ticketMasId='+ticketMasId,function(res){
         if (res.length === 0) {
-            if(ticketStatus !== "COMPLETE"){
+            if(ticketStatusDesc !== "COMPLETE"){
                 let contact =$('#tempContact').children().clone();
                 contact.find('input[name=contactType]').val("On-site Contact");
                 contact.appendTo($('#contact_list'));
