@@ -244,6 +244,11 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     }
 
     @Override
+    public List<String> getPrimaryRoleParentRoleIdList() {
+        return ELIGIBLE_PARENT_ROLE_ID_LIST_OF_PRIMARY_ROLE;
+    }
+
+    @Override
     public List<String> getPrimaryRoles() {
         return getPrimaryRoleList().stream().map(SdUserRoleBean::getRoleId).collect(Collectors.toList());
     }

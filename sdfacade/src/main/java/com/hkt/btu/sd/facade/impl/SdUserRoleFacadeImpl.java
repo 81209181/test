@@ -161,7 +161,7 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
     public List<SdUserRoleData> getPrimaryRoleList(List<SdUserRoleData> userRoleDataList) {
         List<SdUserRoleData> primaryRoleList = new ArrayList<>();
         userRoleDataList.forEach(sdUserRoleBean -> {
-            if (SdUserRoleBean.getPrimaryRoleParentRoleIdList().contains(sdUserRoleBean.getParentRoleId())) {
+            if (sdUserRoleService.getPrimaryRoleParentRoleIdList().contains(sdUserRoleBean.getParentRoleId())) {
                 primaryRoleList.add(sdUserRoleBean);
             }
         });
