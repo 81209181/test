@@ -5,7 +5,7 @@
 <mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdHealthCheckMapper" >
 
     <select id="getDatabaseTime" resultType="java.time.LocalDateTime">
-        SELECT SYSDATE();
+        SELECT SYSDATE FROM DUAL;
     </select>
 
 </mapper>
