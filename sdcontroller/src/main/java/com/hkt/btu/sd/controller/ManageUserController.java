@@ -58,7 +58,7 @@ public class ManageUserController {
         if (!MapUtils.isEmpty(userRoleOptionDataMap)) {
             model.addAttribute("userRoleOptionDataMap", userRoleOptionDataMap);
         }
-        List<SdUserRoleBean> primaryRoleList = userRoleFacade.getPrimaryRoleList();
+        List<SdUserRoleBean> primaryRoleList = userRoleFacade.getPrimaryRoleList(); // todo [SERVDESK-203]:  cannot put bean in Controller Layer
         model.addAttribute("primaryRoleList",primaryRoleList);
         String servletPath = request.getServletPath();
         return CreateUserPathEnum.getValue(servletPath);
@@ -132,7 +132,7 @@ public class ManageUserController {
             List<String> userRole = result == null ? null : (List<String>) result.getList();
             if (CollectionUtils.isNotEmpty(userRole)) {
                 model.addAttribute("userRoleList", userRole);
-                List<SdUserRoleBean> primaryRoleList = userRoleFacade.getPrimaryRoleList();
+                List<SdUserRoleBean> primaryRoleList = userRoleFacade.getPrimaryRoleList(); // todo [SERVDESK-203]:  cannot put bean in Controller Layer
                 model.addAttribute("primaryRoleList",primaryRoleList);
             } else {
                 redirectAttributes.addFlashAttribute(PageMsgController.ERROR_MSG, errorMsg);
