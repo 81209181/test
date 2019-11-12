@@ -101,7 +101,7 @@ public class SdInputCheckServiceImpl implements SdInputCheckService {
     }
 
     @Override
-    public String checkUserName(String input) throws InvalidInputException {
+    public String checkNonPccwHktLoginId(String input) throws InvalidInputException {
         String pattern = "^[X][a-zA-Z0-9_]{0,9}$";
         input = Optional.ofNullable(input)
                 .orElseThrow(() -> new InvalidInputException("Empty input UserName."));
@@ -123,7 +123,7 @@ public class SdInputCheckServiceImpl implements SdInputCheckService {
     }
 
     @Override
-    public String checkLoginID(String input) throws InvalidInputException {
+    public String checkPccwHktLoginID(String input) throws InvalidInputException {
         String pattern = "^[T][0-9]{0,8}$";
         input = Optional.ofNullable(input)
                 .orElseThrow(() -> new InvalidInputException("Empty input UserName."));

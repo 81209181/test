@@ -69,7 +69,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
             sdInputCheckService.checkName(name);
             sdInputCheckService.checkEmail(email);
             sdInputCheckService.checkMobile(mobile);
-            sdInputCheckService.checkLoginID(employeeNumber); // todo [SERVDESK-202] : check pccw/hkt user user id prefix
+            sdInputCheckService.checkPccwHktLoginID(employeeNumber);
             sdInputCheckService.checkAssignRoleByDomain(userRoleIdList, null);
             String primaryRoleId = checkPrimaryRole(createUserFormData.getPrimaryRoleId(), userRoleIdList);
             // create new user
@@ -109,7 +109,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
             sdInputCheckService.checkName(name);
             sdInputCheckService.checkEmail(email);
             sdInputCheckService.checkMobile(mobile);
-            sdInputCheckService.checkUserName(employeeNumber); // todo [SERVDESK-202] : check non-pccw/hkt user user id prefix
+            sdInputCheckService.checkNonPccwHktLoginId(employeeNumber);
             sdInputCheckService.checkAssignRoleByDomain(userRoleIdList, null);
             String primaryRoleId = checkPrimaryRole(createUserFormData.getPrimaryRoleId(),userRoleIdList);
             // create new user.
@@ -244,7 +244,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
             // check input
             sdInputCheckService.checkName(name);
             sdInputCheckService.checkMobile(mobile);
-            sdInputCheckService.checkLoginID(employeeNumber);
+            sdInputCheckService.checkPccwHktLoginID(employeeNumber);
             sdInputCheckService.checkEmail(email);
             // change user type
             userId = sdUserService.changeUserTypeToPCCWOrHktUser(oldUserId, name, mobile, employeeNumber, email);
@@ -274,7 +274,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
             // check input
             sdInputCheckService.checkName(name);
             sdInputCheckService.checkMobile(mobile);
-            sdInputCheckService.checkUserName(employeeNumber);
+            sdInputCheckService.checkNonPccwHktLoginId(employeeNumber);
             if (StringUtils.isNotEmpty(email)) {
                 sdInputCheckService.checkEmail(email);
             }
