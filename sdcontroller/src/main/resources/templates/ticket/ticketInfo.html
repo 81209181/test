@@ -289,36 +289,36 @@
             </div>
         </div>
 
-        <div class="card-body">
-            <details>
-                <summary class="py-2">Related Ticket</summary>
-                <table id="relatedTicketTable" class="display" cellspacing="0" width="100%">
-                    <thead>
-                    <tr>
-                        <th>Ticket Id</th>
-                        <th>Ticket Type</th>
-                        <th>Status</th>
-                        <th>Call-in Count</th>
-                        <th>Create Date</th>
-                        <th>Complete Date</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                    <tfoot>
-                    <tr>
-                        <th>Ticket Id</th>
-                        <th>Ticket Type</th>
-                        <th>Status</th>
-                        <th>Call-in Count</th>
-                        <th>Create Date</th>
-                        <th>Complete Date</th>
-                        <th></th>
-                    </tr>
-                    </tfoot>
-                </table>
-            </details>
+        <div class="card-header bg-primary text-white" onclick="createRelatedTicketDataTable()">
+            Related Ticket
+        </div>
+        <div class="card-body collapse-hide" id="collapseOne">
+            <table id="relatedTicketTable" class="display" cellspacing="0" width="100%">
+                <thead>
+                <tr>
+                    <th>Ticket Id</th>
+                    <th>Ticket Type</th>
+                    <th>Status</th>
+                    <th>Call-in Count</th>
+                    <th>Create Date</th>
+                    <th>Complete Date</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <th>Ticket Id</th>
+                    <th>Ticket Type</th>
+                    <th>Status</th>
+                    <th>Call-in Count</th>
+                    <th>Create Date</th>
+                    <th>Complete Date</th>
+                    <th></th>
+                </tr>
+                </tfoot>
+            </table>
         </div>
     </div>
 
