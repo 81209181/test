@@ -14,9 +14,9 @@ public interface SdInputCheckService {
     String checkEmail(String input) throws InvalidInputException;
     String checkEmployeeNumber(String input) throws InvalidInputException;
     String checkLdapDomain(String input) throws  InvalidInputException;
-    String checkUserName(String input) throws InvalidInputException;
+    String checkNonPccwHktLoginId(String input) throws InvalidInputException;
     String checkAssignRoleByDomain(List<String> roleList, String domain) throws InvalidInputException;
-    String checkLoginID(String input) throws InvalidInputException;
+    String checkPccwHktLoginID(String input) throws InvalidInputException;
 
     void checkUserRole(List<String> userRoleIdList, List<SdUserRoleBean> eligibleUserRoleGrantList, List<SdUserRoleBean> userRoleByUserId);
 }
