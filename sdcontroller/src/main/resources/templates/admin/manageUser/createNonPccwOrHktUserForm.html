@@ -13,17 +13,17 @@
     <form class="row" th:action="@{/admin/manage-user/create-non-pccw-hkt-user}" th:object="${createUserFormData}" method="post">
         <div class="col-md-12">
             <div class="d-inline-block col-md-5 form-group align-top">
-                <label>Email</label>
-                <input type="email" th:field="*{email}" class="form-control" placeholder="your-email@pccw.com" maxlength="50" required>
+                <label>Login ID</label>
+                <input type="text" th:field="*{userId}" id="nonLoginId" onchange="addNonHktPrefix('X')" class="form-control" placeholder="Your User Name" maxlength="10">
 
                 <label>Name</label>
                 <input type="text" th:field="*{name}" class="form-control" placeholder="Your Name" maxlength="100" required>
 
-                <label>Login Id</label>
-                <input type="text" th:field="*{userId}" id="nonLoginId" onchange="addNonHktPrefix('X')" class="form-control" placeholder="Your User Name" maxlength="10">
-
                 <label>Contact Number</label>
                 <input type="tel" th:field="*{mobile}" class="form-control" placeholder="28832299" maxlength="15" required>
+
+                <label>Email</label>
+                <input type="email" th:field="*{email}" class="form-control" placeholder="your-email@pccw.com" maxlength="50" required>
 
                 <label>Primary Role</label>
                 <select class="custom-select" name="primaryRoleId">
