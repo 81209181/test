@@ -374,4 +374,9 @@ public class TicketController {
             return ResponseEntity.badRequest().body("Can't not get the token to make appointment.");
         }
     }
+
+    @GetMapping("team-summary")
+    public String showTeamSummary() {
+        return "ticket/teamSummary";
+    }
 }

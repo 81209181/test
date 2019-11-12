@@ -58,8 +58,7 @@ public class ManageUserController {
         if (!MapUtils.isEmpty(userRoleOptionDataMap)) {
             model.addAttribute("userRoleOptionDataMap", userRoleOptionDataMap);
         }
-        List<SdUserRoleBean> primaryRoleList = userRoleFacade.getPrimaryRoleList();
-        model.addAttribute("primaryRoleList",primaryRoleList);
+        model.addAttribute("primaryRoleList",userRoleFacade.getPrimaryRoleList(userRoleDataList));
         String servletPath = request.getServletPath();
         return CreateUserPathEnum.getValue(servletPath);
     }
@@ -137,8 +136,7 @@ public class ManageUserController {
             List<String> userRole = result == null ? null : (List<String>) result.getList();
             if (CollectionUtils.isNotEmpty(userRole)) {
                 model.addAttribute("userRoleList", userRole);
-                List<SdUserRoleBean> primaryRoleList = userRoleFacade.getPrimaryRoleList();
-                model.addAttribute("primaryRoleList",primaryRoleList);
+
             } else {
                 redirectAttributes.addFlashAttribute(PageMsgController.ERROR_MSG, errorMsg);
                 return "redirect:search-user";
@@ -148,7 +146,9 @@ public class ManageUserController {
                 .filter(sdUserRoleData -> !BooleanUtils.toBoolean(sdUserRoleData.getAbstractFlag()))
                 .filter(sdUserRoleData -> sdUserRoleData.getStatus().equals("A"))
                 .collect(Collectors.toList()));
-        model.addAttribute("eligibleUserRole", userRoleFacade.getEligibleUserRoleList().stream().map(SdUserRoleData::getRoleId).collect(Collectors.toList()));
+        List<SdUserRoleData> eligibleUserRoleList = userRoleFacade.getEligibleUserRoleList();
+        model.addAttribute("eligibleUserRole", eligibleUserRoleList.stream().map(SdUserRoleData::getRoleId).collect(Collectors.toList()));
+        model.addAttribute("primaryRoleList",userRoleFacade.getPrimaryRoleList(eligibleUserRoleList));
 
         return "admin/manageUser/editUserForm";
     }
