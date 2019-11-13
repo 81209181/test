@@ -376,8 +376,9 @@ public class SdTicketServiceImpl implements SdTicketService {
 
             // check primary role
             String primaryRoleId = currentUserBean.getPrimaryRoleId();
-            if (!primaryRoleId.equals(sdTicketMasBean.getOwningRole())) {
-                throw new InvalidInputException("This ticket does not belong to your team.");
+            String owdningRole = sdTicketMasBean.getOwningRole();
+            if ( ! StringUtils.equals(primaryRoleId, owdningRole) ) {
+                throw new InvalidInputException("This ticket belongs to another team (" + owdningRole + ").");
             }
         } else {
             throw new InvalidInputException(String.format("Ticket not found. (ticketMasId: %d)", ticketMasId));

@@ -19,6 +19,8 @@ public class SdUserBean extends BtuUserBean {
     private String domainEmail;
     private String primaryRoleId;
 
+    private boolean isPrimaryRole; // todo SERVDESK-203: populate this in SdUserBeanPopulator
+
     public String getPrimaryRoleId() {
         return primaryRoleId;
     }
