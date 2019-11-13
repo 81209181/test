@@ -527,7 +527,7 @@ function createRelatedTicketDataTable(){
             $('#collapseOne').hide();
         } else {
             $("#collapseOne").show();
-            $('#relatedTicketTable').dataTable().fnClearTable();
+            $('#relatedTicketTable').dataTable().fnClearTable(false); // Prevent initialization request again
             $('#relatedTicketTable').dataTable().fnDestroy();
             $('#relatedTicketTable').DataTable({
                 processing: true,
