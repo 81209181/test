@@ -4,7 +4,6 @@ import com.hkt.btu.common.core.service.populator.AbstractBeanPopulator;
 import com.hkt.btu.sd.core.dao.entity.StatusSummaryEntity;
 import com.hkt.btu.sd.core.service.bean.StatusSummaryBean;
 import com.hkt.btu.sd.core.service.bean.TeamSummaryBean;
-import org.springframework.util.ObjectUtils;
 
 public class SdTeamSummaryBeanPopulator extends AbstractBeanPopulator<TeamSummaryBean> {
 
@@ -20,13 +19,13 @@ public class SdTeamSummaryBeanPopulator extends AbstractBeanPopulator<TeamSummar
                 target.setStatus("Complete");
                 break;
         }
-        target.setJobCnt(ObjectUtils.isEmpty(source.getJobCnt())? 0:source.getJobCnt());
-        target.setQueryCnt(ObjectUtils.isEmpty(source.getQueryCnt())? 0:source.getQueryCnt());
+        target.setJobCnt(source.getJobCnt());
+        target.setQueryCnt(source.getQueryCnt());
     }
 
     public void populate(StatusSummaryEntity source, TeamSummaryBean target) {
-        target.setJobTotal(ObjectUtils.isEmpty(source.getJobCnt())? 0:source.getJobCnt());
-        target.setQueryTotal(ObjectUtils.isEmpty(source.getQueryCnt())?0:source.getQueryCnt());
+        target.setJobTotal(source.getJobCnt());
+        target.setQueryTotal(source.getQueryCnt());
     }
 
 }

@@ -149,9 +149,9 @@
     </update>
 
     <select id="getCountStatusByTicketType" resultMap="teamSummaryEntity">
-        select * from (select count(1) status_cnt,ticket_type,status
+        select status,nvl(job,0) job_cnt,nvl(query,0)query_cnt from (select count(1) status_cnt,ticket_type,status
         from ticket_mas where createdate BETWEEN trunc(sysdate, 'mm') and  last_day(sysdate)
-        group by ticket_type,status order by ticket_type)PIVOT(sum(status_cnt)for ticket_type in ('JOB' job_cnt,'QUERY' query_cnt))
+        group by ticket_type,status order by ticket_type)PIVOT(sum(status_cnt)for ticket_type in ('JOB' job,'QUERY' query))
     </select>
     
     <select id="getSumStatusByTicketType" resultMap="teamSummaryEntity">
