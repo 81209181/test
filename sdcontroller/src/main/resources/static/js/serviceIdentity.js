@@ -165,6 +165,9 @@ $().ready(function(){
                             $('.nora').removeAttr('disabled');
                         }
                     }
+                    if (i === 'detailButton') {
+                        disabledDetailButton(val);
+                    }
                 })
                 $('.modal').modal('hide');
             })
@@ -273,4 +276,14 @@ function createTicket(){
         console.log("ERROR : ", responseError);
         showErrorMsg(responseError);
     })
+}
+
+function disabledDetailButton(flag) {
+    if (flag) {
+        $('.itsm').attr('disabled', false);
+        $('.nora').attr('disabled', true);
+    } else {
+        $('.itsm').attr('disabled', true);
+        $('.nora').attr('disabled', false);
+    }
 }

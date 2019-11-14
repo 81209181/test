@@ -52,6 +52,7 @@ public class RequestCreateSearchResultData implements DataInterface {
     private String offerDetail;
     private String description;
     private String relatedBsn;
+    private boolean detailButton;
 
     // pending order info
     private Long orderId;
@@ -459,5 +460,13 @@ public class RequestCreateSearchResultData implements DataInterface {
 
     public void setAppointmentDate(String appointmentDate) {
         this.appointmentDate = appointmentDate;
+    }
+
+    public boolean isDetailButton() {
+        return detailButton;
+    }
+
+    public void setDetailButton(boolean detailButton) {
+        this.detailButton = detailButton;
     }
 }

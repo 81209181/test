@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="roles">
+    <label>Primary Role</label>
+    <select class="custom-select" name="primaryRoleId">
+        <option hidden>Please select primary role</option>
+        <th:block th:each="list:${userRoleList}">
+            <option th:if="${list.isPrimaryRole()}" th:value="${list.roleId}" th:text="${list.roleDesc}" ></option>
+        </th:block>
+    </select>
+    <label>User Role</label>
+    <div class="d-block">
+        <div class="form-check form-check-inline" th:each="userRole : ${userRoleList}" >
+            <input class="form-check-input" name="userRoleIdList" type="checkbox" th:value="${userRole.roleId}">
+            <label class="form-check-label" th:text="${userRole.roleDesc}"></label>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

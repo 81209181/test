@@ -142,4 +142,17 @@
             modifydate = sysdate
         where ticket_mas_id = #{ticketMasId}
     </update>
+
+    <select id="getSumStatusByTicketType">
+        SELECT
+            COUNT(1),
+            status,
+            sum(COUNT(1)) over()
+        FROM
+            ticket_mas
+        WHERE
+            ticket_type = #{ticketType}
+        GROUP BY
+            status;
+    </select>
 </mapper>

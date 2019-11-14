@@ -371,7 +371,7 @@ public class TicketController {
         if (StringUtils.isNotEmpty(jwt)) {
             return ResponseEntity.ok(jwt);
         } else {
-            return ResponseEntity.badRequest().body("Can't not get the token to make appointment.");
+            return ResponseEntity.badRequest().body("Cannot connect WFM for making appointment.");
         }
     }
 

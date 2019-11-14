@@ -157,15 +157,4 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
         sdUserRoleService.reloadCachedRoleTree();
     }
 
-    @Override
-    public List<SdUserRoleData> getPrimaryRoleList(List<SdUserRoleData> userRoleDataList) {
-        List<SdUserRoleData> primaryRoleList = new ArrayList<>();
-        userRoleDataList.forEach(sdUserRoleBean -> {
-            if (sdUserRoleService.getPrimaryRoleParentRoleIdList().contains(sdUserRoleBean.getParentRoleId())) {
-                primaryRoleList.add(sdUserRoleBean);
-            }
-        });
-        return primaryRoleList.stream().sorted(Comparator.comparing(SdUserRoleData::getRoleDesc)).collect(Collectors.toList());
-    }
-
 }

@@ -4,6 +4,8 @@ $().ready(function(){
 
     let symptomCode = "";
 
+    let serviceType = "";
+
     $('.selectpicker').selectpicker({});
 
     if(ticketStatusDesc === "OPEN"){
@@ -40,6 +42,12 @@ $().ready(function(){
                         }
                         if (key === 'ticketDetId') {
                             ticketDetId = value;
+                        }
+                        if (key === 'serviceType') {
+                            serviceType = value
+                        }
+                        if (key === 'detailButton') {
+                            disabledDetailButton(value);
                         }
                     })
                 })
@@ -109,7 +117,7 @@ $().ready(function(){
             showErrorMsg('No ticket detail Id.');
             return;
         }
-        makeAppointment(ticketMasId, ticketDetId, symptomCode);
+        makeAppointment(ticketMasId, ticketDetId, symptomCode,serviceType);
     });
 
     getAppointmentInfo(ticketMasId);
@@ -404,13 +412,12 @@ function removeContact(btn){
     }
 }
 
-function makeAppointment(ticketMasId, ticketDetId, symptomCode) {
+function makeAppointment(ticketMasId, ticketDetId, symptomCode, serviceType) {
 
     let bsn = $("#service").find('input[name=relatedBsn]').val();
     if (bsn === '') {
         bsn = $("#service").find('input[name=serviceCode]').val();
     }
-    let serviceType = $("#service").find('input[name=serviceType]').val();
 
     $.get('/ticket/token', {
         bsn : bsn,
@@ -593,4 +600,14 @@ function checkWindowClose(winObj) {
             window.location.reload();
         }
     }, 1000);
+}
+
+function disabledDetailButton(flag) {
+    if (flag) {
+        $('.detail').attr('disabled', false);
+        $('.otherDetail').attr('disabled', true);
+    } else {
+        $('.detail').attr('disabled', true);
+        $('.otherDetail').attr('disabled', false);
+    }
 }
