@@ -22,7 +22,9 @@ public class SdTicketInfoDataPopulator extends AbstractDataPopulator<SdTicketInf
     }
 
     public void populateFromBesCustomerData(BesCustomerData source, SdTicketInfoData target) {
-        Optional.ofNullable(source.getCustomerInfos()).map(BesCustomerInfosData::getCustBasicInfo).ifPresent(data -> {
+        Optional.ofNullable(source)
+                .map(BesCustomerData::getCustomerInfos)
+                .map(BesCustomerInfosData::getCustBasicInfo).ifPresent(data -> {
             target.setCustName(data.getCustName());
             target.setCustStatus(data.getStatus());
             switch (data.getCustType()) {

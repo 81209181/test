@@ -105,10 +105,10 @@
                 <div class="col-md-12">
                     <h3>
                         Service
-                        <button type="button" class="btn btn-info ml-3" th:attr="data-url=*{itsmUrl}" th:disabled="not *{itsmUrl}" id="btnServiceLink">Link</button>
-                        <button type="button" class="btn btn-info ml-3" onclick='getInventory(bsn);'>Inventory Detail</button>
-                        <button type="button" class="btn btn-info ml-3" onclick="getOfferDetailList(bsn);">BB Detail</button>
-                        <button type="button" class="btn btn-info ml-3" onclick='getRelatedOfferInfo(bsn);'>VoIP Detail</button>
+                        <button type="button" class="btn btn-info ml-3 detail" th:attr="data-url=*{itsmUrl}" th:disabled="not *{itsmUrl}" id="btnServiceLink">Link</button>
+                        <button type="button" class="btn btn-info ml-3 otherDetail" onclick='getInventory(bsn);'>Inventory Detail</button>
+                        <button type="button" class="btn btn-info ml-3 otherDetail" onclick="getOfferDetailList(bsn);">BB Detail</button>
+                        <button type="button" class="btn btn-info ml-3 otherDetail" onclick='getRelatedOfferInfo(bsn);'>VoIP Detail</button>
                         <button th:if="*{ngn3reset}" type="button" class="btn btn-info ml-3" id="btnResetNGN3PWD">Re-set NGN3 Account Password</button>
                         <button th:if="*{ngn3reset}" type="button" class="btn btn-info ml-3" onclick="getNGN3OneDayAdminAccount(bsn);">One Day Admin Account</button>
                     </h3>
@@ -289,36 +289,41 @@
             </div>
         </div>
 
-        <div class="card-header bg-primary text-white" onclick="createRelatedTicketDataTable()">
-            Related Ticket
-        </div>
-        <div class="card-body collapse-hide" id="collapseOne">
-            <table id="relatedTicketTable" class="display" cellspacing="0" width="100%">
-                <thead>
-                <tr>
-                    <th>Ticket Id</th>
-                    <th>Ticket Type</th>
-                    <th>Status</th>
-                    <th>Call-in Count</th>
-                    <th>Create Date</th>
-                    <th>Complete Date</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                </tbody>
-                <tfoot>
-                <tr>
-                    <th>Ticket Id</th>
-                    <th>Ticket Type</th>
-                    <th>Status</th>
-                    <th>Call-in Count</th>
-                    <th>Create Date</th>
-                    <th>Complete Date</th>
-                    <th></th>
-                </tr>
-                </tfoot>
-            </table>
+        <div class="col-md-12 mt-2">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Related Ticket</h3>
+                    <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+                </div>
+                <div class="panel-body">
+                    <table id="relatedTicketTable" class="display" cellspacing="0" width="100%">
+                        <thead>
+                        <tr>
+                            <th>Ticket Id</th>
+                            <th>Ticket Type</th>
+                            <th>Status</th>
+                            <th>Call-in Count</th>
+                            <th>Create Date</th>
+                            <th>Complete Date</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <th>Ticket Id</th>
+                            <th>Ticket Type</th>
+                            <th>Status</th>
+                            <th>Call-in Count</th>
+                            <th>Create Date</th>
+                            <th>Complete Date</th>
+                            <th></th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 

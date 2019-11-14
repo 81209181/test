@@ -92,7 +92,6 @@ public abstract class AbstractRestfulApiFacade {
 
         // set api path
         WebTarget webTarget = client
-                //.target("http://localhost:8082/wfm")
                 .target(siteInterfaceBean.getUrl())
                 .path(path);
 
@@ -201,13 +200,5 @@ public abstract class AbstractRestfulApiFacade {
             LOG.error(e.getMessage(), e);
         }
         return null;
-    }
-
-    protected String postForm(String path, Form form) {
-        WebTarget webTarget = getWebTarget(path, null);
-
-        String response = webTarget.request(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE), String.class);
-
-        return response;
     }
 }

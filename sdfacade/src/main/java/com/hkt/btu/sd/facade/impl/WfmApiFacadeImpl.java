@@ -17,6 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Resource;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
@@ -178,15 +179,33 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
     }
 
     @Override
-    public String getToken(WfmMakeApptData makeApptData) {
-        return Optional.ofNullable(makeApptData).map(data -> {
-            Map<String, String> queryParam = new HashMap<>(3);
-            queryParam.put("ticketMasId", String.valueOf(data.getTicketMasId()));
-            queryParam.put("ticketDetId", String.valueOf(data.getTicketDetId()));
-            queryParam.put("symptomCode", data.getSymptomCode());
-            queryParam.put("serviceType", data.getServiceType());
-            queryParam.put("bsn", String.valueOf(data.getBsn()));
-            return getData("/api/v1/sd/token", queryParam);
-        }).orElse(null);
+    public WfmResponseTokenData getToken(WfmMakeApptData makeApptData) {
+        if (makeApptData == null) {
+            LOG.error("Null makeAppData");
+            return null;
+        }
+
+        // prepare param
+        Map<String, String> queryParam = new HashMap<>(3);
+        queryParam.put("ticketMasId", String.valueOf(makeApptData.getTicketMasId()));
+        queryParam.put("ticketDetId", String.valueOf(makeApptData.getTicketDetId()));
+        queryParam.put("symptomCode", makeApptData.getSymptomCode());
+        queryParam.put("serviceType", makeApptData.getServiceType());
+        queryParam.put("bsn", String.valueOf(makeApptData.getBsn()));
+
+        // call WFM API
+        try {
+            String url = getTargetApiSiteInterfaceBean().getUrl();
+            String jwt = getData("/api/v1/sd/token", queryParam);
+            if (StringUtils.isEmpty(jwt)) {
+                return null;
+            }
+            return WfmResponseTokenData.of(jwt, url);
+        } catch (NotFoundException e) {
+            LOG.warn(e.getMessage());
+        }
+
+        // failure return
+        return null;
     }
 }

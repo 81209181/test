@@ -14,6 +14,9 @@ $().ready(function(){
         $('#searchKey').val('');
         $('#searchValue').val('');
         $('form').get(0).reset();
+        $("#relatedTicketTable").hide();
+        $('.panel').find('.panel-body').slideUp();
+        $('.panel').find('.panel-heading').find('span').addClass('panel-collapsed');
     })
 
     $('#btnSearchCustomerNext').on('click',function(){
@@ -162,12 +165,95 @@ $().ready(function(){
                             $('.nora').removeAttr('disabled');
                         }
                     }
+                    if (i === 'detailButton') {
+                        disabledDetailButton(val);
+                    }
                 })
                 $('.modal').modal('hide');
             })
         })
     });
-    $("#collapseOne").hide();
+
+    $("#relatedTicketTable").hide();
+    $('.panel').find('.panel-body').slideUp();
+    $('.panel').find('.panel-heading').find('span').addClass('panel-collapsed');
+
+    $(document).on('click', '.panel-heading span.clickable', function(e){
+        $('#relatedTicketTable').dataTable().fnClearTable(false);
+        $('#relatedTicketTable').dataTable().fnDestroy();
+        var $this = $(this);
+        if(!$this.hasClass('panel-collapsed')) {
+            $this.parents('.panel').find('.panel-body').slideUp();
+            $this.addClass('panel-collapsed');
+            $this.find('i').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+            $('#relatedTicketTable').hide();
+        } else {
+            $this.parents('.panel').find('.panel-body').slideDown();
+            $this.removeClass('panel-collapsed');
+            $this.find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+            let serviceNo = $('input[name=serviceNo]').val();
+            if (serviceNo === '') {
+                $('#relatedTicketTable').hide();
+            } else {
+                $('#relatedTicketTable').show();
+                $('#relatedTicketTable').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ordering: false,
+                    searching: false,
+                    ajax: {
+                        type: "GET",
+                        contentType: "application/json",
+                        url: "/ticket/searchTicket",
+                        dataSrc: 'data',
+                        data: function(d){
+                            d.serviceNumber = serviceNo
+                        },
+                        error: function (e) {
+                            if(e.responseText){
+                                showErrorMsg(e.responseText);
+                            } else {
+                                showErrorMsg("Cannot load result.");
+                            }
+                        }
+                    },
+                    columns: [
+                        { data: 'ticketMasId' },
+                        { data: 'ticketType' },
+                        { data: 'statusDesc' },
+                        { data: 'callInCount'},
+                        { data: 'createDate' },
+                        { data: 'completeDate'}
+                    ],
+                    columnDefs: [
+                        {
+                            targets: 4,
+                            data: "createDate",
+                            render: function (nextRunTime, type, row, meta) {
+                                return nextRunTime==null ? null : nextRunTime.replace('T', ' ');
+                            }
+                        },
+                        {
+                            targets: 5,
+                            data: "completeDate",
+                            render: function (nextRunTime, type, row, meta) {
+                                return nextRunTime==null ? null : nextRunTime.replace('T', ' ');
+                            }
+                        },
+                        {
+                            targets: 6,
+                            data: "ticketMasId",
+                            render: function ( ticketMasId, type, row, meta ) {
+                                var ctx = $("meta[name='_ctx']").attr("content");
+                                var link = ctx + "/ticket?ticketMasId=" + ticketMasId;
+                                return '<a class="btn btn-info" href=' + link + ' role="button">Detail</a>';
+                            }
+                        }
+                    ]
+                });
+            }
+        }
+    })
 })
 
 function createTicket(){
@@ -192,75 +278,12 @@ function createTicket(){
     })
 }
 
-function createRelatedTicketDataTable(){
-    let serviceNo = $('input[name=serviceNo]').val();
-    let collapseClass = document.getElementById("collapseOne").getAttribute('class');
-    if (collapseClass === 'col-md-12 mt-3 collapse-show') {
-        document.getElementById("collapseOne").setAttribute('class', 'col-md-12 mt-3 collapse-hide');
-        $("#collapseOne").hide();
+function disabledDetailButton(flag) {
+    if (flag) {
+        $('.itsm').attr('disabled', false);
+        $('.nora').attr('disabled', true);
     } else {
-        document.getElementById("collapseOne").setAttribute('class', 'col-md-12 mt-3 collapse-show');
-        if (serviceNo === '') {
-            $('#collapseOne').hide();
-        } else {
-            $("#collapseOne").show();
-            $('#relatedTicketTable').dataTable().fnClearTable(false);
-            $('#relatedTicketTable').dataTable().fnDestroy();
-            $('#relatedTicketTable').DataTable({
-                processing: true,
-                serverSide: true,
-                ordering: false,
-                searching: false,
-                ajax: {
-                    type: "GET",
-                    contentType: "application/json",
-                    url: "/ticket/searchTicket",
-                    dataSrc: 'data',
-                    data: function(d){
-                        d.serviceNumber = serviceNo
-                    },
-                    error: function (e) {
-                        if(e.responseText){
-                            showErrorMsg(e.responseText);
-                        } else {
-                            showErrorMsg("Cannot load result.");
-                        }
-                    }
-                },
-                columns: [
-                    { data: 'ticketMasId' },
-                    { data: 'ticketType' },
-                    { data: 'statusDesc' },
-                    { data: 'callInCount'},
-                    { data: 'createDate' },
-                    { data: 'completeDate'}
-                ],
-                columnDefs: [
-                    {
-                        targets: 4,
-                        data: "createDate",
-                        render: function (nextRunTime, type, row, meta) {
-                            return nextRunTime==null ? null : nextRunTime.replace('T', ' ');
-                        }
-                    },
-                    {
-                        targets: 5,
-                        data: "completeDate",
-                        render: function (nextRunTime, type, row, meta) {
-                            return nextRunTime==null ? null : nextRunTime.replace('T', ' ');
-                        }
-                    },
-                    {
-                        targets: 6,
-                        data: "ticketMasId",
-                        render: function ( ticketMasId, type, row, meta ) {
-                            var ctx = $("meta[name='_ctx']").attr("content");
-                            var link = ctx + "/ticket?ticketMasId=" + ticketMasId;
-                            return '<a class="btn btn-info" href=' + link + ' role="button">Detail</a>';
-                        }
-                    }
-                ]
-            });
-        }
+        $('.itsm').attr('disabled', true);
+        $('.nora').attr('disabled', false);
     }
 }

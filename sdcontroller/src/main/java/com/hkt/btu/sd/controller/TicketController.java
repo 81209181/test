@@ -11,6 +11,7 @@ import com.hkt.btu.sd.facade.data.nora.NoraDnGroupData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
 import com.hkt.btu.sd.facade.data.wfm.WfmMakeApptData;
 import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
+import com.hkt.btu.sd.facade.data.wfm.WfmResponseTokenData;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
@@ -367,11 +368,11 @@ public class TicketController {
             return ResponseEntity.badRequest().body("Cannot input invalid parameters");
         }
 
-        String jwt = wfmApiFacade.getToken(makeApptData);
-        if (StringUtils.isNotEmpty(jwt)) {
-            return ResponseEntity.ok(jwt);
+        WfmResponseTokenData data = wfmApiFacade.getToken(makeApptData);
+        if (data != null) {
+            return ResponseEntity.ok(data);
         } else {
-            return ResponseEntity.badRequest().body("Can't not get the token to make appointment.");
+            return ResponseEntity.badRequest().body("Cannot connect WFM for get token.");
         }
     }
 

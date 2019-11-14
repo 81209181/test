@@ -4,6 +4,8 @@ $().ready(function(){
 
     let symptomCode = "";
 
+    let serviceType = "";
+
     $('.selectpicker').selectpicker({});
 
     if(ticketStatusDesc === "OPEN"){
@@ -41,6 +43,12 @@ $().ready(function(){
                         if (key === 'ticketDetId') {
                             ticketDetId = value;
                         }
+                        if (key === 'serviceType') {
+                            serviceType = value
+                        }
+                        if (key === 'detailButton') {
+                            disabledDetailButton(value);
+                        }
                     })
                 })
                 $('.selectpicker').selectpicker('refresh');
@@ -52,7 +60,6 @@ $().ready(function(){
     })
 
     getRemarksTableData();
-    $('#collapseOne').hide();
 
     $('#btnUpdateService').on('click',function () {
         let arr = new Array();
@@ -110,7 +117,7 @@ $().ready(function(){
             showErrorMsg('No ticket detail Id.');
             return;
         }
-        makeAppointment(ticketMasId, ticketDetId, symptomCode);
+        makeAppointment(ticketMasId, ticketDetId, symptomCode,serviceType);
     });
 
     getAppointmentInfo(ticketMasId);
@@ -285,6 +292,87 @@ $().ready(function(){
     })
 
     ajaxGetJobInfo(ticketMasId);
+
+    $('#relatedTicketTable').hide();
+    $('.panel').find('.panel-body').slideUp();
+    $('.panel').find('.panel-heading').find('span').addClass('panel-collapsed');
+
+    $(document).on('click', '.panel-heading span.clickable', function(e){
+        $('#relatedTicketTable').dataTable().fnClearTable(false);
+        $('#relatedTicketTable').dataTable().fnDestroy();
+        var $this = $(this);
+        if(!$this.hasClass('panel-collapsed')) {
+            $this.parents('.panel').find('.panel-body').slideUp();
+            $this.addClass('panel-collapsed');
+            $this.find('i').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+            $('#relatedTicketTable').hide();
+        } else {
+            $this.parents('.panel').find('.panel-body').slideDown();
+            $this.removeClass('panel-collapsed');
+            $this.find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+            let serviceNo = $('input[name=serviceCode]').val();
+            if (serviceNo === '') {
+                $('#relatedTicketTable').hide();
+            } else {
+                $('#relatedTicketTable').show();
+                $('#relatedTicketTable').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ordering: false,
+                    searching: false,
+                    ajax: {
+                        type: "GET",
+                        contentType: "application/json",
+                        url: "/ticket/searchTicket",
+                        dataSrc: 'data',
+                        data: function(d){
+                            d.serviceNumber = serviceNo
+                        },
+                        error: function (e) {
+                            if(e.responseText){
+                                showErrorMsg(e.responseText);
+                            } else {
+                                showErrorMsg("Cannot load result.");
+                            }
+                        }
+                    },
+                    columns: [
+                        { data: 'ticketMasId' },
+                        { data: 'ticketType' },
+                        { data: 'statusDesc' },
+                        { data: 'callInCount'},
+                        { data: 'createDate' },
+                        { data: 'completeDate'}
+                    ],
+                    columnDefs: [
+                        {
+                            targets: 4,
+                            data: "createDate",
+                            render: function (nextRunTime, type, row, meta) {
+                                return nextRunTime==null ? null : nextRunTime.replace('T', ' ');
+                            }
+                        },
+                        {
+                            targets: 5,
+                            data: "completeDate",
+                            render: function (nextRunTime, type, row, meta) {
+                                return nextRunTime==null ? null : nextRunTime.replace('T', ' ');
+                            }
+                        },
+                        {
+                            targets: 6,
+                            data: "ticketMasId",
+                            render: function ( ticketMasId, type, row, meta ) {
+                                var ctx = $("meta[name='_ctx']").attr("content");
+                                var link = ctx + "/ticket?ticketMasId=" + ticketMasId;
+                                return '<a class="btn btn-info" href=' + link + ' role="button">Detail</a>';
+                            }
+                        }
+                    ]
+                });
+            }
+        }
+    })
 })
 
 
@@ -324,13 +412,12 @@ function removeContact(btn){
     }
 }
 
-function makeAppointment(ticketMasId, ticketDetId, symptomCode) {
+function makeAppointment(ticketMasId, ticketDetId, symptomCode, serviceType) {
 
     let bsn = $("#service").find('input[name=relatedBsn]').val();
     if (bsn === '') {
         bsn = $("#service").find('input[name=serviceCode]').val();
     }
-    let serviceType = $("#service").find('input[name=serviceType]').val();
 
     $.get('/ticket/token', {
         bsn : bsn,
@@ -341,11 +428,14 @@ function makeAppointment(ticketMasId, ticketDetId, symptomCode) {
     }, function (res) {
         let window = AppointmentSDObj.make({
             data: {
-                sdToken: res,
+                sdToken: res.jwt,
             }
-        }, "https://10.252.15.158/wfm"); // todo [SERVDESK-182]: need to use config param link
-        //}, "http://localhost:8082/wfm");
+        }, res.url);
         checkWindowClose(window);
+    }).fail(function (e) {
+        let responseError = e.responseText ? e.responseText : "Get failed.";
+        console.log("ERROR : ", responseError);
+        showErrorMsg(responseError);
     })
 }
 
@@ -515,75 +605,12 @@ function checkWindowClose(winObj) {
     }, 1000);
 }
 
-function createRelatedTicketDataTable(){
-    let serviceNo = $('input[name=serviceCode]').val();
-    let collapseClass = document.getElementById("collapseOne").getAttribute('class');
-    if (collapseClass === 'card-body collapse-show') {
-        document.getElementById("collapseOne").setAttribute('class','card-body collapse-hide');
-        $("#collapseOne").hide();
+function disabledDetailButton(flag) {
+    if (flag) {
+        $('.detail').attr('disabled', false);
+        $('.otherDetail').attr('disabled', true);
     } else {
-        document.getElementById("collapseOne").setAttribute('class','card-body collapse-show');
-        if (serviceNo === '') {
-            $('#collapseOne').hide();
-        } else {
-            $("#collapseOne").show();
-            $('#relatedTicketTable').dataTable().fnClearTable(false); // Prevent initialization request again
-            $('#relatedTicketTable').dataTable().fnDestroy();
-            $('#relatedTicketTable').DataTable({
-                processing: true,
-                serverSide: true,
-                ordering: false,
-                searching: false,
-                ajax: {
-                    type: "GET",
-                    contentType: "application/json",
-                    url: "/ticket/searchTicket",
-                    dataSrc: 'data',
-                    data: function(d){
-                        d.serviceNumber = serviceNo
-                    },
-                    error: function (e) {
-                        if(e.responseText){
-                            showErrorMsg(e.responseText);
-                        } else {
-                            showErrorMsg("Cannot load result.");
-                        }
-                    }
-                },
-                columns: [
-                    { data: 'ticketMasId' },
-                    { data: 'ticketType' },
-                    { data: 'statusDesc' },
-                    { data: 'callInCount'},
-                    { data: 'createDate' },
-                    { data: 'completeDate'}
-                ],
-                columnDefs: [
-                    {
-                        targets: 4,
-                        data: "createDate",
-                        render: function (nextRunTime, type, row, meta) {
-                            return nextRunTime==null ? null : nextRunTime.replace('T', ' ');
-                        }
-                    },
-                    {
-                        targets: 5,
-                        data: "completeDate",
-                        render: function (nextRunTime, type, row, meta) {
-                            return nextRunTime==null ? null : nextRunTime.replace('T', ' ');
-                        }
-                    },
-                    {
-                        targets: 6,
-                        data: "ticketMasId",
-                        render: function ( ticketMasId, type, row, meta ) {
-                            var ctx = $("meta[name='_ctx']").attr("content");
-                            var link = ctx + "/ticket?ticketMasId=" + ticketMasId;
-                            return '<a class="btn btn-info" href=' + link + ' role="button">Detail</a>';
-                        }
-                    }
-                ]
-            });
-        }
+        $('.detail').attr('disabled', true);
+        $('.otherDetail').attr('disabled', false);
     }
 }

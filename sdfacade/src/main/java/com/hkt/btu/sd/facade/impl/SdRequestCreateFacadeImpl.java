@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.facade.impl;
 
 import com.hkt.btu.common.core.exception.InvalidInputException;
+import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
 import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
 import com.hkt.btu.sd.facade.data.*;
@@ -213,6 +214,12 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
             SdServiceTypeData serviceTypeByOfferName = serviceTypeFacade.getServiceTypeByOfferName(resultData.getOfferName());
             resultData.setServiceType(serviceTypeByOfferName.getServiceTypeCode());
             resultData.setServiceTypeDesc(serviceTypeByOfferName.getServiceTypeName());
+
+            String serviceType = resultData.getServiceType();
+            if (SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD.equals(serviceType) ||
+                SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD_365.equals(serviceType)) {
+                resultData.setDetailButton(true);
+            }
         }
 
         resultsData.setList(resultDataList);

@@ -23,6 +23,6 @@ public interface WfmApiFacade {
 
     List<WfmJobRemarksData> getJobRemarkByTicketId(Integer ticketMasId);
 
-    String getToken(WfmMakeApptData makeApptData);
+    WfmResponseTokenData getToken(WfmMakeApptData makeApptData);
 
 }
