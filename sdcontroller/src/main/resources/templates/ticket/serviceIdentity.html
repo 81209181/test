@@ -130,36 +130,41 @@
                     <button type="button" class="btn btn-primary float-right mt-3" id="btnSearchCustomerNext">Create Ticket</button>
                 </form>
 
-                <div class="col-md-12">
-                    <a class="card-link" onclick="createRelatedTicketDataTable()">Related Ticket</a>
-                </div>
-                <div class="col-md-12 mt-3 collapse-hide" id="collapseOne">
-                    <table id="relatedTicketTable" class="display" cellspacing="0" width="100%">
-                        <thead>
-                        <tr>
-                            <th>Ticket Id</th>
-                            <th>Ticket Type</th>
-                            <th>Status</th>
-                            <th>Call-in Count</th>
-                            <th>Create Date</th>
-                            <th>Complete Date</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                        <tfoot>
-                        <tr>
-                            <th>Ticket Id</th>
-                            <th>Ticket Type</th>
-                            <th>Status</th>
-                            <th>Call-in Count</th>
-                            <th>Create Date</th>
-                            <th>Complete Date</th>
-                            <th></th>
-                        </tr>
-                        </tfoot>
-                    </table>
+                <div class="col-md-12 mt-2">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Related Ticket</h3>
+                            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+                        </div>
+                        <div class="panel-body">
+                            <table id="relatedTicketTable" class="display" cellspacing="0" width="100%">
+                                <thead>
+                                <tr>
+                                    <th>Ticket Id</th>
+                                    <th>Ticket Type</th>
+                                    <th>Status</th>
+                                    <th>Call-in Count</th>
+                                    <th>Create Date</th>
+                                    <th>Complete Date</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <th>Ticket Id</th>
+                                    <th>Ticket Type</th>
+                                    <th>Status</th>
+                                    <th>Call-in Count</th>
+                                    <th>Create Date</th>
+                                    <th>Complete Date</th>
+                                    <th></th>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
