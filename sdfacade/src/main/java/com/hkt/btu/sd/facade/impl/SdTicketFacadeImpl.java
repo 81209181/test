@@ -199,11 +199,20 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     public List<SdTicketServiceData> getServiceInfo(Integer ticketMasId) {
         List<SdTicketServiceBean> serviceInfoList = ticketService.getServiceInfo(ticketMasId);
         if (CollectionUtils.isNotEmpty(serviceInfoList)) {
-            return serviceInfoList.stream().map(bean -> {
+            List<SdTicketServiceData> ticketServiceDataList = serviceInfoList.stream().map(bean -> {
                 SdTicketServiceData data = new SdTicketServiceData();
                 ticketServiceDataPopulator.populate(bean, data);
                 return data;
             }).collect(Collectors.toList());
+
+            for (SdTicketServiceData serviceData : ticketServiceDataList) {
+                String serviceCode = serviceData.getServiceCode();
+                if (serviceCode.equals(SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD_365) ||
+                        serviceCode.equals(SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD)) {
+                    serviceData.setDetailButton(true);
+                }
+            }
+            return ticketServiceDataList;
         }
         return null;
     }

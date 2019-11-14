@@ -105,10 +105,10 @@
                 <div class="col-md-12">
                     <h3>
                         Service
-                        <button type="button" class="btn btn-info ml-3" th:attr="data-url=*{itsmUrl}" th:disabled="not *{itsmUrl}" id="btnServiceLink">Link</button>
-                        <button type="button" class="btn btn-info ml-3" onclick='getInventory(bsn);'>Inventory Detail</button>
-                        <button type="button" class="btn btn-info ml-3" onclick="getOfferDetailList(bsn);">BB Detail</button>
-                        <button type="button" class="btn btn-info ml-3" onclick='getRelatedOfferInfo(bsn);'>VoIP Detail</button>
+                        <button type="button" class="btn btn-info ml-3 detail" th:attr="data-url=*{itsmUrl}" th:disabled="not *{itsmUrl}" id="btnServiceLink">Link</button>
+                        <button type="button" class="btn btn-info ml-3 otherDetail" onclick='getInventory(bsn);'>Inventory Detail</button>
+                        <button type="button" class="btn btn-info ml-3 otherDetail" onclick="getOfferDetailList(bsn);">BB Detail</button>
+                        <button type="button" class="btn btn-info ml-3 otherDetail" onclick='getRelatedOfferInfo(bsn);'>VoIP Detail</button>
                         <button th:if="*{ngn3reset}" type="button" class="btn btn-info ml-3" id="btnResetNGN3PWD">Re-set NGN3 Account Password</button>
                         <button th:if="*{ngn3reset}" type="button" class="btn btn-info ml-3" onclick="getNGN3OneDayAdminAccount(bsn);">One Day Admin Account</button>
                     </h3>

@@ -11,6 +11,7 @@ public class SdTicketServiceData implements DataInterface {
     private String serviceCode;
     private List<SdSymptomData> faultsList;
     private String jobId;
+    private boolean detailButton;
 
     public String getJobId() {
         return jobId;
@@ -50,5 +51,13 @@ public class SdTicketServiceData implements DataInterface {
 
     public void setFaultsList(List<SdSymptomData> faultsList) {
         this.faultsList = faultsList;
+    }
+
+    public boolean isDetailButton() {
+        return detailButton;
+    }
+
+    public void setDetailButton(boolean detailButton) {
+        this.detailButton = detailButton;
     }
 }
