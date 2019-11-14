@@ -4,13 +4,11 @@ import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.controller.constant.CreateUserPathEnum;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
-import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
 import com.hkt.btu.sd.facade.SdAuditTrailFacade;
 import com.hkt.btu.sd.facade.SdUserFacade;
 import com.hkt.btu.sd.facade.SdUserRoleFacade;
 import com.hkt.btu.sd.facade.data.*;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,11 +52,9 @@ public class ManageUserController {
                                       @ModelAttribute("userRoleOptionDataMap") HashMap<String, SdUserRoleData> userRoleOptionDataMap) {
         // user role info
         List<SdUserRoleData> userRoleDataList = userRoleFacade.getEligibleUserRoleList();
-        userRoleOptionDataMap = userRoleFacade.getUserRoleMap(userRoleDataList);
-        if (!MapUtils.isEmpty(userRoleOptionDataMap)) {
-            model.addAttribute("userRoleOptionDataMap", userRoleOptionDataMap);
+        if (CollectionUtils.isNotEmpty(userRoleDataList)) {
+            model.addAttribute("userRoleList", userRoleDataList.stream().sorted(Comparator.comparing(SdUserRoleData::getRoleDesc)).collect(Collectors.toList()));
         }
-        model.addAttribute("primaryRoleList",userRoleFacade.getPrimaryRoleList(userRoleDataList)); // todo SERVDESK-203: remove this model attribute
         String servletPath = request.getServletPath();
         return CreateUserPathEnum.getValue(servletPath);
     }
@@ -142,7 +138,8 @@ public class ManageUserController {
                 .collect(Collectors.toList()));
         List<SdUserRoleData> eligibleUserRoleList = userRoleFacade.getEligibleUserRoleList();
         model.addAttribute("eligibleUserRole", eligibleUserRoleList.stream().map(SdUserRoleData::getRoleId).collect(Collectors.toList()));
-        model.addAttribute("primaryRoleList",userRoleFacade.getPrimaryRoleList(eligibleUserRoleList));
+        model.addAttribute("primaryRoleList",eligibleUserRoleList.stream().filter(SdUserRoleData::isPrimaryRole)
+                .sorted(Comparator.comparing(SdUserRoleData::getRoleDesc)).collect(Collectors.toList()));
 
         return "admin/manageUser/editUserForm";
     }

@@ -183,6 +183,11 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
         // remove abstract role
         List<SdUserRoleBean> eligibleUserRoleList = new LinkedList<>();
         for (SdUserRoleBean sdUserRoleBean : rawEligibleUserRoleList) {
+            if (StringUtils.isNotBlank(sdUserRoleBean.getParentRoleId())) {
+                if (ELIGIBLE_PARENT_ROLE_ID_LIST_OF_PRIMARY_ROLE.contains(sdUserRoleBean.getParentRoleId())) {
+                    sdUserRoleBean.setPrimaryRole(true);
+                }
+            }
             if (!sdUserRoleBean.isAbstract()) {
                 eligibleUserRoleList.add(sdUserRoleBean);
             }
@@ -232,7 +237,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     }
 
     @Override
-    public List<SdUserRoleBean> getPrimaryRoleList() {
+    public List<String> getPrimaryRoles() {
         List<SdUserRoleBean> eligibleUserRoleGrantList = getEligibleUserRoleGrantList();
         List<SdUserRoleBean> primaryRoleList = new ArrayList<>();
         eligibleUserRoleGrantList.forEach(sdUserRoleBean -> {
@@ -240,17 +245,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
                 primaryRoleList.add(sdUserRoleBean);
             }
         });
-        return primaryRoleList.stream().sorted(Comparator.comparing(SdUserRoleBean::getRoleDesc)).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<String> getPrimaryRoleParentRoleIdList() {
-        return ELIGIBLE_PARENT_ROLE_ID_LIST_OF_PRIMARY_ROLE;
-    }
-
-    @Override
-    public List<String> getPrimaryRoles() {
-        return getPrimaryRoleList().stream().map(SdUserRoleBean::getRoleId).collect(Collectors.toList());
+        return primaryRoleList.stream().sorted(Comparator.comparing(SdUserRoleBean::getRoleDesc)).map(SdUserRoleBean::getRoleId).collect(Collectors.toList());
     }
 
     @Override

@@ -26,5 +26,4 @@ public interface SdUserRoleFacade {
 
     void reloadUserRole();
 
-    List<SdUserRoleData> getPrimaryRoleList(List<SdUserRoleData> userRoleDataList);
 }

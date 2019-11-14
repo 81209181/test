@@ -56,4 +56,6 @@ public interface SdTicketMasMapper {
                                                  @Param("excludeStatus")String excludeStatus);
 
     void updateTicketType(@Param("ticketMasId")int ticketMasId, @Param("type")String type,  @Param("userId")String userId);
+
+
 }

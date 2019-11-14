@@ -23,7 +23,7 @@ $(document).ready(function() {
             { data: 'ticketMasId' },
             { data: 'ticketType' },
             { data: 'custCode' },
-            { data: 'status' },
+            { data: 'statusDesc' },
             { data: 'createDate' },
             { data: 'createBy' }
         ],

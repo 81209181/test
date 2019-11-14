@@ -1,14 +1,26 @@
+var time2reload, countdown ;
+
 $(document).ready(function () {
     prepareAjax();
 
     $('#session-expire-warning-modal').find('button').on('click',function(){
-        $.get('/public/contact-us',function(res){});
+        $.get('/public/keepSession',function(res){
+            if(res.success){
+                clearTimeout(time2reload);
+                clearInterval(countdown);
+                $('#session-expire-warning-modal').modal('hide');
+                $('mark').text(30);
+            }
+        });
     })
 
     $('#session-expire-warning-modal').on('show.bs.modal',function(){
-        setTimeout(function(){
+        time2reload = setTimeout(function(){
             location.reload();
-        },30000)
+        },30000);
+        countdown = setInterval(function(){
+            $('mark').text($('mark').text() - 1);
+        },1000)
     })
 });
 

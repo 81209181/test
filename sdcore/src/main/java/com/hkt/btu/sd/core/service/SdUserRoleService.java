@@ -29,8 +29,4 @@ public interface SdUserRoleService {
     boolean isEligibleToGrantUserRole(List<String> roleIdList);
 
     void changeUserIdInUserUserRole(String oldUserId, String userId, List<SdUserRoleEntity> userRoleByUserId);
-
-    List<SdUserRoleBean> getPrimaryRoleList();
-
-    List<String> getPrimaryRoleParentRoleIdList();
 }

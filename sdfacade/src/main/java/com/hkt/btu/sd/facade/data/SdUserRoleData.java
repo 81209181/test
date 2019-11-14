@@ -9,7 +9,7 @@ public class SdUserRoleData implements DataInterface {
     private String parentRoleId;
     private String status;
     private String abstractFlag;
-    private boolean isPrimaryRole; // todo SERVDESK-203: populate this with SdUserBean.isPrimaryRole
+    private boolean isPrimaryRole;
 
     public String getRoleId() {
         return roleId;
@@ -49,5 +49,13 @@ public class SdUserRoleData implements DataInterface {
 
     public void setAbstractFlag(String abstractFlag) {
         this.abstractFlag = abstractFlag;
+    }
+
+    public boolean isPrimaryRole() {
+        return isPrimaryRole;
+    }
+
+    public void setPrimaryRole(boolean primaryRole) {
+        isPrimaryRole = primaryRole;
     }
 }

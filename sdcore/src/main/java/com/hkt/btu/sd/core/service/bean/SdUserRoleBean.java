@@ -20,6 +20,7 @@ public class SdUserRoleBean extends BaseBean {
 
     private boolean isActive;
     private boolean isAbstract;
+    private boolean isPrimaryRole;
 
     public String getRoleId() {
         return roleId;
@@ -75,5 +76,13 @@ public class SdUserRoleBean extends BaseBean {
 
     public void setChildren(List<SdUserRoleBean> children) {
         this.children = children;
+    }
+
+    public boolean isPrimaryRole() {
+        return isPrimaryRole;
+    }
+
+    public void setPrimaryRole(boolean primaryRole) {
+        isPrimaryRole = primaryRole;
     }
 }
