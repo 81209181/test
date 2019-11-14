@@ -8,6 +8,7 @@ public class SdServiceTypeBean extends BaseBean {
         public static final String BROADBAND = "BN";
         public static final String VOIP = "VOIP";
         public static final String E_CLOUD = "E_CLOUD";
+        public static final String UNKNOWN = "UNKNOWN";
     }
 
     private String serviceTypeCode;
