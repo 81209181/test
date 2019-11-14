@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.core.dao.mapper;
 
 import com.hkt.btu.sd.core.dao.entity.SdTicketMasEntity;
+import com.hkt.btu.sd.core.dao.entity.StatusSummaryEntity;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -56,6 +57,9 @@ public interface SdTicketMasMapper {
                                                  @Param("excludeStatus")String excludeStatus);
 
     void updateTicketType(@Param("ticketMasId")int ticketMasId, @Param("type")String type,  @Param("userId")String userId);
+
+    List<StatusSummaryEntity> getCountStatusByTicketType();
+    StatusSummaryEntity getSumStatusByTicketType();
 
 
 }

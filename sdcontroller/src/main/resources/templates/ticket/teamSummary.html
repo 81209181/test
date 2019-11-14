@@ -20,7 +20,7 @@
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="tab-team-summary" role="tabpanel" aria-labelledby="tab-team-summary">
-                    <table class="table table-bordered table-striped mt-2 col-md-6">
+                    <table class="table table-bordered table-striped mt-2 col-md-6" th:object="${teamSummary}">
                         <thead>
                         <tr>
                             <th>Status</th>
@@ -29,26 +29,18 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>Open</td>
-                            <td>12</td>
-                            <td>20</td>
-                        </tr>
-                        <tr>
-                            <td>Work</td>
-                            <td>12</td>
-                            <td>13</td>
-                        </tr>
-                        <tr>
-                            <td>Complete</td>
-                            <td>143</td>
-                            <td>144</td>
-                        </tr>
-                        <tr>
-                            <td>total</td>
-                            <td>1313</td>
-                            <td>1212</td>
-                        </tr>
+                            <th:block th:each="list:*{summaryData}">
+                                <tr>
+                                    <td th:text="${list.status}"></td>
+                                    <td th:text="${list.queryCnt}"></td>
+                                    <td th:text="${list.jobCnt}"></td>
+                                </tr>
+                            </th:block>
+                            <tr>
+                                <td>Total</td>
+                                <td th:text="*{queryTotal}"></td>
+                                <td th:text="*{jobTotal}"></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

@@ -56,6 +56,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     SdTicketRemarkDataPopulator ticketRemarkDataPopulator;
     @Resource(name = "faultInfoDataPopulator")
     BesFaultInfoDataPopulator faultInfoDataPopulator;
+    @Resource(name = "teamSummaryDataPopulator")
+    SdTeamSummaryDataPopulator teamSummaryDataPopulator;
 
     @Override
     public int createQueryTicket(QueryTicketRequestData queryTicketRequestData) {
@@ -531,5 +533,13 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             codeDescDataList.add(codeDescData);
         }
         return codeDescDataList;
+    }
+
+    @Override
+    public TeamSummaryData getTeamSummary() {
+        TeamSummaryData data = new TeamSummaryData();
+        TeamSummaryBean summaryBean = ticketService.getTeamSummary();
+        teamSummaryDataPopulator.populate(summaryBean,data);
+        return data;
     }
 }

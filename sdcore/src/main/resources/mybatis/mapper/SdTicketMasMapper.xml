@@ -22,6 +22,11 @@
         <result column="MODIFYDATE" property="modifydate" />
         <result column="MODIFYBY" property="modifyby" />
     </resultMap>
+    <resultMap id="teamSummaryEntity" type="com.hkt.btu.sd.core.dao.entity.StatusSummaryEntity">
+        <result column="STATUS" property="status"/>
+        <result column="QUERY_CNT" property="queryCnt"/>
+        <result column="JOB_CNT" property="jobCnt"/>
+    </resultMap>
 
     <insert id="insertQueryTicket" parameterType="com.hkt.btu.sd.core.dao.entity.SdTicketMasEntity">
         <selectKey keyProperty="ticketMasId" order="BEFORE" resultType="Integer">
@@ -143,16 +148,15 @@
         where ticket_mas_id = #{ticketMasId}
     </update>
 
-    <select id="getSumStatusByTicketType">
-        SELECT
-            COUNT(1),
-            status,
-            sum(COUNT(1)) over()
-        FROM
-            ticket_mas
-        WHERE
-            ticket_type = #{ticketType}
-        GROUP BY
-            status;
+    <select id="getCountStatusByTicketType" resultMap="teamSummaryEntity">
+        select * from (select count(1) status_cnt,ticket_type,status
+        from ticket_mas where createdate BETWEEN trunc(sysdate, 'mm') and  last_day(sysdate)
+        group by ticket_type,status order by ticket_type)PIVOT(sum(status_cnt)for ticket_type in ('JOB' job_cnt,'QUERY' query_cnt))
+    </select>
+    
+    <select id="getSumStatusByTicketType" resultMap="teamSummaryEntity">
+        select sum(job) job_cnt,sum(query) query_cnt from (select count(1) status_cnt,ticket_type,status
+        from ticket_mas where createdate BETWEEN trunc(sysdate, 'mm') and  last_day(sysdate)
+        group by ticket_type,status order by ticket_type)PIVOT(sum(status_cnt)for ticket_type in ('JOB' job,'QUERY' query))
     </select>
 </mapper>

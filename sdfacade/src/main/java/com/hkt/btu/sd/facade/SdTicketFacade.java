@@ -55,4 +55,6 @@ public interface SdTicketFacade {
     List<CodeDescData> getTicketStatusList();
 
     List<CodeDescData> getTicketTypeList();
+
+    TeamSummaryData getTeamSummary();
 }
