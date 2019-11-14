@@ -348,11 +348,14 @@ function makeAppointment(ticketMasId, ticketDetId, symptomCode, serviceType) {
     }, function (res) {
         let window = AppointmentSDObj.make({
             data: {
-                sdToken: res,
+                sdToken: res.jwt,
             }
-        }, "https://10.252.15.158/wfm"); // todo [SERVDESK-182]: need to use config param link
-        //}, "http://localhost:8082/wfm");
+        }, res.url);
         checkWindowClose(window);
+    }).fail(function (e) {
+        let responseError = e.responseText ? e.responseText : "Get failed.";
+        console.log("ERROR : ", responseError);
+        showErrorMsg(responseError);
     })
 }
 

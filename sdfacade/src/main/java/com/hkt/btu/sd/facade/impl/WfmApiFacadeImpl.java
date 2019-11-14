@@ -179,8 +179,8 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
     }
 
     @Override
-    public String getToken(WfmMakeApptData makeApptData) {
-        if(makeApptData==null){
+    public WfmResponseTokenData getToken(WfmMakeApptData makeApptData) {
+        if (makeApptData == null) {
             LOG.error("Null makeAppData");
             return null;
         }
@@ -194,9 +194,14 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
         queryParam.put("bsn", String.valueOf(makeApptData.getBsn()));
 
         // call WFM API
-        try{
-            return getData("/api/v1/sd/token", queryParam);
-        } catch (NotFoundException e){
+        try {
+            String url = getTargetApiSiteInterfaceBean().getUrl();
+            String jwt = getData("/api/v1/sd/token", queryParam);
+            if (StringUtils.isEmpty(jwt)) {
+                return null;
+            }
+            return WfmResponseTokenData.of(jwt, url);
+        } catch (NotFoundException e) {
             LOG.warn(e.getMessage());
         }
 

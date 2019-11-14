@@ -92,7 +92,6 @@ public abstract class AbstractRestfulApiFacade {
 
         // set api path
         WebTarget webTarget = client
-                //.target("http://localhost:8082/wfm")
                 .target(siteInterfaceBean.getUrl())
                 .path(path);
 
