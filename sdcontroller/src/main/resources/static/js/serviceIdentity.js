@@ -134,7 +134,7 @@ $().ready(function(){
                     let tr = '<tr class="text-center"></tr>';
                     $('tbody').append(tr);
                     $('tbody tr:last').data('info', val);
-                    $('tbody tr:last').append('<td><input type="radio"></td>')
+                    $('tbody tr:last').append('<td><input type="radio" name="service"></td>')
                         .append('<td>' + val.custCode + '</td>')
                         .append('<td>' + val.custName + '</td>')
                         .append('<td>' + val.serviceType + '</td>')
