@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cached Object List</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+    <h1>Cached Object</h1>
+    <table id="cachedObjectTable" class="display">
+        <thead>
+        <tr>
+            <th>Cache Object Name</th>
+            <th>Detail<!--detail--></th>
+            <th>Reload<!--reload button--></th>
+        </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>Site Config</td>
+                <td><a class="btn btn-info" href='#' role="button"><i class="fas fa-edit"></i> Detail</a></td>
+                <td><a class="btn btn-info" href='javascript:reloadSiteConfig();' role="button"><i class="fas fa-sync"></i> Reload</a></td>
+            </tr>
+            <tr>
+                <td>User Role</td>
+                <td><a class="btn btn-info" href='#' role="button"><i class="fas fa-edit"></i> Detail</a></td>
+                 <td><a class="btn btn-info" href='javascript:reloadUserRole();' role="button"><i class="fas fa-sync"></i> Reload</a></td>
+            </tr>
+
+            <tr>
+                <td>Service Type List</td>
+                <td><a class="btn btn-info" href='#' role="button"><i class="fas fa-edit"></i> Detail</a></td>
+                <td><a class="btn btn-info" href='javascript:reloadServiceTypeList();' role="button"><i class="fas fa-sync"></i> Reload</a></td>
+            </tr>
+
+            <tr>
+                <td>Service Type Offer Mapping</td>
+                <td><a class="btn btn-info" href='#' role="button"><i class="fas fa-edit"></i> Detail</a></td>
+                <td><a class="btn btn-info" href='javascript:reloadServiceTypeOfferMapping();' role="button"><i class="fas fa-sync"></i>Reload</a></td>
+            </tr>
+        </tbody>
+
+        <tfoot>
+        <tr>
+            <th>Cache Object Name</th>
+            <th>Detail<!--detail--></th>
+            <th>Reload<!--reload button--></th>
+        </tr>
+        </tfoot>
+    </table>
+    <script type="text/javascript" th:src="@{/js/cachedObject.js}"></script>
+</div>
+</body>
+</html>
