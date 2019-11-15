@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
+import com.hkt.btu.sd.core.exception.ApiException;
 import com.hkt.btu.sd.core.service.SdTicketService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.*;
@@ -489,29 +490,27 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public void createJob4Wfm(int ticketMasId) {
+    public void createJob4Wfm(int ticketMasId) throws InvalidInputException, ApiException {
         try {
             SdTicketData ticketInfo = getTicketInfo(ticketMasId);
             if (ticketInfo != null) {
                 for (SdTicketServiceData serviceData : ticketInfo.getServiceInfo()) {
                     if (CollectionUtils.isEmpty(serviceData.getFaultsList())) {
-                        throw new RuntimeException("Please select one symptom code .");
+                        throw new InvalidInputException("Please select a symptom.");
                     }
                     if (SdServiceTypeBean.SERVICE_TYPE.UNKNOWN.equals(serviceData.getServiceType())) {
-                        throw new RuntimeException("Unknown service type.");
+                        throw new InvalidInputException("Unknown service type.");
                     }
                 }
                 if (CollectionUtils.isEmpty(ticketInfo.getContactInfo())) {
-                    throw new RuntimeException("Please input contact.");
+                    throw new InvalidInputException("Please input contact.");
                 }
             } else {
-                throw new RuntimeException("Ticket not found.");
+                throw new InvalidInputException("Ticket not found.");
             }
             updateJobIdInService(wfmApiFacade.createJob(ticketInfo), ticketMasId);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(String.format("WFM Error: Cannot create job for ticket mas id %s.", ticketMasId));
-        } catch (Exception ex) {
-            throw new RuntimeException(ex.getMessage());
+            throw new ApiException(String.format("WFM Error: Cannot create job for ticket mas id %s.", ticketMasId));
         }
     }
 
