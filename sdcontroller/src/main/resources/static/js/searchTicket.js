@@ -52,6 +52,7 @@ function createSearchTicketDataTable(){
                 d.serviceNumber = $("#serviceNumber").val();
                 d.ticketType = $('#ticketType').val();
                 d.serviceType = $("#serviceType").val();
+                d.owningRole = $("#owningRole").val();
             },
             error: function (e) {
                 if(e.responseText){
@@ -67,6 +68,7 @@ function createSearchTicketDataTable(){
             { data: 'custCode' },
             { data: 'serviceType' },
             { data: 'searchValue'},
+            { data: 'owningRole'},
             { data: 'statusDesc' },
             { data: 'callInCount'},
             { data: 'completeDate'},
@@ -75,21 +77,21 @@ function createSearchTicketDataTable(){
         ],
         columnDefs: [
             {
-                targets: 7,
+                targets: 8,
                 data: "completeDate",
                 render: function (nextRunTime, type, row, meta) {
                     return nextRunTime==null ? null : nextRunTime.replace('T', ' ');
                 }
             },
             {
-                targets: 8,
+                targets: 9,
                 data: "createDate",
                 render: function (nextRunTime, type, row, meta) {
                      return nextRunTime==null ? null : nextRunTime.replace('T', ' ');
                 }
             },
             {
-                targets: 10,
+                targets: 11,
                 data: "ticketMasId",
                 render: function ( ticketMasId, type, row, meta ) {
                     var ctx = $("meta[name='_ctx']").attr("content");
