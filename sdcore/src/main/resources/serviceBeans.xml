@@ -120,4 +120,7 @@
 
     <alias name="sdServiceTypeOfferMappingBeanPopulator" alias="serviceTypeOfferMappingBeanPopulator" />
     <bean id="sdServiceTypeOfferMappingBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdServiceTypeOfferMappingBeanPopulator" />
+
+    <alias name="sdTeamSummaryBeanPopulator" alias="teamSummaryBeanPopulator"/>
+    <bean class="com.hkt.btu.sd.core.service.populator.SdTeamSummaryBeanPopulator" id="sdTeamSummaryBeanPopulator"/>
 </beans>

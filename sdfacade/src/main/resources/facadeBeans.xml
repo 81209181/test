@@ -106,4 +106,7 @@
 
     <alias name="sdTicketInfoDataPopulator" alias="ticketInfoDataPopulator"/>
     <bean class="com.hkt.btu.sd.facade.populator.SdTicketInfoDataPopulator" id="sdTicketInfoDataPopulator"/>
+
+    <alias name="sdTeamSummaryDataPopulator" alias="teamSummaryDataPopulator"/>
+    <bean class="com.hkt.btu.sd.facade.populator.SdTeamSummaryDataPopulator" id="sdTeamSummaryDataPopulator"/>
 </beans>

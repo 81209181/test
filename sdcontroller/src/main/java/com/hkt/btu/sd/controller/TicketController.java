@@ -377,7 +377,8 @@ public class TicketController {
     }
 
     @GetMapping("team-summary")
-    public String showTeamSummary() {
+    public String showTeamSummary(Model model) {
+        model.addAttribute("teamSummary", ticketFacade.getTeamSummary());
         return "ticket/teamSummary";
     }
 }

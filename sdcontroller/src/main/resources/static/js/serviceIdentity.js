@@ -140,7 +140,7 @@ $().ready(function(){
                         .append('<td>' + val.serviceType + '</td>')
                         .append('<td>' + val.serviceNo + '</td>')
                 });
-                $('.modal').modal('show');
+                $('#products_modal').modal('show');
             }
 
             if(response.warningMsg){
@@ -169,7 +169,7 @@ $().ready(function(){
                         disabledDetailButton(val);
                     }
                 })
-                $('.modal').modal('hide');
+                $('#products_modal').modal('hide');
             })
         })
     });

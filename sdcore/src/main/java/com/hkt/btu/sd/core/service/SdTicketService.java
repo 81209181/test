@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface SdTicketService {
@@ -26,7 +25,7 @@ public interface SdTicketService {
     Page<SdTicketMasBean> searchTicketList(Pageable pageable, LocalDate createDateFrom, LocalDate createDateTo,
                                            String status, LocalDate completeDateFrom, LocalDate completeDateTo,
                                            String createBy, String ticketMasId, String custCode,
-                                           String serviceNumber, String ticketType, String serviceType);
+                                           String serviceNumber, String ticketType, String serviceType, boolean isReport, String owningRole);
 
     Page<SdTicketMasBean> getMyTicket(Pageable pageable);
 
@@ -71,4 +70,6 @@ public interface SdTicketService {
     List<TicketStatusEnum> getTicketStatusList();
 
     List<TicketTypeEnum> getTicketTypeList();
+
+    TeamSummaryBean getTeamSummary();
 }

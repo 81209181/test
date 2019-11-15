@@ -1,6 +1,5 @@
 package com.hkt.btu.sd.core.exception;
 
-@SuppressWarnings("unused")
 public class InvalidInputException extends RuntimeException {
 
     public InvalidInputException(){

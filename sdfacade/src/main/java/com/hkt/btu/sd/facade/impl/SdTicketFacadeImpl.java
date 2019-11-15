@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
+import com.hkt.btu.sd.core.exception.ApiException;
 import com.hkt.btu.sd.core.service.SdTicketService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.*;
@@ -18,6 +19,7 @@ import com.hkt.btu.sd.facade.data.wfm.WfmJobProgressData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobRemarksData;
 import com.hkt.btu.sd.facade.populator.*;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -56,6 +58,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     SdTicketRemarkDataPopulator ticketRemarkDataPopulator;
     @Resource(name = "faultInfoDataPopulator")
     BesFaultInfoDataPopulator faultInfoDataPopulator;
+    @Resource(name = "teamSummaryDataPopulator")
+    SdTeamSummaryDataPopulator teamSummaryDataPopulator;
 
     @Override
     public int createQueryTicket(QueryTicketRequestData queryTicketRequestData) {
@@ -128,7 +132,10 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             String ticketType = StringUtils.isEmpty(searchFormData.get("ticketType")) ? null : searchFormData.get("ticketType");
             String serviceType = StringUtils.isEmpty(searchFormData.get("serviceType")) ? null : searchFormData.get("serviceType");
 
-            pageBean = ticketService.searchTicketList(pageable, createDateFrom, createDateTo, status, completeDateFrom, completeDateTo, createBy, ticketMasId, custCode, serviceNumber, ticketType, serviceType);
+            boolean isReport = BooleanUtils.toBoolean(searchFormData.get("isReport"));
+            String owningRole = StringUtils.isEmpty(searchFormData.get("owningRole")) ? null : searchFormData.get("owningRole");
+
+            pageBean = ticketService.searchTicketList(pageable, createDateFrom, createDateTo, status, completeDateFrom, completeDateTo, createBy, ticketMasId, custCode, serviceNumber, ticketType, serviceType,isReport,owningRole);
         } catch (AuthorityNotFoundException e) {
             return new PageData<>(e.getMessage());
         }
@@ -483,16 +490,27 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public void createJob4Wfm(int ticketMasId) {
+    public void createJob4Wfm(int ticketMasId) throws InvalidInputException, ApiException {
         try {
             SdTicketData ticketInfo = getTicketInfo(ticketMasId);
-            ticketInfo.getServiceInfo().get(0).getFaultsList().stream().findFirst().map(SdSymptomData::getSymptomCode).orElseThrow(() ->
-                    new RuntimeException("Please select one symptom code ."));
+            if (ticketInfo != null) {
+                for (SdTicketServiceData serviceData : ticketInfo.getServiceInfo()) {
+                    if (CollectionUtils.isEmpty(serviceData.getFaultsList())) {
+                        throw new InvalidInputException("Please select a symptom.");
+                    }
+                    if (SdServiceTypeBean.SERVICE_TYPE.UNKNOWN.equals(serviceData.getServiceType())) {
+                        throw new InvalidInputException("Unknown service type.");
+                    }
+                }
+                if (CollectionUtils.isEmpty(ticketInfo.getContactInfo())) {
+                    throw new InvalidInputException("Please input contact.");
+                }
+            } else {
+                throw new InvalidInputException("Ticket not found.");
+            }
             updateJobIdInService(wfmApiFacade.createJob(ticketInfo), ticketMasId);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(String.format("WFM Error: Cannot create job for ticket mas id %s.", ticketMasId));
-        } catch (Exception ex) {
-            throw new RuntimeException(ex.getMessage());
+            throw new ApiException(String.format("WFM Error: Cannot create job for ticket mas id %s.", ticketMasId));
         }
     }
 
@@ -528,5 +546,13 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             codeDescDataList.add(codeDescData);
         }
         return codeDescDataList;
+    }
+
+    @Override
+    public TeamSummaryData getTeamSummary() {
+        TeamSummaryData data = new TeamSummaryData();
+        TeamSummaryBean summaryBean = ticketService.getTeamSummary();
+        teamSummaryDataPopulator.populate(summaryBean,data);
+        return data;
     }
 }

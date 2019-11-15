@@ -7,7 +7,7 @@
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-    <div class="card" style="height:700px">
+    <div class="card">
         <div class="card-header bg-info text-white h5">Team Summary</div>
         <div class="card-body">
             <ul class="nav nav-tabs" role="tablist">
@@ -20,7 +20,7 @@
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="tab-team-summary" role="tabpanel" aria-labelledby="tab-team-summary">
-                    <table class="table table-bordered table-striped mt-2 col-md-6">
+                    <table class="table table-bordered table-striped mt-2 col-md-6" th:object="${teamSummary}">
                         <thead>
                         <tr>
                             <th>Status</th>
@@ -29,34 +29,47 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>Open</td>
-                            <td>12</td>
-                            <td>20</td>
-                        </tr>
-                        <tr>
-                            <td>Work</td>
-                            <td>12</td>
-                            <td>13</td>
-                        </tr>
-                        <tr>
-                            <td>Complete</td>
-                            <td>143</td>
-                            <td>144</td>
-                        </tr>
-                        <tr>
-                            <td>total</td>
-                            <td>1313</td>
-                            <td>1212</td>
-                        </tr>
+                            <th:block th:each="list:*{summaryData}">
+                                <tr>
+                                    <td th:text="${list.status}"></td>
+                                    <td th:text="${list.queryCnt}"></td>
+                                    <td th:text="${list.jobCnt}"></td>
+                                </tr>
+                            </th:block>
+                            <tr>
+                                <td>Total</td>
+                                <td th:text="*{queryTotal}"></td>
+                                <td th:text="*{jobTotal}"></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="tab-pane" id="tab-ticket-myTeam" role="tabpanel" aria-labelledby="tab-ticket-myTeam">Tickets of My Team</div>
+                <div class="tab-pane" id="tab-ticket-myTeam" role="tabpanel" aria-labelledby="tab-ticket-myTeam">
+                    <div class="col-md-10 mx-auto mt-2">
+                        <table class="display" cellspacing="0" width="100%" >
+                            <thead>
+                                <tr>
+                                    <th>Ticket ID</th>
+                                    <th>Ticket Type</th>
+                                    <th>Customer Code</th>
+                                    <th>Service Type</th>
+                                    <th>Service Number</th>
+                                    <th>Status</th>
+                                    <th>Call-in Count</th>
+                                    <th>Complete Date</th>
+                                    <th>Create Date</th>
+                                    <th>Create By</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
+    <script type="text/javascript" th:src="@{/js/teamSummary.js}"></script>
 </div>
 </body>
 </html>

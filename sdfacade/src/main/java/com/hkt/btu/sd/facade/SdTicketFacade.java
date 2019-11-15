@@ -1,6 +1,8 @@
 package com.hkt.btu.sd.facade;
 
+import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.facade.data.PageData;
+import com.hkt.btu.sd.core.exception.ApiException;
 import com.hkt.btu.sd.facade.data.*;
 import org.springframework.data.domain.Pageable;
 
@@ -50,9 +52,11 @@ public interface SdTicketFacade {
 
     boolean increaseCallInCount(Integer ticketMasId);
 
-    void createJob4Wfm(int ticketMasId);
+    void createJob4Wfm(int ticketMasId) throws InvalidInputException, ApiException;
 
     List<CodeDescData> getTicketStatusList();
 
     List<CodeDescData> getTicketTypeList();
+
+    TeamSummaryData getTeamSummary();
 }
