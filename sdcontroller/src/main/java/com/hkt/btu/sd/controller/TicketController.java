@@ -372,7 +372,7 @@ public class TicketController {
         if (data != null) {
             return ResponseEntity.ok(data);
         } else {
-            return ResponseEntity.badRequest().body("Cannot connect WFM for get token.");
+            return ResponseEntity.badRequest().body("Cannot connect WFM for getting token.");
         }
     }
 
