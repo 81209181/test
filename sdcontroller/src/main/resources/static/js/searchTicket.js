@@ -64,10 +64,10 @@ function createSearchTicketDataTable(){
         columns: [
             { data: 'ticketMasId' },
             { data: 'ticketType' },
+            { data: 'statusDesc' },
             { data: 'custCode' },
             { data: 'serviceType' },
             { data: 'searchValue'},
-            { data: 'statusDesc' },
             { data: 'callInCount'},
             { data: 'completeDate'},
             { data: 'createDate' },
