@@ -46,6 +46,9 @@
     <alias name="sdServiceTypeFacade" alias="serviceTypeFacade" />
     <bean id="sdServiceTypeFacade" class="com.hkt.btu.sd.facade.impl.SdServiceTypeFacadeImpl"/>
 
+    <alias name="sdCachedFacade" alias="cachedFacade"/>
+    <bean id="sdCachedFacade" class="com.hkt.btu.sd.facade.impl.SdCachedFacadeImpl"/>
+
     <!-- Populator -->
     <alias name="sdUserDataPopulator" alias="userDataPopulator"/>
     <bean id="sdUserDataPopulator" class="com.hkt.btu.sd.facade.populator.SdUserDataPopulator"/>

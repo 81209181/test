@@ -78,7 +78,8 @@ public class SdServiceTypeServiceImpl implements SdServiceTypeService {
                 .map(SdServiceTypeBean::getServiceTypeName).findFirst().orElse(SdServiceTypeEntity.SERVICE_TYPE_NAME.UNKNOWN_SERVICE_TYPE);
     }
 
-    private void reloadServiceTypeOfferMapping() {
+    @Override
+    public void reloadServiceTypeOfferMapping() {
         LOG.info("reload service type offer mapping.");
         SERVICE_TYPE_OFFER_MAPPING = serviceTypeMapper.getServiceTypeOfferMapping().stream().map(entity -> {
             SdServiceTypeOfferMappingBean bean = new SdServiceTypeOfferMappingBean();
@@ -87,8 +88,8 @@ public class SdServiceTypeServiceImpl implements SdServiceTypeService {
         }).collect(Collectors.toList());
     }
 
-
-    private void reloadServiceTypeList() {
+    @Override
+    public void reloadServiceTypeList() {
         LOG.info("reload service type list.");
         SERVICE_TYPE_LIST = serviceTypeMapper.getServiceTypeList().stream().map(entity -> {
             SdServiceTypeBean bean = new SdServiceTypeBean();
