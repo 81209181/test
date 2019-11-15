@@ -80,6 +80,9 @@
             <if test="serviceType != null">
                 and td.service_type_code = #{serviceType}
             </if>
+            <if test="owningRole != null">
+                and tm.owning_role = #{owningRole}
+            </if>
         </where>
     </sql>
 
@@ -150,13 +153,13 @@
 
     <select id="getCountStatusByTicketType" resultMap="teamSummaryEntity">
         select status,nvl(job,0) job_cnt,nvl(query,0)query_cnt from (select count(1) status_cnt,ticket_type,status
-        from ticket_mas where createdate BETWEEN trunc(sysdate, 'mm') and  last_day(sysdate)
+        from ticket_mas where createdate BETWEEN trunc(sysdate, 'mm') and  last_day(sysdate) and owning_role = #{owningRole}
         group by ticket_type,status order by ticket_type)PIVOT(sum(status_cnt)for ticket_type in ('JOB' job,'QUERY' query))
     </select>
     
     <select id="getSumStatusByTicketType" resultMap="teamSummaryEntity">
         select sum(job) job_cnt,sum(query) query_cnt from (select count(1) status_cnt,ticket_type,status
-        from ticket_mas where createdate BETWEEN trunc(sysdate, 'mm') and  last_day(sysdate)
+        from ticket_mas where createdate BETWEEN trunc(sysdate, 'mm') and  last_day(sysdate) and owning_role = #{owningRole}
         group by ticket_type,status order by ticket_type)PIVOT(sum(status_cnt)for ticket_type in ('JOB' job,'QUERY' query))
     </select>
 </mapper>

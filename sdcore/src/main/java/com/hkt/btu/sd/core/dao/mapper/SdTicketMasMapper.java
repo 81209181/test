@@ -27,7 +27,8 @@ public interface SdTicketMasMapper {
                                              @Param("custCode") String custCode,
                                              @Param("serviceNumber") String serviceNumber,
                                              @Param("ticketType") String ticketType,
-                                             @Param("serviceType") String serviceType);
+                                             @Param("serviceType") String serviceType,
+                                             @Param("owningRole") String owningRole);
 
     Integer searchTicketCount(@Param("createDateFrom") LocalDate createDateFrom,
                               @Param("createDateTo") LocalDate createDateTo,
@@ -39,7 +40,8 @@ public interface SdTicketMasMapper {
                               @Param("custCode") String custCode,
                               @Param("serviceNumber") String serviceNumber,
                               @Param("ticketType") String ticketType,
-                              @Param("serviceType") String serviceType);
+                              @Param("serviceType") String serviceType,
+                              @Param("owningRole") String owningRole);
 
     void updateAppointmentInMas(@Param("appointmentDate") LocalDateTime appointmentDate,
                                 @Param("asap") String asap,
@@ -58,8 +60,8 @@ public interface SdTicketMasMapper {
 
     void updateTicketType(@Param("ticketMasId")int ticketMasId, @Param("type")String type,  @Param("userId")String userId);
 
-    List<StatusSummaryEntity> getCountStatusByTicketType();
-    StatusSummaryEntity getSumStatusByTicketType();
+    List<StatusSummaryEntity> getCountStatusByTicketType(@Param("owningRole")String owningRole);
+    StatusSummaryEntity getSumStatusByTicketType(@Param("owningRole")String owningRole);
 
 
 }

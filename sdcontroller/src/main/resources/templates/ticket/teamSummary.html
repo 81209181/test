@@ -7,7 +7,7 @@
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-    <div class="card" style="height:700px">
+    <div class="card">
         <div class="card-header bg-info text-white h5">Team Summary</div>
         <div class="card-body">
             <ul class="nav nav-tabs" role="tablist">
@@ -44,11 +44,32 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="tab-pane" id="tab-ticket-myTeam" role="tabpanel" aria-labelledby="tab-ticket-myTeam">Tickets of My Team</div>
+                <div class="tab-pane" id="tab-ticket-myTeam" role="tabpanel" aria-labelledby="tab-ticket-myTeam">
+                    <div class="col-md-10 mx-auto mt-2">
+                        <table class="display" cellspacing="0" width="100%" >
+                            <thead>
+                                <tr>
+                                    <th>Ticket ID</th>
+                                    <th>Ticket Type</th>
+                                    <th>Customer Code</th>
+                                    <th>Service Type</th>
+                                    <th>Service Number</th>
+                                    <th>Status</th>
+                                    <th>Call-in Count</th>
+                                    <th>Complete Date</th>
+                                    <th>Create Date</th>
+                                    <th>Create By</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
+    <script type="text/javascript" th:src="@{/js/teamSummary.js}"></script>
 </div>
 </body>
 </html>

@@ -18,6 +18,7 @@ import com.hkt.btu.sd.facade.data.wfm.WfmJobProgressData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobRemarksData;
 import com.hkt.btu.sd.facade.populator.*;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -130,7 +131,10 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             String ticketType = StringUtils.isEmpty(searchFormData.get("ticketType")) ? null : searchFormData.get("ticketType");
             String serviceType = StringUtils.isEmpty(searchFormData.get("serviceType")) ? null : searchFormData.get("serviceType");
 
-            pageBean = ticketService.searchTicketList(pageable, createDateFrom, createDateTo, status, completeDateFrom, completeDateTo, createBy, ticketMasId, custCode, serviceNumber, ticketType, serviceType);
+            boolean isReport = BooleanUtils.toBoolean(searchFormData.get("isReport"));
+            String owningRole = StringUtils.isEmpty(searchFormData.get("owningRole")) ? null : searchFormData.get("owningRole");
+
+            pageBean = ticketService.searchTicketList(pageable, createDateFrom, createDateTo, status, completeDateFrom, completeDateTo, createBy, ticketMasId, custCode, serviceNumber, ticketType, serviceType,isReport,owningRole);
         } catch (AuthorityNotFoundException e) {
             return new PageData<>(e.getMessage());
         }

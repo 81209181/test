@@ -132,19 +132,23 @@ public class SdTicketServiceImpl implements SdTicketService {
     public Page<SdTicketMasBean> searchTicketList(Pageable pageable, LocalDate createDateFrom, LocalDate createDateTo,
                                                   String status, LocalDate completeDateFrom, LocalDate completeDateTo,
                                                   String createBy, String ticketMasId, String custCode,
-                                                  String serviceNumber, String ticketType, String serviceType) {
+                                                  String serviceNumber, String ticketType, String serviceType, boolean isReport, String owningRole) {
         List<SdTicketMasEntity> entityList;
         Integer totalCount;
 
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
 
+        if (isReport) {
+            owningRole = userService.getUserByUserId(userService.getCurrentUserUserId()).getPrimaryRoleId();
+        }
+
         if (StringUtils.isNotEmpty(ticketMasId)) {
-            entityList = ticketMasMapper.searchTicketList(offset, pageSize, null, null, null, null, null, null, ticketMasId, null, null, null, null);
-            totalCount = ticketMasMapper.searchTicketCount(null, null, null, null, null, null, ticketMasId, null, null, null, null);
+            entityList = ticketMasMapper.searchTicketList(offset, pageSize, null, null, null, null, null, null, ticketMasId, null, null, null, null,null);
+            totalCount = ticketMasMapper.searchTicketCount(null, null, null, null, null, null, ticketMasId, null, null, null, null, null);
         } else {
-            entityList = ticketMasMapper.searchTicketList(offset, pageSize, createDateFrom, createDateTo, status, completeDateFrom, completeDateTo, createBy, ticketMasId, custCode, serviceNumber, ticketType, serviceType);
-            totalCount = ticketMasMapper.searchTicketCount(createDateFrom, createDateTo, status, completeDateFrom, completeDateTo, createBy, ticketMasId, custCode, serviceNumber, ticketType, serviceType);
+            entityList = ticketMasMapper.searchTicketList(offset, pageSize, createDateFrom, createDateTo, status, completeDateFrom, completeDateTo, createBy, ticketMasId, custCode, serviceNumber, ticketType, serviceType,owningRole);
+            totalCount = ticketMasMapper.searchTicketCount(createDateFrom, createDateTo, status, completeDateFrom, completeDateTo, createBy, ticketMasId, custCode, serviceNumber, ticketType, serviceType,owningRole);
         }
 
         return new PageImpl<>(buildTicketBeanList(entityList), pageable, totalCount);
@@ -157,8 +161,8 @@ public class SdTicketServiceImpl implements SdTicketService {
         int pageSize = pageable.getPageSize();
 
         List<SdTicketMasEntity> entityList = ticketMasMapper.searchTicketList(
-                offset, pageSize, null, null, null, null, null, createBy, null, null, null, null, null);
-        Integer totalCount = ticketMasMapper.searchTicketCount(null, null, null, null, null, createBy, null, null, null, null, null);
+                offset, pageSize, null, null, null, null, null, createBy, null, null, null, null, null, null);
+        Integer totalCount = ticketMasMapper.searchTicketCount(null, null, null, null, null, createBy, null, null, null, null, null, null);
 
         return new PageImpl<>(buildTicketBeanList(entityList), pageable, totalCount);
     }
@@ -409,8 +413,9 @@ public class SdTicketServiceImpl implements SdTicketService {
     public TeamSummaryBean getTeamSummary() {
         TeamSummaryBean teamSummaryBean = new TeamSummaryBean();
         List<StatusSummaryBean> statusSummaryBeans = new ArrayList<>();
-        List<StatusSummaryEntity> countStatus = ticketMasMapper.getCountStatusByTicketType();
-        StatusSummaryEntity sumStatus = ticketMasMapper.getSumStatusByTicketType();
+        String owningRole = userService.getUserByUserId(userService.getCurrentUserUserId()).getPrimaryRoleId();
+        List<StatusSummaryEntity> countStatus = ticketMasMapper.getCountStatusByTicketType(owningRole);
+        StatusSummaryEntity sumStatus = ticketMasMapper.getSumStatusByTicketType(owningRole);
         countStatus.forEach(entity -> {
             StatusSummaryBean bean = new StatusSummaryBean();
             teamSummaryBeanPopulator.populateStatusSummaryBean(entity,bean);
