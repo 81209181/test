@@ -26,9 +26,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequestMapping("/ticket")
 @Controller
@@ -156,6 +158,12 @@ public class TicketController {
         List<SdServiceTypeData> serviceTypeList = serviceTypeFacade.getServiceTypeList();
         if (CollectionUtils.isNotEmpty(serviceTypeList)) {
             model.addAttribute("serviceTypeList", serviceTypeList);
+        }
+
+        List<SdUserRoleData> eligibleUserRoleList = userRoleFacade.getEligibleUserRoleList();
+        if (CollectionUtils.isNotEmpty(eligibleUserRoleList)) {
+            model.addAttribute("primaryRoleList",eligibleUserRoleList.stream().filter(SdUserRoleData::isPrimaryRole)
+                    .sorted(Comparator.comparing(SdUserRoleData::getRoleDesc)).collect(Collectors.toList()));
         }
 
         return "ticket/searchTicket";
