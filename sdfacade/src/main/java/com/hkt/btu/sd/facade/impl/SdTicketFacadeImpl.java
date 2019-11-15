@@ -491,8 +491,9 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     @Override
     public void createJob4Wfm(int ticketMasId) {
         try {
-            Optional.ofNullable(getTicketInfo(ticketMasId)).ifPresentOrElse(ticketData -> {
-                for (SdTicketServiceData serviceData : ticketData.getServiceInfo()) {
+            SdTicketData ticketInfo = getTicketInfo(ticketMasId);
+            if (ticketInfo != null) {
+                for (SdTicketServiceData serviceData : ticketInfo.getServiceInfo()) {
                     if (CollectionUtils.isEmpty(serviceData.getFaultsList())) {
                         throw new RuntimeException("Please select one symptom code .");
                     }
@@ -500,13 +501,13 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                         throw new RuntimeException("Unknown service type.");
                     }
                 }
-                if (CollectionUtils.isEmpty(ticketData.getContactInfo())) {
+                if (CollectionUtils.isEmpty(ticketInfo.getContactInfo())) {
                     throw new RuntimeException("Please input contact.");
                 }
-            },() -> {
+            } else {
                 throw new RuntimeException("Ticket not found.");
-            });
-            updateJobIdInService(wfmApiFacade.createJob(getTicketInfo(ticketMasId)), ticketMasId);
+            }
+            updateJobIdInService(wfmApiFacade.createJob(ticketInfo), ticketMasId);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(String.format("WFM Error: Cannot create job for ticket mas id %s.", ticketMasId));
         } catch (Exception ex) {
