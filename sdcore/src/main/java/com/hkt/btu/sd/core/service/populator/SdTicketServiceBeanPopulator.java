@@ -4,7 +4,6 @@ package com.hkt.btu.sd.core.service.populator;
 import com.hkt.btu.common.core.service.populator.AbstractBeanPopulator;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomEntity;
 import com.hkt.btu.sd.core.dao.entity.SdTicketServiceEntity;
-import com.hkt.btu.sd.core.service.bean.SdServiceFaultsBean;
 import com.hkt.btu.sd.core.service.bean.SdSymptomBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketServiceBean;
 
