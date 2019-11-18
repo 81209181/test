@@ -220,6 +220,10 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
                 SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD_365.equals(serviceType)) {
                 resultData.setDetailButton(true);
             }
+            BesSubscriberData besSubscriberData = besApiFacade.querySubscriberByServiceNumber(resultData.getServiceNo());
+            if (besSubscriberData != null) {
+                resultData.setSubsId(besSubscriberData.getSubscriberInfos().get(0).getSubInfo().getSubsId());
+            }
         }
 
         resultsData.setList(resultDataList);
