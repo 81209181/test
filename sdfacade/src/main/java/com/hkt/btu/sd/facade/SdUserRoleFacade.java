@@ -18,7 +18,7 @@ public interface SdUserRoleFacade {
     List<SdUserPathCtrlData> getParentRolePathByRoleId(String roleId);
     EditResultData getUserRoleByUserId (String userId);
 
-    HashMap<String, SdUserRoleData> getUserRoleMap(List<SdUserRoleData> userGroupDataList);
+    List<SdUserRoleData> filterUserRoleList(List<SdUserRoleData> roleList);
 
     List<SdUserRoleData> getEligibleUserRoleList();
 

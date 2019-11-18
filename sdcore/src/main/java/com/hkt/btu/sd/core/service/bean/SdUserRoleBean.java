@@ -11,6 +11,8 @@ public class SdUserRoleBean extends BaseBean {
         public static final String ENGINEER = "ENG";
     }
 
+    public final static String ACTIVE_ROLE_STATUS = "A";
+
     private String roleId;
     private String roleDesc;
     private String parentRoleId;
