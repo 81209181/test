@@ -62,10 +62,4 @@ public class SdTicketInfoDataPopulator extends AbstractDataPopulator<SdTicketInf
         });
 
     }
-
-    public void populateFromSdTicketServiceData(SdTicketServiceData source, SdTicketInfoData target) {
-        target.setServiceType(source.getServiceType());
-        target.setServiceNo(source.getServiceCode());
-        target.setNgn3reset(SdServiceTypeBean.SERVICE_TYPE.VOIP.equals(source.getServiceType()));
-    }
 }

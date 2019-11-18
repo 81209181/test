@@ -18,6 +18,9 @@ $().ready(function(){
          $("#ticketStatusDesc").css("color","red");
     }
 
+    $('.ngn3btn').hide();
+    $('#btnServiceLink').hide();
+
     $.get('/ticket/service/symptom?ticketMasId='+ticketMasId, function (res) {
         for (item of res) {
             $('.selectpicker').append("<option value="+item.symptomCode+">"+item.symptomCode+"---"+item.symptomDescription+"</option>");
@@ -29,7 +32,7 @@ $().ready(function(){
                 $.each(res,function(index,j){
                     let service =$('#service');
                     $.each(j,function(key,value){
-//                    service.find('input[name='+key+']').val(value);    // by Dennis  ref jira 179
+                        service.find('input[name='+key+']').val(value);
                         if (key === 'faultsList') {
                             if (value == '') {
                                 $('#btnMakeAppointment').attr('disabled', true);
@@ -48,6 +51,18 @@ $().ready(function(){
                         }
                         if (key === 'detailButton') {
                             disabledDetailButton(value);
+                        }
+                        if (key === 'ngn3reset'){
+                            if(value){
+                                $('.ngn3btn').show();
+                            }
+                        }
+                        if (key === 'itsmUrl'){
+                            $('#btnServiceLink').data('url',value);
+                            if(value == null){
+                                $('#btnServiceLink').attr('disabled', true);
+                            }
+                            $('#btnServiceLink').show();
                         }
                     })
                 })

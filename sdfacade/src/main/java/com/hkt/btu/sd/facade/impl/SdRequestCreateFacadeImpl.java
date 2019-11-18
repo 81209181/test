@@ -8,6 +8,7 @@ import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
 import com.hkt.btu.sd.facade.populator.RequestCreateSearchResultDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdTicketInfoDataPopulator;
+import com.hkt.btu.sd.facade.populator.SdTicketServiceInfoDataPopulator;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     private static final Logger LOG = LogManager.getLogger(SdRequestCreateFacadeImpl.class);
@@ -39,6 +41,8 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     RequestCreateSearchResultDataPopulator requestCreateSearchResultDataPopulator;
     @Resource(name = "ticketInfoDataPopulator")
     SdTicketInfoDataPopulator ticketInfoDataPopulator;
+    @Resource(name = "ticketServiceInfoDataPopulator")
+    SdTicketServiceInfoDataPopulator ticketServiceInfoDataPopulator;
 
     @Override
     public List<ServiceSearchEnum> getSearchKeyEnumList() {
@@ -91,48 +95,33 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         BesCustomerData besCustomerData = besApiFacade.queryCustomerByCustomerCode(ticketMasData.getCustCode());
         ticketInfoDataPopulator.populateFromBesCustomerData(besCustomerData, ticketInfoData);
 
-        SdTicketServiceData ticketServiceData = ticketFacade.getService(ticketMasData.getTicketMasId());
-        if (ticketServiceData != null) {
-            // todo [SERVDESK-208] Detach Service Info from Ticket Page: service should be a list
-            //  0. remove below service data
-            //  1. frontend loop all serviceNumber+serviceType from ajax return of TicketController.getServiceInfo
-            //  2. call API to fill-in data
-            //  3. reflect API data on frontend
+        return ticketInfoData;
+    }
 
-            // find service data
-            List<RequestCreateSearchResultData> resultsDataList;
-            if ("DN".equals(ticketInfoData.getSearchKeyDesc())) {
-                resultsDataList = findData4Dn(ticketServiceData.getServiceCode()).getList();
-            } else {
-                resultsDataList = findData4Bsn(ticketServiceData.getServiceCode()).getList();
+    @Override
+    public List<SdTicketServiceInfoData> getServiceInfoInApi(List<SdTicketServiceData> serviceInfo, String serviceKey) {
+        return serviceInfo.stream().map(ticketServiceData -> {
+            SdTicketServiceInfoData ticketServiceInfoData = new SdTicketServiceInfoData();
+            List<RequestCreateSearchResultData> resultsDataList = null;
+            String serviceCode = ticketServiceData.getServiceCode();
+            if (ServiceSearchEnum.BSN.getKey().equals(serviceKey)) {
+                resultsDataList = findData4Bsn(serviceCode).getList();
+            } else if (ServiceSearchEnum.DN.getKey().equals(serviceKey)){
+                resultsDataList = findData4Dn(serviceCode).getList();
+            } else if (ServiceSearchEnum.TENANT_ID.getKey().equals(serviceKey)) {
+                resultsDataList = findData4Tenant(serviceCode).getList();
             }
             if (CollectionUtils.isNotEmpty(resultsDataList)) {
                 RequestCreateSearchResultData requestCreateSearchResultData = resultsDataList.get(0);
                 if (requestCreateSearchResultData != null) {
                     if (requestCreateSearchResultData.getServiceNo().equals(ticketServiceData.getServiceCode())) {
-                        // todo [SERVDESK-208] Detach Service Info from Ticket Page
-                        //  0. remove below service data
-                        ticketInfoData.setServiceStatus(requestCreateSearchResultData.getServiceStatus());
-                        ticketInfoData.setServiceStatusDesc(requestCreateSearchResultData.getServiceStatusDesc());
-                        ticketInfoData.setSubsId(requestCreateSearchResultData.getSubsId());
-                        ticketInfoData.setOfferName(requestCreateSearchResultData.getOfferName());
-                        ticketInfoData.setItsmUrl(requestCreateSearchResultData.getUrl());
-                        ticketInfoData.setDescription(requestCreateSearchResultData.getDescription());
-                        ticketInfoData.setServiceAddress(requestCreateSearchResultData.getServiceAddress());
-                        ticketInfoData.setGridId(requestCreateSearchResultData.getGridId());
-                        ticketInfoData.setExchangeBuildingId(requestCreateSearchResultData.getExchangeBuildingId());
-                        ticketInfoData.setRelatedBsn(requestCreateSearchResultData.getRelatedBsn());
+                        ticketServiceInfoDataPopulator.populateFormRequestCreateSearchResultData(requestCreateSearchResultData,ticketServiceInfoData);
                     }
                 }
             }
-
-            // translate service type code to name
-            String serviceTypeDesc = serviceTypeFacade.getServiceTypeDescByServiceTypeCode(ticketServiceData.getServiceType());
-            ticketInfoData.setServiceTypeDesc(serviceTypeDesc);
-
-            ticketInfoDataPopulator.populateFromSdTicketServiceData(ticketServiceData, ticketInfoData);
-        }
-        return ticketInfoData;
+            ticketServiceInfoDataPopulator.populateFromSdTicketServiceData(ticketServiceData, ticketServiceInfoData);
+            return ticketServiceInfoData;
+        }).collect(Collectors.toList());
     }
 
     @Override
