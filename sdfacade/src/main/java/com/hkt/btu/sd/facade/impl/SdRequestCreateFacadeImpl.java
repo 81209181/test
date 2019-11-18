@@ -101,7 +101,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
 
             // find service data
             List<RequestCreateSearchResultData> resultsDataList;
-            if (ticketInfoData.getSearchKeyDesc().equals("DN")) {
+            if ("DN".equals(ticketInfoData.getSearchKeyDesc())) {
                 resultsDataList = findData4Dn(ticketServiceData.getServiceCode()).getList();
             } else {
                 resultsDataList = findData4Bsn(ticketServiceData.getServiceCode()).getList();
