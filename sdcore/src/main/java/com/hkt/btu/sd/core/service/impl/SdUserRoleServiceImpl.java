@@ -89,7 +89,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
         // Get Current User Role
         Set<GrantedAuthority> authorities = userService.getCurrentUserBean().getAuthorities();
         // Get User Role By UserID
-        List<SdUserRoleEntity> userRole = sdUserRoleMapper.getUserRoleByUserIdAndStatus(userId, SdUserRoleEntity.ACTIVE_ROLE_STATUS);
+        List<SdUserRoleEntity> userRole = sdUserRoleMapper.getUserRoleByUserIdAndStatus(userId, SdUserRoleBean.ACTIVE_ROLE_STATUS);
         // Get RoleId
         List<String> roleIdList = userRole.stream().map(SdUserRoleEntity::getRoleId).collect(Collectors.toList());
 
@@ -351,7 +351,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
             SdUserRoleBean entity = adminRole.get();
             userRole.add(entity);
             userRole.addAll(entity.getChildren().stream()
-                    .filter(role -> role.getStatus().equals(SdUserRoleEntity.ACTIVE_ROLE_STATUS))
+                    .filter(role -> role.getStatus().equals(SdUserRoleBean.ACTIVE_ROLE_STATUS))
                     .collect(Collectors.toList()));
             return userRole;
         } else if (ROLE_TREE.getRoleId().equals(roleId)) {
@@ -365,7 +365,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
                     userRole.add(entity);
                     List<SdUserRoleBean> parentRole = getParentRole(children, entity.getParentRoleId());
                     userRole.addAll(parentRole.stream()
-                            .filter(role -> role.getStatus().equals(SdUserRoleEntity.ACTIVE_ROLE_STATUS))
+                            .filter(role -> role.getStatus().equals(SdUserRoleBean.ACTIVE_ROLE_STATUS))
                             .collect(Collectors.toList()));
                 }
             }

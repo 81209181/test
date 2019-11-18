@@ -86,7 +86,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         }
 
         // get user role data
-        List<SdUserRoleEntity> userRoleEntityList = sdUserRoleMapper.getUserRoleByUserIdAndStatus(sdUserEntity.getUserId(), SdUserRoleEntity.ACTIVE_ROLE_STATUS);
+        List<SdUserRoleEntity> userRoleEntityList = sdUserRoleMapper.getUserRoleByUserIdAndStatus(sdUserEntity.getUserId(), SdUserRoleBean.ACTIVE_ROLE_STATUS);
         if (CollectionUtils.isEmpty(userRoleEntityList)) {
             return null;
         }
@@ -142,7 +142,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         }
 
         // get user group data
-        List<SdUserRoleEntity> roleEntityList = sdUserRoleMapper.getUserRoleByUserIdAndStatus(userId, SdUserRoleEntity.ACTIVE_ROLE_STATUS);
+        List<SdUserRoleEntity> roleEntityList = sdUserRoleMapper.getUserRoleByUserIdAndStatus(userId, SdUserRoleBean.ACTIVE_ROLE_STATUS);
 
         // get roleId
         List<String> roleIdList = roleEntityList.stream().map(SdUserRoleEntity::getRoleId).collect(Collectors.toList());

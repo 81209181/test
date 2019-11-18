@@ -76,6 +76,14 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
         return EditResultData.dataList(results);
     }
 
+    @Override
+    public List<SdUserRoleData> filterUserRoleList(List<SdUserRoleData> roleList) {
+        return roleList.stream()
+                .filter(sdUserRoleData -> !BooleanUtils.toBoolean(sdUserRoleData.getAbstractFlag()))
+                .filter(sdUserRoleData -> SdUserRoleBean.ACTIVE_ROLE_STATUS.equals(sdUserRoleData.getStatus()))
+                .collect(Collectors.toList());
+    }
+
     private List<SdUserRoleData> getSdUserRoleData(List<SdUserRoleData> results, List<SdUserRoleBean> userRoleByUserId) {
         if (CollectionUtils.isEmpty(userRoleByUserId)) {
             return null;
@@ -99,18 +107,7 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
         return getSdUserRoleData(new ArrayList<>(), eligibleUserGroupGrantList);
     }
 
-    @Override
-    public HashMap<String, SdUserRoleData> getUserRoleMap(List<SdUserRoleData> userGroupDataList) {
-        if (CollectionUtils.isEmpty(userGroupDataList)) {
-            return new HashMap<>();
-        }
 
-        HashMap<String, SdUserRoleData> result = new HashMap<>();
-        for (SdUserRoleData userRoleData : userGroupDataList) {
-            result.put(userRoleData.getRoleId(), userRoleData);
-        }
-        return result;
-    }
 
     @Override
     public String updateUserRole(String roleId, String roleDesc, String status, String abstractFlag) {
