@@ -1,18 +1,19 @@
 package com.hkt.btu.sd.core.service.bean;
 
 import com.hkt.btu.common.core.service.bean.BaseBean;
+import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
 
 public class StatusSummaryBean extends BaseBean {
 
-    private String status;
+    private TicketStatusEnum status;
     private int queryCnt;
     private int jobCnt;
 
-    public String getStatus() {
+    public TicketStatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(TicketStatusEnum status) {
         this.status = status;
     }
 

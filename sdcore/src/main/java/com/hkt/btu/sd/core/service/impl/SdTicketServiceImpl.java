@@ -210,7 +210,7 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Transactional(rollbackFor = Exception.class)
     public void updateJobIdInService(Integer jobId, int ticketMasId, String userId) {
         ticketServiceMapper.updateTicketServiceByJobId(jobId, ticketMasId, userId);
-        ticketMasMapper.updateTicketStatus(ticketMasId, SdTicketMasBean.STATUS_TYPE_CODE.WORKING, userId);
+        ticketMasMapper.updateTicketStatus(ticketMasId, TicketStatusEnum.WORKING.getStatusCode(), userId);
         createTicketSysRemarks(ticketMasId, String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_WORKING, userId));
     }
 
@@ -297,17 +297,6 @@ public class SdTicketServiceImpl implements SdTicketService {
 
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
-    public void removeServiceInfoByTicketMasId(Integer ticketMasId) {
-        ticketServiceMapper.removeServiceInfoByTicketMasId(ticketMasId);
-        List<SdTicketServiceEntity> serviceInfoList = ticketServiceMapper.getTicketServiceInfoByTicketMasId(ticketMasId);
-        if (CollectionUtils.isNotEmpty(serviceInfoList)) {
-            List<Integer> ticketServiceIds = serviceInfoList.stream().map(SdTicketServiceEntity::getTicketDetId).collect(Collectors.toList());
-            ticketServiceIds.forEach(ticketDetId -> ticketServiceMapper.removeFaultsByTicketDetId(ticketDetId));
-        }
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public int updateServiceInfo(SdTicketServiceBean bean) {
         BtuUserBean currentUserBean = userService.getCurrentUserBean();
         String createby = currentUserBean.getUserId();
@@ -330,15 +319,6 @@ public class SdTicketServiceImpl implements SdTicketService {
         String modifyby = currentUserBean.getUserId();
 
         ticketServiceMapper.updateTicketServiceSymptomByTicketMasId(ticketMasId, symptomCode, modifyby);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
-    public void updateFaultsInfo(Integer ticketDetId, String faults) {
-        BtuUserBean currentUserBean = userService.getCurrentUserBean();
-        String createBy = currentUserBean.getUserId();
-
-        ticketServiceMapper.insertFaults(ticketDetId, faults, createBy, createBy);
     }
 
     @Override
@@ -390,7 +370,7 @@ public class SdTicketServiceImpl implements SdTicketService {
         String content = reasonContent + String.format(";Contact: %s,%s", contactName, contactNumber);
         // close ticket and add remarks
         String modifyby = currentUserBean.getUserId();
-        ticketMasMapper.updateTicketStatus(ticketMasId, SdTicketMasBean.STATUS_TYPE_CODE.COMPLETE, modifyby);
+        ticketMasMapper.updateTicketStatus(ticketMasId, TicketStatusEnum.COMPLETE.getStatusCode(), modifyby);
         createTicketSysRemarks(ticketMasId, String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_CLOSE, reasonType, content, closeby));
     }
 

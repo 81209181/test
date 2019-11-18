@@ -101,7 +101,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
 
             // find service data
             List<RequestCreateSearchResultData> resultsDataList;
-            if (ticketInfoData.getSearchKeyDesc().equals("DN")) {
+            if ("DN".equals(ticketInfoData.getSearchKeyDesc())) {
                 resultsDataList = findData4Dn(ticketServiceData.getServiceCode()).getList();
             } else {
                 resultsDataList = findData4Bsn(ticketServiceData.getServiceCode()).getList();
@@ -219,6 +219,10 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
             if (SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD.equals(serviceType) ||
                 SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD_365.equals(serviceType)) {
                 resultData.setDetailButton(true);
+            }
+            BesSubscriberData besSubscriberData = besApiFacade.querySubscriberByServiceNumber(resultData.getServiceNo());
+            if (besSubscriberData != null) {
+                resultData.setSubsId(besSubscriberData.getSubscriberInfos().get(0).getSubInfo().getSubsId());
             }
         }
 

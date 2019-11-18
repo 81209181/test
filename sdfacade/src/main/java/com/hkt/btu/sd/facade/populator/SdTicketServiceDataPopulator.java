@@ -3,7 +3,6 @@ package com.hkt.btu.sd.facade.populator;
 import com.hkt.btu.common.facade.populator.AbstractDataPopulator;
 import com.hkt.btu.sd.core.service.bean.SdSymptomBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketServiceBean;
-import com.hkt.btu.sd.facade.data.SdServiceFaultsData;
 import com.hkt.btu.sd.facade.data.SdSymptomData;
 import com.hkt.btu.sd.facade.data.SdTicketServiceData;
 

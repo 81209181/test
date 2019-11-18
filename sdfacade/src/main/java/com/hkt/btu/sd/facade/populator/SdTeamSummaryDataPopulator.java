@@ -17,7 +17,7 @@ public class SdTeamSummaryDataPopulator extends AbstractDataPopulator<TeamSummar
             StatusSummaryData bean = new StatusSummaryData();
             bean.setJobCnt(summaryBean.getJobCnt());
             bean.setQueryCnt(summaryBean.getQueryCnt());
-            bean.setStatus(summaryBean.getStatus());
+            bean.setStatus(summaryBean.getStatus().getStatusCode());
             return bean;
         }).collect(Collectors.toList()));
     }
