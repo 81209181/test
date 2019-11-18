@@ -1,12 +1,13 @@
 package com.hkt.btu.sd.core.service.constant;
 
 import com.hkt.btu.sd.core.dao.entity.SdTicketMasEntity;
+import com.hkt.btu.sd.core.service.bean.SdTicketMasBean;
 import org.apache.commons.lang3.StringUtils;
 
 public enum TicketStatusEnum {
-    OPEN (SdTicketMasEntity.STATUS.OPEN, "OPEN"),
-    WORKING (SdTicketMasEntity.STATUS.WORKING, "WORKING"),
-    COMPLETE (SdTicketMasEntity.STATUS.COMPLETE, "COMPLETE")
+    OPEN (SdTicketMasEntity.STATUS.OPEN, SdTicketMasBean.STATUS_DESC.OPEN),
+    WORKING (SdTicketMasEntity.STATUS.WORKING, SdTicketMasBean.STATUS_DESC.WORKING),
+    COMPLETE (SdTicketMasEntity.STATUS.COMPLETE, SdTicketMasBean.STATUS_DESC.COMPLETE)
     ;
 
     TicketStatusEnum (String statusCode, String statusDesc){
