@@ -115,22 +115,6 @@ CREATE TABLE SERVICE_TYPE
 --     MODIFYBY            varchar2(10)             not null,
 --     CONSTRAINT PK_TICKET_MAS PRIMARY KEY (FAULT_TYPE_CODE)
 -- );
---------------------------------------------------------------------------------------------------
-CREATE SEQUENCE SEQ_TICKET_FAULTS_ID START WITH 1;
-CREATE TABLE TICKET_FAULTS
-(
-    TICKET_FAULTS_ID number default SEQ_TICKET_FAULTS_ID.nextval,
-    TICKET_DET_ID    number not null,
-    FAULTS           varchar2(100),
-    CREATEDATE          date                     default SYSDATE not null,
-    CREATEBY            varchar2(10)             not null,
-    MODIFYDATE          date                     default SYSDATE not null,
-    MODIFYBY            varchar2(10)             not null,
-    CONSTRAINT TICKET_FAULTS_PK PRIMARY KEY (TICKET_FAULTS_ID)
-);
-
-
-
 --SYMPTOM------------------------------------------------------------------------------------------------
 CREATE TABLE SERVICE_TYPE
 (

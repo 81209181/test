@@ -17,12 +17,7 @@ public interface SdTicketServiceMapper {
 
     void removeServiceInfoByTicketMasId(@Param("ticketMasId") int ticketMasId);
 
-    void removeFaultsByTicketDetId(@Param("ticketDetId") int ticketDetId);
-
     void insertServiceInfo(SdTicketServiceEntity entity);
-
-    void insertFaults(@Param("ticketDetId") Integer ticketDetId, @Param("faults") String faults,
-                      @Param("createby") String createby, @Param("modifyby") String modifyby);
 
     void updateTicketServiceByJobId(@Param("jobId") Integer jobId, @Param("ticketMasId") int ticketMasId, @Param("userId") String userId);
 

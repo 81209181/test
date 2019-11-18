@@ -53,21 +53,10 @@
         values (#{ticketDetId}, #{ticketMasId}, #{serviceTypeCode}, #{serviceId}, #{createby}, #{modifyby},#{subsId})
     </insert>
 
-    <insert id="insertFaults">
-        insert into TICKET_FAULTS(TICKET_DET_ID, FAULTS, CREATEBY, MODIFYBY)
-        values (#{ticketDetId}, #{faults}, #{createby}, #{modifyby})
-    </insert>
-
     <delete id="removeServiceInfoByTicketMasId">
         delete
         from TICKET_DET
         where TICKET_MAS_ID = #{ticketMasId}
-    </delete>
-
-    <delete id="removeFaultsByTicketDetId">
-        delete
-        from TICKET_FAULTS
-        where TICKET_DET_ID = #{ticketDetId}
     </delete>
 
     <update id="updateTicketServiceByJobId">

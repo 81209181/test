@@ -31,13 +31,9 @@ public interface SdTicketService {
 
     List<SdTicketServiceBean> getServiceInfo(Integer ticketMasId);
 
-    void removeServiceInfoByTicketMasId(Integer ticketMasId);
-
     int updateServiceInfo(SdTicketServiceBean bean);
 
     void updateServiceSymptom(Integer ticketMasId, String symptomCode);
-
-    void updateFaultsInfo(Integer ticketDetId, String faults);
 
     List<SdTicketRemarkBean> getTicketRemarksByTicketId(Integer ticketMasId);
 

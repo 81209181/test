@@ -384,25 +384,6 @@ function readyForTicketService() {
     })
 }
 
-function addFaults(btn) {
-    $('#btnUpdateService').attr('disabled',false);
-    let service =$('#tempFaults').children().clone();
-    service.appendTo($(btn).parent().next('.faults_list'));
-}
-
-function removeService(btn){
-    $(btn).parents('form').remove();
-    $('#btnUpdateService').attr('disabled',false);
-    if($('#service_list').find('form').length <1){
-        $('#btnUpdateService').attr('disabled',true);
-    }
-}
-
-function removeFaults(btn){
-    $(btn).parent().remove();
-}
-
-
 function removeContact(btn){
     $(btn).parents('form').remove();
     if($('#contact_list').find('form').length < 1){
