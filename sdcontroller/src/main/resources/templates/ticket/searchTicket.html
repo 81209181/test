@@ -66,8 +66,11 @@
                 <input type="text" id="createBy" class="form-control mb-2 mr-sm-2 col-md-5">
             </div>
             <div class="col-md-6 form-inline pt-2">
-                <label for="owningRole" class="col-form-label col-md-5 justify-content-end">Ticket Ownership:</label>
-                <input type="text" id="owningRole" class="form-control mb-2 mr-sm-2 col-md-5">
+                <label for="owningRole" class="col-form-label col-md-5 justify-content-end">Team:</label>
+                <select id="owningRole" class="form-control mb-2 mr-sm-2 col-md-5">
+                    <option value=""><!--Please select--></option>
+                    <option th:each="primaryRole : ${primaryRoleList}" th:value="${primaryRole.roleId}" th:text="${primaryRole.roleDesc}"></option>
+                </select>
             </div>
             <div class="col-md-12">
                 <button type="submit" class="btn btn-lg btn-primary my-md-2" style="margin-left: 780px;"><i class="fas fa-search"></i> Search</button>
@@ -84,11 +87,11 @@
             <th>Customer Code</th>
             <th>Service Type</th>
             <th>Service Number</th>
-            <th>Ticket Ownership</th>
             <th>Call-in Count</th>
             <th>Complete Date</th>
             <th>Create Date</th>
             <th>Create By</th>
+            <th>Team</th>
             <th></th>
         </tr>
         </thead>
@@ -102,11 +105,11 @@
             <th>Customer Code</th>
             <th>Service Type</th>
             <th>Service Number</th>
-            <th>Ticket Ownership</th>
             <th>Call-in Count</th>
             <th>Complete Date</th>
             <th>Create Date</th>
             <th>Create By</th>
+            <th>Team</th>
             <th></th>
         </tr>
         </tfoot>

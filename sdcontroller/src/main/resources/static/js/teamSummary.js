@@ -38,7 +38,8 @@ function getMyTeamTicketData(){
             { data: 'callInCount'},
             { data: 'completeDate'},
             { data: 'createDate' },
-            { data: 'createBy' }
+            { data: 'createBy' },
+            { data: 'owningRole'}
         ],
         columnDefs: [
             {
@@ -56,7 +57,7 @@ function getMyTeamTicketData(){
                 }
             },
             {
-                targets: 10,
+                targets: 11,
                 data: "ticketMasId",
                 render: function ( ticketMasId, type, row, meta ) {
                     var ctx = $("meta[name='_ctx']").attr("content");

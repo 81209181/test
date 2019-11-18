@@ -20,8 +20,8 @@
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="tab-team-summary" role="tabpanel" aria-labelledby="tab-team-summary">
-                    <table class="table table-bordered table-striped mt-2 col-md-6" th:object="${teamSummary}">
-                        <thead>
+                    <table class="table table-bordered table-hover mt-2 col-md-6" th:object="${teamSummary}">
+                        <thead class="thead-light">
                         <tr>
                             <th>Status</th>
                             <th>Query Ticket</th>
@@ -30,11 +30,25 @@
                         </thead>
                         <tbody>
                             <th:block th:each="list:*{summaryData}">
-                                <tr>
-                                    <td th:text="${list.status}"></td>
+                                <tr th:if="${list.status} eq 'O'">
+                                    <td class="text-primary">Open</td>
                                     <td th:text="${list.queryCnt}"></td>
                                     <td th:text="${list.jobCnt}"></td>
                                 </tr>
+                            </th:block>
+                            <th:block th:each="list:*{summaryData}">
+                                <tr th:if="${list.status} eq 'W'">
+                                    <td class="text-warning">Work</td>
+                                    <td th:text="${list.queryCnt}"></td>
+                                    <td th:text="${list.jobCnt}"></td>
+                                </tr>
+                            </th:block>
+                            <th:block th:each="list:*{summaryData}">
+                            <tr th:if="${list.status} eq 'CP'">
+                                <td class="text-success">Complete</td>
+                                <td th:text="${list.queryCnt}"></td>
+                                <td th:text="${list.jobCnt}"></td>
+                            </tr>
                             </th:block>
                             <tr>
                                 <td>Total</td>
@@ -45,7 +59,7 @@
                     </table>
                 </div>
                 <div class="tab-pane" id="tab-ticket-myTeam" role="tabpanel" aria-labelledby="tab-ticket-myTeam">
-                    <div class="col-md-10 mx-auto mt-2">
+                    <div class="col-md-12 mx-auto mt-1">
                         <table class="display" cellspacing="0" width="100%" >
                             <thead>
                                 <tr>
@@ -59,6 +73,7 @@
                                     <th>Complete Date</th>
                                     <th>Create Date</th>
                                     <th>Create By</th>
+                                    <th>Team</th>
                                     <th></th>
                                 </tr>
                             </thead>

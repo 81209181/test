@@ -69,22 +69,22 @@ function createSearchTicketDataTable(){
             { data: 'custCode' },
             { data: 'serviceType' },
             { data: 'searchValue'},
-            { data: 'owningRole'},
             { data: 'callInCount'},
             { data: 'completeDate'},
             { data: 'createDate' },
-            { data: 'createBy' }
+            { data: 'createBy' },
+            { data: 'owningRole'}
         ],
         columnDefs: [
             {
-                targets: 8,
+                targets: 7,
                 data: "completeDate",
                 render: function (nextRunTime, type, row, meta) {
                     return nextRunTime==null ? null : nextRunTime.replace('T', ' ');
                 }
             },
             {
-                targets: 9,
+                targets: 8,
                 data: "createDate",
                 render: function (nextRunTime, type, row, meta) {
                      return nextRunTime==null ? null : nextRunTime.replace('T', ' ');
