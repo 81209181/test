@@ -213,9 +213,9 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             }).collect(Collectors.toList());
 
             for (SdTicketServiceData serviceData : ticketServiceDataList) {
-                String serviceCode = serviceData.getServiceCode();
-                if (serviceCode.equals(SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD_365) ||
-                        serviceCode.equals(SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD)) {
+                String serviceType = serviceData.getServiceType();
+                if (SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD_365.equals(serviceType) ||
+                        SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD.equals(serviceType)) {
                     serviceData.setDetailButton(true);
                 }
             }
