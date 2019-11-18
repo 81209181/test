@@ -4,6 +4,7 @@ import com.hkt.btu.common.core.service.populator.AbstractBeanPopulator;
 import com.hkt.btu.sd.core.dao.entity.SdTicketMasEntity;
 import com.hkt.btu.sd.core.service.bean.SdTicketMasBean;
 import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
+import org.apache.commons.lang3.StringUtils;
 
 import static com.hkt.btu.sd.core.service.bean.SdTicketMasBean.*;
 
@@ -26,16 +27,7 @@ public class SdTicketMasBeanPopulator extends AbstractBeanPopulator<SdTicketMasB
         target.setServiceType(source.getServiceType());
         target.setOwningRole(source.getOwningRole());
 
-        switch (source.getStatus()) {
-            case STATUS_TYPE_CODE.OPEN:
-                target.setStatus(TicketStatusEnum.OPEN);
-                break;
-            case STATUS_TYPE_CODE.WORKING:
-                target.setStatus(TicketStatusEnum.WORKING);
-                break;
-            case STATUS_TYPE_CODE.COMPLETE:
-                target.setStatus(TicketStatusEnum.COMPLETE);
-                break;
-        }
+        String statusCode = source.getStatus();
+        target.setStatus(TicketStatusEnum.getEnum(statusCode));
     }
 }

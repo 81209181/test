@@ -4,7 +4,7 @@ import com.hkt.btu.common.core.service.bean.BaseBean;
 
 public class StatusSummaryBean extends BaseBean {
 
-    private String status;
+    private String status; // todo: SERVDESK-210 use constant, use TicketStatusEnum
     private int queryCnt;
     private int jobCnt;
 
