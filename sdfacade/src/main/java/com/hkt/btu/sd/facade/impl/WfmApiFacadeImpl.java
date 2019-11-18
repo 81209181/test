@@ -100,12 +100,9 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
             return responseData;
         }
 
+        // no pending order
         if (responseData == null) {
-            String errorMsg = "WFM Error: No response for pending order.";
-            LOG.error(errorMsg);
-
             responseData = new WfmPendingOrderData();
-            responseData.setErrorMsg(errorMsg);
             return responseData;
         }
 
