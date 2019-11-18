@@ -419,7 +419,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         if (StringUtils.isNotEmpty(userId)) {
             userId = systemId + " - " + userId;
         }
-        return closeTicket(ticketMasId, reasonType, reasonContent, userId, "", "");
+        return closeTicket(ticketMasId, reasonType, reasonContent, userId, systemId, "");
     }
 
     @Override

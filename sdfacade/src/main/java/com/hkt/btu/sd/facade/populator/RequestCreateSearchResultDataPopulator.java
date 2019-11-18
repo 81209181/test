@@ -179,9 +179,9 @@ public class RequestCreateSearchResultDataPopulator extends AbstractDataPopulato
     }
 
     public void populateFromWfmPendingOrderData (WfmPendingOrderData source, RequestCreateSearchResultData target){
-        target.setOrderId(source.getOrderId() == 0 ? null : source.getOrderId());
+        target.setOrderId(source.getOrderId());
         target.setOrderType(source.getOrderType());
-        target.setFulfillmentId(source.getFulfillmentId() == 0 ? null : source.getFulfillmentId());
+        target.setFulfillmentId(source.getFulfillmentId());
         target.setFulfillmentType(source.getFulfillmentType());
         target.setServiceReadyDate(source.getServiceReadyDate());
         target.setAppointmentDate(source.getAppointmentDate());

@@ -132,10 +132,7 @@ public class ManageUserController {
                 return "redirect:search-user";
             }
         }
-        model.addAttribute("allUserRole", allUserRoles.stream()
-                .filter(sdUserRoleData -> !BooleanUtils.toBoolean(sdUserRoleData.getAbstractFlag()))
-                .filter(sdUserRoleData -> sdUserRoleData.getStatus().equals("A"))
-                .collect(Collectors.toList()));
+        model.addAttribute("allUserRole", userRoleFacade.filterUserRoleList(allUserRoles));
         List<SdUserRoleData> eligibleUserRoleList = userRoleFacade.getEligibleUserRoleList();
         model.addAttribute("eligibleUserRole", eligibleUserRoleList.stream().map(SdUserRoleData::getRoleId).collect(Collectors.toList()));
         model.addAttribute("primaryRoleList",eligibleUserRoleList.stream().filter(SdUserRoleData::isPrimaryRole)
