@@ -87,12 +87,12 @@ public class TicketController {
         boolean checkPendingOrder = serviceTypeFacade.needCheckPendingOrder(queryTicketRequestData.getServiceType());
         if (checkPendingOrder) {
             WfmPendingOrderData pendingOrderData = wfmApiFacade.getPendingOrderByBsn(queryTicketRequestData.getServiceNo());
-            if (StringUtils.isEmpty(pendingOrderData.getErrorMsg())) {
-                if (pendingOrderData.getOrderId() != null && pendingOrderData.getOrderId() != 0) {
-                    return ResponseEntity.ok(ResponseTicketData.of(false, pendingOrderData.getOrderId()));
-                }
-            } else {
+            if ( pendingOrderData==null ) {
+                return ResponseEntity.badRequest().body("No pending order response from WFM.");
+            } else if ( StringUtils.isNotEmpty(pendingOrderData.getErrorMsg()) ) {
                 return ResponseEntity.badRequest().body(pendingOrderData.getErrorMsg());
+            } else if ( pendingOrderData.getOrderId() != null ) {
+                return ResponseEntity.ok(ResponseTicketData.of(false, pendingOrderData.getOrderId()));
             }
         }
 

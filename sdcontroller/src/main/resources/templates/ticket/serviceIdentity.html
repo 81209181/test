@@ -4,6 +4,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Service desk</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/reletedTicket.css}"/>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
@@ -37,7 +38,7 @@
                             <label class="col-form-label col-md-5 justify-content-end">Customer Code:</label>
                             <input type="text" class="form-control-plaintext col-md-7" name="custCode" readonly>
                         </div>
-                        <div class="col-md-4 form-inline pt-2">
+                        <div class="col-md-4 form-inline pt-2" hidden="hidden">
                             <label class="col-form-label col-md-5 justify-content-end">Customer Type:</label>
                             <input type="text" class="form-control-plaintext col-md-7" name="custType" readonly>
                         </div>
@@ -134,7 +135,7 @@
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             <h3 class="panel-title">Related Ticket</h3>
-                            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+                            <span class="float-right clickable"><i class="glyphicon glyphicon-chevron-left"></i></span>
                         </div>
                         <div class="panel-body">
                             <table id="relatedTicketTable" class="display" cellspacing="0" width="100%">
