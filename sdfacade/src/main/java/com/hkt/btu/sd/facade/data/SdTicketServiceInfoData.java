@@ -18,15 +18,18 @@ public class SdTicketServiceInfoData implements DataInterface {
     private String supplementaryOffer;
     private String offerDetail;
     private String description;
-    private String itsmUrl;
+    private String couldUrl;
     private String gridId;
     private String exchangeBuildingId;
     private String relatedBsn;
-    private boolean ngn3reset;
     private List<SdSymptomData> faultsList;
     private Integer ticketDetId;
-    private boolean detailButton;
     private String jobId;
+
+
+    private boolean bnCtrl;
+    private boolean voIpCtrl;
+    private boolean eCloudCtrl;
 
     public String getServiceType() {
         return serviceType;
@@ -124,12 +127,13 @@ public class SdTicketServiceInfoData implements DataInterface {
         this.description = description;
     }
 
-    public String getItsmUrl() {
-        return itsmUrl;
+    public String getCouldUrl() {
+        return couldUrl;
     }
 
-    public void setItsmUrl(String itsmUrl) {
-        this.itsmUrl = itsmUrl;
+    public SdTicketServiceInfoData setCouldUrl(String couldUrl) {
+        this.couldUrl = couldUrl;
+        return this;
     }
 
     public String getGridId() {
@@ -156,14 +160,6 @@ public class SdTicketServiceInfoData implements DataInterface {
         this.relatedBsn = relatedBsn;
     }
 
-    public boolean isNgn3reset() {
-        return ngn3reset;
-    }
-
-    public void setNgn3reset(boolean ngn3reset) {
-        this.ngn3reset = ngn3reset;
-    }
-
     public List<SdSymptomData> getFaultsList() {
         return faultsList;
     }
@@ -180,13 +176,6 @@ public class SdTicketServiceInfoData implements DataInterface {
         this.ticketDetId = ticketDetId;
     }
 
-    public boolean isDetailButton() {
-        return detailButton;
-    }
-
-    public void setDetailButton(boolean detailButton) {
-        this.detailButton = detailButton;
-    }
 
     public String getJobId() {
         return jobId;
@@ -194,5 +183,29 @@ public class SdTicketServiceInfoData implements DataInterface {
 
     public void setJobId(String jobId) {
         this.jobId = jobId;
+    }
+
+    public boolean isBnCtrl() {
+        return bnCtrl;
+    }
+
+    public void setBnCtrl(boolean bnCtrl) {
+        this.bnCtrl = bnCtrl;
+    }
+
+    public boolean isVoIpCtrl() {
+        return voIpCtrl;
+    }
+
+    public void setVoIpCtrl(boolean voIpCtrl) {
+        this.voIpCtrl = voIpCtrl;
+    }
+
+    public boolean iseCloudCtrl() {
+        return eCloudCtrl;
+    }
+
+    public void setECloudCtrl(boolean eCloudCtrl) {
+        this.eCloudCtrl = eCloudCtrl;
     }
 }

@@ -100,25 +100,27 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     }
 
     @Override
-    public List<SdTicketServiceInfoData> getServiceInfoInApi(List<SdTicketServiceData> serviceInfo, String serviceKey) {
+    public List<SdTicketServiceInfoData> getServiceInfoInApi(List<SdTicketServiceData> serviceInfo, SdTicketMasData ticketMasData) {
         return serviceInfo.stream().map(ticketServiceData -> {
             SdTicketServiceInfoData ticketServiceInfoData = new SdTicketServiceInfoData();
             List<RequestCreateSearchResultData> resultsDataList = null;
-            String serviceCode = ticketServiceData.getServiceCode();
-            if (ServiceSearchEnum.BSN.getKey().equals(serviceKey)) {
-                resultsDataList = findData4Bsn(serviceCode).getList();
-            } else if (ServiceSearchEnum.DN.getKey().equals(serviceKey)){
-                resultsDataList = findData4Dn(serviceCode).getList();
-            } else if (ServiceSearchEnum.TENANT_ID.getKey().equals(serviceKey)) {
-                resultsDataList = findData4Tenant(serviceCode).getList();
+            String searchKey = ticketMasData.getSearchKey();
+            String searchValue = ticketMasData.getSearchValue();
+            if (ServiceSearchEnum.BSN.getKey().equals(searchKey)) {
+                resultsDataList = findData4Bsn(searchValue).getList();
+            } else if (ServiceSearchEnum.DN.getKey().equals(searchKey)){
+                resultsDataList = findData4Dn(searchValue).getList();
+            } else if (ServiceSearchEnum.TENANT_ID.getKey().equals(searchKey)) {
+                resultsDataList = findData4Tenant(searchValue).getList();
             }
             if (CollectionUtils.isNotEmpty(resultsDataList)) {
-                RequestCreateSearchResultData requestCreateSearchResultData = resultsDataList.get(0);
-                if (requestCreateSearchResultData != null) {
-                    if (requestCreateSearchResultData.getServiceNo().equals(ticketServiceData.getServiceCode())) {
-                        ticketServiceInfoDataPopulator.populateFormRequestCreateSearchResultData(requestCreateSearchResultData,ticketServiceInfoData);
+                resultsDataList.forEach(requestCreateSearchResultData -> {
+                    if (requestCreateSearchResultData != null) {
+                        if (requestCreateSearchResultData.getServiceNo().equals(ticketServiceData.getServiceCode())) {
+                            ticketServiceInfoDataPopulator.populateFormRequestCreateSearchResultData(requestCreateSearchResultData,ticketServiceInfoData);
+                        }
                     }
-                }
+                });
             }
             ticketServiceInfoDataPopulator.populateFromSdTicketServiceData(ticketServiceData, ticketServiceInfoData);
             return ticketServiceInfoData;

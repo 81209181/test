@@ -13,7 +13,7 @@ public class SdTicketServiceInfoDataPopulator extends AbstractDataPopulator<SdTi
         target.setServiceStatusDesc(source.getServiceStatusDesc());
         target.setSubsId(source.getSubsId());
         target.setOfferName(source.getOfferName());
-        target.setItsmUrl(source.getUrl());
+        target.setCouldUrl(source.getUrl());
         target.setDescription(source.getDescription());
         target.setServiceAddress(source.getServiceAddress());
         target.setGridId(source.getGridId());
@@ -23,11 +23,22 @@ public class SdTicketServiceInfoDataPopulator extends AbstractDataPopulator<SdTi
 
     public void populateFromSdTicketServiceData(SdTicketServiceData source, SdTicketServiceInfoData target) {
         target.setTicketDetId(source.getTicketDetId());
-        target.setDetailButton(source.isDetailButton());
         target.setJobId(source.getJobId());
         target.setFaultsList(source.getFaultsList());
         target.setServiceType(source.getServiceType());
         target.setServiceNo(source.getServiceCode());
-        target.setNgn3reset(SdServiceTypeBean.SERVICE_TYPE.VOIP.equals(source.getServiceType()));
+        switch (source.getServiceType()) {
+            case SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD:
+            case SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD_365:
+                target.setECloudCtrl(true);
+                break;
+            case SdServiceTypeBean.SERVICE_TYPE.VOIP:
+                target.setVoIpCtrl(true);
+                break;
+            case SdServiceTypeBean.SERVICE_TYPE.BROADBAND:
+                target.setBnCtrl(true);
+                break;
+
+        }
     }
 }
