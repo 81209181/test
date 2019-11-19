@@ -144,7 +144,7 @@ $().ready(function(){
             }
 
             if(response.warningMsg){
-                showErrorMsg(response.warningMsg);
+                showWarningMsg(response.warningMsg);
             }
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";
