@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.facade.impl;
 
 import com.hkt.btu.common.core.exception.InvalidInputException;
+import com.hkt.btu.sd.core.exception.ApiException;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
 import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
@@ -159,9 +160,14 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         }
 
         // fill in detail info
-        for(RequestCreateSearchResultData resultData : besSubscriberInfoDataList){
-            fillBnData(bsn, resultData);
-            fillPendingOrderData(bsn, resultData);
+        try {
+            for(RequestCreateSearchResultData resultData : besSubscriberInfoDataList){
+                fillBnData(bsn, resultData);
+                fillPendingOrderData(bsn, resultData);
+            }
+        } catch (ApiException e){
+            LOG.warn(e.getMessage(), e);
+            resultsData.setWarningMsg(e.getMessage());
         }
 
         resultsData.setList(besSubscriberInfoDataList);
@@ -181,14 +187,19 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         }
 
         // fill in detail info
-        for(RequestCreateSearchResultData resultData : besSubscriberInfoDataList){
-            String bnBsn = norarsApiFacade.getBsnByDn(dn);
-            if (StringUtils.isNotEmpty(bnBsn)) {
-                resultData.setRelatedBsn(bnBsn);
-                fillBnData(bnBsn, resultData);
-            }
+        try {
+            for (RequestCreateSearchResultData resultData : besSubscriberInfoDataList) {
+                String bnBsn = norarsApiFacade.getBsnByDn(dn);
+                if (StringUtils.isNotEmpty(bnBsn)) {
+                    resultData.setRelatedBsn(bnBsn);
+                    fillBnData(bnBsn, resultData);
+                }
 
-            fillPendingOrderData(dn, resultData);
+                fillPendingOrderData(dn, resultData);
+            }
+        } catch (ApiException e){
+            LOG.warn(e.getMessage(), e);
+            resultsData.setWarningMsg(e.getMessage());
         }
 
         resultsData.setList(besSubscriberInfoDataList);
@@ -281,11 +292,15 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         resultData.setDescription(l1Info);
     }
 
-    private void fillPendingOrderData(String serviceNumber, RequestCreateSearchResultData resultData){
+    private void fillPendingOrderData(String serviceNumber, RequestCreateSearchResultData resultData) throws ApiException {
         WfmPendingOrderData wfmPendingOrderData = wfmApiFacade.getPendingOrderByBsn(serviceNumber);
-        if(wfmPendingOrderData!=null){
-            requestCreateSearchResultDataPopulator.populateFromWfmPendingOrderData(wfmPendingOrderData, resultData);
+        if( wfmPendingOrderData==null ){
+            throw new ApiException("WFM API response is null.");
+        } else if (StringUtils.isNotEmpty(wfmPendingOrderData.getErrorMsg())){
+            throw new ApiException( wfmPendingOrderData.getErrorMsg() );
         }
+
+        requestCreateSearchResultDataPopulator.populateFromWfmPendingOrderData(wfmPendingOrderData, resultData);
     }
 
     private ItsmSearchProfileResponseData getItsmDataForSearchResult(String searchKey, String searchValue) throws InvalidInputException {
