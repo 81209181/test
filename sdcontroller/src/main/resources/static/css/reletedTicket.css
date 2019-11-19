@@ -1,6 +1,7 @@
 .dataTable {
     text-align: center;
 }
+
 .glyphicon {
     position: relative;
     top: 1px;
@@ -12,53 +13,64 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+
 .panel {
     margin-bottom: 20px;
     background-color: #fff;
     border: 1px solid transparent;
     border-radius: 4px;
-    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
-    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
 }
+
 .panel-primary {
     border-color: #428bca;
 }
-.panel-primary>.panel-heading {
+
+.panel-primary > .panel-heading {
     color: #fff;
     background-color: #428bca;
     border-color: #428bca;
 }
+
 .panel-heading {
     padding: 5px 15px;
     border-bottom: 1px solid transparent;
     border-top-right-radius: 3px;
     border-top-left-radius: 3px;
 }
+
 .panel-title {
     margin-top: 0;
     margin-bottom: 0;
     font-size: 16px;
     color: inherit;
 }
+
 .panel-body {
     padding: 15px;
 }
-.pull-right {
-    float: right!important;
-}
-.glyphicon-chevron-down:before {
-    content: "\e114";
-}
+
 .glyphicon-chevron-up:before {
     content: "\e113";
 }
-.row{
-    margin-top:40px;
-    padding: 0 10px;
+
+.glyphicon-chevron-down:before {
+    content: "\e114";
 }
-.clickable{
+
+.glyphicon-chevron-left:before {
+    content: "\e079"
+}
+
+.glyphicon-chevron-right:before {
+    content: "\e080"
+}
+
+.clickable {
     cursor: pointer;
 }
+
 .panel-heading span {
     margin-top: -30px;
     font-size: 15px;
