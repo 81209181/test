@@ -200,35 +200,31 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     private RequestCreateSearchResultsData findData4Tenant(String tenantId) {
         RequestCreateSearchResultsData resultsData = new RequestCreateSearchResultsData();
         List<RequestCreateSearchResultData> resultDataList = new ArrayList<>();
-        Optional.ofNullable(itsmApiFacade.searchProfileByTenantId(tenantId))
-                .map(ItsmSearchProfileResponseData::getList)
-                .ifPresent(list -> list.forEach(itsmProfileData -> {
-                    RequestCreateSearchResultData resultData = new RequestCreateSearchResultData();
-                    requestCreateSearchResultDataPopulator.populateFromItsmProfileData(itsmProfileData, resultData);
+        RequestCreateSearchResultData resultData;
+        for (ItsmProfileData itsmProfileData : itsmApiFacade.searchProfileByTenantId(tenantId).getList()) {
+            if (StringUtils.isNotEmpty(itsmProfileData.getCustCode())) {
+                if (!itsmProfileData.getServiceNo().equals(tenantId)) {
+                    resultData = new RequestCreateSearchResultData();
+                    requestCreateSearchResultDataPopulator.populateFromItsmProfileData(itsmProfileData,resultData);
+                    BesSubscriberInfoResourceData besSubscriberInfoResourceData = besApiFacade.querySubscriberByServiceNumber(itsmProfileData.getServiceNo()).getSubscriberInfos().get(0);
+                    BesCustomerData besCustomerData = besApiFacade.queryCustomerByServiceCode(itsmProfileData.getServiceNo());
+                    requestCreateSearchResultDataPopulator.populateFromBesSubscriberInfoResourceData(besSubscriberInfoResourceData, resultData);
+                    requestCreateSearchResultDataPopulator.populateFromBesCustomerDataData(besCustomerData, resultData);
+                    SdServiceTypeData serviceTypeData = serviceTypeFacade.getServiceTypeByOfferName(resultData.getOfferName());
+                    requestCreateSearchResultDataPopulator.populateFromServiceTypeData(serviceTypeData,resultData);
                     resultDataList.add(resultData);
-                }));
+                }
+            } else {
+                resultData = new RequestCreateSearchResultData();
+                requestCreateSearchResultDataPopulator.populateFromItsmProfileData(itsmProfileData, resultData);
+                resultDataList.add(resultData);
+            }
+        }
         if (CollectionUtils.isEmpty(resultDataList)) {
             resultsData.setErrorMsg(String.format("Service(s) not found with %s .", tenantId));
-            return resultsData;
+        } else {
+            resultsData.setList(resultDataList);
         }
-
-        for (RequestCreateSearchResultData resultData : resultDataList) {
-            SdServiceTypeData serviceTypeByOfferName = serviceTypeFacade.getServiceTypeByOfferName(resultData.getOfferName());
-            resultData.setServiceType(serviceTypeByOfferName.getServiceTypeCode());
-            resultData.setServiceTypeDesc(serviceTypeByOfferName.getServiceTypeName());
-
-            String serviceType = resultData.getServiceType();
-            if (SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD.equals(serviceType) ||
-                SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD_365.equals(serviceType)) {
-                resultData.setDetailButton(true);
-            }
-            BesSubscriberData besSubscriberData = besApiFacade.querySubscriberByServiceNumber(resultData.getServiceNo());
-            if (besSubscriberData != null) {
-                resultData.setSubsId(besSubscriberData.getSubscriberInfos().get(0).getSubInfo().getSubsId());
-            }
-        }
-
-        resultsData.setList(resultDataList);
         return resultsData;
     }
 

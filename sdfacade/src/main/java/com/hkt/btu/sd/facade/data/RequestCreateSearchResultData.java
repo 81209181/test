@@ -54,6 +54,11 @@ public class RequestCreateSearchResultData implements DataInterface {
     private String relatedBsn;
     private boolean detailButton;
 
+    //button control
+    private boolean bnCtrl;
+    private boolean voIpCtrl;
+    private boolean cloudCtrl;
+
     // pending order info
     private Long orderId;
     private String orderType;
@@ -468,5 +473,32 @@ public class RequestCreateSearchResultData implements DataInterface {
 
     public void setDetailButton(boolean detailButton) {
         this.detailButton = detailButton;
+    }
+
+    public boolean isBnCtrl() {
+        return bnCtrl;
+    }
+
+    public RequestCreateSearchResultData setBnCtrl(boolean bnCtrl) {
+        this.bnCtrl = bnCtrl;
+        return this;
+    }
+
+    public boolean isVoIpCtrl() {
+        return voIpCtrl;
+    }
+
+    public RequestCreateSearchResultData setVoIpCtrl(boolean voIpCtrl) {
+        this.voIpCtrl = voIpCtrl;
+        return this;
+    }
+
+    public boolean isCloudCtrl() {
+        return cloudCtrl;
+    }
+
+    public RequestCreateSearchResultData setCloudCtrl(boolean cloudCtrl) {
+        this.cloudCtrl = cloudCtrl;
+        return this;
     }
 }
