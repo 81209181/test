@@ -217,6 +217,8 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
             } else {
                 resultData = new RequestCreateSearchResultData();
                 requestCreateSearchResultDataPopulator.populateFromItsmProfileData(itsmProfileData, resultData);
+                SdServiceTypeData serviceTypeData = serviceTypeFacade.getServiceTypeByOfferName(itsmProfileData.getOfferName());
+                requestCreateSearchResultDataPopulator.populateFromServiceTypeData(serviceTypeData,resultData);
                 resultDataList.add(resultData);
             }
         }

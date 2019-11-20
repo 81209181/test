@@ -162,7 +162,6 @@ public class RequestCreateSearchResultDataPopulator extends AbstractDataPopulato
         target.setServiceNo(source.getServiceNo());
 
         target.setStatus(source.getStatus());
-//        target.setStatusDesc(source.getStatusDesc());
         target.setStb(source.getStb());
 
         target.setTenantId(source.getTenantId());
