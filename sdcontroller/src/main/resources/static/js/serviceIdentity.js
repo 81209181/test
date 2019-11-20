@@ -90,6 +90,8 @@ $().ready(function(){
             console.log("ERROR : ", responseError);
             showErrorMsg(responseError);
         }).then(function(){
+            $('input[name=searchKey]').val(searchKey.val());
+            $('input[name=searchValue]').val(searchValue.val());
             $('#btnApplyProduct').on('click',function(){
                 $.each($('tbody').find('input:checked').parent().parent().data('info'),function(i,val){
                     $('form').find('input[name='+i+']').val(val);

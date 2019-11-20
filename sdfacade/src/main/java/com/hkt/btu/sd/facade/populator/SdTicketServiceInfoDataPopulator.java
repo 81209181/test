@@ -19,13 +19,14 @@ public class SdTicketServiceInfoDataPopulator extends AbstractDataPopulator<SdTi
         target.setGridId(source.getGridId());
         target.setExchangeBuildingId(source.getExchangeBuildingId());
         target.setRelatedBsn(source.getRelatedBsn());
+        target.setServiceType(source.getServiceType());
+        target.setServiceTypeDesc(source.getServiceTypeDesc());
     }
 
     public void populateFromSdTicketServiceData(SdTicketServiceData source, SdTicketServiceInfoData target) {
         target.setTicketDetId(source.getTicketDetId());
         target.setJobId(source.getJobId());
         target.setFaultsList(source.getFaultsList());
-        target.setServiceType(source.getServiceType());
         target.setServiceNo(source.getServiceCode());
         switch (source.getServiceType()) {
             case SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD:
