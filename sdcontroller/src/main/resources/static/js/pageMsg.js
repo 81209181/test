@@ -10,6 +10,18 @@ function hideInfoMsg(){
     $("#infoMsg").hide();
 }
 
+function showWarningMsg(msg){
+    msg = "[WARNING][" + getFormattedTimestamp() + "] " + msg;
+    $("#warningMsg").html(msg);
+    $("html, body").animate({ scrollTop: 0 }, "fast");
+    $("#warningMsg").slideDown(200);
+}
+
+function hideWarningMsg(){
+    $("#warningMsg").html('');
+    $("#warningMsg").hide();
+}
+
 function showErrorMsg(msg){
     // redirect, if needed
     let inputJson = safeParseJson(msg);
@@ -49,6 +61,7 @@ function hideErrorMsg(){
 
 function clearAllMsg() {
     hideInfoMsg();
+    hideWarningMsg();
     hideErrorMsg();
 }
 

@@ -120,7 +120,7 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
         }
 
         // appointmentDate format
-        String appointmentDate = StringUtils.isEmpty(responseData.getSrdStartDateTime()) ? null :
+        String appointmentDate = StringUtils.isEmpty(responseData.getAppointmentDate()) ? null :
                 LocalDateTime.parse(responseData.getAppointmentDate(), DATE_TIME_FORMATTER).toLocalDate().toString();
         String appointmentStartTime = StringUtils.isEmpty(responseData.getAppointmentStartDateTime()) ? "" :
                 LocalDateTime.parse(responseData.getAppointmentStartDateTime(), DATE_TIME_FORMATTER).toLocalTime().toString();
