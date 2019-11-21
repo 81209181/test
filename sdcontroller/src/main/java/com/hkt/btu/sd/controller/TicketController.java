@@ -201,7 +201,7 @@ public class TicketController {
     public ResponseEntity<?> getServiceInfo(@RequestParam Integer ticketMasId) {
         List<SdTicketServiceData> serviceInfo = ticketFacade.getServiceInfo(ticketMasId);
         SdTicketMasData ticketMasData = ticketFacade.getTicket(ticketMasId).orElse(null);
-        List<SdTicketServiceInfoData> ticketInfoDataList=requestCreateFacade.getServiceInfoInApi(serviceInfo,ticketMasData);
+        List<SdTicketServiceInfoData> ticketInfoDataList = requestCreateFacade.getServiceInfoInApi(serviceInfo, ticketMasData);
         return ResponseEntity.ok(ticketInfoDataList);
     }
 

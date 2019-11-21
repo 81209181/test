@@ -90,7 +90,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         SdTicketInfoData ticketInfoData = new SdTicketInfoData();
 
         // get ticket info from db
-        ticketInfoDataPopulator.populateFromSdTicketMasData(ticketMasData,ticketInfoData);
+        ticketInfoDataPopulator.populateFromSdTicketMasData(ticketMasData, ticketInfoData);
 
         // get customer info from BES
         BesCustomerData besCustomerData = besApiFacade.queryCustomerByCustomerCode(ticketMasData.getCustCode());
@@ -113,6 +113,8 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
             } else if (ServiceSearchEnum.TENANT_ID.getKey().equals(searchKey)) {
                 resultsDataList = findData4Tenant(searchValue).getList();
             }
+
+
             if (CollectionUtils.isNotEmpty(resultsDataList)) {
                 resultsDataList.forEach(requestCreateSearchResultData -> {
                     if (requestCreateSearchResultData != null) {

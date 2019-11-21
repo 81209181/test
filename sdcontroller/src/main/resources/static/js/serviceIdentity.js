@@ -16,7 +16,7 @@ $().ready(function(){
         clearAllMsg();
         let custCode =$('input[name=custCode]').val();
         if(custCode.length < 1){
-            showErrorMsg('Please input customer code.');
+            showErrorMsg('Please input customer code.'); // todo SERVDESK-229: move checking to SdTicketFacade
             return;
         }
         $.post('/ticket/service-identity/checkPendingOrder',$('form').serialize(),function(res){
