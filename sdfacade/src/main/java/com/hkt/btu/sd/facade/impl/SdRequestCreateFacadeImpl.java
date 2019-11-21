@@ -93,8 +93,15 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         ticketInfoDataPopulator.populateFromSdTicketMasData(ticketMasData,ticketInfoData);
 
         // get customer info from BES
-        BesCustomerData besCustomerData = besApiFacade.queryCustomerByCustomerCode(ticketMasData.getCustCode());
-        ticketInfoDataPopulator.populateFromBesCustomerData(besCustomerData, ticketInfoData);
+        if (StringUtils.isNotBlank(ticketMasData.getCustCode())) {
+            BesCustomerData besCustomerData = besApiFacade.queryCustomerByCustomerCode(ticketMasData.getCustCode());
+            ticketInfoDataPopulator.populateFromBesCustomerData(besCustomerData, ticketInfoData);
+        } else {
+            if (ServiceSearchEnum.TENANT_ID.getKey().equalsIgnoreCase(ticketMasData.getSearchKey())) {
+                ItsmProfileData itsmProfileData = itsmApiFacade.searchProfileByServiceNo(ticketMasData.getSearchValue()).getList().get(0);
+                ticketInfoDataPopulator.populateFromItsmProfileData(itsmProfileData,ticketInfoData);
+            }
+        }
 
         return ticketInfoData;
     }

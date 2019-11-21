@@ -14,11 +14,6 @@ $().ready(function(){
 
     $('#btnSearchCustomerNext').on('click',function(){
         clearAllMsg();
-        let custCode =$('input[name=custCode]').val();
-        if(custCode.length < 1){
-            showErrorMsg('Please input customer code.');
-            return;
-        }
         $.post('/ticket/service-identity/checkPendingOrder',$('form').serialize(),function(res){
             if (res.success) {
                 createTicket();

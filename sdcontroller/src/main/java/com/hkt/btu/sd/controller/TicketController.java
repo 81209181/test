@@ -3,6 +3,7 @@ package com.hkt.btu.sd.controller;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
+import com.hkt.btu.sd.core.exception.InvalidInputException;
 import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.nora.NoraAccountData;
@@ -112,7 +113,11 @@ public class TicketController {
         }
 
         // create ticket
-        return ResponseEntity.ok(ResponseTicketData.of(true, ticketFacade.createQueryTicket(queryTicketRequestData)));
+        try {
+            return ResponseEntity.ok(ResponseTicketData.of(true, ticketFacade.createQueryTicket(queryTicketRequestData)));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("")

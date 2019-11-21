@@ -13,6 +13,7 @@ import com.hkt.btu.sd.core.service.constant.TicketTypeEnum;
 import com.hkt.btu.sd.facade.SdAuditTrailFacade;
 import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.WfmApiFacade;
+import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.wfm.WfmAppointmentResData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobProgressData;
@@ -63,6 +64,11 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
     @Override
     public int createQueryTicket(QueryTicketRequestData queryTicketRequestData) {
+        if (!ServiceSearchEnum.TENANT_ID.getKey().equalsIgnoreCase(queryTicketRequestData.getSearchKey())) {
+            if (StringUtils.isBlank(queryTicketRequestData.getCustCode())) {
+                throw new InvalidInputException("Customer Code is Empty.");
+            }
+        }
         return ticketService.createQueryTicket(queryTicketRequestData.getCustCode(),
                 queryTicketRequestData.getServiceNo(),
                 queryTicketRequestData.getServiceType(),
