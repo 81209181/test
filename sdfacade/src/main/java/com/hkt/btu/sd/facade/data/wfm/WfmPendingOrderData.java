@@ -4,8 +4,8 @@ import com.hkt.btu.common.facade.data.DataInterface;
 
 public class WfmPendingOrderData implements DataInterface {
 
-    private Long orderId;
-    private Long fulfillmentId;
+    private String orderId;
+    private String fulfillmentId;
     private String orderType;
     private String fulfillmentType;
     private String serviceReadyDate;
@@ -17,19 +17,19 @@ public class WfmPendingOrderData implements DataInterface {
 
     private String errorMsg;
 
-    public Long getOrderId() {
+    public String getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(Long orderId) {
+    public void setOrderId(String orderId) {
         this.orderId = orderId;
     }
 
-    public Long getFulfillmentId() {
+    public String getFulfillmentId() {
         return fulfillmentId;
     }
 
-    public void setFulfillmentId(Long fulfillmentId) {
+    public void setFulfillmentId(String fulfillmentId) {
         this.fulfillmentId = fulfillmentId;
     }
 

@@ -60,9 +60,9 @@ public class RequestCreateSearchResultData implements DataInterface {
     private boolean cloudCtrl;
 
     // pending order info
-    private Long orderId;
+    private String orderId;
     private String orderType;
-    private Long fulfillmentId;
+    private String fulfillmentId;
     private String fulfillmentType;
     private String serviceReadyDate;
     private String appointmentDate;
@@ -419,11 +419,11 @@ public class RequestCreateSearchResultData implements DataInterface {
         this.relatedBsn = relatedBsn;
     }
 
-    public Long getOrderId() {
+    public String getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(Long orderId) {
+    public void setOrderId(String orderId) {
         this.orderId = orderId;
     }
 
@@ -435,11 +435,11 @@ public class RequestCreateSearchResultData implements DataInterface {
         this.orderType = orderType;
     }
 
-    public Long getFulfillmentId() {
+    public String getFulfillmentId() {
         return fulfillmentId;
     }
 
-    public void setFulfillmentId(Long fulfillmentId) {
+    public void setFulfillmentId(String fulfillmentId) {
         this.fulfillmentId = fulfillmentId;
     }
 
