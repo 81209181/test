@@ -205,9 +205,7 @@ public class TicketController {
     @GetMapping("/service")
     public ResponseEntity<?> getServiceInfo(@RequestParam Integer ticketMasId) {
         List<SdTicketServiceData> serviceInfo = ticketFacade.getServiceInfo(ticketMasId);
-        SdTicketMasData ticketMasData = ticketFacade.getTicket(ticketMasId).orElse(null);
-        List<SdTicketServiceInfoData> ticketInfoDataList = requestCreateFacade.getServiceInfoInApi(serviceInfo, ticketMasData);
-        return ResponseEntity.ok(ticketInfoDataList);
+        return ResponseEntity.ok(serviceInfo);
     }
 
     @PostMapping("/service/update")
@@ -395,5 +393,14 @@ public class TicketController {
     public String showTeamSummary(Model model) {
         model.addAttribute("teamSummary", ticketFacade.getTeamSummary());
         return "ticket/teamSummary";
+    }
+
+    @GetMapping("getOtherServiceData/{serviceCode}")
+    public ResponseEntity<?> getOtherServiceData(@PathVariable String serviceCode) {
+        try {
+            return ResponseEntity.ok(requestCreateFacade.getServiceInfoInApi(serviceCode));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

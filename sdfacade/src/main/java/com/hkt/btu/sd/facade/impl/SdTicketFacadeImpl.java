@@ -11,6 +11,7 @@ import com.hkt.btu.sd.core.service.bean.*;
 import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
 import com.hkt.btu.sd.core.service.constant.TicketTypeEnum;
 import com.hkt.btu.sd.facade.SdAuditTrailFacade;
+import com.hkt.btu.sd.facade.SdServiceTypeFacade;
 import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.WfmApiFacade;
 import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
@@ -48,6 +49,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     SdUserService userService;
     @Resource(name = "wfmApiFacade")
     WfmApiFacade wfmApiFacade;
+    @Resource(name = "serviceTypeFacade")
+    SdServiceTypeFacade serviceTypeFacade;
 
     @Resource(name = "ticketMasDataPopulator")
     SdTicketMasDataPopulator ticketMasDataPopulator;
@@ -219,11 +222,19 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             }).collect(Collectors.toList());
 
             for (SdTicketServiceData serviceData : ticketServiceDataList) {
-                String serviceType = serviceData.getServiceType();
-                if (SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD_365.equals(serviceType) ||
-                        SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD.equals(serviceType)) {
-                    serviceData.setDetailButton(true);
+                switch (serviceData.getServiceType()) {
+                    case SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD:
+                    case SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD_365:
+                        serviceData.setCloudCtrl(true);
+                        break;
+                    case SdServiceTypeBean.SERVICE_TYPE.VOIP:
+                        serviceData.setVoIpCtrl(true);
+                        break;
+                    case SdServiceTypeBean.SERVICE_TYPE.BROADBAND:
+                        serviceData.setBnCtrl(true);
+                        break;
                 }
+                serviceData.setServiceTypeDesc(serviceTypeFacade.getServiceTypeDescByServiceTypeCode(serviceData.getServiceType()));
             }
             return ticketServiceDataList;
         }
