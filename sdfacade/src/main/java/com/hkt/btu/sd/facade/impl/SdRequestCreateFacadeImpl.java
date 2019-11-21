@@ -9,6 +9,7 @@ import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
 import com.hkt.btu.sd.facade.populator.RequestCreateSearchResultDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdTicketInfoDataPopulator;
+import com.hkt.btu.sd.facade.populator.SdTicketServiceInfoDataPopulator;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     private static final Logger LOG = LogManager.getLogger(SdRequestCreateFacadeImpl.class);
@@ -40,6 +42,8 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     RequestCreateSearchResultDataPopulator requestCreateSearchResultDataPopulator;
     @Resource(name = "ticketInfoDataPopulator")
     SdTicketInfoDataPopulator ticketInfoDataPopulator;
+    @Resource(name = "ticketServiceInfoDataPopulator")
+    SdTicketServiceInfoDataPopulator ticketServiceInfoDataPopulator;
 
     @Override
     public List<ServiceSearchEnum> getSearchKeyEnumList() {
@@ -86,54 +90,43 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         SdTicketInfoData ticketInfoData = new SdTicketInfoData();
 
         // get ticket info from db
-        ticketInfoDataPopulator.populateFromSdTicketMasData(ticketMasData,ticketInfoData);
+        ticketInfoDataPopulator.populateFromSdTicketMasData(ticketMasData, ticketInfoData);
 
         // get customer info from BES
         BesCustomerData besCustomerData = besApiFacade.queryCustomerByCustomerCode(ticketMasData.getCustCode());
         ticketInfoDataPopulator.populateFromBesCustomerData(besCustomerData, ticketInfoData);
 
-        SdTicketServiceData ticketServiceData = ticketFacade.getService(ticketMasData.getTicketMasId());
-        if (ticketServiceData != null) {
-            // todo [SERVDESK-208] Detach Service Info from Ticket Page: service should be a list
-            //  0. remove below service data
-            //  1. frontend loop all serviceNumber+serviceType from ajax return of TicketController.getServiceInfo
-            //  2. call API to fill-in data
-            //  3. reflect API data on frontend
-
-            // find service data
-            List<RequestCreateSearchResultData> resultsDataList;
-            if ("DN".equals(ticketInfoData.getSearchKeyDesc())) {
-                resultsDataList = findData4Dn(ticketServiceData.getServiceCode()).getList();
-            } else {
-                resultsDataList = findData4Bsn(ticketServiceData.getServiceCode()).getList();
-            }
-            if (CollectionUtils.isNotEmpty(resultsDataList)) {
-                RequestCreateSearchResultData requestCreateSearchResultData = resultsDataList.get(0);
-                if (requestCreateSearchResultData != null) {
-                    if (requestCreateSearchResultData.getServiceNo().equals(ticketServiceData.getServiceCode())) {
-                        // todo [SERVDESK-208] Detach Service Info from Ticket Page
-                        //  0. remove below service data
-                        ticketInfoData.setServiceStatus(requestCreateSearchResultData.getServiceStatus());
-                        ticketInfoData.setServiceStatusDesc(requestCreateSearchResultData.getServiceStatusDesc());
-                        ticketInfoData.setSubsId(requestCreateSearchResultData.getSubsId());
-                        ticketInfoData.setOfferName(requestCreateSearchResultData.getOfferName());
-                        ticketInfoData.setItsmUrl(requestCreateSearchResultData.getUrl());
-                        ticketInfoData.setDescription(requestCreateSearchResultData.getDescription());
-                        ticketInfoData.setServiceAddress(requestCreateSearchResultData.getServiceAddress());
-                        ticketInfoData.setGridId(requestCreateSearchResultData.getGridId());
-                        ticketInfoData.setExchangeBuildingId(requestCreateSearchResultData.getExchangeBuildingId());
-                        ticketInfoData.setRelatedBsn(requestCreateSearchResultData.getRelatedBsn());
-                    }
-                }
-            }
-
-            // translate service type code to name
-            String serviceTypeDesc = serviceTypeFacade.getServiceTypeDescByServiceTypeCode(ticketServiceData.getServiceType());
-            ticketInfoData.setServiceTypeDesc(serviceTypeDesc);
-
-            ticketInfoDataPopulator.populateFromSdTicketServiceData(ticketServiceData, ticketInfoData);
-        }
         return ticketInfoData;
+    }
+
+    @Override
+    public List<SdTicketServiceInfoData> getServiceInfoInApi(List<SdTicketServiceData> serviceInfo, SdTicketMasData ticketMasData) {
+        return serviceInfo.stream().map(ticketServiceData -> {
+            SdTicketServiceInfoData ticketServiceInfoData = new SdTicketServiceInfoData();
+            List<RequestCreateSearchResultData> resultsDataList = null;
+            String searchKey = ticketMasData.getSearchKey();
+            String searchValue = ticketMasData.getSearchValue();
+            if (ServiceSearchEnum.BSN.getKey().equals(searchKey)) {
+                resultsDataList = findData4Bsn(searchValue).getList();
+            } else if (ServiceSearchEnum.DN.getKey().equals(searchKey)){
+                resultsDataList = findData4Dn(searchValue).getList();
+            } else if (ServiceSearchEnum.TENANT_ID.getKey().equals(searchKey)) {
+                resultsDataList = findData4Tenant(searchValue).getList();
+            }
+
+
+            if (CollectionUtils.isNotEmpty(resultsDataList)) {
+                resultsDataList.forEach(requestCreateSearchResultData -> {
+                    if (requestCreateSearchResultData != null) {
+                        if (requestCreateSearchResultData.getServiceNo().equals(ticketServiceData.getServiceCode())) {
+                            ticketServiceInfoDataPopulator.populateFormRequestCreateSearchResultData(requestCreateSearchResultData,ticketServiceInfoData);
+                        }
+                    }
+                });
+            }
+            ticketServiceInfoDataPopulator.populateFromSdTicketServiceData(ticketServiceData, ticketServiceInfoData);
+            return ticketServiceInfoData;
+        }).collect(Collectors.toList());
     }
 
     @Override
@@ -209,35 +202,33 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     private RequestCreateSearchResultsData findData4Tenant(String tenantId) {
         RequestCreateSearchResultsData resultsData = new RequestCreateSearchResultsData();
         List<RequestCreateSearchResultData> resultDataList = new ArrayList<>();
-        Optional.ofNullable(itsmApiFacade.searchProfileByTenantId(tenantId))
-                .map(ItsmSearchProfileResponseData::getList)
-                .ifPresent(list -> list.forEach(itsmProfileData -> {
-                    RequestCreateSearchResultData resultData = new RequestCreateSearchResultData();
-                    requestCreateSearchResultDataPopulator.populateFromItsmProfileData(itsmProfileData, resultData);
+        RequestCreateSearchResultData resultData;
+        for (ItsmProfileData itsmProfileData : itsmApiFacade.searchProfileByTenantId(tenantId).getList()) {
+            if (StringUtils.isNotEmpty(itsmProfileData.getCustCode())) {
+                if (!itsmProfileData.getServiceNo().equals(tenantId)) {
+                    resultData = new RequestCreateSearchResultData();
+                    requestCreateSearchResultDataPopulator.populateFromItsmProfileData(itsmProfileData,resultData);
+                    BesSubscriberInfoResourceData besSubscriberInfoResourceData = besApiFacade.querySubscriberByServiceNumber(itsmProfileData.getServiceNo()).getSubscriberInfos().get(0);
+                    BesCustomerData besCustomerData = besApiFacade.queryCustomerByServiceCode(itsmProfileData.getServiceNo());
+                    requestCreateSearchResultDataPopulator.populateFromBesSubscriberInfoResourceData(besSubscriberInfoResourceData, resultData);
+                    requestCreateSearchResultDataPopulator.populateFromBesCustomerDataData(besCustomerData, resultData);
+                    SdServiceTypeData serviceTypeData = serviceTypeFacade.getServiceTypeByOfferName(resultData.getOfferName());
+                    requestCreateSearchResultDataPopulator.populateFromServiceTypeData(serviceTypeData,resultData);
                     resultDataList.add(resultData);
-                }));
+                }
+            } else {
+                resultData = new RequestCreateSearchResultData();
+                requestCreateSearchResultDataPopulator.populateFromItsmProfileData(itsmProfileData, resultData);
+                SdServiceTypeData serviceTypeData = serviceTypeFacade.getServiceTypeByOfferName(itsmProfileData.getOfferName());
+                requestCreateSearchResultDataPopulator.populateFromServiceTypeData(serviceTypeData,resultData);
+                resultDataList.add(resultData);
+            }
+        }
         if (CollectionUtils.isEmpty(resultDataList)) {
             resultsData.setErrorMsg(String.format("Service(s) not found with %s .", tenantId));
-            return resultsData;
+        } else {
+            resultsData.setList(resultDataList);
         }
-
-        for (RequestCreateSearchResultData resultData : resultDataList) {
-            SdServiceTypeData serviceTypeByOfferName = serviceTypeFacade.getServiceTypeByOfferName(resultData.getOfferName());
-            resultData.setServiceType(serviceTypeByOfferName.getServiceTypeCode());
-            resultData.setServiceTypeDesc(serviceTypeByOfferName.getServiceTypeName());
-
-            String serviceType = resultData.getServiceType();
-            if (SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD.equals(serviceType) ||
-                SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD_365.equals(serviceType)) {
-                resultData.setDetailButton(true);
-            }
-            BesSubscriberData besSubscriberData = besApiFacade.querySubscriberByServiceNumber(resultData.getServiceNo());
-            if (besSubscriberData != null) {
-                resultData.setSubsId(besSubscriberData.getSubscriberInfos().get(0).getSubInfo().getSubsId());
-            }
-        }
-
-        resultsData.setList(resultDataList);
         return resultsData;
     }
 

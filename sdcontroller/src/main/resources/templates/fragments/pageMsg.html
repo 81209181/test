@@ -14,6 +14,17 @@
             /*]]>*/
         </script>
 
+        <!-- warning msg -->
+        <div th:id="warningMsg" class="alert alert-warning" role="alert" style="display: none" th:text="${'warning message'}"></div>
+        <script th:if="!${#strings.isEmpty(warningMsg)}" th:inline="javascript">
+            /*<![CDATA[*/
+            $(document).ready(function () {
+                var msg = [[${warningMsg}]];
+                showWarningMsg(msg);
+            });
+            /*]]>*/
+        </script>
+
         <!-- error msg -->
         <div th:id="errorMsg" class="alert alert-danger" role="alert" style="display: none" th:text="${'error message'}"></div>
         <script th:if="!${#strings.isEmpty(errorMsg)}" th:inline="javascript">

@@ -1,3 +1,9 @@
+var ngn3Btn = $('.ngn3Btn'),
+    voIpBtn = $('.voIpBtn'),
+    bbBtn = $('.bbBtn'),
+    inventoryBtn = $('.inventoryBtn'),
+    eCloudBtn =$('.eCloudBtn');
+
 $().ready(function(){
 
     var ticketDetId = "";
@@ -17,7 +23,6 @@ $().ready(function(){
     } else if(ticketStatusDesc === "CANCEL"){
          $("#ticketStatusDesc").css("color","red");
     }
-
     $.get('/ticket/service/symptom?ticketMasId='+ticketMasId, function (res) {
         for (item of res) {
             $('.selectpicker').append("<option value="+item.symptomCode+">"+item.symptomCode+"---"+item.symptomDescription+"</option>");
@@ -29,7 +34,10 @@ $().ready(function(){
                 $.each(res,function(index,j){
                     let service =$('#service');
                     $.each(j,function(key,value){
-//                    service.find('input[name='+key+']').val(value);    // by Dennis  ref jira 179
+                        service.find('input[name='+key+']').val(value);
+                        if (key === 'couldUrl'){
+                            $('.eCloudBtn').data('url',value);
+                        }
                         if (key === 'faultsList') {
                             if (value == '') {
                                 $('#btnMakeAppointment').attr('disabled', true);
@@ -46,8 +54,15 @@ $().ready(function(){
                         if (key === 'serviceType') {
                             serviceType = value
                         }
-                        if (key === 'detailButton') {
-                            disabledDetailButton(value);
+                        // button control
+                        if (key === 'bnCtrl') {
+                            bnButtonCtrl(value);
+                        }
+                        if (key === 'voIpCtrl'){
+                            voIpButtonCtrl(value);
+                        }
+                        if (key === 'eCloudCtrl'){
+                            eCloudButtonCtrl(value);
                         }
                     })
                 })
@@ -207,7 +222,7 @@ $().ready(function(){
     readyForTicketService();
 
     // service link button
-    $('#btnServiceLink').on('click',function(){
+    $('.eCloudBtn').on('click',function(){
         window.open($(this).data('url'),'Profile','scrollbars=yes,height=600,width=800');
     });
 
@@ -264,18 +279,6 @@ $().ready(function(){
         $(form).addClass("was-validated");
     });
 
-    $('#btnResetNGN3PWD').on('click',function(){
-        let accountSelect = $('select[name=ngn3Account]');
-        accountSelect.find('option:not(:first)').remove();
-        $('input[name=ngn3pwd]').val('');
-        $.get('/ticket/getNgn3AccountList/'+bsn,function(res){
-            $.each(res,function(k,v){
-                accountSelect.append('<option>'+v+'</option>');
-            })
-        }).then(function(){
-            $('.ngn3').modal({backdrop: 'static', keyboard: false});
-        })
-    })
 
     $('#btnNgn3Reset').on('click',function(){
         let account =$('select[name=ngn3Account]').val();
@@ -304,12 +307,12 @@ $().ready(function(){
         if(!$this.hasClass('panel-collapsed')) {
             $this.parents('.panel').find('.panel-body').slideUp();
             $this.addClass('panel-collapsed');
-            $this.find('i').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+            $this.find('i').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-left');
             $('#relatedTicketTable').hide();
         } else {
             $this.parents('.panel').find('.panel-body').slideDown();
             $this.removeClass('panel-collapsed');
-            $this.find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+            $this.find('i').removeClass('glyphicon-chevron-left').addClass('glyphicon-chevron-down');
             let serviceNo = $('input[name=serviceCode]').val();
             if (serviceNo === '') {
                 $('#relatedTicketTable').hide();
@@ -586,12 +589,43 @@ function checkWindowClose(winObj) {
     }, 1000);
 }
 
-function disabledDetailButton(flag) {
+function goResetNgn3Pwd(){
+    let accountSelect = $('select[name=ngn3Account]');
+    accountSelect.find('option:not(:first)').remove();
+    $('input[name=ngn3pwd]').val('');
+    $.get('/ticket/getNgn3AccountList/'+bsn,function(res){
+        $.each(res,function(k,v){
+            accountSelect.append('<option>'+v+'</option>');
+        })
+    }).then(function(){
+        $('.ngn3').modal({backdrop: 'static', keyboard: false});
+    })
+}
+
+function eCloudButtonCtrl(flag) {
     if (flag) {
-        $('.detail').attr('disabled', false);
-        $('.otherDetail').attr('disabled', true);
-    } else {
-        $('.detail').attr('disabled', true);
-        $('.otherDetail').attr('disabled', false);
+        inventoryBtn.attr('disabled', true);
+        bbBtn.attr('disabled', true);
+        voIpBtn.attr('disabled', true);
+        ngn3Btn.hide();
+    }
+}
+
+function bnButtonCtrl(val){
+    if(val){
+        eCloudBtn.attr('disabled', true);
+        inventoryBtn.attr('disabled', false);
+        bbBtn.attr('disabled', false);
+        voIpBtn.attr('disabled', true);
+        ngn3Btn.hide();
+    }
+}
+
+function voIpButtonCtrl(val){
+    if(val){
+        eCloudBtn.attr('disabled', true);
+        inventoryBtn.attr('disabled', false);
+        bbBtn.attr('disabled', false);
+        voIpBtn.attr('disabled', false);
     }
 }

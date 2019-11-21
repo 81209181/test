@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.facade.populator;
 
 import com.hkt.btu.common.facade.populator.AbstractDataPopulator;
+import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
 import org.apache.commons.collections4.CollectionUtils;
@@ -161,7 +162,6 @@ public class RequestCreateSearchResultDataPopulator extends AbstractDataPopulato
         target.setServiceNo(source.getServiceNo());
 
         target.setStatus(source.getStatus());
-//        target.setStatusDesc(source.getStatusDesc());
         target.setStb(source.getStb());
 
         target.setTenantId(source.getTenantId());
@@ -187,4 +187,21 @@ public class RequestCreateSearchResultDataPopulator extends AbstractDataPopulato
         target.setAppointmentDate(source.getAppointmentDate());
     }
 
+    public void populateFromServiceTypeData(SdServiceTypeData source, RequestCreateSearchResultData target) {
+        target.setServiceType(source.getServiceTypeCode());
+        target.setServiceTypeDesc(source.getServiceTypeName());
+        switch (source.getServiceTypeCode()) {
+            case SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD:
+            case SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD_365:
+                target.setCloudCtrl(true);
+                break;
+            case SdServiceTypeBean.SERVICE_TYPE.VOIP:
+                target.setVoIpCtrl(true);
+                break;
+            case SdServiceTypeBean.SERVICE_TYPE.BROADBAND:
+                target.setBnCtrl(true);
+                break;
+
+        }
+    }
 }

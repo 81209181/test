@@ -200,7 +200,9 @@ public class TicketController {
     @GetMapping("/service")
     public ResponseEntity<?> getServiceInfo(@RequestParam Integer ticketMasId) {
         List<SdTicketServiceData> serviceInfo = ticketFacade.getServiceInfo(ticketMasId);
-        return ResponseEntity.ok(serviceInfo);
+        SdTicketMasData ticketMasData = ticketFacade.getTicket(ticketMasId).orElse(null);
+        List<SdTicketServiceInfoData> ticketInfoDataList = requestCreateFacade.getServiceInfoInApi(serviceInfo, ticketMasData);
+        return ResponseEntity.ok(ticketInfoDataList);
     }
 
     @PostMapping("/service/update")

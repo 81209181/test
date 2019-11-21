@@ -4,6 +4,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Ticket Info</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/reletedTicket.css}"/>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
@@ -11,7 +12,7 @@
         var customerCode = '[[${ticketInfo.custCode}]]';
         var ticketMasId = '[[${ticketInfo.ticketMasId}]]';
         var ticketStatusDesc = '[[${ticketInfo.ticketStatusDesc}]]';
-        var bsn = '[[${ticketInfo.serviceNo}]]';
+        var bsn = '[[${ticketInfo.searchValue}]]';
     </script>
     <div class="card" style="margin-bottom: 75px;" th:object="${ticketInfo}">
         <div class="card-header bg-primary text-white">Ticket - <span th:text="*{ticketMasId}"></span></div>
@@ -105,23 +106,23 @@
                 <div class="col-md-12">
                     <h3>
                         Service
-                        <button type="button" class="btn btn-info ml-3 detail" th:attr="data-url=*{itsmUrl}" th:disabled="not *{itsmUrl}" id="btnServiceLink">E-Cloud Detail</button>
-                        <button type="button" class="btn btn-info ml-3 otherDetail" onclick='getInventory(bsn);'>Inventory Detail</button>
-                        <button type="button" class="btn btn-info ml-3 otherDetail" onclick="getOfferDetailList(bsn);">BB Detail</button>
-                        <button th:disabled="not *{ngn3reset}"type="button" class="btn btn-info ml-3" onclick='getRelatedOfferInfo(bsn);'>VoIP Detail</button>
-                        <button th:if="*{ngn3reset}" type="button" class="btn btn-info ml-3" id="btnResetNGN3PWD">Re-set NGN3 Account Password</button>
-                        <button th:if="*{ngn3reset}" type="button" class="btn btn-info ml-3" onclick="getNGN3OneDayAdminAccount(bsn);">One Day Admin Account</button>
+                        <button type="button" class="btn btn-info ml-3 eCloudBtn">E-Cloud Detail</button>
+                        <button type="button" class="btn btn-info ml-3 inventoryBtn" onclick='getInventory(bsn);'>Inventory Detail</button>
+                        <button type="button" class="btn btn-info ml-3 bbBtn" onclick="getOfferDetailList(bsn);">BB Detail</button>
+                        <button type="button" class="btn btn-info ml-3 voIpBtn" onclick='getRelatedOfferInfo(bsn);'>VoIP Detail</button>
+                        <button type="button" class="btn btn-info ml-3 ngn3Btn" onclick="goResetNgn3Pwd()">Re-set NGN3 Account Password</button>
+                        <button type="button" class="btn btn-info ml-3 ngn3Btn" onclick="getNGN3OneDayAdminAccount(bsn);">One Day Admin Account</button>
                     </h3>
                 </div>
                 <div class="col-md-12">
                     <div class="form-row">
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Service Number: </label>
-                            <input type="text" class="form-control col-md-6" name="serviceCode" readonly th:value="*{serviceNo}"/>
+                            <input type="text" class="form-control col-md-6" name="serviceNo" readonly />
                         </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Service Type: </label>
-                            <input type="text" class="form-control col-md-6" name="serviceType" readonly th:value="*{serviceTypeDesc}">
+                            <input type="text" class="form-control col-md-6" name="serviceTypeDesc" readonly >
                         </div>
                         <div class="temp_faults col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Symptom: </label>
@@ -129,31 +130,31 @@
                         </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Subscriber ID: </label>
-                            <input type="text" class="form-control col-md-6" name="subsId" th:value="*{subsId}" readonly/>
+                            <input type="text" class="form-control col-md-6" name="subsId"  readonly/>
                         </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Offer Name: </label>
-                            <input type="text" class="form-control col-md-6" name="offerName" th:value="*{offerName}" readonly/>
+                            <input type="text" class="form-control col-md-6" name="offerName"  readonly/>
                         </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Status: </label>
-                            <input type="text" class="form-control col-md-6" name="serviceStatusDesc" th:value="*{serviceStatusDesc}" readonly/>
+                            <input type="text" class="form-control col-md-6" name="serviceStatusDesc"  readonly/>
                         </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Service Address: </label>
-                            <input type="text" class="form-control col-md-6" name="serviceAddress" th:value="*{serviceAddress}" readonly/>
+                            <input type="text" class="form-control col-md-6" name="serviceAddress"  readonly/>
                         </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">L1 PID/STB/Description: </label>
-                            <input type="text" class="form-control col-md-6" name="description" th:value="*{description}" readonly/>
+                            <input type="text" class="form-control col-md-6" name="description"  readonly/>
                         </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Related BSN: </label>
-                            <input type="text" class="form-control col-md-6" name="relatedBsn" th:value="*{relatedBsn}" th:id="relatedBsn" readonly/>
+                            <input type="text" class="form-control col-md-6" name="relatedBsn"  th:id="relatedBsn" readonly/>
                         </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Exchange: </label>
-                            <input type="text" class="form-control col-md-6" name="exchangeBuildingId" th:value="*{exchangeBuildingId}" readonly/>
+                            <input type="text" class="form-control col-md-6" name="exchangeBuildingId"  readonly/>
                         </div>
                     </div>
                 </div>
@@ -293,7 +294,7 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="panel-title">Related Ticket</h3>
-                    <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+                    <span class="float-right clickable"><i class="glyphicon glyphicon-chevron-left"></i></span>
                 </div>
                 <div class="panel-body">
                     <table id="relatedTicketTable" class="display" cellspacing="0" width="100%">
@@ -455,7 +456,7 @@
         </div>
     </div>
     <script type="text/javascript" th:src="@{/js/ticketInfo.js}"></script>
-    <script th:src="@{/js/appointment_sd_util.js}" type="text/javascript"></script>
+    <script type="text/javascript" th:src="@{/js/appointment_sd_util.js}"></script>
 </div>
 </body>
 </html>
