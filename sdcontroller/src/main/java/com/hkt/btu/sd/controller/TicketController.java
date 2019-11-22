@@ -3,6 +3,7 @@ package com.hkt.btu.sd.controller;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
+import com.hkt.btu.sd.core.exception.InvalidInputException;
 import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.nora.NoraAccountData;
@@ -112,7 +113,11 @@ public class TicketController {
         }
 
         // create ticket
-        return ResponseEntity.ok(ResponseTicketData.of(true, ticketFacade.createQueryTicket(queryTicketRequestData)));
+        try {
+            return ResponseEntity.ok(ResponseTicketData.of(true, ticketFacade.createQueryTicket(queryTicketRequestData)));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("")
@@ -200,9 +205,7 @@ public class TicketController {
     @GetMapping("/service")
     public ResponseEntity<?> getServiceInfo(@RequestParam Integer ticketMasId) {
         List<SdTicketServiceData> serviceInfo = ticketFacade.getServiceInfo(ticketMasId);
-        SdTicketMasData ticketMasData = ticketFacade.getTicket(ticketMasId).orElse(null);
-        List<SdTicketServiceInfoData> ticketInfoDataList = requestCreateFacade.getServiceInfoInApi(serviceInfo, ticketMasData);
-        return ResponseEntity.ok(ticketInfoDataList);
+        return ResponseEntity.ok(serviceInfo);
     }
 
     @PostMapping("/service/update")
@@ -390,5 +393,14 @@ public class TicketController {
     public String showTeamSummary(Model model) {
         model.addAttribute("teamSummary", ticketFacade.getTeamSummary());
         return "ticket/teamSummary";
+    }
+
+    @GetMapping("getOtherServiceData/{serviceCode}")
+    public ResponseEntity<?> getOtherServiceData(@PathVariable String serviceCode) {
+        try {
+            return ResponseEntity.ok(requestCreateFacade.getServiceInfoInApi(serviceCode));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

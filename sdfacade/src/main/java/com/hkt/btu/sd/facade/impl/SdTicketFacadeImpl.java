@@ -11,8 +11,10 @@ import com.hkt.btu.sd.core.service.bean.*;
 import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
 import com.hkt.btu.sd.core.service.constant.TicketTypeEnum;
 import com.hkt.btu.sd.facade.SdAuditTrailFacade;
+import com.hkt.btu.sd.facade.SdServiceTypeFacade;
 import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.WfmApiFacade;
+import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.wfm.WfmAppointmentResData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobProgressData;
@@ -47,6 +49,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     SdUserService userService;
     @Resource(name = "wfmApiFacade")
     WfmApiFacade wfmApiFacade;
+    @Resource(name = "serviceTypeFacade")
+    SdServiceTypeFacade serviceTypeFacade;
 
     @Resource(name = "ticketMasDataPopulator")
     SdTicketMasDataPopulator ticketMasDataPopulator;
@@ -63,6 +67,11 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
     @Override
     public int createQueryTicket(QueryTicketRequestData queryTicketRequestData) {
+        if (!ServiceSearchEnum.TENANT_ID.getKey().equalsIgnoreCase(queryTicketRequestData.getSearchKey())) {
+            if (StringUtils.isBlank(queryTicketRequestData.getCustCode())) {
+                throw new InvalidInputException("Customer Code is Empty.");
+            }
+        }
         return ticketService.createQueryTicket(queryTicketRequestData.getCustCode(),
                 queryTicketRequestData.getServiceNo(),
                 queryTicketRequestData.getServiceType(),
@@ -213,11 +222,19 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             }).collect(Collectors.toList());
 
             for (SdTicketServiceData serviceData : ticketServiceDataList) {
-                String serviceType = serviceData.getServiceType();
-                if (SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD_365.equals(serviceType) ||
-                        SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD.equals(serviceType)) {
-                    serviceData.setDetailButton(true);
+                switch (serviceData.getServiceType()) {
+                    case SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD:
+                    case SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD_365:
+                        serviceData.setCloudCtrl(true);
+                        break;
+                    case SdServiceTypeBean.SERVICE_TYPE.VOIP:
+                        serviceData.setVoIpCtrl(true);
+                        break;
+                    case SdServiceTypeBean.SERVICE_TYPE.BROADBAND:
+                        serviceData.setBnCtrl(true);
+                        break;
                 }
+                serviceData.setServiceTypeDesc(serviceTypeFacade.getServiceTypeDescByServiceTypeCode(serviceData.getServiceType()));
             }
             return ticketServiceDataList;
         }

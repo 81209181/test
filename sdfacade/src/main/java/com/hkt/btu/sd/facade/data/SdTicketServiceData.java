@@ -9,9 +9,14 @@ public class SdTicketServiceData implements DataInterface {
     private Integer ticketDetId;
     private String serviceType;
     private String serviceCode;
+    private String serviceTypeDesc;
     private List<SdSymptomData> faultsList;
     private String jobId;
-    private boolean detailButton;
+
+    // button control
+    private boolean bnCtrl;
+    private boolean voIpCtrl;
+    private boolean cloudCtrl;
 
     public String getJobId() {
         return jobId;
@@ -53,11 +58,35 @@ public class SdTicketServiceData implements DataInterface {
         this.faultsList = faultsList;
     }
 
-    public boolean isDetailButton() {
-        return detailButton;
+    public String getServiceTypeDesc() {
+        return serviceTypeDesc;
     }
 
-    public void setDetailButton(boolean detailButton) {
-        this.detailButton = detailButton;
+    public void setServiceTypeDesc(String serviceTypeDesc) {
+        this.serviceTypeDesc = serviceTypeDesc;
+    }
+
+    public boolean isBnCtrl() {
+        return bnCtrl;
+    }
+
+    public void setBnCtrl(boolean bnCtrl) {
+        this.bnCtrl = bnCtrl;
+    }
+
+    public boolean isVoIpCtrl() {
+        return voIpCtrl;
+    }
+
+    public void setVoIpCtrl(boolean voIpCtrl) {
+        this.voIpCtrl = voIpCtrl;
+    }
+
+    public boolean isCloudCtrl() {
+        return cloudCtrl;
+    }
+
+    public void setCloudCtrl(boolean cloudCtrl) {
+        this.cloudCtrl = cloudCtrl;
     }
 }

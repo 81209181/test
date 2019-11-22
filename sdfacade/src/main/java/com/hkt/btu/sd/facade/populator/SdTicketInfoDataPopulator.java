@@ -62,4 +62,10 @@ public class SdTicketInfoDataPopulator extends AbstractDataPopulator<SdTicketInf
         });
 
     }
+
+    public void populateFromItsmProfileData(ItsmProfileData itsmProfileData, SdTicketInfoData ticketInfoData) {
+        ticketInfoData.setCustName(itsmProfileData.getCustName());
+        ticketInfoData.setCustCode(itsmProfileData.getCustCode());
+        ticketInfoData.setCustStatus(itsmProfileData.getStatus());
+    }
 }

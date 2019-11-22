@@ -93,40 +93,40 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         ticketInfoDataPopulator.populateFromSdTicketMasData(ticketMasData, ticketInfoData);
 
         // get customer info from BES
-        BesCustomerData besCustomerData = besApiFacade.queryCustomerByCustomerCode(ticketMasData.getCustCode());
-        ticketInfoDataPopulator.populateFromBesCustomerData(besCustomerData, ticketInfoData);
+        if (StringUtils.isNotBlank(ticketMasData.getCustCode())) {
+            BesCustomerData besCustomerData = besApiFacade.queryCustomerByCustomerCode(ticketMasData.getCustCode());
+            ticketInfoDataPopulator.populateFromBesCustomerData(besCustomerData, ticketInfoData);
+        } else {
+            if (ServiceSearchEnum.TENANT_ID.getKey().equalsIgnoreCase(ticketMasData.getSearchKey())) {
+                ItsmProfileData itsmProfileData = itsmApiFacade.searchProfileByServiceNo(ticketMasData.getSearchValue()).getList().get(0);
+                ticketInfoDataPopulator.populateFromItsmProfileData(itsmProfileData,ticketInfoData);
+            }
+        }
 
         return ticketInfoData;
     }
 
     @Override
-    public List<SdTicketServiceInfoData> getServiceInfoInApi(List<SdTicketServiceData> serviceInfo, SdTicketMasData ticketMasData) {
-        return serviceInfo.stream().map(ticketServiceData -> {
-            SdTicketServiceInfoData ticketServiceInfoData = new SdTicketServiceInfoData();
-            List<RequestCreateSearchResultData> resultsDataList = null;
-            String searchKey = ticketMasData.getSearchKey();
-            String searchValue = ticketMasData.getSearchValue();
-            if (ServiceSearchEnum.BSN.getKey().equals(searchKey)) {
-                resultsDataList = findData4Bsn(searchValue).getList();
-            } else if (ServiceSearchEnum.DN.getKey().equals(searchKey)){
-                resultsDataList = findData4Dn(searchValue).getList();
-            } else if (ServiceSearchEnum.TENANT_ID.getKey().equals(searchKey)) {
-                resultsDataList = findData4Tenant(searchValue).getList();
-            }
-
-
-            if (CollectionUtils.isNotEmpty(resultsDataList)) {
-                resultsDataList.forEach(requestCreateSearchResultData -> {
-                    if (requestCreateSearchResultData != null) {
-                        if (requestCreateSearchResultData.getServiceNo().equals(ticketServiceData.getServiceCode())) {
-                            ticketServiceInfoDataPopulator.populateFormRequestCreateSearchResultData(requestCreateSearchResultData,ticketServiceInfoData);
-                        }
-                    }
-                });
-            }
-            ticketServiceInfoDataPopulator.populateFromSdTicketServiceData(ticketServiceData, ticketServiceInfoData);
-            return ticketServiceInfoData;
-        }).collect(Collectors.toList());
+    public SdTicketServiceInfoData getServiceInfoInApi(String serviceNumber) {
+        SdTicketServiceInfoData serviceInfoData = new SdTicketServiceInfoData();
+        RequestCreateSearchResultData resultData = new RequestCreateSearchResultData();
+        List<ItsmProfileData> itsmProfileDataList = itsmApiFacade.searchProfileByServiceNo(serviceNumber).getList();
+        if (CollectionUtils.isNotEmpty(itsmProfileDataList)) {
+            ItsmProfileData itsmProfileData = itsmProfileDataList.get(0);
+            requestCreateSearchResultDataPopulator.populateFromItsmProfileData(itsmProfileData,resultData);
+        }
+        BesSubscriberInfoResourceData besSubscriberInfoResourceData = besApiFacade.querySubscriberByServiceNumber(serviceNumber).getSubscriberInfos().get(0);
+        BesCustomerData besCustomerData = besApiFacade.queryCustomerByServiceCode(serviceNumber);
+        requestCreateSearchResultDataPopulator.populateFromBesSubscriberInfoResourceData(besSubscriberInfoResourceData, resultData);
+        requestCreateSearchResultDataPopulator.populateFromBesCustomerDataData(besCustomerData, resultData);
+        String bnBsn = norarsApiFacade.getBsnByDn(serviceNumber);
+        if (StringUtils.isNotEmpty(bnBsn)) {
+            resultData.setRelatedBsn(bnBsn);
+            fillBnData(bnBsn, resultData);
+        }
+        fillPendingOrderData(serviceNumber, resultData);
+        ticketServiceInfoDataPopulator.populateFormRequestCreateSearchResultData(resultData,serviceInfoData);
+        return serviceInfoData;
     }
 
     @Override
