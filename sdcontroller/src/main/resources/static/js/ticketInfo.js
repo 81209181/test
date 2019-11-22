@@ -33,11 +33,9 @@ $().ready(function(){
             if (res.length > 0) {
                 $.each(res,function(index,j){
                     let service =$('#service');
+                    getOtherServiceData(j.serviceCode);
                     $.each(j,function(key,value){
                         service.find('input[name='+key+']').val(value);
-                        if (key === 'couldUrl'){
-                            $('.eCloudBtn').data('url',value);
-                        }
                         if (key === 'faultsList') {
                             if (value == '') {
                                 $('#btnMakeAppointment').attr('disabled', true);
@@ -61,7 +59,7 @@ $().ready(function(){
                         if (key === 'voIpCtrl'){
                             voIpButtonCtrl(value);
                         }
-                        if (key === 'eCloudCtrl'){
+                        if (key === 'cloudCtrl'){
                             eCloudButtonCtrl(value);
                         }
                     })
@@ -628,4 +626,12 @@ function voIpButtonCtrl(val){
         bbBtn.attr('disabled', false);
         voIpBtn.attr('disabled', false);
     }
+}
+function getOtherServiceData(code){
+    $.get('/ticket/getOtherServiceData/'+code,function(res){
+        eCloudBtn.data('url',res.couldUrl);
+        $.each(res,function(key,val){
+            $('#service').find('input[name='+key+']').val(val);
+        })
+    })
 }
