@@ -143,14 +143,17 @@ $().ready(function(){
     })
 
     //related table
-
+    var relatedTicketTable;
     $("#relatedTicketTable").hide();
     $('.panel').find('.panel-body').slideUp();
     $('.panel').find('.panel-heading').find('span').addClass('panel-collapsed');
 
     $(document).on('click', '.panel-heading span.clickable', function(e){
-        $('#relatedTicketTable').dataTable().fnClearTable(false);
-        $('#relatedTicketTable').dataTable().fnDestroy();
+        if ($('#relatedTicketTable').hasClass('dataTable')) {
+            relatedTicketTable = $('#relatedTicketTable').dataTable();
+            relatedTicketTable.fnClearTable();
+            relatedTicketTable.fnDestroy();
+        }
         var $this = $(this);
         if(!$this.hasClass('panel-collapsed')) {
             $this.parents('.panel').find('.panel-body').slideUp();
@@ -166,7 +169,7 @@ $().ready(function(){
                 $('#relatedTicketTable').hide();
             } else {
                 $('#relatedTicketTable').show();
-                $('#relatedTicketTable').DataTable({
+                relatedTicketTable = $('#relatedTicketTable').DataTable({
                     processing: true,
                     serverSide: true,
                     ordering: false,
