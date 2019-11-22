@@ -34,34 +34,21 @@ $().ready(function(){
                 $.each(res,function(index,j){
                     let service =$('#service');
                     getOtherServiceData(j.serviceCode);
+                    bnButtonCtrl(j.bnCtrl);
+                    voIpButtonCtrl(j.voIpCtrl);
+                    eCloudButtonCtrl(j.cloudCtrl);
+                    ticketDetId = j.ticketDetId;
+                    serviceType = j.serviceType;
+                    let faultsList = j.faultsList;
+                    if(faultsList == '' ){
+                        $('#btnMakeAppointment').attr('disabled', true);
+                    }
+                    for (item of faultsList) {
+                        $('#symptomList').find('option[value=' + item.symptomCode + ']').attr('selected', 'selected');
+                        symptomCode = item.symptomCode;
+                    }
                     $.each(j,function(key,value){
                         service.find('input[name='+key+']').val(value);
-                        if (key === 'faultsList') {
-                            if (value == '') {
-                                $('#btnMakeAppointment').attr('disabled', true);
-                            }
-                            for (item of value) {
-                                $('#symptomList').find('option[value=' + item.symptomCode + ']').attr('selected', 'selected');
-                                symptomCode = item.symptomCode;
-                            }
-
-                        }
-                        if (key === 'ticketDetId') {
-                            ticketDetId = value;
-                        }
-                        if (key === 'serviceType') {
-                            serviceType = value
-                        }
-                        // button control
-                        if (key === 'bnCtrl') {
-                            bnButtonCtrl(value);
-                        }
-                        if (key === 'voIpCtrl'){
-                            voIpButtonCtrl(value);
-                        }
-                        if (key === 'cloudCtrl'){
-                            eCloudButtonCtrl(value);
-                        }
                     })
                 })
                 $('.selectpicker').selectpicker('refresh');
