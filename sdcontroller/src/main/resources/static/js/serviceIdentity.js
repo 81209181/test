@@ -224,7 +224,15 @@ $().ready(function(){
             }
         }
     })
-})
+});
+
+$(document).ready(function () {
+    $.get('/public/keepSession',function(res){
+        if(res.success){
+            // console.log("User login");
+        }
+    });
+});
 
 function createTicket(){
     $.post('/ticket/service-identity/createQueryTicket',$('form').serialize(),function(res){

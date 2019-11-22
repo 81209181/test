@@ -17,7 +17,7 @@ $(document).ready(function () {
     $('#session-expire-warning-modal').on('show.bs.modal',function(){
         time2reload = setTimeout(function(){
             location.reload();
-        },30000);
+        },35000);
         countdown = setInterval(function(){
             $('mark').text($('mark').text() - 1);
         },1000)
