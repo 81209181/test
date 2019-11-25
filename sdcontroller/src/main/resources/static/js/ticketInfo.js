@@ -29,7 +29,7 @@ $().ready(function(){
             if (res.length > 0) {
                 $.each(res,function(index,j){
                     let service =$('#service');
-                    getOtherServiceData(j.serviceCode);
+                    getExternalServiceData(j.serviceCode);
                     bnButtonCtrl(j.bnCtrl);
                     voIpButtonCtrl(j.voIpCtrl);
                     eCloudButtonCtrl(j.cloudCtrl);
@@ -604,8 +604,8 @@ function voIpButtonCtrl(val){
         voIpBtn.attr('disabled', false);
     }
 }
-function getOtherServiceData(code){
-    $.get('/ticket/getOtherServiceData/'+code,function(res){
+function getExternalServiceData(code){
+    $.get('/ticket/get-external-service-data/'+code,function(res){
         eCloudBtn.data('url',res.couldUrl);
         $.each(res,function(key,val){
             $('#service').find('input[name='+key+']').val(val);
