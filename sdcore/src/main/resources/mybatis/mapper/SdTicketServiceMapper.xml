@@ -24,6 +24,14 @@
         </collection>
     </resultMap>
 
+    <resultMap id="MakeApptEntity" type="com.hkt.btu.sd.core.dao.entity.SdMakeApptEntitiy">
+        <id column="TICKET_DET_ID" property="ticketDetId"/>
+        <result column="TICKET_MAS_ID" property="ticketMasId"/>
+        <result column="SERVICE_TYPE_CODE" property="serviceType"/>
+        <result column="SERVICE_ID" property="bsn"/>
+        <result column="SYMPTOM_CODE" property="symptomCode"/>
+    </resultMap>
+
     <select id="getTicketServiceInfoByTicketMasId" resultMap="TicketServiceEntity">
         select td.TICKET_MAS_ID,
                td.TICKET_DET_ID,
@@ -100,5 +108,15 @@
         left join SYMPTOM s on td.SYMPTOM_CODE =s.SYMPTOM_CODE
         left join SYMPTOM_GROUP sg on sg.symptom_group_code =s.symptom_group_code
         where td.SUBS_ID = #{subscriberId}
+    </select>
+
+    <select id="getTicketServiceByTicketDetId" resultMap="MakeApptEntity">
+        select SERVICE_ID,
+               SYMPTOM_CODE,
+               TICKET_MAS_ID,
+               TICKET_DET_ID,
+               SERVICE_TYPE_CODE
+        from   TICKET_DET
+        where  TICKET_DET_ID = #{ticketDetId}
     </select>
 </mapper>

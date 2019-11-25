@@ -405,4 +405,26 @@ public class SdTicketServiceImpl implements SdTicketService {
         teamSummaryBean.setSummaryData(statusSummaryBeans);
         return teamSummaryBean;
     }
+
+    @Override
+    public SdMakeApptBean getTicketServiceByDetId(Integer ticketDetId) {
+        if (ticketDetId <= 0 ) {
+            return null;
+        }
+
+        SdMakeApptEntitiy entity = ticketServiceMapper.getTicketServiceByTicketDetId(ticketDetId);
+
+        if (entity == null) {
+            return null;
+        }
+
+        SdMakeApptBean bean = new SdMakeApptBean();
+        bean.setBsn(entity.getBsn());
+        bean.setServiceType(entity.getServiceType());
+        bean.setSymptomCode(entity.getSymptomCode());
+        bean.setTicketMasId(entity.getTicketMasId());
+        bean.setTicketDetId(entity.getTicketDetId());
+
+        return bean;
+    }
 }
