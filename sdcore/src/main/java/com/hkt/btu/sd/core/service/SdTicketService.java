@@ -68,4 +68,6 @@ public interface SdTicketService {
     List<TicketTypeEnum> getTicketTypeList();
 
     TeamSummaryBean getTeamSummary();
+
+    SdMakeApptBean getTicketServiceByDetId(Integer ticketDetId);
 }
