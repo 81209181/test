@@ -3,8 +3,6 @@ package com.hkt.btu.sd.facade.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.facade.data.PageData;
-import com.hkt.btu.sd.core.dao.entity.SdTicketServiceEntity;
-import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
 import com.hkt.btu.sd.core.exception.ApiException;
 import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
 import com.hkt.btu.sd.core.service.SdTicketService;
