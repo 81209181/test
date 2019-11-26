@@ -254,12 +254,23 @@ public class SdTicketServiceImpl implements SdTicketService {
     }
 
     @Override
-    public List<SdTicketServiceBean> findServiceBySubscriberId(String subscriberId) {
-        return ticketServiceMapper.getTicketServiceBySubscriberId(subscriberId).stream().map(sdTicketServiceEntity -> {
+    public List<SdTicketServiceBean> findServiceBySubscriberId(String subscriberId, Pageable pageable) {
+        Long offset = null;
+        Integer pageSize = null;
+        if (!Objects.isNull(pageable)) {
+            offset = pageable.getOffset();
+            pageSize = pageable.getPageSize();
+        }
+        return ticketServiceMapper.getTicketServiceBySubscriberId(subscriberId, offset, pageSize).stream().map(sdTicketServiceEntity -> {
             SdTicketServiceBean bean = new SdTicketServiceBean();
             ticketServiceBeanPopulator.populate(sdTicketServiceEntity, bean);
             return bean;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public long countServiceBySubscriberId(String subscriberId) {
+        return ticketServiceMapper.countServiceBySubscriberId(subscriberId);
     }
 
     @Override

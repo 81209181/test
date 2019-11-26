@@ -50,7 +50,7 @@ public interface SdTicketService {
 
     List<SdSymptomBean> getSymptomList(Integer ticketMasId);
 
-    List<SdTicketServiceBean> findServiceBySubscriberId(String subscriberId);
+    List<SdTicketServiceBean> findServiceBySubscriberId(String subscriberId, Pageable pageable);
 
     void updateTicketStatus(int ticketMasId, String status, String userId);
 
@@ -68,4 +68,6 @@ public interface SdTicketService {
     List<TicketTypeEnum> getTicketTypeList();
 
     TeamSummaryBean getTeamSummary();
+
+    long countServiceBySubscriberId(String subscriberId);
 }

@@ -365,14 +365,14 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public BesSubFaultData getFaultInfo(String subscriberId) {
+    public BesSubFaultData getFaultInfo(String subscriberId, Pageable pageable) {
         if (StringUtils.isEmpty(subscriberId)) {
             return BesSubFaultData.MISSING_PARAM;
         }
-
+        BesSubFaultData besSubFaultData = new BesSubFaultData();
         try {
             // get ticket det list
-            List<SdTicketServiceBean> sdTicketServiceBeanList = ticketService.findServiceBySubscriberId(subscriberId);
+            List<SdTicketServiceBean> sdTicketServiceBeanList = ticketService.findServiceBySubscriberId(subscriberId,pageable);
             if (CollectionUtils.isEmpty(sdTicketServiceBeanList)) {
                 return BesSubFaultData.NOT_FOUND;
             }
@@ -383,17 +383,19 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                 SdTicketData sdTicketData = getTicketInfo(sdTicketServiceBean.getTicketMasId());
                 sdTicketDataList.add(sdTicketData);
             }
-
-            // transform SdTicketData to BesFaultInfoData
             List<BesFaultInfoData> besFaultInfoDataList = new ArrayList<>();
             for (SdTicketData sdTicketData : sdTicketDataList) {
                 BesFaultInfoData besFaultInfoData = new BesFaultInfoData();
                 faultInfoDataPopulator.populate(sdTicketData, besFaultInfoData);
                 besFaultInfoDataList.add(besFaultInfoData);
             }
-
-            BesSubFaultData besSubFaultData = new BesSubFaultData();
-            besSubFaultData.setList(besFaultInfoDataList);
+            // transform SdTicketData to BesFaultInfoData
+            if (Objects.isNull(pageable)) {
+                besSubFaultData.setList(besFaultInfoDataList);
+            } else {
+                long count = ticketService.countServiceBySubscriberId(subscriberId);
+                besSubFaultData.setPagedList(new PageData<>(besFaultInfoDataList,pageable,count));
+            }
             return besSubFaultData;
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);

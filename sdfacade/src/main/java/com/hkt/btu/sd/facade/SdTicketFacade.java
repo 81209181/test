@@ -39,7 +39,7 @@ public interface SdTicketFacade {
 
     List<SdSymptomData> getSymptom(Integer ticketMasId);
 
-    BesSubFaultData getFaultInfo(String subscriberId);
+    BesSubFaultData getFaultInfo(String subscriberId, Pageable pageable);
 
     SdTicketData getTicketInfo(Integer ticketMasId);
 

@@ -100,5 +100,15 @@
         left join SYMPTOM s on td.SYMPTOM_CODE =s.SYMPTOM_CODE
         left join SYMPTOM_GROUP sg on sg.symptom_group_code =s.symptom_group_code
         where td.SUBS_ID = #{subscriberId}
+        <if test="offset !=null">
+            OFFSET #{offset} ROWS FETCH NEXT #{pageSize} ROWS ONLY
+        </if>
+    </select>
+
+    <select id="countServiceBySubscriberId" resultType="long">
+        select count(1) from TICKET_DET td
+        left join SYMPTOM s on td.SYMPTOM_CODE =s.SYMPTOM_CODE
+        left join SYMPTOM_GROUP sg on sg.symptom_group_code =s.symptom_group_code
+        where td.SUBS_ID = #{subscriberId}
     </select>
 </mapper>

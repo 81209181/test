@@ -238,7 +238,7 @@ public class TicketController {
 
     @GetMapping("/ajax-get-fault")
     public ResponseEntity<?> getFaultInfo(@RequestParam String subscriberId) {
-        return ResponseEntity.ok(ticketFacade.getFaultInfo(subscriberId));
+        return ResponseEntity.ok(ticketFacade.getFaultInfo(subscriberId,null));
     }
 
     @PostMapping("submit")
