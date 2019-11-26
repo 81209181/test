@@ -85,7 +85,7 @@
         </where>
     </sql>
 
-    <select id="searchSymptomList" resultMap="SymptomEntity">
+    <select id="searchSymptomList" resultMap="SymptomEntity" parameterType="com.hkt.btu.sd.core.dao.entity.SdSymptomEntity">
         select
         sy.SYMPTOM_CODE,
         sy.SYMPTOM_DESCRIPTION,
@@ -96,7 +96,31 @@
         sy.MODIFYDATE,
         sy.MODIFYBY
         <include refid="searchSymptomSql"/>
-        order by sy.SYMPTOM_CODE
+        order by
+        <foreach item="sort" collection="sortList" separator="," index="index">
+            <if test="sortList[index].column != null">
+                <choose>
+                <when test="sortList[index].column == 'symptomCode'.toString() ">
+                    SYMPTOM_CODE ${sort.dir}
+                </when>
+                <when test="sortList[index].column == 'symptomDescription'.toString()">
+                    SYMPTOM_DESCRIPTION ${sort.dir}
+                </when>
+                <when test="sortList[index].column == 'symptomGroup'.toString()">
+                    SYMPTOM_GROUP_CODE ${sort.dir}
+                </when>
+                <when test="sortList[index].column == 'modifydate'.toString()">
+                    MODIFYDATE ${sort.dir}
+                </when>
+                <when test="sortList[index].column == 'modifyby'.toString()">
+                    MODIFYBY ${sort.dir}
+                </when>
+                <otherwise>
+                    SYMPTOM_CODE
+                </otherwise>
+                </choose>
+            </if>
+        </foreach>
         OFFSET #{offset} ROWS FETCH NEXT #{pageSize} ROWS ONLY
     </select>
 

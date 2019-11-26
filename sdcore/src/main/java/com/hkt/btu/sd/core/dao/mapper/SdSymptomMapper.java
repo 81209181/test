@@ -1,6 +1,6 @@
 package com.hkt.btu.sd.core.dao.mapper;
 
-import com.hkt.btu.sd.core.dao.entity.SdServiceTypeEntity;
+import com.hkt.btu.sd.core.dao.entity.SdSortEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomMappingEntity;
 import org.apache.ibatis.annotations.Param;
@@ -23,7 +23,8 @@ public interface SdSymptomMapper {
     List<SdSymptomEntity> searchSymptomList(@Param("offset") long offset,
                                             @Param("pageSize") int pageSize,
                                             @Param("symptomGroupCode") String symptomGroupCode,
-                                            @Param("symptomDescription") String symptomDescription);
+                                            @Param("symptomDescription") String symptomDescription,
+                                            @Param("sortList") List<SdSortEntity> sortList);
 
     Integer searchSymptomCount(@Param("symptomGroupCode") String symptomGroupCode,
                                @Param("symptomDescription") String symptomDescription);

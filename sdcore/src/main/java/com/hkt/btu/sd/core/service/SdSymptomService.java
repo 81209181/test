@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.core.service;
 
+import com.hkt.btu.sd.core.service.bean.SdSortBean;
 import com.hkt.btu.sd.core.service.bean.SdSymptomBean;
 import com.hkt.btu.sd.core.service.bean.SdSymptomMappingBean;
 import org.springframework.data.domain.Page;
@@ -13,7 +14,8 @@ public interface SdSymptomService {
 
     void createSymptom(String symptomCode,String symptomGroupCode,String symptomDescription);
 
-    Page<SdSymptomBean> searchSymptomList(Pageable pageable, String symptomGroupCode, String symptomDescription);
+    Page<SdSymptomBean> searchSymptomList(Pageable pageable, String symptomGroupCode, String symptomDescription,
+                                          List<SdSortBean> sortList);
 
     SdSymptomBean getSymptomBySymptomCode(String symptomCode);
 
