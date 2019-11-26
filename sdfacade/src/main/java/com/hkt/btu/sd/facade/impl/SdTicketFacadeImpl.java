@@ -372,7 +372,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         }
         BesSubFaultData besSubFaultData = new BesSubFaultData();
         try {
-            // get ticket det list
+            // get ticket paged det list
             List<SdTicketServiceBean> sdTicketServiceBeanList = ticketService.findServiceBySubscriberId(subscriberId, pageable);
             if (CollectionUtils.isEmpty(sdTicketServiceBeanList)) {
                 return BesSubFaultData.NOT_FOUND;
