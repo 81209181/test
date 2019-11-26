@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.controller;
 
 import com.hkt.btu.sd.facade.SdTicketFacade;
+import com.hkt.btu.sd.facade.data.BesSubFaultData;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,8 @@ public class BesController {
 
     @GetMapping("ajax-get-fault")
     public ResponseEntity<?> getFaultInfo(@RequestParam String subscriberId) {
-        return ResponseEntity.ok(ticketFacade.getFaultInfo(subscriberId, null));
+        BesSubFaultData besSubFaultData = ticketFacade.getFaultInfo(subscriberId, null);
+        return ResponseEntity.ok(besSubFaultData);
     }
 
     @GetMapping("ajax-get-paged")
@@ -30,6 +32,7 @@ public class BesController {
                                            @RequestParam String subscriberId) {
         int page = start / length;
         Pageable pageable = PageRequest.of(page, length);
-        return ResponseEntity.ok(ticketFacade.getFaultInfo(subscriberId,pageable));
+        BesSubFaultData besSubFaultData = ticketFacade.getFaultInfo(subscriberId, pageable);
+        return ResponseEntity.ok(besSubFaultData);
     }
 }
