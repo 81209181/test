@@ -25,7 +25,7 @@ public class BesController {
         return ResponseEntity.ok(besSubFaultData);
     }
 
-    @GetMapping("ajax-get-paged")
+    @GetMapping("ajax-get-paged-fault")
     public ResponseEntity<?> getFaultPaged(@RequestParam(defaultValue = "0") int draw,
                                            @RequestParam(defaultValue = "0") int start,
                                            @RequestParam(defaultValue = "10") int length,
