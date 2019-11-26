@@ -130,7 +130,7 @@ public class TicketController {
     public ResponseEntity<?> updateContactInfo(@RequestBody List<SdTicketContactData> contactList) {
         try {
             contactList.stream().map(SdTicketContactData::getTicketMasId).findFirst().ifPresent(ticketMasId -> {
-                ticketFacade.isAllow(String.valueOf(ticketMasId), SdTicketMasData.ACTION_TYPE.COMPLETE);
+                ticketFacade.isAllow(ticketMasId, SdTicketMasData.ACTION_TYPE.COMPLETE);
             });
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -209,7 +209,7 @@ public class TicketController {
     public ResponseEntity<?> updateServiceInfo(@RequestBody List<RequestTicketServiceData> ticketServiceList) {
         try {
             ticketServiceList.stream().map(RequestTicketServiceData::getTicketMasId).findFirst().ifPresent(ticketMasId -> {
-                ticketFacade.isAllow(String.valueOf(ticketMasId), StringUtils.EMPTY);
+                ticketFacade.isAllow(ticketMasId, StringUtils.EMPTY);
             });
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -235,14 +235,14 @@ public class TicketController {
 
     @GetMapping("/ajax-get-fault")
     public ResponseEntity<?> getFaultInfo(@RequestParam String subscriberId) {
-        return ResponseEntity.ok(ticketFacade.getFaultInfo(subscriberId));
+        return ResponseEntity.ok(ticketFacade.getFaultInfo(subscriberId,null));
     }
 
     @PostMapping("submit")
-    public ResponseEntity<?> submit(SdTicketMasData ticketMasData) {
+    public ResponseEntity<?> submit(int ticketMasId) {
         try {
-            ticketFacade.isAllow(String.valueOf(ticketMasData.getTicketMasId()), StringUtils.EMPTY);
-            ticketFacade.createJob4Wfm(ticketMasData.getTicketMasId());
+            ticketFacade.isAllow(ticketMasId, StringUtils.EMPTY);
+            ticketFacade.createJob4Wfm(ticketMasId);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -258,7 +258,7 @@ public class TicketController {
     @PostMapping("/post-create-ticket-remarks")
     public ResponseEntity<?> createTicketRemarks(@RequestParam Integer ticketMasId, @RequestParam String remarks) {
         try {
-            ticketFacade.isAllow(String.valueOf(ticketMasId), SdTicketMasData.ACTION_TYPE.COMPLETE);
+            ticketFacade.isAllow(ticketMasId, SdTicketMasData.ACTION_TYPE.COMPLETE);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

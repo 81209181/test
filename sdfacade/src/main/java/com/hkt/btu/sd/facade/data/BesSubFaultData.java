@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.facade.data;
 
 import com.hkt.btu.common.facade.data.DataInterface;
+import com.hkt.btu.common.facade.data.PageData;
 
 import java.util.List;
 
@@ -23,6 +24,16 @@ public class BesSubFaultData implements DataInterface {
     }
 
     private List<BesFaultInfoData> list;
+
+    private PageData<BesFaultInfoData> pagedList;
+
+    public PageData<BesFaultInfoData> getPagedList() {
+        return pagedList;
+    }
+
+    public void setPagedList(PageData<BesFaultInfoData> pagedList) {
+        this.pagedList = pagedList;
+    }
 
     public String getMsgCode() {
         return msgCode;

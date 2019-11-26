@@ -6,7 +6,6 @@ import com.hkt.btu.sd.core.dao.entity.SdTicketServiceEntity;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -28,7 +27,9 @@ public interface SdTicketServiceMapper {
 
     List<SdSymptomEntity> getSymptomListByTicketMasId(Integer ticketMasId);
 
-    List<SdTicketServiceEntity> getTicketServiceBySubscriberId(@Param("subscriberId") String subscriberId);
+    List<SdTicketServiceEntity> getTicketServiceBySubscriberId(@Param("subscriberId") String subscriberId,@Param("offset") Long offset, @Param("pageSize") Integer pageSize);
+
+    long countServiceBySubscriberId(@Param("subscriberId")String subscriberId);
 
     SdMakeApptEntitiy getTicketServiceByTicketDetId(@Param("ticketDetId") Integer ticketDetId);
 }

@@ -40,7 +40,7 @@ public interface SdTicketFacade {
 
     List<SdSymptomData> getSymptom(Integer ticketMasId);
 
-    BesSubFaultData getFaultInfo(String subscriberId);
+    BesSubFaultData getFaultInfo(String subscriberId, Pageable pageable);
 
     SdTicketData getTicketInfo(Integer ticketMasId);
 
@@ -49,7 +49,7 @@ public interface SdTicketFacade {
     String closeTicketByApi(int ticketMasId, String reasonType, String reasonContent, String closeby);
     String closeTicket(int ticketMasId, String reasonType, String reasonContent, String contactName, String contactNumber);
 
-    void isAllow(String ticketMasId,String action);
+    void isAllow(int ticketMasId,String action);
 
     boolean increaseCallInCount(Integer ticketMasId);
 

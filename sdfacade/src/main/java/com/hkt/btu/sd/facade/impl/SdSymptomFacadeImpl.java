@@ -4,6 +4,7 @@ import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
 import com.hkt.btu.sd.core.exception.InsufficientAuthorityException;
 import com.hkt.btu.sd.core.service.SdSymptomService;
+import com.hkt.btu.sd.core.service.bean.SdSortBean;
 import com.hkt.btu.sd.core.service.bean.SdSymptomBean;
 import com.hkt.btu.sd.core.service.bean.SdSymptomMappingBean;
 import com.hkt.btu.sd.facade.SdServiceTypeFacade;
@@ -11,15 +12,17 @@ import com.hkt.btu.sd.facade.SdSymptomFacade;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.populator.SdSymptomDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdSymptomMappingDataPopulator;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,13 +68,16 @@ public class SdSymptomFacadeImpl implements SdSymptomFacade {
     }
 
     @Override
-    public PageData<SdSymptomData> searchSymptomList(Pageable pageable, String symptomGroupCode, String symptomDescription) {
+    public PageData<SdSymptomData> searchSymptomList(Pageable pageable, String symptomGroupCode, String symptomDescription,
+                                                     String strDirList, String strSortList) {
         Page<SdSymptomBean> pageBean;
         try {
+            List<SdSortBean> sortList = getSortList(strDirList, strSortList);
+            LOG.info("{}", sortList.toString());
             symptomGroupCode = StringUtils.isEmpty(symptomGroupCode) ? null : symptomGroupCode;
             symptomDescription = StringUtils.isEmpty(symptomDescription) ? null : symptomDescription;
 
-            pageBean = sdSymptomService.searchSymptomList(pageable, symptomGroupCode, symptomDescription);
+            pageBean = sdSymptomService.searchSymptomList(pageable, symptomGroupCode, symptomDescription, sortList);
         } catch (AuthorityNotFoundException e) {
             return new PageData<>(e.getMessage());
         }
@@ -168,5 +174,24 @@ public class SdSymptomFacadeImpl implements SdSymptomFacade {
             }
         }
         return dataList;
+    }
+
+    private List<SdSortBean> getSortList(String strDirList, String strSortList) {
+        if (StringUtils.isEmpty(strDirList) || StringUtils.isEmpty(strSortList)) {
+            return null;
+        }
+        List <SdSortBean> sortDataList = new ArrayList<>();
+
+        List<String> dirList = Arrays.asList(strDirList.split(","));
+        List<String> sortList = Arrays.asList(strSortList.split(","));
+
+        for (int i = 0; i < dirList.size(); i++) {
+            SdSortBean sortData = new SdSortBean();
+            sortData.setColumn(sortList.get(i));
+            sortData.setDir(dirList.get(i));
+            sortDataList.add(sortData);
+        }
+
+        return sortDataList;
     }
 }
