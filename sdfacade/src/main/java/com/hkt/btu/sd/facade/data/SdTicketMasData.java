@@ -45,6 +45,8 @@ public class SdTicketMasData implements DataInterface {
 
     private String owningRole;
 
+    private String serviceNumber;
+
     public String getOwningRole() {
         return owningRole;
     }
@@ -187,5 +189,13 @@ public class SdTicketMasData implements DataInterface {
 
     public void setServiceType(String serviceType) {
         this.serviceType = serviceType;
+    }
+
+    public String getServiceNumber() {
+        return serviceNumber;
+    }
+
+    public void setServiceNumber(String serviceNumber) {
+        this.serviceNumber = serviceNumber;
     }
 }

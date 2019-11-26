@@ -37,6 +37,8 @@ public class SdTicketMasBean extends BaseBean {
 
     private String owningRole;
 
+    private String serviceNumber;
+
     public LocalDateTime getAppointmentDate() {
         return appointmentDate;
     }
@@ -131,5 +133,13 @@ public class SdTicketMasBean extends BaseBean {
 
     public void setOwningRole(String owningRole) {
         this.owningRole = owningRole;
+    }
+
+    public String getServiceNumber() {
+        return serviceNumber;
+    }
+
+    public void setServiceNumber(String serviceNumber) {
+        this.serviceNumber = serviceNumber;
     }
 }
