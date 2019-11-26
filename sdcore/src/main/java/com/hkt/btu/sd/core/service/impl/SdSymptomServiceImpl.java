@@ -1,11 +1,13 @@
 package com.hkt.btu.sd.core.service.impl;
 
 import com.hkt.btu.sd.core.dao.entity.SdServiceTypeEntity;
+import com.hkt.btu.sd.core.dao.entity.SdSortEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomMappingEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdSymptomMapper;
 import com.hkt.btu.sd.core.service.SdSymptomService;
 import com.hkt.btu.sd.core.service.SdUserService;
+import com.hkt.btu.sd.core.service.bean.SdSortBean;
 import com.hkt.btu.sd.core.service.bean.SdSymptomBean;
 import com.hkt.btu.sd.core.service.bean.SdSymptomMappingBean;
 import com.hkt.btu.sd.core.service.populator.SdSymptomBeanPopulator;
@@ -22,6 +24,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SdSymptomServiceImpl implements SdSymptomService {
     private static final Logger LOG = LogManager.getLogger(SdSymptomServiceImpl.class);
@@ -51,11 +54,18 @@ public class SdSymptomServiceImpl implements SdSymptomService {
     }
 
     @Override
-    public Page<SdSymptomBean> searchSymptomList(Pageable pageable, String symptomGroupCode, String symptomDescription) {
+    public Page<SdSymptomBean> searchSymptomList(Pageable pageable, String symptomGroupCode, String symptomDescription, List<SdSortBean> sortList) {
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
 
-        List<SdSymptomEntity> entityList = sdSymptomMapper.searchSymptomList(offset, pageSize, symptomGroupCode, symptomDescription);
+        List<SdSortEntity> sortEntityList = sortList.stream().map(bean -> {
+            SdSortEntity entity = new SdSortEntity();
+            entity.setDir(bean.getDir());
+            entity.setColumn(bean.getColumn());
+            return entity;
+        }).collect(Collectors.toList());
+
+        List<SdSymptomEntity> entityList = sdSymptomMapper.searchSymptomList(offset, pageSize, symptomGroupCode, symptomDescription, sortEntityList);
         Integer totalCount = sdSymptomMapper.searchSymptomCount(symptomGroupCode, symptomDescription);
 
         return new PageImpl<>(buildSymptomBeanList(entityList), pageable, totalCount);

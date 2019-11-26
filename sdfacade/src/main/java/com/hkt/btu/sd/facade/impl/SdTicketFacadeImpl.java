@@ -372,8 +372,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         }
         BesSubFaultData besSubFaultData = new BesSubFaultData();
         try {
-            // get ticket det list
-            List<SdTicketServiceBean> sdTicketServiceBeanList = ticketService.findServiceBySubscriberId(subscriberId,pageable);
+            // get ticket paged det list
+            List<SdTicketServiceBean> sdTicketServiceBeanList = ticketService.findServiceBySubscriberId(subscriberId, pageable);
             if (CollectionUtils.isEmpty(sdTicketServiceBeanList)) {
                 return BesSubFaultData.NOT_FOUND;
             }
@@ -392,11 +392,11 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                 faultInfoDataPopulator.populate(sdTicketData, besFaultInfoData);
                 besFaultInfoDataList.add(besFaultInfoData);
             }
-            if (Objects.isNull(pageable)) {
+            if (pageable==null) {
                 besSubFaultData.setList(besFaultInfoDataList);
             } else {
                 long count = ticketService.countServiceBySubscriberId(subscriberId);
-                besSubFaultData.setPagedList(new PageData<>(besFaultInfoDataList,pageable,count));
+                besSubFaultData.setPagedList(new PageData<>(besFaultInfoDataList, pageable, count));
             }
             return besSubFaultData;
         } catch (Exception e) {

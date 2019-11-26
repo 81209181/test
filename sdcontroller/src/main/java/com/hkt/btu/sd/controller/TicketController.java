@@ -232,7 +232,7 @@ public class TicketController {
         }
     }
 
-
+    @Deprecated // moved to BesController
     @GetMapping("/ajax-get-fault")
     public ResponseEntity<?> getFaultInfo(@RequestParam String subscriberId) {
         return ResponseEntity.ok(ticketFacade.getFaultInfo(subscriberId,null));
@@ -393,8 +393,8 @@ public class TicketController {
         return "ticket/teamSummary";
     }
 
-    @GetMapping("getOtherServiceData/{serviceCode}")
-    public ResponseEntity<?> getOtherServiceData(@PathVariable String serviceCode) {
+    @GetMapping("get-external-service-data/{serviceCode}")
+    public ResponseEntity<?> getExternalServiceData(@PathVariable String serviceCode) {
         try {
             return ResponseEntity.ok(requestCreateFacade.getServiceInfoInApi(serviceCode));
         } catch (Exception e) {

@@ -2,7 +2,6 @@ $(document).ready(function() {
     $('#searchSymptomTable').DataTable({
         processing: true,
         serverSide: true,
-        ordering: false,
         searching: false,
         ajax: {
             type: "GET",
@@ -10,6 +9,9 @@ $(document).ready(function() {
             url: "/symptom/ajax-search-symptom",
             dataSrc: 'data',
             data: function(d){
+                let {dirList, sortList} = getSortData(d);
+                d.dirList = dirList;
+                d.sortList = sortList;
                 // search input
                 d.symptomGroupCode = $("#symptomGroupCode").val();
                 d.symptomDescription = $("#symptomDescription").val();
@@ -23,11 +25,11 @@ $(document).ready(function() {
             }
         },
         columns: [
-            { data: 'symptomCode' },
-            { data: 'symptomDescription' },
-            { data: 'symptomGroupName' },
-            { data: 'modifydate' },
-            { data: 'modifyby' }
+            {data: 'symptomCode', name: 'symptomCode'},
+            {data: 'symptomDescription', name: 'symptomDescription'},
+            {data: 'symptomGroupName', name: 'symptomGroup'},
+            {data: 'modifydate', name: 'modifydate'},
+            {data: 'modifyby', name: 'modifyby'}
         ],
         columnDefs: [
         {
@@ -55,3 +57,19 @@ $(document).ready(function() {
         $('#searchSymptomTable').DataTable().ajax.reload();
     });
 });
+
+function getSortData(d) {
+    let dirList = ''
+    let sortList = '';
+    const separator = ',';
+    let orderList = d.order;
+    for (let i = 0; i < orderList.length; i++) {
+        sortList = sortList + d.columns[orderList[i].column].name;
+        dirList = dirList + orderList[i].dir;
+        if (i !== orderList.length - 1) {
+            sortList = sortList + separator;
+            dirList = dirList + separator;
+        }
+    }
+    return {dirList, sortList};
+}
