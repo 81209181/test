@@ -203,22 +203,10 @@ $().ready(function(){
 
     // submit button
     $('#btnTicketSubmit').on('click',function(){
-        let ticket ={};
-        let ticket_input =$('.card-body').find('input');
-        $.each(ticket_input,function(index,input){
-            ticket[$(input).attr('name')] =$(input).val();
-        })
-        ticket['ticketMasId'] =ticketMasId;
         clearAllMsg();
-        $.ajax({
-            url:'/ticket/submit',
-            type : 'POST',
-            dataType: 'json',
-            data: ticket,
-            success:function(res){
-                if(res.success){
-                    location.reload();
-                }
+        $.post('/ticket/submit',{'ticketMasId':ticketMasId},function(res){
+            if(res.success){
+                location.reload();
             }
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";

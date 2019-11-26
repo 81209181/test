@@ -39,4 +39,9 @@ public class PublicController {
     public SimpleAjaxResponse keepSession() {
         return SimpleAjaxResponse.of();
     }
+
+    @GetMapping("/terms")
+    public String termsOfUser() {
+        return "public/terms";
+    }
 }
