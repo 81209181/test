@@ -6,11 +6,7 @@ var ngn3Btn = $('.ngn3Btn'),
 
 $().ready(function(){
 
-    var ticketDetId = "";
-
-    let symptomCode = "";
-
-    let serviceType = "";
+    let ticketDetId = "";
 
     $('.selectpicker').selectpicker({});
 
@@ -38,14 +34,12 @@ $().ready(function(){
                     voIpButtonCtrl(j.voIpCtrl);
                     eCloudButtonCtrl(j.cloudCtrl);
                     ticketDetId = j.ticketDetId;
-                    serviceType = j.serviceType;
                     let faultsList = j.faultsList;
                     if(faultsList == '' ){
                         $('#btnMakeAppointment').attr('disabled', true);
                     }
                     for (item of faultsList) {
                         $('#symptomList').find('option[value=' + item.symptomCode + ']').attr('selected', 'selected');
-                        symptomCode = item.symptomCode;
                     }
                     $.each(j,function(key,value){
                         service.find('input[name='+key+']').val(value);
@@ -109,15 +103,11 @@ $().ready(function(){
 
     // make appointment
     $('#btnMakeAppointment').on('click', function () {
-        if (ticketMasId === '') {
-            showErrorMsg('No ticket mas Id');
-            return;
-        }
         if (ticketDetId === '') {
             showErrorMsg('No ticket detail Id.');
             return;
         }
-        makeAppointment(ticketMasId, ticketDetId, symptomCode,serviceType);
+        makeAppointment(ticketDetId);
     });
 
     getAppointmentInfo(ticketMasId);
@@ -373,7 +363,7 @@ function removeContact(btn){
     }
 }
 
-function makeAppointment(ticketMasId, ticketDetId, symptomCode, serviceType) {
+function makeAppointment(ticketDetId) {
 
     let bsn = $("#service").find('input[name=relatedBsn]').val();
     if (bsn === '') {
@@ -381,11 +371,7 @@ function makeAppointment(ticketMasId, ticketDetId, symptomCode, serviceType) {
     }
 
     $.get('/ticket/token', {
-        bsn : bsn,
-        ticketMasId: ticketMasId,
-        ticketDetId: ticketDetId,
-        symptomCode: symptomCode,
-        serviceType: serviceType
+        ticketDetId: ticketDetId
     }, function (res) {
         let window = AppointmentSDObj.make({
             data: {

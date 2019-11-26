@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.core.dao.mapper;
 
+import com.hkt.btu.sd.core.dao.entity.SdMakeApptEntitiy;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomEntity;
 import com.hkt.btu.sd.core.dao.entity.SdTicketServiceEntity;
 import org.apache.ibatis.annotations.Param;
@@ -29,4 +30,6 @@ public interface SdTicketServiceMapper {
     List<SdTicketServiceEntity> getTicketServiceBySubscriberId(@Param("subscriberId") String subscriberId,@Param("offset") Long offset, @Param("pageSize") Integer pageSize);
 
     long countServiceBySubscriberId(@Param("subscriberId")String subscriberId);
+
+    SdMakeApptEntitiy getTicketServiceByTicketDetId(@Param("ticketDetId") Integer ticketDetId);
 }

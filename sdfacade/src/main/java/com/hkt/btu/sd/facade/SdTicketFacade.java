@@ -4,6 +4,7 @@ import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.core.exception.ApiException;
 import com.hkt.btu.sd.facade.data.*;
+import com.hkt.btu.sd.facade.data.wfm.WfmMakeApptData;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -59,4 +60,6 @@ public interface SdTicketFacade {
     List<CodeDescData> getTicketTypeList();
 
     TeamSummaryData getTeamSummary();
+
+    WfmMakeApptData getMakeApptDataByTicketDetId(Integer ticketDetId);
 }

@@ -3,6 +3,8 @@ package com.hkt.btu.sd.facade.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.facade.data.PageData;
+import com.hkt.btu.sd.core.dao.entity.SdTicketServiceEntity;
+import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
 import com.hkt.btu.sd.core.exception.ApiException;
 import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
 import com.hkt.btu.sd.core.service.SdTicketService;
@@ -19,6 +21,7 @@ import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.wfm.WfmAppointmentResData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobProgressData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobRemarksData;
+import com.hkt.btu.sd.facade.data.wfm.WfmMakeApptData;
 import com.hkt.btu.sd.facade.populator.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -383,13 +386,14 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                 SdTicketData sdTicketData = getTicketInfo(sdTicketServiceBean.getTicketMasId());
                 sdTicketDataList.add(sdTicketData);
             }
+
+            // transform SdTicketData to BesFaultInfoData
             List<BesFaultInfoData> besFaultInfoDataList = new ArrayList<>();
             for (SdTicketData sdTicketData : sdTicketDataList) {
                 BesFaultInfoData besFaultInfoData = new BesFaultInfoData();
                 faultInfoDataPopulator.populate(sdTicketData, besFaultInfoData);
                 besFaultInfoDataList.add(besFaultInfoData);
             }
-            // transform SdTicketData to BesFaultInfoData
             if (Objects.isNull(pageable)) {
                 besSubFaultData.setList(besFaultInfoDataList);
             } else {
@@ -572,6 +576,24 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         TeamSummaryData data = new TeamSummaryData();
         TeamSummaryBean summaryBean = ticketService.getTeamSummary();
         teamSummaryDataPopulator.populate(summaryBean,data);
+        return data;
+    }
+
+    @Override
+    public WfmMakeApptData getMakeApptDataByTicketDetId(Integer ticketDetId) {
+        SdMakeApptBean bean = ticketService.getTicketServiceByDetId(ticketDetId);
+
+        if (bean == null) {
+            return null;
+        }
+
+        WfmMakeApptData data = new WfmMakeApptData();
+        data.setBsn(bean.getBsn());
+        data.setServiceType(bean.getServiceType());
+        data.setTicketMasId(bean.getTicketMasId());
+        data.setTicketDetId(bean.getTicketDetId());
+        data.setSymptomCode(bean.getSymptomCode());
+
         return data;
     }
 }

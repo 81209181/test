@@ -3,7 +3,6 @@ package com.hkt.btu.sd.controller;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
-import com.hkt.btu.sd.core.exception.InvalidInputException;
 import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.nora.NoraAccountData;
@@ -20,8 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -69,7 +66,7 @@ public class TicketController {
         if (StringUtils.isNotEmpty(resultsData.getErrorMsg())) {
             return ResponseEntity.badRequest().body(resultsData.getErrorMsg());
         } else {
-            if(CollectionUtils.isNotEmpty(pendingTicketDataList)){
+            if (CollectionUtils.isNotEmpty(pendingTicketDataList)) {
                 String warningMsg = String.format("The service number already exists in Ticket - <a href='%s/ticket?ticketMasId=%d'>%d</a>",
                         request.getContextPath(), pendingTicketDataList.get(0).getTicketMasId(), pendingTicketDataList.get(0).getTicketMasId());
                 resultsData.setWarningMsg(warningMsg);
@@ -88,11 +85,11 @@ public class TicketController {
         boolean checkPendingOrder = serviceTypeFacade.needCheckPendingOrder(queryTicketRequestData.getServiceType());
         if (checkPendingOrder) {
             WfmPendingOrderData pendingOrderData = wfmApiFacade.getPendingOrderByBsn(queryTicketRequestData.getServiceNo());
-            if ( pendingOrderData==null ) {
+            if (pendingOrderData == null) {
                 return ResponseEntity.badRequest().body("No pending order response from WFM.");
-            } else if ( StringUtils.isNotEmpty(pendingOrderData.getErrorMsg()) ) {
+            } else if (StringUtils.isNotEmpty(pendingOrderData.getErrorMsg())) {
                 return ResponseEntity.badRequest().body(pendingOrderData.getErrorMsg());
-            } else if ( pendingOrderData.getOrderId() != null ) {
+            } else if (pendingOrderData.getOrderId() != null) {
                 return ResponseEntity.ok(ResponseTicketData.of(false, pendingOrderData.getOrderId()));
             }
         }
@@ -151,12 +148,12 @@ public class TicketController {
     @GetMapping("/search-ticket")
     public String searchTicket(Model model) {
         List<CodeDescData> ticketStatusList = ticketFacade.getTicketStatusList();
-        if(CollectionUtils.isNotEmpty(ticketStatusList)){
+        if (CollectionUtils.isNotEmpty(ticketStatusList)) {
             model.addAttribute("ticketStatusList", ticketStatusList);
         }
 
         List<CodeDescData> ticketTypeList = ticketFacade.getTicketTypeList();
-        if(CollectionUtils.isNotEmpty(ticketTypeList)){
+        if (CollectionUtils.isNotEmpty(ticketTypeList)) {
             model.addAttribute("ticketTypeList", ticketTypeList);
         }
 
@@ -167,7 +164,7 @@ public class TicketController {
 
         List<SdUserRoleData> eligibleUserRoleList = userRoleFacade.getEligibleUserRoleList();
         if (CollectionUtils.isNotEmpty(eligibleUserRoleList)) {
-            model.addAttribute("primaryRoleList",eligibleUserRoleList.stream().filter(SdUserRoleData::isPrimaryRole)
+            model.addAttribute("primaryRoleList", eligibleUserRoleList.stream().filter(SdUserRoleData::isPrimaryRole)
                     .sorted(Comparator.comparing(SdUserRoleData::getRoleDesc)).collect(Collectors.toList()));
         }
 
@@ -280,8 +277,8 @@ public class TicketController {
     }
 
     @PostMapping("close")
-    public ResponseEntity<?> ticketClose(int ticketMasId, String reasonType, String reasonContent,String contactNumber,String contactName) {
-        String errorMsg = ticketFacade.closeTicket(ticketMasId, reasonType, reasonContent,contactName,contactNumber);
+    public ResponseEntity<?> ticketClose(int ticketMasId, String reasonType, String reasonContent, String contactNumber, String contactName) {
+        String errorMsg = ticketFacade.closeTicket(ticketMasId, reasonType, reasonContent, contactName, contactNumber);
         if (StringUtils.isEmpty(errorMsg)) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         } else {
@@ -375,10 +372,11 @@ public class TicketController {
     }
 
     @GetMapping("token")
-    public ResponseEntity<?> getToken(@Validated WfmMakeApptData makeApptData,
-                                      BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body("Cannot input invalid parameters");
+    public ResponseEntity<?> getToken(Integer ticketDetId) {
+        WfmMakeApptData makeApptData = ticketFacade.getMakeApptDataByTicketDetId(ticketDetId);
+
+        if (makeApptData == null) {
+            return ResponseEntity.badRequest().body("Cannot get ticket detail by ticketDetId");
         }
 
         WfmResponseTokenData data = wfmApiFacade.getToken(makeApptData);

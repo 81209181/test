@@ -70,4 +70,6 @@ public interface SdTicketService {
     TeamSummaryBean getTeamSummary();
 
     long countServiceBySubscriberId(String subscriberId);
+
+    SdMakeApptBean getTicketServiceByDetId(Integer ticketDetId);
 }
