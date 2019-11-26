@@ -3,8 +3,8 @@ package com.hkt.btu.sd.facade.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.facade.data.PageData;
-import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
 import com.hkt.btu.sd.core.exception.ApiException;
+import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
 import com.hkt.btu.sd.core.service.SdTicketService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.*;
@@ -469,20 +469,20 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public void isAllow(String ticketMasId, String action) {
+    public void isAllow(int ticketMasId, String action) {
         switch (action) {
             case SdTicketMasData.ACTION_TYPE.WORKING:
-                ticketService.getTicket(Integer.valueOf(ticketMasId)).map(SdTicketMasBean::getStatus)
+                ticketService.getTicket(ticketMasId).map(SdTicketMasBean::getStatus)
                         .filter(s -> s.equals(TicketStatusEnum.OPEN))
                         .orElseThrow(() -> new RuntimeException("Cannot update. This ticket has been passed to working parties."));
                 break;
             case SdTicketMasData.ACTION_TYPE.COMPLETE:
-                ticketService.getTicket(Integer.valueOf(ticketMasId)).map(SdTicketMasBean::getStatus)
+                ticketService.getTicket(ticketMasId).map(SdTicketMasBean::getStatus)
                         .filter(s -> !s.equals(TicketStatusEnum.COMPLETE))
                         .orElseThrow(() -> new RuntimeException("Cannot update. This ticket has been completed."));
                 break;
             default:
-                ticketService.getTicket(Integer.valueOf(ticketMasId)).map(SdTicketMasBean::getStatus)
+                ticketService.getTicket(ticketMasId).map(SdTicketMasBean::getStatus)
                         .filter(s -> (s == TicketStatusEnum.WORKING || s == TicketStatusEnum.COMPLETE)).ifPresent(s -> {
                     if (s.equals(TicketStatusEnum.COMPLETE)) {
                         throw new RuntimeException("Cannot update. This ticket has been completed.");
