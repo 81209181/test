@@ -3,6 +3,7 @@ package com.hkt.btu.sd.facade.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.hkt.btu.sd.core.exception.InvalidInputException;
 import com.hkt.btu.sd.core.service.SdApiService;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeOfferMappingBean;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
@@ -177,18 +178,33 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
 
     @Override
     public WfmResponseTokenData getToken(WfmMakeApptData makeApptData) {
-        if (makeApptData == null) {
-            LOG.error("Null makeAppData");
-            return null;
+        String ticketMasId = String.valueOf(makeApptData.getTicketMasId());
+        String ticketDetId = String.valueOf(makeApptData.getTicketDetId());
+        String symptomCode = makeApptData.getSymptomCode();
+        String serviceType = makeApptData.getServiceType();
+        String bsn = String.valueOf(makeApptData.getBsn());
+        if (StringUtils.isBlank(ticketMasId)) {
+            throw new InvalidInputException("Ticket mas id is empty.");
         }
-
+        if (StringUtils.isBlank(ticketDetId)) {
+            throw new InvalidInputException("Ticket det id is empty.");
+        }
+        if (StringUtils.isBlank(symptomCode)) {
+            throw new InvalidInputException("Symptom code is empty.");
+        }
+        if (StringUtils.isBlank(serviceType)) {
+            throw new InvalidInputException("Service type is empty.");
+        }
+        if (StringUtils.isBlank(bsn)) {
+            throw new InvalidInputException("Bsn is empty.");
+        }
         // prepare param
         Map<String, String> queryParam = new HashMap<>(3);
-        queryParam.put("ticketMasId", String.valueOf(makeApptData.getTicketMasId()));
-        queryParam.put("ticketDetId", String.valueOf(makeApptData.getTicketDetId()));
-        queryParam.put("symptomCode", makeApptData.getSymptomCode());
-        queryParam.put("serviceType", makeApptData.getServiceType());
-        queryParam.put("bsn", String.valueOf(makeApptData.getBsn()));
+        queryParam.put("ticketMasId", ticketMasId);
+        queryParam.put("ticketDetId", ticketDetId);
+        queryParam.put("symptomCode", symptomCode);
+        queryParam.put("serviceType", serviceType);
+        queryParam.put("bsn", bsn);
 
         // call WFM API
         try {
