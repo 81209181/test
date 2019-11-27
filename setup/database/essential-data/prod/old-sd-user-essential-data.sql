@@ -82,3 +82,4 @@ values ('09293531', 'Leung, Jaffe CK', 'A', '28832299', 'Jaffe.CK.Leung@pccw.com
 
 insert into USER_PROFILE (USER_ID, NAME, STATUS, MOBILE, EMAIL, LDAP_DOMAIN, CREATEBY, MODIFYBY, DOMAIN_EMAIL, PRIMARY_ROLE_ID)
 values ('00226811', 'Leung, MiMi', 'A', '28832299', 'MiMi.Leung@pccw.com', '@corphq.hk.pccw.com','81149189','81149189','MiMi.Leung@pccw.com', 'TEAM_HEAD');
+commit;
