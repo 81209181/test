@@ -183,21 +183,20 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
         String symptomCode = makeApptData.getSymptomCode();
         String serviceType = makeApptData.getServiceType();
         String bsn = String.valueOf(makeApptData.getBsn());
-        if (StringUtils.isBlank(ticketMasId)) {
+
+        // check input
+        if (StringUtils.isEmpty(ticketMasId)) {
             throw new InvalidInputException("Ticket mas id is empty.");
-        }
-        if (StringUtils.isBlank(ticketDetId)) {
+        } else if (StringUtils.isEmpty(ticketDetId)) {
             throw new InvalidInputException("Ticket det id is empty.");
-        }
-        if (StringUtils.isBlank(symptomCode)) {
+        } else if (StringUtils.isEmpty(symptomCode)) {
             throw new InvalidInputException("Symptom code is empty.");
-        }
-        if (StringUtils.isBlank(serviceType)) {
+        } else if (StringUtils.isEmpty(serviceType)) {
             throw new InvalidInputException("Service type is empty.");
-        }
-        if (StringUtils.isBlank(bsn)) {
+        } else if (StringUtils.isEmpty(bsn)) {
             throw new InvalidInputException("Bsn is empty.");
         }
+
         // prepare param
         Map<String, String> queryParam = new HashMap<>(3);
         queryParam.put("ticketMasId", ticketMasId);

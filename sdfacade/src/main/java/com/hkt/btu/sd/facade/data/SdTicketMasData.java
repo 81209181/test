@@ -18,6 +18,7 @@ public class SdTicketMasData implements DataInterface {
     private String ticketType;
 
     private String status;
+
     private String statusDesc;
 
     private LocalDateTime createDate;
@@ -28,13 +29,10 @@ public class SdTicketMasData implements DataInterface {
 
     private String modifyBy;
 
-    private LocalDateTime appointmentDate;
-
-    private String asap;
-
     private int callInCount;
 
     private String searchKey;
+
     private String searchKeyDesc;
 
     private String searchValue;
@@ -46,54 +44,6 @@ public class SdTicketMasData implements DataInterface {
     private String owningRole;
 
     private String serviceNumber;
-
-    public String getOwningRole() {
-        return owningRole;
-    }
-
-    public void setOwningRole(String owningRole) {
-        this.owningRole = owningRole;
-    }
-
-    public String getSearchKey() {
-        return searchKey;
-    }
-
-    public void setSearchKey(String searchKey) {
-        this.searchKey = searchKey;
-    }
-
-    public String getSearchKeyDesc() {
-        return searchKeyDesc;
-    }
-
-    public void setSearchKeyDesc(String searchKeyDesc) {
-        this.searchKeyDesc = searchKeyDesc;
-    }
-
-    public String getSearchValue() {
-        return searchValue;
-    }
-
-    public void setSearchValue(String searchValue) {
-        this.searchValue = searchValue;
-    }
-
-    public LocalDateTime getAppointmentDate() {
-        return appointmentDate;
-    }
-
-    public void setAppointmentDate(LocalDateTime appointmentDate) {
-        this.appointmentDate = appointmentDate;
-    }
-
-    public String getAsap() {
-        return asap;
-    }
-
-    public void setAsap(String asap) {
-        this.asap = asap;
-    }
 
     public int getTicketMasId() {
         return ticketMasId;
@@ -175,6 +125,30 @@ public class SdTicketMasData implements DataInterface {
         this.callInCount = callInCount;
     }
 
+    public String getSearchKey() {
+        return searchKey;
+    }
+
+    public void setSearchKey(String searchKey) {
+        this.searchKey = searchKey;
+    }
+
+    public String getSearchKeyDesc() {
+        return searchKeyDesc;
+    }
+
+    public void setSearchKeyDesc(String searchKeyDesc) {
+        this.searchKeyDesc = searchKeyDesc;
+    }
+
+    public String getSearchValue() {
+        return searchValue;
+    }
+
+    public void setSearchValue(String searchValue) {
+        this.searchValue = searchValue;
+    }
+
     public LocalDateTime getCompleteDate() {
         return completeDate;
     }
@@ -189,6 +163,14 @@ public class SdTicketMasData implements DataInterface {
 
     public void setServiceType(String serviceType) {
         this.serviceType = serviceType;
+    }
+
+    public String getOwningRole() {
+        return owningRole;
+    }
+
+    public void setOwningRole(String owningRole) {
+        this.owningRole = owningRole;
     }
 
     public String getServiceNumber() {

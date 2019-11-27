@@ -108,8 +108,7 @@ CREATE TABLE SERVICE_TYPE
 CREATE TABLE SERVICE_TYPE_OFFER_MAPPING
 (
     SERVICE_TYPE_CODE             varchar2(10)             not null,
-    OFFER_NAME                    varchar2(40)             not null,
-
+    OFFER_NAME                    varchar2(100)             not null,
     CREATEDATE                    date                     default SYSDATE not null,
     CREATEBY                      varchar2(10)             not null
 );

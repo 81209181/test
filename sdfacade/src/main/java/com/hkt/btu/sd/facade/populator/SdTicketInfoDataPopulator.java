@@ -14,7 +14,6 @@ public class SdTicketInfoDataPopulator extends AbstractDataPopulator<SdTicketInf
         target.setTicketStatus(source.getStatus());
         target.setTicketStatusDesc(source.getStatusDesc());
         target.setTicketType(source.getTicketType());
-        target.setAsap(source.getAsap());
         target.setCallInCount(source.getCallInCount());
         target.setSearchKeyDesc(source.getSearchKeyDesc());
         target.setSearchValue(source.getSearchValue());
