@@ -77,7 +77,7 @@ end before statement;
         end if;
     end after statement;
     END;
-
+/
 -------------------------------------------------------------------------------------------------
 CREATE TABLE CRON_JOB_HIST(
   JOB_ID        NUMBER              not null,
@@ -148,7 +148,7 @@ end before statement;
         end if;
     end after statement;
     END;
-
+/
 -------------------------------------------------------------------------------------------------
 CREATE TABLE PATH_CTRL_HIST(
     PATH_CTRL_ID    number                  not null,
@@ -212,7 +212,7 @@ end before statement;
         end if;
     end after statement;
     END;
-
+/
 -------------------------------------------------------------------------------------------------
 CREATE TABLE USER_ROLE_HIST(
   ROLE_ID               varchar2(20),
@@ -278,7 +278,7 @@ end before statement;
         end if;
     end after statement;
     END;
-
+/
 -------------------------------------------------------------------------------------------------
 CREATE TABLE USER_ROLE_PATH_CTRL_HIST(
     ROLE_ID         varchar2(20)                            not null,
@@ -338,6 +338,7 @@ end before statement;
         end if;
     end after statement;
     END;
+/
 -------------------------------------------------------------------------------------------------
 CREATE TABLE USER_USER_ROLE_HIST(
     USER_ID               varchar2(12)                not null,
@@ -397,20 +398,5 @@ end before statement;
         end if;
     end after statement;
     END;
-
+/
 -------------------------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
