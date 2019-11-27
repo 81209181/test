@@ -6,8 +6,6 @@ insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TY
 values ('SITE', 'appName', 'ServiceDesk', 'String', current_timestamp, 0, current_timestamp, 0);
 
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
-values ('SITE', 'givenDomain', 'sd.pccw.com', 'String', sysdate, 0, sysdate, 0);
-insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('SITE', 'cronjobHostname', 'yecvm_saapp01', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('SITE', 'prodHostname', 'yecvm_saapp01', 'String', current_timestamp, 0, current_timestamp, 0);
@@ -67,3 +65,4 @@ values ('API_NORARS', 'password', 'tba', 'String', current_timestamp, 0, current
 -- Cronjob Team
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('CRONJOB', 'errorEmail', 'jason.yh.kong@pccw.com', 'String', current_timestamp, 0, current_timestamp, 0);
+commit;

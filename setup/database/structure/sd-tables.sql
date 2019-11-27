@@ -128,7 +128,7 @@ CREATE TABLE SYMPTOM_GROUP
 CREATE TABLE SYMPTOM
 (
     SYMPTOM_CODE                  varchar2(10)             not null,
-    SYMPTOM_DESCRIPTION           varchar2(30)             not null,
+    SYMPTOM_DESCRIPTION           varchar2(120)             not null,
     SYMPTOM_GROUP_CODE            varchar2(10)             not null,
 
     CREATEDATE                    date                     default SYSDATE not null,
