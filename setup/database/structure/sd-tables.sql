@@ -105,30 +105,6 @@ CREATE TABLE SERVICE_TYPE
 );
 
 --------------------------------------------------------------------------------------------------
--- CREATE TABLE FAULT_TYPE
--- (
---     FAULT_TYPE_CODE     varchar2(20),
---
---     CREATEDATE          date                     default SYSDATE not null,
---     CREATEBY            varchar2(10)             not null,
---     MODIFYDATE          date                     default SYSDATE not null,
---     MODIFYBY            varchar2(10)             not null,
---     CONSTRAINT PK_TICKET_MAS PRIMARY KEY (FAULT_TYPE_CODE)
--- );
---SYMPTOM------------------------------------------------------------------------------------------------
-CREATE TABLE SERVICE_TYPE
-(
-    SERVICE_TYPE_CODE             varchar2(10)             not null,
-    SERVICE_TYPE_NAME             varchar2(30)             not null,
-
-    CREATEDATE                    date                     default SYSDATE not null,
-    CREATEBY                      varchar2(10)             not null,
-    MODIFYDATE                    date                     default SYSDATE not null,
-    MODIFYBY                      varchar2(10)             not null,
-    CONSTRAINT PK_SERVICE_TYPE PRIMARY KEY (SERVICE_TYPE_CODE)
-);
-
---------------------------------------------------------------------------------------------------
 CREATE TABLE SERVICE_TYPE_OFFER_MAPPING
 (
     SERVICE_TYPE_CODE             varchar2(10)             not null,
