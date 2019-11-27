@@ -268,11 +268,11 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
             SdServiceTypeData serviceTypeData = serviceTypeFacade.getServiceTypeByOfferName(offerName);
             searchResultData.setServiceType(serviceTypeData.getServiceTypeCode());
             searchResultData.setServiceTypeDesc(serviceTypeData.getServiceTypeName());
+            requestCreateSearchResultDataPopulator.populateFromServiceTypeData(serviceTypeData, searchResultData);
 
             // add to result list
             requestSearchResultDataList.add(searchResultData);
         }
-
         resultData.setList(requestSearchResultDataList);
         return resultData;
     }
