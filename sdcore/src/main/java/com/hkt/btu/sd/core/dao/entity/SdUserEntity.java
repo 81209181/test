@@ -8,7 +8,7 @@ import java.util.Objects;
 public class SdUserEntity extends BaseEntity {
 
     public static class SYSTEM{
-        public static final String USER_ID = "0";
+        public static final String USER_ID = "SERVDESK";
     }
 
     public static class STATUS{

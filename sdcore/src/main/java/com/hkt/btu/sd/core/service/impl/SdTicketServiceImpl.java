@@ -346,22 +346,23 @@ public class SdTicketServiceImpl implements SdTicketService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void closeTicket(int ticketMasId, String reasonType, String reasonContent, String closeby, String contactName, String contactNumber) throws InvalidInputException {
+    public void closeTicket(int ticketMasId, String reasonType, String reasonContent,
+                            String contactName, String contactNumber, boolean nonApiClose) throws InvalidInputException {
         if (StringUtils.isEmpty(reasonType)) {
             throw new InvalidInputException("Empty reasonType.");
         } else if (StringUtils.isEmpty(reasonContent)) {
             throw new InvalidInputException("Empty reasonContent.");
-        } else if (StringUtils.isEmpty(closeby)) {
-            throw new InvalidInputException("Empty closeBy.");
         } else if (StringUtils.isBlank(contactName)) {
             throw new InvalidInputException("Empty contact name.");
         }
 
-        // check status
+        // check ticket
         Optional<SdTicketMasBean> ticketMasBeanOptional = getTicket(ticketMasId);
         SdUserBean currentUserBean = (SdUserBean) userService.getCurrentUserBean();
         if (ticketMasBeanOptional.isPresent()) {
             SdTicketMasBean sdTicketMasBean = ticketMasBeanOptional.get();
+
+            // check ticket status
             TicketStatusEnum ticketStatus = sdTicketMasBean.getStatus();
             if (ticketStatus == null) {
                 throw new InvalidInputException("Ticket status not found.");
@@ -369,21 +370,26 @@ public class SdTicketServiceImpl implements SdTicketService {
                 throw new InvalidInputException("Ticket already closed.");
             }
 
-            // check primary role
-            String primaryRoleId = currentUserBean.getPrimaryRoleId();
-            String owdningRole = sdTicketMasBean.getOwningRole();
-            if (!StringUtils.equals(primaryRoleId, owdningRole)) {
-                throw new InvalidInputException("This ticket belongs to another team (" + owdningRole + ").");
+            // check ticket ownership (for servicedesk close only)
+            if(nonApiClose) {
+                // check primary role
+                String primaryRoleId = currentUserBean.getPrimaryRoleId();
+                String owdningRole = sdTicketMasBean.getOwningRole();
+                if (!StringUtils.equals(primaryRoleId, owdningRole)) {
+                    throw new InvalidInputException("This ticket belongs to another team (" + owdningRole + ").");
+                }
             }
         } else {
             throw new InvalidInputException(String.format("Ticket not found. (ticketMasId: %d)", ticketMasId));
         }
 
-        String content = reasonContent + String.format(";Contact: %s,%s", contactName, contactNumber);
-        // close ticket and add remarks
-        String modifyby = currentUserBean.getUserId();
-        ticketMasMapper.updateTicketStatus(ticketMasId, TicketStatusEnum.COMPLETE.getStatusCode(), modifyby);
-        createTicketSysRemarks(ticketMasId, String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_CLOSE, reasonType, content, closeby));
+        // close ticket
+        String userUserId = userService.getCurrentUserUserId();
+        ticketMasMapper.updateTicketStatus(ticketMasId, TicketStatusEnum.COMPLETE.getStatusCode(), userUserId);
+
+        // add ticket remarks
+        String content = String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_CLOSE, reasonType, reasonContent, contactName, contactNumber);
+        createTicketSysRemarks(ticketMasId, content);
     }
 
     @Override

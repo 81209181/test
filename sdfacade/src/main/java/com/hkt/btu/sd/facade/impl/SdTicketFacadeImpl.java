@@ -437,22 +437,23 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     @Override
     public String closeTicketByApi(int ticketMasId, String reasonType, String reasonContent, String userId) {
         String systemId = userService.getCurrentUserUserId();
-        if (StringUtils.isNotEmpty(userId)) {
-            userId = systemId + " - " + userId;
+
+        // close ticket in servicedesk
+        try {
+            ticketService.closeTicket(ticketMasId, reasonType, reasonContent, systemId, userId, false);
+            LOG.info("Closed (by API) ticket in servicedesk. (ticketMasId: " + ticketMasId + ")");
+            return null;
+        } catch (InvalidInputException e) {
+            LOG.warn(e.getMessage());
+            return e.getMessage();
         }
-        return closeTicket(ticketMasId, reasonType, reasonContent, userId, systemId, "");
     }
 
     @Override
     public String closeTicket(int ticketMasId, String reasonType, String reasonContent, String contactName, String contactNumber) {
-        String currentUserId = userService.getCurrentUserUserId();
-        return closeTicket(ticketMasId, reasonType, reasonContent, currentUserId, contactName, contactNumber);
-    }
-
-    private String closeTicket(int ticketMasId, String reasonType, String reasonContent, String closeby, String contactName, String contactNumber) {
         // close ticket in servicedesk
         try {
-            ticketService.closeTicket(ticketMasId, reasonType, reasonContent, closeby, contactName, contactNumber);
+            ticketService.closeTicket(ticketMasId, reasonType, reasonContent, contactName, contactNumber, true);
             LOG.info("Closed ticket in servicedesk. (ticketMasId: " + ticketMasId + ")");
         } catch (InvalidInputException e) {
             LOG.warn(e.getMessage());

@@ -59,7 +59,8 @@ public interface SdTicketService {
     List<SdTicketMasBean> getTicketByServiceNo(String serviceNom, String ticketType, String excludeStatus);
     List<SdTicketMasBean> getPendingTicketList(String serviceNo);
 
-    void closeTicket(int ticketMasId, String reasonType, String reasonContent, String userId, String contactName, String contactNumber) throws InvalidInputException;
+    void closeTicket(int ticketMasId, String reasonType, String reasonContent,
+                     String contactName, String contactNumber, boolean nonApiClose) throws InvalidInputException;
 
     void updateTicketType(int ticketMasId, String job, String userId);
 
