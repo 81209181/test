@@ -59,7 +59,7 @@ $().ready(function(){
                 bnButtonCtrl(info.bnCtrl);
                 voIpButtonCtrl(info.voIpCtrl);
                 eCloudButtonCtrl(info.cloudCtrl);
-                $('.eCloudBtn').data('url',info.val);
+                $('.eCloudBtn').data('url',info.url);
                 $.each(info,function(key,val){
                     $('form').find('input[name='+ key +']').val(val);
                 });
@@ -92,7 +92,7 @@ $().ready(function(){
                 bnButtonCtrl(info.bnCtrl);
                 voIpButtonCtrl(info.voIpCtrl);
                 eCloudButtonCtrl(info.cloudCtrl);
-                $('.eCloudBtn').data('url',info.val);
+                $('.eCloudBtn').data('url',info.url);
                 $.each(info,function(i,val){
                     $('form').find('input[name='+i+']').val(val);
                 })
@@ -263,11 +263,14 @@ function getFinalBsn(){
     if(relatedBsn.length < 1){
         if(serviceNo.length < 1){
             showErrorMsg('No service number!');
-            return relatedBsn;
+            return;
         }else{
             return serviceNo;
         }
+    } else {
+        return relatedBsn;
     }
+
 }
 function reset(){
     $('#searchKey').val('');

@@ -38,6 +38,7 @@
                td.SERVICE_ID,
                td.SYMPTOM_CODE,
                td.SERVICE_TYPE_CODE,
+               td.JOB_ID,
                s.SYMPTOM_DESCRIPTION
         from TICKET_DET td
         inner join SYMPTOM s
