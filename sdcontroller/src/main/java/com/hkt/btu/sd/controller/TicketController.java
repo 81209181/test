@@ -379,11 +379,15 @@ public class TicketController {
             return ResponseEntity.badRequest().body("Cannot get ticket detail by ticketDetId");
         }
 
-        WfmResponseTokenData data = wfmApiFacade.getToken(makeApptData);
-        if (data != null) {
-            return ResponseEntity.ok(data);
-        } else {
-            return ResponseEntity.badRequest().body("Cannot connect WFM for getting token.");
+        try {
+            WfmResponseTokenData data = wfmApiFacade.getToken(makeApptData);
+            if (data != null) {
+                return ResponseEntity.ok(data);
+            } else {
+                return ResponseEntity.badRequest().body("Cannot connect WFM for getting token.");
+            }
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

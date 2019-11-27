@@ -55,13 +55,13 @@ $().ready(function(){
         }, function(response){
             let res = response.list;
             if(res.length === 1){
-                $.each(res.pop(),function(key,val){
+                let info = res[0];
+                bnButtonCtrl(info.bnCtrl);
+                voIpButtonCtrl(info.voIpCtrl);
+                eCloudButtonCtrl(info.cloudCtrl);
+                $('.eCloudBtn').data('url',info.val);
+                $.each(info,function(key,val){
                     $('form').find('input[name='+ key +']').val(val);
-                    if(key === 'url'){
-                        $('.eCloudBtn').data('url',val);
-                    }
-                    // button control
-                    buttonCtrl(key,val);
                 });
             } else {
                 $.each(res, function (i, val) {
@@ -88,14 +88,13 @@ $().ready(function(){
             $('input[name=searchKey]').val(searchKey.val());
             $('input[name=searchValue]').val(searchValue.val());
             $('#btnApplyProduct').on('click',function(){
-                $.each($('tbody').find('input:checked').parent().parent().data('info'),function(i,val){
+                let info = $('tbody').find('input:checked').parent().parent().data('info');
+                bnButtonCtrl(info.bnCtrl);
+                voIpButtonCtrl(info.voIpCtrl);
+                eCloudButtonCtrl(info.cloudCtrl);
+                $('.eCloudBtn').data('url',info.val);
+                $.each(info,function(i,val){
                     $('form').find('input[name='+i+']').val(val);
-                    if(i === 'url'){
-                        $('.eCloudBtn').data('url',val);
-                    }
-                    // button control
-                    buttonCtrl(i,val);
-
                 })
                 $('#products_modal').modal('hide');
             })
@@ -280,30 +279,29 @@ function reset(){
     $('.panel').find('.panel-body').slideUp();
     $('.panel').find('.panel-heading').find('span').addClass('panel-collapsed');
 }
+function eCloudButtonCtrl(flag) {
+    if (flag) {
+        eCloudBtn.attr('disabled', false);
+        inventoryBtn.attr('disabled', true);
+        bbBtn.attr('disabled', true);
+        voIpBtn.attr('disabled', true);
+    }
+}
 
-function buttonCtrl(key,val){
-    if (key === 'bnCtrl') {
-        if (val) {
-            eCloudBtn.attr('disabled', true);
-            inventoryBtn.attr('disabled', false);
-            bbBtn.attr('disabled', false);
-            voIpBtn.attr('disabled', true);
-        }
+function bnButtonCtrl(val){
+    if(val){
+        eCloudBtn.attr('disabled', true);
+        inventoryBtn.attr('disabled', false);
+        bbBtn.attr('disabled', false);
+        voIpBtn.attr('disabled', true);
     }
-    if (key === 'voIpCtrl'){
-        if(val){
-            eCloudBtn.attr('disabled', true);
-            inventoryBtn.attr('disabled', false);
-            bbBtn.attr('disabled', false);
-            voIpBtn.attr('disabled', false);
-        }
-    }
-    if (key === 'cloudCtrl'){
-        if(val){
-            eCloudBtn.attr('disabled', false);
-            inventoryBtn.attr('disabled', true);
-            bbBtn.attr('disabled', true);
-            voIpBtn.attr('disabled', true);
-        }
+}
+
+function voIpButtonCtrl(val){
+    if(val){
+        eCloudBtn.attr('disabled', true);
+        inventoryBtn.attr('disabled', false);
+        bbBtn.attr('disabled', false);
+        voIpBtn.attr('disabled', false);
     }
 }
