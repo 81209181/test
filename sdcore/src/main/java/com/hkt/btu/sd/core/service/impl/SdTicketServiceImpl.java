@@ -215,15 +215,6 @@ public class SdTicketServiceImpl implements SdTicketService {
     }
 
     @Override
-    public Optional<SdTicketServiceBean> getService(Integer ticketId) {
-        return Optional.ofNullable(ticketServiceMapper.getTicketServiceByTicketMasId(ticketId)).map(sdTicketServiceEntity -> {
-            SdTicketServiceBean bean = new SdTicketServiceBean();
-            ticketServiceBeanPopulator.populate(sdTicketServiceEntity, bean);
-            return bean;
-        });
-    }
-
-    @Override
     public void updateAppointment(String appointmentDate, boolean asap, String userId, String ticketMasId) {
         ticketMasMapper.updateAppointmentInMas(LocalDateTime.parse(appointmentDate), asap ? "Y" : "N", userId, ticketMasId);
     }

@@ -13,8 +13,6 @@ public interface SdTicketServiceMapper {
 
     List<SdTicketServiceEntity> getTicketServiceInfoByTicketMasId(@Param("ticketMasId") int ticketMasId);
 
-    SdTicketServiceEntity getTicketServiceByTicketMasId(@Param("ticketMasId") int ticketMasId);
-
     void removeServiceInfoByTicketMasId(@Param("ticketMasId") int ticketMasId);
 
     void insertServiceInfo(SdTicketServiceEntity entity);

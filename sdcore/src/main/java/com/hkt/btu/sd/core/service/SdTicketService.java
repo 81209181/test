@@ -42,8 +42,6 @@ public interface SdTicketService {
 
     void updateJobIdInService(Integer jobId, int ticketMasId, String userId);
 
-    Optional<SdTicketServiceBean> getService(Integer ticketId);
-
     void updateAppointment(String appointmentDate, boolean asap, String userId, String ticketMasId);
 
     boolean checkAppointmentDate(String appointmentDate);

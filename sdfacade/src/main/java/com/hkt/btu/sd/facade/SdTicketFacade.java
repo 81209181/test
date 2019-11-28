@@ -34,8 +34,6 @@ public interface SdTicketFacade {
 
     void updateJobIdInService(Integer jobId, int ticketMasId);
 
-    SdTicketServiceData getService(Integer ticketId);
-
     AppointmentData getAppointmentData(Integer ticketMasId);
 
     List<SdSymptomData> getSymptom(Integer ticketMasId);

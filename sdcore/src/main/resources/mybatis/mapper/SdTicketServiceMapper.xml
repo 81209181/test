@@ -41,20 +41,9 @@
                td.JOB_ID,
                s.SYMPTOM_DESCRIPTION
         from TICKET_DET td
-        inner join SYMPTOM s
+        left join SYMPTOM s
         on td.SYMPTOM_CODE = s.SYMPTOM_CODE
         where td.TICKET_MAS_ID = #{ticketMasId}
-    </select>
-
-    <select id="getTicketServiceByTicketMasId" resultType="com.hkt.btu.sd.core.dao.entity.SdTicketServiceEntity">
-        select TICKET_DET_ID      as ticketDetId,
-               TICKET_MAS_ID      as ticketMasId,
-               SERVICE_ID         as serviceId,
-               SERVICE_TYPE_CODE  as serviceTypeCode,
-               JOB_ID  as jobId,
-               SUBS_ID  as subsId
-        from TICKET_DET
-        where TICKET_MAS_ID = #{ticketMasId}
     </select>
 
     <insert id="insertServiceInfo" parameterType="com.hkt.btu.sd.core.dao.entity.SdTicketServiceEntity">
