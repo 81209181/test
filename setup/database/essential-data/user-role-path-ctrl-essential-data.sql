@@ -16,3 +16,4 @@ values('API_WFM', 7, '01634476', null);
 
 insert into USER_ROLE_PATH_CTRL (ROLE_ID, PATH_CTRL_ID, CREATEBY, REMARKS)
 values('API_BES', 8, '01634476', null);
+commit;

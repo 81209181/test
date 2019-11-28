@@ -58,3 +58,4 @@ values('VOIP','VoIP for One Comm','system');
 -- BN
 insert into service_type_offer_mapping(service_type_code,offer_name,createby)
 values('BN','broadband','system');
+commit;
