@@ -40,3 +40,4 @@ insert into user_role (ROLE_ID, ROLE_DESC, PARENT_ROLE_ID, STATUS, CREATEBY, MOD
 values ('E_ISRC_V', 'ISRC Voice', 'ENG', 'A', '01634476', '01634476', null);
 insert into user_role (ROLE_ID, ROLE_DESC, PARENT_ROLE_ID, STATUS, CREATEBY, MODIFYBY, REMARKS)
 values ('TH__E_ISRC_V', 'ISRC Voice Team Lead', 'TEAM_HEAD', 'A', '01634476', '01634476', null);
+commit;
