@@ -78,7 +78,7 @@ $().ready(function(){
             contentType: "application/json",
             data: JSON.stringify(arr),
             success:function(res){
-                showInfoMsg(res);
+                showInfoMsg(res, false);
                 window.location.reload();
             }
         }).fail(function(e){
@@ -164,7 +164,7 @@ $().ready(function(){
             data: JSON.stringify(arr),
             success:function(res){
                 if (res === "") {
-                    showInfoMsg("Update contact info success");
+                    showInfoMsg("Updated contact info.", false);
                 } else {
                     showErrorMsg(res);
                 }
