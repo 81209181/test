@@ -97,15 +97,14 @@ function calculateTimeDiff (oldTime, newTime) {
 function checkTimeout() {
     let timeOutCookie = getCookie("timeOut");
     let minute = calculateTimeDiff(timeOutCookie, new Date());
-    if (minute > 15) {
+    if (minute >= 15) {
             $('#session-expire-warning-modal').modal('show');
     } else {
         setTimeout('checkTimeout()',60000 * 14 + 30000);
     }
 }
 
-function getCookie(cname)
-{
+function getCookie(cname) {
     var name = cname + "=";
     var ca = document.cookie.split(';');
     for(var i=0; i<ca.length; i++)
