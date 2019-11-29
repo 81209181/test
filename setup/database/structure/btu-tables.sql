@@ -208,26 +208,27 @@ END;
 -- ..MM::::::::::::::::::::::::::::7MO. IDDDDDDDDDDDDDDDDDDDDZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
 -- ..MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMO. 7MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 -- User
-CREATE TABLE USER_PROFILE (
-  USER_ID               varchar2(12),
-  NAME                  varchar2(100),
-  STATUS                varchar2(2),
-
-  MOBILE                varchar2(15),
-  EMAIL                 varchar2(50)                    not null,
-
-  LDAP_DOMAIN           varchar2(50),
-  DOMAIN_EMAIL          varchar2(50),
-  PASSWORD              varchar2(100),
-  PASSWORD_MODIFYDATE   date,
-  LOGIN_TRIED           number default 0,
-
-  CREATEDATE            date     default SYSDATE        not null,
-  CREATEBY              varchar2(10)                    not null,
-  MODIFYDATE            date     default SYSDATE        not null,
-  MODIFYBY              varchar2(10)                    not null,
-  REMARKS               varchar2(250),
-  CONSTRAINT PK_USER_PROFILE PRIMARY KEY (USER_ID)
+create table USER_PROFILE
+(
+    USER_ID             VARCHAR2(12)           not null
+        constraint PK_USER_PROFILE
+            primary key,
+    NAME                VARCHAR2(100),
+    STATUS              VARCHAR2(2),
+    MOBILE              VARCHAR2(20),
+    EMAIL               VARCHAR2(50),
+    LDAP_DOMAIN         VARCHAR2(50),
+    PASSWORD            VARCHAR2(100),
+    PASSWORD_MODIFYDATE DATE,
+    LOGIN_TRIED         NUMBER default 0,
+    CREATEDATE          DATE   default SYSDATE not null,
+    CREATEBY            VARCHAR2(12)           not null,
+    MODIFYDATE          DATE   default SYSDATE not null,
+    MODIFYBY            VARCHAR2(12)           not null,
+    REMARKS             VARCHAR2(250),
+    STAFF_ID            VARCHAR2(50),
+    DOMAIN_EMAIL        VARCHAR2(50),
+    PRIMARY_ROLE_ID     VARCHAR2(20)
 );
 CREATE UNIQUE INDEX IDX_USER_PROFILE_1 ON USER_PROFILE (EMAIL);
 CREATE UNIQUE INDEX IDX_USER_PROFILE_2 ON USER_PROFILE (DOMAIN_EMAIL);
