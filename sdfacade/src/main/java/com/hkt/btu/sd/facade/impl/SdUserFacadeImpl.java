@@ -2,6 +2,7 @@ package com.hkt.btu.sd.facade.impl;
 
 import com.hkt.btu.common.core.exception.UserNotFoundException;
 import com.hkt.btu.common.facade.data.PageData;
+import com.hkt.btu.sd.core.dao.entity.SdUserEntity;
 import com.hkt.btu.sd.core.exception.*;
 import com.hkt.btu.sd.core.service.SdInputCheckService;
 import com.hkt.btu.sd.core.service.SdUserRoleService;
@@ -150,12 +151,13 @@ public class SdUserFacadeImpl implements SdUserFacade {
             return null;
         }
 
+        String employeeNumber = StringUtils.trim(createUserFormData.getUserId());
+
         // Prepare User Data
         String name = StringUtils.trim(createUserFormData.getName());
         String email = StringUtils.trim(createUserFormData.getEmail());
         String mobile = StringUtils.trim(createUserFormData.getMobile());
         String ldapDomain = StringUtils.trim(createUserFormData.getLdapDomain());
-        String employeeNumber = StringUtils.trim(createUserFormData.getUserId());
         List<String> userRoleIdList = createUserFormData.getUserRoleIdList();
 
         String newUserId;
