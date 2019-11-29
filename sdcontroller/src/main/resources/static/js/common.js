@@ -36,9 +36,7 @@ function prepareAjax(){
                 xhr.setRequestHeader(header, token);
             }
             document.cookie = "timeOut=" + new Date();
-            setTimeout(function(){
-               checkTimeout();
-            }, 60000 * 14 + 30000)
+            checkTimeout();
         }
     });
 
@@ -101,6 +99,8 @@ function checkTimeout() {
     let minute = calculateTimeDiff(timeOutCookie, new Date());
     if (minute > 15) {
             $('#session-expire-warning-modal').modal('show');
+    } else {
+        setTimeout('checkTimeout()',60000 * 14 + 30000);
     }
 }
 
