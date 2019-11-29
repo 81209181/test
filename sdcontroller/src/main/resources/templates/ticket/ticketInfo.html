@@ -258,11 +258,12 @@
                     </div>
                 </form>
                 <div class="offset-md-11">
-                    <button type="button" class="btn btn-primary mt-2 mb-md-2" id="btnCreateTicketRemarks" th:disabled="*{ticketStatusDesc} eq 'COMPLETE'">
-                        <i class="far fa-save"></i> Save
+                    <button type="button" class="btn btn-primary mt-2" id="btnCreateTicketRemarks" th:disabled="*{ticketStatusDesc} eq 'COMPLETE'">
+                        Update
                     </button>
                 </div>
             </div>
+            <hr style="visibility: hidden;">
             <table id="searchTicketRemarksTable" class="display" cellspacing="0" width="100%">
                 <thead>
                 <tr>
