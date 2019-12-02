@@ -240,11 +240,16 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     public List<String> getPrimaryRoles() {
         List<SdUserRoleBean> eligibleUserRoleGrantList = getEligibleUserRoleGrantList();
         List<SdUserRoleBean> primaryRoleList = new ArrayList<>();
-        eligibleUserRoleGrantList.forEach(sdUserRoleBean -> {
-            if (ELIGIBLE_PARENT_ROLE_ID_LIST_OF_PRIMARY_ROLE.contains(sdUserRoleBean.getParentRoleId())) {
-                primaryRoleList.add(sdUserRoleBean);
-            }
-        });
+
+        if (CollectionUtils.isNotEmpty(eligibleUserRoleGrantList)) {
+            eligibleUserRoleGrantList.forEach(sdUserRoleBean -> {
+                Optional.ofNullable(sdUserRoleBean.getParentRoleId()).ifPresent(parentRoleId -> {
+                    if (ELIGIBLE_PARENT_ROLE_ID_LIST_OF_PRIMARY_ROLE.contains(parentRoleId)) {
+                        primaryRoleList.add(sdUserRoleBean);
+                    }
+                });
+            });
+        }
         return primaryRoleList.stream().sorted(Comparator.comparing(SdUserRoleBean::getRoleDesc)).map(SdUserRoleBean::getRoleId).collect(Collectors.toList());
     }
 
