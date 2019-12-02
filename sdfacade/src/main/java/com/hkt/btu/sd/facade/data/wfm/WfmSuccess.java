@@ -3,7 +3,7 @@ package com.hkt.btu.sd.facade.data.wfm;
 public class WfmSuccess {
 
     private Integer jobId;
-    private Long requestid;
+    private Long requestId;
     private String result;
     private String faultId;
 
@@ -15,12 +15,12 @@ public class WfmSuccess {
         this.jobId = jobId;
     }
 
-    public Long getRequestid() {
-        return requestid;
+    public Long getRequestId() {
+        return requestId;
     }
 
-    public void setRequestid(Long requestid) {
-        this.requestid = requestid;
+    public void setRequestId(Long requestId) {
+        this.requestId = requestId;
     }
 
     public String getResult() {
