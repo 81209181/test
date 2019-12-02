@@ -37,6 +37,10 @@ import java.util.stream.Collectors;
 public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApiFacade {
     private static final Logger LOG = LogManager.getLogger(WfmApiFacadeImpl.class);
 
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
+
+    private static final DateTimeFormatter DISPLAY_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
     @Resource(name = "apiService")
     SdApiService apiService;
 
@@ -87,7 +91,6 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
 
     @Override
     public WfmPendingOrderData getPendingOrderByBsn(String bsn) {
-        final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
 
         WfmPendingOrderData responseData;
         try {
@@ -108,12 +111,9 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
         }
 
         // serviceReadyDate format
-        String serviceReadyDate = StringUtils.isEmpty(responseData.getSrdStartDateTime()) ? null :
-                LocalDateTime.parse(responseData.getSrdStartDateTime(), DATE_TIME_FORMATTER).toLocalDate().toString();
-        String srdStartTime = StringUtils.isEmpty(responseData.getSrdStartDateTime()) ? "" :
-                LocalDateTime.parse(responseData.getSrdStartDateTime(), DATE_TIME_FORMATTER).toLocalTime().toString();
-        String srdEndTime = StringUtils.isEmpty(responseData.getSrdEndDateTime()) ? "" :
-                LocalDateTime.parse(responseData.getSrdEndDateTime(), DATE_TIME_FORMATTER).toLocalTime().toString();
+        String serviceReadyDate = dateStrFormat(responseData.getSrdStartDateTime(), null);
+        String srdStartTime = dateStrFormat(responseData.getSrdStartDateTime(), null);
+        String srdEndTime = dateStrFormat(responseData.getSrdEndDateTime(), null);
         if (!srdStartTime.equals("00:00") && !srdEndTime.equals("00:00")) {
             serviceReadyDate = serviceReadyDate == null ? null : serviceReadyDate +
                     (StringUtils.isEmpty(srdStartTime) ? StringUtils.EMPTY : StringUtils.SPACE + srdStartTime +
@@ -121,15 +121,12 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
         }
 
         // appointmentDate format
-        String appointmentDate = StringUtils.isEmpty(responseData.getAppointmentDate()) ? null :
-                LocalDateTime.parse(responseData.getAppointmentDate(), DATE_TIME_FORMATTER).toLocalDate().toString();
-        String appointmentStartTime = StringUtils.isEmpty(responseData.getAppointmentStartDateTime()) ? "" :
-                LocalDateTime.parse(responseData.getAppointmentStartDateTime(), DATE_TIME_FORMATTER).toLocalTime().toString();
-        String appointmentEndTime = StringUtils.isEmpty(responseData.getAppointmentEndDateTime()) ? "" :
-                LocalDateTime.parse(responseData.getAppointmentEndDateTime(), DATE_TIME_FORMATTER).toLocalTime().toString();
+        String appointmentDate = dateStrFormat(responseData.getAppointmentDate(), null);
+        String appointmentStartTime = dateStrFormat(responseData.getAppointmentStartDateTime(), null);
+        String appointmentEndTime = dateStrFormat(responseData.getAppointmentEndDateTime(), null);
         if (!appointmentStartTime.equals("00:00") && !appointmentEndTime.equals("00:00")) {
             appointmentDate = appointmentDate == null ? null : appointmentDate +
-                    ( StringUtils.isEmpty(appointmentStartTime) ? StringUtils.EMPTY : StringUtils.SPACE + appointmentStartTime +
+                    (StringUtils.isEmpty(appointmentStartTime) ? StringUtils.EMPTY : StringUtils.SPACE + appointmentStartTime +
                             (StringUtils.isEmpty(appointmentEndTime) ? StringUtils.EMPTY : "-" + appointmentEndTime));
         }
 
@@ -142,9 +139,10 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
     @Override
     public List<WfmJobData> getJobInfo(Integer ticketMasId) {
         return Optional.ofNullable(ticketMasId).map(id -> {
-            Type type = new TypeToken<List<WfmJobData>>() {
-            }.getType();
-            return this.<WfmJobData>getDataList("/api/v1/sd/GetJobListByTicketId/" + ticketMasId, type, null);
+            Type type = new TypeToken<List<WfmJobData>>() {}.getType();
+            List<WfmJobData> dataList = this.getDataList("/api/v1/sd/GetJobListByTicketId/" + ticketMasId, type, null);
+            formatJobInfoDate(dataList);
+            return dataList.stream().filter(jobInfo -> !WfmJobData.LOCKED_STATUS.equals(jobInfo.getStatus())).collect(Collectors.toList());
         }).orElse(null);
     }
 
@@ -163,7 +161,8 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
     @Override
     public List<WfmJobProgressData> getJobProgessByTicketId(Integer ticketMasId) {
         return Optional.ofNullable(ticketMasId).map(id -> {
-            Type type = new TypeToken<List<WfmJobProgressData>>() {}.getType();
+            Type type = new TypeToken<List<WfmJobProgressData>>() {
+            }.getType();
             return this.<WfmJobProgressData>getDataList("/api/v1/sd/GetJobProgessByTicketId/" + ticketMasId, type, null);
         }).orElse(null);
     }
@@ -171,7 +170,8 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
     @Override
     public List<WfmJobRemarksData> getJobRemarkByTicketId(Integer ticketMasId) {
         return Optional.ofNullable(ticketMasId).map(id -> {
-            Type type = new TypeToken<List<WfmJobRemarksData>>() {}.getType();
+            Type type = new TypeToken<List<WfmJobRemarksData>>() {
+            }.getType();
             return this.<WfmJobRemarksData>getDataList("/api/v1/sd/GetJobRemarkByTicketId/" + ticketMasId, type, null);
         }).orElse(null);
     }
@@ -219,5 +219,25 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
 
         // failure return
         return null;
+    }
+
+    private String dateStrFormat(String time, DateTimeFormatter displayTimeFormatter) {
+        return Optional.ofNullable(displayTimeFormatter)
+                .map(formatter -> StringUtils.isEmpty(time) ? null :
+                                   LocalDateTime.parse(time, DATE_TIME_FORMATTER).format(formatter))
+                .orElse(StringUtils.isEmpty(time) ? null : LocalDateTime.parse(time, DATE_TIME_FORMATTER).toLocalDate().toString());
+    }
+
+    private void formatJobInfoDate(List<WfmJobData> dataList) {
+        if (CollectionUtils.isNotEmpty(dataList)) {
+            for (WfmJobData wfmJobData : dataList) {
+                wfmJobData.setApptSTime(dateStrFormat(wfmJobData.getApptSTime(), DISPLAY_DATE_TIME_FORMATTER));
+                wfmJobData.setApptETime(dateStrFormat(wfmJobData.getApptETime(), DISPLAY_DATE_TIME_FORMATTER));
+                wfmJobData.setSrTimestamp(dateStrFormat(wfmJobData.getSrTimestamp(), DISPLAY_DATE_TIME_FORMATTER));
+                wfmJobData.setApptTimestamp(dateStrFormat(wfmJobData.getApptTimestamp(), DISPLAY_DATE_TIME_FORMATTER));
+                wfmJobData.setActionTimestamp(dateStrFormat(wfmJobData.getActionTimestamp(), DISPLAY_DATE_TIME_FORMATTER));
+                wfmJobData.setLastUpTimestampTimestamp(dateStrFormat(wfmJobData.getLastUpTimestampTimestamp(), DISPLAY_DATE_TIME_FORMATTER));
+            }
+        }
     }
 }

@@ -5,18 +5,21 @@ import com.hkt.btu.common.facade.data.DataInterface;
 import java.sql.Timestamp;
 
 public class WfmJobData implements DataInterface {
+
+    public static final String LOCKED_STATUS = "LOCKED";
+
     // Job info
     private int jobId = 0;
     private String deptId = "";
     private String sysId = "";
     private String status = "";
     private String assignTech = "";
-    private Timestamp actionTimestamp;
-    private Timestamp srTimestamp;
-    private Timestamp apptTimestamp;
-    private Timestamp apptSTime;
-    private Timestamp apptETime;
-    private Timestamp lastUpTimestampTimestamp;
+    private String actionTimestamp;
+    private String srTimestamp;
+    private String apptTimestamp;
+    private String apptSTime;
+    private String apptETime;
+    private String lastUpTimestampTimestamp;
     private String fieldInd = "";
     private String lastJobInd = "";
     private String alertFieldRemark = "";
@@ -64,51 +67,51 @@ public class WfmJobData implements DataInterface {
         this.assignTech = assignTech;
     }
 
-    public Timestamp getActionTimestamp() {
+    public String getActionTimestamp() {
         return actionTimestamp;
     }
 
-    public void setActionTimestamp(Timestamp actionTimestamp) {
+    public void setActionTimestamp(String actionTimestamp) {
         this.actionTimestamp = actionTimestamp;
     }
 
-    public Timestamp getSrTimestamp() {
+    public String getSrTimestamp() {
         return srTimestamp;
     }
 
-    public void setSrTimestamp(Timestamp srTimestamp) {
+    public void setSrTimestamp(String srTimestamp) {
         this.srTimestamp = srTimestamp;
     }
 
-    public Timestamp getApptTimestamp() {
+    public String getApptTimestamp() {
         return apptTimestamp;
     }
 
-    public void setApptTimestamp(Timestamp apptTimestamp) {
+    public void setApptTimestamp(String apptTimestamp) {
         this.apptTimestamp = apptTimestamp;
     }
 
-    public Timestamp getApptSTime() {
+    public String getApptSTime() {
         return apptSTime;
     }
 
-    public void setApptSTime(Timestamp apptSTime) {
+    public void setApptSTime(String apptSTime) {
         this.apptSTime = apptSTime;
     }
 
-    public Timestamp getApptETime() {
+    public String getApptETime() {
         return apptETime;
     }
 
-    public void setApptETime(Timestamp apptETime) {
+    public void setApptETime(String apptETime) {
         this.apptETime = apptETime;
     }
 
-    public Timestamp getLastUpTimestampTimestamp() {
+    public String getLastUpTimestampTimestamp() {
         return lastUpTimestampTimestamp;
     }
 
-    public void setLastUpTimestampTimestamp(Timestamp lastUpTimestampTimestamp) {
+    public void setLastUpTimestampTimestamp(String lastUpTimestampTimestamp) {
         this.lastUpTimestampTimestamp = lastUpTimestampTimestamp;
     }
 

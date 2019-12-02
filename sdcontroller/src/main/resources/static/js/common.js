@@ -3,7 +3,7 @@ var time2reload, countdown ;
 $(document).ready(function () {
     prepareAjax();
 
-    document.cookie = "timeOut=" + new Date();
+    addTimeOutCookie();
 
     $('#session-expire-warning-modal').find('button').on('click',function(){
         $.get('/public/keepSession',function(res){
@@ -16,12 +16,18 @@ $(document).ready(function () {
         });
     })
 
+    checkTimeout();
+
     $('#session-expire-warning-modal').on('show.bs.modal',function(){
         time2reload = setTimeout(function(){
-            location.reload();
+            setTimeout(function () {
+                location.reload();
+            }, 5000);
         },30000);
         countdown = setInterval(function(){
-            $('mark').text($('mark').text() - 1);
+            if ($('mark').text() !== 0) {
+                $('mark').text($('mark').text() - 1);
+            }
         },1000)
     })
 });
@@ -35,7 +41,7 @@ function prepareAjax(){
             if (header && token) {
                 xhr.setRequestHeader(header, token);
             }
-            document.cookie = "timeOut=" + new Date();
+            addTimeOutCookie();
             checkTimeout();
         }
     });
@@ -97,7 +103,7 @@ function calculateTimeDiff (oldTime, newTime) {
 function checkTimeout() {
     let timeOutCookie = getCookie("timeOut");
     let minute = calculateTimeDiff(timeOutCookie, new Date());
-    if (minute >= 15) {
+    if (minute >= 14) {
             $('#session-expire-warning-modal').modal('show');
     } else {
         setTimeout('checkTimeout()',60000 * 14 + 30000);
@@ -107,10 +113,13 @@ function checkTimeout() {
 function getCookie(cname) {
     var name = cname + "=";
     var ca = document.cookie.split(';');
-    for(var i=0; i<ca.length; i++)
-    {
+    for(var i=0; i<ca.length; i++) {
         var c = ca[i].trim();
         if (c.indexOf(name)==0) return c.substring(name.length,c.length);
     }
     return "";
+}
+
+function addTimeOutCookie() {
+    document.cookie = "timeOut=" + new Date();
 }
