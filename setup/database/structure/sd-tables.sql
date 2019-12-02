@@ -94,46 +94,20 @@ CREATE INDEX IDX_TICKET_REMARKS_2 ON TICKET_REMARKS (CREATEDATE);
 --------------------------------------------------------------------------------------------------
 CREATE TABLE SERVICE_TYPE
 (
-    SERVICE_TYPE_CODE   varchar2(20),
-    DESCRIPTION         varchar2(200),
-
-    CREATEDATE          date                     default SYSDATE not null,
-    CREATEBY            varchar2(10)             not null,
-    MODIFYDATE          date                     default SYSDATE not null,
-    MODIFYBY            varchar2(10)             not null,
-    CONSTRAINT PK_TICKET_MAS PRIMARY KEY (SERVICE_TYPE_CODE)
-);
-
---------------------------------------------------------------------------------------------------
--- CREATE TABLE FAULT_TYPE
--- (
---     FAULT_TYPE_CODE     varchar2(20),
---
---     CREATEDATE          date                     default SYSDATE not null,
---     CREATEBY            varchar2(10)             not null,
---     MODIFYDATE          date                     default SYSDATE not null,
---     MODIFYBY            varchar2(10)             not null,
---     CONSTRAINT PK_TICKET_MAS PRIMARY KEY (FAULT_TYPE_CODE)
--- );
---SYMPTOM------------------------------------------------------------------------------------------------
-CREATE TABLE SERVICE_TYPE
-(
-    SERVICE_TYPE_CODE             varchar2(10)             not null,
-    SERVICE_TYPE_NAME             varchar2(30)             not null,
-
-    CREATEDATE                    date                     default SYSDATE not null,
-    CREATEBY                      varchar2(10)             not null,
-    MODIFYDATE                    date                     default SYSDATE not null,
-    MODIFYBY                      varchar2(10)             not null,
-    CONSTRAINT PK_SERVICE_TYPE PRIMARY KEY (SERVICE_TYPE_CODE)
+	SERVICE_TYPE_CODE VARCHAR2(10 BYTE) NOT NULL ENABLE, 
+	SERVICE_TYPE_NAME VARCHAR2(30 BYTE) NOT NULL ENABLE, 
+	CREATEDATE DATE DEFAULT SYSDATE NOT NULL ENABLE, 
+	CREATEBY VARCHAR2(12 BYTE) NOT NULL ENABLE, 
+	MODIFYDATE DATE DEFAULT SYSDATE NOT NULL ENABLE, 
+	MODIFYBY VARCHAR2(12 BYTE) NOT NULL ENABLE, 
+	CONSTRAINT PK_SERVICE_TYPE PRIMARY KEY (SERVICE_TYPE_CODE)	
 );
 
 --------------------------------------------------------------------------------------------------
 CREATE TABLE SERVICE_TYPE_OFFER_MAPPING
 (
     SERVICE_TYPE_CODE             varchar2(10)             not null,
-    OFFER_NAME                    varchar2(40)             not null,
-
+    OFFER_NAME                    varchar2(100)             not null,
     CREATEDATE                    date                     default SYSDATE not null,
     CREATEBY                      varchar2(10)             not null
 );
@@ -153,7 +127,7 @@ CREATE TABLE SYMPTOM_GROUP
 CREATE TABLE SYMPTOM
 (
     SYMPTOM_CODE                  varchar2(10)             not null,
-    SYMPTOM_DESCRIPTION           varchar2(30)             not null,
+    SYMPTOM_DESCRIPTION           varchar2(120)             not null,
     SYMPTOM_GROUP_CODE            varchar2(10)             not null,
 
     CREATEDATE                    date                     default SYSDATE not null,

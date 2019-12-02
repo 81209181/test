@@ -55,13 +55,13 @@ $().ready(function(){
         }, function(response){
             let res = response.list;
             if(res.length === 1){
-                $.each(res.pop(),function(key,val){
+                let info = res[0];
+                bnButtonCtrl(info.bnCtrl);
+                voIpButtonCtrl(info.voIpCtrl);
+                eCloudButtonCtrl(info.cloudCtrl);
+                $('.eCloudBtn').data('url',info.url);
+                $.each(info,function(key,val){
                     $('form').find('input[name='+ key +']').val(val);
-                    if(key === 'url'){
-                        $('.eCloudBtn').data('url',val);
-                    }
-                    // button control
-                    buttonCtrl(key,val);
                 });
             } else {
                 $.each(res, function (i, val) {
@@ -88,14 +88,13 @@ $().ready(function(){
             $('input[name=searchKey]').val(searchKey.val());
             $('input[name=searchValue]').val(searchValue.val());
             $('#btnApplyProduct').on('click',function(){
-                $.each($('tbody').find('input:checked').parent().parent().data('info'),function(i,val){
+                let info = $('tbody').find('input:checked').parent().parent().data('info');
+                bnButtonCtrl(info.bnCtrl);
+                voIpButtonCtrl(info.voIpCtrl);
+                eCloudButtonCtrl(info.cloudCtrl);
+                $('.eCloudBtn').data('url',info.url);
+                $.each(info,function(i,val){
                     $('form').find('input[name='+i+']').val(val);
-                    if(i === 'url'){
-                        $('.eCloudBtn').data('url',val);
-                    }
-                    // button control
-                    buttonCtrl(i,val);
-
                 })
                 $('#products_modal').modal('hide');
             })
@@ -143,14 +142,17 @@ $().ready(function(){
     })
 
     //related table
-
+    var relatedTicketTable;
     $("#relatedTicketTable").hide();
     $('.panel').find('.panel-body').slideUp();
     $('.panel').find('.panel-heading').find('span').addClass('panel-collapsed');
 
     $(document).on('click', '.panel-heading span.clickable', function(e){
-        $('#relatedTicketTable').dataTable().fnClearTable(false);
-        $('#relatedTicketTable').dataTable().fnDestroy();
+        if ($('#relatedTicketTable').hasClass('dataTable')) {
+            relatedTicketTable = $('#relatedTicketTable').dataTable();
+            relatedTicketTable.fnClearTable();
+            relatedTicketTable.fnDestroy();
+        }
         var $this = $(this);
         if(!$this.hasClass('panel-collapsed')) {
             $this.parents('.panel').find('.panel-body').slideUp();
@@ -166,7 +168,7 @@ $().ready(function(){
                 $('#relatedTicketTable').hide();
             } else {
                 $('#relatedTicketTable').show();
-                $('#relatedTicketTable').DataTable({
+                relatedTicketTable = $('#relatedTicketTable').DataTable({
                     processing: true,
                     serverSide: true,
                     ordering: false,
@@ -261,11 +263,14 @@ function getFinalBsn(){
     if(relatedBsn.length < 1){
         if(serviceNo.length < 1){
             showErrorMsg('No service number!');
-            return relatedBsn;
+            return;
         }else{
             return serviceNo;
         }
+    } else {
+        return relatedBsn;
     }
+
 }
 function reset(){
     $('#searchKey').val('');
@@ -277,30 +282,29 @@ function reset(){
     $('.panel').find('.panel-body').slideUp();
     $('.panel').find('.panel-heading').find('span').addClass('panel-collapsed');
 }
+function eCloudButtonCtrl(flag) {
+    if (flag) {
+        eCloudBtn.attr('disabled', false);
+        inventoryBtn.attr('disabled', true);
+        bbBtn.attr('disabled', true);
+        voIpBtn.attr('disabled', true);
+    }
+}
 
-function buttonCtrl(key,val){
-    if (key === 'bnCtrl') {
-        if (val) {
-            eCloudBtn.attr('disabled', true);
-            inventoryBtn.attr('disabled', false);
-            bbBtn.attr('disabled', false);
-            voIpBtn.attr('disabled', true);
-        }
+function bnButtonCtrl(val){
+    if(val){
+        eCloudBtn.attr('disabled', true);
+        inventoryBtn.attr('disabled', false);
+        bbBtn.attr('disabled', false);
+        voIpBtn.attr('disabled', true);
     }
-    if (key === 'voIpCtrl'){
-        if(val){
-            eCloudBtn.attr('disabled', true);
-            inventoryBtn.attr('disabled', false);
-            bbBtn.attr('disabled', false);
-            voIpBtn.attr('disabled', false);
-        }
-    }
-    if (key === 'cloudCtrl'){
-        if(val){
-            eCloudBtn.attr('disabled', false);
-            inventoryBtn.attr('disabled', true);
-            bbBtn.attr('disabled', true);
-            voIpBtn.attr('disabled', true);
-        }
+}
+
+function voIpButtonCtrl(val){
+    if(val){
+        eCloudBtn.attr('disabled', true);
+        inventoryBtn.attr('disabled', false);
+        bbBtn.attr('disabled', false);
+        voIpBtn.attr('disabled', false);
     }
 }

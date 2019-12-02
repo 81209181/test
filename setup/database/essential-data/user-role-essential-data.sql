@@ -18,6 +18,8 @@ values ('API', 'System API', 'BASIC', 'A', 'Y', '81149189', '81149189', null);
 -- level 2
 insert into user_role (ROLE_ID, ROLE_DESC, PARENT_ROLE_ID, STATUS, ABSTRACT, CREATEBY, MODIFYBY, REMARKS)
 values ('API_WFM', 'WFM Server', 'API', 'A', 'Y', '81149189', '81149189', null);
+INSERT INTO user_role (ROLE_ID, ROLE_DESC, PARENT_ROLE_ID, STATUS, ABSTRACT, CREATEBY, MODIFYBY, REMARKS)
+VALUES ('API_BES', 'BES Server', 'API', 'A', 'Y', '81209181', '81209181', null);
 
 insert into user_role (ROLE_ID, ROLE_DESC, PARENT_ROLE_ID, STATUS, CREATEBY, MODIFYBY, REMARKS)
 values ('O_CHL', 'CHL', 'OPT', 'A', '01634476', '01634476', null);
@@ -38,3 +40,15 @@ insert into user_role (ROLE_ID, ROLE_DESC, PARENT_ROLE_ID, STATUS, CREATEBY, MOD
 values ('E_ISRC_V', 'ISRC Voice', 'ENG', 'A', '01634476', '01634476', null);
 insert into user_role (ROLE_ID, ROLE_DESC, PARENT_ROLE_ID, STATUS, CREATEBY, MODIFYBY, REMARKS)
 values ('TH__E_ISRC_V', 'ISRC Voice Team Lead', 'TEAM_HEAD', 'A', '01634476', '01634476', null);
+
+insert into user_role (ROLE_ID, ROLE_DESC, PARENT_ROLE_ID, STATUS, CREATEBY, MODIFYBY, REMARKS)
+values ('O_NFM', 'NFM', 'OPT', 'A', '01634476', '01634476', null);
+insert into user_role (ROLE_ID, ROLE_DESC, PARENT_ROLE_ID, STATUS, CREATEBY, MODIFYBY, REMARKS)
+values ('TH__O_NFM', 'NFM Team Lead', 'TEAM_HEAD', 'A', '01634476', '01634476', null);
+
+insert into user_role (ROLE_ID, ROLE_DESC, PARENT_ROLE_ID, STATUS, CREATEBY, MODIFYBY, REMARKS)
+values ('O_USC', 'USC', 'OPT', 'A', '01634476', '01634476', null);
+insert into user_role (ROLE_ID, ROLE_DESC, PARENT_ROLE_ID, STATUS, CREATEBY, MODIFYBY, REMARKS)
+values ('TH__O_USC', 'USC Team Lead', 'TEAM_HEAD', 'A', '01634476', '01634476', null);
+
+commit;

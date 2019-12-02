@@ -163,6 +163,11 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     public String createLdapUser(String name, String mobile, String employeeNumber,
                                  String ldapDomain, String email, String primaryRoleId, List<String> toGrantRoleIdList)
             throws UserNotFoundException, InvalidInputException {
+        SdUserEntity existUser = sdUserMapper.getLdapUserByUserId(employeeNumber);
+        if (existUser != null) {
+            throw new DuplicateUserEmailException("The user already exists.");
+        }
+
         // get current userId for CreateBy
         String createBy = getCurrentUserUserId();
         // check current user has right to create user of user role

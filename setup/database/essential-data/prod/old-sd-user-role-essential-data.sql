@@ -26,3 +26,4 @@ insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('01610304','O_CHL');
 insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('08032294','O_CHL');
 insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('09293531','O_CHL');
 insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('00226811','TH__O_CHL');
+commit;

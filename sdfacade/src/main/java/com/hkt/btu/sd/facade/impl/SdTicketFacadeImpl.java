@@ -3,8 +3,8 @@ package com.hkt.btu.sd.facade.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.facade.data.PageData;
-import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
 import com.hkt.btu.sd.core.exception.ApiException;
+import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
 import com.hkt.btu.sd.core.service.SdTicketService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.*;
@@ -19,6 +19,7 @@ import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.wfm.WfmAppointmentResData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobProgressData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobRemarksData;
+import com.hkt.btu.sd.facade.data.wfm.WfmMakeApptData;
 import com.hkt.btu.sd.facade.populator.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -298,15 +299,6 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public SdTicketServiceData getService(Integer ticketId) {
-        return ticketService.getService(ticketId).map(sdTicketServiceBean -> {
-            SdTicketServiceData data = new SdTicketServiceData();
-            ticketServiceDataPopulator.populate(sdTicketServiceBean, data);
-            return data;
-        }).orElse(null);
-    }
-
-    @Override
     public AppointmentData getAppointmentData(Integer ticketMasId) {
         if (ticketMasId == null) {
             LOG.warn("Empty ticketMasId.");
@@ -365,14 +357,14 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public BesSubFaultData getFaultInfo(String subscriberId) {
+    public BesSubFaultData getFaultInfo(String subscriberId, Pageable pageable) {
         if (StringUtils.isEmpty(subscriberId)) {
             return BesSubFaultData.MISSING_PARAM;
         }
-
+        BesSubFaultData besSubFaultData = new BesSubFaultData();
         try {
-            // get ticket det list
-            List<SdTicketServiceBean> sdTicketServiceBeanList = ticketService.findServiceBySubscriberId(subscriberId);
+            // get ticket paged det list
+            List<SdTicketServiceBean> sdTicketServiceBeanList = ticketService.findServiceBySubscriberId(subscriberId, pageable);
             if (CollectionUtils.isEmpty(sdTicketServiceBeanList)) {
                 return BesSubFaultData.NOT_FOUND;
             }
@@ -391,9 +383,12 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                 faultInfoDataPopulator.populate(sdTicketData, besFaultInfoData);
                 besFaultInfoDataList.add(besFaultInfoData);
             }
-
-            BesSubFaultData besSubFaultData = new BesSubFaultData();
-            besSubFaultData.setList(besFaultInfoDataList);
+            if (pageable==null) {
+                besSubFaultData.setList(besFaultInfoDataList);
+            } else {
+                long count = ticketService.countServiceBySubscriberId(subscriberId);
+                besSubFaultData.setPagedList(new PageData<>(besFaultInfoDataList, pageable, count));
+            }
             return besSubFaultData;
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
@@ -433,22 +428,23 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     @Override
     public String closeTicketByApi(int ticketMasId, String reasonType, String reasonContent, String userId) {
         String systemId = userService.getCurrentUserUserId();
-        if (StringUtils.isNotEmpty(userId)) {
-            userId = systemId + " - " + userId;
+
+        // close ticket in servicedesk
+        try {
+            ticketService.closeTicket(ticketMasId, reasonType, reasonContent, systemId, userId, false);
+            LOG.info("Closed (by API) ticket in servicedesk. (ticketMasId: " + ticketMasId + ")");
+            return null;
+        } catch (InvalidInputException e) {
+            LOG.warn(e.getMessage());
+            return e.getMessage();
         }
-        return closeTicket(ticketMasId, reasonType, reasonContent, userId, systemId, "");
     }
 
     @Override
     public String closeTicket(int ticketMasId, String reasonType, String reasonContent, String contactName, String contactNumber) {
-        String currentUserId = userService.getCurrentUserUserId();
-        return closeTicket(ticketMasId, reasonType, reasonContent, currentUserId, contactName, contactNumber);
-    }
-
-    private String closeTicket(int ticketMasId, String reasonType, String reasonContent, String closeby, String contactName, String contactNumber) {
         // close ticket in servicedesk
         try {
-            ticketService.closeTicket(ticketMasId, reasonType, reasonContent, closeby, contactName, contactNumber);
+            ticketService.closeTicket(ticketMasId, reasonType, reasonContent, contactName, contactNumber, true);
             LOG.info("Closed ticket in servicedesk. (ticketMasId: " + ticketMasId + ")");
         } catch (InvalidInputException e) {
             LOG.warn(e.getMessage());
@@ -467,20 +463,20 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public void isAllow(String ticketMasId, String action) {
+    public void isAllow(int ticketMasId, String action) {
         switch (action) {
             case SdTicketMasData.ACTION_TYPE.WORKING:
-                ticketService.getTicket(Integer.valueOf(ticketMasId)).map(SdTicketMasBean::getStatus)
+                ticketService.getTicket(ticketMasId).map(SdTicketMasBean::getStatus)
                         .filter(s -> s.equals(TicketStatusEnum.OPEN))
                         .orElseThrow(() -> new RuntimeException("Cannot update. This ticket has been passed to working parties."));
                 break;
             case SdTicketMasData.ACTION_TYPE.COMPLETE:
-                ticketService.getTicket(Integer.valueOf(ticketMasId)).map(SdTicketMasBean::getStatus)
+                ticketService.getTicket(ticketMasId).map(SdTicketMasBean::getStatus)
                         .filter(s -> !s.equals(TicketStatusEnum.COMPLETE))
                         .orElseThrow(() -> new RuntimeException("Cannot update. This ticket has been completed."));
                 break;
             default:
-                ticketService.getTicket(Integer.valueOf(ticketMasId)).map(SdTicketMasBean::getStatus)
+                ticketService.getTicket(ticketMasId).map(SdTicketMasBean::getStatus)
                         .filter(s -> (s == TicketStatusEnum.WORKING || s == TicketStatusEnum.COMPLETE)).ifPresent(s -> {
                     if (s.equals(TicketStatusEnum.COMPLETE)) {
                         throw new RuntimeException("Cannot update. This ticket has been completed.");
@@ -570,6 +566,24 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         TeamSummaryData data = new TeamSummaryData();
         TeamSummaryBean summaryBean = ticketService.getTeamSummary();
         teamSummaryDataPopulator.populate(summaryBean,data);
+        return data;
+    }
+
+    @Override
+    public WfmMakeApptData getMakeApptDataByTicketDetId(Integer ticketDetId) {
+        SdMakeApptBean bean = ticketService.getTicketServiceByDetId(ticketDetId);
+
+        if (bean == null) {
+            return null;
+        }
+
+        WfmMakeApptData data = new WfmMakeApptData();
+        data.setBsn(bean.getBsn());
+        data.setServiceType(bean.getServiceType());
+        data.setTicketMasId(bean.getTicketMasId());
+        data.setTicketDetId(bean.getTicketDetId());
+        data.setSymptomCode(bean.getSymptomCode());
+
         return data;
     }
 }

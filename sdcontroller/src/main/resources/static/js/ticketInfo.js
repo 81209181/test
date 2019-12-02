@@ -6,11 +6,7 @@ var ngn3Btn = $('.ngn3Btn'),
 
 $().ready(function(){
 
-    var ticketDetId = "";
-
-    let symptomCode = "";
-
-    let serviceType = "";
+    let ticketDetId = "";
 
     $('.selectpicker').selectpicker({});
 
@@ -33,35 +29,20 @@ $().ready(function(){
             if (res.length > 0) {
                 $.each(res,function(index,j){
                     let service =$('#service');
-                    getOtherServiceData(j.serviceCode);
+                    getExternalServiceData(j.serviceCode);
+                    bnButtonCtrl(j.bnCtrl);
+                    voIpButtonCtrl(j.voIpCtrl);
+                    eCloudButtonCtrl(j.cloudCtrl);
+                    ticketDetId = j.ticketDetId;
+                    let faultsList = j.faultsList;
+                    if(faultsList == '' ){
+                        $('#btnMakeAppointment').attr('disabled', true);
+                    }
+                    for (item of faultsList) {
+                        $('#symptomList').find('option[value=' + item.symptomCode + ']').attr('selected', 'selected');
+                    }
                     $.each(j,function(key,value){
                         service.find('input[name='+key+']').val(value);
-                        if (key === 'faultsList') {
-                            if (value == '') {
-                                $('#btnMakeAppointment').attr('disabled', true);
-                            }
-                            for (item of value) {
-                                $('#symptomList').find('option[value=' + item.symptomCode + ']').attr('selected', 'selected');
-                                symptomCode = item.symptomCode;
-                            }
-
-                        }
-                        if (key === 'ticketDetId') {
-                            ticketDetId = value;
-                        }
-                        if (key === 'serviceType') {
-                            serviceType = value
-                        }
-                        // button control
-                        if (key === 'bnCtrl') {
-                            bnButtonCtrl(value);
-                        }
-                        if (key === 'voIpCtrl'){
-                            voIpButtonCtrl(value);
-                        }
-                        if (key === 'cloudCtrl'){
-                            eCloudButtonCtrl(value);
-                        }
                     })
                 })
                 $('.selectpicker').selectpicker('refresh');
@@ -97,7 +78,7 @@ $().ready(function(){
             contentType: "application/json",
             data: JSON.stringify(arr),
             success:function(res){
-                showInfoMsg(res);
+                showInfoMsg(res, false);
                 window.location.reload();
             }
         }).fail(function(e){
@@ -122,15 +103,11 @@ $().ready(function(){
 
     // make appointment
     $('#btnMakeAppointment').on('click', function () {
-        if (ticketMasId === '') {
-            showErrorMsg('No ticket mas Id');
-            return;
-        }
         if (ticketDetId === '') {
             showErrorMsg('No ticket detail Id.');
             return;
         }
-        makeAppointment(ticketMasId, ticketDetId, symptomCode,serviceType);
+        makeAppointment(ticketDetId);
     });
 
     getAppointmentInfo(ticketMasId);
@@ -187,7 +164,7 @@ $().ready(function(){
             data: JSON.stringify(arr),
             success:function(res){
                 if (res === "") {
-                    showInfoMsg("Update contact info success");
+                    showInfoMsg("Updated contact info.", false);
                 } else {
                     showErrorMsg(res);
                 }
@@ -226,22 +203,10 @@ $().ready(function(){
 
     // submit button
     $('#btnTicketSubmit').on('click',function(){
-        let ticket ={};
-        let ticket_input =$('.card-body').find('input');
-        $.each(ticket_input,function(index,input){
-            ticket[$(input).attr('name')] =$(input).val();
-        })
-        ticket['ticketMasId'] =ticketMasId;
         clearAllMsg();
-        $.ajax({
-            url:'/ticket/submit',
-            type : 'POST',
-            dataType: 'json',
-            data: ticket,
-            success:function(res){
-                if(res.success){
-                    location.reload();
-                }
+        $.post('/ticket/submit',{'ticketMasId':ticketMasId},function(res){
+            if(res.success){
+                location.reload();
             }
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";
@@ -294,13 +259,17 @@ $().ready(function(){
 
     ajaxGetJobInfo(ticketMasId);
 
+    var relatedTicketTable;
     $('#relatedTicketTable').hide();
     $('.panel').find('.panel-body').slideUp();
     $('.panel').find('.panel-heading').find('span').addClass('panel-collapsed');
 
     $(document).on('click', '.panel-heading span.clickable', function(e){
-        $('#relatedTicketTable').dataTable().fnClearTable(false);
-        $('#relatedTicketTable').dataTable().fnDestroy();
+        if ($('#relatedTicketTable').hasClass('dataTable')) {
+            relatedTicketTable = $('#relatedTicketTable').dataTable();
+            relatedTicketTable.fnClearTable();
+            relatedTicketTable.fnDestroy();
+        }
         var $this = $(this);
         if(!$this.hasClass('panel-collapsed')) {
             $this.parents('.panel').find('.panel-body').slideUp();
@@ -316,7 +285,7 @@ $().ready(function(){
                 $('#relatedTicketTable').hide();
             } else {
                 $('#relatedTicketTable').show();
-                $('#relatedTicketTable').DataTable({
+                relatedTicketTable = $('#relatedTicketTable').DataTable({
                     processing: true,
                     serverSide: true,
                     ordering: false,
@@ -394,7 +363,7 @@ function removeContact(btn){
     }
 }
 
-function makeAppointment(ticketMasId, ticketDetId, symptomCode, serviceType) {
+function makeAppointment(ticketDetId) {
 
     let bsn = $("#service").find('input[name=relatedBsn]').val();
     if (bsn === '') {
@@ -402,11 +371,7 @@ function makeAppointment(ticketMasId, ticketDetId, symptomCode, serviceType) {
     }
 
     $.get('/ticket/token', {
-        bsn : bsn,
-        ticketMasId: ticketMasId,
-        ticketDetId: ticketDetId,
-        symptomCode: symptomCode,
-        serviceType: serviceType
+        ticketDetId: ticketDetId
     }, function (res) {
         let window = AppointmentSDObj.make({
             data: {
@@ -627,8 +592,8 @@ function voIpButtonCtrl(val){
         voIpBtn.attr('disabled', false);
     }
 }
-function getOtherServiceData(code){
-    $.get('/ticket/getOtherServiceData/'+code,function(res){
+function getExternalServiceData(code){
+    $.get('/ticket/get-external-service-data/'+code,function(res){
         eCloudBtn.data('url',res.couldUrl);
         $.each(res,function(key,val){
             $('#service').find('input[name='+key+']').val(val);

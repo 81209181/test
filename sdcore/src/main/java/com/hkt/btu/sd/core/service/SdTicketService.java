@@ -42,15 +42,13 @@ public interface SdTicketService {
 
     void updateJobIdInService(Integer jobId, int ticketMasId, String userId);
 
-    Optional<SdTicketServiceBean> getService(Integer ticketId);
-
     void updateAppointment(String appointmentDate, boolean asap, String userId, String ticketMasId);
 
     boolean checkAppointmentDate(String appointmentDate);
 
     List<SdSymptomBean> getSymptomList(Integer ticketMasId);
 
-    List<SdTicketServiceBean> findServiceBySubscriberId(String subscriberId);
+    List<SdTicketServiceBean> findServiceBySubscriberId(String subscriberId, Pageable pageable);
 
     void updateTicketStatus(int ticketMasId, String status, String userId);
 
@@ -59,7 +57,8 @@ public interface SdTicketService {
     List<SdTicketMasBean> getTicketByServiceNo(String serviceNom, String ticketType, String excludeStatus);
     List<SdTicketMasBean> getPendingTicketList(String serviceNo);
 
-    void closeTicket(int ticketMasId, String reasonType, String reasonContent, String userId, String contactName, String contactNumber) throws InvalidInputException;
+    void closeTicket(int ticketMasId, String reasonType, String reasonContent,
+                     String contactName, String contactNumber, boolean nonApiClose) throws InvalidInputException;
 
     void updateTicketType(int ticketMasId, String job, String userId);
 
@@ -68,4 +67,8 @@ public interface SdTicketService {
     List<TicketTypeEnum> getTicketTypeList();
 
     TeamSummaryBean getTeamSummary();
+
+    long countServiceBySubscriberId(String subscriberId);
+
+    SdMakeApptBean getTicketServiceByDetId(Integer ticketDetId);
 }

@@ -4,6 +4,7 @@ import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.core.exception.ApiException;
 import com.hkt.btu.sd.facade.data.*;
+import com.hkt.btu.sd.facade.data.wfm.WfmMakeApptData;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -33,13 +34,11 @@ public interface SdTicketFacade {
 
     void updateJobIdInService(Integer jobId, int ticketMasId);
 
-    SdTicketServiceData getService(Integer ticketId);
-
     AppointmentData getAppointmentData(Integer ticketMasId);
 
     List<SdSymptomData> getSymptom(Integer ticketMasId);
 
-    BesSubFaultData getFaultInfo(String subscriberId);
+    BesSubFaultData getFaultInfo(String subscriberId, Pageable pageable);
 
     SdTicketData getTicketInfo(Integer ticketMasId);
 
@@ -48,7 +47,7 @@ public interface SdTicketFacade {
     String closeTicketByApi(int ticketMasId, String reasonType, String reasonContent, String closeby);
     String closeTicket(int ticketMasId, String reasonType, String reasonContent, String contactName, String contactNumber);
 
-    void isAllow(String ticketMasId,String action);
+    void isAllow(int ticketMasId,String action);
 
     boolean increaseCallInCount(Integer ticketMasId);
 
@@ -59,4 +58,6 @@ public interface SdTicketFacade {
     List<CodeDescData> getTicketTypeList();
 
     TeamSummaryData getTeamSummary();
+
+    WfmMakeApptData getMakeApptDataByTicketDetId(Integer ticketDetId);
 }

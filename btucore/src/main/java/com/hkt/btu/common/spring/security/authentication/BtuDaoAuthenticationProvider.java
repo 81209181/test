@@ -44,6 +44,10 @@ public class BtuDaoAuthenticationProvider extends DaoAuthenticationProvider {
         } catch (Exception e) {
             LOG.error("User Not Found!");
         }
+        if (StringUtils.isEmpty(authentication.getCredentials().toString().trim())) {
+            LOG.error("Please input password!");
+            throw new BadCredentialsException("Please input password!");
+        }
         if (userBean == null) {
             throw new BadCredentialsException("User Not Found!");
         } else {

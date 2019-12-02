@@ -61,11 +61,14 @@ public class SymptomController {
                                                @RequestParam(defaultValue = "0") int start,
                                                @RequestParam(defaultValue = "10") int length,
                                                @RequestParam String symptomGroupCode,
-                                               @RequestParam String symptomDescription) {
+                                               @RequestParam String symptomDescription,
+                                               @RequestParam String dirList,
+                                               @RequestParam String sortList) {
         int page = start / length;
+
         Pageable pageable = PageRequest.of(page, length);
 
-        PageData<SdSymptomData> pageData = sdSymptomFacade.searchSymptomList(pageable, symptomGroupCode, symptomDescription);
+        PageData<SdSymptomData> pageData = sdSymptomFacade.searchSymptomList(pageable, symptomGroupCode, symptomDescription, dirList, sortList);
         return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
     }
 

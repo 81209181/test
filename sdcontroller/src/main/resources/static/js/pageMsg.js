@@ -1,7 +1,13 @@
 function showInfoMsg(msg){
+    showInfoMsg(msg, true);
+}
+function showInfoMsg(msg, scrollToTop){
     msg = "[INFO][" + getFormattedTimestamp() + "] " + msg;
     $("#infoMsg").html(msg);
-    $("html, body").animate({ scrollTop: 0 }, "fast");
+
+    if(scrollToTop) {
+        $("html, body").animate({scrollTop: 0}, "fast");
+    }
     $("#infoMsg").slideDown(200);
 }
 
