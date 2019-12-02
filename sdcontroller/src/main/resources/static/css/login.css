@@ -1,6 +1,8 @@
 body{
-    background: url('../img/pic-building-04.jpg') no-repeat top;
-    background-size: cover;
+    /*background: url('../img/pic-building-04.jpg') no-repeat top;*/
+    background: url('../img/login-bg.png') no-repeat top;
+    background-size: auto
+;
 }
 
 #loginDiv{
