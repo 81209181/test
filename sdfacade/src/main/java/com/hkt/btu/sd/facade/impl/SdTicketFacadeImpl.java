@@ -429,6 +429,10 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     public String closeTicketByApi(int ticketMasId, String reasonType, String reasonContent, String userId) {
         String systemId = userService.getCurrentUserUserId();
 
+        if(StringUtils.isEmpty(reasonContent)){
+            reasonContent = "Empty sub-clear code.";
+        }
+
         // close ticket in servicedesk
         try {
             ticketService.closeTicket(ticketMasId, reasonType, reasonContent, systemId, userId, false);
