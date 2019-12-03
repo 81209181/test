@@ -160,13 +160,9 @@ public class SdSymptomFacadeImpl implements SdSymptomFacade {
     }
 
     private List<SdSymptomData> buildSymptomDataList(List<SdSymptomBean> beanList) {
-        if (CollectionUtils.isEmpty(beanList)) {
-            return null;
-        }
-
         // populate content
         List<SdSymptomData> dataList = new LinkedList<>();
-        if (!CollectionUtils.isEmpty(beanList)) {
+        if (CollectionUtils.isNotEmpty(beanList)) {
             for (SdSymptomBean bean : beanList) {
                 SdSymptomData data = new SdSymptomData();
                 symptomDataPopulator.populate(bean, data);

@@ -162,15 +162,14 @@ public class SdSymptomServiceImpl implements SdSymptomService {
     }
 
     private List<SdSymptomBean> buildSymptomBeanList(List<SdSymptomEntity> entityList) {
-        if (CollectionUtils.isEmpty(entityList)) {
-            return null;
-        }
 
         List<SdSymptomBean> beanList = new LinkedList<>();
-        for (SdSymptomEntity entity : entityList) {
-            SdSymptomBean bean = new SdSymptomBean();
-            symptomBeanPopulator.populate(entity, bean);
-            beanList.add(bean);
+        if (CollectionUtils.isNotEmpty(entityList)) {
+            for (SdSymptomEntity entity : entityList) {
+                SdSymptomBean bean = new SdSymptomBean();
+                symptomBeanPopulator.populate(entity, bean);
+                beanList.add(bean);
+            }
         }
 
         return beanList;
