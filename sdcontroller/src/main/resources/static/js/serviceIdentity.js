@@ -273,6 +273,7 @@ function getFinalBsn(){
 
 }
 function reset(){
+    clearAllMsg();
     $('#searchKey').val('');
     $('#searchValue').val('');
     $('form').get(0).reset();
