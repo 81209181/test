@@ -140,7 +140,7 @@ public class SdTicketServiceImpl implements SdTicketService {
         int pageSize = pageable.getPageSize();
 
         if (isReport) {
-            owningRole = userService.getUserByUserId(userService.getCurrentUserUserId()).getPrimaryRoleId();
+            owningRole = ((SdUserBean)userService.getCurrentUserBean()).getPrimaryRoleId();
         }
 
         if (StringUtils.isNotEmpty(ticketMasId)) {
@@ -402,7 +402,6 @@ public class SdTicketServiceImpl implements SdTicketService {
     public TeamSummaryBean getTeamSummary() {
         TeamSummaryBean teamSummaryBean = new TeamSummaryBean();
         List<StatusSummaryBean> statusSummaryBeans = new ArrayList<>();
-        //String owningRole = userService.getUserByUserId(userService.getCurrentUserUserId()).getPrimaryRoleId();
         SdUserBean currentUserBean = (SdUserBean) userService.getCurrentUserBean();
         String owningRole = currentUserBean.getPrimaryRoleId();
         List<StatusSummaryEntity> countStatus = ticketMasMapper.getCountStatusByTicketType(owningRole);
