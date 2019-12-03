@@ -30,7 +30,7 @@ public interface SdTicketFacade {
 
     List<SdTicketRemarkData> getTicketRemarksByTicketId(Integer ticketMasId);
 
-    String createTicketRemarks(Integer ticketMasId, String remarks);
+    void createTicketRemarks(Integer ticketMasId, String remarks);
 
     void updateJobIdInService(Integer jobId, int ticketMasId);
 
