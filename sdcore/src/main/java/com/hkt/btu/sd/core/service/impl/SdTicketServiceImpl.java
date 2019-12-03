@@ -28,7 +28,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class SdTicketServiceImpl implements SdTicketService {
-
     private static final Logger LOG = LogManager.getLogger(SdTicketServiceImpl.class);
 
     @Resource
@@ -140,7 +139,8 @@ public class SdTicketServiceImpl implements SdTicketService {
         int pageSize = pageable.getPageSize();
 
         if (isReport) {
-            owningRole = userService.getUserByUserId(userService.getCurrentUserUserId()).getPrimaryRoleId();
+            SdUserBean currentUserBean = userService.getCurrentSdUserBean();
+            owningRole = currentUserBean.getPrimaryRoleId();
         }
 
         if (StringUtils.isNotEmpty(ticketMasId)) {
@@ -402,8 +402,7 @@ public class SdTicketServiceImpl implements SdTicketService {
     public TeamSummaryBean getTeamSummary() {
         TeamSummaryBean teamSummaryBean = new TeamSummaryBean();
         List<StatusSummaryBean> statusSummaryBeans = new ArrayList<>();
-        //String owningRole = userService.getUserByUserId(userService.getCurrentUserUserId()).getPrimaryRoleId();
-        SdUserBean currentUserBean = (SdUserBean) userService.getCurrentUserBean();
+        SdUserBean currentUserBean = userService.getCurrentSdUserBean();
         String owningRole = currentUserBean.getPrimaryRoleId();
         List<StatusSummaryEntity> countStatus = ticketMasMapper.getCountStatusByTicketType(owningRole);
         StatusSummaryEntity sumStatus = ticketMasMapper.getSumStatusByTicketType(owningRole);

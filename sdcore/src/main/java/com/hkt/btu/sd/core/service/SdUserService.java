@@ -41,6 +41,7 @@ public interface SdUserService extends BtuUserService {
 
 
     String getCurrentUserUserId() throws UserNotFoundException;
+    SdUserBean getCurrentSdUserBean() throws UserNotFoundException;
     SdUserBean getUserByUserId(String userId) throws UserNotFoundException;
 
 

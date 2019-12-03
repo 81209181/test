@@ -128,6 +128,15 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     }
 
     @Override
+    public SdUserBean getCurrentSdUserBean() throws UserNotFoundException {
+        BtuUserBean userBean = getCurrentUserBean();
+        if (userBean instanceof SdUserBean) {
+            return (SdUserBean) userBean;
+        }
+        return null;
+    }
+
+    @Override
     public SdUserBean getUserByUserId(String userId) throws UserNotFoundException, InsufficientAuthorityException {
         if (userId == null) {
             throw new UserNotFoundException("Empty user id input.");
