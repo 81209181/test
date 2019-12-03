@@ -132,7 +132,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
             }
         }
 
-        throw new InsufficientAuthorityException("You are no permission.");
+        throw new InsufficientAuthorityException("Insufficient permission.");
     }
 
     @Override
