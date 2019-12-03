@@ -32,11 +32,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class SdTicketFacadeImpl implements SdTicketFacade {
@@ -277,20 +277,11 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     @Override
     public void createTicketRemarks(Integer ticketMasId, String remarks) {
         if (ticketMasId == null) {
-            throw new RuntimeException("Ticket Mas ID is empty.");
-        }
-        if (StringUtils.isEmpty(remarks)) {
-            throw new RuntimeException("Remarks is empty.");
-        }
-        Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
-        if (p.matcher(remarks).find()) {
-            if (remarks.length() > 166) {
-                throw new RuntimeException("Input remark is too long. (max: 500 characters / 166 chinese words)");
-            }
-        } else {
-            if (remarks.length() > 500) {
-                throw new RuntimeException("Input remark is too long. (max: 500 characters / 166 chinese words)");
-            }
+            throw new InvalidInputException("Ticket Mas ID is empty.");
+        } else if (StringUtils.isEmpty(remarks)) {
+            throw new InvalidInputException("Remarks is empty.");
+        } else if (remarks.getBytes(StandardCharsets.UTF_8).length > 500){
+            throw new InvalidInputException("Input remark is too long. (max: 500 characters / 166 chinese words)");
         }
 
         try {
