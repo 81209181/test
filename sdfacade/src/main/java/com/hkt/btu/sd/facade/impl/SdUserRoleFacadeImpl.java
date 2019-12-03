@@ -81,6 +81,7 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
         return roleList.stream()
                 .filter(sdUserRoleData -> !BooleanUtils.toBoolean(sdUserRoleData.getAbstractFlag()))
                 .filter(sdUserRoleData -> SdUserRoleBean.ACTIVE_ROLE_STATUS.equals(sdUserRoleData.getStatus()))
+                .sorted(Comparator.comparing(SdUserRoleData::getRoleDesc))
                 .collect(Collectors.toList());
     }
 

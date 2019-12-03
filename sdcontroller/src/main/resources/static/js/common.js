@@ -1,4 +1,4 @@
-var time2reload, countdown ;
+var time2reload, countdown, timeOut;
 
 $(document).ready(function () {
     prepareAjax();
@@ -22,13 +22,13 @@ $(document).ready(function () {
         time2reload = setTimeout(function(){
             setTimeout(function () {
                 location.reload();
-            }, 5000);
+            }, 5000)
         },30000);
         countdown = setInterval(function(){
-            if ($('mark').text() !== 0) {
-                $('mark').text($('mark').text() - 1);
-            }
-        },1000)
+                if ($('mark').text() > 0) {
+                    $('mark').text($('mark').text() - 1);
+                }
+        },1000);
     })
 });
 
@@ -106,7 +106,8 @@ function checkTimeout() {
     if (minute >= 14) {
             $('#session-expire-warning-modal').modal('show');
     } else {
-        setTimeout('checkTimeout()',60000 * 14 + 30000);
+        clearTimeout(timeOut);
+        timeOut = setTimeout('checkTimeout()',60000 * 14 + 30000);
     }
 }
 
