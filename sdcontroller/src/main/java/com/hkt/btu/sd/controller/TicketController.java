@@ -259,14 +259,10 @@ public class TicketController {
     public ResponseEntity<?> createTicketRemarks(@RequestParam Integer ticketMasId, @RequestParam String remarks) {
         try {
             ticketFacade.isAllow(ticketMasId, SdTicketMasData.ACTION_TYPE.COMPLETE);
+            ticketFacade.createTicketRemarks(ticketMasId, remarks);
+            return ResponseEntity.ok(SimpleAjaxResponse.of());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
-        }
-        String errorMsg = ticketFacade.createTicketRemarks(ticketMasId, remarks);
-        if (errorMsg == null) {
-            return ResponseEntity.ok(SimpleAjaxResponse.of());
-        } else {
-            return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
         }
     }
 

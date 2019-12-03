@@ -184,8 +184,6 @@ $().ready(function(){
             if (res.success) {
                 $('#remark').find('form')[0].reset();
                 $('#searchTicketRemarksTable').DataTable().ajax.reload();
-            } else {
-                showErrorMsg(res.feedback);
             }
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Create failed.";
@@ -527,7 +525,13 @@ function getRemarksTableData(){
         columns: [
             { width: '15%', data: 'createdate' },
             { width: '15%', data: 'remarksType' },
-            { width: '55%', data: 'remarks' },
+            { width: '55%', data: 'remarks' , render: function(data,type,row,meta){
+                if(data.match(/\r\n/g)){
+                    return '<pre>'+data+'</pre>';
+                }else{
+                    return data;
+                }
+            }},
             { width: '15%', data: 'createby' }
         ],
         columnDefs: [
