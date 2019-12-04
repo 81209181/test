@@ -42,7 +42,6 @@ function prepareAjax(){
                 xhr.setRequestHeader(header, token);
             }
             addTimeOutCookie();
-            checkTimeout();
         }
     });
 
@@ -53,6 +52,10 @@ function prepareAjax(){
             options.url = ctx + options.url;
         }
     });
+
+    $(document).ajaxComplete(function () {
+        checkTimeout();
+    })
 }
 
 function populateSelectOptions(select, jsonList){
@@ -96,18 +99,18 @@ function calculateTimeDiff (oldTime, newTime) {
     oldTime = new Date(oldTime);
     newTime = new Date(newTime);
     let time = newTime.getTime() - oldTime.getTime();
-    let minute = Math.floor(time % (24 * 3600 * 1000) % (3600 * 1000) / (60 * 1000));
+    let minute = time % (24 * 3600 * 1000) % (3600 * 1000) / (60 * 1000);
     return minute;
 }
 
 function checkTimeout() {
     let timeOutCookie = getCookie("timeOut");
     let minute = calculateTimeDiff(timeOutCookie, new Date());
-    if (minute >= 14) {
-            $('#session-expire-warning-modal').modal('show');
+    if (minute >= 14.5) {
+          $('#session-expire-warning-modal').modal('show');
     } else {
-        clearTimeout(timeOut);
-        timeOut = setTimeout('checkTimeout()',60000 * 14 + 30000);
+          clearTimeout(timeOut);
+          timeOut = setTimeout('checkTimeout()', 60000 * 14 + 30000);
     }
 }
 
