@@ -1,19 +1,31 @@
 -- User Role Path Ctrl
-insert into USER_ROLE_PATH_CTRL (ROLE_ID, PATH_CTRL_ID, CREATEBY, REMARKS)
-values('BASIC', 1, '81149189', 'Basic');
+insert into USER_ROLE_PATH_CTRL (ROLE_ID, PATH_CTRL_ID, CREATEBY)
+select 'BASIC', PATH_CTRL_ID, '01634476'
+from PATH_CTRL
+where PATH = '/user/**';
 
-insert into USER_ROLE_PATH_CTRL (ROLE_ID, PATH_CTRL_ID, CREATEBY, REMARKS)
-values('SYS_ADMIN', 2, '81149189', 'System Admin');
+insert into USER_ROLE_PATH_CTRL (ROLE_ID, PATH_CTRL_ID, CREATEBY)
+select 'SYS_ADMIN', PATH_CTRL_ID, '01634476'
+from PATH_CTRL
+where PATH = '/**';
 
-insert into USER_ROLE_PATH_CTRL (ROLE_ID, PATH_CTRL_ID, CREATEBY, REMARKS)
-values('TEAM_HEAD', 3, '81149189', 'Manager User');
+insert into USER_ROLE_PATH_CTRL (ROLE_ID, PATH_CTRL_ID, CREATEBY)
+select 'TEAM_HEAD', PATH_CTRL_ID, '01634476'
+from PATH_CTRL
+where PATH = '/admin/manage-user/**';
 
-insert into USER_ROLE_PATH_CTRL (ROLE_ID, PATH_CTRL_ID, CREATEBY, REMARKS)
-values('CS_AGENT', 4, '81149189', 'Fault Page');
+insert into USER_ROLE_PATH_CTRL (ROLE_ID, PATH_CTRL_ID, CREATEBY)
+select 'OPT', PATH_CTRL_ID, '01634476'
+from PATH_CTRL
+where PATH = '/ticket/**';
 
-insert into USER_ROLE_PATH_CTRL (ROLE_ID, PATH_CTRL_ID, CREATEBY, REMARKS)
-values('API_WFM', 7, '01634476', null);
+insert into USER_ROLE_PATH_CTRL (ROLE_ID, PATH_CTRL_ID, CREATEBY)
+select 'API_WFM', PATH_CTRL_ID, '01634476'
+from PATH_CTRL
+where PATH = '/wfm-api/**';
 
-insert into USER_ROLE_PATH_CTRL (ROLE_ID, PATH_CTRL_ID, CREATEBY, REMARKS)
-values('API_BES', 8, '01634476', null);
+insert into USER_ROLE_PATH_CTRL (ROLE_ID, PATH_CTRL_ID, CREATEBY)
+select 'API_BES', PATH_CTRL_ID, '01634476'
+from PATH_CTRL
+where PATH = '/bes-api/**';
 commit;
