@@ -110,7 +110,7 @@ function checkTimeout() {
           $('#session-expire-warning-modal').modal('show');
     } else {
           clearTimeout(timeOut);
-          setTimeout('checkTimeout()', 60000 * 14 + 30000);
+          timeOut = setTimeout('checkTimeout()', 60000 * 14 + 30000);
     }
 }
 
