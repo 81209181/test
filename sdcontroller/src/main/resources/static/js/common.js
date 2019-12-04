@@ -122,5 +122,6 @@ function getCookie(cname) {
 }
 
 function addTimeOutCookie() {
-    document.cookie = "timeOut=" + new Date();
+    let ctx = $("meta[name='_ctx']").attr("content");
+    document.cookie = "timeOut=" + new Date() + ";path="+ ctx;
 }
