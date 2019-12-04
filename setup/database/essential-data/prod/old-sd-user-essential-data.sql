@@ -82,4 +82,34 @@ values ('09293531', 'Leung, Jaffe CK', 'A', '28832299', 'Jaffe.CK.Leung@pccw.com
 
 insert into USER_PROFILE (USER_ID, NAME, STATUS, MOBILE, EMAIL, LDAP_DOMAIN, CREATEBY, MODIFYBY, DOMAIN_EMAIL, PRIMARY_ROLE_ID)
 values ('00226811', 'Leung, MiMi', 'A', '28832299', 'MiMi.Leung@pccw.com', '@corphq.hk.pccw.com','81149189','81149189','MiMi.Leung@pccw.com', 'TEAM_HEAD');
+
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('00168534','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('00177659','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('00277632','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('00234948','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('00324731','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('00540757','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('00681866','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('00863258','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('00863266','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('01063486','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('01098193','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('01230192','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('01259019','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('01279587','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('01302959','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('01374065','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('01420579','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('01436955','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('01509918','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('01510304','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('01528223','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('01547314','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('01553601','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('01574318','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('01610304','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('08032294','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('09293531','O_CHL');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('00226811','TH__O_CHL');
+
 commit;
