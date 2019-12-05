@@ -61,13 +61,13 @@ public class ItsmApiFacadeImpl extends AbstractRestfulApiFacade implements ItsmA
 
     @Override
     public ItsmTenantData getTenant(int tenantId) {
-        String apiPath = "/cloudrs/api/v1/sa/tenant/" + tenantId;
+        String apiPath = "/api/v1/sa/tenant/" + tenantId;
         return postData(apiPath, ItsmTenantData.class, null, null);
     }
 
     private ItsmSearchProfileResponseData searchProfile(String searchKey, String searchValue) {
 
-        String apiPath = "/cloudrs/api/v1/sa/search/" + searchKey + "/" + searchValue;
+        String apiPath = "/api/v1/sa/search/" + searchKey + "/" + searchValue;
         ItsmSearchProfileResponseData itsmSearchProfileResponseData =
                 postData(apiPath, ItsmSearchProfileResponseData.class, null, null);
 
