@@ -183,31 +183,34 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
     @Override
     public List<SdTicketRemarkData> getTicketRemarksByTicketId(Integer ticketMasId) {
+        List<SdTicketRemarkData> dataList = new LinkedList<>();
         List<SdTicketRemarkBean> beanList = ticketService.getTicketRemarksByTicketId(ticketMasId);
         List<WfmJobProgressData> jobProgressDataList = wfmApiFacade.getJobProgessByTicketId(ticketMasId);
         List<WfmJobRemarksData> jobRemarkDataList = wfmApiFacade.getJobRemarkByTicketId(ticketMasId);
 
-        if (CollectionUtils.isEmpty(beanList) && CollectionUtils.isEmpty(jobProgressDataList) && CollectionUtils.isEmpty(jobRemarkDataList)) {
-            return null;
+
+        if(CollectionUtils.isNotEmpty(beanList)) {
+            for (SdTicketRemarkBean bean : beanList) {
+                SdTicketRemarkData data = new SdTicketRemarkData();
+                ticketRemarkDataPopulator.populate(bean, data);
+                dataList.add(data);
+            }
         }
 
-        List<SdTicketRemarkData> dataList = new LinkedList<>();
-        for (SdTicketRemarkBean bean : beanList) {
-            SdTicketRemarkData data = new SdTicketRemarkData();
-            ticketRemarkDataPopulator.populate(bean, data);
-            dataList.add(data);
+        if(CollectionUtils.isNotEmpty(jobProgressDataList)) {
+            for (WfmJobProgressData bean : jobProgressDataList) {
+                SdTicketRemarkData data = new SdTicketRemarkData();
+                ticketRemarkDataPopulator.populateJobProgressData(bean, data);
+                dataList.add(data);
+            }
         }
 
-        for (WfmJobProgressData bean : jobProgressDataList) {
-            SdTicketRemarkData data = new SdTicketRemarkData();
-            ticketRemarkDataPopulator.populateJobProgressData(bean, data);
-            dataList.add(data);
-        }
-
-        for (WfmJobRemarksData bean : jobRemarkDataList) {
-            SdTicketRemarkData data = new SdTicketRemarkData();
-            ticketRemarkDataPopulator.populateJobRemarkData(bean, data);
-            dataList.add(data);
+        if(CollectionUtils.isNotEmpty(jobRemarkDataList)) {
+            for (WfmJobRemarksData bean : jobRemarkDataList) {
+                SdTicketRemarkData data = new SdTicketRemarkData();
+                ticketRemarkDataPopulator.populateJobRemarkData(bean, data);
+                dataList.add(data);
+            }
         }
 
         return dataList;
@@ -429,6 +432,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     @Override
     public String closeTicketByApi(int ticketMasId, String reasonType, String reasonContent, String userId) {
         String systemId = userService.getCurrentUserUserId();
+        LOG.info(String.format("Closing ticket by API. (ticketMasId: %d , systemId: %s)", ticketMasId, systemId));
 
         if(StringUtils.isEmpty(reasonContent)){
             reasonContent = "Empty sub-clear code.";
@@ -447,10 +451,11 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
     @Override
     public String closeTicket(int ticketMasId, String reasonType, String reasonContent, String contactName, String contactNumber) {
+        LOG.info(String.format("Closing ticket. (ticketMasId: %d)", ticketMasId));
+
         // close ticket in servicedesk
         try {
             ticketService.closeTicket(ticketMasId, reasonType, reasonContent, contactName, contactNumber, true);
-            LOG.info("Closed ticket in servicedesk. (ticketMasId: " + ticketMasId + ")");
         } catch (InvalidInputException e) {
             LOG.warn(e.getMessage());
             return e.getMessage();
