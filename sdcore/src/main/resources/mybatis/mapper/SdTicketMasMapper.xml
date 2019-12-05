@@ -45,7 +45,7 @@
         from TICKET_MAS tm
         INNER JOIN TICKET_DET td
         ON tm.TICKET_MAS_ID = td.TICKET_MAS_ID
-        INNER JOIN SERVICE_TYPE st
+        LEFT JOIN SERVICE_TYPE st
         ON td.SERVICE_TYPE_CODE = st.SERVICE_TYPE_CODE
         <where>
             <if test="createDateFrom != null">
