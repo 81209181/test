@@ -56,6 +56,8 @@ public class SdTicketServiceImpl implements SdTicketService {
     SdTicketRemarkBeanPopulator ticketRemarkBeanPopulator;
     @Resource(name = "teamSummaryBeanPopulator")
     SdTeamSummaryBeanPopulator teamSummaryBeanPopulator;
+    @Resource(name = "statusSummaryBeanPopulator")
+    SdStatusSummaryBeanPopulator statusSummaryBeanPopulator;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -402,18 +404,26 @@ public class SdTicketServiceImpl implements SdTicketService {
 
     @Override
     public TeamSummaryBean getTeamSummary() {
-        TeamSummaryBean teamSummaryBean = new TeamSummaryBean();
-        List<StatusSummaryBean> statusSummaryBeans = new ArrayList<>();
         SdUserBean currentUserBean = userService.getCurrentSdUserBean();
         String owningRole = currentUserBean.getPrimaryRoleId();
+
+        // get data
         List<StatusSummaryEntity> countStatus = ticketMasMapper.getCountStatusByTicketType(owningRole);
         StatusSummaryEntity sumStatus = ticketMasMapper.getSumStatusByTicketType(owningRole);
-        countStatus.forEach(entity -> {
-            StatusSummaryBean bean = new StatusSummaryBean();
-            teamSummaryBeanPopulator.populateStatusSummaryBean(entity,bean);
-            statusSummaryBeans.add(bean);
-        });
-        teamSummaryBeanPopulator.populate(sumStatus,teamSummaryBean);
+
+        // set each status summary
+        List<StatusSummaryBean> statusSummaryBeans = new ArrayList<>();
+        if(CollectionUtils.isNotEmpty(countStatus)) {
+            countStatus.forEach(entity -> {
+                StatusSummaryBean bean = new StatusSummaryBean();
+                statusSummaryBeanPopulator.populate(entity, bean);
+                statusSummaryBeans.add(bean);
+            });
+        }
+
+        // set team summary
+        TeamSummaryBean teamSummaryBean = new TeamSummaryBean();
+        teamSummaryBeanPopulator.populate(sumStatus, teamSummaryBean);
         teamSummaryBean.setSummaryData(statusSummaryBeans);
         return teamSummaryBean;
     }

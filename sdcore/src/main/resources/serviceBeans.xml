@@ -123,4 +123,7 @@
 
     <alias name="sdTeamSummaryBeanPopulator" alias="teamSummaryBeanPopulator"/>
     <bean class="com.hkt.btu.sd.core.service.populator.SdTeamSummaryBeanPopulator" id="sdTeamSummaryBeanPopulator"/>
+
+    <alias name="sdStatusSummaryBeanPopulator" alias="statusSummaryBeanPopulator"/>
+    <bean class="com.hkt.btu.sd.core.service.populator.SdStatusSummaryBeanPopulator" id="sdStatusSummaryBeanPopulator"/>
 </beans>
