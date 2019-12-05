@@ -48,14 +48,7 @@ public class SdServiceTypeServiceImpl implements SdServiceTypeService {
         }).stream().filter(bean -> StringUtils.equals(offerName, bean.getOfferName()))
                 .findFirst().flatMap(bean -> getServiceTypeList().stream()
                         .filter(sdServiceTypeBean -> sdServiceTypeBean.getServiceTypeCode().equals(bean.getServiceTypeCode())).findFirst()
-                ).orElseGet(() -> {
-                    if (StringUtils.containsIgnoreCase(offerName, "broadband")) {
-                        return getServiceTypeList().stream().filter(sdServiceTypeBean -> sdServiceTypeBean.getServiceTypeCode().equals("BN")).findFirst()
-                                .orElse(new SdServiceTypeBean(SdServiceTypeEntity.SERVICE_TYPE.UNKNOWN, SdServiceTypeEntity.SERVICE_TYPE_NAME.UNKNOWN_SERVICE_TYPE));
-                    } else {
-                        return new SdServiceTypeBean(SdServiceTypeEntity.SERVICE_TYPE.UNKNOWN, SdServiceTypeEntity.SERVICE_TYPE_NAME.UNKNOWN_SERVICE_TYPE);
-                    }
-                });
+                ).orElseGet(() -> new SdServiceTypeBean(SdServiceTypeEntity.SERVICE_TYPE.UNKNOWN, SdServiceTypeEntity.SERVICE_TYPE_NAME.UNKNOWN_SERVICE_TYPE));
     }
 
     @Override
