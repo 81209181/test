@@ -183,31 +183,34 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
     @Override
     public List<SdTicketRemarkData> getTicketRemarksByTicketId(Integer ticketMasId) {
+        List<SdTicketRemarkData> dataList = new LinkedList<>();
         List<SdTicketRemarkBean> beanList = ticketService.getTicketRemarksByTicketId(ticketMasId);
         List<WfmJobProgressData> jobProgressDataList = wfmApiFacade.getJobProgessByTicketId(ticketMasId);
         List<WfmJobRemarksData> jobRemarkDataList = wfmApiFacade.getJobRemarkByTicketId(ticketMasId);
 
-        if (CollectionUtils.isEmpty(beanList) && CollectionUtils.isEmpty(jobProgressDataList) && CollectionUtils.isEmpty(jobRemarkDataList)) {
-            return null;
+
+        if(CollectionUtils.isNotEmpty(beanList)) {
+            for (SdTicketRemarkBean bean : beanList) {
+                SdTicketRemarkData data = new SdTicketRemarkData();
+                ticketRemarkDataPopulator.populate(bean, data);
+                dataList.add(data);
+            }
         }
 
-        List<SdTicketRemarkData> dataList = new LinkedList<>();
-        for (SdTicketRemarkBean bean : beanList) {
-            SdTicketRemarkData data = new SdTicketRemarkData();
-            ticketRemarkDataPopulator.populate(bean, data);
-            dataList.add(data);
+        if(CollectionUtils.isNotEmpty(jobProgressDataList)) {
+            for (WfmJobProgressData bean : jobProgressDataList) {
+                SdTicketRemarkData data = new SdTicketRemarkData();
+                ticketRemarkDataPopulator.populateJobProgressData(bean, data);
+                dataList.add(data);
+            }
         }
 
-        for (WfmJobProgressData bean : jobProgressDataList) {
-            SdTicketRemarkData data = new SdTicketRemarkData();
-            ticketRemarkDataPopulator.populateJobProgressData(bean, data);
-            dataList.add(data);
-        }
-
-        for (WfmJobRemarksData bean : jobRemarkDataList) {
-            SdTicketRemarkData data = new SdTicketRemarkData();
-            ticketRemarkDataPopulator.populateJobRemarkData(bean, data);
-            dataList.add(data);
+        if(CollectionUtils.isNotEmpty(jobRemarkDataList)) {
+            for (WfmJobRemarksData bean : jobRemarkDataList) {
+                SdTicketRemarkData data = new SdTicketRemarkData();
+                ticketRemarkDataPopulator.populateJobRemarkData(bean, data);
+                dataList.add(data);
+            }
         }
 
         return dataList;
