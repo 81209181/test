@@ -381,6 +381,8 @@ public class SdTicketServiceImpl implements SdTicketService {
         // add ticket remarks
         String content = String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_CLOSE, reasonType, reasonContent, contactName, contactNumber);
         createTicketSysRemarks(ticketMasId, content);
+
+        LOG.info(String.format("Closed ticket. (ticketMasId: %d)", ticketMasId));
     }
 
     @Override

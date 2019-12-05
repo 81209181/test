@@ -432,6 +432,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     @Override
     public String closeTicketByApi(int ticketMasId, String reasonType, String reasonContent, String userId) {
         String systemId = userService.getCurrentUserUserId();
+        LOG.info(String.format("Closing ticket by API. (ticketMasId: %d , systemId: %s)", ticketMasId, systemId));
 
         if(StringUtils.isEmpty(reasonContent)){
             reasonContent = "Empty sub-clear code.";
@@ -450,10 +451,11 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
     @Override
     public String closeTicket(int ticketMasId, String reasonType, String reasonContent, String contactName, String contactNumber) {
+        LOG.info(String.format("Closing ticket. (ticketMasId: %d)", ticketMasId));
+
         // close ticket in servicedesk
         try {
             ticketService.closeTicket(ticketMasId, reasonType, reasonContent, contactName, contactNumber, true);
-            LOG.info("Closed ticket in servicedesk. (ticketMasId: " + ticketMasId + ")");
         } catch (InvalidInputException e) {
             LOG.warn(e.getMessage());
             return e.getMessage();
