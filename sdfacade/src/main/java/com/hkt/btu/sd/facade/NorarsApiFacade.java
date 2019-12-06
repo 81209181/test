@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.facade;
 
+import com.hkt.btu.sd.core.exception.ApiException;
 import com.hkt.btu.sd.facade.data.ServiceAddressData;
 import com.hkt.btu.sd.facade.data.nora.NoraAccountData;
 import com.hkt.btu.sd.facade.data.nora.NoraBroadbandInfoData;
@@ -14,5 +15,5 @@ public interface NorarsApiFacade {
     NoraBroadbandInfoData getOfferDetailListByBsn(String bsn);
     NoraDnGroupData getRelatedOfferInfoListByBsn(String bsn);
 
-    NoraAccountData getNGN3OneDayAdminAccount(String bsn);
+    NoraAccountData getNGN3OneDayAdminAccount(String bsn) throws ApiException;
 }

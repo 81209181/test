@@ -7,21 +7,24 @@ import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.NorarsApiFacade;
+import com.hkt.btu.sd.facade.SdAuditTrailFacade;
 import com.hkt.btu.sd.facade.data.ServiceAddressData;
 import com.hkt.btu.sd.facade.data.nora.*;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Resource;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements NorarsApiFacade {
+    private static final Logger LOG = LogManager.getLogger(NorarsApiFacadeImpl.class);
 
     private final static String STATUS = "W";
 
@@ -30,6 +33,9 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
 
     @Resource(name = "userService")
     SdUserService userService;
+
+    @Resource(name = "auditTrailFacade")
+    SdAuditTrailFacade auditTrailFacade;
 
     @Override
     public String getBsnByDn(String dn) {
@@ -44,9 +50,7 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
         }
 
         String apiPath = "/norars/api/v1/onecomm/bsn/" + bsn + "/detail";
-        NoraBroadbandInfoData data = getData(apiPath, NoraBroadbandInfoData.class, null);
-
-        return data;
+        return getData(apiPath, NoraBroadbandInfoData.class, null);
     }
 
     @Override
@@ -80,12 +84,27 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
     }
 
     @Override
-    public NoraAccountData getNGN3OneDayAdminAccount(String bsn) {
+    public NoraAccountData getNGN3OneDayAdminAccount(String bsn) throws InvalidInputException {
         String requestorId = userService.getCurrentUserBean().getUserId();
 
-        String apiPath = "/norars/api/v1/osb/accounts/" + bsn + "/" + requestorId;
-        NoraAccountData data = postData(apiPath, NoraAccountData.class, null, null);
-        return data;
+        // get company id
+        LOG.info("Getting company id...");
+        NoraBroadbandInfoData noraBroadbandInfoData = getOfferDetailListByBsn(bsn);
+        String companyId = noraBroadbandInfoData==null ? null : noraBroadbandInfoData.getCompanyId();
+        if( StringUtils.isEmpty(companyId) ){
+            String errorMsg = String.format("Cannot find company Id. (bsn: %s)", bsn);
+            throw new InvalidInputException(errorMsg);
+        }
+
+        // get one-day admin account
+        LOG.info("Getting one-day admin account...");
+        String apiPath = "/norars/api/v1/osb/accounts/" + companyId + "/" + requestorId;
+        NoraAccountData accountData = getData(apiPath, NoraAccountData.class, null);
+        if(accountData!=null && StringUtils.isNotEmpty(accountData.getPassword())){
+            auditTrailFacade.insertGetNgn3OneDayAdmin(bsn, companyId); // add audit
+        }
+
+        return accountData;
     }
 
     @Override

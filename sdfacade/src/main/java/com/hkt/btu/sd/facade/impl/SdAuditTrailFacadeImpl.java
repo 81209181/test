@@ -25,6 +25,11 @@ public class SdAuditTrailFacadeImpl implements SdAuditTrailFacade {
 
     @Override
     public void insertViewTicketAuditTrail(String user, String ticketMasId) {
-        sdAuditTrailService.insertViewTicketAuditTrail(user,ticketMasId);
+        sdAuditTrailService.insertViewTicketAuditTrail(user, ticketMasId);
+    }
+
+    @Override
+    public void insertGetNgn3OneDayAdmin(String bsn, String companyId) {
+        sdAuditTrailService.insertGetNgn3OneDayAdmin(bsn, companyId);
     }
 }

@@ -432,19 +432,21 @@ function getOfferDetailList(bsn) {
     }
 }
 
-function getNGN3OneDayAdminAccount(bsn) {
-        clearAllMsg();
-        $.get('/ticket/getNGN3OneDayAdminAccount/'+ bsn,function(res){
-            $.each(res,function(k,v){
-                $('.ngn3-one-day-account').find('input[name='+ k +']').val(v);
-            })
-        }).fail(function(e){
-            let responseError = e.responseText ? e.responseText : "Get failed.";
-            console.log("ERROR : ", responseError);
-            showErrorMsg(responseError);
-        }).then(function(){
-            $('.ngn3-one-day-account').modal({backdrop: 'static', keyboard: false});
+function getNGN3OneDayAdminAccount() {
+    clearAllMsg();
+
+    let bsnForNgn3 = $('#relatedBsn').val()
+    $.get('/ticket/getNGN3OneDayAdminAccount/'+bsnForNgn3, function(res){
+        $.each(res,function(k,v){
+            $('.ngn3-one-day-account').find('input[name='+ k +']').val(v);
         })
+    }).fail(function(e){
+        let responseError = e.responseText ? e.responseText : "Get failed.";
+        console.log("ERROR : ", responseError);
+        showErrorMsg(responseError);
+    }).then(function(){
+        $('.ngn3-one-day-account').modal({backdrop: 'static', keyboard: false});
+    });
 }
 
 function getAppointmentInfo(ticketMasId) {

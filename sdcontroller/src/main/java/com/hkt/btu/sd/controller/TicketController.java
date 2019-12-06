@@ -3,6 +3,7 @@ package com.hkt.btu.sd.controller;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
+import com.hkt.btu.sd.core.exception.InvalidInputException;
 import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.nora.NoraAccountData;
@@ -14,6 +15,8 @@ import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
 import com.hkt.btu.sd.facade.data.wfm.WfmResponseTokenData;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +36,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/ticket")
 @Controller
 public class TicketController {
+    private static final Logger LOG = LogManager.getLogger(TicketController.class);
 
     @Resource(name = "requestCreateFacade")
     SdRequestCreateFacade requestCreateFacade;
@@ -335,10 +339,17 @@ public class TicketController {
 
     @GetMapping("/getNGN3OneDayAdminAccount/{bsn}")
     public ResponseEntity<?> getNGN3OneDayAdminAccount(@PathVariable String bsn) {
-        NoraAccountData oneDayAdminAccount = norarsApiFacade.getNGN3OneDayAdminAccount(bsn);
-        if (oneDayAdminAccount == null) {
-            return ResponseEntity.badRequest().body("NGN3 one day admin account not found.");
+        NoraAccountData oneDayAdminAccount;
+        try{
+            oneDayAdminAccount = norarsApiFacade.getNGN3OneDayAdminAccount(bsn);
+            if (oneDayAdminAccount == null) {
+                return ResponseEntity.badRequest().body("Cannot get NGN3 one day admin account.");
+            }
+        }catch (InvalidInputException e){
+            LOG.warn(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
+
         return ResponseEntity.ok(oneDayAdminAccount);
     }
 
