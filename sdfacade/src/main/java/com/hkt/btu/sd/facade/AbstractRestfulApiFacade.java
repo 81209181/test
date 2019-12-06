@@ -8,6 +8,7 @@ import com.hkt.btu.common.facade.data.DataInterface;
 import com.hkt.btu.sd.core.service.SdSiteService;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.client.ClientResponse;
@@ -174,6 +175,34 @@ public abstract class AbstractRestfulApiFacade {
 
     protected <T extends DataInterface> T postData(String path, Class<T> responseType, Map<String, String> queryParamMap, Entity<?> entity) {
         String jsonString = postData(path, queryParamMap, entity);
+        try {
+            // using gson here with purpose for easier debugging (better exception for stack trace)
+            return new Gson().fromJson(jsonString, responseType);
+        } catch (ProcessingException | WebApplicationException e) {
+            LOG.error(e.getMessage(), e);
+            LOG.debug(jsonString);
+            return null;
+        }
+    }
+
+    protected String putData(String path, Map<String, String> queryParamMap, Entity<?> entity) {
+        LOG.info("Posting to API: " + path);
+        if(entity==null){
+            entity = Entity.text(StringUtils.EMPTY);
+        }
+
+        WebTarget webTarget = getWebTarget(path, queryParamMap);
+        Invocation.Builder invocationBuilder = getInvocationBuilder(webTarget);
+        try {
+            return invocationBuilder.put(entity, String.class);
+        } catch (ProcessingException | WebApplicationException e) {
+            LOG.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    protected <T extends DataInterface> T putData(String path, Class<T> responseType, Map<String, String> queryParamMap, Entity<?> entity) {
+        String jsonString = putData(path, queryParamMap, entity);
         try {
             // using gson here with purpose for easier debugging (better exception for stack trace)
             return new Gson().fromJson(jsonString, responseType);

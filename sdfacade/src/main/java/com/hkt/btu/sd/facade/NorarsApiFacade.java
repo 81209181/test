@@ -15,5 +15,6 @@ public interface NorarsApiFacade {
     NoraBroadbandInfoData getOfferDetailListByBsn(String bsn);
     NoraDnGroupData getRelatedOfferInfoListByBsn(String bsn);
 
-    NoraAccountData getNGN3OneDayAdminAccount(String bsn) throws ApiException;
+    NoraAccountData getNgn3OneDayAdminAccount(String bsn) throws ApiException;
+    String resetNgn3Account(String dn) throws ApiException;
 }

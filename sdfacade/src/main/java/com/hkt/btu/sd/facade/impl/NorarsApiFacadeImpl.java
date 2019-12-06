@@ -2,6 +2,7 @@ package com.hkt.btu.sd.facade.impl;
 
 import com.google.gson.Gson;
 import com.hkt.btu.common.core.exception.InvalidInputException;
+import com.hkt.btu.sd.core.exception.ApiException;
 import com.hkt.btu.sd.core.service.SdApiService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
@@ -84,7 +85,7 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
     }
 
     @Override
-    public NoraAccountData getNGN3OneDayAdminAccount(String bsn) throws InvalidInputException {
+    public NoraAccountData getNgn3OneDayAdminAccount(String bsn) throws InvalidInputException {
         String requestorId = userService.getCurrentUserBean().getUserId();
 
         // get company id
@@ -105,6 +106,20 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
         }
 
         return accountData;
+    }
+
+    @Override
+    public String resetNgn3Account(String dn) throws ApiException {
+//        return "testingComplexPwd";
+
+        LOG.info("Resetting NGN3 Account...");
+        String apiPath = "/norars/api/v1/osb/complexpwd/" + dn;
+        String complexPwd = putData(apiPath, null, null);
+        if(StringUtils.isNotEmpty(complexPwd)){
+            auditTrailFacade.insertResetNgn3Account(dn); // add audit
+        }
+
+        return complexPwd;
     }
 
     @Override

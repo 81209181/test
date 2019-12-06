@@ -14,5 +14,6 @@ public interface SdAuditTrailFacade {
 
     // NGN3
     void insertGetNgn3OneDayAdmin(String bsn, String companyId);
+    void insertResetNgn3Account(String dn);
 
 }

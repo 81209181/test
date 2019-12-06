@@ -341,7 +341,7 @@ public class TicketController {
     public ResponseEntity<?> getNGN3OneDayAdminAccount(@PathVariable String bsn) {
         NoraAccountData oneDayAdminAccount;
         try{
-            oneDayAdminAccount = norarsApiFacade.getNGN3OneDayAdminAccount(bsn);
+            oneDayAdminAccount = norarsApiFacade.getNgn3OneDayAdminAccount(bsn);
             if (oneDayAdminAccount == null) {
                 return ResponseEntity.badRequest().body("Cannot get NGN3 one day admin account.");
             }
@@ -363,18 +363,20 @@ public class TicketController {
         return ResponseEntity.badRequest().body("WFM Error: Cannot get appointment info for ticketMasId:" + ticketMasId);
     }
 
-    @GetMapping("getNgn3AccountList/{bsn}")
+    @GetMapping("resetNgn3Pwd/{dn}")
     @ResponseBody
-    public List<String> getNgn3AccountList(@PathVariable String bsn) {
-        return Optional.ofNullable(norarsApiFacade.getRelatedOfferInfoListByBsn(bsn)).map(NoraDnGroupData::getAdminPortalId).map(s -> List.of(s.split(","))).orElse(List.of());
-    }
-
-    @GetMapping("resetNgn3Pwd/{account}")
-    public ResponseEntity<?> resetNgn3Pwd(@PathVariable String account) {
-        try {
-            return ResponseEntity.ok(cloudApiFacade.resetNgn3Pwd(account));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Reset password fail.");
+    public ResponseEntity<?> resetNgn3Pwd(@PathVariable String dn) {
+        String ngn3ComplexPwd;
+        try{
+            ngn3ComplexPwd = norarsApiFacade.resetNgn3Account(dn);
+            if ( StringUtils.isEmpty(ngn3ComplexPwd) ) {
+                return ResponseEntity.badRequest().body("Cannot reset NGN3 account password.");
+            } else {
+                return ResponseEntity.ok(ngn3ComplexPwd);
+            }
+        }catch (InvalidInputException e){
+            LOG.warn(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

@@ -558,17 +558,29 @@ function checkWindowClose(winObj) {
     }, 1000);
 }
 
-function goResetNgn3Pwd(){
-    let accountSelect = $('select[name=ngn3Account]');
-    accountSelect.find('option:not(:first)').remove();
-    $('input[name=ngn3pwd]').val('');
-    $.get('/ticket/getNgn3AccountList/'+bsn,function(res){
-        $.each(res,function(k,v){
-            accountSelect.append('<option>'+v+'</option>');
-        })
+function resetNgn3AccountPwd(){
+    clearAllMsg();
+
+    $.get('/ticket/resetNgn3Pwd/'+bsn, function(res){
+        $('.ngn3').find('input[name=password]').val(res);
+    }).fail(function(e){
+        let responseError = e.responseText ? e.responseText : "Get failed.";
+        console.log("ERROR : ", responseError);
+        showErrorMsg(responseError);
     }).then(function(){
         $('.ngn3').modal({backdrop: 'static', keyboard: false});
-    })
+    });
+    //
+    // let accountSelect = $('select[name=ngn3Account]');
+    // accountSelect.find('option:not(:first)').remove();
+    // $('input[name=ngn3pwd]').val('');
+    // $.get('/ticket/getNgn3AccountList/'+bsn, function(res){
+    //     $.each(res,function(k,v){
+    //         accountSelect.append('<option>'+v+'</option>');
+    //     })
+    // }).then(function(){
+    //     $('.ngn3').modal({backdrop: 'static', keyboard: false});
+    // });
 }
 
 function eCloudButtonCtrl(flag) {

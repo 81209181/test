@@ -32,4 +32,9 @@ public class SdAuditTrailFacadeImpl implements SdAuditTrailFacade {
     public void insertGetNgn3OneDayAdmin(String bsn, String companyId) {
         sdAuditTrailService.insertGetNgn3OneDayAdmin(bsn, companyId);
     }
+
+    @Override
+    public void insertResetNgn3Account(String dn) {
+        sdAuditTrailService.insertResetNgn3Account(dn);
+    }
 }
