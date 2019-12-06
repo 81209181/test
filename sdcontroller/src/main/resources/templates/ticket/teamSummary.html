@@ -20,6 +20,10 @@
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="tab-team-summary" role="tabpanel" aria-labelledby="tab-team-summary">
+                    <div class="form-row">
+                        <div id="query_ticket" class="col-md-6"></div>
+                        <div id="job_ticket" class="col-md-6"></div>
+                    </div>
                     <table class="table table-bordered table-hover mt-2 col-md-6" th:object="${teamSummary}">
                         <thead class="thead-light">
                         <tr>
@@ -34,6 +38,10 @@
                                     <td class="text-primary">Open</td>
                                     <td th:text="${list.queryCnt}"></td>
                                     <td th:text="${list.jobCnt}"></td>
+                                    <script>
+                                        var query_open = '[[${list.queryCnt}]]';
+                                        var job_open = '[[${list.jobCnt}]]';
+                                    </script>
                                 </tr>
                             </th:block>
                             <th:block th:each="list:*{summaryData}">
@@ -41,6 +49,10 @@
                                     <td class="text-warning">Work</td>
                                     <td th:text="${list.queryCnt}"></td>
                                     <td th:text="${list.jobCnt}"></td>
+                                    <script>
+                                        var query_work = '[[${list.queryCnt}]]';
+                                        var job_work = '[[${list.jobCnt}]]';
+                                    </script>
                                 </tr>
                             </th:block>
                             <th:block th:each="list:*{summaryData}">
@@ -48,6 +60,10 @@
                                 <td class="text-success">Complete</td>
                                 <td th:text="${list.queryCnt}"></td>
                                 <td th:text="${list.jobCnt}"></td>
+                                <script>
+                                    var query_complete = '[[${list.queryCnt}]]';
+                                    var job_complete = '[[${list.jobCnt}]]';
+                                </script>
                             </tr>
                             </th:block>
                             <tr>

@@ -2,7 +2,56 @@ $(function(){
     $('a[aria-controls=tab-ticket-myTeam]').on('click',function(){
         getMyTeamTicketData();
     })
+
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
 })
+function drawChart() {
+    var query_data = new google.visualization.DataTable();
+    query_data.addColumn('string', 'status');
+    query_data.addColumn('number', 'Slices');
+    query_data.addRows([
+        ['Open', Number(query_open)],
+        ['Work', Number(query_work)],
+        ['Complete', Number(query_complete)],
+    ]);
+
+    var job_data = new google.visualization.DataTable();
+    job_data.addColumn('string', 'status');
+    job_data.addColumn('number', 'Slices');
+    job_data.addRows([
+        ['Open', Number(job_open)],
+        ['Work', Number(job_work)],
+        ['Complete', Number(job_complete)],
+    ]);
+
+    var query_options = {
+        'title':'Query Ticket',
+        'height':300,
+        is3D:true,
+        slices: {
+            0: { color: 'dodgerblue' },
+            1: { color: 'orange' },
+            2: { color: 'mediumseagreen'}
+        },
+    };
+    var job_options = {
+        'title':'Job Ticket',
+        'height':300,
+        is3D: true,
+        slices: {
+            0: { color: 'dodgerblue' },
+            1: { color: 'orange' },
+            2: { color: 'mediumseagreen'}
+        },
+    };
+
+    var query_chart = new google.visualization.PieChart(document.getElementById('query_ticket'));
+    var job_chart = new google.visualization.PieChart(document.getElementById('job_ticket'));
+    query_chart.draw(query_data, query_options);
+    job_chart.draw(job_data, job_options);
+}
 
 function getMyTeamTicketData(){
     $('#tab-ticket-myTeam').find('table').DataTable({
