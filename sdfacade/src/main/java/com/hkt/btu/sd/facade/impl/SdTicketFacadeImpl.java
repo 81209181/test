@@ -79,7 +79,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                 queryTicketRequestData.getServiceType(),
                 queryTicketRequestData.getSubsId(),
                 queryTicketRequestData.getSearchKey(),
-                queryTicketRequestData.getSearchValue());
+                queryTicketRequestData.getSearchValue(),
+                queryTicketRequestData.getCustName());
     }
 
     @Override

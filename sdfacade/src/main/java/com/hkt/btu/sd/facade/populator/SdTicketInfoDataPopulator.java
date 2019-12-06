@@ -18,13 +18,13 @@ public class SdTicketInfoDataPopulator extends AbstractDataPopulator<SdTicketInf
         target.setSearchKeyDesc(source.getSearchKeyDesc());
         target.setSearchValue(source.getSearchValue());
         target.setOwningRole(source.getOwningRole());
+        target.setCustName(source.getCustName());
     }
 
     public void populateFromBesCustomerData(BesCustomerData source, SdTicketInfoData target) {
         Optional.ofNullable(source)
                 .map(BesCustomerData::getCustomerInfos)
                 .map(BesCustomerInfosData::getCustBasicInfo).ifPresent(data -> {
-            target.setCustName(data.getCustName());
             target.setCustStatus(data.getStatus());
             switch (data.getCustType()) {
                 case "1":
@@ -62,9 +62,8 @@ public class SdTicketInfoDataPopulator extends AbstractDataPopulator<SdTicketInf
 
     }
 
-    public void populateFromItsmProfileData(ItsmProfileData itsmProfileData, SdTicketInfoData ticketInfoData) {
-        ticketInfoData.setCustName(itsmProfileData.getCustName());
-        ticketInfoData.setCustCode(itsmProfileData.getCustCode());
-        ticketInfoData.setCustStatus(itsmProfileData.getStatus());
+    public void populateFromItsmProfileData(ItsmProfileData source, SdTicketInfoData target) {
+        target.setCustCode(source.getCustCode());
+        target.setCustStatus(source.getStatus());
     }
 }

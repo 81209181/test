@@ -43,6 +43,8 @@ public class SdTicketMasEntity extends BaseEntity {
 
     private String serviceNumber;
 
+    private String custName;
+
     public LocalDateTime getAppointmentDate() {
         return appointmentDate;
     }
@@ -145,5 +147,13 @@ public class SdTicketMasEntity extends BaseEntity {
 
     public void setServiceNumber(String serviceNumber) {
         this.serviceNumber = serviceNumber;
+    }
+
+    public String getCustName() {
+        return custName;
+    }
+
+    public void setCustName(String custName) {
+        this.custName = custName;
     }
 }
