@@ -8,7 +8,6 @@ import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.nora.NoraAccountData;
 import com.hkt.btu.sd.facade.data.nora.NoraBroadbandInfoData;
-import com.hkt.btu.sd.facade.data.nora.NoraDnGroupData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
 import com.hkt.btu.sd.facade.data.wfm.WfmMakeApptData;
 import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
@@ -30,7 +29,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequestMapping("/ticket")
@@ -318,10 +316,10 @@ public class TicketController {
     @GetMapping("/offer-info")
     public String getOfferInfo(final Model model,
                                @RequestParam String bsn,
-                               @ModelAttribute("noraDnGroupData") NoraDnGroupData noraDnGroupData) {
-        noraDnGroupData = norarsApiFacade.getRelatedOfferInfoListByBsn(bsn);
-        if (noraDnGroupData != null) {
-            model.addAttribute("noraDnGroupData", noraDnGroupData);
+                               @ModelAttribute("dnGroupData") SdDnGroupData dnGroupData) {
+        dnGroupData = norarsApiFacade.getDnGroupData(bsn);
+        if (dnGroupData != null) {
+            model.addAttribute("dnGroupData", dnGroupData);
         }
         return "ticket/offerInfo";
     }

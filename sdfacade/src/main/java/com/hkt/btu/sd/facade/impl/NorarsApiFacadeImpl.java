@@ -9,8 +9,13 @@ import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.NorarsApiFacade;
 import com.hkt.btu.sd.facade.SdAuditTrailFacade;
+import com.hkt.btu.sd.facade.data.SdDnGroupData;
+import com.hkt.btu.sd.facade.data.SdDnPlanData;
 import com.hkt.btu.sd.facade.data.ServiceAddressData;
 import com.hkt.btu.sd.facade.data.nora.*;
+import com.hkt.btu.sd.facade.populator.SdDnGroupDataPopulator;
+import com.hkt.btu.sd.facade.populator.SdDnPlanDataPopulator;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,9 +25,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements NorarsApiFacade {
     private static final Logger LOG = LogManager.getLogger(NorarsApiFacadeImpl.class);
@@ -31,12 +34,17 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
 
     @Resource(name = "apiService")
     SdApiService apiService;
-
     @Resource(name = "userService")
     SdUserService userService;
 
     @Resource(name = "auditTrailFacade")
     SdAuditTrailFacade auditTrailFacade;
+
+    @Resource(name = "dnGroupDataPopulator")
+    SdDnGroupDataPopulator dnGroupDataPopulator;
+    @Resource(name = "dnPlanDataPopulator")
+    SdDnPlanDataPopulator dnPlanDataPopulator;
+
 
     @Override
     public String getBsnByDn(String dn) {
@@ -82,6 +90,31 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
         } else {
             return new Gson().fromJson(responseString, NoraDnGroupData.class);
         }
+    }
+
+    @Override
+    public SdDnGroupData getDnGroupData(String bsn) {
+        NoraDnGroupData noraDnGroupData = getRelatedOfferInfoListByBsn(bsn);
+        if(noraDnGroupData==null){
+            return null;
+        }
+
+        SdDnGroupData dnGroupData = new SdDnGroupData();
+        dnGroupDataPopulator.populate(noraDnGroupData, dnGroupData);
+
+        List<NoraDnPlanData> noraDnPlanDataList = noraDnGroupData.getUserPlanList();
+        if(CollectionUtils.isNotEmpty(noraDnPlanDataList)){
+            List<SdDnPlanData> dnPlanDataList = new ArrayList<>();
+            dnGroupData.setUserPlanList(dnPlanDataList);
+
+            for(NoraDnPlanData noraDnPlanData : noraDnPlanDataList){
+                SdDnPlanData dnPlanData = new SdDnPlanData();
+                dnPlanDataPopulator.populate(noraDnPlanData, dnPlanData);
+                dnPlanDataList.add(dnPlanData);
+            }
+        }
+
+        return dnGroupData;
     }
 
     @Override
