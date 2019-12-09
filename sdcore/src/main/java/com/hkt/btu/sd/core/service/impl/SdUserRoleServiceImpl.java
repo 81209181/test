@@ -113,18 +113,18 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     }
 
     @Override
-    public void checkUserRole(Set<GrantedAuthority> authorities, List<String> roleList) throws InsufficientAuthorityException {
-        if (authorities.contains(new SimpleGrantedAuthority(SdUserRoleEntity.SYS_ADMIN))) {
+    public void checkUserRole(Set<GrantedAuthority> sourceAuthorities, List<String> targetRoleList) throws InsufficientAuthorityException {
+        if (sourceAuthorities.contains(new SimpleGrantedAuthority(SdUserRoleEntity.SYS_ADMIN))) {
             return;
         }
 
         // find matching team head authority
-        for (GrantedAuthority authority : authorities) {
+        for (GrantedAuthority authority : sourceAuthorities) {
             if (authority instanceof SimpleGrantedAuthority) {
                 String roleId = authority.getAuthority();
                 if (roleId.contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR)) {
                     String th_roleId = StringUtils.substringAfter(roleId, SdUserRoleEntity.TEAM_HEAD_INDICATOR);
-                    boolean flag = roleList.stream().anyMatch(role -> role.equals(th_roleId));
+                    boolean flag = targetRoleList.stream().anyMatch(role -> role.equals(th_roleId));
                     if (flag) {
                         return;
                     }

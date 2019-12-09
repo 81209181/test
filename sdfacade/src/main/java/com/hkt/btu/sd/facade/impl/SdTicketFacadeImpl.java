@@ -74,7 +74,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                 throw new InvalidInputException("Customer Code is Empty.");
             }
         }
-        return ticketService.createQueryTicket(queryTicketRequestData.getCustCode(),
+        return ticketService.createQueryTicket(
+                queryTicketRequestData.getCustCode(),
                 queryTicketRequestData.getServiceNo(),
                 queryTicketRequestData.getServiceType(),
                 queryTicketRequestData.getSubsId(),
