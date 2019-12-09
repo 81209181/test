@@ -1,6 +1,10 @@
 -- Site Config
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('SITE', 'givenDomain', 'jecvm-savt01.pccw.com', 'String', sysdate, 0, sysdate, 0);
+insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
+values ('SITE', 'cronjobHostname', 'jecvm-savt01', 'String', current_timestamp, 0, current_timestamp, 0);
+
+
 
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('API_BES', 'systemName', 'BES', 'String', current_timestamp, 0, current_timestamp, 0);
