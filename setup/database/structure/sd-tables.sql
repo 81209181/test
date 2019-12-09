@@ -10,6 +10,7 @@ CREATE TABLE TICKET_MAS
     SEARCH_KEY         varchar2(20),
     SEARCH_VALUE       varchar2(30),
     OWNING_ROLE        varchar2(20),
+    CUST_NAME          varchar2(100),
 
     CREATEDATE         date                    default SYSDATE not null,
     CREATEBY           varchar2(12)            not null,
