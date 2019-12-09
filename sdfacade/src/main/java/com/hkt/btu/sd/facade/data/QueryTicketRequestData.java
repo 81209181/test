@@ -6,6 +6,7 @@ public class QueryTicketRequestData implements DataInterface {
 
     private String subsId;
     private String custCode;
+    private String custName;
     private String serviceNo;
     private String searchKey;
     private String searchValue;
@@ -57,5 +58,13 @@ public class QueryTicketRequestData implements DataInterface {
 
     public void setServiceType(String serviceType) {
         this.serviceType = serviceType;
+    }
+
+    public String getCustName() {
+        return custName;
+    }
+
+    public void setCustName(String custName) {
+        this.custName = custName;
     }
 }

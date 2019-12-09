@@ -5,7 +5,9 @@ import com.hkt.btu.common.core.service.BtuSensitiveDataService;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.sd.core.dao.entity.*;
 import com.hkt.btu.sd.core.dao.mapper.*;
+import com.hkt.btu.sd.core.exception.InsufficientAuthorityException;
 import com.hkt.btu.sd.core.service.SdTicketService;
+import com.hkt.btu.sd.core.service.SdUserRoleService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.*;
 import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
@@ -45,6 +47,8 @@ public class SdTicketServiceImpl implements SdTicketService {
     SdUserService userService;
     @Resource(name = "sensitiveDataService")
     BtuSensitiveDataService sensitiveDataService;
+    @Resource(name = "userRoleService")
+    SdUserRoleService userRoleService;
 
     @Resource(name = "ticketMasBeanPopulator")
     SdTicketMasBeanPopulator ticketMasBeanPopulator;
@@ -62,7 +66,7 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int createQueryTicket(String custCode, String serviceNo, String serviceType, String subsId,
-                                 String searchKey, String searchValue) {
+                                 String searchKey, String searchValue, String custName) {
         SdTicketMasEntity ticketMasEntity = new SdTicketMasEntity();
         SdUserBean currentUserBean = (SdUserBean) userService.getCurrentUserBean();
         String userId = currentUserBean.getUserId();
@@ -73,6 +77,7 @@ public class SdTicketServiceImpl implements SdTicketService {
         ticketMasEntity.setSearchKey(searchKey);
         ticketMasEntity.setSearchValue(searchValue);
         ticketMasEntity.setOwningRole(primaryRoleId);
+        ticketMasEntity.setCustName(custName);
         ticketMasMapper.insertQueryTicket(ticketMasEntity);
 
         // service
@@ -365,11 +370,12 @@ public class SdTicketServiceImpl implements SdTicketService {
 
             // check ticket ownership (for servicedesk close only)
             if(nonApiClose) {
-                // check primary role
-                String primaryRoleId = currentUserBean.getPrimaryRoleId();
-                String owdningRole = sdTicketMasBean.getOwningRole();
-                if (!StringUtils.equals(primaryRoleId, owdningRole)) {
-                    throw new InvalidInputException("This ticket belongs to another team (" + owdningRole + ").");
+                String ticketOwningRole = sdTicketMasBean.getOwningRole();
+                try {
+                    userRoleService.checkUserRole(currentUserBean.getAuthorities(), List.of(ticketOwningRole));
+                }catch (InsufficientAuthorityException e){
+                    LOG.warn(e.getMessage());
+                    throw new InvalidInputException("This ticket belongs to another team (" + ticketOwningRole + ").");
                 }
             }
         } else {

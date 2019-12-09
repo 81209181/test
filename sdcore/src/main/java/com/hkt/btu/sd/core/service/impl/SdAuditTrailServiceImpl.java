@@ -50,18 +50,6 @@ public class SdAuditTrailServiceImpl extends BtuAuditTrailServiceImpl implements
     }
 
     @Override
-    public void insertViewRequesterAuditTrail(Integer requesterId) {
-        String detail = String.format("%s", requesterId);
-        insertAuditTrail(SdAuditTrailEntity.ACTION.VIEW_REQUESTER, detail);
-    }
-
-    @Override
-    public void insertViewRequestVisitorAuditTrail(Integer visitorAccessId) {
-        String detail = String.format("%s", visitorAccessId);
-        insertAuditTrail(SdAuditTrailEntity.ACTION.VIEW_VISITOR, detail);
-    }
-
-    @Override
     public void insertKickAuditTrail(String user, String kickBy) {
         insertAuditTrail(user,SdAuditTrailEntity.ACTION.KICK,String.format("By %s",kickBy));
     }
@@ -76,18 +64,33 @@ public class SdAuditTrailServiceImpl extends BtuAuditTrailServiceImpl implements
         insertAuditTrail(user,SdAuditTrailEntity.ACTION.VIEW_TICKET,ticketMasId);
     }
 
+    @Override
+    public void insertGetNgn3OneDayAdmin(String bsn, String companyId) {
+        String details = String.format("bsn: %s, companyId: %s", bsn, companyId);
+        insertAuditTrail(SdAuditTrailEntity.ACTION.GET_NGN3_ADMIN_ACCOUNT, details);
+    }
+
+    @Override
+    public void insertResetNgn3Account(String dn) {
+        String details = String.format("dn: %s", dn);
+        insertAuditTrail(SdAuditTrailEntity.ACTION.RESET_NGN3_ACCOUNT, details);
+    }
+
     public void insertLoginAuditTrail(BtuUser btuUser) {
-        this.insertAuditTrail(btuUser, SdAuditTrailEntity.ACTION.LOGIN, "SUCCESS");
+        insertAuditTrail(btuUser, SdAuditTrailEntity.ACTION.LOGIN, "SUCCESS");
     }
 
     public void insertLogoutAuditTrail(BtuUser btuUser) {
-        this.insertAuditTrail(btuUser, SdAuditTrailEntity.ACTION.LOGOUT, "SUCCESS");
+        insertAuditTrail(btuUser, SdAuditTrailEntity.ACTION.LOGOUT, "SUCCESS");
     }
 
     @Override
     public void insertLoginExceptionAuditTrail(BtuUser btuUser, String exception) {
-        this.insertAuditTrail(btuUser, SdAuditTrailEntity.ACTION.LOGIN, exception);
+        insertAuditTrail(btuUser, SdAuditTrailEntity.ACTION.LOGIN, exception);
     }
 
-
+    @Override
+    public int cleanAuditTrail() {
+        return sdAuditTrailMapper.cleanAuditTrail();
+    }
 }

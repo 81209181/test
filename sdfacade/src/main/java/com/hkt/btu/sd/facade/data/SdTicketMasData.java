@@ -45,6 +45,16 @@ public class SdTicketMasData implements DataInterface {
 
     private String serviceNumber;
 
+    private String custName;
+
+    public String getCustName() {
+        return custName;
+    }
+
+    public void setCustName(String custName) {
+        this.custName = custName;
+    }
+
     public int getTicketMasId() {
         return ticketMasId;
     }

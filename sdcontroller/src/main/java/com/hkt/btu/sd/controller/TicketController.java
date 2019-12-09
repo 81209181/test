@@ -3,6 +3,7 @@ package com.hkt.btu.sd.controller;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
+import com.hkt.btu.sd.core.exception.InvalidInputException;
 import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.nora.NoraAccountData;
@@ -14,6 +15,8 @@ import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
 import com.hkt.btu.sd.facade.data.wfm.WfmResponseTokenData;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +36,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/ticket")
 @Controller
 public class TicketController {
+    private static final Logger LOG = LogManager.getLogger(TicketController.class);
 
     @Resource(name = "requestCreateFacade")
     SdRequestCreateFacade requestCreateFacade;
@@ -335,10 +339,17 @@ public class TicketController {
 
     @GetMapping("/getNGN3OneDayAdminAccount/{bsn}")
     public ResponseEntity<?> getNGN3OneDayAdminAccount(@PathVariable String bsn) {
-        NoraAccountData oneDayAdminAccount = norarsApiFacade.getNGN3OneDayAdminAccount(bsn);
-        if (oneDayAdminAccount == null) {
-            return ResponseEntity.badRequest().body("NGN3 one day admin account not found.");
+        NoraAccountData oneDayAdminAccount;
+        try{
+            oneDayAdminAccount = norarsApiFacade.getNgn3OneDayAdminAccount(bsn);
+            if (oneDayAdminAccount == null) {
+                return ResponseEntity.badRequest().body("Cannot get NGN3 one day admin account.");
+            }
+        }catch (InvalidInputException e){
+            LOG.warn(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
+
         return ResponseEntity.ok(oneDayAdminAccount);
     }
 
@@ -352,18 +363,20 @@ public class TicketController {
         return ResponseEntity.badRequest().body("WFM Error: Cannot get appointment info for ticketMasId:" + ticketMasId);
     }
 
-    @GetMapping("getNgn3AccountList/{bsn}")
+    @GetMapping("resetNgn3Pwd/{dn}")
     @ResponseBody
-    public List<String> getNgn3AccountList(@PathVariable String bsn) {
-        return Optional.ofNullable(norarsApiFacade.getRelatedOfferInfoListByBsn(bsn)).map(NoraDnGroupData::getAdminPortalId).map(s -> List.of(s.split(","))).orElse(List.of());
-    }
-
-    @GetMapping("resetNgn3Pwd/{account}")
-    public ResponseEntity<?> resetNgn3Pwd(@PathVariable String account) {
-        try {
-            return ResponseEntity.ok(cloudApiFacade.resetNgn3Pwd(account));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Reset password fail.");
+    public ResponseEntity<?> resetNgn3Pwd(@PathVariable String dn) {
+        String ngn3ComplexPwd;
+        try{
+            ngn3ComplexPwd = norarsApiFacade.resetNgn3Account(dn);
+            if ( StringUtils.isEmpty(ngn3ComplexPwd) ) {
+                return ResponseEntity.badRequest().body("Cannot reset NGN3 account password.");
+            } else {
+                return ResponseEntity.ok(ngn3ComplexPwd);
+            }
+        }catch (InvalidInputException e){
+            LOG.warn(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

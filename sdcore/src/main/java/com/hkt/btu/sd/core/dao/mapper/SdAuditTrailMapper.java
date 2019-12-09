@@ -10,4 +10,6 @@ public interface SdAuditTrailMapper {
     void insertAuditTrail(@Param("userId") String userId, @Param("action") String action, @Param("detail") String detail);
 
     int houseKeep();
+
+    int cleanAuditTrail();
 }

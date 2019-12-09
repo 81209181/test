@@ -24,6 +24,7 @@ public class SdTicketMasDataPopulator extends AbstractDataPopulator<SdTicketMasD
         target.setServiceType(source.getServiceType());
         target.setOwningRole(source.getOwningRole());
         target.setServiceNumber(source.getServiceNumber());
+        target.setCustName(source.getCustName());
 
         ServiceSearchEnum serviceSearchEnum = ServiceSearchEnum.getEnum(source.getSearchKey());
         if (serviceSearchEnum != null) {

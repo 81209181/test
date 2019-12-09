@@ -45,9 +45,9 @@ public class SdServiceTypeServiceImpl implements SdServiceTypeService {
         return Optional.ofNullable(SERVICE_TYPE_OFFER_MAPPING).orElseGet(() -> {
             reloadServiceTypeOfferMapping();
             return SERVICE_TYPE_OFFER_MAPPING;
-        }).stream().filter(bean -> StringUtils.equals(offerName, bean.getOfferName()))
+        }).stream().filter(bean -> StringUtils.equalsIgnoreCase(offerName, bean.getOfferName()))
                 .findFirst().flatMap(bean -> getServiceTypeList().stream()
-                        .filter(sdServiceTypeBean -> sdServiceTypeBean.getServiceTypeCode().equals(bean.getServiceTypeCode())).findFirst()
+                        .filter(sdServiceTypeBean -> StringUtils.equals(sdServiceTypeBean.getServiceTypeCode(), bean.getServiceTypeCode()) ).findFirst()
                 ).orElseGet(() -> new SdServiceTypeBean(SdServiceTypeEntity.SERVICE_TYPE.UNKNOWN, SdServiceTypeEntity.SERVICE_TYPE_NAME.UNKNOWN_SERVICE_TYPE));
     }
 
