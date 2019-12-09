@@ -14,4 +14,9 @@
         where trunc(CREATEDATE) &lt;= trunc(last_day(ADD_MONTHS(sysdate, -13)))
     </delete>
 
+    <delete id="cleanAuditTrail" >
+        delete AUDIT_TRAIL
+        where trunc(CREATEDATE) &lt;= trunc(last_day(ADD_MONTHS(sysdate, -25)))
+    </delete>
+
 </mapper>

@@ -89,5 +89,8 @@ public class SdAuditTrailServiceImpl extends BtuAuditTrailServiceImpl implements
         insertAuditTrail(btuUser, SdAuditTrailEntity.ACTION.LOGIN, exception);
     }
 
-
+    @Override
+    public int cleanAuditTrail() {
+        return sdAuditTrailMapper.cleanAuditTrail();
+    }
 }
