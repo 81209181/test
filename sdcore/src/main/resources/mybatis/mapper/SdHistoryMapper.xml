@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdHistoryMapper">
+
+    <delete id="cleanConfigParamHistory">
+        delete CONFIG_PARAM_HIST
+        where trunc(CREATEDATE) &lt;= trunc(last_day(ADD_MONTHS(sysdate, -19)))
+    </delete>
+
+    <delete id="cleanCronJobHistory">
+        delete CRON_JOB_HIST
+        where trunc(CREATEDATE) &lt;= trunc(last_day(ADD_MONTHS(sysdate, -19)))
+    </delete>
+
+    <delete id="cleanPathCtrlHistory">
+        delete PATH_CTRL_HIST
+        where trunc(CREATEDATE) &lt;= trunc(last_day(ADD_MONTHS(sysdate, -19)))
+    </delete>
+
+    <delete id="cleanUserPwdHistory">
+        delete USER_PWD_HIST
+        where trunc(CREATEDATE) &lt;= trunc(last_day(ADD_MONTHS(sysdate, -19)))
+    </delete>
+
+    <delete id="cleanUserRoleHistory">
+        delete USER_ROLE_HIST
+        where trunc(CREATEDATE) &lt;= trunc(last_day(ADD_MONTHS(sysdate, -19)))
+    </delete>
+
+    <delete id="cleanUserRolePathCtrlHistory">
+        delete USER_ROLE_PATH_CTRL_HIST
+        where trunc(CREATEDATE) &lt;= trunc(last_day(ADD_MONTHS(sysdate, -19)))
+    </delete>
+
+    <delete id="cleanUserUserRoleHistory">
+        delete USER_USER_ROLE_HIST
+        where trunc(CREATEDATE) &lt;= trunc(last_day(ADD_MONTHS(sysdate, -19)))
+    </delete>
+</mapper>

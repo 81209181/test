@@ -7,12 +7,13 @@ public interface SdAuditTrailService extends BtuAuditTrailService {
     void insertAuditTrail(String userId, String action, String detail);
 
     void insertViewUserAuditTrail(String userId);
-    void insertViewRequesterAuditTrail(Integer requestId);
-    void insertViewRequestVisitorAuditTrail(Integer visitorId);
 
     void insertKickAuditTrail(String user, String clickBy);
 
     int houseKeep();
 
     void insertViewTicketAuditTrail(String user, String ticketMasId);
+
+    void insertGetNgn3OneDayAdmin(String bsn, String companyId);
+    void insertResetNgn3Account(String dn);
 }

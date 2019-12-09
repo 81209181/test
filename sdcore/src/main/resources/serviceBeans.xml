@@ -67,6 +67,9 @@
     <alias name="sdServiceTypeService" alias="serviceTypeService"/>
     <bean id="sdServiceTypeService" class="com.hkt.btu.sd.core.service.impl.SdServiceTypeServiceImpl"/>
 
+    <alias name="sdHistoryService" alias="historyService"/>
+    <bean id="sdHistoryService" class="com.hkt.btu.sd.core.service.impl.SdHistoryServiceImpl"/>
+
     <!-- Populator -->
     <alias name="sdUserBeanPopulator" alias="userBeanPopulator"/>
     <bean id="sdUserBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserBeanPopulator"/>
