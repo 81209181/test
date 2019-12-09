@@ -110,8 +110,6 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
 
     @Override
     public String resetNgn3Account(String dn) throws ApiException {
-//        return "testingComplexPwd";
-
         LOG.info("Resetting NGN3 Account...");
         String apiPath = "/norars/api/v1/osb/complexpwd/" + dn;
         String complexPwd = putData(apiPath, null, null);
