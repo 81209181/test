@@ -62,7 +62,7 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int createQueryTicket(String custCode, String serviceNo, String serviceType, String subsId,
-                                 String searchKey, String searchValue) {
+                                 String searchKey, String searchValue, String custName) {
         SdTicketMasEntity ticketMasEntity = new SdTicketMasEntity();
         SdUserBean currentUserBean = (SdUserBean) userService.getCurrentUserBean();
         String userId = currentUserBean.getUserId();
@@ -73,6 +73,7 @@ public class SdTicketServiceImpl implements SdTicketService {
         ticketMasEntity.setSearchKey(searchKey);
         ticketMasEntity.setSearchValue(searchValue);
         ticketMasEntity.setOwningRole(primaryRoleId);
+        ticketMasEntity.setCustName(custName);
         ticketMasMapper.insertQueryTicket(ticketMasEntity);
 
         // service

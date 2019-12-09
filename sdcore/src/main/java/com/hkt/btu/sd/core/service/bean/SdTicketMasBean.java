@@ -39,6 +39,16 @@ public class SdTicketMasBean extends BaseBean {
 
     private String serviceNumber;
 
+    private String custName;
+
+    public String getCustName() {
+        return custName;
+    }
+
+    public void setCustName(String custName) {
+        this.custName = custName;
+    }
+
     public LocalDateTime getAppointmentDate() {
         return appointmentDate;
     }
