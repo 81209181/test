@@ -30,15 +30,19 @@ function drawChart() {
         'title':'Query Ticket',
         'height':300,
         is3D:true,
+        legend: 'none',
         colors:['dodgerblue','orange','mediumseagreen'],
-        fontSize:16
+        fontSize:16,
+        pieSliceText:'label'
     };
     var job_options = {
         'title':'Job Ticket',
         'height':300,
         is3D: true,
+        legend: 'none',
         colors:['dodgerblue','orange','mediumseagreen'],
-        fontSize:16
+        fontSize:16,
+        pieSliceText:'label'
     };
 
     var query_chart = new google.visualization.PieChart(document.getElementById('query_ticket'));
