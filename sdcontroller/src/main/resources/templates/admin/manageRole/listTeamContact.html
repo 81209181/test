@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>List Team Contact</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <h1>Team Contact List</h1>
+    <table id="teamContactTable" class="display">
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Team</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Team</th>
+            </tr>
+        </tfoot>
+    </table>
+
+    <script type="text/javascript" th:src="@{/js/listTeamContact.js}"></script>
+</div>
+</body>
+</html>
