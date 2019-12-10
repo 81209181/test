@@ -28,17 +28,25 @@ function drawChart() {
 
     var query_options = {
         'title':'Query Ticket',
-        'height':300,
+        'height':250,
+        'margin': '0 auto',
         is3D:true,
+        legend: 'none',
         colors:['dodgerblue','orange','mediumseagreen'],
-        fontSize:16
+        fontSize:16,
+        pieSliceText:'label',
+        chartArea: {width: "100%", height: "100%"}
     };
     var job_options = {
         'title':'Job Ticket',
-        'height':300,
+        'height':250,
+        'margin': '0 auto',
         is3D: true,
+        legend: 'none',
         colors:['dodgerblue','orange','mediumseagreen'],
-        fontSize:16
+        fontSize:16,
+        pieSliceText:'label',
+        chartArea: {width: "100%", height: "100%"}
     };
 
     var query_chart = new google.visualization.PieChart(document.getElementById('query_ticket'));
