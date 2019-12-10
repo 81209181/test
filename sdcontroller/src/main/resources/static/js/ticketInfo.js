@@ -602,12 +602,15 @@ function bnButtonCtrl(val){
     }
 }
 
+var voIpMark =false;
+
 function voIpButtonCtrl(val){
     if(val){
         eCloudBtn.attr('disabled', true);
-        inventoryBtn.attr('disabled', false);
-        bbBtn.attr('disabled', false);
-        voIpBtn.attr('disabled', false);
+        voIpMark =true;
+        inventoryBtn.attr('disabled', true);
+        bbBtn.attr('disabled', true);
+        voIpBtn.attr('disabled', true);
     }
 }
 function getExternalServiceData(code){
@@ -616,5 +619,10 @@ function getExternalServiceData(code){
         $.each(res,function(key,val){
             $('#service').find('input[name='+key+']').val(val);
         })
+        if(voIpMark){
+            inventoryBtn.attr('disabled', false);
+            bbBtn.attr('disabled', false);
+            voIpBtn.attr('disabled', false);
+        }
     })
 }
