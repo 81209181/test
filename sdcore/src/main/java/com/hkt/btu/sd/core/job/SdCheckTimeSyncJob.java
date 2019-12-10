@@ -1,8 +1,6 @@
 package com.hkt.btu.sd.core.job;
 
-import com.hkt.btu.sd.core.service.SdAuditTrailService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.hkt.btu.sd.core.service.SdHealthCheckService;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -11,14 +9,13 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 import javax.annotation.Resource;
 
 @DisallowConcurrentExecution
-public class SdCleanAuditTableJob extends QuartzJobBean {
-    private static final Logger LOG = LogManager.getLogger(SdCleanAuditTableJob.class);
+public class SdCheckTimeSyncJob extends QuartzJobBean {
 
-    @Resource(name = "auditTrailService")
-    SdAuditTrailService auditTrailService;
+    @Resource(name = "healthCheckService")
+    SdHealthCheckService sdHealthCheckService;
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        auditTrailService.cleanAuditTrail();
+        sdHealthCheckService.checkTimeSync();
     }
 }

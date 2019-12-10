@@ -16,7 +16,7 @@
 
     <delete id="cleanAuditTrail" >
         delete AUDIT_TRAIL
-        where trunc(CREATEDATE) &lt;= trunc(last_day(ADD_MONTHS(sysdate, -25)))
+        where trunc(CREATEDATE) &lt; trunc(ADD_MONTHS(sysdate, -24), 'mm')
     </delete>
 
 </mapper>

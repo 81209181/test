@@ -5,18 +5,25 @@ import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
 import com.hkt.btu.sd.core.dao.entity.SdAuditTrailEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdAuditTrailMapper;
 import com.hkt.btu.sd.core.service.SdAuditTrailService;
+import com.hkt.btu.sd.core.service.SdHealthCheckService;
 import com.hkt.btu.sd.core.service.SdUserService;
-import com.hkt.btu.sd.core.service.bean.SdUserBean;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.quartz.JobExecutionException;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 
 public class SdAuditTrailServiceImpl extends BtuAuditTrailServiceImpl implements SdAuditTrailService {
     private static final Logger LOG = LogManager.getLogger(SdAuditTrailServiceImpl.class);
 
     @Resource(name = "userService")
     SdUserService userService;
+
+    @Resource(name = "healthCheckService")
+    SdHealthCheckService sdHealthCheckService;
 
     @Resource
     SdAuditTrailMapper sdAuditTrailMapper;
@@ -90,7 +97,10 @@ public class SdAuditTrailServiceImpl extends BtuAuditTrailServiceImpl implements
     }
 
     @Override
-    public int cleanAuditTrail() {
-        return sdAuditTrailMapper.cleanAuditTrail();
+    public void cleanAuditTrail() throws JobExecutionException {
+        sdHealthCheckService.checkTimeSync();
+        String beforeDate = LocalDateTime.now().minusMonths(24).with(TemporalAdjusters.firstDayOfMonth()).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        LOG.info("Cleaning audit trail before {}", beforeDate);
+        LOG.info("Deleted {} row(s) of audit trail.", sdAuditTrailMapper.cleanAuditTrail());
     }
 }
