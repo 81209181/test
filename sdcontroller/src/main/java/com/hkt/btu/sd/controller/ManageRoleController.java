@@ -82,4 +82,9 @@ public class ManageRoleController {
         userRoleFacade.reloadUserRole();
         return ResponseEntity.ok("done.");
     }
+
+    @GetMapping("/list-team-contact")
+    public String listTeamContact() {
+        return "admin/manageRole/listTeamContact";
+    }
 }
