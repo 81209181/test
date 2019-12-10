@@ -72,7 +72,7 @@ CREATE INDEX IDX_TICKET_CONTACT_2 ON TICKET_CONTACT (CREATEDATE);
 CREATE SEQUENCE SEQ_TICKET_REMARKS_ID START WITH 1;
 CREATE TABLE TICKET_REMARKS
 (
-    TICKET_REMARKS_ID       number          default SEQ_TICKET_DET_ID.nextval,
+    TICKET_REMARKS_ID       number          default SEQ_TICKET_REMARKS_ID.nextval,
     TICKET_MAS_ID           number,
 
     REMARKS_TYPE            varchar2(5), -- {Customer: 'CUST', Field: 'FIELD', System: 'SYS'}
