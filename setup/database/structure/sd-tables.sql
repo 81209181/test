@@ -110,8 +110,11 @@ CREATE TABLE SERVICE_TYPE_OFFER_MAPPING
     SERVICE_TYPE_CODE             varchar2(10)             not null,
     OFFER_NAME                    varchar2(100)             not null,
     CREATEDATE                    date                     default SYSDATE not null,
-    CREATEBY                      varchar2(10)             not null
+    CREATEBY                      varchar2(10)             not null,
+    MODIFYDATE                    date                     default SYSDATE not null,
+    MODIFYBY                      varchar2(10)             not null
 );
+CREATE UNIQUE INDEX IDX_SERVICE_TYPE_OFFER_MAPPING_1 ON SERVICE_TYPE_OFFER_MAPPING (SERVICE_TYPE_CODE, OFFER_NAME);
 --------------------------------------------------------------------------------------------------
 CREATE TABLE SYMPTOM_GROUP
 (

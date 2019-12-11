@@ -34,6 +34,7 @@ public class SdUserEntity extends BaseEntity {
     private Integer loginTried;
 
     private String primaryRoleId;
+    private String teamHead;
 
 
     public String getUserId() {
@@ -138,6 +139,14 @@ public class SdUserEntity extends BaseEntity {
 
     public void setPrimaryRoleId(String primaryRoleId) {
         this.primaryRoleId = primaryRoleId;
+    }
+
+    public String getTeamHead() {
+        return teamHead;
+    }
+
+    public void setTeamHead(String teamHead) {
+        this.teamHead = teamHead;
     }
 
     @Override

@@ -39,4 +39,6 @@ public interface SdUserFacade {
     PageData<SdUserData> searchUser(Pageable pageable, String userId, String email, String name);
 
     void resetPwd4NonLdapUser(String userId) throws MessagingException;
+
+    PageData<SdUserData> getTeamHeadUser(Pageable pageable, String teamHead);
 }

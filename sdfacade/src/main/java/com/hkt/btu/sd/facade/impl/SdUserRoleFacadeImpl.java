@@ -155,4 +155,11 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
         sdUserRoleService.reloadCachedRoleTree();
     }
 
+    @Override
+    public List<SdUserRoleData> getTeamHeadRoleList() {
+        List<SdUserRoleData> results = new LinkedList<>();
+        List<SdUserRoleBean> allUserRole = sdUserRoleService.getTeamHeadRoleList();
+        return getSdUserRoleData(results, allUserRole);
+    }
+
 }

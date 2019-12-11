@@ -39,4 +39,6 @@ public interface SdUserRoleMapper {
 
 
     List<SdUserRoleEntity> getUserRoleByParentRoleId(@Param("roleId") String roleId);
+
+    List<SdUserRoleEntity> getTeamHeadRoleList(@Param("roleId") String roleId);
 }

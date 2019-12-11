@@ -14,6 +14,7 @@
         <result column="LDAP_DOMAIN" property="ldapDomain"/>
         <result column="DOMAIN_EMAIL" property="domainEmail"/>
         <result column="PRIMARY_ROLE_ID" property="primaryRoleId"/>
+        <result column="ROLE_DESC" property="teamHead"/>
 
         <result column="PASSWORD" property="password"/>
         <result column="PASSWORD_MODIFYDATE" property="passwordModifydate"/>
@@ -177,5 +178,45 @@
 
     <select id="getAllUser" resultMap="SdUserEntity">
         select * from USER_PROFILE
+    </select>
+
+    <select id="getTeamHeadUser" resultMap="SdUserEntity">
+        select
+        ur.ROLE_DESC,up.*
+        from USER_PROFILE up
+        inner join USER_USER_ROLE uur on up.USER_ID = uur.USER_ID
+        inner join USER_ROLE ur on uur.ROLE_ID = ur.ROLE_ID
+        <where>
+            <choose>
+                <when test="teamHead != null and teamHead != ''">
+                    uur.ROLE_ID = #{teamHead}
+                </when>
+                <otherwise>
+                    uur.ROLE_ID in (
+                        select ROLE_ID from USER_ROLE start with ROLE_ID = #{roleId} connect by prior ROLE_ID = PARENT_ROLE_ID
+                    )
+                </otherwise>
+            </choose>
+        </where>
+        order by uur.ROLE_ID,up.USER_ID
+        OFFSET #{offset} ROWS FETCH NEXT #{pageSize} ROWS ONLY
+    </select>
+
+    <select id="countTeamHeadUser" resultType="Integer">
+        select count(1)
+        from USER_PROFILE up
+        inner join USER_USER_ROLE uur on up.USER_ID = uur.USER_ID
+        <where>
+            <choose>
+                <when test="teamHead != null and teamHead != ''">
+                    uur.ROLE_ID = #{teamHead}
+                </when>
+                <otherwise>
+                    uur.ROLE_ID in (
+                        select ROLE_ID from USER_ROLE start with ROLE_ID = #{roleId} connect by prior ROLE_ID = PARENT_ROLE_ID
+                    )
+                </otherwise>
+            </choose>
+        </where>
     </select>
 </mapper>

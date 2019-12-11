@@ -4,15 +4,17 @@ import com.hkt.btu.common.core.service.impl.BtuAuditTrailServiceImpl;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
 import com.hkt.btu.sd.core.dao.entity.SdAuditTrailEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdAuditTrailMapper;
+import com.hkt.btu.sd.core.exception.ClockOutSyncException;
 import com.hkt.btu.sd.core.service.SdAuditTrailService;
 import com.hkt.btu.sd.core.service.SdHealthCheckService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.quartz.JobExecutionException;
 
 import javax.annotation.Resource;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 
@@ -97,10 +99,13 @@ public class SdAuditTrailServiceImpl extends BtuAuditTrailServiceImpl implements
     }
 
     @Override
-    public void cleanAuditTrail() throws JobExecutionException {
+    public void cleanAuditTrail() throws ClockOutSyncException {
+        // Check Database date and JVM date in sync
         sdHealthCheckService.checkTimeSync();
-        String beforeDate = LocalDateTime.now().minusMonths(24).with(TemporalAdjusters.firstDayOfMonth()).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        String beforeDate = LocalDateTime.of(LocalDate.now().minusMonths(24).with(TemporalAdjusters.firstDayOfMonth()), LocalTime.MIN)
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         LOG.info("Cleaning audit trail before {}", beforeDate);
-        LOG.info("Deleted {} row(s) of audit trail.", sdAuditTrailMapper.cleanAuditTrail());
+        LOG.info("Deleted {} row(s) of audit trail.", sdAuditTrailMapper.cleanAuditTrail(beforeDate));
     }
 }

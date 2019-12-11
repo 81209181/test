@@ -9,7 +9,6 @@ import com.hkt.btu.sd.facade.SdUserFacade;
 import com.hkt.btu.sd.facade.SdUserRoleFacade;
 import com.hkt.btu.sd.facade.data.*;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -305,5 +304,24 @@ public class ManageUserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         return ResponseEntity.ok("Reset password email has been sent to your email.");
+    }
+
+    @GetMapping("/list-team-contact")
+    public String listTeamContact(Model model) {
+        model.addAttribute("teamHeadList", userRoleFacade.getTeamHeadRoleList());
+        return "admin/manageUser/listTeamContact";
+    }
+
+    @GetMapping("/ajax-list-team-contact")
+    public ResponseEntity<?> ajaxTeamContactList(
+            @RequestParam(defaultValue = "0") int draw,
+            @RequestParam(defaultValue = "0") int start,
+            @RequestParam(defaultValue = "10") int length,
+            @RequestParam(required = false) String teamHead) {
+        int page = start / length;
+        Pageable pageable = PageRequest.of(page, length);
+
+        PageData<SdUserData> pageData = userFacade.getTeamHeadUser(pageable, teamHead);
+        return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
     }
 }

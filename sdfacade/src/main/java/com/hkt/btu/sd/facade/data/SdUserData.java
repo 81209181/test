@@ -23,6 +23,7 @@ public class SdUserData implements DataInterface {
     private String companyName;
     private String staffId;
     private String primaryRoleId;
+    private String teamHead;
 
     public String getPrimaryRoleId() {
         return primaryRoleId;
@@ -136,5 +137,13 @@ public class SdUserData implements DataInterface {
 
     public void setDomainEmail(String domainEmail) {
         this.domainEmail = domainEmail;
+    }
+
+    public String getTeamHead() {
+        return teamHead;
+    }
+
+    public void setTeamHead(String teamHead) {
+        this.teamHead = teamHead;
     }
 }

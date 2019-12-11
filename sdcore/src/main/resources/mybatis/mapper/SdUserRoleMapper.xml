@@ -138,4 +138,8 @@
     <update id="updateUserUserRoleByUserId">
         update USER_USER_ROLE set USER_ID = #{newUserId} where USER_ID = #{oldUserId}
     </update>
+
+    <select id="getTeamHeadRoleList" resultMap="SdUserRoleEntity">
+        select * from USER_ROLE start with ROLE_ID = #{roleId} connect by prior ROLE_ID = PARENT_ROLE_ID order by role_id
+    </select>
 </mapper>

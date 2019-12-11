@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Service Type Mapping</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+    <h1>Service Type Mapping</h1>
+    <div class="mt-5 from-row">
+        <button type="button" class="btn btn-lg btn-primary float-left mr-sm-2" id="btnCreateOfferName"><i class="far fa-save"></i> Create Offer Name
+        </button>
+    </div>
+
+    <br>
+    <br>
+
+    <div class="modal fade offerName">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-white bg-info h-80">
+                    <h6 class="modal-title">Create Offer Name</h6>
+                    <button type="button" class="close text-white" data-dismiss="modal">x</button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation" novalidate>
+                        <div class="form-row mt-3">
+                            <label class="col-md-2 justify-content-end" >Service Type:</label>
+                            <select name="serviceType" id="serviceTypeList" class="selectpicker form-control col-md-10" data-width="500px"
+                                    data-live-search="true" title="Please select a service type..." required>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select on service type.
+                            </div>
+                        </div>
+                        <div class="form-row mt-3">
+                            <label class="col-md-2 justify-content-end" >Offer Name:</label>
+                            <input type="text" class="form-control col-md-8" name="offerName" required/>
+                            <div class="invalid-feedback">
+                                Please enter a offer name in the textarea.
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info float-right" id="btnOffNameSubmit">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-5 from-row">
+    <table id="serviceTypeMpTable" class="display">
+        <thead>
+        <tr>
+            <th>Service Type Name</th>
+            <th>Offer Name</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+        <tr>
+            <th>Service Type Name</th>
+            <th>Offer Name</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </tfoot>
+    </table>
+    </div>
+
+
+    <div class="modal fade updateOfferName">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-white bg-info h-80">
+                    <h6 class="modal-title">Edit Service Type Offer Mapping</h6>
+                    <button type="button" class="close text-white" data-dismiss="modal">x</button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation" id="updateOfferNameForm" novalidate>
+                        <div class="form-row mt-3">
+                            <label class="col-md-2 justify-content-end" >Service Type:</label>
+                            <select name="serviceType" id="editServiceTypeList" class="selectpicker form-control col-md-10 editOfferName" data-width="500px"
+                                    data-live-search="true" title="Please select a service type..." required>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select on service type.
+                            </div>
+                        </div>
+                        <div class="form-row mt-3">
+                            <label class="col-md-2 justify-content-end" >Offer Name:</label>
+                            <input type="text" class="form-control col-md-8" name="offerName" required/>
+                            <div class="invalid-feedback">
+                                Please enter a offer name in the textarea.
+                            </div>
+                        </div>
+                        <input type="text" name="oldOfferName" hidden="hidden"/>
+                        <input type="text" name="oldServiceTypeCode" hidden="hidden"/>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info float-right" id="btnUpdateOfferName">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" th:src="@{/js/serviceTypeMapping.js}"></script>
+</div>
+</body>
+</html>

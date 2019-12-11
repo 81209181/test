@@ -11,5 +11,5 @@ public interface SdAuditTrailMapper {
 
     int houseKeep();
 
-    int cleanAuditTrail();
+    int cleanAuditTrail(String beforeDate);
 }

@@ -1,4 +1,12 @@
 $(document).ready(function() {
+    // search button
+    $("#search-team-head-form").submit(function (event) {
+        event.preventDefault();
+        clearAllMsg();
+        $('#teamContactTable').DataTable().ajax.reload();
+    });
+
+    // search result
     $('#teamContactTable').DataTable({
         processing: true,
         serverSide: true,
@@ -7,9 +15,10 @@ $(document).ready(function() {
         ajax: {
             type: "GET",
             contentType: "application/json",
-            url: "/admin/manage-user/ajax-search-user",
+            url: "/admin/manage-user/ajax-list-team-contact",
             dataSrc: 'data',
             data: function(d){
+                d.teamHead = $("#teamHead").val();
             },
             error: function (e) {
                 if(e.responseText){
@@ -20,10 +29,11 @@ $(document).ready(function() {
             }
         },
         columns: [
+            { data: 'teamHead' },
             { data: 'userId' },
             { data: 'name' },
             { data: 'email' },
-            { data: 'primaryRoleId' },
+            { data: 'domainEmail' }
         ]
     });
 });

@@ -237,6 +237,13 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     }
 
     @Override
+    public List<SdUserRoleBean> getTeamHeadRoleList() {
+        List<SdUserRoleBean> results = new LinkedList<>();
+        List<SdUserRoleEntity> teamHeadRoleList = sdUserRoleMapper.getTeamHeadRoleList(SdUserRoleBean.ROLE_ID.TEAM_HEAD);
+        return getSdUserRoleBeans(results, teamHeadRoleList);
+    }
+
+    @Override
     public List<String> getPrimaryRoles() {
         List<SdUserRoleBean> eligibleUserRoleGrantList = getEligibleUserRoleGrantList();
         List<SdUserRoleBean> primaryRoleList = new ArrayList<>();
