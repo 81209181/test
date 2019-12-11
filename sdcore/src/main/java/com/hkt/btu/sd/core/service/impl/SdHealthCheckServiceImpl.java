@@ -1,16 +1,16 @@
 package com.hkt.btu.sd.core.service.impl;
 
 import com.hkt.btu.sd.core.dao.mapper.SdHealthCheckMapper;
+import com.hkt.btu.sd.core.exception.ClockOutSyncException;
 import com.hkt.btu.sd.core.service.SdHealthCheckService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.quartz.JobExecutionException;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 public class SdHealthCheckServiceImpl implements SdHealthCheckService {
-
     private static final Logger LOG = LogManager.getLogger(SdHealthCheckServiceImpl.class);
 
     @Resource
@@ -23,16 +23,16 @@ public class SdHealthCheckServiceImpl implements SdHealthCheckService {
     }
 
     @Override
-    public void checkTimeSync() throws JobExecutionException {
+    public void checkTimeSync() throws ClockOutSyncException {
         LocalDateTime dbDateTime = sdHealthCheckMapper.getDatabaseTime();
         LocalDateTime jvmDateTime = LocalDateTime.now();
-        LOG.info("database date time: {}", dbDateTime);
+        LOG.info("db date time: {}", dbDateTime);
         LOG.info("jvm date time: {}", jvmDateTime);
 
-        java.time.Duration duration = java.time.Duration.between(dbDateTime, jvmDateTime);
-        if (duration.toMinutes()  >= 0 && duration.toMinutes() <= 3) {
-        } else {
-            throw new JobExecutionException("The difference between the database date and the jvm date is more than 3 mins.");
+        long secondDiff = jvmDateTime.until(dbDateTime, ChronoUnit.SECONDS);
+        if (Math.abs(secondDiff) > 180) {
+            String errorMsg = String.format("Database and JVM not in sync. (db: %s, jvm: %s)", dbDateTime, jvmDateTime);
+            throw new ClockOutSyncException(errorMsg);
         }
     }
 }

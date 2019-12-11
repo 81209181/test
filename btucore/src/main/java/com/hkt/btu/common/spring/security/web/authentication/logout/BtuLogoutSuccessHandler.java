@@ -33,7 +33,10 @@ public class BtuLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
         // add audit trail
         auditTrailService.insertLogoutAuditTrail(user);
 
-        httpServletRequest.getSession().setAttribute("__spring_security_session_mgmt_filter_applied",Boolean.TRUE);
+        // disable session validation,
+        // so that the security filter does not throw exception and can land on login page with new session
+        httpServletRequest.getSession().setAttribute("__spring_security_session_mgmt_filter_applied", Boolean.TRUE);
+
         // redirect to defaultTargetUrl
         super.onLogoutSuccess(httpServletRequest, httpServletResponse, authentication);
     }
