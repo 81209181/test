@@ -38,8 +38,31 @@
     </delete>
 
     <insert id="insertServiceTypeOfferMapping">
-        insert into service_type_offer_mapping (SERVICE_TYPE_CODE,OFFER_NAME,CREATEBY)
-        values (#{serviceTypeCode},#{offerName},'system')
+        insert into service_type_offer_mapping (SERVICE_TYPE_CODE,OFFER_NAME,CREATEBY, MODIFYBY)
+        values (#{serviceTypeCode}, #{offerName}, #{createby}, #{createby})
     </insert>
 
+    <update id="updateServiceTypeMappingByCodeAndOfferName">
+        update SERVICE_TYPE_OFFER_MAPPING
+        set SERVICE_TYPE_CODE = #{serviceTypeCode},
+            OFFER_NAME = #{offerName},
+            MODIFYBY = #{modifyby}
+        where
+            SERVICE_TYPE_CODE = #{oldServiceTypeCode}
+        and
+            OFFER_NAME = #{oldOfferName}
+    </update>
+
+    <select id="getServiceTypeOfferMappingByCodeAndOfferName" resultMap="ServiceTypeOfferMapping">
+        select SERVICE_TYPE_CODE, OFFER_NAME
+        from SERVICE_TYPE_OFFER_MAPPING
+        where SERVICE_TYPE_CODE = #{serviceTypeCode}
+        and OFFER_NAME = #{offerName}
+    </select>
+
+    <delete id="deleteServiceTypeOfferMapping">
+        delete from SERVICE_TYPE_OFFER_MAPPING
+        where SERVICE_TYPE_CODE = #{serviceTypeCode}
+        and OFFER_NAME = #{offerName}
+    </delete>
 </mapper>
