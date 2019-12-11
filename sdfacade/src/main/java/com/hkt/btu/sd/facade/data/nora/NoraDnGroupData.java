@@ -7,13 +7,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NoraDnGroupData
 {
-	private String asCluster = "";
-	private String adminPortalId = "";
-	private String cliNumber = "";
-	private String recordingProvisionMethod = "";
-	private String dod = "";
-	private int cac = 0;
-	ArrayList<NoraDnPlanData> userPlanList = new ArrayList<NoraDnPlanData>();
+	private String asCluster;
+	private String adminPortalId;
+	private String cliNumber;
+	private String recordingProvisionMethod;
+	private String dod;
+	private Integer cac;
+	private ArrayList<NoraDnPlanData> userPlanList = new ArrayList<>();
 
 	public String getAsCluster()
 	{
@@ -65,12 +65,12 @@ public class NoraDnGroupData
 		this.dod = dod;
 	}
 
-	public int getCac()
+	public Integer getCac()
 	{
 		return cac;
 	}
 
-	public void setCac(int cac)
+	public void setCac(Integer cac)
 	{
 		this.cac = cac;
 	}

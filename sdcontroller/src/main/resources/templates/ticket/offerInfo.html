@@ -13,7 +13,7 @@
         <div class="card-body">
             <h2>Group Info</h2>
             <div class="row col-md-10">
-                <form class="col-md-12" th:object="${noraDnGroupData}">
+                <form class="col-md-12" th:object="${dnGroupData}">
                     <div class="form-row">
                         <div class="col-md-4 form-inline pt-2">
                             <label class="col-form-label col-md-5 justify-content-end">AS Cluster:</label>
@@ -55,7 +55,7 @@
                             <tr th:each="visitor, itemStat : *{userPlanList}">
                                 <td><span th:text="*{userPlanList[__${itemStat.index}__].param}" /></td>
                                 <td><span th:text="*{userPlanList[__${itemStat.index}__].plan}" /></td>
-                                <td><span th:text="*{userPlanList[__${itemStat.index}__].action}" /></td>
+                                <td><span th:text="*{userPlanList[__${itemStat.index}__].action.codeDesc}" /></td>
                             </tr>
                             </tbody>
                         </table>
