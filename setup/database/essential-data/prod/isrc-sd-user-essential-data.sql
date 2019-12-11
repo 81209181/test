@@ -74,4 +74,4 @@ insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('01309228','E_ISRC_BB');
 
 insert into USER_PROFILE (USER_ID, NAME, STATUS, MOBILE, EMAIL, LDAP_DOMAIN, CREATEBY, MODIFYBY, DOMAIN_EMAIL, PRIMARY_ROLE_ID)
 values ('00277244', 'Lui Yick Man Edmond', 'A', '28886344', 'Yick-Man.Lui@pccw.com', '@corphq.hk.pccw.com','81209181','81209181','Yick-Man.Lui@pccw.com', 'E_ISRC_BB');
-insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('01309228','E_ISRC_BB');
+insert into USER_USER_ROLE (USER_ID, ROLE_ID) values ('00277244','E_ISRC_BB');
