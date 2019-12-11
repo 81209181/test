@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 public class SdHealthCheckServiceImpl implements SdHealthCheckService {
@@ -26,8 +27,8 @@ public class SdHealthCheckServiceImpl implements SdHealthCheckService {
     public void checkTimeSync() throws ClockOutSyncException {
         LocalDateTime dbDateTime = sdHealthCheckMapper.getDatabaseTime();
         LocalDateTime jvmDateTime = LocalDateTime.now();
-        LOG.info("db date time: {}", dbDateTime);
-        LOG.info("jvm date time: {}", jvmDateTime);
+        LOG.info("Database date time: {}", dbDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        LOG.info("JVM date time: {}", jvmDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
         long secondDiff = jvmDateTime.until(dbDateTime, ChronoUnit.SECONDS);
         if (Math.abs(secondDiff) > 180) {

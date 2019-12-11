@@ -6,17 +6,17 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SdHistoryMapper {
 
-    int cleanConfigParamHistory();
+    int cleanConfigParamHistory(String beforeDate);
 
-    int cleanCronJobHistory();
+    int cleanCronJobHistory(String beforeDate);
 
-    int cleanPathCtrlHistory();
+    int cleanPathCtrlHistory(String beforeDate);
 
-    int cleanUserPwdHistory();
+    int cleanUserPwdHistory(String beforeDate);
 
-    int cleanUserRoleHistory();
+    int cleanUserRoleHistory(String beforeDate);
 
-    int cleanUserRolePathCtrlHistory();
+    int cleanUserRolePathCtrlHistory(String beforeDate);
 
-    int cleanUserUserRoleHistory();
+    int cleanUserUserRoleHistory(String beforeDate);
 }
