@@ -46,7 +46,8 @@
         update SERVICE_TYPE_OFFER_MAPPING
         set SERVICE_TYPE_CODE = #{serviceTypeCode},
             OFFER_NAME = #{offerName},
-            MODIFYBY = #{modifyby}
+            MODIFYBY = #{modifyby},
+            MODIFYDATE = CURRENT_TIMESTAMP
         where
             SERVICE_TYPE_CODE = #{oldServiceTypeCode}
         and
