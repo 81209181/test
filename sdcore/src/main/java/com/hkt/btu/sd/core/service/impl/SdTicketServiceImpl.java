@@ -120,7 +120,7 @@ public class SdTicketServiceImpl implements SdTicketService {
         List<SdTicketContactBean> beanList = new ArrayList<>();
         ticketContactMapper.selectContactInfoByTicketMasId(ticketMasId).forEach(sdTicketContactEntity -> {
             SdTicketContactBean bean = new SdTicketContactBean();
-            bean.setContactMobile(sensitiveDataService.decryptToStringSafe(sdTicketContactEntity.getContactEmail()));
+            bean.setContactMobile(sensitiveDataService.decryptToStringSafe(sdTicketContactEntity.getContactMobile()));
             bean.setContactEmail(sensitiveDataService.decryptToStringSafe(sdTicketContactEntity.getContactEmail()));
             bean.setContactNumber(sensitiveDataService.decryptToStringSafe(sdTicketContactEntity.getContactNumber()));
             ticketContactBeanPopulator.populate(sdTicketContactEntity, bean);
