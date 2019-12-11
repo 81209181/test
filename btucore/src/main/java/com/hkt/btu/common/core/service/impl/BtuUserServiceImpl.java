@@ -152,6 +152,11 @@ public class BtuUserServiceImpl implements BtuUserService {
         return false;
     }
 
+    @Override
+    public void updateLdapInfo(String loginUser, String username, String userEmail) {
+
+    }
+
     protected String encodePassword(CharSequence plaintext) {
         return btuPasswordEncoder.encode(plaintext);
     }

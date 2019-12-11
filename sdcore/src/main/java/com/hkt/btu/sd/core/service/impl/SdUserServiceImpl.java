@@ -414,6 +414,11 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         return null;
     }
 
+    @Override
+    public void updateLdapInfo(String loginUser, String username, String userEmail) {
+        sdUserMapper.updateLdapUser(loginUser, username, userEmail);
+    }
+
     public void resetLoginTriedByUsername(String username) {
         sdUserMapper.resetLoginTriedByUsername(username);
     }

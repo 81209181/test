@@ -25,4 +25,6 @@ public interface BtuUserService {
 
     String getUserLogonPage();
     boolean hasAnyAuthority(String... targetAuthorities);
+
+    void updateLdapInfo(String loginUser, String username, String userEmail);
 }
