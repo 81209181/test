@@ -15,7 +15,7 @@ public class SdCheckTimeSyncJob extends QuartzJobBean {
     SdHealthCheckService sdHealthCheckService;
 
     @Override
-    protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+    protected void executeInternal(JobExecutionContext jobExecutionContext) {
         sdHealthCheckService.checkTimeSync();
     }
 }

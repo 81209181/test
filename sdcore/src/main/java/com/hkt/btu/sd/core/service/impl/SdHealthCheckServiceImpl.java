@@ -1,10 +1,10 @@
 package com.hkt.btu.sd.core.service.impl;
 
 import com.hkt.btu.sd.core.dao.mapper.SdHealthCheckMapper;
+import com.hkt.btu.sd.core.exception.ClockOutSyncException;
 import com.hkt.btu.sd.core.service.SdHealthCheckService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.quartz.JobExecutionException;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -23,7 +23,7 @@ public class SdHealthCheckServiceImpl implements SdHealthCheckService {
     }
 
     @Override
-    public void checkTimeSync() throws JobExecutionException {
+    public void checkTimeSync() throws ClockOutSyncException {
         LocalDateTime dbDateTime = sdHealthCheckMapper.getDatabaseTime();
         LocalDateTime jvmDateTime = LocalDateTime.now();
         LOG.info("db date time: {}", dbDateTime);
@@ -32,7 +32,7 @@ public class SdHealthCheckServiceImpl implements SdHealthCheckService {
         long secondDiff = jvmDateTime.until(dbDateTime, ChronoUnit.SECONDS);
         if (Math.abs(secondDiff) > 180) {
             String errorMsg = String.format("Database and JVM not in sync. (db: %s, jvm: %s)", dbDateTime, jvmDateTime);
-            throw new JobExecutionException(errorMsg);
+            throw new ClockOutSyncException(errorMsg);
         }
     }
 }
