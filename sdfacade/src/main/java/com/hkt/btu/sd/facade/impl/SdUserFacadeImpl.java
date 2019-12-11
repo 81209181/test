@@ -513,4 +513,27 @@ public class SdUserFacadeImpl implements SdUserFacade {
 
         return userData;
     }
+
+    @Override
+    public PageData<SdUserData> getTeamHeadUser(Pageable pageable, String teamHead) {
+        Page<SdUserBean> pageBean;
+        try {
+            pageBean = sdUserService.getTeamHeadUser(pageable, teamHead);
+        } catch (AuthorityNotFoundException e) {
+            return new PageData<>(e.getMessage());
+        }
+
+        // populate content
+        List<SdUserBean> beanList = pageBean.getContent();
+        List<SdUserData> dataList = new LinkedList<>();
+        if (!CollectionUtils.isEmpty(beanList)) {
+            for (SdUserBean bean : beanList) {
+                SdUserData data = new SdUserData();
+                userDataPopulator.populate(bean, data);
+                dataList.add(data);
+            }
+        }
+
+        return new PageData<>(dataList, pageBean.getPageable(), pageBean.getTotalElements());
+    }
 }

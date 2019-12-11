@@ -18,6 +18,7 @@ public class SdUserBean extends BtuUserBean {
     private String ldapDomain;
     private String domainEmail;
     private String primaryRoleId;
+    private String teamHead;
 
     private boolean isPrimaryRole; // todo SERVDESK-203: populate this in SdUserBeanPopulator
 
@@ -83,5 +84,13 @@ public class SdUserBean extends BtuUserBean {
 
     public void setDomainEmail(String domainEmail) {
         this.domainEmail = domainEmail;
+    }
+
+    public String getTeamHead() {
+        return teamHead;
+    }
+
+    public void setTeamHead(String teamHead) {
+        this.teamHead = teamHead;
     }
 }

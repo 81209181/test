@@ -2,6 +2,7 @@ package com.hkt.btu.sd.core.dao.mapper;
 
 import com.hkt.btu.sd.core.dao.entity.SdUserEntity;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -57,4 +58,9 @@ public interface SdUserMapper {
     List<SdUserEntity> getUserByRoleId(@Param("roleId") String roleId);
 
     List<SdUserEntity> getAllUser();
+
+    List<SdUserEntity> getTeamHeadUser(@Param("offset") long offset, @Param("pageSize") int pageSize,
+                                       String teamHead, String roleId);
+
+    Integer countTeamHeadUser(String teamHead, String roleId);
 }

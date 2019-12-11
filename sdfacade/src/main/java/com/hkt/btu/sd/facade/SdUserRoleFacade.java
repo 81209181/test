@@ -26,4 +26,5 @@ public interface SdUserRoleFacade {
 
     void reloadUserRole();
 
+    List<SdUserRoleData> getTeamHeadRoleList();
 }

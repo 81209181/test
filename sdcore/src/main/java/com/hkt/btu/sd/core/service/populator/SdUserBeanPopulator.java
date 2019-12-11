@@ -39,6 +39,7 @@ public class SdUserBeanPopulator extends AbstractBeanPopulator<SdUserBean> {
         target.setMobile(source.getMobile());
         target.setStaffId(source.getStaffId());
         target.setPrimaryRoleId(source.getPrimaryRoleId());
+        target.setTeamHead(source.getTeamHead());
     }
 
     public void populate(List<SdUserRoleEntity> userRoleEntityList, SdUserBean target) {

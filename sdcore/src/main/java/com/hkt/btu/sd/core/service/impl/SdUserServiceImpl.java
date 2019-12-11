@@ -680,4 +680,28 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             throw new UserNotFoundException("User not Exist.");
         }
     }
+
+    @Override
+    public Page<SdUserBean> getTeamHeadUser(Pageable pageable, String teamHead)
+            throws AuthorityNotFoundException {
+        long offset = pageable.getOffset();
+        int pageSize = pageable.getPageSize();
+
+        LOG.info(String.format("Searching user with {teamHead: %s}", teamHead));
+
+        Integer totalCount = sdUserMapper.countTeamHeadUser(teamHead, SdUserRoleBean.ROLE_ID.TEAM_HEAD);
+
+        List<SdUserEntity> sdUserEntityList = sdUserMapper.getTeamHeadUser(offset, pageSize, teamHead, SdUserRoleBean.ROLE_ID.TEAM_HEAD);
+
+        List<SdUserBean> sdUserBeanList = new LinkedList<>();
+        if (!CollectionUtils.isEmpty(sdUserEntityList)) {
+            for (SdUserEntity sdUserEntity : sdUserEntityList) {
+                SdUserBean sdUserBean = new SdUserBean();
+                sdUserBeanPopulator.populate(sdUserEntity, sdUserBean);
+                sdUserBeanList.add(sdUserBean);
+            }
+        }
+
+        return new PageImpl<>(sdUserBeanList, pageable, totalCount);
+    }
 }

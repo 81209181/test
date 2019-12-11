@@ -8,24 +8,34 @@
 <body>
 <div layout:fragment="content" th:remove="tag">
 
+    <form th:id="search-team-head-form" class="form-inline">
+        <select id="teamHead" class="form-control mb-2 mr-sm-2" th:placeholder="Team">
+            <option value=""><!--Please select--></option>
+            <option th:each="teamHead : ${teamHeadList}" th:value="${teamHead.roleId}" th:text="${teamHead.roleDesc}"></option>
+        </select>
+        <button type="submit" class="btn btn-lg btn-primary mb-2"><i class="fas fa-search"></i> Search</button>
+    </form>
+
     <h1>Team Contact List</h1>
     <table id="teamContactTable" class="display">
         <thead>
             <tr>
+                <th>Team</th>
                 <th>User ID</th>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Team</th>
+                <th>Domain Email</th>
             </tr>
         </thead>
         <tbody>
         </tbody>
         <tfoot>
             <tr>
+                <th>Team</th>
                 <th>User ID</th>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Team</th>
+                <th>Domain Email</th>
             </tr>
         </tfoot>
     </table>
