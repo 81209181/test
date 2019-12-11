@@ -28,7 +28,7 @@ public class OfferNameServiceTypeUpdateJob extends QuartzJobBean {
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         try {
-            serviceTypeService.updateServiceTypeOfferMapping(wfmApiFacade.getServiceTypeOfferMapping());
+            serviceTypeService.updateServiceTypeOfferMappingByJob(wfmApiFacade.getServiceTypeOfferMapping());
         } catch (Exception e) {
             try {
                 emailService.sendErrorStackTrace("", "", e);
