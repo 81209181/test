@@ -20,6 +20,21 @@ from PATH_CTRL
 where PATH = '/ticket/**';
 
 insert into USER_ROLE_PATH_CTRL (ROLE_ID, PATH_CTRL_ID, CREATEBY)
+select 'ENG', PATH_CTRL_ID, '01634476'
+from PATH_CTRL
+where PATH = '/ticket/**';
+
+insert into USER_ROLE_PATH_CTRL (ROLE_ID, PATH_CTRL_ID, CREATEBY)
+select 'OPT', PATH_CTRL_ID, '01634476'
+from PATH_CTRL
+where PATH = '/symptom/**';
+
+insert into USER_ROLE_PATH_CTRL (ROLE_ID, PATH_CTRL_ID, CREATEBY)
+select 'ENG', PATH_CTRL_ID, '01634476'
+from PATH_CTRL
+where PATH = '/symptom/**';
+
+insert into USER_ROLE_PATH_CTRL (ROLE_ID, PATH_CTRL_ID, CREATEBY)
 select 'API_WFM', PATH_CTRL_ID, '01634476'
 from PATH_CTRL
 where PATH = '/wfm-api/**';
@@ -28,4 +43,5 @@ insert into USER_ROLE_PATH_CTRL (ROLE_ID, PATH_CTRL_ID, CREATEBY)
 select 'API_BES', PATH_CTRL_ID, '01634476'
 from PATH_CTRL
 where PATH = '/bes-api/**';
+
 commit;
