@@ -103,9 +103,14 @@ public class SdAuditTrailServiceImpl extends BtuAuditTrailServiceImpl implements
         // Check Database date and JVM date in sync
         sdHealthCheckService.checkTimeSync();
 
+        // decide delete cutoff date
+        // todo [SERVDESK-275]: String beforeDate --> LocalDateTime cutoffDate
         String beforeDate = LocalDateTime.of(LocalDate.now().minusMonths(24).with(TemporalAdjusters.firstDayOfMonth()), LocalTime.MIN)
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        LOG.info("Cleaning audit trail before {}", beforeDate);
-        LOG.info("Deleted {} row(s) of audit trail.", sdAuditTrailMapper.cleanAuditTrail(beforeDate));
+        LOG.info("Cleaning audit trail before {}...", beforeDate);
+
+        // delete
+        int deleteCount = sdAuditTrailMapper.cleanAuditTrail(beforeDate);
+        LOG.info("Deleted {} row(s) of audit trail.", deleteCount);
     }
 }
