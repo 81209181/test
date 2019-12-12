@@ -12,6 +12,7 @@ import com.hkt.btu.common.core.service.constant.LdapError;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
 import com.hkt.btu.common.spring.security.exception.ChangePasswordException;
 import com.hkt.btu.common.spring.security.exception.NotPermittedLogonException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.*;
@@ -57,7 +58,20 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
     public Authentication authenticate(Authentication auth) throws AuthenticationException {
         final LocalDateTime NOW = LocalDateTime.now();
         BtuUser userDetails = null;
+        String loginUser = auth.getName();
+        String loginPwd = auth.getCredentials().toString();
         try {
+            String domain = Optional.ofNullable(btuUserBean.getLdapDomain()).orElseThrow(() -> new NotPermittedLogonException("Invalid LDAP Domain"));
+
+            // check in ldap
+            BtuLdapBean ldapConfig = ldapService.getBtuLdapBean(domain);
+            BtuUserBean ldapUserInfo = ldapService.searchUser(ldapConfig, loginUser, loginPwd, loginUser);
+
+            //update ldap info
+            String username = StringUtils.isNotEmpty(ldapUserInfo.getUsername())? ldapUserInfo.getUsername():null;
+            String userEmail = StringUtils.isNotEmpty(ldapUserInfo.getEmail())? ldapUserInfo.getEmail():null;
+            userService.updateLdapInfo(loginUser,username,userEmail);
+
             // check account enable
             boolean enabled = userService.isEnabled(btuUserBean);
 
@@ -80,16 +94,6 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
                     btuUserBean.getAuthorities(),
                     btuUserBean);
             userDetails.setLdapPassword((String) auth.getCredentials());
-            // Prepare ldap data
-
-            String domain = Optional
-                             .ofNullable(userDetails.getUserBean().getLdapDomain())
-                               .orElseThrow(() -> new NotPermittedLogonException("Invalid LDAP Domain"));
-
-            BtuLdapBean ldapInfo = ldapService.getBtuLdapBean(domain);
-
-            // login ldap
-            ldapService.authenticationOnly(ldapInfo, auth);
 
             //if success, record it
             auditTrailService.insertLoginAuditTrail(userDetails);

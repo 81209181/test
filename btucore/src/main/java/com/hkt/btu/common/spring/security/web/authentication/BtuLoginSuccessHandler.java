@@ -29,8 +29,6 @@ public class BtuLoginSuccessHandler extends SavedRequestAwareAuthenticationSucce
             throw new ServletException("Incoming user profile not found.");
         }
 
-        // login ldap
-        userService.verifyLdapUser(user, userBean);
         // erase user ldapPassword
         user.setLdapPassword(null);
 
