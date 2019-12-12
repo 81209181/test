@@ -291,7 +291,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         String mobile = StringUtils.equals(newMobile, targetUserBean.getMobile()) ? null : newMobile;
         String encryptedMobile = StringUtils.isEmpty(mobile) ? null : mobile;
 
-        sdUserMapper.updateUser(userId, name, encryptedMobile, email,primaryRoleId, modifier.getUserId());
+        sdUserMapper.updateUser(userId, name, encryptedMobile, email, primaryRoleId, modifier.getUserId());
 
         // update user role
         userRoleService.updateUserRoleByUserId(userId, userRoleIdList);
@@ -415,8 +415,9 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     }
 
     @Override
-    public void updateLdapInfo(String loginUser, String username, String userEmail) {
-        sdUserMapper.updateLdapUser(loginUser, username, userEmail);
+    public void updateLdapInfo(String userId, String username, String ldapEmail) {
+        // todo [SERVDESK-287]: set modify system SdUserEntity.SYSTEM
+        sdUserMapper.updateLdapUser(userId, username, ldapEmail);
     }
 
     public void resetLoginTriedByUsername(String username) {
