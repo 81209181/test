@@ -3,7 +3,6 @@ package com.hkt.btu.sd.core.job;
 import com.hkt.btu.sd.core.service.SdHistoryService;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import javax.annotation.Resource;
@@ -15,7 +14,7 @@ public class SdCleanHistoryTableJob extends QuartzJobBean {
     SdHistoryService historyService;
 
     @Override
-    protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+    protected void executeInternal(JobExecutionContext jobExecutionContext) {
         historyService.cleanHistoryData();
     }
 }
