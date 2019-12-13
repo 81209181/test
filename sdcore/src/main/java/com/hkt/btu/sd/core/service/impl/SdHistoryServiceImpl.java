@@ -9,9 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.temporal.TemporalAdjusters;
+
 
 public class SdHistoryServiceImpl implements SdHistoryService {
     private static final Logger LOG = LogManager.getLogger(SdHistoryServiceImpl.class);
@@ -26,12 +24,11 @@ public class SdHistoryServiceImpl implements SdHistoryService {
     public void cleanHistoryData() throws ClockOutSyncException {
         // Check Database date and JVM date in sync
         healthCheckService.checkTimeSync();
-
         // decide delete cutoff date
-        LocalDateTime cutoffDate = LocalDateTime.of(LocalDate.now().minusMonths(18).with(TemporalAdjusters.firstDayOfMonth()), LocalTime.MIN);
-        LOG.info("Cleaning config param history before {}...", cutoffDate);
+        LocalDate cutoffDate = LocalDate.now().withDayOfMonth(1).minusMonths(18);
 
         // delete
+        LOG.info("Cleaning config param history before {}...", cutoffDate);
         int deleteCount = historyMapper.cleanConfigParamHistory(cutoffDate);
         LOG.info("Deleted {} row(s) of config param history.", deleteCount);
 
