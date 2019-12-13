@@ -33,7 +33,7 @@ function clearFormContent(form) {
 }
 
 function getServiceTypeList() {
-    $.get('/system/serviceTypeMapping/serviceTypeList', function (res) {
+    $.get('/system/service-type-mapping/service-type-list', function (res) {
         appendSelectOption(res);
     }).fail(function(e){
         var responseError = e.responseText ? e.responseText : "Get failed.";
@@ -52,7 +52,7 @@ function appendSelectOption(res) {
 function createServiceTypeMapping() {
     let form = $('.needs-validation').get(0);
     if (form.checkValidity()) {
-        $.post('/system/serviceTypeMapping/createOfferName', {
+        $.post('/system/service-type-mapping/create-offer-name', {
             offerName: $(form).find('input[name=offerName]').val(),
             serviceTypeCode: $(form).find('select[name=serviceType]').val()
         }, function (res) {
@@ -82,7 +82,7 @@ function updateServiceTypeMapping() {
         let oldServiceTypeCode = $(form).find('input[name=oldServiceTypeCode]').val();
 
         if (checkServiceTypeOfferMappingDiff(offerName, oldOfferName, serviceTypeCode, oldServiceTypeCode)) {
-            $.post('/system/serviceTypeMapping/updateServiceTypeMapping', {
+            $.post('/system/service-type-mapping/update-service-type-mapping', {
                 offerName: offerName,
                 oldOfferName: oldOfferName,
                 serviceTypeCode: serviceTypeCode,
@@ -127,7 +127,7 @@ function showUpdateOfferNameModal(serviceTypeName, offerName) {
 function deleteServiceTypeOfferMapping(serviceTypeName, offerName) {
     if (confirm("Are you sure you want to delete this record?")) {
         let serviceTypeCode = getServiceTypeCodeByServiceTypeName(serviceTypeName);
-        $.post('/system/serviceTypeMapping/deleteServiceTypeMapping', {
+        $.post('/system/service-type-mapping/delete-service-type-mapping', {
             offerName: offerName,
             serviceTypeCode: serviceTypeCode,
         }, function (res) {
@@ -178,7 +178,7 @@ function getAjaxServiceTypeMappingDataTable() {
         ajax: {
             type: "GET",
             contentType: "application/json",
-            url: "/system/serviceTypeMapping/serviceTypeMappingList",
+            url: "/system/service-type-mapping/service-type-mapping-list",
             dataSrc: '',
             error: function (e) {
                 if(e.responseText){

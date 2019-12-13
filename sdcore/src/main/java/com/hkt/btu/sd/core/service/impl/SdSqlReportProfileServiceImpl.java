@@ -112,7 +112,7 @@ public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImp
     @Override
     @Transactional
     public String deleteReport(String reportId) {
-        SdSqlReportEntity entity = sdSqlReportMapper.getSqlReportDataByReportId(reportId);
+        SdSqlReportEntity entity = sdSqlReportMapper.getSqlReportByReportId(reportId);
         if (entity == null) {
             return "No such report.";
         }

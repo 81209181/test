@@ -1,4 +1,4 @@
-package com.hkt.btu.sd.core.exception;
+package com.hkt.btu.common.core.exception;
 
 public class ClockOutSyncException extends RuntimeException {
     public ClockOutSyncException() {

@@ -6,36 +6,36 @@
 
     <delete id="cleanConfigParamHistory">
         delete CONFIG_PARAM_HIST
-        where trunc(CREATEDATE) &lt; trunc(to_date(#{beforeDate},'yyyy-MM-dd hh24:mi:ss'))
+        where trunc(CREATEDATE) &lt; trunc(#{cutoffDate})
     </delete>
 
     <delete id="cleanCronJobHistory">
         delete CRON_JOB_HIST
-        where trunc(CREATEDATE) &lt; trunc(to_date(#{beforeDate},'yyyy-MM-dd hh24:mi:ss'))
+        where trunc(CREATEDATE) &lt; trunc(#{cutoffDate})
     </delete>
 
     <delete id="cleanPathCtrlHistory">
         delete PATH_CTRL_HIST
-        where trunc(CREATEDATE) &lt; trunc(to_date(#{beforeDate},'yyyy-MM-dd hh24:mi:ss'))
+        where trunc(CREATEDATE) &lt; trunc(#{cutoffDate})
     </delete>
 
     <delete id="cleanUserPwdHistory">
         delete USER_PWD_HIST
-        where trunc(CREATEDATE) &lt; trunc(to_date(#{beforeDate},'yyyy-MM-dd hh24:mi:ss'))
+        where trunc(CREATEDATE) &lt; trunc(#{cutoffDate})
     </delete>
 
     <delete id="cleanUserRoleHistory">
         delete USER_ROLE_HIST
-        where trunc(CREATEDATE) &lt; trunc(to_date(#{beforeDate},'yyyy-MM-dd hh24:mi:ss'))
+        where trunc(CREATEDATE) &lt; trunc(#{cutoffDate})
     </delete>
 
     <delete id="cleanUserRolePathCtrlHistory">
         delete USER_ROLE_PATH_CTRL_HIST
-        where trunc(CREATEDATE) &lt; trunc(to_date(#{beforeDate},'yyyy-MM-dd hh24:mi:ss'))
+        where trunc(CREATEDATE) &lt; trunc(#{cutoffDate})
     </delete>
 
     <delete id="cleanUserUserRoleHistory">
         delete USER_USER_ROLE_HIST
-        where trunc(CREATEDATE) &lt; trunc(to_date(#{beforeDate},'yyyy-MM-dd hh24:mi:ss'))
+        where trunc(CREATEDATE) &lt; trunc(#{cutoffDate})
     </delete>
 </mapper>

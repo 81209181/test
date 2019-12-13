@@ -1,7 +1,7 @@
 package com.hkt.btu.sd.core.service.impl;
 
+import com.hkt.btu.common.core.exception.ClockOutSyncException;
 import com.hkt.btu.sd.core.dao.mapper.SdHealthCheckMapper;
-import com.hkt.btu.sd.core.exception.ClockOutSyncException;
 import com.hkt.btu.sd.core.service.SdHealthCheckService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,7 +16,6 @@ public class SdHealthCheckServiceImpl implements SdHealthCheckService {
 
     @Resource
     private SdHealthCheckMapper sdHealthCheckMapper;
-
 
     @Override
     public LocalDateTime getDatabaseTime() {
