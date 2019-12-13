@@ -101,7 +101,8 @@
         <set>
             <if test="name != null">NAME=#{name},</if>
             <if test="email !=  null">DOMAIN_EMAIL=#{email},</if>
-            MODIFYDATE = CURRENT_TIMESTAMP
+            MODIFYDATE = CURRENT_TIMESTAMP,
+            MODIFYBY = #{modifyBy}
         </set>
         where USER_ID = #{userId}
     </update>

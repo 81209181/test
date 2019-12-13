@@ -32,8 +32,6 @@ import java.util.stream.Collectors;
 public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
     private static final Logger LOG = LogManager.getLogger(LdapAuthenticationProvider.class);
 
-    private UserDetailsChecker preAuthenticationChecks = new DefaultPreAuthenticationChecks(); // todo [SERVDESK-287]: can deleted?
-
     private static final Map<String, String> LDAP_ERROR_CODE = Collections.unmodifiableMap(
             Arrays.stream(LdapError.values()).collect(Collectors.toMap(LdapError::getCode, LdapError::getMsg)) );
 
@@ -46,7 +44,6 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
     @Resource
     BtuSiteConfigService siteConfigService;
 
-    private String domain;  // todo [SERVDESK-287]: is still useful?
     private BtuUserBean btuUserBean;
 
     @Override
@@ -153,14 +150,10 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             throw new BadCredentialsException(e.getMessage());
-        } finally {
-            domain = null;  // todo [SERVDESK-287]: is still useful?
         }
     }
 
-    // todo [SERVDESK-287]: Access can be package-private?
     public Authentication btuAuth(Authentication auth, BtuUserBean btuUserBean, String ldapName) throws AuthenticationException {
-        this.domain = ldapName;
         this.btuUserBean = btuUserBean;
         return authenticate(auth);
     }

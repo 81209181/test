@@ -405,10 +405,10 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             String email = btuUserBean.getEmail();
             String username = btuUserBean.getUsername();
             if (StringUtils.isNotEmpty(email)) {
-                sdUserMapper.updateLdapUser(userId, null, email);
+                sdUserMapper.updateLdapUser(userId, null, email, SdUserEntity.SYSTEM.USER_ID);
             }
             if (StringUtils.isNotEmpty(username)) {
-                sdUserMapper.updateLdapUser(userId, username, null);
+                sdUserMapper.updateLdapUser(userId, username, null, SdUserEntity.SYSTEM.USER_ID);
             }
         }
         return null;
@@ -416,8 +416,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
     @Override
     public void updateLdapInfo(String userId, String username, String ldapEmail) {
-        // todo [SERVDESK-287]: set modify system SdUserEntity.SYSTEM
-        sdUserMapper.updateLdapUser(userId, username, ldapEmail);
+        sdUserMapper.updateLdapUser(userId, username, ldapEmail,SdUserEntity.SYSTEM.USER_ID);
     }
 
     public void resetLoginTriedByUsername(String username) {
