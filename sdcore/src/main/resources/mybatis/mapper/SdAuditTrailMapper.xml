@@ -16,7 +16,7 @@
 
     <delete id="cleanAuditTrail" >
         delete AUDIT_TRAIL
-        where trunc(CREATEDATE) &lt; trunc(to_date(#{beforeDate},'yyyy-MM-dd hh24:mi:ss'))
+        where trunc(CREATEDATE) &lt; trunc(#{cutoffDate})
     </delete>
 
 </mapper>

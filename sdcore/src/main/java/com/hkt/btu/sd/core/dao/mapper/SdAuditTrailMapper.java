@@ -3,6 +3,8 @@ package com.hkt.btu.sd.core.dao.mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+
 
 @Repository
 public interface SdAuditTrailMapper {
@@ -11,5 +13,5 @@ public interface SdAuditTrailMapper {
 
     int houseKeep();
 
-    int cleanAuditTrail(String beforeDate);
+    int cleanAuditTrail(LocalDateTime cutoffDate);
 }
