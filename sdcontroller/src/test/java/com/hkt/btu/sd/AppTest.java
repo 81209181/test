@@ -2,6 +2,7 @@ package com.hkt.btu.sd;
 
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
+import com.hkt.btu.common.core.service.BtuCacheService;
 import com.hkt.btu.sd.core.dao.entity.SdTicketServiceEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdConfigParamMapper;
 import com.hkt.btu.sd.core.dao.mapper.SdTicketServiceMapper;
@@ -18,6 +19,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -36,6 +38,14 @@ public class AppTest {
     @Autowired
     SdTicketServiceMapper ticketServiceMapper;
 
+    @Resource(name = "cacheService")
+    BtuCacheService btuCacheService;
+
+    @Test
+    public void testCache() {
+        String json = btuCacheService.getCache("serviceTypeService");
+        System.out.println(json);
+    }
 
     @Test
     public void shouldAnswerWithTrue() {
@@ -86,17 +96,17 @@ public class AppTest {
         csvWriter.writeAll(contentResult);
     }
 
-    private final String SQL_INJ_STR = "'|and|exec|insert|delete|update|\n" +
-            "\n" +
-            "|chr|mid|master|truncate|char|declare|;|-|+|,";
-
-
-    public String sqlFilter(String sql) {
-        if (StringUtils.isNotBlank(sql)) {
-            sql = sql.replaceAll(SQL_INJ_STR, "");
-        }
-        return sql;
-    }
+//    private final String SQL_INJ_STR = "'|and|exec|insert|delete|update|\n" +
+//            "\n" +
+//            "|chr|mid|master|truncate|char|declare|;|-|+|,";
+//
+//
+//    public String sqlFilter(String sql) {
+//        if (StringUtils.isNotBlank(sql)) {
+//            sql = sql.replaceAll(SQL_INJ_STR, "");
+//        }
+//        return sql;
+//    }
 
 
     private List<String[]> getCsvContent(List<Map<String, Object>> maps) {

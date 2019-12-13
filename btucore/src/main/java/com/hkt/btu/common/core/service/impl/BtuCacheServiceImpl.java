@@ -1,46 +1,30 @@
 package com.hkt.btu.common.core.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hkt.btu.common.core.service.BtuCacheService;
-import com.hkt.btu.common.core.service.bean.BtuCacheInfoBean;
-import com.hkt.btu.common.core.service.constant.BtuCacheEnum;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 public class BtuCacheServiceImpl implements BtuCacheService {
 
-    private static Map<String, Object> CACHE_OBJECT_MAP = new HashMap<>();
+    @Autowired
+    private ApplicationContext applicationContext;
 
-    public <T> T get(Class<T> objectType, Object loadingClass, Method loadingMethod)
-            throws InvocationTargetException, IllegalAccessException {
-
-
-
-
-        return (T) loadingMethod.invoke(loadingClass);
+    @Override
+    public String getCache(String cacheName) {
+        Object bean = applicationContext.getBean(cacheName);
+        try {
+            Method getServiceTypeList = bean.getClass().getMethod("getServiceTypeList");
+            Object returnObj = getServiceTypeList.invoke(bean);
+            ObjectMapper om = new ObjectMapper();
+            return om.writeValueAsString(returnObj);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | JsonProcessingException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
-
-    public <T> T get(BtuCacheInfoBean cacheInfoBean, Class<T> objectType)
-            throws InvocationTargetException, IllegalAccessException {
-        return get(objectType, cacheInfoBean.getLoadingClass(), cacheInfoBean.getLoadingMethod());
-    }
-
-//    public <T> T get(String cacheId, Class<T> objectType)
-//            throws InvocationTargetException, IllegalAccessException {
-//        BtuCacheEnum btuCacheEnum = BtuCacheEnum.getEnum(cacheId);
-//        if(btuCacheEnum==null){
-//            return null;
-//        }
-//
-//        return get(objectType, btuCacheEnum.getLoadingClassBeanName(), btuCacheEnum.getLoadingMethodStr());
-//    }
-
-
-
-    public void init(){
-
-    }
-
 }

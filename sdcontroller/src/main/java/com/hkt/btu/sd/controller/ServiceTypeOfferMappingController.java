@@ -18,7 +18,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @Controller
-@RequestMapping("/system/serviceTypeMapping") // todo [SERVDESK-270]: align path format /system/serviceTypeMapping --> /system/service-type-mapping
+@RequestMapping("/system/service-type-mapping")
 public class ServiceTypeOfferMappingController {
 
     @Resource
@@ -29,7 +29,7 @@ public class ServiceTypeOfferMappingController {
         return "system/serviceTypeMapping/serviceTypeMapping";
     }
 
-    @GetMapping("/serviceTypeList") // todo [SERVDESK-270]: align path format
+    @GetMapping("/service-type-list")
     public ResponseEntity<?> getServiceTypeList() {
         List<SdServiceTypeData> serviceTypeList = serviceTypeFacade.getServiceTypeList();
         if (CollectionUtils.isEmpty(serviceTypeList)) {
@@ -39,13 +39,13 @@ public class ServiceTypeOfferMappingController {
         }
     }
 
-    @GetMapping("/serviceTypeMappingList") // todo [SERVDESK-270]: align path format
+    @GetMapping("/service-type-mapping-list")
     public ResponseEntity<?> getServiceTypeMappingList() {
         List<SdServiceTypeOfferMappingData> mappingDataList = serviceTypeFacade.getServiceTypeMappingList();
         return ResponseEntity.ok(mappingDataList);
     }
 
-    @PostMapping("/createOfferName") // todo [SERVDESK-270]: align path format
+    @PostMapping("/create-offer-name")
     public ResponseEntity<?> createOfferName(String serviceTypeCode, String offerName) {
         boolean result = serviceTypeFacade.createServiceTypeOfferMapping(serviceTypeCode, offerName);
         if (result) {
@@ -55,7 +55,7 @@ public class ServiceTypeOfferMappingController {
         }
     }
 
-    @PostMapping("/updateServiceTypeMapping") // todo [SERVDESK-270]: align path format
+    @PostMapping("/update-service-type-mapping")
     public ResponseEntity<?> updateServiceTypeOfferMapping(@Validated UpdateServiceTypeOfferMappingData data,
                                                            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -69,7 +69,7 @@ public class ServiceTypeOfferMappingController {
         }
     }
 
-    @PostMapping("/deleteServiceTypeMapping") // todo [SERVDESK-270]: align path format
+    @PostMapping("/delete-service-type-mapping")
     public ResponseEntity<?> deleteServiceTypeOfferMapping(String serviceTypeCode, String offerName) {
         boolean result = serviceTypeFacade.deleteServiceTypeOfferMapping(serviceTypeCode, offerName);
         if (result) {

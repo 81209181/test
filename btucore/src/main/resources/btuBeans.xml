@@ -85,6 +85,10 @@
     <alias name="btuEmailService" alias="emailService"/>
     <bean id="btuEmailService" class="com.hkt.btu.common.core.service.impl.BtuEmailServiceImpl"/>
 
+    <alias name="btuCacheService" alias="cacheService"/>
+    <bean id="btuCacheService" class="com.hkt.btu.common.core.service.impl.BtuCacheServiceImpl"/>
+
+
     <alias name="tokenAuthenticationProvider" alias="customTokenAuthenticationProvider"/>
     <bean id="tokenAuthenticationProvider"
           class="com.hkt.btu.common.spring.security.authentication.TokenAuthenticationProvider"/>
