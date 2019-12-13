@@ -1,10 +1,11 @@
 package com.hkt.btu.sd.core.service.impl;
 
+import com.hkt.btu.common.core.service.BtuHealthCheckService;
 import com.hkt.btu.common.core.service.impl.BtuAuditTrailServiceImpl;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
 import com.hkt.btu.sd.core.dao.entity.SdAuditTrailEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdAuditTrailMapper;
-import com.hkt.btu.sd.core.exception.ClockOutSyncException;
+import com.hkt.btu.common.core.exception.ClockOutSyncException;
 import com.hkt.btu.sd.core.service.SdAuditTrailService;
 import com.hkt.btu.sd.core.service.SdHealthCheckService;
 import com.hkt.btu.sd.core.service.SdUserService;
@@ -25,7 +26,7 @@ public class SdAuditTrailServiceImpl extends BtuAuditTrailServiceImpl implements
     SdUserService userService;
 
     @Resource(name = "healthCheckService")
-    SdHealthCheckService sdHealthCheckService;
+    BtuHealthCheckService healthCheckService;
 
     @Resource
     SdAuditTrailMapper sdAuditTrailMapper;
@@ -101,16 +102,14 @@ public class SdAuditTrailServiceImpl extends BtuAuditTrailServiceImpl implements
     @Override
     public void cleanAuditTrail() throws ClockOutSyncException {
         // Check Database date and JVM date in sync
-        sdHealthCheckService.checkTimeSync();
+        healthCheckService.checkTimeSync();
 
         // decide delete cutoff date
-        // todo [SERVDESK-275]: String beforeDate --> LocalDateTime cutoffDate
-        String beforeDate = LocalDateTime.of(LocalDate.now().minusMonths(24).with(TemporalAdjusters.firstDayOfMonth()), LocalTime.MIN)
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        LOG.info("Cleaning audit trail before {}...", beforeDate);
+        LocalDateTime cutoffDate = LocalDateTime.of(LocalDate.now().minusMonths(24).with(TemporalAdjusters.firstDayOfMonth()), LocalTime.MIN);
+        LOG.info("Cleaning audit trail before {}...", cutoffDate);
 
         // delete
-        int deleteCount = sdAuditTrailMapper.cleanAuditTrail(beforeDate);
+        int deleteCount = sdAuditTrailMapper.cleanAuditTrail(cutoffDate);
         LOG.info("Deleted {} row(s) of audit trail.", deleteCount);
     }
 }

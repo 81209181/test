@@ -2,21 +2,23 @@ package com.hkt.btu.sd.core.dao.mapper;
 
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+
 
 @Repository
 public interface SdHistoryMapper {
 
-    int cleanConfigParamHistory(String beforeDate);
+    int cleanConfigParamHistory(LocalDateTime cutoffDate);
 
-    int cleanCronJobHistory(String beforeDate);
+    int cleanCronJobHistory(LocalDateTime cutoffDate);
 
-    int cleanPathCtrlHistory(String beforeDate);
+    int cleanPathCtrlHistory(LocalDateTime cutoffDate);
 
-    int cleanUserPwdHistory(String beforeDate);
+    int cleanUserPwdHistory(LocalDateTime cutoffDate);
 
-    int cleanUserRoleHistory(String beforeDate);
+    int cleanUserRoleHistory(LocalDateTime cutoffDate);
 
-    int cleanUserRolePathCtrlHistory(String beforeDate);
+    int cleanUserRolePathCtrlHistory(LocalDateTime cutoffDate);
 
-    int cleanUserUserRoleHistory(String beforeDate);
+    int cleanUserUserRoleHistory(LocalDateTime cutoffDate);
 }
