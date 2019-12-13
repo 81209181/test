@@ -32,45 +32,38 @@ import java.util.stream.Collectors;
 public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
     private static final Logger LOG = LogManager.getLogger(LdapAuthenticationProvider.class);
 
-    private UserDetailsChecker preAuthenticationChecks = new DefaultPreAuthenticationChecks();
-
-    private static final Map<String, String> LDAP_ERROR_CODE = Collections.unmodifiableMap
-            (Arrays.stream(LdapError.values()).
-                    collect(Collectors.toMap(constant -> constant.getCode(), constant -> constant.getMsg())));
+    private static final Map<String, String> LDAP_ERROR_CODE = Collections.unmodifiableMap(
+            Arrays.stream(LdapError.values()).collect(Collectors.toMap(LdapError::getCode, LdapError::getMsg)) );
 
     @Resource (name = "ldapService")
     BtuLdapService ldapService;
-
     @Resource(name = "auditTrailService")
     BtuAuditTrailService auditTrailService;
-
     @Resource(name = "userService")
     BtuUserService userService;
-
     @Resource
     BtuSiteConfigService siteConfigService;
-
-    private String domain;
 
     private BtuUserBean btuUserBean;
 
     @Override
     public Authentication authenticate(Authentication auth) throws AuthenticationException {
         final LocalDateTime NOW = LocalDateTime.now();
+
         BtuUser userDetails = null;
-        String loginUser = auth.getName();
+        String userId = auth.getName();
         String loginPwd = auth.getCredentials().toString();
+        String domain = Optional.ofNullable(btuUserBean.getLdapDomain())
+                .orElseThrow(() -> new NotPermittedLogonException("Invalid LDAP Domain"));
         try {
-            String domain = Optional.ofNullable(btuUserBean.getLdapDomain()).orElseThrow(() -> new NotPermittedLogonException("Invalid LDAP Domain"));
-
-            // check in ldap
+            // check login with ldap
             BtuLdapBean ldapConfig = ldapService.getBtuLdapBean(domain);
-            BtuUserBean ldapUserInfo = ldapService.searchUser(ldapConfig, loginUser, loginPwd, loginUser);
+            BtuUserBean ldapUserInfo = ldapService.searchUser(ldapConfig, userId, loginPwd, userId);
 
-            //update ldap info
-            String username = StringUtils.isNotEmpty(ldapUserInfo.getUsername())? ldapUserInfo.getUsername():null;
-            String userEmail = StringUtils.isNotEmpty(ldapUserInfo.getEmail())? ldapUserInfo.getEmail():null;
-            userService.updateLdapInfo(loginUser,username,userEmail);
+            // update with ldap info
+            String username = StringUtils.isNotEmpty(ldapUserInfo.getUsername()) ? ldapUserInfo.getUsername() : null;
+            String ldapEmail = StringUtils.isNotEmpty(ldapUserInfo.getEmail()) ? ldapUserInfo.getEmail() : null;
+            userService.updateLdapInfo(userId, username, ldapEmail);
 
             // check account enable
             boolean enabled = userService.isEnabled(btuUserBean);
@@ -100,7 +93,7 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
 
             return createSuccessAuthentication(userDetails, auth, userDetails);
         } catch (javax.naming.AuthenticationException authEx) {
-            String result = "";
+            String result;
             String code = "";
             int startIndex = authEx.getExplanation().indexOf("data ");
             int endIndex = 0;
@@ -114,33 +107,37 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
 
             // log exception
             auditTrailService.insertLoginExceptionAuditTrail(userDetails, LDAP_ERROR_CODE.get(code));
-            if ("525".equals(code)) {
-                result = LdapError.USER_NOT_FOUND.getMsg();
-            } else if ("52e".equals(code)) {
-                result = LdapError.INVALID_LOGIN.getMsg();
-            } else if ("530".equals(code)) {
-                result = LdapError.NOT_PERMITTED_LOGIN_TIME.getMsg();
-                throw new NotPermittedLogonException(result);
-            } else if ("531".equals(code)) {
-                result = LdapError.NOT_PERMITTED_LOGIN_WORKSTATION.getMsg();
-                throw new NotPermittedLogonException(result);
-            } else if ("532".equals(code)) {
-                result = LdapError.PWD_EXPIRED.getMsg();
-                throw new CredentialsExpiredException(result);
-            } else if ("533".equals(code)) {
-                result = LdapError.ACCOUNT_DISABLED.getMsg();
-                throw new DisabledException(result);
-            } else if ("701".equals(code)) {
-                result = LdapError.ACCOUNT_EXPIRED.getMsg();
-                throw new DisabledException(result);
-            } else if ("773".equals(code)) {
-                result = LdapError.CHANGE_PWD.getMsg();
-                throw new ChangePasswordException(result);
-            } else if ("775".equals(code)) {
-                result = LdapError.LOCK.getMsg();
-                throw new LockedException(result);
-            } else {
-                result = authEx.getExplanation();
+            switch (code) {
+                case "525":
+                    result = LdapError.USER_NOT_FOUND.getMsg();
+                    break;
+                case "52e":
+                    result = LdapError.INVALID_LOGIN.getMsg();
+                    break;
+                case "530":
+                    result = LdapError.NOT_PERMITTED_LOGIN_TIME.getMsg();
+                    throw new NotPermittedLogonException(result);
+                case "531":
+                    result = LdapError.NOT_PERMITTED_LOGIN_WORKSTATION.getMsg();
+                    throw new NotPermittedLogonException(result);
+                case "532":
+                    result = LdapError.PWD_EXPIRED.getMsg();
+                    throw new CredentialsExpiredException(result);
+                case "533":
+                    result = LdapError.ACCOUNT_DISABLED.getMsg();
+                    throw new DisabledException(result);
+                case "701":
+                    result = LdapError.ACCOUNT_EXPIRED.getMsg();
+                    throw new DisabledException(result);
+                case "773":
+                    result = LdapError.CHANGE_PWD.getMsg();
+                    throw new ChangePasswordException(result);
+                case "775":
+                    result = LdapError.LOCK.getMsg();
+                    throw new LockedException(result);
+                default:
+                    result = authEx.getExplanation();
+                    break;
             }
             LOG.debug(result);
 
@@ -153,28 +150,23 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             throw new BadCredentialsException(e.getMessage());
-        } finally {
-            domain = null;
         }
     }
 
     public Authentication btuAuth(Authentication auth, BtuUserBean btuUserBean, String ldapName) throws AuthenticationException {
-        this.domain = ldapName;
         this.btuUserBean = btuUserBean;
         return authenticate(auth);
     }
 
     @Override
-    protected void additionalAuthenticationChecks(UserDetails userDetails,
-                                                  UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
+    protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication)
+            throws AuthenticationException {
         // do nothing
-
     }
 
     @Override
     protected UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authentication)
             throws AuthenticationException {
-        //return userDetailService.loadUserByUsername(username);
         return null;
     }
 

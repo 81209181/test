@@ -153,8 +153,8 @@ public class BtuUserServiceImpl implements BtuUserService {
     }
 
     @Override
-    public void updateLdapInfo(String loginUser, String username, String userEmail) {
-
+    public void updateLdapInfo(String userId, String username, String ldapEmail) {
+        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
     }
 
     protected String encodePassword(CharSequence plaintext) {

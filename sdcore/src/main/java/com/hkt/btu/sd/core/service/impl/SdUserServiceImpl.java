@@ -291,7 +291,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         String mobile = StringUtils.equals(newMobile, targetUserBean.getMobile()) ? null : newMobile;
         String encryptedMobile = StringUtils.isEmpty(mobile) ? null : mobile;
 
-        sdUserMapper.updateUser(userId, name, encryptedMobile, email,primaryRoleId, modifier.getUserId());
+        sdUserMapper.updateUser(userId, name, encryptedMobile, email, primaryRoleId, modifier.getUserId());
 
         // update user role
         userRoleService.updateUserRoleByUserId(userId, userRoleIdList);
@@ -405,18 +405,18 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             String email = btuUserBean.getEmail();
             String username = btuUserBean.getUsername();
             if (StringUtils.isNotEmpty(email)) {
-                sdUserMapper.updateLdapUser(userId, null, email);
+                sdUserMapper.updateLdapUser(userId, null, email, SdUserEntity.SYSTEM.USER_ID);
             }
             if (StringUtils.isNotEmpty(username)) {
-                sdUserMapper.updateLdapUser(userId, username, null);
+                sdUserMapper.updateLdapUser(userId, username, null, SdUserEntity.SYSTEM.USER_ID);
             }
         }
         return null;
     }
 
     @Override
-    public void updateLdapInfo(String loginUser, String username, String userEmail) {
-        sdUserMapper.updateLdapUser(loginUser, username, userEmail);
+    public void updateLdapInfo(String userId, String username, String ldapEmail) {
+        sdUserMapper.updateLdapUser(userId, username, ldapEmail,SdUserEntity.SYSTEM.USER_ID);
     }
 
     public void resetLoginTriedByUsername(String username) {
