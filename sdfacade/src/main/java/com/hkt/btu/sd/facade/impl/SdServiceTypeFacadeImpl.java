@@ -76,11 +76,13 @@ public class SdServiceTypeFacadeImpl implements SdServiceTypeFacade {
         List<SdServiceTypeOfferMappingData> mappingDataList = new ArrayList<>();
         for (SdServiceTypeOfferMappingBean mappingBean : serviceTypeOfferMappingList) {
             for (SdServiceTypeBean serviceTypeBean : serviceTypeList) {
-                if (mappingBean.getServiceTypeCode().equals(serviceTypeBean.getServiceTypeCode())) { // todo [SERVDESK-270]: null pointer, use StringUtils
-                    SdServiceTypeOfferMappingData data = new SdServiceTypeOfferMappingData();
-                    data.setOfferName(mappingBean.getOfferName());
-                    data.setServiceTypeName(serviceTypeBean.getServiceTypeName());
-                    mappingDataList.add(data);
+                if (StringUtils.isNotEmpty(serviceTypeBean.getServiceTypeCode()) && StringUtils.isNotEmpty(mappingBean.getServiceTypeCode())) {
+                    if (mappingBean.getServiceTypeCode().equals(serviceTypeBean.getServiceTypeCode())) {
+                        SdServiceTypeOfferMappingData data = new SdServiceTypeOfferMappingData();
+                        data.setOfferName(mappingBean.getOfferName());
+                        data.setServiceTypeName(serviceTypeBean.getServiceTypeName());
+                        mappingDataList.add(data);
+                    }
                 }
             }
         }
