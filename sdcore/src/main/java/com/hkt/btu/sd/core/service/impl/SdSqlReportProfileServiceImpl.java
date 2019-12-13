@@ -1,12 +1,11 @@
 package com.hkt.btu.sd.core.service.impl;
 
+import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.core.service.bean.BtuSqlReportBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.core.service.impl.BtuSqlReportProfileServiceImpl;
-import com.hkt.btu.sd.core.dao.entity.SdCronJobEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSqlReportEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdSqlReportMapper;
-import com.hkt.btu.sd.core.exception.InvalidInputException;
 import com.hkt.btu.sd.core.service.SdCronJobLogService;
 import com.hkt.btu.sd.core.service.SdSqlReportProfileService;
 import com.hkt.btu.sd.core.service.SdUserService;

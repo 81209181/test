@@ -1,8 +1,8 @@
 package com.hkt.btu.sd.facade.impl;
 
+import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.core.exception.UserNotFoundException;
 import com.hkt.btu.common.facade.data.PageData;
-import com.hkt.btu.sd.core.dao.entity.SdUserEntity;
 import com.hkt.btu.sd.core.exception.*;
 import com.hkt.btu.sd.core.service.SdInputCheckService;
 import com.hkt.btu.sd.core.service.SdUserRoleService;

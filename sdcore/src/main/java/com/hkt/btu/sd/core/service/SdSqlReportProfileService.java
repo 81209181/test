@@ -1,8 +1,7 @@
 package com.hkt.btu.sd.core.service;
 
+import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.core.service.BtuSqlReportProfileService;
-import com.hkt.btu.sd.core.dao.entity.SdSqlReportEntity;
-import com.hkt.btu.sd.core.exception.InvalidInputException;
 import com.hkt.btu.sd.core.service.bean.SdSqlReportBean;
 
 import java.util.List;

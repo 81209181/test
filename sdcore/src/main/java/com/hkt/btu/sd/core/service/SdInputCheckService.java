@@ -1,7 +1,7 @@
 package com.hkt.btu.sd.core.service;
 
 
-import com.hkt.btu.sd.core.exception.InvalidInputException;
+import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
 
 import java.util.List;

@@ -1,8 +1,8 @@
 package com.hkt.btu.sd.core.service.impl;
 
+import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.core.service.constant.LdapEnum;
 import com.hkt.btu.sd.core.dao.entity.SdUserRoleEntity;
-import com.hkt.btu.sd.core.exception.InvalidInputException;
 import com.hkt.btu.sd.core.service.SdInputCheckService;
 import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
 import org.apache.commons.collections4.CollectionUtils;
