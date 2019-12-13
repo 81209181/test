@@ -54,7 +54,7 @@ public class BtuDaoAuthenticationProvider extends DaoAuthenticationProvider {
             if (StringUtils.isEmpty(userBean.getLdapDomain())) {
                 return dbDaoAuthenticationProvider.authenticate(authentication);
             } else {
-                return ldapAuthenticationProvider.btuAuth(authentication, userBean, userBean.getLdapDomain());
+                return ldapAuthenticationProvider.btuAuth(authentication, userBean);
             }
         }
     }
