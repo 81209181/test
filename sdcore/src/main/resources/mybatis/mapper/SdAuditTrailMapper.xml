@@ -9,11 +9,6 @@
         values (SEQ_AUDIT_TRAIL_ID.nextval,#{userId}, #{action}, #{detail})
     </insert>
 
-    <delete id="houseKeep" >
-        delete AUDIT_TRAIL
-        where trunc(CREATEDATE) &lt;= trunc(last_day(ADD_MONTHS(sysdate, -13)))
-    </delete>
-
     <delete id="cleanAuditTrail" >
         delete AUDIT_TRAIL
         where trunc(CREATEDATE) &lt; trunc(#{cutoffDate})
