@@ -27,6 +27,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +39,7 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
     private static final Logger LOG = LogManager.getLogger(WfmApiFacadeImpl.class);
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
-    private static final DateTimeFormatter DISPLAY_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final DateTimeFormatter DISPLAY_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
 
     @Resource(name = "apiService")
     SdApiService apiService;
@@ -110,32 +111,9 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
         }
 
         // serviceReadyDate format
-        LocalDateTime srdStartDateTime = StringUtils.isEmpty(responseData.getSrdStartDateTime()) ?
-                null : LocalDateTime.parse(responseData.getSrdStartDateTime(), WfmAppointmentResData.DATE_TIME_FORMATTER);
-        LocalDateTime srdEndDateTime = StringUtils.isEmpty(responseData.getSrdEndDateTime()) ?
-                null : LocalDateTime.parse(responseData.getSrdEndDateTime(), WfmAppointmentResData.DATE_TIME_FORMATTER);
-        String serviceReadyDate = srdStartDateTime==null ? null : srdStartDateTime.toLocalDate().toString();
-        String srdStartTime = srdStartDateTime==null ? null: srdStartDateTime.toLocalTime().toString();
-        String srdEndTime = srdEndDateTime==null ? null : srdEndDateTime.toLocalTime().toString();
-        if (!StringUtils.equals(srdStartTime, "00:00") && !StringUtils.equals(srdEndTime, "00:00")) {
-            serviceReadyDate = serviceReadyDate == null ? null : serviceReadyDate +
-                    (StringUtils.isEmpty(srdStartTime) ? StringUtils.EMPTY : StringUtils.SPACE + srdStartTime +
-                            (StringUtils.isEmpty(srdEndTime) ? StringUtils.EMPTY : "-" + srdEndTime));
-        }
-
+        String serviceReadyDate = handleDateRangeForDisplay(responseData.getSrdStartDateTime(), responseData.getSrdEndDateTime());
         // appointmentDate format
-        LocalDateTime apptStartDateTime = StringUtils.isEmpty(responseData.getAppointmentStartDateTime()) ?
-                null : LocalDateTime.parse(responseData.getAppointmentStartDateTime(), WfmAppointmentResData.DATE_TIME_FORMATTER);
-        LocalDateTime apptEndDateTime = StringUtils.isEmpty(responseData.getAppointmentEndDateTime()) ?
-                null : LocalDateTime.parse(responseData.getAppointmentEndDateTime(), WfmAppointmentResData.DATE_TIME_FORMATTER);
-        String appointmentDate = apptStartDateTime==null ? null : apptStartDateTime.toLocalDate().toString();
-        String appointmentStartTime = apptStartDateTime==null ? null : apptStartDateTime.toLocalTime().toString();
-        String appointmentEndTime = apptEndDateTime==null ? null : apptEndDateTime.toLocalTime().toString();
-        if (!StringUtils.equals(appointmentStartTime, "00:00") && !StringUtils.equals(appointmentEndTime, "00:00")) {
-            appointmentDate = appointmentDate == null ? null : appointmentDate +
-                    (StringUtils.isEmpty(appointmentStartTime) ? StringUtils.EMPTY : StringUtils.SPACE + appointmentStartTime +
-                            (StringUtils.isEmpty(appointmentEndTime) ? StringUtils.EMPTY : "-" + appointmentEndTime));
-        }
+        String appointmentDate = handleDateRangeForDisplay(responseData.getAppointmentStartDateTime(), responseData.getAppointmentEndDateTime());
 
         responseData.setServiceReadyDate(serviceReadyDate);
         responseData.setAppointmentDate(appointmentDate);
@@ -246,5 +224,38 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
                 wfmJobData.setLastUpTimestampTimestamp(dateStrFormat(wfmJobData.getLastUpTimestampTimestamp(), DISPLAY_DATE_TIME_FORMATTER));
             }
         }
+    }
+
+    private String handleDateRangeForDisplay(String startTime, String endTime) {
+        if (StringUtils.isEmpty(startTime) && StringUtils.isEmpty(endTime)) {
+            return null;
+        }
+
+        LocalDateTime startLocalDateTime = LocalDateTime.parse(startTime, WfmAppointmentResData.DATE_TIME_FORMATTER);
+        LocalDateTime endLocalDateTime = LocalDateTime.parse(endTime, WfmAppointmentResData.DATE_TIME_FORMATTER);
+
+        if (startLocalDateTime != null && endLocalDateTime != null) {
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+            String startDate = startLocalDateTime.format(dateTimeFormatter);
+            String endDate = endLocalDateTime.format(dateTimeFormatter);
+
+            if (StringUtils.isEmpty(startDate) && StringUtils.isEmpty(endDate)) {
+                return null;
+            }
+
+            if (startDate.equals(endDate)) {
+                String sTime = startLocalDateTime.toLocalTime().toString();
+                String eTime = endLocalDateTime.toLocalTime().toString();
+                if (sTime.equals(eTime)) {
+                    return startDate;
+                } else {
+                    return startDate + StringUtils.SPACE + sTime + "-" + eTime;
+                }
+            } else {
+                return startLocalDateTime.format(DISPLAY_DATE_TIME_FORMATTER) + " - " + endLocalDateTime.format(DISPLAY_DATE_TIME_FORMATTER);
+            }
+        }
+
+        return null;
     }
 }

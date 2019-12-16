@@ -116,8 +116,8 @@ public class SdServiceTypeServiceImpl implements SdServiceTypeService {
                                                     String oldOfferName, String offerName) {
         String modifyby = userService.getCurrentSdUserBean().getUserId();
         serviceTypeMapper.updateServiceTypeMappingByCodeAndOfferName(oldServiceTypeCode, serviceTypeCode, oldOfferName, offerName, modifyby);
-        LOG.info("update service type code in SERVICE_TYPE_OFFER_MAPPING:" + oldServiceTypeCode + "=>" + serviceTypeCode + ", modify by :" + modifyby);
-        LOG.info("update offerName in SERVICE_TYPE_OFFER_MAPPING:" + oldOfferName + "=>" + offerName + ", modify by :" + modifyby);
+        LOG.info("update service type code in SERVICE_TYPE_OFFER_MAPPING:" + oldServiceTypeCode + " => " + serviceTypeCode + ", modify by :" + modifyby);
+        LOG.info("update offerName in SERVICE_TYPE_OFFER_MAPPING:" + oldOfferName + " => " + offerName + ", modify by :" + modifyby);
     }
 
     @Override
