@@ -243,6 +243,17 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     }
 
     @Override
+    public List<List<Object>> getRole4Chart() {
+        List<Map<String, Object>> role4Chart = sdUserRoleMapper.getRole4Chart();
+        List<List<Object>> result = new ArrayList<>();
+        role4Chart.forEach(stringStringMap -> {
+            List<Object> objects = List.of(stringStringMap.get("ROLE_NAME"), stringStringMap.get("ROLE_PARENT")==null? "":stringStringMap.get("ROLE_PARENT"));
+            result.add(objects);
+        });
+        return result;
+    }
+
+    @Override
     public List<String> getPrimaryRoles() {
         List<SdUserRoleBean> eligibleUserRoleGrantList = getEligibleUserRoleGrantList();
         List<SdUserRoleBean> primaryRoleList = new ArrayList<>();
