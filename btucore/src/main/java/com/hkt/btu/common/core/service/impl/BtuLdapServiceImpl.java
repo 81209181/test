@@ -6,7 +6,6 @@ import com.hkt.btu.common.core.service.bean.BtuLdapBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.core.service.constant.LdapEnum;
 import com.hkt.btu.common.javax.net.LdapSSLSocketFactory;
-import com.hkt.btu.common.spring.security.authentication.LdapAuthenticationProvider;
 import com.hkt.btu.common.spring.security.exception.NotPermittedLogonException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -117,23 +116,7 @@ public class BtuLdapServiceImpl implements BtuLdapService {
             authEnv.put(Context.SECURITY_PROTOCOL, "ssl");
             authEnv.put("java.naming.ldap.factory.socket", LdapSSLSocketFactory.class.getCanonicalName());
         }
-
-        try
-        {
-            return new InitialDirContext(authEnv);
-
-        }
-        catch (javax.naming.AuthenticationException authEx)
-        {
-            throw authEx;
-        }
-        catch (NamingException namEx)
-        {
-            namEx.printStackTrace();
-            throw namEx;
-        } finally {
-            //if (ctx != null) ctx.close();
-        }
+        return new InitialDirContext(authEnv);
     }
 
     @Override
@@ -161,28 +144,24 @@ public class BtuLdapServiceImpl implements BtuLdapService {
     }
 
 
-    protected BtuUserBean getSearchResult(BtuLdapBean ldapInfo, DirContext ctx, String filter) throws NamingException {
-        try {
-            String ldapBase = ldapInfo.getLdapAttributeLoginName();
-            SearchControls constraints = new SearchControls();
-            constraints.setSearchScope(SearchControls.SUBTREE_SCOPE);
-            NamingEnumeration<SearchResult> results = ctx.search(ldapBase, filter, constraints);
+    private BtuUserBean getSearchResult(BtuLdapBean ldapInfo, DirContext ctx, String filter) throws NamingException {
+        String ldapBase = ldapInfo.getLdapAttributeLoginName();
+        SearchControls constraints = new SearchControls();
+        constraints.setSearchScope(SearchControls.SUBTREE_SCOPE);
+        NamingEnumeration<SearchResult> results = ctx.search(ldapBase, filter, constraints);
 
-            if (results != null && results.hasMore()) {
-                Map<String, String> ldapResponse = getLdapResponseAttrMap(results);
-                BtuUserBean btuUserBean = new BtuUserBean();
-                if (StringUtils.isNotEmpty(ldapResponse.get("cn"))) {
-                    btuUserBean.setUsername(ldapResponse.get("cn"));
-                }
-                if (StringUtils.isNotEmpty(ldapResponse.get("mail"))) {
-                    btuUserBean.setEmail(ldapResponse.get("mail"));
-                }
-                return btuUserBean;
-            } else {
-                throw new UserNotFoundException("User not found in LDAP domain");
+        if (results != null && results.hasMore()) {
+            Map<String, String> ldapResponse = getLdapResponseAttrMap(results);
+            BtuUserBean btuUserBean = new BtuUserBean();
+            if (StringUtils.isNotEmpty(ldapResponse.get("cn"))) {
+                btuUserBean.setUsername(ldapResponse.get("cn"));
             }
-        } finally {
-
+            if (StringUtils.isNotEmpty(ldapResponse.get("mail"))) {
+                btuUserBean.setEmail(ldapResponse.get("mail"));
+            }
+            return btuUserBean;
+        } else {
+            throw new UserNotFoundException("User not found in LDAP domain");
         }
     }
 }

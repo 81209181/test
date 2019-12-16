@@ -20,12 +20,14 @@ import org.springframework.security.authentication.dao.AbstractUserDetailsAuthen
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsChecker;
 
 import javax.annotation.Resource;
 import javax.naming.NamingException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -153,7 +155,7 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
         }
     }
 
-    public Authentication btuAuth(Authentication auth, BtuUserBean btuUserBean, String ldapName) throws AuthenticationException {
+    Authentication btuAuth(Authentication auth, BtuUserBean btuUserBean) throws AuthenticationException {
         this.btuUserBean = btuUserBean;
         return authenticate(auth);
     }
@@ -170,32 +172,4 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
         return null;
     }
 
-    // copy from AbstractUserDetailsAuthenticationProvider
-    private class DefaultPreAuthenticationChecks implements UserDetailsChecker {
-        public void check(UserDetails user) {
-            if (!user.isAccountNonLocked()) {
-                LOG.debug("User account is locked");
-
-                throw new LockedException(messages.getMessage(
-                        "AbstractUserDetailsAuthenticationProvider.locked",
-                        "User account is locked"));
-            }
-
-            if (!user.isEnabled()) {
-                LOG.debug("User account is disabled");
-
-                throw new DisabledException(messages.getMessage(
-                        "AbstractUserDetailsAuthenticationProvider.disabled",
-                        "User is disabled"));
-            }
-
-            if (!user.isAccountNonExpired()) {
-                LOG.debug("User account is expired");
-
-                throw new AccountExpiredException(messages.getMessage(
-                        "AbstractUserDetailsAuthenticationProvider.expired",
-                        "User account has expired"));
-            }
-        }
-    }
 }
