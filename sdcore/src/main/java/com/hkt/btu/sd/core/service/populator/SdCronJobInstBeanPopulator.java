@@ -45,10 +45,10 @@ public class SdCronJobInstBeanPopulator extends AbstractBeanPopulator<SdCronJobI
 
     public void populate(Trigger.TriggerState triggerState, SdCronJobInstBean target) {
         if (triggerState != null) {
-            if(triggerState == Trigger.TriggerState.NORMAL){
-                target.setPaused(false);
-            } else {
+            if (triggerState == Trigger.TriggerState.PAUSED) {
                 target.setPaused(true);
+            } else {
+                target.setPaused(false);
             }
         }
     }
