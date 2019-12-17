@@ -1,12 +1,11 @@
 package com.hkt.btu.common.core.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hkt.btu.common.core.service.BtuCacheService;
+import com.hkt.btu.common.core.service.constant.BtuCacheEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class BtuCacheServiceImpl implements BtuCacheService {
@@ -15,16 +14,22 @@ public class BtuCacheServiceImpl implements BtuCacheService {
     private ApplicationContext applicationContext;
 
     @Override
-    public String getCache(String cacheName) {
-        Object bean = applicationContext.getBean(cacheName);
-        try {
-            Method getServiceTypeList = bean.getClass().getMethod("getServiceTypeList");
-            Object returnObj = getServiceTypeList.invoke(bean);
-            ObjectMapper om = new ObjectMapper();
-            return om.writeValueAsString(returnObj);
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | JsonProcessingException e) {
-            e.printStackTrace();
-            return "";
-        }
+    public String getCache(String cacheId) throws Exception {
+        BtuCacheEnum btuCacheEnum = BtuCacheEnum.valueOf(cacheId);
+        Object bean = applicationContext.getBean(btuCacheEnum.getServiceName());
+        Method method = bean.getClass().getMethod(btuCacheEnum.getCacheBeanMethodName());
+        Object returnObj = method.invoke(bean);
+        ObjectMapper om = new ObjectMapper();
+        return om.writeValueAsString(returnObj);
     }
+
+    @Override
+    public void reloadCache(String cacheId) throws Exception {
+        BtuCacheEnum btuCacheEnum = BtuCacheEnum.valueOf(cacheId);
+        Object bean = applicationContext.getBean(btuCacheEnum.getServiceName());
+        Method method = bean.getClass().getMethod(btuCacheEnum.getReloadMethodName());
+        method.invoke(bean);
+    }
+
+
 }

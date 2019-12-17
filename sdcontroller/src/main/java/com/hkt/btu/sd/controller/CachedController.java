@@ -1,70 +1,66 @@
 package com.hkt.btu.sd.controller;
 
-import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
+import com.hkt.btu.common.core.service.bean.BtuCacheInfoBean;
 import com.hkt.btu.sd.facade.SdCachedFacade;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
 import java.util.List;
 
 @Controller
-@RequestMapping("/cached")
+@RequestMapping("cached")
 public class CachedController {
 
     @Resource(name = "cachedFacade")
     SdCachedFacade cachedFacade;
 
     @GetMapping({"","/"})
-    public String forwardToCachedPage() {
+    public String forwardToCachedPage(Model model) {
+        List<BtuCacheInfoBean> cacheInfoList = cachedFacade.getCacheInfoList();
+        model.addAttribute("cacheInfoList", cacheInfoList);
         return "system/cachedObject/cachedObjectList";
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<?> getCacheList() {
-        List<String> cachedObjectList = List.of("ServiceType", "UserRole");
-        return ResponseEntity.ok(cachedObjectList);
+    @GetMapping("info/{cacheId}")
+    public String getCacheList(@PathVariable String cacheId,Model model) {
+        model.addAttribute("cacheId", cacheId);
+        return "system/cachedObject/cachedObjectInfo";
     }
 
-    @GetMapping("reloadSiteConfig")
-    public ResponseEntity<?> reloadSiteConfig() {
-        boolean result = cachedFacade.reloadSiteConfigBean();
-        if (result) {
-            return ResponseEntity.ok(SimpleAjaxResponse.of(true,"Reload success."));
-        } else {
-            return ResponseEntity.badRequest().body(SimpleAjaxResponse.of(false,"Reload fail"));
+    @GetMapping("getCacheInfo/{cacheId}")
+    public ResponseEntity<?> getCacheInfo(@PathVariable String cacheId){
+        try {
+            return ResponseEntity.ok(cachedFacade.getCacheInfo(cacheId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Get cache fail.");
         }
     }
 
-    @GetMapping("reloadServiceTypeOfferMapping")
-    public ResponseEntity<?> reloadServiceTypeOfferMapping() {
-        boolean result = cachedFacade.reloadServiceTypeOfferMapping();
-        if (result) {
-            return ResponseEntity.ok(SimpleAjaxResponse.of(true,"Reload success."));
-        } else {
-            return ResponseEntity.badRequest().body(SimpleAjaxResponse.of(false,"Reload fail"));
+    @GetMapping("reloadCache/{cacheId}")
+    public ResponseEntity<?> reloadCache(@PathVariable String cacheId) {
+        try {
+            cachedFacade.reloadCache(cacheId);
+            return ResponseEntity.ok(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("Reload cache fail.");
         }
     }
 
-    @GetMapping("reloadServiceTypeList")
-    public ResponseEntity<?> reloadServiceTypeList() {
-        boolean result = cachedFacade.reloadServiceTypeList();
-        if (result) {
-            return ResponseEntity.ok(SimpleAjaxResponse.of(true,"Reload success."));
-        } else {
-            return ResponseEntity.badRequest().body(SimpleAjaxResponse.of(false,"Reload fail"));
+    @GetMapping("getReloadedCacheInfo/{cacheId}")
+    public ResponseEntity<?> getReloadedCacheInfo(@PathVariable String cacheId) {
+        try {
+            cachedFacade.reloadCache(cacheId);
+            return ResponseEntity.ok(cachedFacade.getCacheInfo(cacheId));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("Reload cache fail.");
         }
     }
 
-    @GetMapping("reloadCachedRoleTree")
-    public ResponseEntity<?> reloadCachedRoleTree() {
-        boolean result = cachedFacade.reloadCachedRoleTree();
-        if (result) {
-            return ResponseEntity.ok(SimpleAjaxResponse.of(true,"Reload success."));
-        } else {
-            return ResponseEntity.badRequest().body(SimpleAjaxResponse.of(false,"Reload fail"));
-        }
-    }
 }
