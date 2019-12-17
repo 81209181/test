@@ -123,12 +123,18 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
 
     @Override
     public List<WfmJobData> getJobInfo(Integer ticketMasId) {
-        return Optional.ofNullable(ticketMasId).map(id -> {
-            Type type = new TypeToken<List<WfmJobData>>() {}.getType();
-            List<WfmJobData> dataList = this.getDataList("/api/v1/sd/GetJobListByTicketId/" + ticketMasId, type, null);
-            formatJobInfoDate(dataList);
-            return dataList.stream().filter(jobInfo -> !WfmJobData.LOCKED_STATUS.equals(jobInfo.getStatus())).collect(Collectors.toList());
-        }).orElse(null);
+        if (ticketMasId <= 0) {
+            return null;
+        }
+
+        Type type = new TypeToken<List<WfmJobData>>() {}.getType();
+        List<WfmJobData> dataList = this.getDataList("/api/v1/sd/GetJobListByTicketId/" + ticketMasId, type, null);
+        if (CollectionUtils.isEmpty(dataList)) {
+            return null;
+        }
+
+        formatJobInfoDate(dataList);
+        return dataList.stream().filter(jobInfo -> !WfmJobData.LOCKED_STATUS.equals(jobInfo.getStatus())).collect(Collectors.toList());
     }
 
     @Override
