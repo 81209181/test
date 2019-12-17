@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface SdUserRoleMapper {
@@ -41,4 +42,6 @@ public interface SdUserRoleMapper {
     List<SdUserRoleEntity> getUserRoleByParentRoleId(@Param("roleId") String roleId);
 
     List<SdUserRoleEntity> getTeamHeadRoleList(@Param("roleId") String roleId);
+
+    List<Map<String,Object>> getRole4Chart();
 }

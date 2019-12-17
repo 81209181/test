@@ -4,6 +4,11 @@ $(document).ready(function() {
         ajaxReload();
     });
 
+    google.charts.load('current', {packages:["orgchart"]});
+    $.get('/admin/manage-role/getRole4Chart',function(res){
+        google.charts.setOnLoadCallback(drawChart(res));
+    })
+
     $('#userGroupTable').DataTable({
         ajax: {
             type: "GET",
@@ -36,6 +41,15 @@ $(document).ready(function() {
         } ]
     });
 });
+ function drawChart(rowData) {
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'name');
+    data.addColumn('string', 'parent');
+    data.addRows(rowData);
+    var chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
+    chart.draw(data,{'allowHtml':true});
+}
+
 
 function ajaxReload() {
     $.ajax({

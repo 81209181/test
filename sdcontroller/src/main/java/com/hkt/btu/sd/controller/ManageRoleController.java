@@ -9,7 +9,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -81,5 +84,14 @@ public class ManageRoleController {
     public ResponseEntity<?> reloadUserRole() {
         userRoleFacade.reloadUserRole();
         return ResponseEntity.ok("done.");
+    }
+
+    @GetMapping("getRole4Chart")
+    public ResponseEntity<?> getRole4Chart() {
+        try {
+            return ResponseEntity.ok(userRoleFacade.getRole4Chart());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

@@ -142,4 +142,8 @@
     <select id="getTeamHeadRoleList" resultMap="SdUserRoleEntity">
         select * from USER_ROLE start with ROLE_ID = #{roleId} connect by prior ROLE_ID = PARENT_ROLE_ID order by role_id
     </select>
+
+    <select id="getRole4Chart" resultType="hashMap">
+        select ur1.role_desc role_name,ur2.role_desc role_parent from user_role ur1 left join user_role ur2 on ur1.parent_role_id = ur2.role_id
+    </select>
 </mapper>
