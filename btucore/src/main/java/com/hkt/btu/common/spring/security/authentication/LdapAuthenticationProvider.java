@@ -90,6 +90,8 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
                     btuUserBean);
             userDetails.setLdapPassword((String) auth.getCredentials());
 
+            getPreAuthenticationChecks().check(userDetails);
+
             //if success, record it
             auditTrailService.insertLoginAuditTrail(userDetails);
 
@@ -171,5 +173,4 @@ public class LdapAuthenticationProvider extends AbstractUserDetailsAuthenticatio
             throws AuthenticationException {
         return null;
     }
-
 }

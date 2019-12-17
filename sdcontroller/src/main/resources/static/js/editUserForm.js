@@ -161,9 +161,6 @@ $(document).ready(function() {
         ajaxUpdateUser();
     });
 
-
-    $("#btnActivateUser").hide();
-    $("#btnDeactivateUser").hide();
     $("#edit-login-tried").hide();
     $("#edit-password-modify-date").hide();
     $("label.emailUserInfo").hide();
