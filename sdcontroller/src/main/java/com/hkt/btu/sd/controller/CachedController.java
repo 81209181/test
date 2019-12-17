@@ -47,7 +47,6 @@ public class CachedController {
             cachedFacade.reloadCache(cacheId);
             return ResponseEntity.ok(true);
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.badRequest().body("Reload cache fail.");
         }
     }
@@ -58,7 +57,6 @@ public class CachedController {
             cachedFacade.reloadCache(cacheId);
             return ResponseEntity.ok(cachedFacade.getCacheInfo(cacheId));
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.badRequest().body("Reload cache fail.");
         }
     }
