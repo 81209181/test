@@ -5,7 +5,6 @@ import com.hkt.btu.sd.facade.data.EditResultData;
 import com.hkt.btu.sd.facade.data.SdUserPathCtrlData;
 import com.hkt.btu.sd.facade.data.SdUserRoleData;
 
-import java.util.HashMap;
 import java.util.List;
 
 public interface SdUserRoleFacade {
@@ -27,4 +26,6 @@ public interface SdUserRoleFacade {
     void reloadUserRole();
 
     List<SdUserRoleData> getTeamHeadRoleList();
+
+    List<List<Object>> getRole4Chart();
 }

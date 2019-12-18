@@ -1,48 +1,54 @@
 package com.hkt.btu.common.core.service.constant;
 
-import org.apache.commons.lang3.StringUtils;
+import com.hkt.btu.common.core.service.bean.BtuCacheInfoBean;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public enum BtuCacheEnum {
-    SERVICE_TYPE_LIST ("serviceTypeList", "123", "123", "")
+    C1 ("Service Type Offer Mapping","serviceTypeService", "getServiceTypeOfferMappingBean", "reloadServiceTypeOfferMapping"),
+    C2 ("Service Type List","serviceTypeService","getServiceTypeList","reloadServiceTypeList"),
+    C3 ("Site Config","","",""),
+    C4 ("User Role","","","")
     ;
 
-
-    BtuCacheEnum(String cacheId, String objectTypeStr, String loadingClassBeanName, String loadingMethodStr) {
-        this.cacheId = cacheId;
-        this.objectTypeStr = objectTypeStr;
-        this.loadingClassBeanName = loadingClassBeanName;
-        this.loadingMethodStr = loadingMethodStr;
+    BtuCacheEnum(String cacheName, String serviceName, String cacheBeanMethodName, String reloadMethodName) {
+        this.cacheName = cacheName;
+        this.serviceName = serviceName;
+        this.cacheBeanMethodName = cacheBeanMethodName;
+        this.reloadMethodName = reloadMethodName;
     }
 
-    public static BtuCacheEnum getEnum(String cacheId) {
-        for(BtuCacheEnum btuCacheEnum : values()){
-            if(StringUtils.equals(cacheId, btuCacheEnum.cacheId)){
-                return btuCacheEnum;
-            }
-        }
-        return null;
+    public static List<BtuCacheInfoBean> getCacheInfoList() {
+        return Stream.of(values()).map(btuCacheEnum -> {
+            BtuCacheInfoBean bean = new BtuCacheInfoBean();
+            bean.setCacheId(btuCacheEnum.toString());
+            bean.setCacheName(btuCacheEnum.getCacheName());
+            return bean;
+        }).collect(Collectors.toList());
     }
 
-    private String cacheId;
-    private String objectTypeStr;
-    private String loadingClassBeanName;
-    private String loadingMethodStr;
+    private String cacheName;
+    private String serviceName;
+    private String cacheBeanMethodName;
+    private String reloadMethodName;
 
 
-    public String getCacheId() {
-        return cacheId;
+    public String getCacheName() {
+        return cacheName;
     }
 
-    public String getObjectTypeStr() {
-        return objectTypeStr;
+    public String getServiceName() {
+        return serviceName;
     }
 
-    public String getLoadingClassBeanName() {
-        return loadingClassBeanName;
+    public String getCacheBeanMethodName() {
+        return cacheBeanMethodName;
     }
 
-    public String getLoadingMethodStr() {
-        return loadingMethodStr;
+    public String getReloadMethodName() {
+        return reloadMethodName;
     }
 }
