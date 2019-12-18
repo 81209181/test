@@ -1,14 +1,16 @@
 package com.hkt.btu.sd.controller;
 
+import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
+import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
 import com.hkt.btu.sd.facade.SdConfigParamFacade;
 import com.hkt.btu.sd.facade.SdJobFacade;
+import com.hkt.btu.sd.facade.SdPublicHolidayFacade;
 import com.hkt.btu.sd.facade.SdSiteConfigFacade;
-import com.hkt.btu.sd.facade.data.SdConfigParamData;
-import com.hkt.btu.sd.facade.data.SdCronJobInstData;
-import com.hkt.btu.sd.facade.data.SdCronJobProfileData;
-import com.hkt.btu.sd.facade.data.SdSiteConfigData;
+import com.hkt.btu.sd.facade.data.*;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +33,8 @@ public class SystemController {
     SdSiteConfigFacade sdSiteConfigFacade;
     @Resource(name = "jobFacade")
     SdJobFacade sdJobFacade;
+    @Resource(name = "publicHolidayFacade")
+    SdPublicHolidayFacade sdPublicHolidayFacade;
 
 
     @GetMapping({"", "/", "/index"})
@@ -232,5 +236,22 @@ public class SystemController {
         } else {
             return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
         }
+    }
+
+    @GetMapping("/public-holiday")
+    public String ListPublicHoliday() {
+        return "system/publicHoliday/searchPublicHoliday";
+    }
+
+    @GetMapping("/public-holiday/ajax-list-public-holiday")
+    public ResponseEntity<?> ajaxListPublicHoliday(@RequestParam(defaultValue = "0") int draw,
+                                                   @RequestParam(defaultValue = "0") int start,
+                                                   @RequestParam(defaultValue = "10") int length,
+                                                   @RequestParam(required = false) String year) {
+        int page = start / length;
+        Pageable pageable = PageRequest.of(page, length);
+
+        PageData<SdPublicHolidayData> pageData = sdPublicHolidayFacade.getPublicHolidayList(pageable, year);
+        return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
     }
 }
