@@ -36,9 +36,14 @@ public class BtuLoginUrlAuthenticationEntryPoint extends LoginUrlAuthenticationE
         INSUFFICIENT_AUTH("Insufficient Authority."),
         HELP("Please contact system support."),
         UNKNOWN("Login error."),
-        NOT_PERMITTED("Not permitted to logon at this time or this workstation. Please contact administrator."),
-        CHANGE_PWD("Please change your password."),
-        DISABLED("Your account is disabled/expired. Please contact administrator.");
+        DISABLED("Your account is disabled/expired. Please contact administrator."),
+
+        NOT_PERMITTED("[LDAP]Not permitted to logon at this time or this workstation. Please contact administrator."),
+        CHANGE_PWD("[LDAP]Please change your password."),
+        LDAP_LOCK("[LDAP]Account deactivated. Please contact admin."),
+        LDAP_BAD_CREDENTIALS("[LDAP]Invalid login credential."),
+        LDAP_DISABLED("[LDAP]Your account is disabled/expired. Please contact administrator."),
+        LDAP_CREDENTIALS_EXPIRED("[LDAP]Your password was expired.");
 
         private String msg;
 
