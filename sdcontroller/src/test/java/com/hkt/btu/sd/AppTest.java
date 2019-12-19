@@ -1,13 +1,7 @@
 package com.hkt.btu.sd;
 
-import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
-import com.hkt.btu.common.core.service.BtuCacheService;
-import com.hkt.btu.sd.core.dao.entity.SdTicketServiceEntity;
-import com.hkt.btu.sd.core.dao.mapper.SdConfigParamMapper;
-import com.hkt.btu.sd.core.dao.mapper.SdTicketServiceMapper;
 import com.hkt.btu.sd.core.dao.mapper.SdUserMapper;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,11 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -32,31 +23,6 @@ import java.util.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class AppTest {
-    @Autowired
-    SdConfigParamMapper configParamMapper;
-
-    @Autowired
-    SdTicketServiceMapper ticketServiceMapper;
-
-    @Resource(name = "cacheService")
-    BtuCacheService btuCacheService;
-
-    @Test
-    public void testCache() {
-        String json = btuCacheService.getCache("serviceTypeService");
-        System.out.println(json);
-    }
-
-    @Test
-    public void shouldAnswerWithTrue() {
-        List<SdTicketServiceEntity> serviceList = ticketServiceMapper.getTicketServiceInfoByTicketMasId(22);
-        serviceList.forEach(System.out::println);
-    }
-
-    @Test
-    public void testStringUtils() {
-        System.out.println(StringUtils.join("config key", " already exists."));
-    }
 
     @Autowired
     SdUserMapper sdUserMapper;

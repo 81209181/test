@@ -1,67 +1,34 @@
 package com.hkt.btu.sd.facade.impl;
 
-import com.hkt.btu.sd.core.service.SdServiceTypeService;
-import com.hkt.btu.sd.core.service.SdSiteConfigService;
-import com.hkt.btu.sd.core.service.SdUserRoleService;
+import com.hkt.btu.common.core.service.BtuCacheService;
+import com.hkt.btu.common.core.service.bean.BtuCacheInfoBean;
+import com.hkt.btu.common.core.service.constant.BtuCacheEnum;
 import com.hkt.btu.sd.facade.SdCachedFacade;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 public class SdCachedFacadeImpl implements SdCachedFacade {
 
     private static final Logger LOG = LogManager.getLogger(SdCachedFacadeImpl.class);
 
-    @Resource(name = "siteConfigService")
-    SdSiteConfigService siteConfigService;
-    @Resource(name = "userRoleService")
-    SdUserRoleService userRoleService;
-    @Resource(name = "serviceTypeService")
-    SdServiceTypeService serviceTypeService;
+    @Resource(name = "cacheService")
+    BtuCacheService cacheService;
 
     @Override
-    public boolean reloadSiteConfigBean() {
-        try {
-            siteConfigService.reload();
-            return true;
-        } catch (Exception e) {
-            LOG.warn(e.getMessage());
-            return false;
-        }
+    public void reloadCache(String cacheId) throws Exception {
+        cacheService.reloadCache(cacheId);
     }
 
     @Override
-    public boolean reloadServiceTypeOfferMapping() {
-        try {
-            serviceTypeService.reloadServiceTypeOfferMapping();
-            return true;
-        } catch (Exception e) {
-            LOG.warn(e.getMessage());
-            return false;
-        }
+    public String getCacheInfo(String cacheId) throws Exception {
+        return cacheService.getCache(cacheId);
     }
 
     @Override
-    public boolean reloadServiceTypeList() {
-        try {
-            serviceTypeService.reloadServiceTypeList();
-            return true;
-        } catch (Exception e) {
-            LOG.warn(e.getMessage());
-            return false;
-        }
+    public List<BtuCacheInfoBean> getCacheInfoList() {
+        return BtuCacheEnum.getCacheInfoList();
     }
-
-    @Override
-    public boolean reloadCachedRoleTree() {
-        try {
-            userRoleService.reloadCachedRoleTree();
-            return true;
-        } catch (Exception e) {
-            LOG.warn(e.getMessage());
-            return false;
-        }
-    }
-
 }

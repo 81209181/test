@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdPublicHolidayMapper">
+
+    <resultMap id="PublicHolidayEntity" type="com.hkt.btu.sd.core.dao.entity.SdPublicHolidayEntity" >
+        <result column="PUBLIC_HOLIDAY" property="publicHoliday" />
+        <result column="DESCRIPTION" property="description" />
+    </resultMap>
+
+    <select id="getPublicHolidayList" resultMap="PublicHolidayEntity">
+        SELECT * FROM PUBLIC_HOLIDAY
+        <where>
+            <if test="year != null and year != ''">
+                #{year} = TO_CHAR(PUBLIC_HOLIDAY, 'yyyy')
+            </if>
+        </where>
+        ORDER BY PUBLIC_HOLIDAY
+        OFFSET #{offset} ROWS FETCH NEXT #{pageSize} ROWS ONLY
+    </select>
+
+    <select id="countPublicHoliday" resultType="Integer">
+        SELECT count(1) FROM PUBLIC_HOLIDAY
+        <where>
+            <if test="year != null and year != ''">
+                #{year} = TO_CHAR(PUBLIC_HOLIDAY, 'yyyy')
+            </if>
+        </where>
+    </select>
+
+</mapper>

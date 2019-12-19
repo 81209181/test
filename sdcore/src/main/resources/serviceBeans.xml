@@ -70,6 +70,9 @@
     <alias name="sdHistoryService" alias="historyService"/>
     <bean id="sdHistoryService" class="com.hkt.btu.sd.core.service.impl.SdHistoryServiceImpl"/>
 
+    <alias name="sdPublicHolidayService" alias="publicHolidayService"/>
+    <bean id="sdPublicHolidayService" class="com.hkt.btu.sd.core.service.impl.SdPublicHolidayServiceImpl"/>
+
     <!-- Populator -->
     <alias name="sdUserBeanPopulator" alias="userBeanPopulator"/>
     <bean id="sdUserBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserBeanPopulator"/>
@@ -125,8 +128,11 @@
     <bean id="sdServiceTypeOfferMappingBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdServiceTypeOfferMappingBeanPopulator" />
 
     <alias name="sdTeamSummaryBeanPopulator" alias="teamSummaryBeanPopulator"/>
-    <bean class="com.hkt.btu.sd.core.service.populator.SdTeamSummaryBeanPopulator" id="sdTeamSummaryBeanPopulator"/>
+    <bean id="sdTeamSummaryBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdTeamSummaryBeanPopulator"/>
 
     <alias name="sdStatusSummaryBeanPopulator" alias="statusSummaryBeanPopulator"/>
-    <bean class="com.hkt.btu.sd.core.service.populator.SdStatusSummaryBeanPopulator" id="sdStatusSummaryBeanPopulator"/>
+    <bean id="sdStatusSummaryBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdStatusSummaryBeanPopulator"/>
+
+    <alias name="sdPublicHolidayBeanPopulator" alias="publicHolidayBeanPopulator"/>
+    <bean id="sdPublicHolidayBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdPublicHolidayBeanPopulator"/>
 </beans>
