@@ -38,12 +38,12 @@ public class BtuLoginUrlAuthenticationEntryPoint extends LoginUrlAuthenticationE
         UNKNOWN("Login error."),
         DISABLED("Your account is disabled/expired. Please contact administrator."),
 
-        NOT_PERMITTED("[LDAP]Not permitted to logon at this time or this workstation. Please contact administrator."),
-        CHANGE_PWD("[LDAP]Please change your password."),
-        LDAP_LOCK("[LDAP]Account deactivated. Please contact admin."),
-        LDAP_BAD_CREDENTIALS("[LDAP]Invalid login credential."),
-        LDAP_DISABLED("[LDAP]Your account is disabled/expired. Please contact administrator."),
-        LDAP_CREDENTIALS_EXPIRED("[LDAP]Your password was expired.");
+        NOT_PERMITTED("Domain (LDAP): Not permitted to logon at this time or this workstation. Please contact administrator."),
+        CHANGE_PWD("Domain (LDAP): Please change your password."),
+        LDAP_LOCK("Domain (LDAP): Account deactivated. Please contact admin."),
+        LDAP_BAD_CREDENTIALS("Domain (LDAP): Invalid login credential."),
+        LDAP_DISABLED("Domain (LDAP): Your account is disabled/expired. Please contact administrator."),
+        LDAP_CREDENTIALS_EXPIRED("Domain (LDAP): Your password was expired.");
 
         private String msg;
 
