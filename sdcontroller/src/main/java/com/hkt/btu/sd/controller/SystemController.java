@@ -271,4 +271,26 @@ public class SystemController {
             return ResponseEntity.ok(SimpleAjaxResponse.of(false, "insert failed."));
         }
     }
+
+    @PostMapping("/public-holiday/delete-public-holiday")
+    public ResponseEntity<?> deletePublicHoliday(@RequestParam String publicHoliday,
+                                                 @RequestParam String description) {
+        boolean result = sdPublicHolidayFacade.deletePublicHoliday(publicHoliday, description);
+        if (result) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of());
+        } else {
+            return ResponseEntity.badRequest().body("delete failed.");
+        }
+    }
+
+    @PostMapping("/public-holiday/create-public-holiday")
+    public ResponseEntity<?> createPublicHoliday(@RequestParam String publicHoliday,
+                                                 @RequestParam String description) {
+        boolean result = sdPublicHolidayFacade.createPublicHoliday(publicHoliday, description);
+        if (result) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of());
+        } else {
+            return ResponseEntity.badRequest().body("create failed.");
+        }
+    }
 }

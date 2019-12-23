@@ -16,4 +16,10 @@ public interface SdPublicHolidayMapper {
     List<SdPublicHolidayEntity> getAllPublicHolidayList();
 
     void insertPublicHoliday(@Param("entityList") List<SdPublicHolidayEntity> entityList);
+
+    void deletePublicHoliday(@Param("publicHoliday") String publicHoliday, @Param("description") String description);
+
+    void createPublicHoliday(@Param("publicHoliday") String publicHoliday, @Param("description") String description);
+
+    List<SdPublicHolidayEntity> checkNextPublicHoliday();
 }

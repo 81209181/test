@@ -6,6 +6,7 @@ import com.hkt.btu.sd.core.service.SdPublicHolidayService;
 import com.hkt.btu.sd.core.service.bean.SdPublicHolidayBean;
 import com.hkt.btu.sd.core.service.populator.SdPublicHolidayBeanPopulator;
 import org.apache.commons.collections4.CollectionUtils;
+import org.quartz.JobExecutionException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -29,19 +30,42 @@ public class SdPublicHolidayServiceImpl implements SdPublicHolidayService {
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
 
-        List<SdPublicHolidayEntity> sdUserEntityList = sdPublicHolidayMapper.getPublicHolidayList(offset, pageSize, year);
+        List<SdPublicHolidayEntity> entityList = sdPublicHolidayMapper.getPublicHolidayList(offset, pageSize, year);
         Integer totalCount = sdPublicHolidayMapper.countPublicHoliday(year);
 
-        List<SdPublicHolidayBean> sdUserBeanList = new LinkedList<>();
-        if (!CollectionUtils.isEmpty(sdUserEntityList)) {
-            for (SdPublicHolidayEntity sdUserEntity : sdUserEntityList) {
-                SdPublicHolidayBean sdUserBean = new SdPublicHolidayBean();
-                publicHolidayBeanPopulator.populate(sdUserEntity, sdUserBean);
-                sdUserBeanList.add(sdUserBean);
+        List<SdPublicHolidayBean> beanList = new LinkedList<>();
+        if (!CollectionUtils.isEmpty(entityList)) {
+            for (SdPublicHolidayEntity entity : entityList) {
+                SdPublicHolidayBean bean = new SdPublicHolidayBean();
+                publicHolidayBeanPopulator.populate(entity, bean);
+                beanList.add(bean);
             }
         }
 
-        return new PageImpl<>(sdUserBeanList, pageable, totalCount);
+        return new PageImpl<>(beanList, pageable, totalCount);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deletePublicHoliday(String publicHoliday, String description) {
+        sdPublicHolidayMapper.deletePublicHoliday(publicHoliday, description);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void createPublicHoliday(String publicHoliday, String description) {
+        sdPublicHolidayMapper.createPublicHoliday(publicHoliday, description);
+    }
+
+    @Override
+    public void checkPublicHoliday() throws JobExecutionException {
+        List<SdPublicHolidayEntity> entityList = sdPublicHolidayMapper.checkNextPublicHoliday();
+
+        if (CollectionUtils.isNotEmpty(entityList)) {
+            return;
+        }
+
+        throw new JobExecutionException("Not found public holiday after next three months.");
     }
 
     @Override
