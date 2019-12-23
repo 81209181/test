@@ -243,7 +243,7 @@ public class SystemController {
         return "system/publicHoliday/searchPublicHoliday";
     }
 
-    @GetMapping("/public-holiday/ajax-list-public-holiday")
+    @GetMapping("/public-holiday/ajax-page-public-holiday")
     public ResponseEntity<?> ajaxListPublicHoliday(@RequestParam(defaultValue = "0") int draw,
                                                    @RequestParam(defaultValue = "0") int start,
                                                    @RequestParam(defaultValue = "10") int length,
@@ -253,5 +253,22 @@ public class SystemController {
 
         PageData<SdPublicHolidayData> pageData = sdPublicHolidayFacade.getPublicHolidayList(pageable, year);
         return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
+    }
+
+    @ResponseBody
+    @GetMapping("/public-holiday/ajax-list-public-holiday")
+    public List<SdPublicHolidayData> ajaxListPublicHoliday() {
+        List<SdPublicHolidayData> allPublicHolidayList = sdPublicHolidayFacade.getAllPublicHolidayList();
+        return allPublicHolidayList;
+    }
+
+    @PostMapping("/public-holiday/ajax-add-public-holiday")
+    public ResponseEntity<?> ajaxAddPublicHoliday(@RequestBody List<SdPublicHolidayData> data) {
+        boolean result = sdPublicHolidayFacade.addPublicHoliday(data);
+        if (result) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of(true, "insert successful."));
+        } else {
+            return ResponseEntity.ok(SimpleAjaxResponse.of(false, "insert failed."));
+        }
     }
 }

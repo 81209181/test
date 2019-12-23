@@ -11,4 +11,9 @@ public class SdPublicHolidayDataPopulator extends AbstractDataPopulator<SdPublic
         target.setPublicHoliday(source.getPublicHoliday());
         target.setDescription(source.getDescription());
     }
+
+    public void populate(SdPublicHolidayData source, SdPublicHolidayBean target) {
+        target.setPublicHoliday(source.getPublicHoliday());
+        target.setDescription(source.getDescription());
+    }
 }

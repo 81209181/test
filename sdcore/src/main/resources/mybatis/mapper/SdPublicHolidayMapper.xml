@@ -29,4 +29,21 @@
         </where>
     </select>
 
+    <select id="getAllPublicHolidayList" resultMap="PublicHolidayEntity">
+        SELECT * FROM PUBLIC_HOLIDAY ORDER BY PUBLIC_HOLIDAY
+    </select>
+
+    <insert id="insertPublicHoliday" parameterType="java.util.List">
+        INSERT INTO PUBLIC_HOLIDAY
+        (PUBLIC_HOLIDAY, DESCRIPTION)
+         <foreach collection="entityList" item="ph" index="index" separator="union all">
+             (
+             SELECT
+             #{ph.publicHoliday},
+             #{ph.description}
+             FROM DUAL
+             )
+         </foreach>
+    </insert>
+
 </mapper>

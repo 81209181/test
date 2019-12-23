@@ -12,4 +12,8 @@ public interface SdPublicHolidayMapper {
     List<SdPublicHolidayEntity> getPublicHolidayList(@Param("offset") long offset, @Param("pageSize") int pageSize, @Param("year") String year);
 
     Integer countPublicHoliday(@Param("year") String year);
+
+    List<SdPublicHolidayEntity> getAllPublicHolidayList();
+
+    void insertPublicHoliday(@Param("entityList") List<SdPublicHolidayEntity> entityList);
 }
