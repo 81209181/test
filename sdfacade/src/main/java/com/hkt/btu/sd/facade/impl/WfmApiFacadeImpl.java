@@ -240,28 +240,25 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
         LocalDateTime startLocalDateTime = LocalDateTime.parse(startTime, WfmAppointmentResData.DATE_TIME_FORMATTER);
         LocalDateTime endLocalDateTime = LocalDateTime.parse(endTime, WfmAppointmentResData.DATE_TIME_FORMATTER);
 
-        if (startLocalDateTime != null && endLocalDateTime != null) {
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-            String startDate = startLocalDateTime.format(dateTimeFormatter);
-            String endDate = endLocalDateTime.format(dateTimeFormatter);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        String startDate = startLocalDateTime.format(dateTimeFormatter);
+        String endDate = endLocalDateTime.format(dateTimeFormatter);
 
-            if (StringUtils.isEmpty(startDate) && StringUtils.isEmpty(endDate)) {
-                return null;
-            }
-
-            if (startDate.equals(endDate)) {
-                String sTime = startLocalDateTime.toLocalTime().toString();
-                String eTime = endLocalDateTime.toLocalTime().toString();
-                if (sTime.equals(eTime)) {
-                    return startDate;
-                } else {
-                    return startDate + StringUtils.SPACE + sTime + "-" + eTime;
-                }
-            } else {
-                return startLocalDateTime.format(DISPLAY_DATE_TIME_FORMATTER) + " - " + endLocalDateTime.format(DISPLAY_DATE_TIME_FORMATTER);
-            }
+        if (StringUtils.isEmpty(startDate) && StringUtils.isEmpty(endDate)) {
+            return null;
         }
 
-        return null;
+        if (startDate.equals(endDate)) {
+            String sTime = startLocalDateTime.toLocalTime().toString();
+            String eTime = endLocalDateTime.toLocalTime().toString();
+            if (sTime.equals(eTime)) {
+                return startDate;
+            } else {
+                return startDate + StringUtils.SPACE + sTime + "-" + eTime;
+            }
+        } else {
+            return startLocalDateTime.format(DISPLAY_DATE_TIME_FORMATTER) + " - " + endLocalDateTime.format(DISPLAY_DATE_TIME_FORMATTER);
+        }
+
     }
 }
