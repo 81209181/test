@@ -10,7 +10,8 @@
 
     <form th:id="search-public-holiday-form" class="form-inline">
         <input type="number" min="1900" max="9999" class="form-control mb-2 mr-sm-2 col-md-2" placeholder="Year" th:id="public-holiday-search-year">
-        <button type="submit" class="btn btn-lg btn-primary mb-2"><i class="fas fa-search"></i> Search</button>
+        <button id="btnSearch" type="button" class="btn btn-lg btn-primary mb-2"><i class="fas fa-search"></i> Search</button>
+        <button id="btnCreate" type="button" class="btn btn-lg btn-success mb-2 ml-2"><i class="fas fa-plus-square"></i> Create</button>
     </form>
 
     <h1>Public Holiday List</h1>
@@ -19,6 +20,7 @@
         <tr>
             <th>Public Holiday</th>
             <th>Description</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -27,10 +29,42 @@
         <tr>
             <th>Public Holiday</th>
             <th>Description</th>
+            <th></th>
         </tr>
         </tfoot>
     </table>
 
+    <div class="modal fade reason">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-white bg-info h-80">
+                    <h6 class="modal-title">Create New Public Holiday</h6>
+                    <button type="button" class="close text-white" data-dismiss="modal">x</button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation" novalidate>
+                        <div class="form-row mt-3">
+                            <label class="col-md-3 justify-content-end" >Public Holiday:</label>
+                            <input type="date" class="col-md-8" required name="publicHoliday">
+                            <div class="invalid-feedback offset-md-3">
+                                Please select on date.
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label class="col-md-3 justify-content-end">Description:</label>
+                            <textarea class="form-control col-md-8 mt-2" required name="description" rows="3"></textarea>
+                            <div class="invalid-feedback offset-md-3">
+                                Please enter a message in the textarea.
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info float-right" id="btnSubmit">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script type="text/javascript" th:src="@{/js/searchPublicHoliday.js}"></script>
 </div>
 </body>

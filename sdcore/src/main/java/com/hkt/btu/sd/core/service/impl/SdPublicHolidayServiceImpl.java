@@ -9,6 +9,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.LinkedList;
@@ -40,5 +41,17 @@ public class SdPublicHolidayServiceImpl implements SdPublicHolidayService {
         }
 
         return new PageImpl<>(sdUserBeanList, pageable, totalCount);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deletePublicHoliday(String publicHoliday, String description) {
+        sdPublicHolidayMapper.deletePublicHoliday(publicHoliday, description);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void createPublicHoliday(String publicHoliday, String description) {
+        sdPublicHolidayMapper.createPublicHoliday(publicHoliday, description);
     }
 }

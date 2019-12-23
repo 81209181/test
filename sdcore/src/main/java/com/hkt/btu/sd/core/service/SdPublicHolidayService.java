@@ -7,4 +7,7 @@ import org.springframework.data.domain.Pageable;
 public interface SdPublicHolidayService {
     Page<SdPublicHolidayBean> getPublicHolidayList(Pageable pageable, String year);
 
+    void deletePublicHoliday(String publicHoliday, String description);
+
+    void createPublicHoliday(String publicHoliday, String description);
 }

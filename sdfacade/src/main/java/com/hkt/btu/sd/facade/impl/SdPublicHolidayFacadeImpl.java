@@ -7,6 +7,9 @@ import com.hkt.btu.sd.core.service.bean.SdPublicHolidayBean;
 import com.hkt.btu.sd.facade.SdPublicHolidayFacade;
 import com.hkt.btu.sd.facade.data.SdPublicHolidayData;
 import com.hkt.btu.sd.facade.populator.SdPublicHolidayDataPopulator;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
@@ -17,6 +20,7 @@ import java.util.List;
 
 
 public class SdPublicHolidayFacadeImpl implements SdPublicHolidayFacade {
+    private static final Logger LOG = LogManager.getLogger(SdPublicHolidayFacadeImpl.class);
 
     @Resource(name = "sdPublicHolidayService")
     SdPublicHolidayService sdPublicHolidayService;
@@ -45,5 +49,33 @@ public class SdPublicHolidayFacadeImpl implements SdPublicHolidayFacade {
         }
 
         return new PageData<>(dataList, pageBean.getPageable(), pageBean.getTotalElements());
+    }
+
+    @Override
+    public boolean deletePublicHoliday(String publicHoliday, String description) {
+        if (StringUtils.isEmpty(publicHoliday) || StringUtils.isEmpty(description)) {
+            return false;
+        }
+        try {
+            sdPublicHolidayService.deletePublicHoliday(publicHoliday, description);
+            return true;
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+        }
+        return false;
+    }
+
+    @Override
+    public boolean createPublicHoliday(String publicHoliday, String description) {
+        if (StringUtils.isEmpty(publicHoliday) || StringUtils.isEmpty(description)) {
+            return false;
+        }
+        try {
+            sdPublicHolidayService.createPublicHoliday(publicHoliday, description);
+            return true;
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+        }
+        return false;
     }
 }
