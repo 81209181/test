@@ -164,4 +164,20 @@
         from ticket_mas where createdate BETWEEN trunc(sysdate, 'mm') and  last_day(sysdate) and owning_role = #{owningRole}
         group by ticket_type,status order by ticket_type)PIVOT(sum(status_cnt)for ticket_type in ('JOB' job,'QUERY' query))
     </select>
+
+    <select id="getNewTicketId" resultType="string">
+        select SEQ_TICKET_MAS_ID.NEXTVAL from dual
+    </select>
+
+    <insert id="createHktCloudTicket">
+        insert into TICKET_MAS (TICKET_MAS_ID,TICKET_TYPE,STATUS,CREATEBY,MODIFYBY,SEARCH_KEY,SEARCH_VALUE)
+        values(#{ticketId},'QUERY','O',#{createBy},#{createBy},'tenantId',#{tenantId})
+    </insert>
+
+    <select id="getTicket4HktCloud" resultMap="TicketMasEntity">
+        select ticket_mas_id,status,createby,createdate,complete_date
+        from ticket_mas
+        where search_key ='tenantId' and search_value=#{tenantId} and createby = #{username}
+    </select>
+
 </mapper>

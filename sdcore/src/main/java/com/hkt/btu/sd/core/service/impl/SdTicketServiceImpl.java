@@ -41,6 +41,8 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Resource
     SdTicketRemarkMapper ticketRemarkMapper;
     @Resource
+    SdTicketFileUploadMapper ticketFileUploadMapper;
+    @Resource
     private SdSymptomMapper symptomMapper;
 
     @Resource(name = "userService")
@@ -454,5 +456,29 @@ public class SdTicketServiceImpl implements SdTicketService {
         bean.setTicketDetId(entity.getTicketDetId());
 
         return bean;
+    }
+
+    @Override
+    public String getNewTicketId() {
+        return ticketMasMapper.getNewTicketId();
+    }
+
+    @Override
+    public void createHktCloudTicket(int ticketId, String tenantId, String createdBy) {
+        ticketMasMapper.createHktCloudTicket(ticketId,createdBy,tenantId);
+    }
+
+    @Override
+    public void insertUploadFile(int ticketId, String fileName, String content) {
+        ticketFileUploadMapper.insertUploadFile(ticketId,fileName,Base64.getDecoder().decode(content));
+    }
+
+    @Override
+    public List<SdTicketMasBean> getHktCloudTicket(String tenantId, String username) {
+        return ticketMasMapper.getTicket4HktCloud(tenantId,username).stream().map(sdTicketMasEntity -> {
+            SdTicketMasBean bean = new SdTicketMasBean();
+            ticketMasBeanPopulator.populate(sdTicketMasEntity, bean);
+            return bean;
+        }).collect(Collectors.toList());
     }
 }

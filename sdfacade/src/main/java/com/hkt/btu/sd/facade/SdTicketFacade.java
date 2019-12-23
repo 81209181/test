@@ -60,4 +60,10 @@ public interface SdTicketFacade {
     TeamSummaryData getTeamSummary();
 
     WfmMakeApptData getMakeApptDataByTicketDetId(Integer ticketDetId);
+
+    String createTicket4hktCloud(HktCloudCaseData cloudCaseData);
+
+    String getNewTicketId();
+
+    List<HktCloudViewData> getHktCloudTicket(String tenantId, String username);
 }
