@@ -36,4 +36,8 @@
     <insert id="createPublicHoliday">
         insert into PUBLIC_HOLIDAY (PUBLIC_HOLIDAY, DESCRIPTION) values (to_date(#{publicHoliday}, 'yyyy-MM-dd'), #{description})
     </insert>
+
+    <select id="checkNextPublicHoliday" resultMap="PublicHolidayEntity">
+        SELECT * FROM PUBLIC_HOLIDAY where trunc(PUBLIC_HOLIDAY) >= trunc(ADD_MONTHS(sysdate, 3), 'mm')
+    </select>
 </mapper>
