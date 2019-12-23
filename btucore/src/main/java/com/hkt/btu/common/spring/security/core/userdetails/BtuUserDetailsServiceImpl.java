@@ -8,8 +8,6 @@ import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,8 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 
 public class BtuUserDetailsServiceImpl implements UserDetailsService {

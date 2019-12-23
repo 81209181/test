@@ -1,7 +1,6 @@
 package com.hkt.btu.common.core.service.constant;
 
-import com.hkt.btu.common.spring.security.exception.NotPermittedLogonException;
-import org.apache.commons.lang3.StringUtils;
+import com.hkt.btu.common.spring.security.exception.ldap.LdapNotPermittedLogonException;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,7 +29,7 @@ public enum LdapEnum {
     }
 
     public static LdapEnum getValue(String domain) {
-        String checkDomain = Optional.ofNullable(domain).orElseThrow(() -> new NotPermittedLogonException(""));
+        String checkDomain = Optional.ofNullable(domain).orElseThrow(() -> new LdapNotPermittedLogonException(""));
         return LDAP_DOMAIN_LIST.get(checkDomain);
     }
 

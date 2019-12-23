@@ -49,6 +49,9 @@
     <alias name="sdCachedFacade" alias="cachedFacade"/>
     <bean id="sdCachedFacade" class="com.hkt.btu.sd.facade.impl.SdCachedFacadeImpl"/>
 
+    <alias name="sdPublicHolidayFacade" alias="publicHolidayFacade"/>
+    <bean id="sdPublicHolidayFacade" class="com.hkt.btu.sd.facade.impl.SdPublicHolidayFacadeImpl"/>
+
     <!-- Populator -->
     <alias name="sdUserDataPopulator" alias="userDataPopulator"/>
     <bean id="sdUserDataPopulator" class="com.hkt.btu.sd.facade.populator.SdUserDataPopulator"/>
@@ -121,4 +124,8 @@
 
     <alias name="hktCloudViewDataPopulator" alias="cloudViewDataPopulator"/>
     <bean class="com.hkt.btu.sd.facade.populator.HktCloudViewDataPopulator" id="hktCloudViewDataPopulator"/>
+
+    <alias name="sdPublicHolidayDataPopulator" alias="publicHolidayDataPopulator"/>
+    <bean id="sdPublicHolidayDataPopulator" class="com.hkt.btu.sd.facade.populator.SdPublicHolidayDataPopulator"/>
+
 </beans>

@@ -6,7 +6,7 @@ import com.hkt.btu.common.core.service.bean.BtuLdapBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.core.service.constant.LdapEnum;
 import com.hkt.btu.common.javax.net.LdapSSLSocketFactory;
-import com.hkt.btu.common.spring.security.exception.NotPermittedLogonException;
+import com.hkt.btu.common.spring.security.exception.ldap.LdapNotPermittedLogonException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -137,7 +137,7 @@ public class BtuLdapServiceImpl implements BtuLdapService {
                 ldapInfo.setLdapAttributeLoginName(LdapEnum.CSL.getBase());
                 break;
             default:
-                throw new NotPermittedLogonException("");
+                throw new LdapNotPermittedLogonException("");
         }
         ldapInfo.setPrincipleName(domain);
         return ldapInfo;
