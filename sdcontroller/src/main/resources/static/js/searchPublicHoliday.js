@@ -147,7 +147,7 @@ function importPublicHoliday() {
     $("#btnPbImportSb").on('click', function () {
         let array = JSON.parse($("#textareaImport").val());
         for (item of array) {
-            if (JSON.stringify(item) == '{}') {
+            if (JSON.stringify(item) === '{}') {
                 showErrorMsg('can not import empty data.');
                 $('.import').modal('hide');
                 return;
