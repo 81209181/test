@@ -11,6 +11,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -103,16 +104,24 @@ public class SdPublicHolidayFacadeImpl implements SdPublicHolidayFacade {
             return false;
         }
 
+        List<SdPublicHolidayData> filterList = data.stream()
+                .filter(pbData -> pbData.getPublicHoliday() != null && pbData.getDescription() != null)
+                .collect(Collectors.toList());
+
+        if (CollectionUtils.isEmpty(filterList)) {
+            return false;
+        }
+
         try {
             List<SdPublicHolidayData> allPublicHolidayList = getAllPublicHolidayList();
 
-            Collection<SdPublicHolidayData> intersection = CollectionUtils.intersection(data, allPublicHolidayList);
-            data.removeAll(intersection);
+            Collection<SdPublicHolidayData> intersection = CollectionUtils.intersection(filterList, allPublicHolidayList);
+            filterList.removeAll(intersection);
             if (CollectionUtils.isEmpty(data)) {
                 return true;
             }
 
-            List<SdPublicHolidayBean> beanList = data.stream().map(pbData -> {
+            List<SdPublicHolidayBean> beanList = filterList.stream().map(pbData -> {
                 SdPublicHolidayBean bean = new SdPublicHolidayBean();
                 publicHolidayDataPopulator.populate(pbData, bean);
                 return bean;
