@@ -145,13 +145,20 @@ function showImportPublicHoliday() {
 
 function importPublicHoliday() {
     $("#btnPbImportSb").on('click', function () {
-        let array = JSON.parse($("#textareaImport").val());
-        for (item of array) {
-            if (JSON.stringify(item) === '{}') {
-                showErrorMsg('can not import empty data.');
-                $('.import').modal('hide');
-                return;
-            }
+        let array = '';
+        try {
+            array = JSON.parse($("#textareaImport").val());
+            for (item of array) {
+                    if (JSON.stringify(item) === '{}') {
+                        showErrorMsg('can not import empty data.');
+                        $('.import').modal('hide');
+                        return;
+                    }
+                }
+        } catch (e) {
+            showErrorMsg('can not import invalid data.');
+            $('.import').modal('hide');
+            return;
         }
         let textarea = JSON.stringify(array);
         $.ajax({
