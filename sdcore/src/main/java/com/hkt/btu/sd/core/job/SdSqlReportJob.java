@@ -52,23 +52,23 @@ public class SdSqlReportJob extends BtuSampleJob {
         }
         File csvFile = csvGenratorService.getCsvFile(metaDataBean);
         if (csvFile != null) {
-            List<SdUserEntity> userList = userMapper.getAllUser();
-            if (CollectionUtils.isEmpty(userList)) {
+            String email = metaDataBean.getEmailTo();
+            SdUserEntity userByEmail = userMapper.getUserByEmail(email);
+            if (userByEmail == null) {
+                LOG.error("User not found.");
                 return;
             }
-            for (SdUserEntity userEntity : userList) {
-                String email = userEntity.getEmail();
-                // Send Email
-                if (StringUtils.isNotEmpty(email)) {
-                    try {
-                        Map<String, Object> dataMap = new HashMap<>(16);
-                        dataMap.put(SdEmailBean.EMAIL_BASIC_RECIPIENT_NAME, userEntity.getName());
-                        emailService.send(SdEmailBean.DEFAULT_EMAIL.TEMPLATE_ID, email, csvFile, dataMap);
-                    } catch (MessagingException e) {
-                        LOG.warn(e);
-                    }
+            // Send Email
+            if (StringUtils.isNotEmpty(email)) {
+                try {
+                    Map<String, Object> dataMap = new HashMap<>(2);
+                    dataMap.put(SdEmailBean.EMAIL_BASIC_RECIPIENT_NAME, userByEmail.getName());
+                    emailService.send(SdEmailBean.DEFAULT_EMAIL.TEMPLATE_ID, email, csvFile, dataMap);
+                } catch (MessagingException e) {
+                    LOG.warn(e);
                 }
             }
         }
     }
 }
+
