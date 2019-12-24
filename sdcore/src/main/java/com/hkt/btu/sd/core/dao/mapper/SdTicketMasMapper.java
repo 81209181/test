@@ -64,4 +64,9 @@ public interface SdTicketMasMapper {
     StatusSummaryEntity getSumStatusByTicketType(@Param("owningRole")String owningRole);
 
 
+    String getNewTicketId();
+
+    void createHktCloudTicket(@Param("ticketId")int ticketId, @Param("createBy")String createBy, @Param("tenantId")String tenantId);
+
+    List<SdTicketMasEntity> getTicket4HktCloud(@Param("tenantId") String tenantId, @Param("username")String username);
 }
