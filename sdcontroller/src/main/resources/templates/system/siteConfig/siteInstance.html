@@ -57,7 +57,7 @@
 
     <button th:id="btnReloadSiteConfig" type="submit" class="btn btn-lg btn-primary mb-2"><i class="fas fa-sync"></i> Reload</button>
 
-    <script type="text/javascript" th:src="@{/js/siteConfig.js}"></script>
+    <script type="text/javascript" th:src="@{/js/siteConfig.js(v=${session.version})}"></script>
 </div>
 </body>
 </html>

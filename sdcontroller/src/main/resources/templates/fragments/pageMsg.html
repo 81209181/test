@@ -36,7 +36,7 @@
             /*]]>*/
         </script>
 
-        <script type="text/javascript" th:src="@{/js/pageMsg.js}"></script>
+        <script type="text/javascript" th:src="@{/js/pageMsg.js(v=${session.version})}"></script>
     </div>
     <div class="modal fade" id="session-expire-warning-modal" aria-hidden="true" data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">

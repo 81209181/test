@@ -51,7 +51,7 @@
             <button type="button" class="btn btn-lg btn-primary float-right mr-sm-2" id="btnSubmit"><i class="far fa-save"></i> Submit</button>
         </div>
     </form>
-    <script type="text/javascript" th:src="@{/js/editSymptomMapping.js}"></script>
+    <script type="text/javascript" th:src="@{/js/editSymptomMapping.js(v=${session.version})}"></script>
 
 </div>
 </body>

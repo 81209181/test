@@ -33,7 +33,7 @@
         </tr>
         </tfoot>
     </table>
-    <script type="text/javascript" th:src="@{/js/cachedObject.js}"></script>
+    <script type="text/javascript" th:src="@{/js/cachedObject.js(v=${session.version})}"></script>
 </div>
 </body>
 </html>

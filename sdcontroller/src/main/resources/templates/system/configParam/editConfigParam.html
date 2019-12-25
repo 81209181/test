@@ -47,7 +47,7 @@
         </div>
         <button type="button" class="btn btn-lg btn-primary float-right mr-sm-2" id="btnUpdateConfigParam"><i class="far fa-save"></i> Save</button>
     </form>
-    <script type="text/javascript" th:src="@{/js/editConfigParam.js}"></script>
+    <script type="text/javascript" th:src="@{/js/editConfigParam.js(v=${session.version})}"></script>
 </div>
 </body>
 </html>

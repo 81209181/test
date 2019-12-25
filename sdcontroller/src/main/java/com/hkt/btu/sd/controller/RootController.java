@@ -7,12 +7,14 @@ import com.hkt.btu.sd.facade.data.ResetPwdFormData;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 
@@ -21,6 +23,9 @@ import javax.validation.Valid;
 @RequestMapping(value = "/")
 public class RootController {
     private static final Logger LOG = LogManager.getLogger(RootController.class);
+
+    @Value("${project.buildtime}")
+    private String projectBuildTime;
 
     @Resource(name = "userFacade")
     SdUserFacade sdUserFacade;
@@ -33,14 +38,14 @@ public class RootController {
     @GetMapping(value = "login")
     public String login(final Model model,
                         @RequestParam(required = false) String logout,
-                        @RequestParam(required = false) String error) {
+                        @RequestParam(required = false) String error, HttpSession session) {
         if (logout != null) {
             model.addAttribute(PageMsgController.INFO_MSG, "You have been logged out.");
         }
         if (error != null) {
             model.addAttribute(PageMsgController.ERROR_MSG, LOGIN_ERROR.getValue(error));
         }
-
+        session.setAttribute("version",projectBuildTime);
         return "login";
     }
 
