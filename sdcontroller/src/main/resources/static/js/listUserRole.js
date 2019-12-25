@@ -1,13 +1,13 @@
 $(document).ready(function() {
+    google.charts.load('current', {packages:["orgchart"]});
+    $.get('/admin/manage-role/getRole4Chart',function(res){
+        setTimeout(function(){google.charts.setOnLoadCallback(drawChart(res))},2000);
+    })
+
     // click event
     $("#btnReloadUserRole").on("click", function (){
         ajaxReload();
     });
-
-    google.charts.load('current', {packages:["orgchart"]});
-    $.get('/admin/manage-role/getRole4Chart',function(res){
-        google.charts.setOnLoadCallback(drawChart(res));
-    })
 
     $('#userGroupTable').DataTable({
         ajax: {
