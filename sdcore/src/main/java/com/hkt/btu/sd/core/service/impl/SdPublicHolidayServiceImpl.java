@@ -96,6 +96,10 @@ public class SdPublicHolidayServiceImpl implements SdPublicHolidayService {
             return entity;
         }).collect(Collectors.toList());
 
-        sdPublicHolidayMapper.insertPublicHoliday(entityList);
+        if (CollectionUtils.isEmpty(entityList)) {
+            return;
+        } else {
+            sdPublicHolidayMapper.insertPublicHoliday(entityList);
+        }
     }
 }

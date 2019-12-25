@@ -12,14 +12,18 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
 public class SdCsvGenratorServiceImpl implements SdCsvGenratorService {
 
-    public static final String CSV_SUFFIX = ".csv";
+    private static final String CSV_SUFFIX = ".csv";
 
     private static final Logger LOG = LogManager.getLogger(SdCsvGenratorServiceImpl.class);
+
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd_HHmm");
 
     @Resource(name = "csvGenrator")
     BtuCSVGenrator csvGenrator;
@@ -43,12 +47,15 @@ public class SdCsvGenratorServiceImpl implements SdCsvGenratorService {
     }
 
     private String getFilePath(String exportTo, String reportName) {
-        String filePath = "";
-        if (reportName.contains(CSV_SUFFIX)) {
-            filePath = exportTo + File.separator + reportName;
-        } else {
-            filePath = exportTo + File.separator + reportName + CSV_SUFFIX;
-        }
+        // /opt/report/${reportName}/${reportName}_${yyyymmdd_hh24miss}
+        String formatLocalDateTime = getFormatLocalDateTime();
+        String filePath = exportTo + File.separator + reportName + File.separator + reportName + formatLocalDateTime + CSV_SUFFIX;
         return filePath;
+    }
+
+    private String getFormatLocalDateTime() {
+        final LocalDateTime NOW = LocalDateTime.now();
+        String formatLocalDateTime = NOW.format(FORMATTER);
+        return formatLocalDateTime;
     }
 }

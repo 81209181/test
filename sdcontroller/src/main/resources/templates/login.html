@@ -30,9 +30,34 @@
 <script>
     $('#password').hideShowPassword(false, 'focus', {
         toggle: {
-            className: 'my-toggle'
+            className: 'my-toggle',
+            attr: {
+                role: 'button',
+                'aria-label': 'Show Password',
+                title: 'Show Password',
+                tabIndex: 0,
+                id : 'showHidePwdBtn'
+            }
         }
     });
+
+
+    let tid;
+    let btn = window.document.getElementById("showHidePwdBtn");
+    btn.onclick = function(e){};
+    btn.onmousedown = function(e){
+        tid = setInterval(function(){
+            $('#password').hideShowPassword(true);
+        },500);
+    };
+    btn.onmouseup = function(e){
+        $('#password').hideShowPassword(false);
+        clearInterval(tid);
+    }
+    btn.onmouseout = function(e){
+        $('#password').hideShowPassword(false);
+        clearInterval(tid)
+    }
 </script>
 </div>
 </body>

@@ -145,12 +145,28 @@ function showImportPublicHoliday() {
 
 function importPublicHoliday() {
     $("#btnPbImportSb").on('click', function () {
+        let array = '';
+        try {
+            array = JSON.parse($("#textareaImport").val());
+            for (item of array) {
+                    if (JSON.stringify(item) === '{}') {
+                        showErrorMsg('can not import empty data.');
+                        $('.import').modal('hide');
+                        return;
+                    }
+                }
+        } catch (e) {
+            showErrorMsg('can not import invalid data.');
+            $('.import').modal('hide');
+            return;
+        }
+        let textarea = JSON.stringify(array);
         $.ajax({
             type: 'POST',
             dataType: 'json',
             contentType: 'application/json;charset=utf-8',
             url : '/system/public-holiday/ajax-add-public-holiday',
-            data: JSON.stringify(JSON.parse($("#textareaImport").val())),
+            data: textarea,
             success: function (res) {
                 if (res.success) {
                     $('.import').modal('hide');

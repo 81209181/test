@@ -268,7 +268,7 @@ public class SystemController {
         if (result) {
             return ResponseEntity.ok(SimpleAjaxResponse.of(true, "insert successful."));
         } else {
-            return ResponseEntity.ok(SimpleAjaxResponse.of(false, "insert failed."));
+            return ResponseEntity.badRequest().body("insert failed.");
         }
     }
 
