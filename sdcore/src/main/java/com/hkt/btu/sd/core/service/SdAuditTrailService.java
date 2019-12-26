@@ -20,4 +20,8 @@ public interface SdAuditTrailService extends BtuAuditTrailService {
 
     // house keep
     void cleanAuditTrail();
+
+    void insertViewApiAuthAuditTrail(String apiName);
+
+    void insertRegenApiAuthAuditTrail(String apiName);
 }

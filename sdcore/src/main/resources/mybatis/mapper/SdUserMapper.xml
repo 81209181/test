@@ -220,4 +220,14 @@
             </choose>
         </where>
     </select>
+
+    <select id="getApiUser" resultMap="SdUserEntity">
+        SELECT up.*
+        FROM USER_PROFILE up
+        INNER JOIN USER_USER_ROLE uur
+        ON up.USER_ID = uur.USER_ID
+        INNER JOIN USER_ROLE ur
+        ON ur.ROLE_ID = uur.ROLE_ID
+        AND ur.PARENT_ROLE_ID = 'API'
+    </select>
 </mapper>
