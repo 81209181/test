@@ -45,7 +45,7 @@ insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TY
 values ('API_NORARS', 'password', 'g$Hw0#MG-3', 'String', current_timestamp, 0, current_timestamp, 0);
 
 Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
-values ('API_WFM','url','https://yecvm-wfmuat01.pccw.com/wfm','String',current_timestamp,0,current_timestamp,0);
+values ('API_WFM','url','https://yecvm-wfmvt01.pccw.com/wfm','String',current_timestamp,0,current_timestamp,0);
 Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
 values ('API_WFM','userName','sd','String',current_timestamp,0,current_timestamp,0);
 Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
