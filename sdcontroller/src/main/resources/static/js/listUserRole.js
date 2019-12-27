@@ -1,8 +1,6 @@
 $(document).ready(function() {
     google.charts.load('current', {packages:["orgchart"]});
-    $.get('/admin/manage-role/getRole4Chart',function(res){
-        setTimeout(function(){google.charts.setOnLoadCallback(drawChart(res))},2000);
-    })
+    google.charts.setOnLoadCallback(drawChart())
 
     // click event
     $("#btnReloadUserRole").on("click", function (){
@@ -41,13 +39,16 @@ $(document).ready(function() {
         } ]
     });
 });
- function drawChart(rowData) {
-    var data = new google.visualization.DataTable();
-    data.addColumn('string', 'name');
-    data.addColumn('string', 'parent');
-    data.addRows(rowData);
-    var chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
-    chart.draw(data,{'allowHtml':true});
+ function drawChart() {
+    $.get('/admin/manage-role/getRole4Chart',function(res){
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'name');
+        data.addColumn('string', 'parent');
+        data.addRows(res);
+        var chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
+        chart.draw(data,{'allowHtml':true});
+    })
+
 }
 
 
