@@ -50,9 +50,7 @@ function drawChart() {
     data.addRows(JSON.parse(chartDate));
     var chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
     chart.draw(data,{'allowHtml':true});
-    google.charts.load('current', {packages:["orgchart"]});
-    google.charts.setOnLoadCallback(drawChart());
-});
+}
 
 
 function ajaxReload() {
