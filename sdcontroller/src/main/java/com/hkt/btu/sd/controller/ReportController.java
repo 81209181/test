@@ -186,14 +186,18 @@ public class ReportController {
     @GetMapping("/downLoadReport")
     public ResponseEntity<?> downLoadReport(String reportId, String reportName) {
         org.springframework.core.io.Resource resource = sqlReportFacade.downLoadReport(reportId, reportName);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment;filename=\"%s", reportName));
-        ResponseEntity<Object> responseEntity = ResponseEntity.ok()
-                .headers(headers)
-                .contentType(MediaType.parseMediaType(MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE))
-                .body(resource);
+        if (resource != null) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment;filename=\"%s", reportName));
+            ResponseEntity<Object> responseEntity = ResponseEntity.ok()
+                    .headers(headers)
+                    .contentType(MediaType.parseMediaType(MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE))
+                    .body(resource);
 
-        return responseEntity;
+            return responseEntity;
+        } else {
+            return ResponseEntity.badRequest().body("download failed.");
+        }
     }
 
 }
