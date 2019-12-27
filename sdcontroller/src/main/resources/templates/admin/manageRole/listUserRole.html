@@ -4,13 +4,16 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>List User Role</title>
+    <style>
+        #chart_div table {
+			border-collapse: separate;
+		}
+    </style>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
     <h1>User Role List</h1>
-    <div class="form-row">
-        <div id="chart_div" style="width:100%"></div>
-    </div>
+    <div id="chart_div" class="form-row"></div>
     <table id="userGroupTable" class="display">
         <thead>
             <tr>
