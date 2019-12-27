@@ -76,6 +76,12 @@ public class SdAuditTrailServiceImpl extends BtuAuditTrailServiceImpl implements
         insertAuditTrail(SdAuditTrailEntity.ACTION.RESET_NGN3_ACCOUNT, details);
     }
 
+    @Override
+    public void insertDownLoadReportAuditTrail(String reportName, String userId) {
+        String details = String.format("reportName: %s", reportName);
+        insertAuditTrail(userId,SdAuditTrailEntity.ACTION.REPORT, details);
+    }
+
     public void insertLoginAuditTrail(BtuUser btuUser) {
         insertAuditTrail(btuUser, SdAuditTrailEntity.ACTION.LOGIN, "SUCCESS");
     }

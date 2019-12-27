@@ -13,6 +13,7 @@ public class SdAuditTrailEntity extends BaseEntity {
         public static final String VIEW_TICKET = "VIEW_TICKET";
         public static final String GET_NGN3_ADMIN_ACCOUNT = "NGN3_ADMIN";
         public static final String RESET_NGN3_ACCOUNT = "NGN3_ACCT";
+        public static final String REPORT = "REPORT";
     }
 
     private Integer auditId;
