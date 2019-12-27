@@ -23,7 +23,7 @@ public interface SdSqlReportMapper {
     void createSqlReport(SdSqlReportEntity entity);
 
     void updateReportData(@Param("reportId") String reportId, @Param("reportName") String reportName, @Param("sql") String sql,
-                         @Param("cronExp") String cronExp, @Param("exportTo") String exportTo, @Param("emailTo") String emailTo,
+                         @Param("cronExp") String cronExp, @Param("emailTo") String emailTo,
                          @Param("modifyBy") String modifyBy, @Param("status") String status, @Param("remarks") String remarks);
 
     int updateReportStatus(@Param("reportId") String reportId, @Param("status") String status, @Param("modifyby") String modifyby);

@@ -1,16 +1,14 @@
 package com.hkt.btu.sd.facade.impl;
 
 import com.hkt.btu.common.core.exception.InvalidInputException;
-import com.hkt.btu.sd.core.service.SdInputCheckService;
+import com.hkt.btu.sd.core.service.SdAuditTrailService;
 import com.hkt.btu.sd.core.service.SdSchedulerService;
 import com.hkt.btu.sd.core.service.SdSqlReportProfileService;
+import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdCronJobInstBean;
 import com.hkt.btu.sd.core.service.bean.SdSqlReportBean;
 import com.hkt.btu.sd.facade.SdSqlReportFacade;
-import com.hkt.btu.sd.facade.data.RequestReportData;
-import com.hkt.btu.sd.facade.data.ResponseReportData;
-import com.hkt.btu.sd.facade.data.SdCronJobInstData;
-import com.hkt.btu.sd.facade.data.SdSqlReportData;
+import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.populator.SdCronJobInstDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdSqlReportDataPopulator;
 import org.apache.commons.lang3.StringUtils;
@@ -19,13 +17,21 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.quartz.CronExpression;
 import org.quartz.SchedulerException;
+import org.springframework.core.io.UrlResource;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
 
@@ -42,6 +48,12 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
 
     @Resource(name = "cronJobInstDataPopulator")
     SdCronJobInstDataPopulator sdCronJobInstDataPopulator;
+
+    @Resource(name = "auditTrailService")
+    SdAuditTrailService auditTrailService;
+
+    @Resource(name = "userService")
+    SdUserService userService;
 
     @Override
     public List<SdSqlReportData> getAllReportData() {
@@ -168,7 +180,7 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
         try {
             checkReportData(data);
             String reportName = reportService.updateReport(data.getReportId(), data.getReportName(), data.getCronExp(), data.getStatus(),
-                    data.getSql(), data.getExportTo(), data.getEmailTo(), data.getRemarks());
+                    data.getSql(), data.getEmailTo(), data.getRemarks());
             sdSchedulerService.pauseJob(SdSqlReportBean.KEY_GROUP, reportName);
             sdSchedulerService.destroyJob(SdSqlReportBean.KEY_GROUP, reportName);
             sdSchedulerService.scheduleReportJob(data.getReportName());
@@ -228,6 +240,65 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
         return null;
     }
 
+    @Override
+    public List<SdReportHistoryData> getFileList(String reportId) {
+        String reportPath = getReportPath(reportId);
+        if (StringUtils.isEmpty(reportPath)) {
+            return null;
+        }
+        try (Stream<Path> paths = Files.walk(Paths.get(reportPath))) {
+            List<SdReportHistoryData> dataList = paths.filter(Files::isRegularFile)
+                    .map(Path::getFileName)
+                    .map(Path::toString)
+                    .map(reportName -> {
+                        SdReportHistoryData historyData = new SdReportHistoryData();
+                        historyData.setReportId(reportId);
+                        historyData.setReportName(reportName);
+                        return historyData;
+                    }).collect(Collectors.toList());
+            return dataList;
+        } catch (IOException e) {
+            LOG.error(e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public org.springframework.core.io.Resource downLoadReport(String reportId, String reportName) {
+        final String folderPath = getReportPath(reportId);
+        if (StringUtils.isEmpty(folderPath)) {
+            return null;
+        }
+        String reportPath = folderPath + File.separator + reportName;
+        File file = new File(reportPath);
+        if (file.exists()) {
+            final String userId = userService.getCurrentSdUserBean().getUserId();
+            auditTrailService.insertDownLoadReportAuditTrail(reportName, userId);
+            Path path = Paths.get(reportPath);
+            try {
+                return new UrlResource(path.toUri());
+            } catch (MalformedURLException e) {
+                LOG.error(e.getMessage());
+            }
+        }
+        return null;
+    }
+
+    private String getReportPath(String reportId) {
+        SdSqlReportBean bean = reportService.getSqlReportDataByReportId(reportId);
+        if (bean == null) {
+            return null;
+        }
+
+        String exportTo = bean.getExportTo();
+        String reportName = bean.getReportName();
+        if (StringUtils.isEmpty(exportTo) && StringUtils.isEmpty(reportName)) {
+            return null;
+        }
+
+        String path = exportTo + File.separator + reportName;
+        return path;
+    }
 
     private void checkReportData(RequestReportData data) throws InvalidInputException {
         if (StringUtils.isEmpty(data.getReportName())) {
