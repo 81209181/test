@@ -63,4 +63,6 @@ public interface SdUserMapper {
                                        String teamHead, String roleId);
 
     Integer countTeamHeadUser(String teamHead, String roleId);
+
+    List<SdUserEntity> getApiUser();
 }

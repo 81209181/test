@@ -2,7 +2,7 @@
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('SITE', 'givenDomain', 'yecvm-sasit01.pccw.com', 'String', sysdate, 0, sysdate, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
-values ('SITE', 'cronjobHostname', 'jecvm-sasit01', 'String', current_timestamp, 0, current_timestamp, 0);
+values ('SITE', 'cronjobHostname', 'yecvm-sasit01', 'String', current_timestamp, 0, current_timestamp, 0);
 
 -- oldTable.API_AUTHORIZATION (for ref)
 -- basic,bes,jsa9u3vhs1
@@ -40,7 +40,7 @@ values ('API_NORARS', 'password', 'g$Hw0#MG-3', 'String', current_timestamp, 0, 
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('API_ITSM_RESTFUL', 'systemName', 'ITSM_RESTFUL', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
-values ('API_ITSM_RESTFUL', 'url', 'https://10.111.7.32', 'String', current_timestamp, 0, current_timestamp, 0);
+values ('API_ITSM_RESTFUL', 'url', 'https://jecvm-itsmsit01.pccw.com/cloudrs', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('API_ITSM_RESTFUL', 'userName', 'ssa', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
@@ -49,10 +49,10 @@ values ('API_ITSM_RESTFUL', 'password', 'sa2018', 'String', current_timestamp, 0
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('API_ITSM', 'systemName', 'ITSM', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
-values ('API_ITSM', 'url', 'https://10.111.7.32/itsm', 'String', current_timestamp, 0, current_timestamp, 0);
+values ('API_ITSM', 'url', 'https://jecvm-itsmsit01.pccw.com/itsm', 'String', current_timestamp, 0, current_timestamp, 0);
 -- WFM,https://10.111.6.34/wfm,sd,Ki6/rEDs47*^5,,,,,
 Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
-values ('API_WFM','url','https://10.111.6.34/wfm','String',current_timestamp,0,current_timestamp,0);
+values ('API_WFM','url','https://yecvm-wfmsit01.pccw.com/wfm','String',current_timestamp,0,current_timestamp,0);
 Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
 values ('API_WFM','userName','sd','String',current_timestamp,0,current_timestamp,0);
 Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)

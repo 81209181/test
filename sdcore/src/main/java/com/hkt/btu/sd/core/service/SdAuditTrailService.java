@@ -23,4 +23,8 @@ public interface SdAuditTrailService extends BtuAuditTrailService {
 
     //download Report
     void insertDownLoadReportAuditTrail(String reportName, String userId);
+
+    void insertViewApiAuthAuditTrail(String apiName);
+
+    void insertRegenApiAuthAuditTrail(String apiName);
 }

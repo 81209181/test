@@ -37,4 +37,14 @@ public class SdAuditTrailFacadeImpl implements SdAuditTrailFacade {
     public void insertResetNgn3Account(String dn) {
         sdAuditTrailService.insertResetNgn3Account(dn);
     }
+
+    @Override
+    public void insertViewApiAuthAuditTrail(String apiName) {
+        sdAuditTrailService.insertViewApiAuthAuditTrail(apiName);
+    }
+
+    @Override
+    public void insertRegenApiAuthAuditTrail(String apiName) {
+        sdAuditTrailService.insertRegenApiAuthAuditTrail(apiName);
+    }
 }

@@ -50,4 +50,6 @@ public interface SdUserService extends BtuUserService {
     Page<SdUserBean> searchUser(Pageable pageable, String userId, String email, String name);
 
     Page<SdUserBean> getTeamHeadUser(Pageable pageable, String teamHead);
+
+    List<SdUserBean> getApiUser();
 }

@@ -3,10 +3,9 @@ package com.hkt.btu.sd.controller;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
-import com.hkt.btu.sd.facade.SdConfigParamFacade;
-import com.hkt.btu.sd.facade.SdJobFacade;
-import com.hkt.btu.sd.facade.SdPublicHolidayFacade;
-import com.hkt.btu.sd.facade.SdSiteConfigFacade;
+import com.hkt.btu.sd.core.service.SdApiService;
+import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
+import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.data.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.security.GeneralSecurityException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +35,12 @@ public class SystemController {
     SdJobFacade sdJobFacade;
     @Resource(name = "publicHolidayFacade")
     SdPublicHolidayFacade sdPublicHolidayFacade;
+    @Resource(name = "userFacade")
+    SdUserFacade userFacade;
+    @Resource(name = "apiService")
+    SdApiService apiService;
+    @Resource(name = "auditTrailFacade")
+    SdAuditTrailFacade sdAuditTrailFacade;
 
 
     @GetMapping({"", "/", "/index"})
@@ -291,6 +297,42 @@ public class SystemController {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         } else {
             return ResponseEntity.badRequest().body("create failed.");
+        }
+    }
+
+    @GetMapping("/manage-api")
+    public String ListApiUser(){
+        return "system/manageApi/listApiUser";
+    }
+
+    @GetMapping("/manage-api/ajax-list-api-user")
+    public ResponseEntity<?> ajaxListApiUser(){
+        List<SdUserData> dataList = userFacade.getApiUser();
+
+        if (dataList == null) {
+            return ResponseEntity.badRequest().body("user list not found.");
+        } else {
+            return ResponseEntity.ok(dataList);
+        }
+    }
+
+    @PostMapping("/manage-api/getAuthorization")
+    public ResponseEntity<?> getAuthorization(String apiName) {
+        sdAuditTrailFacade.insertViewApiAuthAuditTrail(apiName);
+        SiteInterfaceBean siteInterfaceBean = apiService.getSiteInterfaceBean(apiName);
+        String authPlainText = String.format("%s:%s", siteInterfaceBean.getUserName(), siteInterfaceBean.getPassword());
+        String encodedAuth = Base64.getEncoder().encodeToString(authPlainText.getBytes());
+        return ResponseEntity.ok(String.format("Basic %s", encodedAuth));
+    }
+
+    @PostMapping("/manage-api/regenerateKey")
+    public ResponseEntity<?> regenerateKey(String apiName) {
+        try {
+            sdAuditTrailFacade.insertRegenApiAuthAuditTrail(apiName);
+            apiService.reloadCached(apiName);
+            return ResponseEntity.ok(SimpleAjaxResponse.of());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Re-generate failed.");
         }
     }
 }

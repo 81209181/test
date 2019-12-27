@@ -536,4 +536,18 @@ public class SdUserFacadeImpl implements SdUserFacade {
 
         return new PageData<>(dataList, pageBean.getPageable(), pageBean.getTotalElements());
     }
+
+    @Override
+    public List<SdUserData> getApiUser() {
+        List<SdUserBean> beanList = sdUserService.getApiUser();
+        List<SdUserData> dataList = new LinkedList<>();
+        if (!CollectionUtils.isEmpty(beanList)) {
+            for (SdUserBean bean : beanList) {
+                SdUserData data = new SdUserData();
+                userDataPopulator.populate(bean, data);
+                dataList.add(data);
+            }
+        }
+        return dataList;
+    }
 }

@@ -2,7 +2,7 @@
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('SITE', 'givenDomain', 'yecvm-sauat01.pccw.com', 'String', sysdate, 0, sysdate, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
-values ('SITE', 'cronjobHostname', 'jecvm-sauat01', 'String', current_timestamp, 0, current_timestamp, 0);
+values ('SITE', 'cronjobHostname', 'yecvm-sauat01', 'String', current_timestamp, 0, current_timestamp, 0);
 
 -- oldTable.API_AUTHORIZATION (for ref)
 -- basic,bes,jsa9u3vhs1
@@ -16,14 +16,14 @@ values ('SITE', 'cronjobHostname', 'jecvm-sauat01', 'String', current_timestamp,
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('API_ITSM_RESTFUL', 'systemName', 'ITSM_RESTFUL', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
-values ('API_ITSM_RESTFUL', 'url', 'https://10.111.7.30:8443', 'String', current_timestamp, 0, current_timestamp, 0);
+values ('API_ITSM_RESTFUL', 'url', 'https://jecvm-itsmuat01.pccw.com/cloudrs', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('API_ITSM_RESTFUL', 'userName', 'ssa', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('API_ITSM_RESTFUL', 'password', 'sa2018', 'String', current_timestamp, 0, current_timestamp, 0);
 -- WFM,https://10.111.7.31:8443/wfm,sd,Ki6/rEDs47*^5,,,,,
 Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
-values ('API_WFM','url','https://10.111.7.31:8443/wfm','String',current_timestamp,0,current_timestamp,0);
+values ('API_WFM','url','https://yecvm-wfmuat01.pccw.com/wfm','String',current_timestamp,0,current_timestamp,0);
 Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
 values ('API_WFM','userName','sd','String',current_timestamp,0,current_timestamp,0);
 Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
@@ -32,7 +32,7 @@ values ('API_WFM','password','Ki6/rEDs47*^5','String',current_timestamp,0,curren
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('API_ITSM', 'systemName', 'ITSM', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
-values ('API_ITSM', 'url', 'https://10.111.7.30:8443/itsm', 'String', current_timestamp, 0, current_timestamp, 0);
+values ('API_ITSM', 'url', 'https://jecvm-itsmuat01.pccw.com/itsm', 'String', current_timestamp, 0, current_timestamp, 0);
 -- BES
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('API_BES', 'systemName', 'BES', 'String', current_timestamp, 0, current_timestamp, 0);
@@ -52,7 +52,7 @@ values ('API_BES', 'channelType', '613', 'String', current_timestamp, 0, current
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('API_NORARS', 'systemName', 'NORARS', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
-values ('API_NORARS', 'url', 'https://10.252.15.139', 'String', current_timestamp, 0, current_timestamp, 0);
+values ('API_NORARS', 'url', 'https://10.252.15.83', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('API_NORARS', 'userName', 'sd', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
