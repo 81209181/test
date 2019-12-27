@@ -178,6 +178,15 @@ function createSqlReportTable() {
                 targets: 9,
                 data: "reportId",
                 render: function (reportId, type, row, meta) {
+                    var ctx = $("meta[name='_ctx']").attr("content");
+                    var link = ctx + "/system/report/edit-sql-report?reportId=" + reportId;
+                    return "<button type='button' class='btn btn-primary' onclick='showHistoryModal(\"" + reportId + "\")'><i class='fas fa-search'></i>Report History</button>";
+                }
+            },
+            {
+                targets: 10,
+                data: "reportId",
+                render: function (reportId, type, row, meta) {
                     return "<button type='button' class='btn btn-danger' onclick='ajaxDeleteReport(\"" + reportId + "\")' ><i class=\"fas fa-times-circle\"></i> Delete</button>";
                 }
             }
@@ -268,4 +277,36 @@ function ajaxDeleteReport(reportId) {
             showErrorMsg("Cannot delete report.");
         }
     });
+}
+
+function showHistoryModal(reportId) {
+    clearAllMsg();
+    $("#reportHistoryTable").DataTable({
+        searching: true,
+        destroy: true,
+        ajax: {
+            type: "GET",
+            contentType: "application/json",
+            url: "/system/report/history?reportId=" + reportId,
+            dataSrc: '',
+            error: function () {
+                $(".history").modal('hide');
+                showErrorMsg("Cannot load report list.");
+            }
+        },
+        columns : [
+            {data: 'reportName'}
+        ],
+        columnDefs: [
+            {
+                targets: 1,
+                render: function (data, type, row, meta) {
+                    let ctx = $("meta[name='_ctx']").attr("content");
+                    let link = ctx + "/system/report/downLoadReport?reportName=" + row['reportName'] + "&reportId=" + row['reportId'];
+                    return '<a href=' + link + '><button class="btn btn-info">DownLoad</button></a>';
+                }
+            }
+        ]
+    });
+    $(".history").modal('show');
 }
