@@ -35,21 +35,24 @@ $(document).ready(function() {
             }
         } ]
     });
+});
+google.charts.load('current', {packages:["orgchart"]});
+google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+    var chartDate = $.ajax({
+        url:'/admin/manage-role/getRole4Chart',
+        async: false
+    }).responseText;
+    var data = new google.visualization.DataTable(chartDate);
+    data.addColumn('string', 'name');
+    data.addColumn('string', 'parent');
+    data.addRows(JSON.parse(chartDate));
+    var chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
+    chart.draw(data,{'allowHtml':true});
     google.charts.load('current', {packages:["orgchart"]});
     google.charts.setOnLoadCallback(drawChart());
 });
- function drawChart() {
-    $.get('/admin/manage-role/getRole4Chart',function(res){
-        setTimeout(function(){
-            var data = new google.visualization.DataTable();
-            data.addColumn('string', 'name');
-            data.addColumn('string', 'parent');
-            data.addRows(res);
-            var chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
-            chart.draw(data,{'allowHtml':true});
-        },3000);
-    })
-}
 
 
 function ajaxReload() {
