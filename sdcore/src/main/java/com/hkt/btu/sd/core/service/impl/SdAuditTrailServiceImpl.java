@@ -76,6 +76,12 @@ public class SdAuditTrailServiceImpl extends BtuAuditTrailServiceImpl implements
         insertAuditTrail(SdAuditTrailEntity.ACTION.RESET_NGN3_ACCOUNT, details);
     }
 
+    @Override
+    public void insertDownLoadReportAuditTrail(String reportName, String userId) {
+        String details = String.format("reportName: %s", reportName);
+        insertAuditTrail(userId,SdAuditTrailEntity.ACTION.REPORT, details);
+    }
+
     public void insertLoginAuditTrail(BtuUser btuUser) {
         insertAuditTrail(btuUser, SdAuditTrailEntity.ACTION.LOGIN, "SUCCESS");
     }
@@ -101,5 +107,15 @@ public class SdAuditTrailServiceImpl extends BtuAuditTrailServiceImpl implements
         // delete
         int deleteCount = sdAuditTrailMapper.cleanAuditTrail(cutoffDate);
         LOG.info("Deleted {} row(s) of audit trail.", deleteCount);
+    }
+
+    @Override
+    public void insertViewApiAuthAuditTrail(String apiName) {
+        insertAuditTrail(SdAuditTrailEntity.ACTION.VIEW_API_AUTH, apiName);
+    }
+
+    @Override
+    public void insertRegenApiAuthAuditTrail(String apiName) {
+        insertAuditTrail(SdAuditTrailEntity.ACTION.REGEN_API_AUTH, apiName);
     }
 }

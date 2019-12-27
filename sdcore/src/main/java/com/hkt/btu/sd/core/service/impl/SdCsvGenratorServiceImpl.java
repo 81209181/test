@@ -49,8 +49,14 @@ public class SdCsvGenratorServiceImpl implements SdCsvGenratorService {
     private String getFilePath(String exportTo, String reportName) {
         // /opt/report/${reportName}/${reportName}_${yyyymmdd_hh24miss}
         String formatLocalDateTime = getFormatLocalDateTime();
-        String filePath = exportTo + File.separator + reportName + File.separator + reportName + formatLocalDateTime + CSV_SUFFIX;
-        return filePath;
+        String filePath = exportTo + File.separator + reportName;
+        File dir = new File(filePath);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        String fileName = File.separator + reportName + "_" +formatLocalDateTime + CSV_SUFFIX;
+        String realPath = filePath + fileName;
+        return realPath;
     }
 
     private String getFormatLocalDateTime() {
