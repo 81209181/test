@@ -15,10 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.List;
 
 @Controller
@@ -175,11 +171,7 @@ public class ReportController {
     @GetMapping("/history")
     public ResponseEntity<?> ajaxListFile(@RequestParam String reportId) {
         List<SdReportHistoryData> fileList = sqlReportFacade.getFileList(reportId);
-        if (CollectionUtils.isEmpty(fileList)) {
-            return ResponseEntity.badRequest().body("get file list failed.");
-        } else {
-            return ResponseEntity.ok(fileList);
-        }
+        return ResponseEntity.ok(fileList);
     }
 
     @ResponseBody
@@ -199,5 +191,4 @@ public class ReportController {
             return ResponseEntity.badRequest().body("download failed.");
         }
     }
-
 }
