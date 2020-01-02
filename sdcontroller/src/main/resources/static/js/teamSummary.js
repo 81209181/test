@@ -122,5 +122,9 @@ function getMyTeamTicketData(){
 
 function getCurrentMonthFirst(){
     let now = new Date();
-    return now.getFullYear() + '-' + (now.getMonth()+1) + '-01';
+    let monthVal = now.getMonth()+1;
+    if(monthVal.toString().length<2){
+        monthVal = '0'+monthVal;
+    }
+    return now.getFullYear() + '-' + monthVal + '-01';
 }
