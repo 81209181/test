@@ -2,9 +2,9 @@ package com.hkt.btu.sd.core.dao.entity;
 
 public class StatusSummaryEntity {
 
-    private String status;
-    private Integer queryCnt;
-    private Integer jobCnt;
+    private String status = "";
+    private int queryCnt;
+    private int jobCnt;
 
     public String getStatus() {
         return status;
@@ -14,19 +14,19 @@ public class StatusSummaryEntity {
         this.status = status;
     }
 
-    public Integer getQueryCnt() {
+    public int getQueryCnt() {
         return queryCnt;
     }
 
-    public void setQueryCnt(Integer queryCnt) {
+    public void setQueryCnt(int queryCnt) {
         this.queryCnt = queryCnt;
     }
 
-    public Integer getJobCnt() {
+    public int getJobCnt() {
         return jobCnt;
     }
 
-    public void setJobCnt(Integer jobCnt) {
+    public void setJobCnt(int jobCnt) {
         this.jobCnt = jobCnt;
     }
 }

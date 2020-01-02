@@ -7,8 +7,23 @@ import com.hkt.btu.sd.core.service.bean.TeamSummaryBean;
 public class SdTeamSummaryBeanPopulator extends AbstractBeanPopulator<TeamSummaryBean> {
 
     public void populate(StatusSummaryEntity source, TeamSummaryBean target) {
-        target.setJobTotal(source.getJobCnt()==null ? 0 : source.getJobCnt());
-        target.setQueryTotal(source.getQueryCnt()==null ? 0 : source.getQueryCnt());
+        switch (source.getStatus()) {
+            case "O":
+                target.setOpenQueryCount(source.getQueryCnt());
+                target.setOpenJobCount(source.getJobCnt());
+                break;
+            case "W":
+                target.setWorkQueryCount(source.getQueryCnt());
+                target.setWorkJobCount(source.getJobCnt());
+                break;
+            case "CP":
+                target.setCompleteQueryCount(source.getQueryCnt());
+                target.setCompleteJobCount(source.getJobCnt());
+                break;
+            default:
+                target.setQueryTotal(source.getQueryCnt());
+                target.setJobTotal(source.getJobCnt());
+        }
     }
 
 }

@@ -415,24 +415,17 @@ public class SdTicketServiceImpl implements SdTicketService {
         SdUserBean currentUserBean = userService.getCurrentSdUserBean();
         String owningRole = currentUserBean.getPrimaryRoleId();
 
+        TeamSummaryBean teamSummaryBean = new TeamSummaryBean();
+
         // get data
         List<StatusSummaryEntity> countStatus = ticketMasMapper.getCountStatusByTicketType(owningRole);
         StatusSummaryEntity sumStatus = ticketMasMapper.getSumStatusByTicketType(owningRole);
 
         // set each status summary
-        List<StatusSummaryBean> statusSummaryBeans = new ArrayList<>();
-        if(CollectionUtils.isNotEmpty(countStatus)) {
-            countStatus.forEach(entity -> {
-                StatusSummaryBean bean = new StatusSummaryBean();
-                statusSummaryBeanPopulator.populate(entity, bean);
-                statusSummaryBeans.add(bean);
-            });
-        }
+        countStatus.forEach(entity -> teamSummaryBeanPopulator.populate(entity,teamSummaryBean));
 
         // set team summary
-        TeamSummaryBean teamSummaryBean = new TeamSummaryBean();
         teamSummaryBeanPopulator.populate(sumStatus, teamSummaryBean);
-        teamSummaryBean.setSummaryData(statusSummaryBeans);
         return teamSummaryBean;
     }
 

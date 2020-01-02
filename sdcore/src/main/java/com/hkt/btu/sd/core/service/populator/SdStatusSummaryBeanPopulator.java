@@ -9,8 +9,8 @@ public class SdStatusSummaryBeanPopulator extends AbstractBeanPopulator<StatusSu
 
     public void populate(StatusSummaryEntity source, StatusSummaryBean target) {
         target.setStatus(TicketStatusEnum.getEnum(source.getStatus()));
-        target.setJobCnt(source.getJobCnt()==null ? 0 : source.getJobCnt());
-        target.setQueryCnt(source.getQueryCnt()==null ? 0 : source.getQueryCnt());
+//        target.setJobCnt(source.getJobCnt()==null ? 0 : source.getJobCnt());
+//        target.setQueryCnt(source.getQueryCnt()==null ? 0 : source.getQueryCnt());
     }
 
 }
