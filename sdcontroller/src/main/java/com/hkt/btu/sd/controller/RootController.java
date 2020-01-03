@@ -38,14 +38,13 @@ public class RootController {
     @GetMapping(value = "login")
     public String login(final Model model,
                         @RequestParam(required = false) String logout,
-                        @RequestParam(required = false) String error, HttpSession session) {
+                        @RequestParam(required = false) String error) {
         if (logout != null) {
             model.addAttribute(PageMsgController.INFO_MSG, "You have been logged out.");
         }
         if (error != null) {
             model.addAttribute(PageMsgController.ERROR_MSG, LOGIN_ERROR.getValue(error));
         }
-        session.setAttribute("version",projectBuildTime);
         return "login";
     }
 
