@@ -254,6 +254,11 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     }
 
     @Override
+    public SdUserRoleBean getCachedUserRoleTree() {
+        return ROLE_TREE;
+    }
+
+    @Override
     public List<String> getPrimaryRoles() {
         List<SdUserRoleBean> eligibleUserRoleGrantList = getEligibleUserRoleGrantList();
         List<SdUserRoleBean> primaryRoleList = new ArrayList<>();

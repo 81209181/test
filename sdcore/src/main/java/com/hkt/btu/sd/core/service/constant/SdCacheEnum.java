@@ -4,7 +4,11 @@ import org.apache.commons.lang3.StringUtils;
 
 public enum SdCacheEnum {
     SERVICE_TYPE_LIST ("Service Type List", 20, false,
-            "customBtuSecurityMetadataSource","buildResourceMapFromDb") // todo[SERVDESK-311]
+            "serviceTypeService","getServiceTypeList"),
+    SERVICE_TYPE_OFFER_MAPPING ("Service Type Offer Mapping", 21, false,
+            "serviceTypeService","getServiceTypeOfferMappingBean"),
+    USER_ROLE_TREE ("User Role Tree", 22, false,
+            "userRoleService","getCachedUserRoleTree"),
     ;
 
 
