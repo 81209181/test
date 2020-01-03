@@ -25,8 +25,6 @@ public class BtuCacheServiceImpl implements BtuCacheService {
     private ApplicationContext applicationContext;
     @Resource(name="cacheBeanPopulator")
     BtuCacheBeanPopulator btuCacheBeanPopulator;
-    @Resource(name="userService")
-    BtuUserService btuUserService;
 
     private static final Map<String, BtuCacheBean> CACHE_BEAN_MAP = new HashMap<>(); // key = cacheName
 
@@ -87,7 +85,7 @@ public class BtuCacheServiceImpl implements BtuCacheService {
     @Override
     public Object getCachedObjectByCacheName(String cacheName) {
         BtuCacheBean existingCacheBean =  CACHE_BEAN_MAP.get(cacheName);
-        if(existingCacheBean.isLazyInit()){
+        if(existingCacheBean.getCacheObject()==null && existingCacheBean.isLazyInit()){
             reloadCachedObject(cacheName);
         }
         return existingCacheBean.getCacheObject();
