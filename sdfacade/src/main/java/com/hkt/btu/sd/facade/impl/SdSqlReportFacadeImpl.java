@@ -258,7 +258,7 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
                     }).collect(Collectors.toList());
             return dataList;
         } catch (IOException e) {
-            LOG.error(e.getMessage());
+            LOG.error(e.getMessage(), e);
         }
         return null;
     }
