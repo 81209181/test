@@ -10,10 +10,7 @@ import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.*;
 import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
 import com.hkt.btu.sd.core.service.constant.TicketTypeEnum;
-import com.hkt.btu.sd.facade.SdAuditTrailFacade;
-import com.hkt.btu.sd.facade.SdServiceTypeFacade;
-import com.hkt.btu.sd.facade.SdTicketFacade;
-import com.hkt.btu.sd.facade.WfmApiFacade;
+import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.wfm.WfmAppointmentResData;
@@ -66,6 +63,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     BesFaultInfoDataPopulator faultInfoDataPopulator;
     @Resource(name = "teamSummaryDataPopulator")
     SdTeamSummaryDataPopulator teamSummaryDataPopulator;
+    @Resource(name = "cloudViewDataPopulator")
+    HktCloudViewDataPopulator cloudViewDataPopulator;
 
     @Override
     public int createQueryTicket(QueryTicketRequestData queryTicketRequestData) {
@@ -148,7 +147,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             boolean isReport = BooleanUtils.toBoolean(searchFormData.get("isReport"));
             String owningRole = StringUtils.isEmpty(searchFormData.get("owningRole")) ? null : searchFormData.get("owningRole");
 
-            pageBean = ticketService.searchTicketList(pageable, createDateFrom, createDateTo, status, completeDateFrom, completeDateTo, createBy, ticketMasId, custCode, serviceNumber, ticketType, serviceType,isReport,owningRole);
+            pageBean = ticketService.searchTicketList(pageable, createDateFrom, createDateTo, status, completeDateFrom, completeDateTo, createBy, ticketMasId, custCode, serviceNumber, ticketType, serviceType, isReport, owningRole);
         } catch (AuthorityNotFoundException e) {
             return new PageData<>(e.getMessage());
         }
@@ -191,7 +190,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         List<WfmJobRemarksData> jobRemarkDataList = wfmApiFacade.getJobRemarkByTicketId(ticketMasId);
 
 
-        if(CollectionUtils.isNotEmpty(beanList)) {
+        if (CollectionUtils.isNotEmpty(beanList)) {
             for (SdTicketRemarkBean bean : beanList) {
                 SdTicketRemarkData data = new SdTicketRemarkData();
                 ticketRemarkDataPopulator.populate(bean, data);
@@ -199,7 +198,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             }
         }
 
-        if(CollectionUtils.isNotEmpty(jobProgressDataList)) {
+        if (CollectionUtils.isNotEmpty(jobProgressDataList)) {
             for (WfmJobProgressData bean : jobProgressDataList) {
                 SdTicketRemarkData data = new SdTicketRemarkData();
                 ticketRemarkDataPopulator.populateJobProgressData(bean, data);
@@ -207,7 +206,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             }
         }
 
-        if(CollectionUtils.isNotEmpty(jobRemarkDataList)) {
+        if (CollectionUtils.isNotEmpty(jobRemarkDataList)) {
             for (WfmJobRemarksData bean : jobRemarkDataList) {
                 SdTicketRemarkData data = new SdTicketRemarkData();
                 ticketRemarkDataPopulator.populateJobRemarkData(bean, data);
@@ -285,7 +284,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             throw new InvalidInputException("Ticket Mas ID is empty.");
         } else if (StringUtils.isEmpty(remarks)) {
             throw new InvalidInputException("Remarks is empty.");
-        } else if (remarks.getBytes(StandardCharsets.UTF_8).length > 500){
+        } else if (remarks.getBytes(StandardCharsets.UTF_8).length > 500) {
             throw new InvalidInputException("Input remark is too long. (max: 500 characters / 166 chinese words)");
         }
 
@@ -389,7 +388,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                 faultInfoDataPopulator.populate(sdTicketData, besFaultInfoData);
                 besFaultInfoDataList.add(besFaultInfoData);
             }
-            if (pageable==null) {
+            if (pageable == null) {
                 besSubFaultData.setList(besFaultInfoDataList);
             } else {
                 long count = ticketService.countServiceBySubscriberId(subscriberId);
@@ -436,7 +435,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         String systemId = userService.getCurrentUserUserId();
         LOG.info(String.format("Closing ticket by API. (ticketMasId: %d , systemId: %s)", ticketMasId, systemId));
 
-        if(StringUtils.isEmpty(reasonContent)){
+        if (StringUtils.isEmpty(reasonContent)) {
             reasonContent = "Empty sub-clear code.";
         }
 
@@ -577,7 +576,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     public TeamSummaryData getTeamSummary() {
         TeamSummaryData data = new TeamSummaryData();
         TeamSummaryBean summaryBean = ticketService.getTeamSummary();
-        teamSummaryDataPopulator.populate(summaryBean,data);
+        teamSummaryDataPopulator.populate(summaryBean, data);
         return data;
     }
 
@@ -597,5 +596,44 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         data.setSymptomCode(bean.getSymptomCode());
 
         return data;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String createTicket4hktCloud(HktCloudCaseData cloudCaseData) {
+        int ticketId = Integer.parseInt(cloudCaseData.getRequestId());
+        String contactEmail = "";
+        String contactNumber = "";
+        StringBuilder remark = new StringBuilder();
+        for (Attribute attr : cloudCaseData.getAttributes()) {
+            if (StringUtils.equals("Contact Email", attr.getAttrName())) {
+                contactEmail = attr.getAttrValue();
+            } else if (StringUtils.equals("Contact Phone", attr.getAttrName())) {
+                contactNumber = attr.getAttrValue();
+            } else {
+                remark.append(attr.getAttrName()).append(":").append(attr.getAttrValue()).append(",");
+            }
+        }
+        ticketService.createHktCloudTicket(ticketId,cloudCaseData.getTenantId(),cloudCaseData.getCreatedBy());
+        ticketService.insertTicketContactInfo(ticketId,"","",contactNumber,contactEmail,"");
+        ticketService.createTicketCustRemarks(ticketId,remark.toString());
+        for (Attachment attachment : cloudCaseData.getAttachments()) {
+            ticketService.insertUploadFile(ticketId, attachment.getFileName(), attachment.getContent());
+        }
+        return "Creation success.";
+    }
+
+    @Override
+    public String getNewTicketId() {
+        return ticketService.getNewTicketId();
+    }
+
+    @Override
+    public List<HktCloudViewData> getHktCloudTicket(String tenantId, String username) {
+        return ticketService.getHktCloudTicket(tenantId,username).stream().map(sdTicketMasBean -> {
+            HktCloudViewData data = new HktCloudViewData();
+            cloudViewDataPopulator.populate(sdTicketMasBean,data);
+            return data;
+        }).collect(Collectors.toList());
     }
 }

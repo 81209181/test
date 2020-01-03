@@ -4,7 +4,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Ticket Info</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/reletedTicket.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/reletedTicket.css(v=${session.version})}"/>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
@@ -451,8 +451,8 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript" th:src="@{/js/ticketInfo.js}"></script>
-    <script type="text/javascript" th:src="@{/js/appointment_sd_util.js}"></script>
+    <script type="text/javascript" th:src="@{/js/ticketInfo.js(v=${session.version})}"></script>
+    <script type="text/javascript" th:src="@{/js/appointment_sd_util.js(v=${session.version})}"></script>
 </div>
 </body>
 </html>

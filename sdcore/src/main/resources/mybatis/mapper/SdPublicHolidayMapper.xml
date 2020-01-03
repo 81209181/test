@@ -29,6 +29,23 @@
         </where>
     </select>
 
+    <select id="getAllPublicHolidayList" resultMap="PublicHolidayEntity">
+        SELECT * FROM PUBLIC_HOLIDAY ORDER BY PUBLIC_HOLIDAY
+    </select>
+
+    <insert id="insertPublicHoliday" parameterType="java.util.List">
+        INSERT INTO PUBLIC_HOLIDAY
+        (PUBLIC_HOLIDAY, DESCRIPTION)
+         <foreach collection="entityList" item="ph" index="index" separator="union all">
+             (
+             SELECT
+             #{ph.publicHoliday},
+             #{ph.description}
+             FROM DUAL
+             )
+         </foreach>
+    </insert>
+
     <delete id="deletePublicHoliday">
         delete from PUBLIC_HOLIDAY where TO_CHAR(PUBLIC_HOLIDAY, 'yyyy-MM-dd') = #{publicHoliday} and DESCRIPTION = #{description}
     </delete>
@@ -36,4 +53,8 @@
     <insert id="createPublicHoliday">
         insert into PUBLIC_HOLIDAY (PUBLIC_HOLIDAY, DESCRIPTION) values (to_date(#{publicHoliday}, 'yyyy-MM-dd'), #{description})
     </insert>
+
+    <select id="checkNextPublicHoliday" resultMap="PublicHolidayEntity">
+        SELECT * FROM PUBLIC_HOLIDAY where trunc(PUBLIC_HOLIDAY) >= trunc(ADD_MONTHS(sysdate, 3), 'mm')
+    </select>
 </mapper>

@@ -1,16 +1,16 @@
 package com.hkt.btu.sd.controller;
 
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
-import com.hkt.btu.sd.facade.data.ResponseReportData;
-import com.hkt.btu.sd.facade.data.SdCronJobInstData;
-import com.hkt.btu.sd.facade.data.SdSqlReportData;
 import com.hkt.btu.sd.facade.SdSqlReportFacade;
-import com.hkt.btu.sd.facade.data.RequestReportData;
+import com.hkt.btu.sd.facade.data.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -23,12 +23,6 @@ public class ReportController {
 
     @Resource(name = "reportFacade")
     SdSqlReportFacade sqlReportFacade;
-
-
-    @GetMapping({"", "/", "/index"})
-    public String index() {
-        return "redirect:search";
-    }
 
     @GetMapping({"/search"})
     public String searchSqlReport() {
@@ -174,5 +168,27 @@ public class ReportController {
         }
     }
 
+    @GetMapping("/history")
+    public ResponseEntity<?> ajaxListFile(@RequestParam String reportId) {
+        List<SdReportHistoryData> fileList = sqlReportFacade.getFileList(reportId);
+        return ResponseEntity.ok(fileList);
+    }
 
+    @ResponseBody
+    @GetMapping("/downLoadReport")
+    public ResponseEntity<?> downLoadReport(String reportId, String reportName) {
+        org.springframework.core.io.Resource resource = sqlReportFacade.downLoadReport(reportId, reportName);
+        if (resource != null) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment;filename=\"%s", reportName));
+            ResponseEntity<Object> responseEntity = ResponseEntity.ok()
+                    .headers(headers)
+                    .contentType(MediaType.parseMediaType(MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE))
+                    .body(resource);
+
+            return responseEntity;
+        } else {
+            return ResponseEntity.badRequest().body("download failed.");
+        }
+    }
 }

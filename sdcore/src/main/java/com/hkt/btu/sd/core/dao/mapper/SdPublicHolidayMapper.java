@@ -13,7 +13,13 @@ public interface SdPublicHolidayMapper {
 
     Integer countPublicHoliday(@Param("year") String year);
 
+    List<SdPublicHolidayEntity> getAllPublicHolidayList();
+
+    void insertPublicHoliday(@Param("entityList") List<SdPublicHolidayEntity> entityList);
+
     void deletePublicHoliday(@Param("publicHoliday") String publicHoliday, @Param("description") String description);
 
     void createPublicHoliday(@Param("publicHoliday") String publicHoliday, @Param("description") String description);
+
+    List<SdPublicHolidayEntity> checkNextPublicHoliday();
 }

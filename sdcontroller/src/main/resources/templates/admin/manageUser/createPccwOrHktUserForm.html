@@ -35,7 +35,7 @@
                     </div>
                 </div>
             </form>
-            <script type="text/javascript" th:src="@{/js/createUser.js}"></script>
+            <script type="text/javascript" th:src="@{/js/createUser.js(v=${session.version})}"></script>
         </div>
     </body>
     </html>

@@ -1,10 +1,9 @@
 package com.hkt.btu.sd.facade;
 
-import com.hkt.btu.sd.facade.data.RequestReportData;
-import com.hkt.btu.sd.facade.data.ResponseReportData;
-import com.hkt.btu.sd.facade.data.SdCronJobInstData;
-import com.hkt.btu.sd.facade.data.SdSqlReportData;
+import com.hkt.btu.sd.facade.data.*;
+import org.springframework.core.io.Resource;
 
+import java.io.File;
 import java.util.List;
 
 public interface SdSqlReportFacade {
@@ -32,4 +31,8 @@ public interface SdSqlReportFacade {
     String deactiveReport(String reportId);
 
     String syncReport(String reportId);
+
+    List<SdReportHistoryData> getFileList(String reportId);
+
+    Resource downLoadReport(String reportId, String reportName);
 }

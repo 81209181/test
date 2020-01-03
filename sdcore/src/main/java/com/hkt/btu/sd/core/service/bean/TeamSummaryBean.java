@@ -2,20 +2,66 @@ package com.hkt.btu.sd.core.service.bean;
 
 import com.hkt.btu.common.core.service.bean.BaseBean;
 
-import java.util.List;
-
 public class TeamSummaryBean extends BaseBean {
 
-    private List<StatusSummaryBean> summaryData;
     private int queryTotal;
     private int jobTotal;
 
-    public List<StatusSummaryBean> getSummaryData() {
-        return summaryData;
+    private int openQueryCount;
+    private int openJobCount;
+
+    private int workQueryCount;
+    private int workJobCount;
+
+    private int completeQueryCount;
+    private int completeJobCount;
+
+    public int getOpenQueryCount() {
+        return openQueryCount;
     }
 
-    public void setSummaryData(List<StatusSummaryBean> summaryData) {
-        this.summaryData = summaryData;
+    public void setOpenQueryCount(int openQueryCount) {
+        this.openQueryCount = openQueryCount;
+    }
+
+    public int getOpenJobCount() {
+        return openJobCount;
+    }
+
+    public void setOpenJobCount(int openJobCount) {
+        this.openJobCount = openJobCount;
+    }
+
+    public int getWorkQueryCount() {
+        return workQueryCount;
+    }
+
+    public void setWorkQueryCount(int workQueryCount) {
+        this.workQueryCount = workQueryCount;
+    }
+
+    public int getWorkJobCount() {
+        return workJobCount;
+    }
+
+    public void setWorkJobCount(int workJobCount) {
+        this.workJobCount = workJobCount;
+    }
+
+    public int getCompleteQueryCount() {
+        return completeQueryCount;
+    }
+
+    public void setCompleteQueryCount(int completeQueryCount) {
+        this.completeQueryCount = completeQueryCount;
+    }
+
+    public int getCompleteJobCount() {
+        return completeJobCount;
+    }
+
+    public void setCompleteJobCount(int completeJobCount) {
+        this.completeJobCount = completeJobCount;
     }
 
     public int getQueryTotal() {

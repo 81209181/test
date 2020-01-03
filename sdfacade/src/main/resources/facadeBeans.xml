@@ -122,6 +122,9 @@
     <alias name="sdDnPlanDataPopulator" alias="dnPlanDataPopulator"/>
     <bean class="com.hkt.btu.sd.facade.populator.SdDnPlanDataPopulator" id="sdDnPlanDataPopulator"/>
 
+    <alias name="hktCloudViewDataPopulator" alias="cloudViewDataPopulator"/>
+    <bean class="com.hkt.btu.sd.facade.populator.HktCloudViewDataPopulator" id="hktCloudViewDataPopulator"/>
+
     <alias name="sdPublicHolidayDataPopulator" alias="publicHolidayDataPopulator"/>
     <bean id="sdPublicHolidayDataPopulator" class="com.hkt.btu.sd.facade.populator.SdPublicHolidayDataPopulator"/>
 

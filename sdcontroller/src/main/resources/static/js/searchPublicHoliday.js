@@ -30,6 +30,12 @@ $(document).ready(function() {
         $(form).addClass("was-validated");
     });
 
+    exportPublicHoliday();
+
+    copyToClipBoard();
+
+    showImportPublicHoliday();
+
     // search result
     $('#publicHolidayTable').DataTable({
         processing: true,
@@ -39,7 +45,7 @@ $(document).ready(function() {
         ajax: {
             type: "GET",
             contentType: "application/json",
-            url: "/system/public-holiday/ajax-list-public-holiday",
+            url: "/system/public-holiday/ajax-page-public-holiday",
             dataSrc: 'data',
             data: function(d){
                 d.year = $("#public-holiday-search-year").val();
@@ -86,4 +92,92 @@ function deletePublicHoliday(publicHoliday, description) {
             showErrorMsg(responseError);
         })
     }
+}
+
+function copyToClipBoard() {
+    const btn = document.querySelector('#btnPbExportCp');
+    btn.addEventListener('click', () => {
+        const input = document.querySelector('#textareaExport');
+        input.select();
+        if (document.execCommand('copy')) {
+            document.execCommand('copy');
+            alert('Copy success.');
+        }
+    })
+}
+
+function exportPublicHoliday() {
+    $("#btnPbExport").on('click', function () {
+        $('.export').on('hide.bs.modal', function () {
+            $("#textareaExport").val("");
+        })
+        getAllPhList();
+        $(".export").modal('show');
+    })
+}
+
+function getAllPhList() {
+    $.ajax({
+        type: 'GET',
+        url: '/system/public-holiday/ajax-list-public-holiday',
+        dataType: 'text',
+        success: function (res) {
+            var jsonPretty = JSON.stringify(JSON.parse(res), null, 2);
+            $('#textareaExport').val(jsonPretty);
+        },
+    }).fail(function (e) {
+        var responseError = e.responseText ? e.responseText : "Get failed.";
+        console.log("ERROR : ", responseError);
+        $('.export').modal('hide');
+        showErrorMsg(responseError);
+    })
+}
+
+function showImportPublicHoliday() {
+    $("#btnPbImport").on('click', function () {
+        $('.import').on('hide.bs.modal', function () {
+            $("#textareaImport").val("");
+        })
+        importPublicHoliday();
+        $('.import').modal('show');
+    })
+}
+
+function importPublicHoliday() {
+    $("#btnPbImportSb").on('click', function () {
+        let array = '';
+        try {
+            array = JSON.parse($("#textareaImport").val());
+            for (item of array) {
+                    if (JSON.stringify(item) === '{}') {
+                        showErrorMsg('can not import empty data.');
+                        $('.import').modal('hide');
+                        return;
+                    }
+                }
+        } catch (e) {
+            showErrorMsg('can not import invalid data.');
+            $('.import').modal('hide');
+            return;
+        }
+        let textarea = JSON.stringify(array);
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json;charset=utf-8',
+            url : '/system/public-holiday/ajax-add-public-holiday',
+            data: textarea,
+            success: function (res) {
+                if (res.success) {
+                    $('.import').modal('hide');
+                    showInfoMsg(res.feedback);
+                }
+            }
+        }).fail(function (e) {
+            var responseError = e.responseText ? e.responseText : "Get failed.";
+            console.log("ERROR : ", responseError);
+            $('.import').modal('hide');
+            showErrorMsg(responseError);
+        })
+    })
 }

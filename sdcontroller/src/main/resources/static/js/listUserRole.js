@@ -4,11 +4,6 @@ $(document).ready(function() {
         ajaxReload();
     });
 
-    google.charts.load('current', {packages:["orgchart"]});
-    $.get('/admin/manage-role/getRole4Chart',function(res){
-        google.charts.setOnLoadCallback(drawChart(res));
-    })
-
     $('#userGroupTable').DataTable({
         ajax: {
             type: "GET",
@@ -41,11 +36,18 @@ $(document).ready(function() {
         } ]
     });
 });
- function drawChart(rowData) {
-    var data = new google.visualization.DataTable();
+google.charts.load('current', {packages:["orgchart"]});
+google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+    var chartDate = $.ajax({
+        url:'/admin/manage-role/getRole4Chart',
+        async: false
+    }).responseText;
+    var data = new google.visualization.DataTable(chartDate);
     data.addColumn('string', 'name');
     data.addColumn('string', 'parent');
-    data.addRows(rowData);
+    data.addRows(JSON.parse(chartDate));
     var chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
     chart.draw(data,{'allowHtml':true});
 }

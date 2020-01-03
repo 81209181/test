@@ -11,4 +11,9 @@ public class SdPublicHolidayBeanPopulator extends AbstractBeanPopulator<SdPublic
         target.setPublicHoliday(source.getPublicHoliday());
         target.setDescription(source.getDescription());
     }
+
+    public void populate(SdPublicHolidayBean source, SdPublicHolidayEntity target) {
+        target.setPublicHoliday(source.getPublicHoliday());
+        target.setDescription(source.getDescription());
+    }
 }

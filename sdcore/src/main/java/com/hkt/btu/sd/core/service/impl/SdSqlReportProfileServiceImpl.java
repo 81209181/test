@@ -123,11 +123,11 @@ public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImp
 
     @Override
     @Transactional
-    public String updateReport(String reportId, String reportName, String cronExpression, String status,
-                               String sql, String exportTo, String emailTo, String remarks) {
+    public String updateReport(String reportId, String reportName,String cronExpression, String status,
+                               String sql, String emailTo, String remarks) {
         BtuUserBean currentUserBean = sdUserService.getCurrentUserBean();
         String modifyBy = currentUserBean.getUserId();
-        sdSqlReportMapper.updateReportData(reportId, reportName, sql, cronExpression, exportTo, emailTo, modifyBy, status, remarks);
+        sdSqlReportMapper.updateReportData(reportId,  reportName,sql, cronExpression, emailTo, modifyBy, status, remarks);
         return reportName;
     }
 

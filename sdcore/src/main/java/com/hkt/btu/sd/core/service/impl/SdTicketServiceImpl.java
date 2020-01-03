@@ -41,6 +41,8 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Resource
     SdTicketRemarkMapper ticketRemarkMapper;
     @Resource
+    SdTicketFileUploadMapper ticketFileUploadMapper;
+    @Resource
     private SdSymptomMapper symptomMapper;
 
     @Resource(name = "userService")
@@ -413,24 +415,17 @@ public class SdTicketServiceImpl implements SdTicketService {
         SdUserBean currentUserBean = userService.getCurrentSdUserBean();
         String owningRole = currentUserBean.getPrimaryRoleId();
 
+        TeamSummaryBean teamSummaryBean = new TeamSummaryBean();
+
         // get data
         List<StatusSummaryEntity> countStatus = ticketMasMapper.getCountStatusByTicketType(owningRole);
         StatusSummaryEntity sumStatus = ticketMasMapper.getSumStatusByTicketType(owningRole);
 
         // set each status summary
-        List<StatusSummaryBean> statusSummaryBeans = new ArrayList<>();
-        if(CollectionUtils.isNotEmpty(countStatus)) {
-            countStatus.forEach(entity -> {
-                StatusSummaryBean bean = new StatusSummaryBean();
-                statusSummaryBeanPopulator.populate(entity, bean);
-                statusSummaryBeans.add(bean);
-            });
-        }
+        countStatus.forEach(entity -> teamSummaryBeanPopulator.populate(entity,teamSummaryBean));
 
         // set team summary
-        TeamSummaryBean teamSummaryBean = new TeamSummaryBean();
         teamSummaryBeanPopulator.populate(sumStatus, teamSummaryBean);
-        teamSummaryBean.setSummaryData(statusSummaryBeans);
         return teamSummaryBean;
     }
 
@@ -454,5 +449,29 @@ public class SdTicketServiceImpl implements SdTicketService {
         bean.setTicketDetId(entity.getTicketDetId());
 
         return bean;
+    }
+
+    @Override
+    public String getNewTicketId() {
+        return ticketMasMapper.getNewTicketId();
+    }
+
+    @Override
+    public void createHktCloudTicket(int ticketId, String tenantId, String createdBy) {
+        ticketMasMapper.createHktCloudTicket(ticketId,createdBy,tenantId);
+    }
+
+    @Override
+    public void insertUploadFile(int ticketId, String fileName, String content) {
+        ticketFileUploadMapper.insertUploadFile(ticketId,fileName,Base64.getDecoder().decode(content));
+    }
+
+    @Override
+    public List<SdTicketMasBean> getHktCloudTicket(String tenantId, String username) {
+        return ticketMasMapper.getTicket4HktCloud(tenantId,username).stream().map(sdTicketMasEntity -> {
+            SdTicketMasBean bean = new SdTicketMasBean();
+            ticketMasBeanPopulator.populate(sdTicketMasEntity, bean);
+            return bean;
+        }).collect(Collectors.toList());
     }
 }

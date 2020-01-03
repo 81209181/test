@@ -71,4 +71,12 @@ public interface SdTicketService {
     long countServiceBySubscriberId(String subscriberId);
 
     SdMakeApptBean getTicketServiceByDetId(Integer ticketDetId);
+
+    String getNewTicketId();
+
+    void createHktCloudTicket(int ticketId, String tenantId, String createdBy);
+
+    void insertUploadFile(int ticketId, String fileName, String content);
+
+    List<SdTicketMasBean> getHktCloudTicket(String tenantId, String username);
 }
