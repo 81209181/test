@@ -6,6 +6,8 @@ import com.hkt.btu.sd.core.service.SdPublicHolidayService;
 import com.hkt.btu.sd.core.service.bean.SdPublicHolidayBean;
 import com.hkt.btu.sd.core.service.populator.SdPublicHolidayBeanPopulator;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.quartz.JobExecutionException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -18,6 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SdPublicHolidayServiceImpl implements SdPublicHolidayService {
+    private static final Logger LOG = LogManager.getLogger(SdPublicHolidayServiceImpl.class);
 
     @Resource
     SdPublicHolidayMapper sdPublicHolidayMapper;
@@ -59,13 +62,14 @@ public class SdPublicHolidayServiceImpl implements SdPublicHolidayService {
 
     @Override
     public void checkPublicHoliday() throws JobExecutionException {
+        // todo[SERVDESK-299] entity cannot be used in logic, get all holiday records and check the bean here
+        LOG.info("Furthest public holiday: " ); // todo[SERVDESK-299] log furthest holiday date
         List<SdPublicHolidayEntity> entityList = sdPublicHolidayMapper.checkNextPublicHoliday();
-
         if (CollectionUtils.isNotEmpty(entityList)) {
             return;
         }
 
-        throw new JobExecutionException("Not found public holiday after next three months.");
+        throw new JobExecutionException("Found no public holiday record after three months.");
     }
 
     @Override
