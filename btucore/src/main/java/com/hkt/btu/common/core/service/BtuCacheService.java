@@ -8,6 +8,7 @@ public interface BtuCacheService {
 
     // setup
     void initCacheObjectMap();
+    List<BtuCacheBean> getAllCacheBeanProfile();
     BtuCacheBean getNewCacheProfileBeanByCacheName(String cacheName);
     Object buildCacheObject(BtuCacheBean btuCacheBean);
 
@@ -17,7 +18,7 @@ public interface BtuCacheService {
     void deleteCachedObject(String cacheName);
 
     // get cached object
-    List<BtuCacheBean> getAllCacheBean();
+    List<BtuCacheBean> getAllCachedBean();
     Object getCachedObjectByCacheName(String cacheName);
     Object getSourceObjectByCacheName(String cacheName);
 }

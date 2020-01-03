@@ -24,7 +24,7 @@ public class BtuCacheFacadeImpl implements BtuCacheFacade {
 
     @Override
     public List<BtuCacheProfileData> getCacheProfileDataList() {
-        List<BtuCacheBean> cacheBeanList = btuCacheService.getAllCacheBean();
+        List<BtuCacheBean> cacheBeanList = btuCacheService.getAllCachedBean();
         if(CollectionUtils.isEmpty(cacheBeanList)){
             return new ArrayList<>();
         }

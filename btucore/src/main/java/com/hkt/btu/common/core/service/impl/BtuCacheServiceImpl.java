@@ -34,11 +34,7 @@ public class BtuCacheServiceImpl implements BtuCacheService {
     @PostConstruct
     public void initCacheObjectMap() {
         // load cache profiles
-        List<BtuCacheBean> cacheInitBeanList = new ArrayList<>();
-        for(BtuCacheEnum btuCacheEnum : BtuCacheEnum.values()){
-            BtuCacheBean btuCacheBean = getNewCacheProfileBeanByCacheName(btuCacheEnum.getCacheName());
-            cacheInitBeanList.add(btuCacheBean);
-        }
+        List<BtuCacheBean> cacheInitBeanList = getAllCacheBeanProfile();
         LOG.info("Loaded cache objects profiles.");
 
         // sort by loading priority
@@ -63,6 +59,16 @@ public class BtuCacheServiceImpl implements BtuCacheService {
         }
 
         LOG.info("Completed loading cache objects.");
+    }
+
+    @Override
+    public List<BtuCacheBean> getAllCacheBeanProfile() {
+        List<BtuCacheBean> cacheInitBeanList = new ArrayList<>();
+        for(BtuCacheEnum btuCacheEnum : BtuCacheEnum.values()){
+            BtuCacheBean btuCacheBean = getNewCacheProfileBeanByCacheName(btuCacheEnum.getCacheName());
+            cacheInitBeanList.add(btuCacheBean);
+        }
+        return cacheInitBeanList;
     }
 
     @Override
@@ -111,7 +117,7 @@ public class BtuCacheServiceImpl implements BtuCacheService {
 
     @Override
     public void reloadAll() {
-        List<BtuCacheBean> cacheBeanList = getAllCacheBean();
+        List<BtuCacheBean> cacheBeanList = getAllCachedBean();
         if(CollectionUtils.isEmpty(cacheBeanList)){
             LOG.warn("No cache to reload.");
             return;
@@ -156,7 +162,7 @@ public class BtuCacheServiceImpl implements BtuCacheService {
     }
 
     @Override
-    public List<BtuCacheBean> getAllCacheBean() {
+    public List<BtuCacheBean> getAllCachedBean() {
         return new ArrayList<>(CACHE_BEAN_MAP.values());
     }
 

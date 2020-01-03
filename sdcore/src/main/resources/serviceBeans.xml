@@ -76,6 +76,9 @@
     <alias name="sdCertService" alias="certService"/>
     <bean class="com.hkt.btu.sd.core.service.impl.SdCertServiceImpl" id="sdCertService"/>
 
+    <alias name="SdCacheService" alias="cacheService"/>
+    <bean class="com.hkt.btu.sd.core.service.impl.SdCacheServiceImpl" id="SdCacheService"/>
+
     <!-- Populator -->
     <alias name="sdUserBeanPopulator" alias="userBeanPopulator"/>
     <bean id="sdUserBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserBeanPopulator"/>

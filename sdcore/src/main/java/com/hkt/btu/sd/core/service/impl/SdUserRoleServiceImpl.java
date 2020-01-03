@@ -26,9 +26,9 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
 
     private static final Logger LOG = LogManager.getLogger(SdUserRoleServiceImpl.class);
 
-    private static final SdUserRoleBean ROLE_TREE = new SdUserRoleBean();
+    private static SdUserRoleBean ROLE_TREE = new SdUserRoleBean();
 
-    private static List<String> ELIGIBLE_PARENT_ROLE_ID_LIST_OF_PRIMARY_ROLE =
+    private static final List<String> ELIGIBLE_PARENT_ROLE_ID_LIST_OF_PRIMARY_ROLE =
             List.of(SdUserRoleBean.ROLE_ID.OPERATOR, SdUserRoleBean.ROLE_ID.ENGINEER);
 
     @Resource
