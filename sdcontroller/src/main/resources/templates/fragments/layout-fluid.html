@@ -18,7 +18,7 @@
 
     <meta name="_ctx" th:content="${#httpServletRequest.getContextPath()}" />
 
-    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css(v=${session.version})}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css(v=${projectBuildtime})}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/webjars/font-awesome/5.7.2/css/all.css(v=${session.version})}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/lib/DataTables/datatables.min.css(v=${session.version})}">
     <link rel="stylesheet" type="text/css" th:href="@{/lib/bootstrap-select/bootstrap-select.min.css(v=${session.version})}">

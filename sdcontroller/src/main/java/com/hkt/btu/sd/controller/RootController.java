@@ -45,7 +45,7 @@ public class RootController {
         if (error != null) {
             model.addAttribute(PageMsgController.ERROR_MSG, LOGIN_ERROR.getValue(error));
         }
-        session.setAttribute("version",projectBuildTime);
+        session.setAttribute("version",projectBuildTime); // todo [SERVDESK-306]: remove this session.version
         return "login";
     }
 
