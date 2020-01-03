@@ -319,7 +319,7 @@ public class SystemController {
     @PostMapping("/manage-api/getAuthorization")
     public ResponseEntity<?> getAuthorization(String apiName) {
         sdAuditTrailFacade.insertViewApiAuthAuditTrail(apiName);
-        SiteInterfaceBean siteInterfaceBean = apiService.getSiteInterfaceBean(apiName);
+        SiteInterfaceBean siteInterfaceBean = apiService.getSiteInterfaceBean(apiName); // todo [SERVDESK-308]: cannot call service/bean in controller
         String authPlainText = String.format("%s:%s", siteInterfaceBean.getUserName(), siteInterfaceBean.getPassword());
         String encodedAuth = Base64.getEncoder().encodeToString(authPlainText.getBytes());
         return ResponseEntity.ok(String.format("Basic %s", encodedAuth));
@@ -329,7 +329,7 @@ public class SystemController {
     public ResponseEntity<?> regenerateKey(String apiName) {
         try {
             sdAuditTrailFacade.insertRegenApiAuthAuditTrail(apiName);
-            apiService.reloadCached(apiName);
+            apiService.reloadCached(apiName);// todo [SERVDESK-308]: cannot call service/bean in controller
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Re-generate failed.");
