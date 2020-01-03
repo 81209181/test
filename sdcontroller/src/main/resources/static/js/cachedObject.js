@@ -2,9 +2,9 @@ $(document).ready(function () {
     $('#cachedObjectTable').DataTable();
 })
 
-function reloadMethod(cacheId) {
+function reloadMethod(cacheName) {
     clearAllMsg();
-    $.get('/cached/reloadCache/'+cacheId, function (res) {
+    $.get('/cached/reloadCache/'+cacheName, function (res) {
         showInfoMsg("reload cache success.");
     }).fail(function(e){
         var responseError = e.responseText ? e.responseText : "Get failed.";

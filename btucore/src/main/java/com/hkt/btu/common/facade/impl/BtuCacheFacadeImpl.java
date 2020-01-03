@@ -1,5 +1,7 @@
 package com.hkt.btu.common.facade.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hkt.btu.common.core.service.BtuCacheService;
 import com.hkt.btu.common.core.service.bean.BtuCacheBean;
 import com.hkt.btu.common.facade.BtuCacheFacade;
@@ -22,6 +24,8 @@ public class BtuCacheFacadeImpl implements BtuCacheFacade {
     @Resource(name="cacheProfileDataPopulator")
     BtuCacheProfileDataPopulator btuCacheProfileDataPopulator;
 
+    private final ObjectMapper om = new ObjectMapper();
+
     @Override
     public List<BtuCacheProfileData> getCacheProfileDataList() {
         List<BtuCacheBean> cacheBeanList = btuCacheService.getAllCachedBean();
@@ -40,14 +44,22 @@ public class BtuCacheFacadeImpl implements BtuCacheFacade {
 
     @Override
     public String getCachedObjectJson(String cacheName) {
-        return btuCacheService.getCachedObjectByCacheName(cacheName).toString();
-        //todo
+        try {
+            return om.writeValueAsString(btuCacheService.getCachedObjectByCacheName(cacheName));
+        } catch (JsonProcessingException e) {
+            LOG.warn(e.getMessage());
+            throw new RuntimeException();
+        }
     }
 
     @Override
     public String getSourceObjectJson(String cacheName) {
-        return btuCacheService.getSourceObjectByCacheName(cacheName).toString();
-        //todo
+        try {
+            return om.writeValueAsString(btuCacheService.getSourceObjectByCacheName(cacheName));
+        } catch (JsonProcessingException e) {
+            LOG.warn(e.getMessage());
+            throw new RuntimeException();
+        }
     }
 
     @Override

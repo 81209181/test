@@ -35,8 +35,7 @@ public class CachedController {
     @GetMapping("getCacheInfo/{cacheName}")
     public ResponseEntity<?> getCacheInfo(@PathVariable String cacheName){
         try {
-//            return ResponseEntity.ok(cachedFacade.getCacheInfo(cacheName));
-            return ResponseEntity.ok("");
+            return ResponseEntity.ok(cachedFacade.getCachedObjectJson(cacheName));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Get cache fail.");
         }
