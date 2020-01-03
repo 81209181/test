@@ -47,7 +47,7 @@ public class BtuSecurityMetadataSource implements FilterInvocationSecurityMetada
     BtuCacheService btuCacheService;
 
 
-    public synchronized void reloadResourceDefine() {
+    public void reloadResourceDefine() {
         btuCacheService.reloadCachedObject(BtuCacheEnum.RESOURCE_MAP.getCacheName());
     }
 
