@@ -141,4 +141,7 @@
 
     <alias name="sdPublicHolidayBeanPopulator" alias="publicHolidayBeanPopulator"/>
     <bean id="sdPublicHolidayBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdPublicHolidayBeanPopulator"/>
+
+    <alias name="sdCacheBeanPopulator" alias="cacheBeanPopulator"/>
+    <bean id="sdCacheBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdCacheBeanPopulator"/>
 </beans>

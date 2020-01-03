@@ -2,7 +2,6 @@ package com.hkt.btu.common.core.service.populator;
 
 
 import com.hkt.btu.common.core.service.bean.BtuCacheBean;
-import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.core.service.constant.BtuCacheEnum;
 
 import java.time.LocalDateTime;

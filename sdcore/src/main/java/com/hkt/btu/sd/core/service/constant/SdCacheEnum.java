@@ -3,8 +3,8 @@ package com.hkt.btu.sd.core.service.constant;
 import org.apache.commons.lang3.StringUtils;
 
 public enum SdCacheEnum {
-//    RESOURCE_MAP ("Security Resource Map", 100, false,
-//            "customBtuSecurityMetadataSource","buildResourceMapFromDb")
+    SERVICE_TYPE_LIST ("Service Type List", 20, false,
+            "customBtuSecurityMetadataSource","buildResourceMapFromDb") // todo[SERVDESK-311]
     ;
 
 

@@ -6,7 +6,7 @@ public class BtuCacheBean extends BaseBean {
     private String originServiceBeanName;
     private String originServiceMethodName;
 
-    private int loadingPriority; // higher = earlier
+    private int loadingPriority; // smaller to big
     private boolean lazyInit; // pre-load or load on use
 
     private String cacheName;

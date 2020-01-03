@@ -22,7 +22,7 @@ public class BtuDaoAuthenticationProvider extends DaoAuthenticationProvider {
     @Resource(name = "userService")
     BtuUserService btuUserService;
 
-    @Resource
+    @Resource(name = "customLdapAuthenticationProvider")
     LdapAuthenticationProvider ldapAuthenticationProvider;
 
     @Resource(name = "customDbDaoAuthenticationProvider")

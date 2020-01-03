@@ -62,7 +62,7 @@ public class BtuSecurityMetadataSource implements FilterInvocationSecurityMetada
         Map<String, RequestMatcher> uriMatcherIndexRefMap = new HashMap<>();
 
         // get Secured URLs config from db
-        List<BtuUserRolePathCtrlBean> userGroupPathCtrlBeanList = pathCtrlService.getActiveCtrlBeanList();
+        List<BtuUserRolePathCtrlBean> userGroupPathCtrlBeanList =pathCtrlService.getActiveCtrlBeanList();
 
 
         // add config form db data
