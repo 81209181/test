@@ -18,10 +18,10 @@
         </thead>
 
         <tbody>
-            <tr th:each="info:${cacheInfoList}">
-                <td th:text="*{info.cacheName}"></td>
-                <td><a class="btn btn-info" th:href='@{|/cached/info/*{info.cacheId}|}' role="button"><i class="fas fa-edit"></i> Detail</a></td>
-                <td><button class="btn btn-info" th:onclick="reloadMethod([[*{info.cacheId}]])"><i class="fas fa-sync"></i> Reload</button></td>
+            <tr th:each="cacheProfile:${cacheProfileDataList}">
+                <td th:text="*{cacheProfile.cacheName}"></td>
+                <td><a class="btn btn-info" th:href='@{|/cached/info/*{cacheProfile.cacheName}|}' role="button"><i class="fas fa-edit"></i> Detail</a></td>
+                <td><button class="btn btn-info" th:onclick="reloadMethod([[*{cacheProfile.cacheName}]])"><i class="fas fa-sync"></i> Reload</button></td>
             </tr>
         </tbody>
 

@@ -1,7 +1,7 @@
 package com.hkt.btu.sd.controller;
 
-import com.hkt.btu.common.core.service.bean.BtuCacheInfoBean;
-import com.hkt.btu.sd.facade.SdCachedFacade;
+import com.hkt.btu.common.facade.data.BtuCacheProfileData;
+import com.hkt.btu.sd.facade.SdCacheFacade;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,45 +17,36 @@ import java.util.List;
 public class CachedController {
 
     @Resource(name = "cachedFacade")
-    SdCachedFacade cachedFacade;
+    SdCacheFacade cachedFacade;
 
     @GetMapping({"","/"})
     public String forwardToCachedPage(Model model) {
-        List<BtuCacheInfoBean> cacheInfoList = cachedFacade.getCacheInfoList();
-        model.addAttribute("cacheInfoList", cacheInfoList);
+        List<BtuCacheProfileData> cacheProfileDataList = cachedFacade.getCacheProfileDataList();
+        model.addAttribute("cacheProfileDataList", cacheProfileDataList);
         return "system/cachedObject/cachedObjectList";
     }
 
-    @GetMapping("info/{cacheId}")
-    public String getCacheList(@PathVariable String cacheId,Model model) {
-        model.addAttribute("cacheId", cacheId);
+    @GetMapping("info/{cacheName}")
+    public String getCacheList(@PathVariable String cacheName, Model model) {
+        model.addAttribute("cacheName", cacheName);
         return "system/cachedObject/cachedObjectInfo";
     }
 
-    @GetMapping("getCacheInfo/{cacheId}")
-    public ResponseEntity<?> getCacheInfo(@PathVariable String cacheId){
+    @GetMapping("getCacheInfo/{cacheName}")
+    public ResponseEntity<?> getCacheInfo(@PathVariable String cacheName){
         try {
-            return ResponseEntity.ok(cachedFacade.getCacheInfo(cacheId));
+//            return ResponseEntity.ok(cachedFacade.getCacheInfo(cacheName));
+            return ResponseEntity.ok("");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Get cache fail.");
         }
     }
 
-    @GetMapping("reloadCache/{cacheId}")
-    public ResponseEntity<?> reloadCache(@PathVariable String cacheId) {
+    @GetMapping("reloadCache/{cacheName}")
+    public ResponseEntity<?> reloadCache(@PathVariable String cacheName) {
         try {
-            cachedFacade.reloadCache(cacheId);
+            cachedFacade.reloadCacheByCacheName(cacheName);
             return ResponseEntity.ok(true);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Reload cache fail.");
-        }
-    }
-
-    @GetMapping("getReloadedCacheInfo/{cacheId}")
-    public ResponseEntity<?> getReloadedCacheInfo(@PathVariable String cacheId) {
-        try {
-            cachedFacade.reloadCache(cacheId);
-            return ResponseEntity.ok(cachedFacade.getCacheInfo(cacheId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Reload cache fail.");
         }

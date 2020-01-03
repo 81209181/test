@@ -106,4 +106,10 @@
     <alias name="btuSiteConfigBeanPopulator" alias="siteConfigBeanPopulator"/>
     <bean id="btuSiteConfigBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuSiteConfigBeanPopulator"/>
 
+    <alias name="btuCacheBeanPopulator" alias="cacheBeanPopulator"/>
+    <bean id="btuCacheBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuCacheBeanPopulator"/>
+
+    <alias name="btuCacheProfileDataPopulator" alias="cacheProfileDataPopulator"/>
+    <bean id="btuCacheProfileDataPopulator" class="com.hkt.btu.common.facade.populator.BtuCacheProfileDataPopulator"/>
+
 </beans>

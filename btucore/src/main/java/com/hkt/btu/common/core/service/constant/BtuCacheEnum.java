@@ -1,54 +1,61 @@
 package com.hkt.btu.common.core.service.constant;
 
-import com.hkt.btu.common.core.service.bean.BtuCacheInfoBean;
+import org.apache.commons.lang3.StringUtils;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 public enum BtuCacheEnum {
-    C1 ("Service Type Offer Mapping","serviceTypeService", "getServiceTypeOfferMappingBean", "reloadServiceTypeOfferMapping"),
-    C2 ("Service Type List","serviceTypeService","getServiceTypeList","reloadServiceTypeList"),
-    C3 ("Site Config","","",""),
-    C4 ("User Role","","","")
+//    SITE_CONFIG_BEAN ("Site Config Bean","siteService",""),
+//    USER_ROLE_TREE ("User Role Tree","userRoleService","getRoleTree")
+    RESOURCE_MAP ("Security Resource Map", 100, false,
+        "customBtuSecurityMetadataSource","buildResourceMapFromDb")
     ;
 
-    BtuCacheEnum(String cacheName, String serviceName, String cacheBeanMethodName, String reloadMethodName) {
+
+    BtuCacheEnum(String cacheName, int loadingPriority, boolean lazyInit,
+                 String originServiceBeanName, String originServiceMethodName) {
         this.cacheName = cacheName;
-        this.serviceName = serviceName;
-        this.cacheBeanMethodName = cacheBeanMethodName;
-        this.reloadMethodName = reloadMethodName;
+        this.originServiceBeanName = originServiceBeanName;
+        this.originServiceMethodName = originServiceMethodName;
+        this.loadingPriority = loadingPriority;
+        this.lazyInit = lazyInit;
     }
 
-    public static List<BtuCacheInfoBean> getCacheInfoList() {
-        return Stream.of(values()).map(btuCacheEnum -> {
-            BtuCacheInfoBean bean = new BtuCacheInfoBean();
-            bean.setCacheId(btuCacheEnum.toString());
-            bean.setCacheName(btuCacheEnum.getCacheName());
-            return bean;
-        }).collect(Collectors.toList());
+    public static BtuCacheEnum getEnum(String key) {
+        for(BtuCacheEnum cacheEnum : values()){
+            if(StringUtils.equals(key, cacheEnum.cacheName)){
+                return cacheEnum;
+            }
+        }
+        return null;
     }
 
     private String cacheName;
-    private String serviceName;
-    private String cacheBeanMethodName;
-    private String reloadMethodName;
+    private int loadingPriority; // higher = earlier
+    private boolean lazyInit; // pre-load or load on use
+
+    private String originServiceBeanName;
+    private String originServiceMethodName;
+
 
 
     public String getCacheName() {
         return cacheName;
     }
 
-    public String getServiceName() {
-        return serviceName;
+    public String getOriginServiceBeanName() {
+        return originServiceBeanName;
     }
 
-    public String getCacheBeanMethodName() {
-        return cacheBeanMethodName;
+    public String getOriginServiceMethodName() {
+        return originServiceMethodName;
     }
 
-    public String getReloadMethodName() {
-        return reloadMethodName;
+    public int getLoadingPriority() {
+        return loadingPriority;
+    }
+
+    public boolean isLazyInit() {
+        return lazyInit;
     }
 }

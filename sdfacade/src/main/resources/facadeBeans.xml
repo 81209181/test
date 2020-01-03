@@ -47,7 +47,7 @@
     <bean id="sdServiceTypeFacade" class="com.hkt.btu.sd.facade.impl.SdServiceTypeFacadeImpl"/>
 
     <alias name="sdCachedFacade" alias="cachedFacade"/>
-    <bean id="sdCachedFacade" class="com.hkt.btu.sd.facade.impl.SdCachedFacadeImpl"/>
+    <bean id="sdCachedFacade" class="com.hkt.btu.sd.facade.impl.SdCacheFacadeImpl"/>
 
     <alias name="sdPublicHolidayFacade" alias="publicHolidayFacade"/>
     <bean id="sdPublicHolidayFacade" class="com.hkt.btu.sd.facade.impl.SdPublicHolidayFacadeImpl"/>

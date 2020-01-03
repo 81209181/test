@@ -1,13 +1,12 @@
 package com.hkt.btu.common.spring.security.access.intercept;
 
 
+import com.hkt.btu.common.core.service.BtuCacheService;
 import com.hkt.btu.common.core.service.BtuPathCtrlService;
 import com.hkt.btu.common.core.service.bean.BtuUserRolePathCtrlBean;
+import com.hkt.btu.common.core.service.constant.BtuCacheEnum;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;
@@ -15,17 +14,12 @@ import org.springframework.security.web.access.intercept.FilterInvocationSecurit
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 
 public class BtuSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
-    private static final Logger LOG = LogManager.getLogger(BtuSecurityMetadataSource.class);
-
-    // cached Secured URLs config
-    private static Map<RequestMatcher, Collection<ConfigAttribute>> resourceMap = null;
 
     // default user group
     public static final ConfigAttribute CONFIG_ATTR_PERMIT_ALL = new SecurityConfig("permitAll");
@@ -49,27 +43,21 @@ public class BtuSecurityMetadataSource implements FilterInvocationSecurityMetada
 
     @Resource(name = "pathCtrlService")
     BtuPathCtrlService pathCtrlService;
+    @Resource(name = "cacheService")
+    BtuCacheService btuCacheService;
 
-    @PostConstruct
-    public void loadResourceDefine() {
-        reloadResourceDefine();
-    }
 
     public synchronized void reloadResourceDefine() {
-        Map<RequestMatcher, Collection<ConfigAttribute>> newResourceMap = buildResourceMapFromDb();
+        btuCacheService.reloadCachedObject(BtuCacheEnum.RESOURCE_MAP.getCacheName());
+    }
 
-        if (MapUtils.isEmpty(newResourceMap)) {
-            LOG.error("Secured URLs config is empty.");
-            LOG.error("Secured URLs config CANNOT be re-loaded from DB.");
-        } else {
-            resourceMap = newResourceMap;
-            LOG.info(String.format("Secured URLs config successfully re-loaded from DB. Applying on %d URLs.",
-                    newResourceMap.keySet().size()));
-        }
+    // cached Secured URLs config
+    private Map<RequestMatcher, Collection<ConfigAttribute>> getResourceMap(){
+        return (Map<RequestMatcher, Collection<ConfigAttribute>>) btuCacheService.getCachedObjectByCacheName(BtuCacheEnum.RESOURCE_MAP.getCacheName());
     }
 
     @SuppressWarnings("Duplicates")
-    private Map<RequestMatcher, Collection<ConfigAttribute>> buildResourceMapFromDb() {
+    public Map<RequestMatcher, Collection<ConfigAttribute>> buildResourceMapFromDb() {
         Map<RequestMatcher, Collection<ConfigAttribute>> newResourceMap = new HashMap<>();
         Map<String, RequestMatcher> uriMatcherIndexRefMap = new HashMap<>();
 
@@ -126,7 +114,7 @@ public class BtuSecurityMetadataSource implements FilterInvocationSecurityMetada
 
         List<ConfigAttribute> results = new ArrayList<>();
 
-        for (Map.Entry<RequestMatcher, Collection<ConfigAttribute>> entry : resourceMap.entrySet()) {
+        for (Map.Entry<RequestMatcher, Collection<ConfigAttribute>> entry : getResourceMap().entrySet()) {
             if (entry.getKey().matches(request)) {
                 results.addAll(entry.getValue());
             }
@@ -143,8 +131,7 @@ public class BtuSecurityMetadataSource implements FilterInvocationSecurityMetada
     @Override
     public Collection<ConfigAttribute> getAllConfigAttributes() {
         Set<ConfigAttribute> allAttributes = new HashSet<>();
-        for (Map.Entry<RequestMatcher, Collection<ConfigAttribute>> entry : resourceMap
-                .entrySet()) {
+        for (Map.Entry<RequestMatcher, Collection<ConfigAttribute>> entry : getResourceMap().entrySet()) {
             allAttributes.addAll(entry.getValue());
         }
 
