@@ -1,9 +1,7 @@
 $(document).ready(function() {
     // search button
-    $("#btnSearch").on('click', function(event) {
-        event.preventDefault();
-        clearAllMsg();
-        $('#publicHolidayTable').DataTable().ajax.reload();
+    $("#btnSearch").on('click', function (event) {
+        searchPublicHolidayTableByYear(event);
     });
 
     // create button
@@ -42,6 +40,7 @@ $(document).ready(function() {
         serverSide: true,
         ordering: false,
         searching: false,
+        pageLength: 50,
         ajax: {
             type: "GET",
             contentType: "application/json",
@@ -73,6 +72,18 @@ $(document).ready(function() {
         ]
     });
 });
+
+function searchPublicHolidayTableByYear(event) {
+    event.preventDefault();
+    clearAllMsg();
+    $('#publicHolidayTable').DataTable().ajax.reload();
+}
+
+function triggerSearch(event) {
+    if (event.keyCode === 13) {
+        searchPublicHolidayTableByYear(event);
+    }
+}
 
 // delete button
 function deletePublicHoliday(publicHoliday, description) {
