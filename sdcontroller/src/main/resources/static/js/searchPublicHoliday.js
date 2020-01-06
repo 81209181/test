@@ -157,7 +157,7 @@ function importPublicHoliday() {
                     }
                 }
         } catch (e) {
-            showErrorMsg('can not import invalid data.');
+            showErrorMsg('Cannot import invalid data.');
             $('.import').modal('hide');
             return;
         }
