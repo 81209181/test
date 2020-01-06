@@ -277,7 +277,7 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
             Path path = Paths.get(reportPath);
             try {
                 return new UrlResource(path.toUri());
-            } catch (MalformedURLException e) {
+            } catch (Exception e) {
                 LOG.error(e.getMessage());
             }
         }
@@ -316,7 +316,7 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
             }
         }
         if (StringUtils.isEmpty(data.getCronExp())) {
-            throw new InvalidInputException("Empty intput cron expression.");
+            throw new InvalidInputException("Empty input cron expression.");
         } else {
             if (!CronExpression.isValidExpression(data.getCronExp())) {
                 throw new InvalidInputException("Invalid cron expression");
