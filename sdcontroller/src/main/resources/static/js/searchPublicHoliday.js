@@ -14,18 +14,22 @@ $(document).ready(function() {
     $('#btnSubmit').on('click',function(){
         let form =$('.needs-validation').get(0);
         if(form.checkValidity()){
+            clearAllMsg();
             $.post('/system/public-holiday/create-public-holiday',{
                 publicHoliday : $(form).find('input[name=publicHoliday]').val(),
                 description : $(form).find('textarea[name=description]').val(),
             },function(res){
-                if(res.success){
-                    location.reload();
+                if (res.success) {
+                    $('#publicHolidayTable').DataTable().ajax.reload();
+                } else {
+                    showErrorMsg(res.feedback);
                 }
             }).fail(function(e){
                 var responseError = e.responseText ? e.responseText : "Get failed.";
                 console.log("ERROR : ", responseError);
-                alert(responseError);
+                showErrorMsg(responseError);
             })
+            $('.reason').modal('hide');
         }
         $(form).addClass("was-validated");
     });
@@ -76,15 +80,14 @@ $(document).ready(function() {
 // delete button
 function deletePublicHoliday(publicHoliday, description) {
     if (confirm("Are you sure you want to delete this record?")) {
+        clearAllMsg();
         $.post('/system/public-holiday/delete-public-holiday', {
             publicHoliday: publicHoliday,
             description: description,
         }, function (res) {
             if (res.success) {
                 showInfoMsg("delete success.");
-                setTimeout(function () {
-                    location.reload();
-                }, 1000)
+                $('#publicHolidayTable').DataTable().ajax.reload();
             }
         }).fail(function (e) {
             var responseError = e.responseText ? e.responseText : "Get failed.";
@@ -101,7 +104,8 @@ function copyToClipBoard() {
         input.select();
         if (document.execCommand('copy')) {
             document.execCommand('copy');
-            alert('Copy success.');
+            $('.export').modal('hide');
+            showInfoMsg("Copied successfully.");
         }
     })
 }
@@ -144,7 +148,8 @@ function showImportPublicHoliday() {
 }
 
 function importPublicHoliday() {
-    $("#btnPbImportSb").on('click', function () {
+    $("#btnPbImportSb").one('click', function () {
+        clearAllMsg();
         let array = '';
         try {
             array = JSON.parse($("#textareaImport").val());
