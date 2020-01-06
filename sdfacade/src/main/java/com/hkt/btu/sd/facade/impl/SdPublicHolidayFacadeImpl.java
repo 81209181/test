@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,6 +37,10 @@ public class SdPublicHolidayFacadeImpl implements SdPublicHolidayFacade {
     public PageData<SdPublicHolidayData> getPublicHolidayList(Pageable pageable, String year) {
         Page<SdPublicHolidayBean> pageBean;
         try {
+            // default search result of current year
+            if (StringUtils.isEmpty(year)) {
+                year = String.valueOf(LocalDateTime.now().getYear());
+            }
             pageBean = sdPublicHolidayService.getPublicHolidayList(pageable, year);
         } catch (AuthorityNotFoundException e) {
             return new PageData<>(e.getMessage());
