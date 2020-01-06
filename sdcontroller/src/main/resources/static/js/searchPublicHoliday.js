@@ -66,7 +66,8 @@ $(document).ready(function() {
             {
                 targets: 2,
                 render: function (data, type, row, meta) {
-                    return "<button class='btn btn-danger' onclick='deletePublicHoliday(\"" + row['publicHoliday'] + "\",\"" + row['description'] +"\")' ><i class='fas fa-edit'></i>Delete</button>";
+                    let description = row['description'].replace("'", "&#39;");
+                    return "<button class='btn btn-danger' onclick='deletePublicHoliday(\"" + row['publicHoliday'] + "\",\"" + description +"\")' ><i class='fas fa-edit'></i>Delete</button>";
                 }
             }
         ]
@@ -95,6 +96,7 @@ function deletePublicHoliday(publicHoliday, description) {
 }
 
 function copyToClipBoard() {
+    clearAllMsg();
     const btn = document.querySelector('#btnPbExportCp');
     btn.addEventListener('click', () => {
         const input = document.querySelector('#textareaExport');
@@ -109,6 +111,7 @@ function copyToClipBoard() {
 
 function exportPublicHoliday() {
     $("#btnPbExport").on('click', function () {
+        clearAllMsg();
         $('.export').on('hide.bs.modal', function () {
             $("#textareaExport").val("");
         })
@@ -145,7 +148,8 @@ function showImportPublicHoliday() {
 }
 
 function importPublicHoliday() {
-    $("#btnPbImportSb").on('click', function () {
+    clearAllMsg();
+    $("#btnPbImportSb").one('click', function () {
         let array = '';
         try {
             array = JSON.parse($("#textareaImport").val());
@@ -172,6 +176,9 @@ function importPublicHoliday() {
                 if (res.success) {
                     $('.import').modal('hide');
                     showInfoMsg(res.feedback);
+                    setTimeout(function () {
+                        location.reload();
+                    }, 1000)
                 }
             }
         }).fail(function (e) {

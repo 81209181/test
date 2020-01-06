@@ -104,10 +104,16 @@ public class SdPublicHolidayFacadeImpl implements SdPublicHolidayFacade {
             return false;
         }
 
+        // check duplicate element
+        int duplicateSize = data.stream().distinct().collect(Collectors.toList()).size();
+        if (data.size() != duplicateSize) {
+            return false;
+        }
+
+        // filter null element
         List<SdPublicHolidayData> filterList = data.stream()
                 .filter(pbData -> pbData.getPublicHoliday() != null && pbData.getDescription() != null)
                 .collect(Collectors.toList());
-
         if (CollectionUtils.isEmpty(filterList)) {
             return false;
         }
@@ -127,6 +133,9 @@ public class SdPublicHolidayFacadeImpl implements SdPublicHolidayFacade {
                 return bean;
             }).collect(Collectors.toList());
 
+            if (CollectionUtils.isEmpty(beanList)) {
+                return false;
+            }
             sdPublicHolidayService.insertPublicHoliday(beanList);
             return true;
         } catch (Exception e) {
