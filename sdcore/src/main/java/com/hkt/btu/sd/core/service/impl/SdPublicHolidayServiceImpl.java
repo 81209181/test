@@ -75,11 +75,11 @@ public class SdPublicHolidayServiceImpl implements SdPublicHolidayService {
             if (bean.getPublicHoliday().isAfter(cutoffDate)) {
                 return;
             } else {
-                throw new JobExecutionException("Not found public holiday after next three months.");
+                throw new JobExecutionException("Found no public holiday record after three months.");
             }
         }
 
-        throw new JobExecutionException("Not found public holiday in DB.");
+        throw new JobExecutionException("Found no public holiday record in DB.");
     }
 
     @Override

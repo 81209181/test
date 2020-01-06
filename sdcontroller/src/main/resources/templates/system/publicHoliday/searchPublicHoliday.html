@@ -7,8 +7,8 @@
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
-    <form th:id="search-public-holiday-form" class="form-inline">
-        <input type="number" min="1900" max="9999" class="form-control mb-2 mr-sm-2 col-md-2" placeholder="Year" th:id="public-holiday-search-year">
+    <div th:id="search-public-holiday-form" class="form-inline">
+        <input type="number" min="1900" max="9999" class="form-control mb-2 mr-sm-2 col-md-2" onkeyup="triggerSearch(event);" placeholder="Year" th:id="public-holiday-search-year">
         <button id="btnSearch" type="button" class="btn btn-lg btn-primary mb-2"><i class="fas fa-search"></i> Search</button>
         <button id="btnCreate" type="button" class="btn btn-lg btn-success mb-2 ml-2"><i class="fas fa-plus-square"></i> Create</button>
 
@@ -23,7 +23,7 @@
             <i class="far fa-save"></i> Export
         </button>
         </div>
-    </form>
+    </div>
 
     <h1>Public Holiday List</h1>
     <table id="publicHolidayTable" class="display">

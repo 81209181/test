@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,6 +38,10 @@ public class SdPublicHolidayFacadeImpl implements SdPublicHolidayFacade {
     public PageData<SdPublicHolidayData> getPublicHolidayList(Pageable pageable, String year) {
         Page<SdPublicHolidayBean> pageBean;
         try {
+            // default search result of current year
+            if (StringUtils.isEmpty(year)) {
+                year = String.valueOf(LocalDateTime.now().getYear());
+            }
             pageBean = sdPublicHolidayService.getPublicHolidayList(pageable, year);
         } catch (AuthorityNotFoundException e) {
             return new PageData<>(e.getMessage());
@@ -106,10 +111,16 @@ public class SdPublicHolidayFacadeImpl implements SdPublicHolidayFacade {
             return false;
         }
 
+        // check duplicate element
+        int duplicateSize = data.stream().distinct().collect(Collectors.toList()).size();
+        if (data.size() != duplicateSize) {
+            return false;
+        }
+
+        // filter null element
         List<SdPublicHolidayData> filterList = data.stream()
                 .filter(pbData -> pbData.getPublicHoliday() != null && pbData.getDescription() != null)
                 .collect(Collectors.toList());
-
         if (CollectionUtils.isEmpty(filterList)) {
             return false;
         }
@@ -129,6 +140,9 @@ public class SdPublicHolidayFacadeImpl implements SdPublicHolidayFacade {
                 return bean;
             }).collect(Collectors.toList());
 
+            if (CollectionUtils.isEmpty(beanList)) {
+                return false;
+            }
             sdPublicHolidayService.insertPublicHoliday(beanList);
             return true;
         } catch (Exception e) {
