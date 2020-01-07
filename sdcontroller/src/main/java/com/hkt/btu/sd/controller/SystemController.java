@@ -36,7 +36,7 @@ public class SystemController {
     @Resource(name = "userFacade")
     SdUserFacade userFacade;
     @Resource(name = "apiClientFacade")
-    SdApiClientFacade apiClientFacade;
+    SdApiClientFacade sdApiClientFacade;
 
     @GetMapping({"", "/", "/index"})
     public String index() {
@@ -313,7 +313,7 @@ public class SystemController {
 
     @PostMapping("/manage-api/getAuthorization")
     public ResponseEntity<?> getAuthorization(String apiName) {
-        String authPlainText = String.format("%s:%s", apiName, apiClientFacade.getApiClientBean(apiName));
+        String authPlainText = String.format("%s:%s", apiName, sdApiClientFacade.getApiClientBean(apiName));
 
         if (StringUtils.isEmpty(authPlainText)) {
             return ResponseEntity.ok(SimpleAjaxResponse.of(false, "Get Authorization failed."));
@@ -327,7 +327,7 @@ public class SystemController {
     @PostMapping("/manage-api/regenerateKey")
     public ResponseEntity<?> regenerateKey(String apiName) {
         try {
-            apiClientFacade.reloadCached(apiName);
+            sdApiClientFacade.reloadCached(apiName);
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Re-generate failed.");
