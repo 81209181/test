@@ -23,7 +23,6 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -32,6 +31,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static com.hkt.btu.common.core.service.bean.BtuSqlReportBean.REPORT_FOLDER_PATH;
 
 public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
 
@@ -151,7 +152,7 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
         try {
             checkReportData(data);
             reportId = reportService.createReport(data.getReportName(), data.getCronExp(), data.getStatus(),
-                    data.getSql(), data.getExportTo(), data.getEmailTo(), data.getRemarks());
+                    data.getSql(), data.getEmailTo(), data.getRemarks());
             sdSchedulerService.scheduleReportJob(data.getReportName());
         } catch (InvalidInputException | SchedulerException | ClassNotFoundException e) {
             LOG.warn(e.getMessage());
@@ -242,9 +243,10 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
 
     @Override
     public List<SdReportHistoryData> getFileList(String reportId) {
+        List<SdReportHistoryData> emptyList = new ArrayList<>();
         String reportPath = getReportPath(reportId);
         if (StringUtils.isEmpty(reportPath)) {
-            return null;
+            return emptyList;
         }
         try (Stream<Path> paths = Files.walk(Paths.get(reportPath))) {
             List<SdReportHistoryData> dataList = paths.filter(Files::isRegularFile)
@@ -260,7 +262,7 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
         } catch (IOException e) {
             LOG.error(e.getMessage(), e);
         }
-        return null;
+        return emptyList;
     }
 
     @Override
@@ -278,25 +280,28 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
             try {
                 return new UrlResource(path.toUri());
             } catch (Exception e) {
-                LOG.error(e.getMessage());
+                LOG.error(e.getMessage(), e);
             }
         }
         return null;
     }
 
     private String getReportPath(String reportId) {
+        if (StringUtils.isEmpty(reportId)) {
+            return null;
+        }
+
         SdSqlReportBean bean = reportService.getSqlReportDataByReportId(reportId);
         if (bean == null) {
             return null;
         }
 
-        String exportTo = bean.getExportTo();
         String reportName = bean.getReportName();
-        if (StringUtils.isEmpty(exportTo) && StringUtils.isEmpty(reportName)) {
+        if (StringUtils.isEmpty(reportName)) {
             return null;
         }
 
-        String path = exportTo + File.separator + reportName;
+        String path = REPORT_FOLDER_PATH + reportName;
         return path;
     }
 
@@ -306,9 +311,6 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
         }
         if (StringUtils.isEmpty(data.getSql())) {
             throw new InvalidInputException("Empty input SQL statement.");
-        }
-        if (StringUtils.isEmpty(data.getExportTo())) {
-            throw new InvalidInputException("Empty input export place.");
         }
         if (StringUtils.isNotEmpty(data.getEmailTo())) {
             if (!EmailValidator.getInstance().isValid(data.getEmailTo())) {

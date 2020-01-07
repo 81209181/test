@@ -30,6 +30,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.hkt.btu.common.core.service.bean.BtuSqlReportBean.REPORT_FOLDER_PATH;
+
 public class BtuSchedulerServiceImpl implements BtuSchedulerService {
     private static final Logger LOG = LogManager.getLogger(BtuSchedulerServiceImpl.class);
 
@@ -256,8 +258,8 @@ public class BtuSchedulerServiceImpl implements BtuSchedulerService {
         // Build Report Meta Data
         BtuReportMetaDataBean metaData = new BtuReportMetaDataBean();
         metaData.setSql(sqlReportBean.getSql());
+        metaData.setExportTo(REPORT_FOLDER_PATH);
         metaData.setEmailTo(sqlReportBean.getEmailTo());
-        metaData.setExportTo(sqlReportBean.getExportTo());
         metaData.setReportName(sqlReportBean.getReportName());
 
         // set job data map
