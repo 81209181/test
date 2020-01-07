@@ -49,7 +49,6 @@
             <th>Report Name</th>
             <th>Cron Exp</th>
             <th>SQL</th>
-            <th>Export To</th>
             <th>Email To</th>
             <th>Active</th>
             <th></th>
@@ -65,7 +64,6 @@
             <th>Report Name</th>
             <th>Cron Exp</th>
             <th>SQL</th>
-            <th>Export To</th>
             <th>Email To</th>
             <th></th>
             <th></th>
@@ -106,7 +104,7 @@
         </div>
     </div>
 
-    <script type="text/javascript" th:src="@{/js/searchSqlReport.js(v=${session.version})}"></script>
+    <script type="text/javascript" th:src="@{/js/searchSqlReport.js(v=${projectBuildtime})}"></script>
 </div>
 </body>
 </html>

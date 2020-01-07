@@ -49,10 +49,10 @@
 
 
         <div class="form-row">
-            <div class="form-group col-md-6">
+            <!--<div class="form-group col-md-6">
                 <label>Export To</label>
                 <input type="text" class="form-control" id="exportTo" name="exportTo" th:value="${data.exportTo}" readonly>
-            </div>
+            </div>-->
             <div class="form-group col-md-6">
                 <label>Email To</label>
                 <input type="text" class="form-control" id="emailTo" name="emailTo" th:value="${data.emailTo}">
@@ -63,7 +63,7 @@
             </button>
         </div>
     </form>
-    <script type="text/javascript" th:src="@{/js/editSqlReport.js(v=${session.version})}"></script>
+    <script type="text/javascript" th:src="@{/js/editSqlReport.js(v=${projectBuildtime})}"></script>
 
 </div>
 </body>

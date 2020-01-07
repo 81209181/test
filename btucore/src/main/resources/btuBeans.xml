@@ -84,10 +84,10 @@
     <bean id="btuTemplateEngineService" class="com.hkt.btu.common.core.service.impl.BtuTemplateEngineServiceImpl"/>
 
     <alias name="btuDateConverter" alias="dateConverter"/>
-    <bean id="btuDateConverter" class="com.hkt.btu.common.genrator.impl.BtuDateConverterImpl"/>
+    <bean id="btuDateConverter" class="com.hkt.btu.common.generator.impl.BtuDateConverterImpl"/>
 
-    <alias name="btuCsvGenrator" alias="csvGenrator"/>
-    <bean id="btuCsvGenrator" class="com.hkt.btu.common.genrator.impl.BtuSQL2CSVGenratorImpl"/>
+    <alias name="btuCsvGenerator" alias="csvGenerator"/>
+    <bean id="btuCsvGenerator" class="com.hkt.btu.common.generator.impl.BtuSQL2CSVGeneratorImpl"/>
 
     <alias name="btuApiClientService" alias="apiClientService"/>
     <bean id="btuApiClientService" class="com.hkt.btu.common.core.service.impl.BtuApiClientServiceImpl"/>

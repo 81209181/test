@@ -9,7 +9,6 @@
         <result column="CRON_EXP" property="cronExp"/>
         <result column="STATUS" property="status"/>
         <result column="SQL" property="sql"/>
-        <result column="EXPORT_TO" property="exportTo"/>
         <result column="EMAIL_TO" property="emailTo"/>
 
         <result column="CREATEDATE" property="createdate"/>
@@ -47,9 +46,9 @@
         <selectKey keyProperty="reportId" resultType="string" order="BEFORE">
             SELECT SEQ_SQL_REPORT_REPORT_ID.nextval FROM DUAL
         </selectKey>
-        insert into SQL_REPORT(REPORT_ID,REPORT_NAME, CRON_EXP, STATUS, SQL, EXPORT_TO, EMAIL_TO, CREATEBY, MODIFYBY,
+        insert into SQL_REPORT(REPORT_ID,REPORT_NAME, CRON_EXP, STATUS, SQL, EMAIL_TO, CREATEBY, MODIFYBY,
         REMARKS)
-        VALUES (#{reportId},#{reportName}, #{cronExp}, #{status}, #{sql}, #{exportTo}, #{emailTo}, #{createby},
+        VALUES (#{reportId},#{reportName}, #{cronExp}, #{status}, #{sql}, #{emailTo}, #{createby},
         #{modifyby}, #{remarks})
     </insert>
 

@@ -386,7 +386,6 @@ CREATE TABLE SQL_REPORT
     CRON_EXP    VARCHAR2(20)        not null,
     STATUS      VARCHAR2(2)         not null,
     SQL         VARCHAR2(100)       not null,
-    EXPORT_TO   VARCHAR2(50),
     EMAIL_TO    VARCHAR2(20),
     CREATEDATE  DATE                default SYSDATE not null,
     CREATEBY    VARCHAR2(10)        not null,

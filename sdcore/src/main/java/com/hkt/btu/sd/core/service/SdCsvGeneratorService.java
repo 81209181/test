@@ -4,7 +4,7 @@ import com.hkt.btu.common.core.service.bean.BtuReportMetaDataBean;
 
 import java.io.File;
 
-public interface SdCsvGenratorService {
+public interface SdCsvGeneratorService {
 
     File getCsvFile(BtuReportMetaDataBean metaData);
 }

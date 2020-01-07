@@ -9,7 +9,6 @@ public class SdSqlReportData implements DataInterface {
     private String cronExp;
     private String status;
     private String sql;
-    private String exportTo;
     private String emailTo;
     private boolean isActive;
     private String remarks;
@@ -52,14 +51,6 @@ public class SdSqlReportData implements DataInterface {
 
     public void setSql(String sql) {
         this.sql = sql;
-    }
-
-    public String getExportTo() {
-        return exportTo;
-    }
-
-    public void setExportTo(String exportTo) {
-        this.exportTo = exportTo;
     }
 
     public String getEmailTo() {

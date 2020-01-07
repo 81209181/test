@@ -1,6 +1,6 @@
-package com.hkt.btu.common.genrator.impl;
+package com.hkt.btu.common.generator.impl;
 
-import com.hkt.btu.common.genrator.BtuDateConverter;
+import com.hkt.btu.common.generator.BtuDateConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

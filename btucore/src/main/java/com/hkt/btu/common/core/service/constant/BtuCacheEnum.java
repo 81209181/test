@@ -8,7 +8,11 @@ public enum BtuCacheEnum {
 //    SITE_CONFIG_BEAN ("Site Config Bean","siteService",""),
 //    USER_ROLE_TREE ("User Role Tree","userRoleService","getRoleTree")
     RESOURCE_MAP ("Security Resource Map", 100, false,
-        "customBtuSecurityMetadataSource","buildResourceMapFromDb")
+        "customBtuSecurityMetadataSource","buildResourceMapFromDb"),
+    SITE_CONFIG_MAP("Site Config Map",101,true,
+            "siteConfigService","getSiteConfigBean"),
+    SENSITIVE_DATA("Sensitive Data Map",102,false,
+            "sensitiveDataService","getCachedKeyMap")
     ;
 
 

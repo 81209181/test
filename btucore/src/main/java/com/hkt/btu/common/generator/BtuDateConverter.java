@@ -1,4 +1,4 @@
-package com.hkt.btu.common.genrator;
+package com.hkt.btu.common.generator;
 
 public interface BtuDateConverter {
 
