@@ -15,12 +15,12 @@ public class SdApiFacadeImpl implements SdApiFacade {
     private static final Logger LOG = LogManager.getLogger(SdApiFacadeImpl.class);
 
     // cached api info
-    private Map<String, String> cachedApiSiteInterfaceBean = new HashMap<>();
+    private Map<String, String> cachedApiSiteInterfaceBean = new HashMap<>();// todo [SERVDESK-308]: this should be useless
 
     @Resource
     private SdConfigParamService sdConfigParamService;
 
-    public String getSiteInterfaceBean(String apiName){
+    public String getSiteInterfaceBean(String apiName){// todo [SERVDESK-308]: this should be useless
         // try find in cache
         if(cachedApiSiteInterfaceBean.size() > 0 && cachedApiSiteInterfaceBean.containsKey(apiName)){
             return cachedApiSiteInterfaceBean.get(apiName);
