@@ -118,7 +118,7 @@ function copyToClipBoard() {
         if (document.execCommand('copy')) {
             document.execCommand('copy');
             $('.export').modal('hide');
-            showInfoMsg('Copied successfully.');
+            showInfoMsg('Copied successfully.', true);
         }
     })
 }
