@@ -9,7 +9,7 @@ public class BtuSqlReportBean extends BaseBean {
 
     public static final String DEACTIVE_STATUS = "D";
 
-    public static final String REPORT_FOLDER_PATH = "D:\\opt\\report\\";
+    public static final String REPORT_FOLDER_PATH = "/opt/report/";
 
     public static final String REPORT_JOBDATAMAP_KEY = "reportMetaData";
 
