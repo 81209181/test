@@ -269,7 +269,7 @@ public class SystemController {
         if (result) {
             return ResponseEntity.ok(SimpleAjaxResponse.of(true, "insert successful."));
         } else {
-            return ResponseEntity.badRequest().body("invalid date input/input duplicate date.");
+            return ResponseEntity.badRequest().body("Cannot import duplicate/invalid date.");
         }
     }
 

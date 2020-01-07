@@ -112,7 +112,7 @@ public class SdPublicHolidayFacadeImpl implements SdPublicHolidayFacade {
         }
 
         // check duplicate element
-        int duplicateSize = data.stream().distinct().collect(Collectors.toList()).size();
+        int duplicateSize = (int) data.stream().distinct().count();
         if (data.size() != duplicateSize) {
             return false;
         }
