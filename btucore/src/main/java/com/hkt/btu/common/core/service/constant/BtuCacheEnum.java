@@ -5,8 +5,6 @@ import org.apache.commons.lang3.StringUtils;
 
 
 public enum BtuCacheEnum {
-//    SITE_CONFIG_BEAN ("Site Config Bean","siteService",""),
-//    USER_ROLE_TREE ("User Role Tree","userRoleService","getRoleTree")
     RESOURCE_MAP ("Security Resource Map", 100, false,
         "customBtuSecurityMetadataSource","buildResourceMapFromDb"),
     SITE_CONFIG_MAP("Site Config Map",101,true,

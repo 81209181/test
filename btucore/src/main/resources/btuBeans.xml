@@ -89,6 +89,9 @@
     <alias name="btuCsvGenerator" alias="csvGenerator"/>
     <bean id="btuCsvGenerator" class="com.hkt.btu.common.generator.impl.BtuSQL2CSVGeneratorImpl"/>
 
+    <alias name="btuApiClientService" alias="apiClientService"/>
+    <bean id="btuApiClientService" class="com.hkt.btu.common.core.service.impl.BtuApiClientServiceImpl"/>
+
     <!--  Populator  -->
     <alias name="btuSiteConfigBeanPopulator" alias="siteConfigBeanPopulator"/>
     <bean id="btuSiteConfigBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuSiteConfigBeanPopulator"/>

@@ -52,8 +52,8 @@
     <alias name="sdPublicHolidayFacade" alias="publicHolidayFacade"/>
     <bean id="sdPublicHolidayFacade" class="com.hkt.btu.sd.facade.impl.SdPublicHolidayFacadeImpl"/>
 
-    <alias name="sdApiFacade" alias="apiFacade"/>
-    <bean id="sdApiFacade" class="com.hkt.btu.sd.facade.impl.SdApiFacadeImpl"/>
+    <alias name="sdApiClientFacade" alias="apiClientFacade"/>
+    <bean id="sdApiClientFacade" class="com.hkt.btu.sd.facade.impl.SdApiClientFacadeImpl"/>
 
     <!-- Populator -->
     <alias name="sdUserDataPopulator" alias="userDataPopulator"/>
