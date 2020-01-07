@@ -9,7 +9,9 @@ public class BtuSqlReportBean extends BaseBean {
 
     public static final String DEACTIVE_STATUS = "D";
 
-   public static final String REPORT_JOBDATAMAP_KEY = "reportMetaData";
+    public static final String REPORT_FOLDER_PATH = "D:\\opt\\report\\";
+
+    public static final String REPORT_JOBDATAMAP_KEY = "reportMetaData";
 
     private String reportId;
     private String reportName;
@@ -17,7 +19,6 @@ public class BtuSqlReportBean extends BaseBean {
     private String status;
     private String jobClass;
     private String sql;
-    private String exportTo;
     private String emailTo;
 
 
@@ -67,14 +68,6 @@ public class BtuSqlReportBean extends BaseBean {
 
     public void setSql(String sql) {
         this.sql = sql;
-    }
-
-    public String getExportTo() {
-        return exportTo;
-    }
-
-    public void setExportTo(String exportTo) {
-        this.exportTo = exportTo;
     }
 
     public String getEmailTo() {

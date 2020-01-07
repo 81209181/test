@@ -1,7 +1,5 @@
 package com.hkt.btu.sd.core.service.populator;
 
-
-import com.hkt.btu.common.core.service.bean.BtuSqlReportBean;
 import com.hkt.btu.common.core.service.populator.AbstractBeanPopulator;
 import com.hkt.btu.sd.core.dao.entity.SdCronJobEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSqlReportEntity;
@@ -19,7 +17,6 @@ public class SdReportBeanPopulator extends AbstractBeanPopulator<SdSqlReportBean
         target.setJobClass("com.hkt.btu.sd.core.job.SdSqlReportJob");
         target.setCronExp(source.getCronExp());
         target.setEmailTo(source.getEmailTo());
-        target.setExportTo(source.getExportTo());
         target.setSql(source.getSql());
         target.setStatus(source.getStatus());
     }
