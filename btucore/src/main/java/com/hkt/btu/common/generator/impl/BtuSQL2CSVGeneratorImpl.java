@@ -1,20 +1,21 @@
-package com.hkt.btu.common.genrator.impl;
+package com.hkt.btu.common.generator.impl;
 
 import au.com.bytecode.opencsv.CSVWriter;
-import com.hkt.btu.common.genrator.BtuCSVGenrator;
-import com.hkt.btu.common.genrator.BtuDateConverter;
+import com.hkt.btu.common.generator.BtuCSVGenerator;
+import com.hkt.btu.common.generator.BtuDateConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Resource;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
 
-public class BtuSQL2CSVGenratorImpl implements BtuCSVGenrator {
+public class BtuSQL2CSVGeneratorImpl implements BtuCSVGenerator {
 
     private final char DEFAULT_SEPARATOR = ',';
 
-    private static final Logger LOG = LogManager.getLogger(BtuSQL2CSVGenratorImpl.class);
+    private static final Logger LOG = LogManager.getLogger(BtuSQL2CSVGeneratorImpl.class);
 
     @Resource(name = "dateConverter")
     BtuDateConverter dateConverter;
@@ -43,7 +44,7 @@ public class BtuSQL2CSVGenratorImpl implements BtuCSVGenrator {
 
     private CSVWriter prepareCSVWriter(String filePath, char separator) throws IOException {
         File file = new File(filePath);
-        Writer writer = new FileWriter(file);
+        Writer writer = new FileWriter(file, Charset.forName("GBK"));
         CSVWriter csvWriter = new CSVWriter(writer, separator);
         return csvWriter;
     }

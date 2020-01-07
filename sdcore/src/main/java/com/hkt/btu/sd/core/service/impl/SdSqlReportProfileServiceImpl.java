@@ -98,11 +98,11 @@ public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImp
     @Override
     @Transactional
     public String createReport(String reportName, String cronExpression, String status,
-                               String sql, String exportTo, String emailTo, String remarks) {
+                               String sql, String emailTo, String remarks) {
         BtuUserBean currentUserBean = sdUserService.getCurrentUserBean();
         String createBy = currentUserBean.getUserId();
         SdSqlReportEntity entity = new SdSqlReportEntity();
-        setProperties(reportName, cronExpression, status, sql, exportTo, emailTo, remarks, createBy, entity);
+        setProperties(reportName, cronExpression, status, sql, emailTo, remarks, createBy, entity);
         sdSqlReportMapper.createSqlReport(entity);
         return entity.getReportId();
     }
@@ -174,12 +174,11 @@ public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImp
     }
 
     private void setProperties(String reportName, String cronExpression, String status, String sql,
-                               String exportTo, String emailTo, String remarks, String createBy, SdSqlReportEntity entity) {
+                               String emailTo, String remarks, String createBy, SdSqlReportEntity entity) {
         entity.setSql(sql);
         entity.setReportName(reportName);
         entity.setCronExp(cronExpression);
         entity.setEmailTo(emailTo);
-        entity.setExportTo(exportTo);
         entity.setRemarks(remarks);
         entity.setCreateby(createBy);
         entity.setStatus(status);

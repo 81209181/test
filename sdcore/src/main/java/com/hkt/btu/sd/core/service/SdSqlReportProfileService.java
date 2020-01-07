@@ -16,7 +16,7 @@ public interface SdSqlReportProfileService extends BtuSqlReportProfileService {
     SdSqlReportBean getSqlReportDataByReportId(String reportId);
 
     String createReport(String reportName, String cronExpression, String status,
-                        String sql, String exportTo, String emailTo, String remarks);
+                        String sql, String emailTo, String remarks);
 
     String deleteReport(String reportId);
 

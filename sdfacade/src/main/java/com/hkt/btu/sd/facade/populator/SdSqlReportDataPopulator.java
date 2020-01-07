@@ -14,7 +14,6 @@ public class SdSqlReportDataPopulator extends AbstractDataPopulator<SdSqlReportD
         target.setRemarks(source.getRemarks());
         target.setReportName(source.getReportName());
         target.setReportId(source.getReportId());
-        target.setExportTo(source.getExportTo());
         target.setEmailTo(source.getEmailTo());
         target.setActive(source.getStatus().equals(SdSqlReportBean.ACTIVE_STATUS) ? true : false);
     }

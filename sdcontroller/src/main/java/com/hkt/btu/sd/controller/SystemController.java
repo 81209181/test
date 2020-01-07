@@ -35,11 +35,8 @@ public class SystemController {
     SdPublicHolidayFacade sdPublicHolidayFacade;
     @Resource(name = "userFacade")
     SdUserFacade userFacade;
-    @Resource(name = "apiFacade")
-    SdApiFacade sdApiFacade;
-    @Resource(name = "auditTrailFacade")
-    SdAuditTrailFacade sdAuditTrailFacade;
-
+    @Resource(name = "apiClientFacade")
+    SdApiClientFacade sdApiClientFacade;
 
     @GetMapping({"", "/", "/index"})
     public String index() {
@@ -316,25 +313,21 @@ public class SystemController {
 
     @PostMapping("/manage-api/getAuthorization")
     public ResponseEntity<?> getAuthorization(String apiName) {
+        String authPlainText = String.format("%s:%s", apiName, sdApiClientFacade.getApiClientBean(apiName));
 
-        // todo [SERVDESK-308]: move audit to facade layer - sdApiFacade.getAuthorization
-        sdAuditTrailFacade.insertViewApiAuthAuditTrail(apiName);
+        if (StringUtils.isEmpty(authPlainText)) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of(false, "Get Authorization failed."));
+        }
 
-        // todo [SERVDESK-308]: move forming result to facade layer - sdApiFacade.getAuthorization, ask dennis how he checked incoming api key
-        String apiKey = String.format("%s.%s", apiName, sdApiFacade.getSiteInterfaceBean(apiName));
-        String authPlainText = String.format("%s:%s", apiName, apiKey);
         String encodedAuth = Base64.getEncoder().encodeToString(authPlainText.getBytes());
-        return ResponseEntity.ok(String.format("Bearer %s", encodedAuth));
+        String apiKey = String.format("Bearer %s", encodedAuth);
+        return ResponseEntity.ok(SimpleAjaxResponse.of(true, apiKey));
     }
 
     @PostMapping("/manage-api/regenerateKey")
     public ResponseEntity<?> regenerateKey(String apiName) {
         try {
-            // todo [SERVDESK-308]: move audit to facade layer - sdApiFacade.getAuthorization
-            sdAuditTrailFacade.insertRegenApiAuthAuditTrail(apiName);
-
-            // todo [SERVDESK-308]: move reload cache to facade layer - sdApiFacade.getAuthorization
-            sdApiFacade.reloadCached(apiName);
+            sdApiClientFacade.reloadCached(apiName);
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Re-generate failed.");
