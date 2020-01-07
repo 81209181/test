@@ -98,7 +98,7 @@ function deletePublicHoliday(publicHoliday, description) {
             description: description,
         }, function (res) {
             if (res.success) {
-                showInfoMsg("delete success.");
+                showInfoMsg("Deleted successfully.");
                 $('#publicHolidayTable').DataTable().ajax.reload();
             }
         }).fail(function (e) {

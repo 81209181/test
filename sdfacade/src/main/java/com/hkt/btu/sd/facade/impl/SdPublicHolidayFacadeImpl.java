@@ -86,7 +86,7 @@ public class SdPublicHolidayFacadeImpl implements SdPublicHolidayFacade {
         try {
             sdPublicHolidayService.createPublicHoliday(publicHoliday, description);
         } catch (DuplicateKeyException e) {
-            throw new RuntimeException("Duplicate data already exists.");
+            throw new RuntimeException("Input date is already a public holiday.");
         }
     }
 
