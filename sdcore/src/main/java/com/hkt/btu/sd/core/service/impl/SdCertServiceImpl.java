@@ -28,9 +28,7 @@ public class SdCertServiceImpl implements SdCertService {
             throw new RuntimeException(String.format("Check url[%s] cert fail, error:%s.", url,e.getMessage()));
         }
         long remainingDay = (certificate.getNotAfter().getTime() - Calendar.getInstance().getTimeInMillis()) / (24 * 3600 * 1000);
-        if (remainingDay < 90) {
-            throw new RuntimeException(String.format("Url:[%s],expiry at %s, %d day(s) left.", url, certificate.getNotAfter(), remainingDay));
-        }
+        throw new RuntimeException(String.format("Url:[%s],expiry at %s, %d day(s) left.", url, certificate.getNotAfter(), remainingDay));
     }
 
     private HttpsURLConnection getHttpsURLConnection(String url) throws IOException, NoSuchAlgorithmException, KeyManagementException {

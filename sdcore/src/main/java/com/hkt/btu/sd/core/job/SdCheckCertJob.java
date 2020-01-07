@@ -37,6 +37,5 @@ public class SdCheckCertJob extends QuartzJobBean {
                 LOG.warn(ex);
             }
         }
-
     }
 }
