@@ -191,7 +191,7 @@ function importPublicHoliday() {
                     $('.import').modal('hide');
                     showInfoMsg(res.feedback);
                     setTimeout(function () {
-                        location.reload();
+                        $('#publicHolidayTable').DataTable().ajax.reload();
                     }, 1000)
                 }
             }
