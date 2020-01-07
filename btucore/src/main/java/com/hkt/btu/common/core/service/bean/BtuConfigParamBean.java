@@ -11,6 +11,11 @@ public class BtuConfigParamBean extends BaseBean {
         public static final String API_CLIENT ="API_CLIENT";
     }
 
+    public static class API_CONFIG_KEY {
+        public static final String BES_KEY ="BES.key";
+        public static final String WFM_KEY ="WFM.key";
+    }
+
     private String configGroup;
     private String configKey;
     private String configValue;

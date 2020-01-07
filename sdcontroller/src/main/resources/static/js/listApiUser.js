@@ -41,13 +41,13 @@ function ajaxGetApiKey(apiName) {
     })
 
     $.post('/system/manage-api/getAuthorization',{
-        apiName : 'API_' + apiName,
+        apiName : apiName,
     },function(data){
         $('#textareaApiKey').val(data);
     }).fail(function(e){
         var responseError = e.responseText ? e.responseText : "Get failed.";
         console.log("ERROR : ", responseError);
-        $('.export').modal('hide');
+        $('.apiKey').modal('hide');
         showErrorMsg(responseError);
     });
 
@@ -57,7 +57,7 @@ function ajaxGetApiKey(apiName) {
 function ajaxRegenerate(apiName) {
     if (confirm("Are you sure you want to re-generate?")) {
         $.post('/system/manage-api/regenerateKey',{
-            apiName : 'API_' + apiName,
+            apiName : apiName,
         }, function (res) {
             if (res.success) {
                 showInfoMsg("Re-generate success.");
@@ -77,7 +77,8 @@ function copyToClipBoard() {
         input.select();
         if (document.execCommand('copy')) {
             document.execCommand('copy');
-            alert('Copy success.');
+            $('.apiKey').modal('hide');
+            showInfoMsg("Copied successfully.");
         }
     })
 }

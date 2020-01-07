@@ -3,8 +3,6 @@ package com.hkt.btu.sd.controller;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
-import com.hkt.btu.sd.core.service.SdApiService;
-import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.data.*;
 import org.apache.commons.lang3.StringUtils;
@@ -37,8 +35,8 @@ public class SystemController {
     SdPublicHolidayFacade sdPublicHolidayFacade;
     @Resource(name = "userFacade")
     SdUserFacade userFacade;
-    @Resource(name = "apiService")
-    SdApiService apiService;
+    @Resource(name = "apiFacade")
+    SdApiFacade apiFacade;
     @Resource(name = "auditTrailFacade")
     SdAuditTrailFacade sdAuditTrailFacade;
 
@@ -274,7 +272,7 @@ public class SystemController {
         if (result) {
             return ResponseEntity.ok(SimpleAjaxResponse.of(true, "insert successful."));
         } else {
-            return ResponseEntity.badRequest().body("insert failed.");
+            return ResponseEntity.badRequest().body("invalid date input/input duplicate date.");
         }
     }
 
@@ -292,11 +290,11 @@ public class SystemController {
     @PostMapping("/public-holiday/create-public-holiday")
     public ResponseEntity<?> createPublicHoliday(@RequestParam String publicHoliday,
                                                  @RequestParam String description) {
-        boolean result = sdPublicHolidayFacade.createPublicHoliday(publicHoliday, description);
-        if (result) {
+        try {
+            sdPublicHolidayFacade.createPublicHoliday(publicHoliday, description);
             return ResponseEntity.ok(SimpleAjaxResponse.of());
-        } else {
-            return ResponseEntity.badRequest().body("create failed.");
+        } catch (Exception e) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of(false, e.getMessage()));
         }
     }
 
@@ -319,17 +317,17 @@ public class SystemController {
     @PostMapping("/manage-api/getAuthorization")
     public ResponseEntity<?> getAuthorization(String apiName) {
         sdAuditTrailFacade.insertViewApiAuthAuditTrail(apiName);
-        SiteInterfaceBean siteInterfaceBean = apiService.getSiteInterfaceBean(apiName);
-        String authPlainText = String.format("%s:%s", siteInterfaceBean.getUserName(), siteInterfaceBean.getPassword());
+        String apiKey = String.format("%s.%s", apiName, apiFacade.getSiteInterfaceBean(apiName));
+        String authPlainText = String.format("%s:%s", apiName, apiKey);
         String encodedAuth = Base64.getEncoder().encodeToString(authPlainText.getBytes());
-        return ResponseEntity.ok(String.format("Basic %s", encodedAuth));
+        return ResponseEntity.ok(String.format("Bearer %s", encodedAuth));
     }
 
     @PostMapping("/manage-api/regenerateKey")
     public ResponseEntity<?> regenerateKey(String apiName) {
         try {
             sdAuditTrailFacade.insertRegenApiAuthAuditTrail(apiName);
-            apiService.reloadCached(apiName);
+            apiFacade.reloadCached(apiName);
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Re-generate failed.");

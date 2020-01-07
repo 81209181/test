@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.facade.impl;
 
+import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
 import com.hkt.btu.sd.core.service.SdPublicHolidayService;
@@ -11,11 +12,12 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,6 +38,10 @@ public class SdPublicHolidayFacadeImpl implements SdPublicHolidayFacade {
     public PageData<SdPublicHolidayData> getPublicHolidayList(Pageable pageable, String year) {
         Page<SdPublicHolidayBean> pageBean;
         try {
+            // default search result of current year
+            if (StringUtils.isEmpty(year)) {
+                year = String.valueOf(LocalDateTime.now().getYear());
+            }
             pageBean = sdPublicHolidayService.getPublicHolidayList(pageable, year);
         } catch (AuthorityNotFoundException e) {
             return new PageData<>(e.getMessage());
@@ -70,17 +76,18 @@ public class SdPublicHolidayFacadeImpl implements SdPublicHolidayFacade {
     }
 
     @Override
-    public boolean createPublicHoliday(String publicHoliday, String description) {
-        if (StringUtils.isEmpty(publicHoliday) || StringUtils.isEmpty(description)) {
-            return false;
+    public void createPublicHoliday(String publicHoliday, String description) {
+        if (StringUtils.isEmpty(publicHoliday)) {
+            throw new InvalidInputException("Public holiday is empty.");
+        } else if (StringUtils.isEmpty(description)) {
+            throw new InvalidInputException("Description is empty.");
         }
+
         try {
             sdPublicHolidayService.createPublicHoliday(publicHoliday, description);
-            return true;
-        } catch (Exception e) {
-            LOG.error(e.getMessage());
+        } catch (DuplicateKeyException e) {
+            throw new RuntimeException("Duplicate data already exists.");
         }
-        return false;
     }
 
     @Override
@@ -104,10 +111,16 @@ public class SdPublicHolidayFacadeImpl implements SdPublicHolidayFacade {
             return false;
         }
 
+        // check duplicate element
+        int duplicateSize = data.stream().distinct().collect(Collectors.toList()).size();
+        if (data.size() != duplicateSize) {
+            return false;
+        }
+
+        // filter null element
         List<SdPublicHolidayData> filterList = data.stream()
                 .filter(pbData -> pbData.getPublicHoliday() != null && pbData.getDescription() != null)
                 .collect(Collectors.toList());
-
         if (CollectionUtils.isEmpty(filterList)) {
             return false;
         }
@@ -127,6 +140,9 @@ public class SdPublicHolidayFacadeImpl implements SdPublicHolidayFacade {
                 return bean;
             }).collect(Collectors.toList());
 
+            if (CollectionUtils.isEmpty(beanList)) {
+                return false;
+            }
             sdPublicHolidayService.insertPublicHoliday(beanList);
             return true;
         } catch (Exception e) {

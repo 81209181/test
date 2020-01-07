@@ -11,7 +11,7 @@ public interface SdPublicHolidayFacade {
 
     boolean deletePublicHoliday(String publicHoliday, String description);
 
-    boolean createPublicHoliday(String publicHoliday, String description);
+    void createPublicHoliday(String publicHoliday, String description);
 
     List<SdPublicHolidayData> getAllPublicHolidayList();
 

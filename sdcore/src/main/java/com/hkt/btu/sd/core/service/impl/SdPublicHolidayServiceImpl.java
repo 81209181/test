@@ -6,6 +6,8 @@ import com.hkt.btu.sd.core.service.SdPublicHolidayService;
 import com.hkt.btu.sd.core.service.bean.SdPublicHolidayBean;
 import com.hkt.btu.sd.core.service.populator.SdPublicHolidayBeanPopulator;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.quartz.JobExecutionException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -13,11 +15,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class SdPublicHolidayServiceImpl implements SdPublicHolidayService {
+    private static final Logger LOG = LogManager.getLogger(SdPublicHolidayServiceImpl.class);
 
     @Resource
     SdPublicHolidayMapper sdPublicHolidayMapper;
@@ -59,13 +63,23 @@ public class SdPublicHolidayServiceImpl implements SdPublicHolidayService {
 
     @Override
     public void checkPublicHoliday() throws JobExecutionException {
-        List<SdPublicHolidayEntity> entityList = sdPublicHolidayMapper.checkNextPublicHoliday();
+        List<SdPublicHolidayBean> beanList = getAllPublicHolidayList();
 
-        if (CollectionUtils.isNotEmpty(entityList)) {
-            return;
+        if (!CollectionUtils.isEmpty(beanList)) {
+            SdPublicHolidayBean bean = beanList.get(beanList.size() - 1);
+            LocalDate cutoffDate = LocalDate.now().withDayOfMonth(1).minusMonths(-3);
+
+            LOG.info("Check public holiday after: {}", cutoffDate);
+            LOG.info("Furthest public holiday date: {}", bean.getPublicHoliday());
+
+            if (bean.getPublicHoliday().isAfter(cutoffDate)) {
+                return;
+            } else {
+                throw new JobExecutionException("Found no public holiday record after three months.");
+            }
         }
 
-        throw new JobExecutionException("Not found public holiday after next three months.");
+        throw new JobExecutionException("Found no public holiday record in DB.");
     }
 
     @Override

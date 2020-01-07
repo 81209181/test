@@ -20,6 +20,4 @@ public interface SdPublicHolidayMapper {
     void deletePublicHoliday(@Param("publicHoliday") String publicHoliday, @Param("description") String description);
 
     void createPublicHoliday(@Param("publicHoliday") String publicHoliday, @Param("description") String description);
-
-    List<SdPublicHolidayEntity> checkNextPublicHoliday();
 }
