@@ -79,6 +79,9 @@
     <alias name="SdCacheService" alias="cacheService"/>
     <bean class="com.hkt.btu.sd.core.service.impl.SdCacheServiceImpl" id="SdCacheService"/>
 
+    <alias name="SdApiClientService" alias="apiClientService"/>
+    <bean id="SdApiClientService" class="com.hkt.btu.sd.core.service.impl.SdApiClientServiceImpl"/>
+
     <!-- Populator -->
     <alias name="sdUserBeanPopulator" alias="userBeanPopulator"/>
     <bean id="sdUserBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserBeanPopulator"/>

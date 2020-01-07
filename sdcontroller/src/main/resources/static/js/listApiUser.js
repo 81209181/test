@@ -42,16 +42,20 @@ function ajaxGetApiKey(apiName) {
 
     $.post('/system/manage-api/getAuthorization',{
         apiName : apiName,
-    },function(data){
-        $('#textareaApiKey').val(data);
+    },function(res){
+        if (res.success) {
+            $(".apiKey").modal('show');
+            $('#textareaApiKey').val(res.feedback);
+        } else {
+            $('.apiKey').modal('hide');
+            showErrorMsg(res.feedback);
+        }
     }).fail(function(e){
         var responseError = e.responseText ? e.responseText : "Get failed.";
         console.log("ERROR : ", responseError);
         $('.apiKey').modal('hide');
         showErrorMsg(responseError);
     });
-
-    $(".apiKey").modal('show');
 }
 
 function ajaxRegenerate(apiName) {

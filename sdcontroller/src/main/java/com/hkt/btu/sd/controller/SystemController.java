@@ -35,11 +35,8 @@ public class SystemController {
     SdPublicHolidayFacade sdPublicHolidayFacade;
     @Resource(name = "userFacade")
     SdUserFacade userFacade;
-    @Resource(name = "apiFacade")
-    SdApiFacade apiFacade;
-    @Resource(name = "auditTrailFacade")
-    SdAuditTrailFacade sdAuditTrailFacade;
-
+    @Resource(name = "apiClientFacade")
+    SdApiClientFacade apiClientFacade;
 
     @GetMapping({"", "/", "/index"})
     public String index() {
@@ -316,18 +313,21 @@ public class SystemController {
 
     @PostMapping("/manage-api/getAuthorization")
     public ResponseEntity<?> getAuthorization(String apiName) {
-        sdAuditTrailFacade.insertViewApiAuthAuditTrail(apiName);
-        String apiKey = String.format("%s.%s", apiName, apiFacade.getSiteInterfaceBean(apiName));
-        String authPlainText = String.format("%s:%s", apiName, apiKey);
+        String authPlainText = String.format("%s:%s", apiName, apiClientFacade.getApiClientBean(apiName));
+
+        if (StringUtils.isEmpty(authPlainText)) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of(false, "Get Authorization failed."));
+        }
+
         String encodedAuth = Base64.getEncoder().encodeToString(authPlainText.getBytes());
-        return ResponseEntity.ok(String.format("Bearer %s", encodedAuth));
+        String apiKey = String.format("Bearer %s", encodedAuth);
+        return ResponseEntity.ok(SimpleAjaxResponse.of(true, apiKey));
     }
 
     @PostMapping("/manage-api/regenerateKey")
     public ResponseEntity<?> regenerateKey(String apiName) {
         try {
-            sdAuditTrailFacade.insertRegenApiAuthAuditTrail(apiName);
-            apiFacade.reloadCached(apiName);
+            apiClientFacade.reloadCached(apiName);
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Re-generate failed.");
