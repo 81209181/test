@@ -33,4 +33,6 @@ public interface SdUserRoleService {
     List<SdUserRoleBean> getTeamHeadRoleList();
 
     List<List<Object>> getRole4Chart();
+
+    SdUserRoleBean getCachedUserRoleTree();
 }

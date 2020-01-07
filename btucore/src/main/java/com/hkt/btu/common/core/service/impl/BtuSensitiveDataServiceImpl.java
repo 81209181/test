@@ -155,6 +155,11 @@ public class BtuSensitiveDataServiceImpl implements BtuSensitiveDataService {
         getKeyByAlias(LATEST_KEY_ALIAS);
     }
 
+    @Override
+    public Map<Integer, Key> getCachedKeyMap() {
+        return CACHED_KEY_MAP;
+    }
+
     private Key getKeyByAlias(int alias) {
         final String aliasString = String.valueOf(alias);
 
