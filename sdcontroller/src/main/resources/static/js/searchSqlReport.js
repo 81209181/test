@@ -143,13 +143,12 @@ function createSqlReportTable() {
             { data: 'reportName' },
             { data: 'cronExp' },
             { data: 'sql' },
-            { data: 'exportTo' },
             { data: 'emailTo' },
             { data: 'active' }
         ],
         columnDefs: [
             {
-                targets: 6,
+                targets: 5,
                 data: "reportId",
                 render: function (reportId, type, row, meta) {
                     if (row['active']) {
@@ -160,13 +159,13 @@ function createSqlReportTable() {
                 }
             },
             {
-                targets: 7,
+                targets: 6,
                 render: function (reportName, type, row, meta) {
                     return "<button type='button' class='btn btn-info' onclick='ajaxSyncJobProfile(\"" + row['reportName'] + "\")' ><i class=\"fas fa-sync\"></i> Sync</button>";
                 }
             },
             {
-                targets: 8,
+                targets: 7,
                 data: "reportId",
                 render: function (reportId, type, row, meta) {
                     var ctx = $("meta[name='_ctx']").attr("content");
@@ -175,7 +174,7 @@ function createSqlReportTable() {
                 }
             },
             {
-                targets: 9,
+                targets: 8,
                 data: "reportId",
                 render: function (reportId, type, row, meta) {
                     var ctx = $("meta[name='_ctx']").attr("content");
@@ -184,7 +183,7 @@ function createSqlReportTable() {
                 }
             },
             {
-                targets: 10,
+                targets: 9,
                 data: "reportId",
                 render: function (reportId, type, row, meta) {
                     return "<button type='button' class='btn btn-danger' onclick='ajaxDeleteReport(\"" + reportId + "\")' ><i class=\"fas fa-times-circle\"></i> Delete</button>";
@@ -290,7 +289,6 @@ function showHistoryModal(reportId) {
             url: "/system/report/history?reportId=" + reportId,
             dataSrc: '',
             error: function () {
-                $(".history").modal('hide');
                 showErrorMsg("Cannot load report list.");
             }
         },
@@ -302,7 +300,9 @@ function showHistoryModal(reportId) {
                 targets: 1,
                 render: function (data, type, row, meta) {
                     let ctx = $("meta[name='_ctx']").attr("content");
-                    let link = ctx + "/system/report/downLoadReport?reportName=" + row['reportName'] + "&reportId=" + row['reportId'];
+                    let reportName = row['reportName'].replace(" ", "%20");
+                    reportName = reportName.replace("'", "&#39;")
+                    let link = ctx + "/system/report/downLoadReport?reportName=" + reportName + "&reportId=" + row['reportId'];
                     return '<a href=' + link + '><button class="btn btn-info">DownLoad</button></a>';
                 }
             }
