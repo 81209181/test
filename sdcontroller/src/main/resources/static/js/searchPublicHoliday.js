@@ -1,4 +1,8 @@
 $(document).ready(function() {
+    let date = new Date();
+    let currentYear = date.getFullYear();
+    $("#public-holiday-search-year").val(currentYear);
+
     // search button
     $("#btnSearch").on('click', function (event) {
         searchPublicHolidayTableByYear(event);
