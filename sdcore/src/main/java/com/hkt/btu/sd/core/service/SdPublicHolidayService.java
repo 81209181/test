@@ -5,14 +5,15 @@ import org.quartz.JobExecutionException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface SdPublicHolidayService {
     Page<SdPublicHolidayBean> getPublicHolidayList(Pageable pageable, String year);
 
-    void deletePublicHoliday(String publicHoliday, String description);
+    void deletePublicHoliday(LocalDate publicHoliday, String description);
 
-    void createPublicHoliday(String publicHoliday, String description);
+    void createPublicHoliday(LocalDate publicHoliday, String description);
 
     void checkPublicHoliday() throws JobExecutionException;
     List<SdPublicHolidayBean> getAllPublicHolidayList();

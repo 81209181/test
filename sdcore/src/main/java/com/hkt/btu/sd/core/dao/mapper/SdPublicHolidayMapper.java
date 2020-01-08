@@ -4,6 +4,7 @@ import com.hkt.btu.sd.core.dao.entity.SdPublicHolidayEntity;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -17,7 +18,7 @@ public interface SdPublicHolidayMapper {
 
     void insertPublicHoliday(@Param("entityList") List<SdPublicHolidayEntity> entityList);
 
-    void deletePublicHoliday(@Param("publicHoliday") String publicHoliday, @Param("description") String description);
+    void deletePublicHoliday(@Param("publicHoliday") LocalDate publicHoliday, @Param("description") String description);
 
-    void createPublicHoliday(@Param("publicHoliday") String publicHoliday, @Param("description") String description);
+    void createPublicHoliday(@Param("publicHoliday") LocalDate publicHoliday, @Param("description") String description);
 }

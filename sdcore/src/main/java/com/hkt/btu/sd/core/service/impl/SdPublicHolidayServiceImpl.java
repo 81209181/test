@@ -51,13 +51,13 @@ public class SdPublicHolidayServiceImpl implements SdPublicHolidayService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deletePublicHoliday(String publicHoliday, String description) {
+    public void deletePublicHoliday(LocalDate publicHoliday, String description) {
         sdPublicHolidayMapper.deletePublicHoliday(publicHoliday, description);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createPublicHoliday(String publicHoliday, String description) {
+    public void createPublicHoliday(LocalDate publicHoliday, String description) {
         sdPublicHolidayMapper.createPublicHoliday(publicHoliday, description);
     }
 
