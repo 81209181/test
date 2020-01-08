@@ -47,10 +47,10 @@
     </insert>
 
     <delete id="deletePublicHoliday">
-        delete from PUBLIC_HOLIDAY where TO_CHAR(PUBLIC_HOLIDAY, 'yyyy-MM-dd') = #{publicHoliday} and DESCRIPTION = #{description}
+        delete from PUBLIC_HOLIDAY where trunc(PUBLIC_HOLIDAY) = trunc(#{publicHoliday}) and DESCRIPTION = #{description}
     </delete>
 
     <insert id="createPublicHoliday">
-        insert into PUBLIC_HOLIDAY (PUBLIC_HOLIDAY, DESCRIPTION) values (to_date(#{publicHoliday}, 'yyyy-MM-dd'), #{description})
+        insert into PUBLIC_HOLIDAY (PUBLIC_HOLIDAY, DESCRIPTION) values (trunc(#{publicHoliday}), #{description})
     </insert>
 </mapper>

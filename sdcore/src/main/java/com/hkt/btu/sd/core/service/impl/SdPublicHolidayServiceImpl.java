@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,35 +52,33 @@ public class SdPublicHolidayServiceImpl implements SdPublicHolidayService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deletePublicHoliday(String publicHoliday, String description) {
+    public void deletePublicHoliday(LocalDate publicHoliday, String description) {
         sdPublicHolidayMapper.deletePublicHoliday(publicHoliday, description);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createPublicHoliday(String publicHoliday, String description) {
+    public void createPublicHoliday(LocalDate publicHoliday, String description) {
         sdPublicHolidayMapper.createPublicHoliday(publicHoliday, description);
     }
 
     @Override
     public void checkPublicHoliday() throws JobExecutionException {
         List<SdPublicHolidayBean> beanList = getAllPublicHolidayList();
-
-        if (!CollectionUtils.isEmpty(beanList)) {
-            SdPublicHolidayBean bean = beanList.get(beanList.size() - 1);
-            LocalDate cutoffDate = LocalDate.now().withDayOfMonth(1).minusMonths(-3);
-
-            LOG.info("Check public holiday after: {}", cutoffDate);
-            LOG.info("Furthest public holiday date: {}", bean.getPublicHoliday());
-
-            if (bean.getPublicHoliday().isAfter(cutoffDate)) {
-                return;
-            } else {
-                throw new JobExecutionException("Found no public holiday record after three months.");
-            }
+        if(CollectionUtils.isEmpty(beanList)){
+            throw new JobExecutionException("Found no public holiday record in DB.");
         }
 
-        throw new JobExecutionException("Found no public holiday record in DB.");
+        final LocalDate CUTOFF_DATE = LocalDate.now().withDayOfMonth(1).plusMonths(3);
+        LOG.info("Check public holiday after: {}", CUTOFF_DATE);
+
+        beanList.sort(Comparator.comparing(SdPublicHolidayBean::getPublicHoliday).reversed());
+        SdPublicHolidayBean furthestHolidayBean = beanList.get(0);
+        LOG.info("Furthest public holiday date: {}", furthestHolidayBean.getPublicHoliday());
+
+        if (furthestHolidayBean.getPublicHoliday().isBefore(CUTOFF_DATE)) {
+            throw new JobExecutionException("Found no public holiday record after three months.");
+        }
     }
 
     @Override

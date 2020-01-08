@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import javax.annotation.Resource;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -66,8 +67,10 @@ public class SdPublicHolidayFacadeImpl implements SdPublicHolidayFacade {
         if (StringUtils.isEmpty(publicHoliday) || StringUtils.isEmpty(description)) {
             return false;
         }
+
+        LocalDate holidayDate = LocalDate.parse(publicHoliday);
         try {
-            sdPublicHolidayService.deletePublicHoliday(publicHoliday, description);
+            sdPublicHolidayService.deletePublicHoliday(holidayDate, description);
             return true;
         } catch (Exception e) {
             LOG.error(e.getMessage());
@@ -83,8 +86,9 @@ public class SdPublicHolidayFacadeImpl implements SdPublicHolidayFacade {
             throw new InvalidInputException("Description is empty.");
         }
 
+        LocalDate holidayDate = LocalDate.parse(publicHoliday);
         try {
-            sdPublicHolidayService.createPublicHoliday(publicHoliday, description);
+            sdPublicHolidayService.createPublicHoliday(holidayDate, description);
         } catch (DuplicateKeyException e) {
             throw new RuntimeException("Input date is already a public holiday.");
         }
