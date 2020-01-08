@@ -22,7 +22,7 @@ public class SdCacheServiceImpl extends BtuCacheServiceImpl implements SdCacheSe
     public List<BtuCacheBean> getAllCacheBeanProfile() {
         List<BtuCacheBean> cacheInitBeanList = super.getAllCacheBeanProfile();
 
-        for(SdCacheEnum sdCacheEnum : SdCacheEnum.values()){
+        for (SdCacheEnum sdCacheEnum : SdCacheEnum.values()) {
             BtuCacheBean btuCacheBean = getNewCacheProfileBeanByCacheName(sdCacheEnum.getCacheName());
             cacheInitBeanList.add(btuCacheBean);
         }
@@ -32,12 +32,12 @@ public class SdCacheServiceImpl extends BtuCacheServiceImpl implements SdCacheSe
     @Override
     public BtuCacheBean getNewCacheProfileBeanByCacheName(String cacheName) {
         BtuCacheBean btuCacheBean = super.getNewCacheProfileBeanByCacheName(cacheName);
-        if(btuCacheBean!=null){
+        if (btuCacheBean != null) {
             return btuCacheBean;
         }
 
         SdCacheEnum sdCacheEnum = SdCacheEnum.getEnum(cacheName);
-        if(sdCacheEnum==null){
+        if (sdCacheEnum == null) {
             LOG.warn("Cannot find cache profile: " + cacheName);
             return null;
         }

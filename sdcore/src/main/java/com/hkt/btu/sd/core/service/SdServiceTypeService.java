@@ -19,9 +19,9 @@ public interface SdServiceTypeService {
 
     String getServiceTypeDescByServiceTypeCode(String code);
 
-    void reloadServiceTypeOfferMapping();
+    List<SdServiceTypeOfferMappingBean> loadServiceTypeOfferMapping();
 
-    void reloadServiceTypeList();
+    List<SdServiceTypeBean> loadServiceTypeList();
 
     void createServiceTypeOfferMapping(String serviceTypeCode, String offerName);
 

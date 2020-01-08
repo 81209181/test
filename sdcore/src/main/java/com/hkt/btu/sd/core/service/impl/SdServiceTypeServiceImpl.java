@@ -3,10 +3,12 @@ package com.hkt.btu.sd.core.service.impl;
 import com.hkt.btu.sd.core.dao.entity.SdServiceTypeEntity;
 import com.hkt.btu.sd.core.dao.entity.SdServiceTypeOfferMappingEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdServiceTypeMapper;
+import com.hkt.btu.sd.core.service.SdCacheService;
 import com.hkt.btu.sd.core.service.SdServiceTypeService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeOfferMappingBean;
+import com.hkt.btu.sd.core.service.constant.SdCacheEnum;
 import com.hkt.btu.sd.core.service.populator.SdServiceTypeBeanPopulator;
 import com.hkt.btu.sd.core.service.populator.SdServiceTypeOfferMappingBeanPopulator;
 import org.apache.commons.lang3.StringUtils;
@@ -16,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class SdServiceTypeServiceImpl implements SdServiceTypeService {
@@ -24,13 +25,15 @@ public class SdServiceTypeServiceImpl implements SdServiceTypeService {
     private static final Logger LOG = LogManager.getLogger(SdServiceTypeServiceImpl.class);
 
     private static final String CREATE_BY_SYSTEM = "system";
-    private static List<SdServiceTypeBean> SERVICE_TYPE_LIST = null;
-    private static List<SdServiceTypeOfferMappingBean> SERVICE_TYPE_OFFER_MAPPING = null;
 
     @Resource
     SdServiceTypeMapper serviceTypeMapper;
+
     @Resource(name = "userService")
     SdUserService userService;
+    @Resource(name = "cacheService")
+    SdCacheService cacheService;
+
     @Resource(name = "serviceTypeBeanPopulator")
     SdServiceTypeBeanPopulator serviceTypeBeanPopulator;
     @Resource(name = "serviceTypeOfferMappingBeanPopulator")
@@ -38,26 +41,17 @@ public class SdServiceTypeServiceImpl implements SdServiceTypeService {
 
     @Override
     public List<SdServiceTypeBean> getServiceTypeList() {
-        return Optional.ofNullable(SERVICE_TYPE_LIST).orElseGet(() -> {
-            reloadServiceTypeList();
-            return SERVICE_TYPE_LIST;
-        });
+        return (List<SdServiceTypeBean>) cacheService.getCachedObjectByCacheName(SdCacheEnum.SERVICE_TYPE_LIST.getCacheName());
     }
 
     @Override
     public List<SdServiceTypeOfferMappingBean> getServiceTypeOfferMappingBean() {
-        return Optional.ofNullable(SERVICE_TYPE_OFFER_MAPPING).orElseGet(() -> {
-            reloadServiceTypeOfferMapping();
-            return SERVICE_TYPE_OFFER_MAPPING;
-        });
+        return (List<SdServiceTypeOfferMappingBean>) cacheService.getCachedObjectByCacheName(SdCacheEnum.SERVICE_TYPE_OFFER_MAPPING.getCacheName());
     }
 
     @Override
     public SdServiceTypeBean getServiceTypeByOfferName(String offerName) {
-        return Optional.ofNullable(SERVICE_TYPE_OFFER_MAPPING).orElseGet(() -> {
-            reloadServiceTypeOfferMapping();
-            return SERVICE_TYPE_OFFER_MAPPING;
-        }).stream().filter(bean -> StringUtils.equalsIgnoreCase(offerName, bean.getOfferName()))
+        return getServiceTypeOfferMappingBean().stream().filter(bean -> StringUtils.equalsIgnoreCase(offerName, bean.getOfferName()))
                 .findFirst().flatMap(bean -> getServiceTypeList().stream()
                         .filter(sdServiceTypeBean -> StringUtils.equals(sdServiceTypeBean.getServiceTypeCode(), bean.getServiceTypeCode())).findFirst()
                 ).orElseGet(() -> new SdServiceTypeBean(SdServiceTypeEntity.SERVICE_TYPE.UNKNOWN, SdServiceTypeEntity.SERVICE_TYPE_NAME.UNKNOWN_SERVICE_TYPE));
@@ -65,8 +59,10 @@ public class SdServiceTypeServiceImpl implements SdServiceTypeService {
 
     @Override
     public void reload() {
-        reloadServiceTypeList();
-        reloadServiceTypeOfferMapping();
+        LOG.info("reload service type list.");
+        cacheService.reloadCachedObject(SdCacheEnum.SERVICE_TYPE_LIST.getCacheName());
+        LOG.info("reload service type offer mapping.");
+        cacheService.reloadCachedObject(SdCacheEnum.SERVICE_TYPE_OFFER_MAPPING.getCacheName());
     }
 
     @Override
@@ -79,14 +75,14 @@ public class SdServiceTypeServiceImpl implements SdServiceTypeService {
 
     @Override
     public String getServiceTypeDescByServiceTypeCode(String code) {
-        return SERVICE_TYPE_LIST.stream().filter(sdServiceTypeBean -> sdServiceTypeBean.getServiceTypeCode().equals(code))
+        return getServiceTypeList().stream().filter(sdServiceTypeBean -> sdServiceTypeBean.getServiceTypeCode().equals(code))
                 .map(SdServiceTypeBean::getServiceTypeName).findFirst().orElse(SdServiceTypeEntity.SERVICE_TYPE_NAME.UNKNOWN_SERVICE_TYPE);
     }
 
     @Override
-    public void reloadServiceTypeOfferMapping() {
-        LOG.info("reload service type offer mapping.");
-        SERVICE_TYPE_OFFER_MAPPING = serviceTypeMapper.getServiceTypeOfferMapping().stream().map(entity -> {
+    public List<SdServiceTypeOfferMappingBean> loadServiceTypeOfferMapping() {
+        LOG.info("load service type offer mapping.");
+        return serviceTypeMapper.getServiceTypeOfferMapping().stream().map(entity -> {
             SdServiceTypeOfferMappingBean bean = new SdServiceTypeOfferMappingBean();
             serviceTypeOfferMappingBeanPopulator.populate(entity, bean);
             return bean;
@@ -94,9 +90,9 @@ public class SdServiceTypeServiceImpl implements SdServiceTypeService {
     }
 
     @Override
-    public void reloadServiceTypeList() {
-        LOG.info("reload service type list.");
-        SERVICE_TYPE_LIST = serviceTypeMapper.getServiceTypeList().stream().map(entity -> {
+    public List<SdServiceTypeBean> loadServiceTypeList() {
+        LOG.info("load service type list.");
+        return serviceTypeMapper.getServiceTypeList().stream().map(entity -> {
             SdServiceTypeBean bean = new SdServiceTypeBean();
             serviceTypeBeanPopulator.populate(entity, bean);
             return bean;

@@ -5,16 +5,16 @@ import org.apache.commons.lang3.StringUtils;
 
 
 public enum BtuCacheEnum {
-    RESOURCE_MAP ("Security Resource Map", 100, false,
+    RESOURCE_MAP ("Security Resource Map", 100, false,false,
         "customBtuSecurityMetadataSource","buildResourceMapFromDb"),
-    SITE_CONFIG_MAP("Site Config Map",101,true,
-            "siteConfigService","getSiteConfigBean"),
-    SENSITIVE_DATA("Sensitive Data Map",102,false,
-            "sensitiveDataService","getCachedKeyMap")
+    SITE_CONFIG_MAP("Site Config Map",101,true,false,
+            "siteConfigService","loadSiteConfigBean"),
+    SENSITIVE_DATA("Sensitive Data Map",102,false,false,
+            "sensitiveDataService","loadCachedKey")
     ;
 
 
-    BtuCacheEnum(String cacheName, int loadingPriority, boolean lazyInit,
+    BtuCacheEnum(String cacheName, int loadingPriority, boolean lazyInit,boolean isSensitive,
                  String originServiceBeanName, String originServiceMethodName) {
         this.cacheName = cacheName;
         this.originServiceBeanName = originServiceBeanName;
@@ -35,7 +35,7 @@ public enum BtuCacheEnum {
     private String cacheName;
     private int loadingPriority; // higher = earlier
     private boolean lazyInit; // pre-load or load on use
-
+    private boolean isSensitive;
     private String originServiceBeanName;
     private String originServiceMethodName;
 
@@ -59,5 +59,9 @@ public enum BtuCacheEnum {
 
     public boolean isLazyInit() {
         return lazyInit;
+    }
+
+    public boolean isSensitive() {
+        return isSensitive;
     }
 }

@@ -8,6 +8,7 @@ public class BtuCacheBean extends BaseBean {
 
     private int loadingPriority; // smaller to big
     private boolean lazyInit; // pre-load or load on use
+    private boolean isSensitive;
 
     private String cacheName;
     private Object cacheObject;
@@ -52,6 +53,14 @@ public class BtuCacheBean extends BaseBean {
 
     public void setLazyInit(boolean lazyInit) {
         this.lazyInit = lazyInit;
+    }
+
+    public boolean isSensitive() {
+        return isSensitive;
+    }
+
+    public void setSensitive(boolean sensitive) {
+        isSensitive = sensitive;
     }
 
     public Object getCacheObject() {

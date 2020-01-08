@@ -10,4 +10,6 @@ public interface BtuSiteConfigService {
     boolean isProductionServer();
 
     boolean isDevelopmentServer();
+
+    BtuSiteConfigBean loadSiteConfigBean();
 }

@@ -1,7 +1,6 @@
 package com.hkt.btu.common.core.service.impl;
 
 import com.hkt.btu.common.core.service.BtuCacheService;
-import com.hkt.btu.common.core.service.BtuUserService;
 import com.hkt.btu.common.core.service.bean.BtuCacheBean;
 import com.hkt.btu.common.core.service.constant.BtuCacheEnum;
 import com.hkt.btu.common.core.service.populator.BtuCacheBeanPopulator;
@@ -23,7 +22,7 @@ public class BtuCacheServiceImpl implements BtuCacheService {
 
     @Autowired
     private ApplicationContext applicationContext;
-    @Resource(name="cacheBeanPopulator")
+    @Resource(name = "cacheBeanPopulator")
     BtuCacheBeanPopulator btuCacheBeanPopulator;
 
     private static final Map<String, BtuCacheBean> CACHE_BEAN_MAP = new HashMap<>(); // key = cacheName
@@ -40,18 +39,18 @@ public class BtuCacheServiceImpl implements BtuCacheService {
         LOG.info("Sorted cache objects with loading priority.");
 
 
-        for(BtuCacheBean btuCacheBean : cacheInitBeanList){
+        for (BtuCacheBean btuCacheBean : cacheInitBeanList) {
             // cache object profile
             CACHE_BEAN_MAP.put(btuCacheBean.getCacheName(), btuCacheBean);
-            if(btuCacheBean.isLazyInit()){
+            if (btuCacheBean.isLazyInit()) {
                 continue;
             }
 
             // cache object
-            try{
+            try {
                 Object newCacheObject = buildCacheObject(btuCacheBean);
                 btuCacheBeanPopulator.populate(newCacheObject, btuCacheBean);
-            }catch (Exception e){
+            } catch (Exception e) {
                 LOG.error(e.getMessage(), e);
             }
         }
@@ -62,7 +61,7 @@ public class BtuCacheServiceImpl implements BtuCacheService {
     @Override
     public List<BtuCacheBean> getAllCacheBeanProfile() {
         List<BtuCacheBean> cacheInitBeanList = new ArrayList<>();
-        for(BtuCacheEnum btuCacheEnum : BtuCacheEnum.values()){
+        for (BtuCacheEnum btuCacheEnum : BtuCacheEnum.values()) {
             BtuCacheBean btuCacheBean = getNewCacheProfileBeanByCacheName(btuCacheEnum.getCacheName());
             cacheInitBeanList.add(btuCacheBean);
         }
@@ -72,7 +71,7 @@ public class BtuCacheServiceImpl implements BtuCacheService {
     @Override
     public BtuCacheBean getNewCacheProfileBeanByCacheName(String cacheName) {
         BtuCacheEnum btuCacheEnum = BtuCacheEnum.getEnum(cacheName);
-        if(btuCacheEnum==null){
+        if (btuCacheEnum == null) {
             LOG.warn("Cannot find cache profile: " + cacheName);
             return null;
         }
@@ -84,8 +83,8 @@ public class BtuCacheServiceImpl implements BtuCacheService {
 
     @Override
     public Object getCachedObjectByCacheName(String cacheName) {
-        BtuCacheBean existingCacheBean =  CACHE_BEAN_MAP.get(cacheName);
-        if(existingCacheBean.getCacheObject()==null && existingCacheBean.isLazyInit()){
+        BtuCacheBean existingCacheBean = CACHE_BEAN_MAP.get(cacheName);
+        if (existingCacheBean.getCacheObject() == null && existingCacheBean.isLazyInit()) {
             reloadCachedObject(cacheName);
         }
         return existingCacheBean.getCacheObject();
@@ -116,12 +115,12 @@ public class BtuCacheServiceImpl implements BtuCacheService {
     @Override
     public void reloadAll() {
         List<BtuCacheBean> cacheBeanList = getAllCachedBean();
-        if(CollectionUtils.isEmpty(cacheBeanList)){
+        if (CollectionUtils.isEmpty(cacheBeanList)) {
             LOG.warn("No cache to reload.");
             return;
         }
 
-        for(BtuCacheBean cacheBean : cacheBeanList){
+        for (BtuCacheBean cacheBean : cacheBeanList) {
             reloadCachedObject(cacheBean.getCacheName());
         }
     }
@@ -129,9 +128,9 @@ public class BtuCacheServiceImpl implements BtuCacheService {
     @Override
     public synchronized void reloadCachedObject(String cacheName) {
         // get new content to cache
-        BtuCacheBean existingCacheBean =  CACHE_BEAN_MAP.get(cacheName);
+        BtuCacheBean existingCacheBean = CACHE_BEAN_MAP.get(cacheName);
         Object newCacheObject = buildCacheObject(existingCacheBean);
-        if(newCacheObject==null){
+        if (newCacheObject == null) {
             LOG.warn("Cannot cache null:" + cacheName);
             return;
         }
@@ -141,17 +140,17 @@ public class BtuCacheServiceImpl implements BtuCacheService {
         LOG.info("Reloaded new cache object: " + cacheName);
 
         // log size
-        if(newCacheObject instanceof Collection){
+        if (newCacheObject instanceof Collection) {
             LOG.info("New cache collection size: " + CollectionUtils.size(newCacheObject));
-        }else if (newCacheObject instanceof Map) {
+        } else if (newCacheObject instanceof Map) {
             LOG.info("New cache map size: " + MapUtils.size((Map<?, ?>) newCacheObject));
         }
     }
 
     @Override
     public void deleteCachedObject(String cacheName) {
-        BtuCacheBean existingCacheBean =  CACHE_BEAN_MAP.get(cacheName);
-        if(existingCacheBean==null){
+        BtuCacheBean existingCacheBean = CACHE_BEAN_MAP.get(cacheName);
+        if (existingCacheBean == null) {
             LOG.warn("Cannot find and delete cached object: " + cacheName);
         } else {
             CACHE_BEAN_MAP.put(cacheName, null);

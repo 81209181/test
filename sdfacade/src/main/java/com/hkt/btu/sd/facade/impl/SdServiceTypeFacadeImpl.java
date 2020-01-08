@@ -97,7 +97,7 @@ public class SdServiceTypeFacadeImpl implements SdServiceTypeFacade {
         }
         try {
             serviceTypeService.createServiceTypeOfferMapping(serviceTypeCode, offerName);
-            serviceTypeService.reloadServiceTypeOfferMapping();
+            serviceTypeService.loadServiceTypeOfferMapping();
             return true;
         } catch (Exception e) {
             LOG.error(e.getMessage());
@@ -115,7 +115,7 @@ public class SdServiceTypeFacadeImpl implements SdServiceTypeFacade {
             }
             serviceTypeService.updateServiceTypeOfferMappingByUser(data.getOldServiceTypeCode(), data.getServiceTypeCode(),
                     data.getOldOfferName(), data.getOfferName());
-            serviceTypeService.reloadServiceTypeOfferMapping();
+            serviceTypeService.loadServiceTypeOfferMapping();
             return true;
         } catch (Exception e) {
             LOG.error(e.getMessage());
@@ -130,7 +130,7 @@ public class SdServiceTypeFacadeImpl implements SdServiceTypeFacade {
         }
         try {
             serviceTypeService.deleteServiceTypeOfferMapping(serviceTypeCode, offerName);
-            serviceTypeService.reloadServiceTypeOfferMapping();
+            serviceTypeService.loadServiceTypeOfferMapping();
             return true;
         } catch (Exception e) {
             LOG.error(e.getMessage());

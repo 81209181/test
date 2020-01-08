@@ -2,7 +2,6 @@ package com.hkt.btu.common.core.service;
 
 import java.security.GeneralSecurityException;
 import java.security.Key;
-import java.util.Map;
 
 public interface BtuSensitiveDataService {
     String decryptToStringSafe(byte[] cipherMessage);
@@ -17,7 +16,7 @@ public interface BtuSensitiveDataService {
 
     byte[] encrypt(byte[] plaintext) throws GeneralSecurityException;
 
-    void clearCachedKeys();
+    void reloadCachedKeys();
 
-    Map<Integer, Key> getCachedKeyMap();
+    Key loadCachedKey();
 }

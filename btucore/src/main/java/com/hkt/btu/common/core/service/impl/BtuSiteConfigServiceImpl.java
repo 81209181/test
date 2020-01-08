@@ -1,18 +1,15 @@
 package com.hkt.btu.common.core.service.impl;
 
 import com.hkt.btu.common.core.dao.entity.BtuConfigParamEntity;
-import com.hkt.btu.common.core.service.BtuConfigParamService;
-import com.hkt.btu.common.core.service.BtuEmailService;
-import com.hkt.btu.common.core.service.BtuSensitiveDataService;
-import com.hkt.btu.common.core.service.BtuSiteConfigService;
+import com.hkt.btu.common.core.service.*;
 import com.hkt.btu.common.core.service.bean.BtuSiteConfigBean;
+import com.hkt.btu.common.core.service.constant.BtuCacheEnum;
 import com.hkt.btu.common.core.service.populator.BtuSiteConfigBeanPopulator;
 import com.hkt.btu.common.spring.security.access.intercept.BtuSecurityMetadataSource;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletContext;
@@ -22,8 +19,6 @@ import java.util.Map;
 
 public class BtuSiteConfigServiceImpl implements BtuSiteConfigService {
     private static final Logger LOG = LogManager.getLogger(BtuSiteConfigService.class);
-
-    private static BtuSiteConfigBean btuSiteConfigBean;
 
     @Resource(name = "siteConfigBeanPopulator")
     BtuSiteConfigBeanPopulator siteConfigBeanPopulator;
@@ -40,15 +35,24 @@ public class BtuSiteConfigServiceImpl implements BtuSiteConfigService {
     @Resource(name = "customBtuSecurityMetadataSource")
     BtuSecurityMetadataSource customBtuSecurityMetadataSource;
 
+    @Resource(name = "cacheService")
+    BtuCacheService cacheService;
+
     @Resource
     private ServletContext servletContext;
 
     @Override
     public BtuSiteConfigBean getSiteConfigBean() {
-        if (ObjectUtils.isEmpty(btuSiteConfigBean)) {
-            reload();
-        }
-        return btuSiteConfigBean;
+        return (BtuSiteConfigBean) cacheService.getCachedObjectByCacheName(BtuCacheEnum.SITE_CONFIG_MAP.getCacheName());
+    }
+
+    @Override
+    public BtuSiteConfigBean loadSiteConfigBean() {
+        LOG.info("load site config.");
+        BtuSiteConfigBean siteConfigBean = new BtuSiteConfigBean();
+        reloadServerInfo(siteConfigBean);
+        reloadConfigFromDb(siteConfigBean);
+        return siteConfigBean;
     }
 
     @Override
@@ -63,7 +67,7 @@ public class BtuSiteConfigServiceImpl implements BtuSiteConfigService {
         btuEmailService.reload();
 
         // reload key
-        btuSensitiveDataService.clearCachedKeys();
+        btuSensitiveDataService.reloadCachedKeys();
     }
 
     @Override
@@ -80,17 +84,8 @@ public class BtuSiteConfigServiceImpl implements BtuSiteConfigService {
     }
 
     private void reloadSiteConfigBean() {
-        BtuSiteConfigBean newBean = new BtuSiteConfigBean();
-        reloadServerInfo(newBean);
-        reloadConfigFromDb(newBean);
-
-        // log bean
-        LOG.info("SiteConfigBean old: " + btuSiteConfigBean);
-        LOG.info("SiteConfigBean new: " + newBean);
-        // switch to new bean
-        btuSiteConfigBean = newBean;
-        LOG.info("SiteConfigBean reloaded.");
-
+        LOG.info("reload site config.");
+        cacheService.reloadCachedObject(BtuCacheEnum.SITE_CONFIG_MAP.getCacheName());
     }
 
     private void reloadConfigFromDb(BtuSiteConfigBean siteConfigBean) {

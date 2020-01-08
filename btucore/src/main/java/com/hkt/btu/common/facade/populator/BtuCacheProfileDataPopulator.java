@@ -12,6 +12,7 @@ public class BtuCacheProfileDataPopulator extends AbstractDataPopulator<BtuCache
 
         target.setLoadingPriority(source.getLoadingPriority());
         target.setLazyInit(source.isLazyInit());
+        target.setSensitive(source.isSensitive());
 
         target.setCreateby(source.getCacheName());
         target.setCreatedate(source.getCreatedate());
