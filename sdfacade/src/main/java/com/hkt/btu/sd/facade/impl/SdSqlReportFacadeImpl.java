@@ -24,6 +24,7 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -243,13 +244,13 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
 
     @Override
     public List<SdReportHistoryData> getFileList(String reportId) {
-        List<SdReportHistoryData> emptyList = new ArrayList<>();
         String reportPath = getReportPath(reportId);
         if (StringUtils.isEmpty(reportPath)) {
-            return emptyList;
+            return new ArrayList<>();
         }
+
         try (Stream<Path> paths = Files.walk(Paths.get(reportPath))) {
-            List<SdReportHistoryData> dataList = paths.filter(Files::isRegularFile)
+            return paths.filter(Files::isRegularFile)
                     .map(Path::getFileName)
                     .map(Path::toString)
                     .map(reportName -> {
@@ -258,11 +259,13 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
                         historyData.setReportName(reportName);
                         return historyData;
                     }).collect(Collectors.toList());
-            return dataList;
+        } catch (NoSuchFileException e) {
+            LOG.warn(e.toString());
+            return new ArrayList<>();
         } catch (IOException e) {
             LOG.error(e.getMessage(), e);
+            return new ArrayList<>();
         }
-        return emptyList;
     }
 
     @Override
