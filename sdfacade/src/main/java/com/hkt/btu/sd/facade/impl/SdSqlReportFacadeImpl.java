@@ -250,7 +250,7 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
         }
 
         try (Stream<Path> paths = Files.walk(Paths.get(reportPath))) {
-            List<SdReportHistoryData> dataList = paths.filter(Files::isRegularFile)
+            return paths.filter(Files::isRegularFile)
                     .map(Path::getFileName)
                     .map(Path::toString)
                     .map(reportName -> {
@@ -259,7 +259,6 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
                         historyData.setReportName(reportName);
                         return historyData;
                     }).collect(Collectors.toList());
-            return dataList;
         } catch (NoSuchFileException e) {
             LOG.warn(e.toString());
             return new ArrayList<>();
