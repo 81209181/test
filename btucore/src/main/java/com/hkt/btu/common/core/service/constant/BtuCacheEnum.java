@@ -10,7 +10,9 @@ public enum BtuCacheEnum {
     SITE_CONFIG_MAP("Site Config Map",101,true,false,
             "siteConfigService","loadSiteConfigBean"),
     SENSITIVE_DATA("Sensitive Data Map",102,false,false,
-            "sensitiveDataService","loadCachedKey")
+            "sensitiveDataService","loadCachedKey"),
+    API_CLIENT_MAP("Api Client Map",103,false,false,
+            "apiClientService","loadApiClientBean")
     ;
 
 

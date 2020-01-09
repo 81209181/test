@@ -1,8 +1,10 @@
 package com.hkt.btu.common.core.service;
 
+import java.util.Map;
+
 public interface BtuApiClientService {
 
-    String getApiClientBean(String apiName);
+    Map<String, Object> loadApiClientBean();
 
-    void reloadCached(String apiName);
+    String getApiClientBean(String apiName);
 }
