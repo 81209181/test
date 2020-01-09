@@ -16,6 +16,7 @@ public class BtuCacheBeanPopulator extends AbstractBeanPopulator<BtuCacheBean> {
         btuCacheBean.setCacheName(btuCacheEnum.getCacheName());
         btuCacheBean.setLoadingPriority(btuCacheEnum.getLoadingPriority());
         btuCacheBean.setLazyInit(btuCacheEnum.isLazyInit());
+        btuCacheBean.setSensitive(btuCacheEnum.isSensitive());
         btuCacheBean.setOriginServiceBeanName(btuCacheEnum.getOriginServiceBeanName());
         btuCacheBean.setOriginServiceMethodName(btuCacheEnum.getOriginServiceMethodName());
     }

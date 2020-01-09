@@ -6,20 +6,65 @@
     <title>Cached Object info</title>
 </head>
 <body>
-<div layout:fragment="content" th:remove="tag">
-    <script>
-        var cacheName = '[[${cacheName}]]';
-    </script>
+<div layout:fragment="content" th:remove="tag" th:object="${cacheProfile}">
     <h1>Cached Object Detail</h1>
+    <div class="form-row mt-3">
+        <div class="col-md-4">
+            <label>Cache Name:</label>
+            <input class="form-control" readonly th:value="*{cacheName}" id="cacheName">
+        </div>
+        <div class="col-md-4">
+            <label>Origin Service Bean Name:</label>
+            <input class="form-control" readonly th:value="*{originServiceBeanName}">
+        </div>
+        <div class="col-md-4">
+            <label>Origin Service Method Name:</label>
+            <input class="form-control" readonly th:value="*{originServiceMethodName}">
+        </div>
+    </div>
+    <div class="form-row mt-3">
+        <div class="col-md-4">
+            <label>Loading Priority:</label>
+            <input class="form-control" readonly th:value="*{loadingPriority}">
+        </div>
+        <div class="col-md-4">
+            <label>Lazy Init:</label>
+            <input class="form-control" readonly th:value="*{lazyInit}">
+        </div>
+        <div class="col-md-4">
+            <label>Sensitive:</label>
+            <input class="form-control" readonly th:value="*{sensitive}">
+        </div>
+    </div>
+    <div class="form-row mt-3">
+        <div class="col-md-4">
+            <label>Create By:</label>
+            <input class="form-control" readonly th:value="*{createby}">
+        </div>
+        <div class="col-md-6">
+            <label>Create Date:</label>
+            <input class="form-control" readonly th:value="*{createdate}">
+        </div>
+    </div>
+    <div class="form-row mt-3">
+        <div class="col-md-4">
+            <label>Modify By:</label>
+            <input class="form-control" readonly th:value="*{modifyby}">
+        </div>
+        <div class="col-md-6">
+            <label>Modify Date:</label>
+            <input class="form-control" readonly th:value="*{modifydate}">
+        </div>
+    </div>
     <div class="form-row mt-3">
         <div class="col-md-6">
             <label>Current Cache</label>
-            <textarea rows="8" class="form-control old_detail" readonly></textarea>
+            <textarea rows="10" class="form-control " readonly id="current_object"></textarea>
         </div>
         <div class="col-md-6">
             <label>New Cache after Reload</label>
-            <textarea rows="8" class="form-control new_detail" readonly></textarea>
-            <button class="btn btn-info float-right mt-3" onclick="getReloadCache()">reload</button>
+            <textarea rows="10" class="form-control" readonly id="new_object"></textarea>
+            <button class="btn btn-info float-right mt-3" onclick="refresh()">Refresh</button>
         </div>
     </div>
     <script type="text/javascript" th:src="@{/js/cachedObjectInfo.js(v=${projectBuildtime})}"></script>

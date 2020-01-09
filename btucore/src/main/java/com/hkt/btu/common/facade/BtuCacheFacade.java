@@ -13,4 +13,6 @@ public interface BtuCacheFacade {
 
     String reloadCacheByCacheName(String cacheName);
 
+    BtuCacheProfileData getCacheProfileDataByCacheName(String cacheName);
+
 }

@@ -26,6 +26,8 @@ public class BtuCacheFacadeImpl implements BtuCacheFacade {
 
     private final ObjectMapper om = new ObjectMapper();
 
+    public static final String SENSITIVE = "SENSITIVE";
+
     @Override
     public List<BtuCacheProfileData> getCacheProfileDataList() {
         List<BtuCacheBean> cacheBeanList = btuCacheService.getAllCachedBean();
@@ -45,6 +47,10 @@ public class BtuCacheFacadeImpl implements BtuCacheFacade {
     @Override
     public String getCachedObjectJson(String cacheName) {
         try {
+            BtuCacheBean profileBean = btuCacheService.getNewCacheProfileBeanByCacheName(cacheName);
+            if (profileBean.isSensitive()) {
+                return SENSITIVE;
+            }
             return om.writeValueAsString(btuCacheService.getCachedObjectByCacheName(cacheName));
         } catch (JsonProcessingException e) {
             LOG.warn(e.getMessage());
@@ -55,6 +61,10 @@ public class BtuCacheFacadeImpl implements BtuCacheFacade {
     @Override
     public String getSourceObjectJson(String cacheName) {
         try {
+            BtuCacheBean profileBean = btuCacheService.getNewCacheProfileBeanByCacheName(cacheName);
+            if (profileBean.isSensitive()) {
+                return SENSITIVE;
+            }
             return om.writeValueAsString(btuCacheService.getSourceObjectByCacheName(cacheName));
         } catch (JsonProcessingException e) {
             LOG.warn(e.getMessage());
@@ -73,5 +83,13 @@ public class BtuCacheFacadeImpl implements BtuCacheFacade {
             LOG.error(e.getMessage(), e);
             return errorMsg;
         }
+    }
+
+    @Override
+    public BtuCacheProfileData getCacheProfileDataByCacheName(String cacheName) {
+        BtuCacheProfileData cacheProfileData = new BtuCacheProfileData();
+        BtuCacheBean btuCacheBean = btuCacheService.getNewCacheProfileBeanByCacheName(cacheName);
+        btuCacheProfileDataPopulator.populate(btuCacheBean, cacheProfileData);
+        return cacheProfileData;
     }
 }
