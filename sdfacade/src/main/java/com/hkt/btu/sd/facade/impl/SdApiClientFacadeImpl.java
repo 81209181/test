@@ -26,6 +26,6 @@ public class SdApiClientFacadeImpl implements SdApiClientFacade {
         // add audit trail
         sdAuditTrailService.insertRegenApiAuthAuditTrail(apiName);
 
-        sdApiClientService.reloadCached(apiName);
+        sdApiClientService.reloadCached();
     }
 }
