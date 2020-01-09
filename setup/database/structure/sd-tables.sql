@@ -153,4 +153,37 @@ CREATE TABLE SYMPTOM_MAPPING
 CREATE INDEX IDX_SYMPTOM_MAPPING_1 ON SYMPTOM_MAPPING (SERVICE_TYPE_CODE);
 CREATE INDEX IDX_SYMPTOM_MAPPING_2 ON SYMPTOM_MAPPING (SYMPTOM_CODE);
 CREATE UNIQUE INDEX IDX_SYMPTOM_MAPPING_3 ON SYMPTOM_MAPPING (SERVICE_TYPE_CODE, SYMPTOM_CODE);
+--------------------------------------------------------------------------------------------------
+CREATE SEQUENCE SEQ_UT_CALL_ID START WITH 1;
+CREATE TABLE UT_CALL_REQUEST_RECORD
+(
+    UT_CALL_ID                    number                   default SEQ_UT_CALL_ID.nextval,
+    BSN_NUM                       varchar2(15)             not null,
+    CODE                          varchar2(10),
+    MSG                           varchar2(50),
+    SERVICECODE                   varchar2(30),
+    SEQ                           varchar2(10),
+    SEQ_TYPE                      varchar2(10),
+    LAST_CHECK_DATE               date,
+
+    CREATEDATE                    date                     default SYSDATE not null,
+    CREATEBY                      varchar2(10)             not null,
+    MODIFYDATE                    date,
+    MODIFYBY                      varchar2(10),
+);
+CREATE INDEX IDX_UT_CALL_REQUEST_RECORD_1 ON UT_CALL_REQUEST_RECORD (BSN_NUM);
+--------------------------------------------------------------------------------------------------
+CREATE TABLE UT_CALL_RESULT_RECORD
+(
+    UT_CALL_ID                    number                   not null,
+    CODE                          varchar2(10),
+    MSG                           varchar2(50),
+    UT_SUMMARY                    varchar2(100),
+
+    CREATEDATE                    date                     default SYSDATE not null,
+    CREATEBY                      varchar2(10)             not null,
+    MODIFYDATE                    date,
+    MODIFYBY                      varchar2(10)
+);
+CREATE INDEX IDX_UT_CALL_RESULT_RECORD_1 ON UT_CALL_RESULT_RECORD (UT_CALL_ID);
 

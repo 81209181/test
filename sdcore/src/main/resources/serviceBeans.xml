@@ -82,6 +82,9 @@
     <alias name="SdApiClientService" alias="apiClientService"/>
     <bean id="SdApiClientService" class="com.hkt.btu.sd.core.service.impl.SdApiClientServiceImpl"/>
 
+    <alias name="UTCallService" alias="utCallService"/>
+    <bean class="com.hkt.btu.sd.core.service.impl.UTCallServiceImpl" id="UTCallService"/>
+
     <!-- Populator -->
     <alias name="sdUserBeanPopulator" alias="userBeanPopulator"/>
     <bean id="sdUserBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserBeanPopulator"/>
@@ -147,4 +150,7 @@
 
     <alias name="sdCacheBeanPopulator" alias="cacheBeanPopulator"/>
     <bean id="sdCacheBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdCacheBeanPopulator"/>
+
+    <alias name="utCallRequestBeanPopulator" alias="callRequestBeanPopulator"/>
+    <bean id="utCallRequestBeanPopulator" class="com.hkt.btu.sd.core.service.populator.UTCallRequestBeanPopulator"/>
 </beans>
