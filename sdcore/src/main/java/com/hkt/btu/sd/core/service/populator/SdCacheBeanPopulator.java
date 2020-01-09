@@ -18,6 +18,7 @@ public class SdCacheBeanPopulator extends BtuCacheBeanPopulator {
         btuCacheBean.setCacheName(sdCacheEnum.getCacheName());
         btuCacheBean.setLoadingPriority(sdCacheEnum.getLoadingPriority());
         btuCacheBean.setLazyInit(sdCacheEnum.isLazyInit());
+        btuCacheBean.setSensitive(sdCacheEnum.isSensitive());
         btuCacheBean.setOriginServiceBeanName(sdCacheEnum.getOriginServiceBeanName());
         btuCacheBean.setOriginServiceMethodName(sdCacheEnum.getOriginServiceMethodName());
     }
