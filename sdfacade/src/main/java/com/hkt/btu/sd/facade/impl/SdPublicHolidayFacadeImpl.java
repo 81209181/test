@@ -63,14 +63,14 @@ public class SdPublicHolidayFacadeImpl implements SdPublicHolidayFacade {
     }
 
     @Override
-    public boolean deletePublicHoliday(String publicHoliday, String description) {
-        if (StringUtils.isEmpty(publicHoliday) || StringUtils.isEmpty(description)) {
+    public boolean deletePublicHoliday(String publicHoliday) {
+        if (StringUtils.isEmpty(publicHoliday)) {
             return false;
         }
 
         LocalDate holidayDate = LocalDate.parse(publicHoliday);
         try {
-            sdPublicHolidayService.deletePublicHoliday(holidayDate, description);
+            sdPublicHolidayService.deletePublicHoliday(holidayDate);
             return true;
         } catch (Exception e) {
             LOG.error(e.getMessage());

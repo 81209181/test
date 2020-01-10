@@ -274,9 +274,8 @@ public class SystemController {
     }
 
     @PostMapping("/public-holiday/delete-public-holiday")
-    public ResponseEntity<?> deletePublicHoliday(@RequestParam String publicHoliday,
-                                                 @RequestParam String description) {
-        boolean result = sdPublicHolidayFacade.deletePublicHoliday(publicHoliday, description);
+    public ResponseEntity<?> deletePublicHoliday(@RequestParam String publicHoliday) {
+        boolean result = sdPublicHolidayFacade.deletePublicHoliday(publicHoliday);
         if (result) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         } else {
