@@ -120,23 +120,15 @@ function calculateTimeDiff (oldTime, newTime) {
 }
 
 function checkTimeout() {
-    if (!isLoginPage){
+    if (!isLoginPage) {
         let timeOutCookie = getCookie("timeOut");
-        let minute = calculateTimeDiff(timeOutCookie, new Date());
-        console.log("started the timeout count");
+        let {minute, timeOutMillisecond} = calculateTimeDiff(timeOutCookie, new Date());
         if (minute >= 14.5) {
             $('#session-expire-warning-modal').modal('show');
         } else {
             clearTimeout(timeOut);
-            timeOut = setTimeout('checkTimeout()', 60000 * 14 + 30000);
+            timeOut = setTimeout('checkTimeout()', timeOutMillisecond);
         }
-    let timeOutCookie = getCookie("timeOut");
-    let {minute, timeOutMillisecond} = calculateTimeDiff(timeOutCookie, new Date());
-    if (minute >= 14.5) {
-          $('#session-expire-warning-modal').modal('show');
-    } else {
-          clearTimeout(timeOut);
-          timeOut = setTimeout('checkTimeout()', timeOutMillisecond);
     }
 }
 
