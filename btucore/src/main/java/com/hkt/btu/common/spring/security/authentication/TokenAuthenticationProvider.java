@@ -25,18 +25,20 @@ public class TokenAuthenticationProvider extends AbstractUserDetailsAuthenticati
 
     @Override
     protected UserDetails retrieveUser(String s, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
+        // check user token
         String username = (String) usernamePasswordAuthenticationToken.getPrincipal();
         String password = (String) usernamePasswordAuthenticationToken.getCredentials();
-        String decryptApiClient = apiClientService.getApiClientBean(username);
-        boolean isNotMatch = true;
-        if (password.equals(decryptApiClient)) {
-            isNotMatch =false;
+        boolean validToken = apiClientService.checkApiClientKey(username, password);
+        if (!validToken) {
+            throw new BadCredentialsException("Invalid token.");
         }
-        if (isNotMatch) {
-            throw new BadCredentialsException("token is not match!");
-        }
+
+        // check user
         BtuUserBean userBean = userService.getUserBeanByUsername(username);
-        if (userService.isActive(userBean)) {
+        boolean isActiveUser = userService.isActive(userBean);
+
+
+        if (isActiveUser) {
             return BtuUser.of(
                     userBean.getUsername(),
                     userBean.getPassword(),

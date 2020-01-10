@@ -15,10 +15,8 @@ public class SdApiClientFacadeImpl implements SdApiClientFacade {
 
     @Override
     public String getApiClientBean(String apiName){
-        // add audit trail
         sdAuditTrailService.insertViewApiAuthAuditTrail(apiName);
-
-        return sdApiClientService.getApiClientBean(apiName);
+        return sdApiClientService.getApiClientKey(apiName);
     }
 
     @Override
@@ -26,6 +24,6 @@ public class SdApiClientFacadeImpl implements SdApiClientFacade {
         // add audit trail
         sdAuditTrailService.insertRegenApiAuthAuditTrail(apiName);
 
-        sdApiClientService.reloadCached();
+        sdApiClientService.reloadCache();
     }
 }
