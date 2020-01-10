@@ -100,23 +100,24 @@ function calculateTimeDiff (oldTime, newTime) {
     newTime = new Date(newTime);
     let time = newTime.getTime() - oldTime.getTime();
     let minute = time % (24 * 3600 * 1000) % (3600 * 1000) / (60 * 1000);
-    return minute;
+    let timeOutMillisecond = (60000 * 14 + 30900) - time;
+    return {minute: minute, timeOutMillisecond: timeOutMillisecond};
 }
 
 function checkTimeout() {
     let timeOutCookie = getCookie("timeOut");
-    let minute = calculateTimeDiff(timeOutCookie, new Date());
+    let {minute, timeOutMillisecond} = calculateTimeDiff(timeOutCookie, new Date());
     if (minute >= 14.5) {
           $('#session-expire-warning-modal').modal('show');
     } else {
           clearTimeout(timeOut);
-          timeOut = setTimeout('checkTimeout()', 60000 * 14 + 30000);
+          timeOut = setTimeout('checkTimeout()', timeOutMillisecond);
     }
 }
 
 function getCookie(cname) {
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
+    let name = cname + "=";
+    let ca = document.cookie.split(';');
     for(var i=0; i<ca.length; i++) {
         var c = ca[i].trim();
         if (c.indexOf(name)==0) return c.substring(name.length,c.length);
