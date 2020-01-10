@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>UT Call</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+    <h1>UT Call</h1>
+
+    <br>
+    <form class="row" th:action="@{/system/ut-call/trigger-new-ut-call}" method="post">
+        <div class="col-md-12">
+            <input type="text" th:id="triggerNewBSNNum" class="form-control" placeholder="Target BSN Number" maxlength="10" required="" name="triggerNewBSNNum" value=""><br>
+            <button type="submit" class="btn btn-lg btn-primary float-left mr-sm-2" id="btnTriggerNewBSNNum"><i class="fas fa-stopwatch"></i> Trigger New UT Call</button>
+        </div>
+    </form>
+
+    <form class="row" th:action="@{/system/ut-call/ut-call-get-result}" method="post">
+        <div class="col-md-12">
+            <input type="text" th:id="serviceCode" class="form-control" placeholder="serviceCode here" maxlength="30" required="" name="serviceCode" value=""><br>
+            <button type="submit" class="btn btn-lg btn-primary float-left mr-sm-2" id="btnUTCallGetResult"><i class="fas fa-stopwatch"></i> getResult</button>
+        </div>
+    </form>
+
+    <br>
+
+    <div class="mt-5 from-row">
+    <table id="utCallRecordTable" class="display">
+        <thead>
+        <tr>
+            <th>UT Call ID</th>
+            <th>Service Code</th>
+            <th>BSN Num</th>
+            <th>Trigger Time</th>
+            <th>Trigger Status</th>
+            <th>Testing Status</th>
+            <th>Last Check Time</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+        <tr>
+            <th>UT Call ID</th>
+            <th>Service Code</th>
+            <th>BSN Num</th>
+            <th>Trigger Time</th>
+            <th>Trigger Status</th>
+            <th>Testing Status</th>
+            <th>Last Check Time</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </tfoot>
+    </table>
+    </div>
+
+    <script type="text/javascript" th:src="@{/js/utCall.js}"></script>
+</div>
+</body>
+</html>

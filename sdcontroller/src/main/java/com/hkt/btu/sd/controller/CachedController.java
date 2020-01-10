@@ -28,14 +28,14 @@ public class CachedController {
 
     @GetMapping("info/{cacheName}")
     public String getCacheList(@PathVariable String cacheName, Model model) {
-        model.addAttribute("cacheName", cacheName);
+        model.addAttribute("cacheProfile", cachedFacade.getCacheProfileDataByCacheName(cacheName));
         return "system/cachedObject/cachedObjectInfo";
     }
 
     @GetMapping("getCacheInfo/{cacheName}")
     public ResponseEntity<?> getCacheInfo(@PathVariable String cacheName){
         try {
-            return ResponseEntity.ok(cachedFacade.getCachedObjectJson(cacheName));
+            return ResponseEntity.ok(List.of(cachedFacade.getCachedObjectJson(cacheName), cachedFacade.getSourceObjectJson(cacheName)));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Get cache fail.");
         }

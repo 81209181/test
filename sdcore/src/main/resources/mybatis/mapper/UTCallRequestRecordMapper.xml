@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hkt.btu.sd.core.dao.mapper.UTCallRequestRecordMapper">
+
+    <resultMap id="UTCallRequestEntity" type="com.hkt.btu.sd.core.dao.entity.UTCallRequestEntity" >
+        <result column="UT_CALL_ID" property="UTCALLID" />
+        <result column="BSN_NUM" property="BSNNUM" />
+        <result column="CODE" property="CODE" />
+        <result column="MSG" property="MSG" />
+        <result column="SERVICECODE" property="SERVICECODE" />
+        <result column="SEQ" property="SEQ" />
+        <result column="SEQ_TYPE" property="SEQTYPE" />
+        <result column="LAST_CHECK_DATE" property="LASTCHECKDATE" />
+
+        <result column="CREATEDATE" property="createdate" />
+        <result column="CREATEBY" property="createby" />
+        <result column="MODIFYDATE" property="modifydate" />
+        <result column="MODIFYBY" property="modifyby" />
+    </resultMap>
+
+    <select id="getUTCallRequestRecordList" resultMap="UTCallRequestEntity">
+        SELECT *
+        FROM UT_CALL_REQUEST_RECORD
+    </select>
+
+    <insert id="insertNewUTCallRequestRecord">
+        INSERT INTO UT_CALL_REQUEST_RECORD (UT_CALL_ID, BSN_NUM, CODE, MSG, SERVICECODE, SEQ, SEQ_TYPE, LAST_CHECK_DATE, CREATEDATE, CREATEBY)
+        VALUES (SEQ_UT_CALL_ID.nextval, #{bsnNum}, #{code}, #{msg}, #{serviceCode}, #{seq}, #{seqType}, null, CURRENT_TIMESTAMP, #{createBy})
+    </insert>
+
+</mapper>

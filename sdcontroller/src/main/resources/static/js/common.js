@@ -1,7 +1,9 @@
-var time2reload, countdown, timeOut;
+var time2reload, countdown, timeOut, currentURL, isLoginPage;
 
 $(document).ready(function () {
     prepareAjax();
+
+    getCurrentURL();
 
     addTimeOutCookie();
 
@@ -31,6 +33,19 @@ $(document).ready(function () {
         },1000);
     })
 });
+
+function getCurrentURL() {
+    currentURL = window.location.href;
+
+    if (currentURL.endsWith("/servicedesk/")||currentURL.includes("/servicedesk/login")){
+        isLoginPage = true;
+        console.log("it's login page")
+    }
+    else {
+        isLoginPage = false;
+        console.log("it's not login page");
+    }
+}
 
 function prepareAjax(){
     // add spring csrf token
@@ -105,6 +120,16 @@ function calculateTimeDiff (oldTime, newTime) {
 }
 
 function checkTimeout() {
+    if (!isLoginPage){
+        let timeOutCookie = getCookie("timeOut");
+        let minute = calculateTimeDiff(timeOutCookie, new Date());
+        console.log("started the timeout count");
+        if (minute >= 14.5) {
+            $('#session-expire-warning-modal').modal('show');
+        } else {
+            clearTimeout(timeOut);
+            timeOut = setTimeout('checkTimeout()', 60000 * 14 + 30000);
+        }
     let timeOutCookie = getCookie("timeOut");
     let {minute, timeOutMillisecond} = calculateTimeDiff(timeOutCookie, new Date());
     if (minute >= 14.5) {

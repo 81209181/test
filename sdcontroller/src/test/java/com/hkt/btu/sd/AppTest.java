@@ -2,6 +2,10 @@ package com.hkt.btu.sd;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import com.hkt.btu.sd.core.dao.mapper.SdUserMapper;
+import com.hkt.btu.sd.core.service.SdCacheService;
+import com.hkt.btu.sd.core.service.SdServiceTypeService;
+import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
+import com.hkt.btu.sd.core.service.constant.SdCacheEnum;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -31,6 +36,17 @@ public class AppTest {
 
     @Autowired
     PlatformTransactionManager transactionManager;
+
+    @Resource(name = "serviceTypeService")
+    SdServiceTypeService serviceTypeService;
+    @Resource(name = "cacheService")
+    SdCacheService cacheService;
+
+    @Test
+    public void name() {
+        SdUserRoleBean cachedObjectByCacheName = (SdUserRoleBean) cacheService.getCachedObjectByCacheName(SdCacheEnum.USER_ROLE_TREE.getCacheName());
+        System.out.println(cachedObjectByCacheName.getRoleId());
+    }
 
     @Before
     public void loadBean() {

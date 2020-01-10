@@ -11,7 +11,7 @@ public class BtuCacheProfileData implements DataInterface {
 
     private int loadingPriority;
     private boolean lazyInit;
-    private boolean isSensitive;
+    private boolean sensitive;
 
     private LocalDateTime createdate;
     private String createby;
@@ -61,11 +61,11 @@ public class BtuCacheProfileData implements DataInterface {
     }
 
     public boolean isSensitive() {
-        return isSensitive;
+        return sensitive;
     }
 
     public void setSensitive(boolean sensitive) {
-        isSensitive = sensitive;
+        this.sensitive = sensitive;
     }
 
     public LocalDateTime getCreatedate() {

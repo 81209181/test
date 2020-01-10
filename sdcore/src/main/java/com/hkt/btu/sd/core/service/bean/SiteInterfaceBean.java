@@ -24,8 +24,19 @@ public class SiteInterfaceBean {
     public static class API_WFM {
         public static final String API_NAME = "API_WFM";
     }
+
     public static class API_NORARS{
         public static final String API_NAME = "API_NORARS";
+    }
+
+    public static class API_UT_CALL{
+        public static final String API_NAME = "API_UT_CALL";
+
+        public static class API_HEADER {
+            public static final String USER_NAME = "user";
+            public static final String SYSTEM_NAME = "sys";
+            public static final String F_ID = "fid";
+        }
     }
 
     public static class API_CONFIG_KEY {
