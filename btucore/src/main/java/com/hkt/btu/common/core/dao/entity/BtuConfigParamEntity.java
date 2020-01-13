@@ -28,6 +28,10 @@ public class BtuConfigParamEntity extends BaseEntity {
         public static final String CONFIG_KEY_MAIL_USERNAME = "mailUsername";
     }
 
+    public static class API_CLIENT {
+        public static final String CONFIG_GROUP = "API_CLIENT";
+    }
+
     public static class TYPE {
         public static final String STRING = "String";
         public static final String INTEGER = "Integer";

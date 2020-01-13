@@ -1,12 +1,9 @@
 package com.hkt.btu.sd.core.service;
 
-import java.util.Map;
+import com.hkt.btu.common.core.service.BtuApiClientService;
 
-public interface SdApiClientService {
 
-    Map<String, Object> loadApiClientBean();
+public interface SdApiClientService extends BtuApiClientService {
 
-    String getApiClientBean(String apiName);
 
-    void reloadCached();
 }
