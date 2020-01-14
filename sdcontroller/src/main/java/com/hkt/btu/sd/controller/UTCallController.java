@@ -55,8 +55,8 @@ public class UTCallController {
 
     @PostMapping("/ajax-ut-call-get-request-result")
     public ResponseEntity<?> utCallGetResult(@RequestParam String utCallId, @RequestParam String serviceCode){
-        if (StringUtils.isEmpty(utCallId)||StringUtils.isEmpty(serviceCode)){
-            ResponseEntity.badRequest().body("Cannot Get Result with empty UT Call Id or Service Code");
+        if (StringUtils.isEmpty(utCallId)||StringUtils.isEmpty(serviceCode)||serviceCode.equals("null")||utCallId.equals("null")){
+            return ResponseEntity.badRequest().body("Cannot Get Result with empty UT Call Id or Service Code");
         }
 
         UTCallProgressData resultData = utCallFacade.checkNewUTCallProgress(serviceCode, "2");
