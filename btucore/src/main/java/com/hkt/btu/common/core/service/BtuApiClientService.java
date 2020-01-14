@@ -3,8 +3,10 @@ package com.hkt.btu.common.core.service;
 import java.util.Map;
 
 public interface BtuApiClientService {
+    // cache
+    Map<String, String> loadApiClientBean();
+    void reloadCache();
 
-    Map<String, Object> loadApiClientBean();
-
-    String getApiClientBean(String apiName);
+    String getApiClientKey(String apiName);
+    boolean checkApiClientKey(String apiName, String key);
 }

@@ -26,7 +26,7 @@ public class BtuCacheFacadeImpl implements BtuCacheFacade {
 
     private final ObjectMapper om = new ObjectMapper();
 
-    public static final String SENSITIVE = "SENSITIVE";
+    private static final String SENSITIVE = "SENSITIVE";
 
     @Override
     public List<BtuCacheProfileData> getCacheProfileDataList() {

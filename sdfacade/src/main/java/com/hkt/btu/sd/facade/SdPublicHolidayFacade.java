@@ -9,9 +9,8 @@ import java.util.List;
 public interface SdPublicHolidayFacade {
     PageData<SdPublicHolidayData> getPublicHolidayList(Pageable pageable, String year);
 
-    boolean deletePublicHoliday(String publicHoliday, String description);
-
     void createPublicHoliday(String publicHoliday, String description);
+    boolean deletePublicHoliday(String publicHoliday);
 
     List<SdPublicHolidayData> getAllPublicHolidayList();
 

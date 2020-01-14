@@ -52,8 +52,8 @@ public class SdPublicHolidayServiceImpl implements SdPublicHolidayService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deletePublicHoliday(LocalDate publicHoliday, String description) {
-        sdPublicHolidayMapper.deletePublicHoliday(publicHoliday, description);
+    public void deletePublicHoliday(LocalDate publicHoliday) {
+        sdPublicHolidayMapper.deletePublicHoliday(publicHoliday);
     }
 
     @Override

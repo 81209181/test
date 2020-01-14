@@ -11,9 +11,8 @@ import java.util.List;
 public interface SdPublicHolidayService {
     Page<SdPublicHolidayBean> getPublicHolidayList(Pageable pageable, String year);
 
-    void deletePublicHoliday(LocalDate publicHoliday, String description);
-
     void createPublicHoliday(LocalDate publicHoliday, String description);
+    void deletePublicHoliday(LocalDate publicHoliday);
 
     void checkPublicHoliday() throws JobExecutionException;
     List<SdPublicHolidayBean> getAllPublicHolidayList();
