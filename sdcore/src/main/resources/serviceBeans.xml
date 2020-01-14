@@ -153,4 +153,7 @@
 
     <alias name="utCallRequestBeanPopulator" alias="callRequestBeanPopulator"/>
     <bean id="utCallRequestBeanPopulator" class="com.hkt.btu.sd.core.service.populator.UTCallRequestBeanPopulator"/>
+
+    <alias name="utCallPageBeanPopulator" alias="callPageBeanPopulator"/>
+    <bean id="utCallPageBeanPopulator" class="com.hkt.btu.sd.core.service.populator.UTCallPageBeanPopulator"/>
 </beans>

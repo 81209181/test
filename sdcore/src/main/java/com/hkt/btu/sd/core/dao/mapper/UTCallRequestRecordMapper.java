@@ -14,4 +14,6 @@ public interface UTCallRequestRecordMapper {
     void insertNewUTCallRequestRecord(@Param("bsnNum") String bsnNum, @Param("code") String code,
                              @Param("msg") String msg, @Param("serviceCode") String serviceCode,
                              @Param("seq") String seq, @Param("seqType") String seqType, @Param("createBy") String createBy);
+
+    void updateRequestAfterGetResult(@Param("utCallId") Integer utCallId, @Param("modifyBy") String modifyBy);
 }

@@ -4,7 +4,7 @@ $(document).ready(function() {
 
 function getAjaxUTCallRecordDataTable() {
     $('#utCallRecordTable').DataTable({
-        "order": [[ 0, "asc" ],[1,"asc"],[2,"asc"],[3,"asc"]],
+        "order": [[0,"asc"],[1,"asc"],[2,"asc"],[3,"asc"],[4,"asc"],[5,"asc"],[6,"asc"]],
         ajax: {
             type: "GET",
             contentType: "application/json",
@@ -25,17 +25,17 @@ function getAjaxUTCallRecordDataTable() {
             {data: 'createDate'},
             {data: 'msg'},
             {data: 'testStatus'},
-            {data: 'lastCheckDate'},
+            {data: 'lastCheckDate'}
         ],
         columnDefs: [
             {
-                targets: 4,
+                targets: 7,
                 render: function (data, type, row, meta) {
                     return "<button class='btn btn-info' onclick='reTriggerUTCall(\"" + row['bsnNum'] +"\")' ><i class='fas fa-stopwatch'></i> Re-Trigger</button>";
                 }
             },
             {
-                targets: 5,
+                targets: 8,
                 render: function (data, type, row, meta) {
                     return "<button class='btn btn-success' onclick='getUTCallRequestResult(\"" + row['utCallId'] + "\",\"" + row['serviceCode'] +"\")' ><i class='fas fa-play'></i> Get Result</button>";
                 }
@@ -62,7 +62,7 @@ function reTriggerUTCall(bsnNum) {
 }
 
 function getUTCallRequestResult(utCallId, serviceCode) {
-    $.post('/system/ut-call//ut-call-get-request-result', {
+    $.post('/system/ut-call/ajax-ut-call-get-request-result', {
         utCallId: utCallId,
         serviceCode: serviceCode
     }, function (res) {
