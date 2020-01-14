@@ -326,7 +326,7 @@ public class SystemController {
     @PostMapping("/manage-api/regenerateKey")
     public ResponseEntity<?> regenerateKey(String apiName) {
         try {
-            sdApiClientFacade.reloadCached(apiName);
+            sdApiClientFacade.regenerateApiClientKey(apiName);
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Re-generate failed.");
