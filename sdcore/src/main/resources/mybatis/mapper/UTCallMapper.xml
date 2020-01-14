@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hkt.btu.sd.core.dao.mapper.UTCallMapper">
+
+    <resultMap id="UTCallPageEntity" type="com.hkt.btu.sd.core.dao.entity.UTCallPageEntity" >
+        <result column="UT_CALL_ID" property="utCallId" />
+        <result column="BSN_NUM" property="bsnNum" />
+        <result column="CODE" property="code" />
+        <result column="MSG" property="msg" />
+        <result column="SERVICECODE" property="serviceCode" />
+        <result column="SEQ" property="seq" />
+        <result column="SEQ_TYPE" property="seqType" />
+        <result column="TEST_STATUS" property="testStatus" />
+        <result column="LAST_CHECK_DATE" property="lastCheckDate" />
+
+        <result column="CREATEDATE" property="createdate" />
+        <result column="CREATEBY" property="createby" />
+        <result column="MODIFYDATE" property="modifydate" />
+        <result column="MODIFYBY" property="modifyby" />
+    </resultMap>
+
+    <select id="getUTCallRecord" resultMap="UTCallPageEntity">
+        SELECT UCREQ.*, UCRES.MSG as TEST_STATUS
+        FROM UT_CALL_REQUEST_RECORD UCREQ
+        FULL OUTER JOIN UT_CALL_RESULT_RECORD UCRES on UCREQ.UT_CALL_ID = UCRES.UT_CALL_ID
+    </select>
+
+</mapper>

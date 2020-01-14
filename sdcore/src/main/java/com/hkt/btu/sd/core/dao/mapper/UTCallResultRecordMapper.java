@@ -13,4 +13,10 @@ public interface UTCallResultRecordMapper {
     void insertNewUTCallResultRecord(@Param("utCallId") String utCallId, @Param("code") String code,
                                       @Param("msg") String msg, @Param("utSummaryString") String utSummaryString,
                                       @Param("createBy") String createBy);
+
+    void updateUTCallResultRecord(@Param("utCallId") String utCallId, @Param("code") String code,
+                                  @Param("msg") String msg, @Param("utSummaryString") String utSummaryString,
+                                  @Param("modifyBy") String modifyBy);
+
+    Integer utCallResultRecordExist(@Param("utCallId") String utCallId);
 }

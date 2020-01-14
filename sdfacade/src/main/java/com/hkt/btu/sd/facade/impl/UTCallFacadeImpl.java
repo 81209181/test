@@ -4,6 +4,8 @@ import com.hkt.btu.sd.core.service.SdApiService;
 import com.hkt.btu.sd.core.service.UTCallService;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.core.service.bean.UTCallRequestBean;
+import com.hkt.btu.sd.core.dao.entity.UTCallPageEntity;
+import com.hkt.btu.sd.core.service.bean.UTCallPageBean;
 import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.UTCallFacade;
 import com.hkt.btu.sd.facade.data.*;
@@ -110,7 +112,32 @@ public class UTCallFacadeImpl extends AbstractRestfulApiFacade implements UTCall
     @Override
     public String insertNewUTCallResultRecord(String utCallId, String code, String msg, List<Map<String, String>> utSummary){
         try{
-            utCallService.insertNewUTCallResultRecord(utCallId, code, msg, utSummary);
+            if(utCallService.utCallResultRecordExist(utCallId)){
+                utCallService.updateUTCallResultRecord(utCallId, code, msg, utSummary);
+            }
+            else {
+                utCallService.insertNewUTCallResultRecord(utCallId, code, msg, utSummary);
+            }
+        }
+        catch (InvalidInputException e){
+            LOG.warn(e.getMessage());
+            return e.getMessage();
+        }
+        catch (UserNotFoundException e){
+            LOG.warn(e.getMessage());
+            return e.getMessage();
+        }
+        catch (Exception e){
+            LOG.warn(e.getMessage());
+            return "Unhandle Error Occur: Please see the log for detail";
+        }
+        return null;
+    }
+
+    @Override
+    public String updateRequestAfterGetResult(String utCallId){
+        try{
+            utCallService.updateRequestAfterGetResult(utCallId);
         }
         catch (InvalidInputException e){
             LOG.warn(e.getMessage());
@@ -130,9 +157,9 @@ public class UTCallFacadeImpl extends AbstractRestfulApiFacade implements UTCall
     @Override
     public List<UTCallPageData> getUTCallRequestRecordList(){
         List<UTCallPageData> utCallRecordListData = new ArrayList();
-        List<UTCallRequestBean> utCallRecordList = utCallService.getUTCallRequestRecordList();
+        List<UTCallPageBean> utCallRecordList = utCallService.getUTCallRequestRecordList();
 
-        for (UTCallRequestBean bean : utCallRecordList){
+        for (UTCallPageBean bean : utCallRecordList){
             UTCallPageData data = new UTCallPageData();
             utCallPageDataPopulator.populate(bean, data);
             utCallRecordListData.add(data);

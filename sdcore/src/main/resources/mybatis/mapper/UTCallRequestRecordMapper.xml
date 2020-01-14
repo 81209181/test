@@ -30,4 +30,12 @@
         VALUES (SEQ_UT_CALL_ID.nextval, #{bsnNum}, #{code}, #{msg}, #{serviceCode}, #{seq}, #{seqType}, null, CURRENT_TIMESTAMP, #{createBy})
     </insert>
 
+    <update id="updateRequestAfterGetResult">
+        UPDATE UT_CALL_REQUEST_RECORD
+        SET LAST_CHECK_DATE = CURRENT_TIMESTAMP,
+            MODIFYBY   = #{modifyBy},
+            MODIFYDATE = CURRENT_TIMESTAMP
+        WHERE UT_CALL_ID = #{utCallId}
+    </update>
+
 </mapper>
