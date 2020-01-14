@@ -16,6 +16,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -52,14 +53,24 @@ public class UTCallController {
         return "redirect:/system/ut-call";
     }
 
-    @PostMapping("/ut-call-get-request-result")
+    @PostMapping("/ajax-ut-call-get-request-result")
     public ResponseEntity<?> utCallGetResult(@RequestParam String utCallId, @RequestParam String serviceCode){
+        if (StringUtils.isEmpty(utCallId)||StringUtils.isEmpty(serviceCode)){
+            ResponseEntity.badRequest().body("Cannot Get Result with empty UT Call Id or Service Code");
+        }
+
         UTCallProgressData resultData = utCallFacade.checkNewUTCallProgress(serviceCode, "2");
         String resultMsg = utCallFacade.insertNewUTCallResultRecord(utCallId, resultData.getCODE(),
                                                                     resultData.getMSG(), resultData.getACTIONDATA().getUT_SUMMARY());
 
         if (resultMsg==null){
-            return ResponseEntity.ok(SimpleAjaxResponse.of());
+            String updateMsg = utCallFacade.updateRequestAfterGetResult(utCallId);
+            if (updateMsg==null){
+                return ResponseEntity.ok(SimpleAjaxResponse.of());
+            }
+            else {
+                return ResponseEntity.badRequest().body("update request failed.");
+            }
         }
         else {
             return ResponseEntity.badRequest().body("get result failed.");

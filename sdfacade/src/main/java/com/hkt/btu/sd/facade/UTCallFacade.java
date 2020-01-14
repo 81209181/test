@@ -13,5 +13,7 @@ public interface UTCallFacade {
     UTCallProgressData checkNewUTCallProgress(String serviceCode, String seq);
     String insertNewUTCallResultRecord(String utCallId, String code, String msg, List<Map<String, String>> utSummary);
 
+    String updateRequestAfterGetResult(String utCallId);
+
     List<UTCallPageData> getUTCallRequestRecordList();
 }
