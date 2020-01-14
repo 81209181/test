@@ -301,7 +301,7 @@ public class SystemController {
 
     @GetMapping("/manage-api/ajax-list-api-user")
     public ResponseEntity<?> ajaxListApiUser(){
-        List<SdUserData> dataList = userFacade.getApiUser();
+        List<SdUserData> dataList = userFacade.getApiUser(); // todo [SERVDESK-320] call to new method in apiClientFacade, new return data needed
 
         if (dataList == null) {
             return ResponseEntity.badRequest().body("user list not found.");

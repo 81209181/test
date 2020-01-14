@@ -25,7 +25,9 @@ public class SdApiClientServiceImpl extends BtuApiClientServiceImpl implements S
         String configValue = uuid.toString();
 
         try{
-            sdConfigParamService.updateConfigParam(BtuConfigParamEntity.API_CLIENT.CONFIG_GROUP, configKey, configValue, BtuConfigParamEntity.TYPE.STRING, BtuConfigParamEntity.ENCRYPT.YES);
+            sdConfigParamService.updateConfigParam(BtuConfigParamEntity.API_CLIENT.CONFIG_GROUP, configKey, configValue,
+                    BtuConfigParamEntity.TYPE.STRING, BtuConfigParamEntity.ENCRYPT.YES);
+            LOG.info("Re-generated API Client key: {}", apiName);
         } catch (GeneralSecurityException e) {
             LOG.error(e.getMessage());
         }
