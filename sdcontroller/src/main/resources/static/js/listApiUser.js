@@ -16,19 +16,26 @@ $(document).ready(function() {
             }
         },
         columns: [
-            { data: 'name' }
+            { data: 'name' },
+            { data: 'cacheSync' }
         ],
         columnDefs: [
             {
-                targets: 1,
+                targets: 2,
                 render: function (data, type, row, meta) {
-                    return "<button class='btn btn-info' onclick='ajaxGetApiKey(\"" + row['name'] + "\")' ><i class='fas fa-edit'></i>Show</button>";
+                    return "<button class='btn btn-info' onclick='ajaxGetApiKey(\"" + row['name'] + "\")' ><i class='fas fa-edit'></i> Show</button>";
                 }
             },
             {
-                targets: 2,
+                targets: 3,
                 render: function (data, type, row, meta) {
-                    return "<button class='btn btn-info' onclick='ajaxRegenerate(\"" + row['name'] + "\")' ><i class='fas fa-edit'></i>Re-generate</button>";
+                    return "<button class='btn btn-info' onclick='ajaxRegenerate(\"" + row['name'] + "\")' ><i class='fas fa-edit'></i> Re-generate</button>";
+                }
+            },
+            {
+                targets: 4,
+                render: function (data, type, row, meta) {
+                    return "<button class='btn btn-info' onclick='ajaxReloadCache(\"" + row['name'] + "\")' ><i class='fas fa-sync'></i> Reload</button>";
                 }
             }
         ]
@@ -65,6 +72,7 @@ function ajaxRegenerate(apiName) {
         }, function (res) {
             if (res.success) {
                 showInfoMsg("Re-generate success.");
+                $('#userGroupTable').DataTable().ajax.reload();
             }
         }).fail(function (e) {
             var responseError = e.responseText ? e.responseText : "Get failed.";
@@ -84,5 +92,20 @@ function copyToClipBoard() {
             $('.apiKey').modal('hide');
             showInfoMsg("Copied successfully.");
         }
+    })
+}
+
+function ajaxReloadCache(apiName) {
+    $.post('/system/manage-api/reloadCache',{
+        apiName : apiName,
+    }, function (res) {
+        if (res.success) {
+            showInfoMsg("Reload success.");
+            $('#userGroupTable').DataTable().ajax.reload();
+        }
+    }).fail(function (e) {
+        var responseError = e.responseText ? e.responseText : "Get failed.";
+        console.log("ERROR : ", responseError);
+        showErrorMsg(responseError);
     })
 }
