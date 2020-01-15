@@ -1,5 +1,9 @@
 $(document).ready(function() {
     getAjaxUTCallRecordDataTable();
+
+    $('#btnTriggerNewBSNNum').on('click',function(){
+        triggerUTCall($('#triggerNewBSNNum').val());
+    });
 });
 
 function getAjaxUTCallRecordDataTable() {
@@ -31,7 +35,7 @@ function getAjaxUTCallRecordDataTable() {
             {
                 targets: 7,
                 render: function (data, type, row, meta) {
-                    return "<button class='btn btn-info' onclick='reTriggerUTCall(\"" + row['bsnNum'] +"\")' ><i class='fas fa-stopwatch'></i> Re-Trigger</button>";
+                    return "<button class='btn btn-info' onclick='triggerUTCall(\"" + row['bsnNum'] +"\")' ><i class='fas fa-stopwatch'></i> Re-Trigger</button>";
                 }
             },
             {
@@ -44,18 +48,16 @@ function getAjaxUTCallRecordDataTable() {
     });
 }
 
-function reTriggerUTCall(bsnNum) {
-    $.post('/system/ut-call/ajax-re-trigger-ut-call', {
+function triggerUTCall(bsnNum) {
+    $.post('/system/ut-call/ajax-trigger-ut-call', {
         bsnNum: bsnNum
     }, function (res) {
         if (res.success) {
-            showInfoMsg("re-trigger success.");
-            setTimeout(function () {
-                location.reload();
-            }, 1000)
+            showInfoMsg("trigger success.");
+            $('#utCallRecordTable').DataTable().ajax.reload();
         }
     }).fail(function (e) {
-        var responseError = e.responseText ? e.responseText : "re-trigger failed.";
+        var responseError = e.responseText ? e.responseText : "trigger failed.";
         console.log("ERROR : ", responseError);
         showErrorMsg(responseError);
     });
@@ -68,9 +70,7 @@ function getUTCallRequestResult(utCallId, serviceCode) {
     }, function (res) {
         if (res.success) {
             showInfoMsg("get result success.");
-            setTimeout(function () {
-                location.reload();
-            }, 1000)
+            $('#utCallRecordTable').DataTable().ajax.reload();
         }
     }).fail(function (e) {
         var responseError = e.responseText ? e.responseText : "get result failed.";

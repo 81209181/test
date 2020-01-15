@@ -6,14 +6,15 @@ import java.util.List;
 import java.util.Map;
 
 public interface UTCallFacade {
-    UTCallRequestTempData triggerNewUTCall(String BSNNum);
-    String insertNewUTCallRequestRecord(String triggerNewBSNNum, String code, String msg,
-                                                String serviceCode, String seq, String seqType);
+    String newUtCallRequest(String triggerNewBSNNum);
+//    UTCallRequestTempData triggerNewUTCall(String BSNNum);
+//    String insertNewUTCallRequestRecord(String triggerNewBSNNum, String code, String msg,
+//                                                String serviceCode, String seq, String seqType);
 
-    UTCallProgressData checkNewUTCallProgress(String serviceCode, String seq);
-    String insertNewUTCallResultRecord(String utCallId, String code, String msg, List<Map<String, String>> utSummary);
-
-    String updateRequestAfterGetResult(String utCallId);
+    String newUtCallResult(String utCallId, String serviceCode);
+//    UTCallProgressData checkNewUTCallProgress(String serviceCode, String seq);
+//    String insertNewUTCallResultRecord(String utCallId, String code, String msg, List<Map<String, String>> utSummary);
+//    String updateRequestAfterGetResult(String utCallId);
 
     List<UTCallPageData> getUTCallRequestRecordList();
 }

@@ -40,9 +40,8 @@ public class UTCallController {
     @PostMapping("/trigger-new-ut-call")
     public String triggerNewUTCall(final RedirectAttributes redirectAttributes,
                                    @ModelAttribute("triggerNewBSNNum") String triggerNewBSNNum){
-        UTCallRequestTempData requestData = utCallFacade.triggerNewUTCall(triggerNewBSNNum);
-        String resultMsg = utCallFacade.insertNewUTCallRequestRecord(triggerNewBSNNum, requestData.getCODE(), requestData.getMSG(),
-                                                                requestData.getSERVICECODE(), requestData.getSEQ(), requestData.getSEQTYPE());
+
+        String resultMsg = utCallFacade.newUtCallRequest(triggerNewBSNNum);
 
         if (resultMsg==null){
             redirectAttributes.addFlashAttribute(PageMsgController.INFO_MSG, "UT Call successfully");
@@ -59,18 +58,10 @@ public class UTCallController {
             return ResponseEntity.badRequest().body("Cannot Get Result with empty UT Call Id or Service Code");
         }
 
-        UTCallProgressData resultData = utCallFacade.checkNewUTCallProgress(serviceCode, "2");
-        String resultMsg = utCallFacade.insertNewUTCallResultRecord(utCallId, resultData.getCODE(),
-                                                                    resultData.getMSG(), resultData.getACTIONDATA().getUT_SUMMARY());
+        String resultMsg = utCallFacade.newUtCallResult(utCallId, serviceCode);
 
         if (resultMsg==null){
-            String updateMsg = utCallFacade.updateRequestAfterGetResult(utCallId);
-            if (updateMsg==null){
-                return ResponseEntity.ok(SimpleAjaxResponse.of());
-            }
-            else {
-                return ResponseEntity.badRequest().body("update request failed.");
-            }
+            return ResponseEntity.ok(SimpleAjaxResponse.of());
         }
         else {
             return ResponseEntity.badRequest().body("get result failed.");
@@ -83,16 +74,15 @@ public class UTCallController {
         return ResponseEntity.ok(utCallRecordList);
     }
 
-    @PostMapping("/ajax-re-trigger-ut-call")
+    @PostMapping("/ajax-trigger-ut-call")
     public ResponseEntity<?> ajaxreTriggerUTCall(@RequestParam String bsnNum){
-        UTCallRequestTempData requestData = utCallFacade.triggerNewUTCall(bsnNum);
-        String resultMsg = utCallFacade.insertNewUTCallRequestRecord(bsnNum, requestData.getCODE(), requestData.getMSG(),
-                                                                requestData.getSERVICECODE(), requestData.getSEQ(), requestData.getSEQTYPE());
+        String resultMsg = utCallFacade.newUtCallRequest(bsnNum);
+
         if (resultMsg==null){
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         }
         else {
-            return ResponseEntity.badRequest().body("re-trigger failed.");
+            return ResponseEntity.badRequest().body("trigger failed.");
         }
     }
 }
