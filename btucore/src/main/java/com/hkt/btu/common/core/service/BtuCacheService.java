@@ -21,4 +21,6 @@ public interface BtuCacheService {
     List<BtuCacheBean> getAllCachedBean();
     Object getCachedObjectByCacheName(String cacheName);
     Object getSourceObjectByCacheName(String cacheName);
+
+    void reloadCachedObject(String cacheName, Object newCacheObject);
 }
