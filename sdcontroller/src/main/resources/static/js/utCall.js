@@ -8,7 +8,7 @@ $(document).ready(function() {
 
 function getAjaxUTCallRecordDataTable() {
     $('#utCallRecordTable').DataTable({
-        "order": [[0,"asc"],[1,"asc"],[2,"asc"],[3,"asc"],[4,"asc"],[5,"asc"],[6,"asc"]],
+        "order": [[0,"asc"],[1,"asc"],[2,"asc"],[3,"asc"],[4,"asc"],[5,"asc"],[6,"asc"],[7,"asc"]],
         ajax: {
             type: "GET",
             contentType: "application/json",
@@ -29,17 +29,18 @@ function getAjaxUTCallRecordDataTable() {
             {data: 'createDate'},
             {data: 'msg'},
             {data: 'testStatus'},
-            {data: 'lastCheckDate'}
+            {data: 'lastCheckDate'},
+            {data: 'ticketDetId'}
         ],
         columnDefs: [
             {
-                targets: 7,
+                targets: 8,
                 render: function (data, type, row, meta) {
                     return "<button class='btn btn-info' onclick='triggerUTCall(\"" + row['bsnNum'] +"\")' ><i class='fas fa-stopwatch'></i> Re-Trigger</button>";
                 }
             },
             {
-                targets: 8,
+                targets: 9,
                 render: function (data, type, row, meta) {
                     return "<button class='btn btn-success' onclick='getUTCallRequestResult(\"" + row['utCallId'] + "\",\"" + row['serviceCode'] +"\")' ><i class='fas fa-play'></i> Get Result</button>";
                 }
