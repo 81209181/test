@@ -60,9 +60,9 @@ public class UTCallFacadeImpl extends AbstractRestfulApiFacade implements UTCall
     //own implementation
 
     @Override
-    public String newUtCallRequest(String triggerNewBSNNum){
+    public String newUtCallRequest(String triggerNewBSNNum, Integer ticketDetId){
         UTCallRequestTempData requestData = triggerNewUTCall(triggerNewBSNNum);
-        return insertNewUTCallRequestRecord(triggerNewBSNNum, requestData.getCODE(), requestData.getMSG(), requestData.getSERVICECODE(), requestData.getSEQ(), requestData.getSEQTYPE());
+        return insertNewUTCallRequestRecord(triggerNewBSNNum, requestData.getCODE(), requestData.getMSG(), requestData.getSERVICECODE(), requestData.getSEQ(), requestData.getSEQTYPE(), ticketDetId);
     }
 
     private UTCallRequestTempData triggerNewUTCall(String BSNNum){
@@ -74,9 +74,9 @@ public class UTCallFacadeImpl extends AbstractRestfulApiFacade implements UTCall
         return getData(apiPath, UTCallRequestTempData.class, queryParamMap);
     }
 
-    private String insertNewUTCallRequestRecord(String triggerNewBSNNum, String code, String msg, String serviceCode, String seq, String seqType){
+    private String insertNewUTCallRequestRecord(String triggerNewBSNNum, String code, String msg, String serviceCode, String seq, String seqType, Integer ticketDetId){
         try{
-            utCallService.insertNewUTCallRequestRecord(triggerNewBSNNum, code, msg, serviceCode, seq, seqType);
+            utCallService.insertNewUTCallRequestRecord(triggerNewBSNNum, code, msg, serviceCode, seq, seqType, ticketDetId);
         }
         catch (InvalidInputException e){
             LOG.warn(e.getMessage());

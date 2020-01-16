@@ -20,5 +20,6 @@ public class UTCallPageBeanPopulator extends AbstractBeanPopulator<UTCallPageBea
         target.setSeqType(source.getSeqType());
         target.setTestStatus(source.getTestStatus());
         target.setLastCheckDate(source.getLastCheckDate());
+        target.setTicketDetId(source.getTicketDetId());
     }
 }

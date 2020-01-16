@@ -14,6 +14,7 @@
         <result column="SEQ_TYPE" property="seqType" />
         <result column="TEST_STATUS" property="testStatus" />
         <result column="LAST_CHECK_DATE" property="lastCheckDate" />
+        <result column="TICKET_DET_ID" property="ticketDetId" />
 
         <result column="CREATEDATE" property="createdate" />
         <result column="CREATEBY" property="createby" />

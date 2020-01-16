@@ -41,7 +41,7 @@ public class UTCallController {
     public String triggerNewUTCall(final RedirectAttributes redirectAttributes,
                                    @ModelAttribute("triggerNewBSNNum") String triggerNewBSNNum){
 
-        String resultMsg = utCallFacade.newUtCallRequest(triggerNewBSNNum);
+        String resultMsg = utCallFacade.newUtCallRequest(triggerNewBSNNum, null);
 
         if (resultMsg==null){
             redirectAttributes.addFlashAttribute(PageMsgController.INFO_MSG, "UT Call successfully");
@@ -76,7 +76,7 @@ public class UTCallController {
 
     @PostMapping("/ajax-trigger-ut-call")
     public ResponseEntity<?> ajaxreTriggerUTCall(@RequestParam String bsnNum){
-        String resultMsg = utCallFacade.newUtCallRequest(bsnNum);
+        String resultMsg = utCallFacade.newUtCallRequest(bsnNum, null);
 
         if (resultMsg==null){
             return ResponseEntity.ok(SimpleAjaxResponse.of());

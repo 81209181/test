@@ -46,7 +46,7 @@ public class UTCallServiceImpl implements UTCallService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void insertNewUTCallRequestRecord(String triggerNewBSNNum, String code, String msg, String serviceCode, String seq, String seqType){
+    public void insertNewUTCallRequestRecord(String triggerNewBSNNum, String code, String msg, String serviceCode, String seq, String seqType, Integer ticketDetId){
         if (StringUtils.isEmpty(triggerNewBSNNum)) {
             throw new InvalidInputException("bsn number not found.");
         }
@@ -58,7 +58,7 @@ public class UTCallServiceImpl implements UTCallService {
             throw new UserNotFoundException("Cannot find user id");
         }
 
-        utCallRequestRecordMapper.insertNewUTCallRequestRecord(triggerNewBSNNum, code, msg, serviceCode, seq, seqType, createBy);
+        utCallRequestRecordMapper.insertNewUTCallRequestRecord(triggerNewBSNNum, code, msg, serviceCode, seq, seqType, ticketDetId, createBy);
     }
 
     @Override
@@ -152,6 +152,9 @@ public class UTCallServiceImpl implements UTCallService {
     }
 
     private String getUTSummaryString(List<Map<String, String>> utSummary){
+        if (utSummary==null)
+            return null;
+
         StringBuilder utSummaryString = new StringBuilder("[");
         for (Map<String, String> map : utSummary){
             StringBuilder mapAsString = new StringBuilder("{");
