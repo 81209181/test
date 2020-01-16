@@ -301,7 +301,7 @@ public class SystemController {
 
     @GetMapping("/manage-api/ajax-list-api-user")
     public ResponseEntity<?> ajaxListApiUser(){
-        List<SdUserData> dataList = userFacade.getApiUser(); // todo [SERVDESK-320] call to new method in apiClientFacade, new return data needed
+        List<SdApiUserData> dataList = sdApiClientFacade.getApiUser();
 
         if (dataList == null) {
             return ResponseEntity.badRequest().body("user list not found.");
@@ -330,6 +330,16 @@ public class SystemController {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Re-generate failed.");
+        }
+    }
+
+    @PostMapping("/manage-api/reloadCache")
+    public ResponseEntity<?> reloadCache(String apiName) {
+        try {
+            sdApiClientFacade.reloadCache(apiName);
+            return ResponseEntity.ok(SimpleAjaxResponse.of());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Reload failed.");
         }
     }
 }

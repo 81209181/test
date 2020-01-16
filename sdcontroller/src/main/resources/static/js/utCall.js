@@ -1,10 +1,14 @@
 $(document).ready(function() {
     getAjaxUTCallRecordDataTable();
+
+    $('#btnTriggerNewBSNNum').on('click',function(){
+        triggerUTCall($('#triggerNewBSNNum').val());
+    });
 });
 
 function getAjaxUTCallRecordDataTable() {
     $('#utCallRecordTable').DataTable({
-        "order": [[0,"asc"],[1,"asc"],[2,"asc"],[3,"asc"],[4,"asc"],[5,"asc"],[6,"asc"]],
+        "order": [[0,"asc"],[1,"asc"],[2,"asc"],[3,"asc"],[4,"asc"],[5,"asc"],[6,"asc"],[7,"asc"]],
         ajax: {
             type: "GET",
             contentType: "application/json",
@@ -25,17 +29,18 @@ function getAjaxUTCallRecordDataTable() {
             {data: 'createDate'},
             {data: 'msg'},
             {data: 'testStatus'},
-            {data: 'lastCheckDate'}
+            {data: 'lastCheckDate'},
+            {data: 'ticketDetId'}
         ],
         columnDefs: [
             {
-                targets: 7,
+                targets: 8,
                 render: function (data, type, row, meta) {
-                    return "<button class='btn btn-info' onclick='reTriggerUTCall(\"" + row['bsnNum'] +"\")' ><i class='fas fa-stopwatch'></i> Re-Trigger</button>";
+                    return "<button class='btn btn-info' onclick='triggerUTCall(\"" + row['bsnNum'] +"\")' ><i class='fas fa-stopwatch'></i> Re-Trigger</button>";
                 }
             },
             {
-                targets: 8,
+                targets: 9,
                 render: function (data, type, row, meta) {
                     return "<button class='btn btn-success' onclick='getUTCallRequestResult(\"" + row['utCallId'] + "\",\"" + row['serviceCode'] +"\")' ><i class='fas fa-play'></i> Get Result</button>";
                 }
@@ -44,18 +49,16 @@ function getAjaxUTCallRecordDataTable() {
     });
 }
 
-function reTriggerUTCall(bsnNum) {
-    $.post('/system/ut-call/ajax-re-trigger-ut-call', {
+function triggerUTCall(bsnNum) {
+    $.post('/system/ut-call/ajax-trigger-ut-call', {
         bsnNum: bsnNum
     }, function (res) {
         if (res.success) {
-            showInfoMsg("re-trigger success.");
-            setTimeout(function () {
-                location.reload();
-            }, 1000)
+            showInfoMsg("trigger success.");
+            $('#utCallRecordTable').DataTable().ajax.reload();
         }
     }).fail(function (e) {
-        var responseError = e.responseText ? e.responseText : "re-trigger failed.";
+        var responseError = e.responseText ? e.responseText : "trigger failed.";
         console.log("ERROR : ", responseError);
         showErrorMsg(responseError);
     });
@@ -68,9 +71,7 @@ function getUTCallRequestResult(utCallId, serviceCode) {
     }, function (res) {
         if (res.success) {
             showInfoMsg("get result success.");
-            setTimeout(function () {
-                location.reload();
-            }, 1000)
+            $('#utCallRecordTable').DataTable().ajax.reload();
         }
     }).fail(function (e) {
         var responseError = e.responseText ? e.responseText : "get result failed.";

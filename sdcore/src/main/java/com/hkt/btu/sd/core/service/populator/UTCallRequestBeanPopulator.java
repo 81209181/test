@@ -12,13 +12,14 @@ public class UTCallRequestBeanPopulator extends AbstractBeanPopulator<UTCallRequ
     public void populate(UTCallRequestEntity source, UTCallRequestBean target) {
         super.populate(source, target);
 
-        target.setUTCALLID(source.getUTCALLID());
-        target.setBSNNUM(source.getBSNNUM());
-        target.setCODE(source.getCODE());
-        target.setMSG(source.getMSG());
-        target.setSERVICECODE(source.getSERVICECODE());
-        target.setSEQ(source.getSEQ());
-        target.setSEQTYPE(source.getSEQTYPE());
-        target.setLASTCHECKDATE(source.getLASTCHECKDATE());
+        target.setUtCallId(source.getUtCallId());
+        target.setBsnNum(source.getBsnNum());
+        target.setCode(source.getCode());
+        target.setMsg(source.getMsg());
+        target.setServiceCode(source.getServiceCode());
+        target.setSeq(source.getSeq());
+        target.setSeqType(source.getSeqType());
+        target.setLastCheckDate(source.getLastCheckDate());
+        target.setTicketDetId(source.getTicketDetId());
     }
 }

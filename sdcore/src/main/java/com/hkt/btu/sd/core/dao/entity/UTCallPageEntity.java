@@ -13,6 +13,7 @@ public class UTCallPageEntity extends BaseEntity{
     private String seqType;
     private String testStatus;
     private LocalDateTime lastCheckDate;
+    private Integer ticketDetId;
 
     public Integer getUtCallId() {
         return utCallId;
@@ -84,5 +85,13 @@ public class UTCallPageEntity extends BaseEntity{
 
     public void setLastCheckDate(LocalDateTime lastCheckDate) {
         this.lastCheckDate = lastCheckDate;
+    }
+
+    public Integer getTicketDetId() {
+        return ticketDetId;
+    }
+
+    public void setTicketDetId(Integer ticketDetId) {
+        this.ticketDetId = ticketDetId;
     }
 }

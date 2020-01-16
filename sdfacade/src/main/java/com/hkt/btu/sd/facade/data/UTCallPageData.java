@@ -15,6 +15,7 @@ public class UTCallPageData implements DataInterface {
     private String seqType;
     private String testStatus;
     private LocalDateTime lastCheckDate;
+    private Integer ticketDetId;
     private LocalDateTime createDate;
 
     public Integer getUtCallId() {
@@ -87,6 +88,14 @@ public class UTCallPageData implements DataInterface {
 
     public void setLastCheckDate(LocalDateTime lastCheckDate) {
         this.lastCheckDate = lastCheckDate;
+    }
+
+    public Integer getTicketDetId() {
+        return ticketDetId;
+    }
+
+    public void setTicketDetId(Integer ticketDetId) {
+        this.ticketDetId = ticketDetId;
     }
 
     public LocalDateTime getCreateDate() {

@@ -22,6 +22,7 @@ public class UTCallPageDataPopulator extends AbstractDataPopulator<UTCallPageDat
         target.setSeqType(source.getSeqType());
         target.setTestStatus(source.getTestStatus());
         target.setLastCheckDate(source.getLastCheckDate());
+        target.setTicketDetId(source.getTicketDetId());
         target.setCreateDate(source.getCreatedate());
     }
 }

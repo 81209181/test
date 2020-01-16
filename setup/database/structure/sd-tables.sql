@@ -165,6 +165,7 @@ CREATE TABLE UT_CALL_REQUEST_RECORD
     SEQ                           varchar2(10),
     SEQ_TYPE                      varchar2(10),
     LAST_CHECK_DATE               date,
+    TICKET_DET_ID                 number,
 
     CREATEDATE                    date                     default SYSDATE not null,
     CREATEBY                      varchar2(10)             not null,

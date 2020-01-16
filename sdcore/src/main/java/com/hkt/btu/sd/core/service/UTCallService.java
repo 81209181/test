@@ -8,7 +8,7 @@ import java.util.Map;
 
 public interface UTCallService {
     void insertNewUTCallRequestRecord(String triggerNewBSNNum, String code, String msg,
-                               String serviceCode, String seq, String seqType);
+                               String serviceCode, String seq, String seqType, Integer ticketDetId);
     void insertNewUTCallResultRecord(String utCallId, String code, String msg, List<Map<String, String>> utSummary);
     void updateUTCallResultRecord(String utCallId, String code, String msg, List<Map<String, String>> utSummary);
     void updateRequestAfterGetResult(String utCallId);
