@@ -1,4 +1,4 @@
-package com.hkt.btu.sd.facade;
+package com.hkt.btu.sd.facade.data.cloud;
 
 public class Attachment {
     private String fileName;

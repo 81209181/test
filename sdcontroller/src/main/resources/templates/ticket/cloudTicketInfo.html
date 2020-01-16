@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout-fluid}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ticket Info</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+    <div class="card" style="margin-bottom: 75px;" th:object="${ticketInfo}">
+        <div class="card-header bg-primary text-white">Ticket - <span th:text="*{ticketMasId}"></span></div>
+        <div class="card-body">
+            <div id="ticket" class="row">
+                <div class="col-md-12">
+                    <h3>Ticket</h3>
+                </div>
+                <div class="col-md-3 form-inline pt-2">
+                    <label class="col-form-label justify-content-end mr-3">Ticket Mas ID:</label>
+                    <span th:text="*{ticketMasId}" id="ticketMasId"></span>
+                </div>
+                <div class="col-md-3 form-inline pt-2">
+                    <label class="col-form-label justify-content-end mr-3">Ticket Type:</label>
+                    <font th:text="*{ticketType}"></font>
+                </div>
+                <div class="col-md-3 form-inline pt-2" th:switch="*{statusDesc}">
+                    <label class="col-form-label justify-content-end mr-3">Ticket Status:</label>
+                    <span th:case="OPEN" class="text-primary" th:text="*{statusDesc}"></span>
+                    <span th:case="WORKING" class="text-warning" th:text="*{statusDesc}"></span>
+                    <span th:case="COMPLETE" class="text-success" th:text="*{statusDesc}"></span>
+                    <button type="button" class="btn btn-info ml-2" id="btnTicketClose" th:unless="*{statusDesc} eq 'COMPLETE'">Close</button>
+                </div>
+                <div class="col-md-3 form-inline pt-2">
+                    <label class="col-form-label justify-content-end mr-3">Team:</label>
+                    <font th:text="*{owningRole}"></font>
+                </div>
+            </div>
+            <hr>
+            <div id="contact" class="row">
+                <div class="col-md-12">
+                    <h3>Contact</h3>
+                </div>
+                <form class="col-md-12">
+                    <input type="hidden" name="contactType">
+                    <div class="form-row">
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-2 justify-content-end">Contact Name :</label>
+                            <input type="text" class="form-control col-md-4" name="contactName">
+                        </div>
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-2 justify-content-end">Contact No. :</label>
+                            <input type="text" class="form-control col-md-4" name="contactNumber">
+                        </div>
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-2 justify-content-end">Contact Mobile :</label>
+                            <input type="text" class="form-control col-md-4" name="contactMobile">
+                        </div>
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-2 justify-content-end">Contact Email :</label>
+                            <input type="text" class="form-control col-md-4" name="contactEmail">
+                        </div>
+                    </div>
+                </form>
+                <div class="offset-md-11">
+                    <button type="button" class="btn btn-primary mt-2" id="btnUpdateContact" disabled="disabled" th:disabled="*{statusDesc} eq 'COMPLETE'">Update</button>
+                </div>
+            </div>
+            <hr>
+            <div id="uploadFile" class="row mb-5">
+                <div class="col-md-12">
+                    <h3>Upload File</h3>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-row">
+                        <div class="col-md-4 form-inline pt-2" id="div_upload_file" style="display: none;">
+                            <label class="col-form-label col-md-3 justify-content-end">File name :</label>
+                            <input type="text" class="form-control col-md-4 mr-2" readonly>
+                            <a type="button" class="btn btn-primary text-light">Download</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <h3>Remark</h3>
+            <div id="remark" class="row">
+                <form class="col-md-12 form">
+                    <div class="form-row">
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Remarks: </label>
+                            <textarea rows="3" cols="20" class="form-control col-md-6" name="remarks"></textarea>
+                        </div>
+                    </div>
+                </form>
+                <div class="offset-md-11">
+                    <button type="button" class="btn btn-primary mt-2" id="btnCreateTicketRemarks" >
+                        Update
+                    </button>
+                </div>
+            </div>
+            <hr style="visibility: hidden;">
+            <table id="searchTicketRemarksTable" class="display" cellspacing="0" width="100%" style="table-layout: fixed;word-wrap:break-word;border-collapse: collapse;">
+                <thead>
+                <tr>
+                    <th>Create Date</th>
+                    <th>Type</th>
+                    <th>Remarks</th>
+                    <th>Create By</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <th>Create Date</th>
+                    <th>Type</th>
+                    <th>Remarks</th>
+                    <th>Create By</th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="card-footer">
+            <div class="float-right">
+                <button type="button" class="btn btn-primary " id="btnTicketSubmit" >Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade reason">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-white bg-info h-80">
+                    <h6 class="modal-title">Closing Ticket</h6>
+                    <button type="button" class="close text-white" data-dismiss="modal">x</button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation" novalidate id="close_ticket_form">
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <label>Contact Name:</label>
+                                <input type="text" class="form-control" name="contactName" required>
+                                <div class="invalid-feedback">
+                                    Please input contact name.
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label >Contact Number:</label>
+                                <input type="text" class="form-control" name="contactNumber" pattern="[0-9]{8}">
+                                <div class="invalid-feedback">
+                                    Must be 8 digits.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row mt-3">
+                            <label class="col-md-2 justify-content-end" >Reason:</label>
+                            <select class="custom-select col-md-10" required name="reasonType">
+                                <option value="" hidden>Please select</option>
+                                <option value="CUSTOMER REPORT OK & REQUEST CANCEL">Customer Report OK & Request Cancel</option>
+                                <option value="Wrong Issue" >Wrong Issue</option>
+                                <option value="Generated 1-day Password - Job Done">Generated 1-day Password - Job Done</option>
+                                <option value="Reset NGN3 Password - Job Done">Reset NGN3 Password - Job Done</option>
+                            </select>
+                            <div class="invalid-feedback offset-md-2">
+                                Please select on reason.
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label class="col-md-2 justify-content-end">Remark:</label>
+                            <textarea class="form-control col-md-10 mt-2" required name="reasonContent" rows="3"></textarea>
+                            <div class="invalid-feedback offset-md-2">
+                                Please enter a message in the textarea.
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info float-right" id="btnReasonSubmit">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" th:src="@{/js/cloudTicketInfo.js(v=${projectBuildtime})}"></script>
+</div>
+</body>
+</html>

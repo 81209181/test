@@ -79,4 +79,6 @@ public interface SdTicketService {
     void insertUploadFile(int ticketId, String fileName, String content);
 
     List<SdTicketMasBean> getHktCloudTicket(String tenantId, String username);
+
+    List<SdTicketUploadFileBean> getUploadFiles(int ticketMasId);
 }

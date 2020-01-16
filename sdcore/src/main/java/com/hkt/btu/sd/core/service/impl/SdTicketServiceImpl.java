@@ -64,6 +64,8 @@ public class SdTicketServiceImpl implements SdTicketService {
     SdTeamSummaryBeanPopulator teamSummaryBeanPopulator;
     @Resource(name = "statusSummaryBeanPopulator")
     SdStatusSummaryBeanPopulator statusSummaryBeanPopulator;
+    @Resource(name = "ticketUploadFileBeanPopulator")
+    SdTicketUploadFileBeanPopulator ticketUploadFileBeanPopulator;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -471,6 +473,15 @@ public class SdTicketServiceImpl implements SdTicketService {
         return ticketMasMapper.getTicket4HktCloud(tenantId,username).stream().map(sdTicketMasEntity -> {
             SdTicketMasBean bean = new SdTicketMasBean();
             ticketMasBeanPopulator.populate(sdTicketMasEntity, bean);
+            return bean;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SdTicketUploadFileBean> getUploadFiles(int ticketMasId) {
+        return ticketFileUploadMapper.getUploadFiles(ticketMasId).stream().map(entity -> {
+            SdTicketUploadFileBean bean = new SdTicketUploadFileBean();
+            ticketUploadFileBeanPopulator.populate(entity,bean);
             return bean;
         }).collect(Collectors.toList());
     }

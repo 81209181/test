@@ -1,7 +1,7 @@
 package com.hkt.btu.sd.controller;
 
-import com.hkt.btu.sd.facade.HktCloudCaseData;
-import com.hkt.btu.sd.facade.HktCloudViewData;
+import com.hkt.btu.sd.facade.data.cloud.HktCloudCaseData;
+import com.hkt.btu.sd.facade.data.cloud.HktCloudViewData;
 import com.hkt.btu.sd.facade.SdTicketFacade;
 import org.springframework.web.bind.annotation.*;
 

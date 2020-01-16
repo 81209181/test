@@ -10,9 +10,16 @@ import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.*;
 import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
 import com.hkt.btu.sd.core.service.constant.TicketTypeEnum;
-import com.hkt.btu.sd.facade.*;
+import com.hkt.btu.sd.facade.SdAuditTrailFacade;
+import com.hkt.btu.sd.facade.SdServiceTypeFacade;
+import com.hkt.btu.sd.facade.SdTicketFacade;
+import com.hkt.btu.sd.facade.WfmApiFacade;
 import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
 import com.hkt.btu.sd.facade.data.*;
+import com.hkt.btu.sd.facade.data.cloud.Attachment;
+import com.hkt.btu.sd.facade.data.cloud.Attribute;
+import com.hkt.btu.sd.facade.data.cloud.HktCloudCaseData;
+import com.hkt.btu.sd.facade.data.cloud.HktCloudViewData;
 import com.hkt.btu.sd.facade.data.wfm.WfmAppointmentResData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobProgressData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobRemarksData;
@@ -65,6 +72,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     SdTeamSummaryDataPopulator teamSummaryDataPopulator;
     @Resource(name = "cloudViewDataPopulator")
     HktCloudViewDataPopulator cloudViewDataPopulator;
+    @Resource(name = "ticketUploadFileDataPopulator")
+    SdTicketUploadFileDataPopulator ticketUploadFileDataPopulator;
 
     @Override
     public int createQueryTicket(QueryTicketRequestData queryTicketRequestData) {
@@ -611,11 +620,11 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             } else if (StringUtils.equals("Contact Phone", attr.getAttrName())) {
                 contactNumber = attr.getAttrValue();
             } else {
-                remark.append(attr.getAttrName()).append(":").append(attr.getAttrValue()).append(",");
+                remark.append(attr.getAttrName()).append(":").append(StringUtils.isEmpty(attr.getAttrValue())? "NULL":attr.getAttrValue()).append(",");
             }
         }
         ticketService.createHktCloudTicket(ticketId,cloudCaseData.getTenantId(),cloudCaseData.getCreatedBy());
-        ticketService.insertTicketContactInfo(ticketId,"","",contactNumber,contactEmail,"");
+        ticketService.insertTicketContactInfo(ticketId,"CUST",cloudCaseData.getCreatedBy(),contactNumber,contactEmail,"");
         ticketService.createTicketCustRemarks(ticketId,remark.toString());
         for (Attachment attachment : cloudCaseData.getAttachments()) {
             ticketService.insertUploadFile(ticketId, attachment.getFileName(), attachment.getContent());
@@ -630,9 +639,18 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
     @Override
     public List<HktCloudViewData> getHktCloudTicket(String tenantId, String username) {
-        return ticketService.getHktCloudTicket(tenantId,username).stream().map(sdTicketMasBean -> {
+        return ticketService.getHktCloudTicket(tenantId,username).stream().map(bean -> {
             HktCloudViewData data = new HktCloudViewData();
-            cloudViewDataPopulator.populate(sdTicketMasBean,data);
+            cloudViewDataPopulator.populate(bean,data);
+            return data;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SdTicketUploadFileData> getUploadFiles(int ticketMasId) {
+        return ticketService.getUploadFiles(ticketMasId).stream().map(bean -> {
+            SdTicketUploadFileData data = new SdTicketUploadFileData();
+            ticketUploadFileDataPopulator.populate(bean,data);
             return data;
         }).collect(Collectors.toList());
     }

@@ -412,4 +412,18 @@ public class TicketController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("cloud")
+    public ModelAndView showCloudTicket(int ticketMasId) {
+        return ticketFacade.getTicket(ticketMasId).map(sdTicketMasData -> {
+            ModelAndView modelAndView = new ModelAndView("ticket/cloudTicketInfo");
+            modelAndView.addObject("ticketInfo", sdTicketMasData);
+            return modelAndView;
+        }).orElse(new ModelAndView("redirect:/ticket/search-ticket"));
+    }
+
+    @PostMapping("get-upload-files")
+    public ResponseEntity<?> getUploadFiles(int ticketMasId) {
+        return ResponseEntity.ok(ticketFacade.getUploadFiles(ticketMasId));
+    }
 }

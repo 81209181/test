@@ -137,4 +137,7 @@
     <alias name="utCallPageDataPopulator" alias="callPageDataPopulator"/>
     <bean id="utCallPageDataPopulator" class="com.hkt.btu.sd.facade.populator.UTCallPageDataPopulator"/>
 
+    <alias name="sdTicketUploadFileDataPopulator" alias="ticketUploadFileDataPopulator"/>
+    <bean class="com.hkt.btu.sd.facade.populator.SdTicketUploadFileDataPopulator" id="sdTicketUploadFileDataPopulator"/>
+
 </beans>

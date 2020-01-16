@@ -4,6 +4,8 @@ import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.core.exception.ApiException;
 import com.hkt.btu.sd.facade.data.*;
+import com.hkt.btu.sd.facade.data.cloud.HktCloudCaseData;
+import com.hkt.btu.sd.facade.data.cloud.HktCloudViewData;
 import com.hkt.btu.sd.facade.data.wfm.WfmMakeApptData;
 import org.springframework.data.domain.Pageable;
 
@@ -66,4 +68,6 @@ public interface SdTicketFacade {
     String getNewTicketId();
 
     List<HktCloudViewData> getHktCloudTicket(String tenantId, String username);
+
+    List<SdTicketUploadFileData> getUploadFiles(int ticketMasId);
 }
