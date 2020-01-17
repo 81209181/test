@@ -1,29 +1,28 @@
 package com.hkt.btu.sd.facade.impl;
 
+import com.hkt.btu.common.core.exception.InvalidInputException;
+import com.hkt.btu.common.core.exception.UserNotFoundException;
 import com.hkt.btu.sd.core.service.SdApiService;
 import com.hkt.btu.sd.core.service.UTCallService;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.core.service.bean.UTCallPageBean;
 import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.UTCallFacade;
-import com.hkt.btu.sd.facade.data.*;
+import com.hkt.btu.sd.facade.data.UTCallPageData;
 import com.hkt.btu.sd.facade.data.UTCallRequestTempData;
 import com.hkt.btu.sd.facade.data.ut.UTCallProgressData;
+import com.hkt.btu.sd.facade.populator.UTCallPageDataPopulator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import com.hkt.btu.common.core.exception.InvalidInputException;
-import com.hkt.btu.common.core.exception.UserNotFoundException;
-import com.hkt.btu.sd.facade.populator.UTCallPageDataPopulator;
 
 import javax.annotation.Resource;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class UTCallFacadeImpl extends AbstractRestfulApiFacade implements UTCallFacade{
     private static final Logger LOG = LogManager.getLogger(UTCallFacadeImpl.class);
@@ -78,17 +77,9 @@ public class UTCallFacadeImpl extends AbstractRestfulApiFacade implements UTCall
         try{
             utCallService.insertNewUTCallRequestRecord(triggerNewBSNNum, code, msg, serviceCode, seq, seqType, ticketDetId);
         }
-        catch (InvalidInputException e){
+        catch (InvalidInputException | UserNotFoundException e){
             LOG.warn(e.getMessage());
             return e.getMessage();
-        }
-        catch (UserNotFoundException e){
-            LOG.warn(e.getMessage());
-            return e.getMessage();
-        }
-        catch (Exception e){
-            LOG.warn(e.getMessage());
-            return "Unhandle Error Occur: Please see the log for detail";
         }
         return null;
     }
@@ -128,17 +119,9 @@ public class UTCallFacadeImpl extends AbstractRestfulApiFacade implements UTCall
                 utCallService.insertNewUTCallResultRecord(utCallId, code, msg, utSummary);
             }
         }
-        catch (InvalidInputException e){
+        catch (InvalidInputException | UserNotFoundException e){
             LOG.warn(e.getMessage());
             return e.getMessage();
-        }
-        catch (UserNotFoundException e){
-            LOG.warn(e.getMessage());
-            return e.getMessage();
-        }
-        catch (Exception e){
-            LOG.warn(e.getMessage());
-            return "Unhandle Error Occur: Please see the log for detail";
         }
         return null;
     }
@@ -147,24 +130,16 @@ public class UTCallFacadeImpl extends AbstractRestfulApiFacade implements UTCall
         try{
             utCallService.updateRequestAfterGetResult(utCallId);
         }
-        catch (InvalidInputException e){
+        catch (InvalidInputException | UserNotFoundException e){
             LOG.warn(e.getMessage());
             return e.getMessage();
-        }
-        catch (UserNotFoundException e){
-            LOG.warn(e.getMessage());
-            return e.getMessage();
-        }
-        catch (Exception e){
-            LOG.warn(e.getMessage());
-            return "Unhandle Error Occur: Please see the log for detail";
         }
         return null;
     }
 
     @Override
     public List<UTCallPageData> getUTCallRequestRecordList(){
-        List<UTCallPageData> utCallRecordListData = new ArrayList();
+        List<UTCallPageData> utCallRecordListData = new ArrayList<>();
         List<UTCallPageBean> utCallRecordList = utCallService.getUTCallRequestRecordList();
 
         for (UTCallPageBean bean : utCallRecordList){
