@@ -1,4 +1,4 @@
-var time2reload, countdown, timeOut, currentURL, isLoginPage;
+let time2reload, countdown, timeOut, currentURL, isLoginPage;
 
 $(document).ready(function () {
     prepareAjax();
@@ -16,7 +16,7 @@ $(document).ready(function () {
                 $('mark').text(30);
             }
         });
-    })
+    });
 
     checkTimeout();
 
@@ -31,7 +31,7 @@ $(document).ready(function () {
                     $('mark').text($('mark').text() - 1);
                 }
         },1000);
-    })
+    });
 });
 
 function getCurrentURL() {
@@ -49,8 +49,8 @@ function getCurrentURL() {
 
 function prepareAjax(){
     // add spring csrf token
-    var header = $("meta[name='_csrf_header']").attr("content");
-    var token =$("meta[name='_csrf']").attr("content");
+    let header = $("meta[name='_csrf_header']").attr("content");
+    let token =$("meta[name='_csrf']").attr("content");
     $.ajaxSetup({
         beforeSend: function (xhr) {
             if (header && token) {
@@ -61,7 +61,7 @@ function prepareAjax(){
     });
 
     // add context path
-    var ctx = $("meta[name='_ctx']").attr("content");
+    let ctx = $("meta[name='_ctx']").attr("content");
     $.ajaxPrefilter(function( options, originalOptions, jqXHR ) {
         if (!options.crossDomain && ctx) {
             options.url = ctx + options.url;
@@ -85,14 +85,14 @@ function populateSelectOptions(select, jsonList){
     select.empty();
 
     // add data
-    for(var i=0; i<jsonList.length; i++){
-        var data = jsonList[i];
-        var optionText = data.optionText==null ? data : data.optionText;
-        var optionValue = data.optionValue==null ? optionText : data.optionValue;
-        var isDefaultSelected = data.isDefaultSelected==null ? false : data.isDefaultSelected;
-        var isSelected = data.isSelected==null ? false : data.isSelected;
+    for(let i=0; i<jsonList.length; i++){
+        let data = jsonList[i];
+        let optionText = data.optionText==null ? data : data.optionText;
+        let optionValue = data.optionValue==null ? optionText : data.optionValue;
+        let isDefaultSelected = data.isDefaultSelected==null ? false : data.isDefaultSelected;
+        let isSelected = data.isSelected==null ? false : data.isSelected;
 
-        var option = new Option(optionText, optionValue, isDefaultSelected, isSelected);
+        let option = new Option(optionText, optionValue, isDefaultSelected, isSelected);
         select.append(option);
     }
 }
@@ -115,28 +115,28 @@ function calculateTimeDiff (oldTime, newTime) {
     newTime = new Date(newTime);
     let time = newTime.getTime() - oldTime.getTime();
     let minute = time % (24 * 3600 * 1000) % (3600 * 1000) / (60 * 1000);
-    return minute;
+    let timeOutMillisecond = (60000 * 14 + 30900) - time;
+    return {minute: minute, timeOutMillisecond: timeOutMillisecond};
 }
 
 function checkTimeout() {
-    if (!isLoginPage){
+    if (!isLoginPage) {
         let timeOutCookie = getCookie("timeOut");
-        let minute = calculateTimeDiff(timeOutCookie, new Date());
-        console.log("started the timeout count");
+        let {minute, timeOutMillisecond} = calculateTimeDiff(timeOutCookie, new Date());
         if (minute >= 14.5) {
             $('#session-expire-warning-modal').modal('show');
         } else {
             clearTimeout(timeOut);
-            timeOut = setTimeout('checkTimeout()', 60000 * 14 + 30000);
+            timeOut = setTimeout('checkTimeout()', timeOutMillisecond);
         }
     }
 }
 
 function getCookie(cname) {
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for(var i=0; i<ca.length; i++) {
-        var c = ca[i].trim();
+    let name = cname + "=";
+    let ca = document.cookie.split(';');
+    for(let i=0; i<ca.length; i++) {
+        let c = ca[i].trim();
         if (c.indexOf(name)==0) return c.substring(name.length,c.length);
     }
     return "";

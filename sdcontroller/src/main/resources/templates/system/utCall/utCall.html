@@ -11,17 +11,10 @@
     <h1>UT Call</h1>
 
     <br>
-    <form class="row" th:action="@{/system/ut-call/trigger-new-ut-call}" method="post">
+    <form class="row">
         <div class="col-md-12">
-            <input type="text" th:id="triggerNewBSNNum" class="form-control" placeholder="Target BSN Number" maxlength="10" required="" name="triggerNewBSNNum" value=""><br>
-            <button type="submit" class="btn btn-lg btn-primary float-left mr-sm-2" id="btnTriggerNewBSNNum"><i class="fas fa-stopwatch"></i> Trigger New UT Call</button>
-        </div>
-    </form>
-
-    <form class="row" th:action="@{/system/ut-call/ut-call-get-result}" method="post">
-        <div class="col-md-12">
-            <input type="text" th:id="serviceCode" class="form-control" placeholder="serviceCode here" maxlength="30" required="" name="serviceCode" value=""><br>
-            <button type="submit" class="btn btn-lg btn-primary float-left mr-sm-2" id="btnUTCallGetResult"><i class="fas fa-stopwatch"></i> getResult</button>
+            <input type="text" id="triggerNewBSNNum" class="form-control" placeholder="Target BSN Number" maxlength="10" required="" name="triggerNewBSNNum" value=""><br>
+            <button type="button" class="btn btn-lg btn-primary float-left mr-sm-2" id="btnTriggerNewBSNNum"><i class="fas fa-stopwatch"></i> Trigger New UT Call</button>
         </div>
     </form>
 
@@ -38,6 +31,7 @@
             <th>Trigger Status</th>
             <th>Testing Status</th>
             <th>Last Check Time</th>
+            <th>Ticket Detail Id</th>
             <th></th>
             <th></th>
         </tr>
@@ -52,6 +46,7 @@
             <th>Trigger Status</th>
             <th>Testing Status</th>
             <th>Last Check Time</th>
+            <th>Ticket Detail Id</th>
             <th></th>
             <th></th>
         </tr>

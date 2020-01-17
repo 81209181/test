@@ -163,5 +163,25 @@ public class BtuCacheServiceImpl implements BtuCacheService {
         return new ArrayList<>(CACHE_BEAN_MAP.values());
     }
 
+    @Override
+    public void reloadCachedObject(String cacheName, Object newCacheObject) {
+        // get new content to cache
+        BtuCacheBean existingCacheBean = CACHE_BEAN_MAP.get(cacheName);
+        if (newCacheObject == null) {
+            LOG.warn("Cannot cache null:" + cacheName);
+            return;
+        }
+
+        // update cache
+        btuCacheBeanPopulator.populate(newCacheObject, existingCacheBean);
+        LOG.info("Reloaded new cache object: " + cacheName);
+
+        // log size
+        if (newCacheObject instanceof Collection) {
+            LOG.info("New cache collection size: " + CollectionUtils.size(newCacheObject));
+        } else if (newCacheObject instanceof Map) {
+            LOG.info("New cache map size: " + MapUtils.size((Map<?, ?>) newCacheObject));
+        }
+    }
 
 }

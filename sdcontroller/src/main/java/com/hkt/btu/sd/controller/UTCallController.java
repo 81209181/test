@@ -16,6 +16,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -39,9 +40,8 @@ public class UTCallController {
     @PostMapping("/trigger-new-ut-call")
     public String triggerNewUTCall(final RedirectAttributes redirectAttributes,
                                    @ModelAttribute("triggerNewBSNNum") String triggerNewBSNNum){
-        UTCallRequestTempData requestData = utCallFacade.triggerNewUTCall(triggerNewBSNNum);
-        String resultMsg = utCallFacade.insertNewUTCallRequestRecord(triggerNewBSNNum, requestData.getCODE(), requestData.getMSG(),
-                                                                requestData.getSERVICECODE(), requestData.getSEQ(), requestData.getSEQTYPE());
+
+        String resultMsg = utCallFacade.newUtCallRequest(triggerNewBSNNum, null);
 
         if (resultMsg==null){
             redirectAttributes.addFlashAttribute(PageMsgController.INFO_MSG, "UT Call successfully");
@@ -52,11 +52,13 @@ public class UTCallController {
         return "redirect:/system/ut-call";
     }
 
-    @PostMapping("/ut-call-get-request-result")
+    @PostMapping("/ajax-ut-call-get-request-result")
     public ResponseEntity<?> utCallGetResult(@RequestParam String utCallId, @RequestParam String serviceCode){
-        UTCallProgressData resultData = utCallFacade.checkNewUTCallProgress(serviceCode, "2");
-        String resultMsg = utCallFacade.insertNewUTCallResultRecord(utCallId, resultData.getCODE(),
-                                                                    resultData.getMSG(), resultData.getACTIONDATA().getUT_SUMMARY());
+        if (StringUtils.isEmpty(utCallId)||StringUtils.isEmpty(serviceCode)||serviceCode.equals("null")||utCallId.equals("null")){
+            return ResponseEntity.badRequest().body("Cannot Get Result with empty UT Call Id or Service Code");
+        }
+
+        String resultMsg = utCallFacade.newUtCallResult(utCallId, serviceCode);
 
         if (resultMsg==null){
             return ResponseEntity.ok(SimpleAjaxResponse.of());
@@ -72,16 +74,15 @@ public class UTCallController {
         return ResponseEntity.ok(utCallRecordList);
     }
 
-    @PostMapping("/ajax-re-trigger-ut-call")
+    @PostMapping("/ajax-trigger-ut-call")
     public ResponseEntity<?> ajaxreTriggerUTCall(@RequestParam String bsnNum){
-        UTCallRequestTempData requestData = utCallFacade.triggerNewUTCall(bsnNum);
-        String resultMsg = utCallFacade.insertNewUTCallRequestRecord(bsnNum, requestData.getCODE(), requestData.getMSG(),
-                                                                requestData.getSERVICECODE(), requestData.getSEQ(), requestData.getSEQTYPE());
+        String resultMsg = utCallFacade.newUtCallRequest(bsnNum, null);
+
         if (resultMsg==null){
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         }
         else {
-            return ResponseEntity.badRequest().body("re-trigger failed.");
+            return ResponseEntity.badRequest().body("trigger failed.");
         }
     }
 }

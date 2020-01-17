@@ -4,12 +4,14 @@ import com.hkt.btu.common.core.dao.entity.BtuConfigParamEntity;
 import com.hkt.btu.common.core.service.BtuApiClientService;
 import com.hkt.btu.common.core.service.BtuCacheService;
 import com.hkt.btu.common.core.service.BtuConfigParamService;
+import com.hkt.btu.common.core.service.BtuSensitiveDataService;
 import com.hkt.btu.common.core.service.constant.BtuCacheEnum;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.util.Base64Utils;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -22,6 +24,8 @@ public class BtuApiClientServiceImpl implements BtuApiClientService {
     BtuConfigParamService btuConfigParamService;
     @Resource(name = "cacheService")
     BtuCacheService btuCacheService;
+    @Resource(name = "sensitiveDataService")
+    BtuSensitiveDataService btuSensitiveDataService;
 
 
     @Override
@@ -69,5 +73,17 @@ public class BtuApiClientServiceImpl implements BtuApiClientService {
         return StringUtils.equals(inputKey, targetKey);
     }
 
+    @Override
+    public void reloadApiClientKey(String apiName) {
+        String dbKey = btuConfigParamService.getString(BtuConfigParamEntity.API_CLIENT.CONFIG_GROUP, String.format("%s.key", apiName));
+        String newKey = btuSensitiveDataService.decryptToStringSafe(Base64Utils.decodeFromString(dbKey));
 
+        Map<String, String> cachedObjectMap = (Map<String, String>) btuCacheService.getCachedObjectByCacheName(BtuCacheEnum.API_CLIENT_MAP.getCacheName());
+        cachedObjectMap.forEach((k, v)->{
+            if (StringUtils.equals(k, apiName)) {
+                cachedObjectMap.put(apiName, newKey);
+            }
+        });
+        btuCacheService.reloadCachedObject(BtuCacheEnum.API_CLIENT_MAP.getCacheName(), cachedObjectMap);
+    }
 }

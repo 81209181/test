@@ -1,11 +1,9 @@
-package com.hkt.btu.sd.facade.data;
+package com.hkt.btu.sd.core.dao.entity;
 
-import com.hkt.btu.common.facade.data.DataInterface;
-
+import com.hkt.btu.common.core.dao.entity.BaseEntity;
 import java.time.LocalDateTime;
-import java.util.List;
 
-public class UTCallPageData implements DataInterface {
+public class UTCallPageEntity extends BaseEntity{
     private Integer utCallId;
     private String bsnNum;
     private String code;
@@ -16,7 +14,6 @@ public class UTCallPageData implements DataInterface {
     private String testStatus;
     private LocalDateTime lastCheckDate;
     private Integer ticketDetId;
-    private LocalDateTime createDate;
 
     public Integer getUtCallId() {
         return utCallId;
@@ -96,13 +93,5 @@ public class UTCallPageData implements DataInterface {
 
     public void setTicketDetId(Integer ticketDetId) {
         this.ticketDetId = ticketDetId;
-    }
-
-    public LocalDateTime getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(LocalDateTime createDate) {
-        this.createDate = createDate;
     }
 }

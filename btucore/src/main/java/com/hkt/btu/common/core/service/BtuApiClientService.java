@@ -9,4 +9,6 @@ public interface BtuApiClientService {
 
     String getApiClientKey(String apiName);
     boolean checkApiClientKey(String apiName, String key);
+
+    void reloadApiClientKey(String apiName);
 }

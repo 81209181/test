@@ -1,15 +1,14 @@
 package com.hkt.btu.sd.core.service.populator;
 
-
 import com.hkt.btu.common.core.service.populator.AbstractBeanPopulator;
-import com.hkt.btu.sd.core.dao.entity.UTCallRequestEntity;
-import com.hkt.btu.sd.core.service.bean.UTCallRequestBean;
+import com.hkt.btu.sd.core.dao.entity.UTCallPageEntity;
+import com.hkt.btu.sd.core.service.bean.UTCallPageBean;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
-public class UTCallRequestBeanPopulator extends AbstractBeanPopulator<UTCallRequestBean> {
-    public void populate(UTCallRequestEntity source, UTCallRequestBean target) {
+public class UTCallPageBeanPopulator extends AbstractBeanPopulator<UTCallPageBean> {
+    public void populate(UTCallPageEntity source, UTCallPageBean target) {
         super.populate(source, target);
 
         target.setUtCallId(source.getUtCallId());
@@ -19,6 +18,7 @@ public class UTCallRequestBeanPopulator extends AbstractBeanPopulator<UTCallRequ
         target.setServiceCode(source.getServiceCode());
         target.setSeq(source.getSeq());
         target.setSeqType(source.getSeqType());
+        target.setTestStatus(source.getTestStatus());
         target.setLastCheckDate(source.getLastCheckDate());
         target.setTicketDetId(source.getTicketDetId());
     }

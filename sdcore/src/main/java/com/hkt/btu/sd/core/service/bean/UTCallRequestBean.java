@@ -4,84 +4,85 @@ import com.hkt.btu.common.core.service.bean.BaseBean;
 import java.time.LocalDateTime;
 
 public class UTCallRequestBean extends BaseBean{
-    private Integer UTCALLID;
-    private String BSNNUM;
-    private String CODE;
-    private String MSG;
-    private String SERVICECODE;
-    private String SEQ;
-    private String SEQTYPE;
-    private LocalDateTime LASTCHECKDATE;
+    private Integer utCallId;
+    private String bsnNum;
+    private String code;
+    private String msg;
+    private String serviceCode;
+    private String seq;
+    private String seqType;
+    private LocalDateTime lastCheckDate;
+    private Integer ticketDetId;
 
-    public Integer getUTCALLID() {
-        return UTCALLID;
+    public Integer getUtCallId() {
+        return utCallId;
     }
 
-    public void setUTCALLID(Integer UTCALLID) {
-        this.UTCALLID = UTCALLID;
+    public void setUtCallId(Integer utCallId) {
+        this.utCallId = utCallId;
     }
 
-    public String getBSNNUM() {
-        return BSNNUM;
+    public String getBsnNum() {
+        return bsnNum;
     }
 
-    public void setBSNNUM(String BSNNUM) {
-        this.BSNNUM = BSNNUM;
+    public void setBsnNum(String bsnNum) {
+        this.bsnNum = bsnNum;
     }
 
-    public LocalDateTime getLASTCHECKDATE() {
-        return LASTCHECKDATE;
+    public String getCode() {
+        return code;
     }
 
-    public void setLASTCHECKDATE(LocalDateTime LASTCHECKDATE) {
-        this.LASTCHECKDATE = LASTCHECKDATE;
+    public void setCode(String code) {
+        this.code = code;
     }
 
-    public static class DATA_KEY {
-        public static final String CODE = "CODE";
-        public static final String MSG = "MSG";
-        public static final String SERVICECODE = "SERVICECODE";
-        public static final String SEQ = "SEQ";
-        public static final String SEQTYPE = "SEQTYPE";
+    public String getMsg() {
+        return msg;
     }
 
-    public String getCODE() {
-        return CODE;
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 
-    public void setCODE(String CODE) {
-        this.CODE = CODE;
+    public String getServiceCode() {
+        return serviceCode;
     }
 
-    public String getMSG() {
-        return MSG;
+    public void setServiceCode(String serviceCode) {
+        this.serviceCode = serviceCode;
     }
 
-    public void setMSG(String MSG) {
-        this.MSG = MSG;
+    public String getSeq() {
+        return seq;
     }
 
-    public String getSERVICECODE() {
-        return SERVICECODE;
+    public void setSeq(String seq) {
+        this.seq = seq;
     }
 
-    public void setSERVICECODE(String SERVICECODE) {
-        this.SERVICECODE = SERVICECODE;
+    public String getSeqType() {
+        return seqType;
     }
 
-    public String getSEQ() {
-        return SEQ;
+    public void setSeqType(String seqType) {
+        this.seqType = seqType;
     }
 
-    public void setSEQ(String SEQ) {
-        this.SEQ = SEQ;
+    public LocalDateTime getLastCheckDate() {
+        return lastCheckDate;
     }
 
-    public String getSEQTYPE() {
-        return SEQTYPE;
+    public void setLastCheckDate(LocalDateTime lastCheckDate) {
+        this.lastCheckDate = lastCheckDate;
     }
 
-    public void setSEQTYPE(String SEQTYPE) {
-        this.SEQTYPE = SEQTYPE;
+    public Integer getTicketDetId() {
+        return ticketDetId;
+    }
+
+    public void setTicketDetId(Integer ticketDetId) {
+        this.ticketDetId = ticketDetId;
     }
 }

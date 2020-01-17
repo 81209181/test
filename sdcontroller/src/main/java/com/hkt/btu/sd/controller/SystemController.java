@@ -301,7 +301,7 @@ public class SystemController {
 
     @GetMapping("/manage-api/ajax-list-api-user")
     public ResponseEntity<?> ajaxListApiUser(){
-        List<SdUserData> dataList = userFacade.getApiUser();
+        List<SdApiUserData> dataList = sdApiClientFacade.getApiUser();
 
         if (dataList == null) {
             return ResponseEntity.badRequest().body("user list not found.");
@@ -326,10 +326,20 @@ public class SystemController {
     @PostMapping("/manage-api/regenerateKey")
     public ResponseEntity<?> regenerateKey(String apiName) {
         try {
-            sdApiClientFacade.reloadCached(apiName);
+            sdApiClientFacade.regenerateApiClientKey(apiName);
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Re-generate failed.");
+        }
+    }
+
+    @PostMapping("/manage-api/reloadCache")
+    public ResponseEntity<?> reloadCache(String apiName) {
+        try {
+            sdApiClientFacade.reloadCache(apiName);
+            return ResponseEntity.ok(SimpleAjaxResponse.of());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Reload failed.");
         }
     }
 }

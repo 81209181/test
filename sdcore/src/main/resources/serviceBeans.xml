@@ -156,4 +156,7 @@
 
     <alias name="sdTicketUploadFileBeanPopulator" alias="ticketUploadFileBeanPopulator" />
     <bean class="com.hkt.btu.sd.core.service.populator.SdTicketUploadFileBeanPopulator" id="sdTicketUploadFileBeanPopulator"/>
+
+    <alias name="utCallPageBeanPopulator" alias="callPageBeanPopulator"/>
+    <bean id="utCallPageBeanPopulator" class="com.hkt.btu.sd.core.service.populator.UTCallPageBeanPopulator"/>
 </beans>

@@ -4,6 +4,8 @@ import com.hkt.btu.sd.core.service.SdApiService;
 import com.hkt.btu.sd.core.service.UTCallService;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.core.service.bean.UTCallRequestBean;
+import com.hkt.btu.sd.core.dao.entity.UTCallPageEntity;
+import com.hkt.btu.sd.core.service.bean.UTCallPageBean;
 import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.UTCallFacade;
 import com.hkt.btu.sd.facade.data.*;
@@ -44,36 +46,37 @@ public class UTCallFacadeImpl extends AbstractRestfulApiFacade implements UTCall
     @Override
     protected Invocation.Builder getInvocationBuilder(WebTarget webTarget) {
         SiteInterfaceBean siteInterfaceBean = getTargetApiSiteInterfaceBean();
-        return webTarget.request(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, siteInterfaceBean.getPassword());
-//                .header(SiteInterfaceBean.API_UT_CALL.API_HEADER.OPERATOR_ID,   siteInterfaceBean.getUserName())
-//                .header(SiteInterfaceBean.API_UT_CALL.API_HEADER.CHANNEL_TYPE,  siteInterfaceBean.getChannelType())
-//                .header(SiteInterfaceBean.API_UT_CALL.API_HEADER.F_ID,          siteInterfaceBean.getBeId())
-//                .header(SiteInterfaceBean.API_UT_CALL.API_HEADER.X_APP_KEY,     siteInterfaceBean.getxAppkey());
+        webTarget = webTarget.queryParam("fid", siteInterfaceBean.getBeId());
+        webTarget = webTarget.queryParam("user", siteInterfaceBean.getUserName());
+        webTarget = webTarget.queryParam("pwd", siteInterfaceBean.getPassword());
+
+        webTarget = webTarget.queryParam("sys", siteInterfaceBean.getSystemName());
+
+        webTarget = webTarget.queryParam("seq", "2");
+        webTarget = webTarget.queryParam("type", siteInterfaceBean.getChannelType());
+        return webTarget.request(MediaType.APPLICATION_JSON);
     }
 
     //own implementation
 
     @Override
-    public UTCallRequestTempData triggerNewUTCall(String BSNNum){
+    public String newUtCallRequest(String triggerNewBSNNum, Integer ticketDetId){
+        UTCallRequestTempData requestData = triggerNewUTCall(triggerNewBSNNum);
+        return insertNewUTCallRequestRecord(triggerNewBSNNum, requestData.getCODE(), requestData.getMSG(), requestData.getSERVICECODE(), requestData.getSEQ(), requestData.getSEQTYPE(), ticketDetId);
+    }
+
+    private UTCallRequestTempData triggerNewUTCall(String BSNNum){
         String apiPath = "/utapi/enquiry";
 
-        SiteInterfaceBean siteInterfaceBean = getTargetApiSiteInterfaceBean();
-
         Map<String, String> queryParamMap = new HashMap<>();
-        queryParamMap.put("fid", siteInterfaceBean.getBeId());
-        queryParamMap.put("user", siteInterfaceBean.getUserName());
-        queryParamMap.put("pwd", "nvng[kGZE\\C^");
         queryParamMap.put("xid", BSNNum);
-        queryParamMap.put("sys", siteInterfaceBean.getSystemName());
 
         return getData(apiPath, UTCallRequestTempData.class, queryParamMap);
     }
 
-    @Override
-    public String insertNewUTCallRequestRecord(String triggerNewBSNNum, String code, String msg, String serviceCode, String seq, String seqType){
+    private String insertNewUTCallRequestRecord(String triggerNewBSNNum, String code, String msg, String serviceCode, String seq, String seqType, Integer ticketDetId){
         try{
-            utCallService.insertNewUTCallRequestRecord(triggerNewBSNNum, code, msg, serviceCode, seq, seqType);
+            utCallService.insertNewUTCallRequestRecord(triggerNewBSNNum, code, msg, serviceCode, seq, seqType, ticketDetId);
         }
         catch (InvalidInputException e){
             LOG.warn(e.getMessage());
@@ -91,26 +94,58 @@ public class UTCallFacadeImpl extends AbstractRestfulApiFacade implements UTCall
     }
 
     @Override
-    public UTCallProgressData checkNewUTCallProgress(String serviceCode, String seq){
-        String apiPath = "/utapi/getresultt4";
+    public String newUtCallResult(String utCallId, String serviceCode){
+        UTCallProgressData resultData = checkNewUTCallProgress(serviceCode);
+        String resultMsg = insertNewUTCallResultRecord(utCallId, resultData.getCODE(), resultData.getMSG(), resultData.getACTIONDATA().getUT_SUMMARY());
 
-        SiteInterfaceBean siteInterfaceBean = getTargetApiSiteInterfaceBean();
+        if (resultMsg==null){
+            String updateMsg = updateRequestAfterGetResult(utCallId);
+            if (updateMsg==null){
+                return null;
+            }
+            else {
+                return "update request failed.";
+            }
+        }
+        return "get result failed.";
+    }
+
+    private UTCallProgressData checkNewUTCallProgress(String serviceCode){
+        String apiPath = "/utapi/getresultt4";
 
         Map<String, String> queryParamMap = new HashMap<>();
         queryParamMap.put("servicecode", serviceCode);
-        queryParamMap.put("seq", seq);
-        queryParamMap.put("sys", siteInterfaceBean.getSystemName());
-        queryParamMap.put("type", siteInterfaceBean.getChannelType());
 
-        UTCallProgressData result = getData(apiPath, UTCallProgressData.class, queryParamMap);
-
-        return result;
+        return getData(apiPath, UTCallProgressData.class, queryParamMap);
     }
 
-    @Override
-    public String insertNewUTCallResultRecord(String utCallId, String code, String msg, List<Map<String, String>> utSummary){
+    private String insertNewUTCallResultRecord(String utCallId, String code, String msg, List<Map<String, String>> utSummary){
         try{
-            utCallService.insertNewUTCallResultRecord(utCallId, code, msg, utSummary);
+            if(utCallService.utCallResultRecordExist(utCallId)){
+                utCallService.updateUTCallResultRecord(utCallId, code, msg, utSummary);
+            }
+            else {
+                utCallService.insertNewUTCallResultRecord(utCallId, code, msg, utSummary);
+            }
+        }
+        catch (InvalidInputException e){
+            LOG.warn(e.getMessage());
+            return e.getMessage();
+        }
+        catch (UserNotFoundException e){
+            LOG.warn(e.getMessage());
+            return e.getMessage();
+        }
+        catch (Exception e){
+            LOG.warn(e.getMessage());
+            return "Unhandle Error Occur: Please see the log for detail";
+        }
+        return null;
+    }
+
+    private String updateRequestAfterGetResult(String utCallId){
+        try{
+            utCallService.updateRequestAfterGetResult(utCallId);
         }
         catch (InvalidInputException e){
             LOG.warn(e.getMessage());
@@ -130,9 +165,9 @@ public class UTCallFacadeImpl extends AbstractRestfulApiFacade implements UTCall
     @Override
     public List<UTCallPageData> getUTCallRequestRecordList(){
         List<UTCallPageData> utCallRecordListData = new ArrayList();
-        List<UTCallRequestBean> utCallRecordList = utCallService.getUTCallRequestRecordList();
+        List<UTCallPageBean> utCallRecordList = utCallService.getUTCallRequestRecordList();
 
-        for (UTCallRequestBean bean : utCallRecordList){
+        for (UTCallPageBean bean : utCallRecordList){
             UTCallPageData data = new UTCallPageData();
             utCallPageDataPopulator.populate(bean, data);
             utCallRecordListData.add(data);
