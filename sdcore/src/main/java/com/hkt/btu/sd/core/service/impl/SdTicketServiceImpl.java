@@ -460,6 +460,7 @@ public class SdTicketServiceImpl implements SdTicketService {
 
     @Override
     public void createHktCloudTicket(int ticketId, String tenantId, String createdBy) {
+        ticketServiceMapper.insertServiceInfoForCloudCase(ticketId,createdBy,tenantId);
         ticketMasMapper.createHktCloudTicket(ticketId,createdBy,tenantId);
     }
 

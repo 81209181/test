@@ -122,4 +122,9 @@
         from   TICKET_DET
         where  TICKET_DET_ID = #{ticketDetId}
     </select>
+
+    <insert id="insertServiceInfoForCloudCase">
+        insert into TICKET_DET(TICKET_DET_ID, TICKET_MAS_ID, SERVICE_TYPE_CODE,SERVICE_ID, CREATEBY, MODIFYBY)
+        values (SEQ_TICKET_DET_ID.nextval, #{ticketId}, 'E_CLOUD',#{tenantId}, #{createdBy}, #{createdBy})
+    </insert>
 </mapper>

@@ -52,6 +52,8 @@ public class TicketController {
     @Resource(name = "cloudApiFacade")
     CloudApiFacade cloudApiFacade;
 
+    public static final String O_CLOUD_SH = "O_CLOUD_SH";
+
     @GetMapping("service-identity")
     public String serviceIdentity(Model model) {
         model.addAttribute("serviceSearchKeyList", requestCreateFacade.getSearchKeyEnumList());
@@ -121,9 +123,14 @@ public class TicketController {
 
     @GetMapping("")
     public ModelAndView showQueryTicket(int ticketMasId) {
-        return ticketFacade.getTicket(ticketMasId).map(sdTicketMasData -> {
+        return ticketFacade.getTicket(ticketMasId).map(data -> {
+            if (data.getOwningRole().equalsIgnoreCase(O_CLOUD_SH)) {
+                ModelAndView modelAndView = new ModelAndView("ticket/cloudTicketInfo");
+                modelAndView.addObject("ticketInfo", data);
+                return modelAndView;
+            }
             ModelAndView modelAndView = new ModelAndView("ticket/ticketInfo");
-            modelAndView.addObject("ticketInfo", requestCreateFacade.getTicketInfo(sdTicketMasData));
+            modelAndView.addObject("ticketInfo", requestCreateFacade.getTicketInfo(data));
             return modelAndView;
         }).orElse(new ModelAndView("redirect:/ticket/search-ticket"));
     }
@@ -411,15 +418,6 @@ public class TicketController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-    }
-
-    @GetMapping("cloud")
-    public ModelAndView showCloudTicket(int ticketMasId) {
-        return ticketFacade.getTicket(ticketMasId).map(sdTicketMasData -> {
-            ModelAndView modelAndView = new ModelAndView("ticket/cloudTicketInfo");
-            modelAndView.addObject("ticketInfo", sdTicketMasData);
-            return modelAndView;
-        }).orElse(new ModelAndView("redirect:/ticket/search-ticket"));
     }
 
     @PostMapping("get-upload-files")

@@ -30,4 +30,6 @@ public interface SdTicketServiceMapper {
     long countServiceBySubscriberId(@Param("subscriberId")String subscriberId);
 
     SdMakeApptEntitiy getTicketServiceByTicketDetId(@Param("ticketDetId") Integer ticketDetId);
+
+    void insertServiceInfoForCloudCase(@Param("ticketId") int ticketId, @Param("createdBy") String createdBy,@Param("tenantId") String tenantId);
 }
