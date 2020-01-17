@@ -1,8 +1,7 @@
-package com.hkt.btu.sd.facade.data;
+package com.hkt.btu.sd.facade.data.ut;
 
 import com.hkt.btu.common.facade.data.DataInterface;
-
-import java.util.List;
+import com.hkt.btu.sd.facade.data.UTCallActionData;
 
 public class UTCallProgressData implements DataInterface {
     private String CODE;
