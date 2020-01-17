@@ -39,7 +39,7 @@ public class SdApiClientFacadeImpl implements SdApiClientFacade {
                 String apiClient = String.format("%s.key", userBean.getName());
                 SdConfigParamBean configParamBean = new SdConfigParamBean();
                 Optional<SdConfigParamBean> sdConfigParamBean = sdConfigParamService.getConfigParamByGroupAndKey(BtuConfigParamEntity.API_CLIENT.CONFIG_GROUP, apiClient);
-                if (!sdConfigParamBean.isEmpty()) {
+                if (sdConfigParamBean.isPresent()) {
                     configParamBean = sdConfigParamBean.get();
                 }
 
