@@ -14,8 +14,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.util.Base64Utils;
 
 import javax.annotation.Resource;
+import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class BtuApiClientServiceImpl implements BtuApiClientService {
     private static final Logger LOG = LogManager.getLogger(BtuApiClientServiceImpl.class);
@@ -85,5 +87,20 @@ public class BtuApiClientServiceImpl implements BtuApiClientService {
             }
         });
         btuCacheService.reloadCachedObject(BtuCacheEnum.API_CLIENT_MAP.getCacheName(), cachedObjectMap);
+    }
+
+    @Override
+    public void regenerateApiClientKey(String apiName) {
+        UUID uuid = UUID.randomUUID();
+        String configKey = String.format("%s.key", apiName);
+        String configValue = uuid.toString();
+
+        try{
+            btuConfigParamService.updateConfigParam(BtuConfigParamEntity.API_CLIENT.CONFIG_GROUP, configKey, configValue,
+                    BtuConfigParamEntity.TYPE.STRING, BtuConfigParamEntity.ENCRYPT.YES);
+            LOG.info("Re-generated API Client key: {}", apiName);
+        } catch (GeneralSecurityException e) {
+            LOG.error(e.getMessage(), e);
+        }
     }
 }

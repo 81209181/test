@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.controller;
 
+import com.hkt.btu.common.facade.data.BtuApiUserData;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
@@ -301,7 +302,7 @@ public class SystemController {
 
     @GetMapping("/manage-api/ajax-list-api-user")
     public ResponseEntity<?> ajaxListApiUser(){
-        List<SdApiUserData> dataList = sdApiClientFacade.getApiUser();
+        List<BtuApiUserData> dataList = sdApiClientFacade.getApiUser();
 
         if (dataList == null) {
             return ResponseEntity.badRequest().body("user list not found.");
@@ -312,7 +313,7 @@ public class SystemController {
 
     @PostMapping("/manage-api/getAuthorization")
     public ResponseEntity<?> getAuthorization(String apiName) {
-        String authPlainText = String.format("%s:%s", apiName, sdApiClientFacade.getApiClientBean(apiName));
+        String authPlainText = String.format("%s:%s", apiName, sdApiClientFacade.getApiAuthKey(apiName));
 
         if (StringUtils.isEmpty(authPlainText)) {
             return ResponseEntity.ok(SimpleAjaxResponse.of(false, "Get Authorization failed."));

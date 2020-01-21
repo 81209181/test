@@ -1,8 +1,7 @@
-package com.hkt.btu.sd.facade.data;
+package com.hkt.btu.common.facade.data;
 
-import com.hkt.btu.common.facade.data.DataInterface;
 
-public class SdApiUserData implements DataInterface {
+public class BtuApiUserData implements DataInterface {
 
     public static class CACHE_SYNC{
         public static final String YES = "Y";
@@ -10,7 +9,6 @@ public class SdApiUserData implements DataInterface {
     }
 
     private String name;
-
     private String cacheSync;
 
     public String getName() {

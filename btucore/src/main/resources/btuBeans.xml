@@ -3,6 +3,8 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+
+
     <!-- BTU Spring Security -->
     <alias name="btuLoginSuccessHandler" alias="customLoginSuccessHandler"/>
     <bean id="btuLoginSuccessHandler" class="com.hkt.btu.common.spring.security.web.authentication.BtuLoginSuccessHandler"/>
@@ -39,6 +41,8 @@
 
     <alias name="tokenAuthenticationProvider" alias="customTokenAuthenticationProvider"/>
     <bean id="tokenAuthenticationProvider" class="com.hkt.btu.common.spring.security.authentication.TokenAuthenticationProvider"/>
+
+
 
     <!-- BTU Service -->
     <alias name="btuSiteConfigService" alias="siteConfigService"/>
@@ -92,13 +96,26 @@
     <alias name="btuApiClientService" alias="apiClientService"/>
     <bean id="btuApiClientService" class="com.hkt.btu.common.core.service.impl.BtuApiClientServiceImpl"/>
 
-    <!--  Populator  -->
+    <!--  Bean Populator  -->
     <alias name="btuSiteConfigBeanPopulator" alias="siteConfigBeanPopulator"/>
     <bean id="btuSiteConfigBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuSiteConfigBeanPopulator"/>
 
     <alias name="btuCacheBeanPopulator" alias="cacheBeanPopulator"/>
     <bean id="btuCacheBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuCacheBeanPopulator"/>
 
+
+
+    <!-- BTU Facade -->
+    <alias name="btuCacheFacadeImpl" alias="cacheFacadeImpl"/>
+    <bean id="btuCacheFacadeImpl" class="com.hkt.btu.common.facade.impl.BtuCacheFacadeImpl"/>
+
+    <alias name="btuApiClientFacadeImpl" alias="apiClientFacadeImpl"/>
+    <bean id="btuApiClientFacadeImpl" class="com.hkt.btu.common.facade.impl.BtuApiClientFacadeImpl"/>
+
+    <!--  Data Populator  -->
     <alias name="btuCacheProfileDataPopulator" alias="cacheProfileDataPopulator"/>
     <bean id="btuCacheProfileDataPopulator" class="com.hkt.btu.common.facade.populator.BtuCacheProfileDataPopulator"/>
+
+    <alias name="btuConfigParamDataPopulator" alias="configParamDataPopulator"/>
+    <bean id="btuConfigParamDataPopulator" class="com.hkt.btu.common.facade.populator.BtuConfigParamDataPopulator"/>
 </beans>

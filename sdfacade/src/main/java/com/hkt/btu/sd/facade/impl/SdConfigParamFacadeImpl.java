@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.facade.impl;
 
+import com.hkt.btu.common.core.service.bean.BtuConfigParamBean;
 import com.hkt.btu.sd.core.service.SdConfigParamService;
 import com.hkt.btu.sd.core.service.bean.SdConfigParamBean;
 import com.hkt.btu.sd.facade.SdConfigParamFacade;
@@ -41,7 +42,7 @@ public class SdConfigParamFacadeImpl implements SdConfigParamFacade {
 
     @Override
     public Optional<SdConfigParamData> getConfigParamByGroupAndKey(String configGroup, String configKey) {
-        Optional<SdConfigParamBean> bean = sdConfigParamService.getConfigParamByGroupAndKey(configGroup, configKey);
+        Optional<BtuConfigParamBean> bean = sdConfigParamService.getConfigParamByGroupAndKey(configGroup, configKey);
         if (bean.isEmpty()) {
             return Optional.empty();
         }

@@ -8,17 +8,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SdConfigParamService extends BtuConfigParamService {
-    List<SdConfigParamBean> getAllConfigParam();
-
-    Optional<SdConfigParamBean> getConfigParamByGroupAndKey(String configGroup, String configKey);
-
-    boolean updateConfigParam(String configGroup, String configKey, String configValue, String configValueType, String encrypt) throws GeneralSecurityException;
 
     List<String> getConfigGroupList();
 
-    boolean createConfigParam(String configGroup, String configKey, String configValue, String configValueType, String encrypt) throws GeneralSecurityException;
+    List<SdConfigParamBean> getAllConfigParam();
 
     boolean checkConfigKey(String configGroup, String configKey);
-
     boolean checkConfigParam(String configGroup, String configKey, String configValue, String configValueType);
 }

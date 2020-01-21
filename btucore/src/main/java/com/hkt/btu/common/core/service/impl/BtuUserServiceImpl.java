@@ -85,16 +85,26 @@ public class BtuUserServiceImpl implements BtuUserService {
         return null;
     }
 
+    @Override
+    public List<BtuUserBean> getApiUser() {
+        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        return null;
+    }
+
     public void resetLoginTriedByUsername(String username) {
+        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
     }
 
     public void addLoginTriedByUsername(String username) {
+        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
     }
 
     public void lockUserByUsername(String username) {
+        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
     }
 
     public void activateUserByUsername(String username) {
+        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
     }
 
     @Override

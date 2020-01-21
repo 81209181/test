@@ -2,6 +2,7 @@ package com.hkt.btu.sd.core.service.impl;
 
 import com.hkt.btu.common.core.dao.entity.BtuConfigParamEntity;
 import com.hkt.btu.common.core.service.BtuSensitiveDataService;
+import com.hkt.btu.common.core.service.bean.BtuConfigParamBean;
 import com.hkt.btu.common.core.service.impl.BtuConfigParamServiceImpl;
 import com.hkt.btu.sd.core.dao.entity.SdConfigParamEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdConfigParamMapper;
@@ -94,7 +95,7 @@ public class SdConfigParamServiceImpl extends BtuConfigParamServiceImpl implemen
     }
 
     @Override
-    public Optional<SdConfigParamBean> getConfigParamByGroupAndKey(String configGroup, String configKey) {
+    public Optional<BtuConfigParamBean> getConfigParamByGroupAndKey(String configGroup, String configKey) {
         SdConfigParamEntity entity = sdConfigParamMapper.getValue(configGroup, configKey);
         if (entity == null) {
             return Optional.empty();

@@ -2,17 +2,32 @@ package com.hkt.btu.common.core.service.impl;
 
 import com.hkt.btu.common.core.dao.entity.BtuConfigParamEntity;
 import com.hkt.btu.common.core.service.BtuConfigParamService;
+import com.hkt.btu.common.core.service.bean.BtuConfigParamBean;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class BtuConfigParamServiceImpl implements BtuConfigParamService {
     private static final Logger LOG = LogManager.getLogger(BtuConfigParamServiceImpl.class);
+
+    @Override
+    public boolean createConfigParam(String configGroup, String configKey, String configValue, String configValueType, String encrypt) throws GeneralSecurityException {
+        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        return false;
+    }
+
+    @Override
+    public boolean updateConfigParam(String configGroup, String configKey, String configValue, String configValueType, String encrypt) throws GeneralSecurityException {
+        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        return false;
+    }
 
     @Override
     public List<String> getConfigTypeList() {
@@ -56,6 +71,12 @@ public class BtuConfigParamServiceImpl implements BtuConfigParamService {
 
         LOG.warn(String.format("Cannot parse %s to %s.", value, type));
         return null;
+    }
+
+    @Override
+    public Optional<BtuConfigParamBean> getConfigParamByGroupAndKey(String configGroup, String configKey) {
+        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        return Optional.empty();
     }
 
     @Override
