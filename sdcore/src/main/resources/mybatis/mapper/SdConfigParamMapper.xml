@@ -17,30 +17,22 @@
     </resultMap>
 
     <select id="getConfigGroupList" resultType="String">
-        select  CONFIG_GROUP
+        select distinct CONFIG_GROUP
         from CONFIG_PARAM
-        group by CONFIG_GROUP
         order by CONFIG_GROUP
     </select>
 
-    <select id="getAllConfigParam" resultMap="ConfigParamEntity" >
+    <select id="getConfigParamByGroupAndKey" resultMap="ConfigParamEntity" >
         select *
         from CONFIG_PARAM
-        order by CONFIG_GROUP, CONFIG_KEY
-    </select>
-
-    <select id="getValue" resultMap="ConfigParamEntity" >
-        select *
-        from CONFIG_PARAM
-        where CONFIG_GROUP = #{configGroup}
-        and CONFIG_KEY = #{configKey}
-        order by CONFIG_GROUP, CONFIG_KEY
-    </select>
-
-    <select id="getValuesByConfigGroup" resultMap="ConfigParamEntity" >
-        select *
-        from CONFIG_PARAM
-        where CONFIG_GROUP = #{configGroup}
+        <where>
+            <if test="configGroup != null">
+                and CONFIG_GROUP = #{configGroup}
+            </if>
+            <if test="configKey != null">
+                and CONFIG_KEY = #{configKey}
+            </if>
+        </where>
         order by CONFIG_GROUP, CONFIG_KEY
     </select>
 
@@ -48,14 +40,14 @@
         update CONFIG_PARAM
         set CONFIG_VALUE = #{configValue}, CONFIG_VALUE_TYPE = #{configValueType}, MODIFYBY = #{modifyBy}, ENCRYPT = #{encrypt}
         where CONFIG_GROUP = #{configGroup}
-        and CONFIG_KEY = #{configKey}
+          and CONFIG_KEY = #{configKey}
     </update>
 
 
     <delete id="deleteConfig" >
         delete from CONFIG_PARAM
         where CONFIG_GROUP = #{configGroup}
-        and CONFIG_KEY = #{configKey}
+          and CONFIG_KEY = #{configKey}
     </delete>
 
     <insert id="insertConfig" >

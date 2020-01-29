@@ -5,7 +5,9 @@ import java.util.Map;
 
 public interface BtuApiClientService {
     // cache
+    @SuppressWarnings("unused") // used in BtuCacheEnum
     Map<String, String> loadApiClientBean();
+    @SuppressWarnings("unused") // used in BtuCacheEnum
     void reloadCache();
 
     String getApiClientKey(String apiName);

@@ -5,7 +5,6 @@ import com.hkt.btu.common.core.service.BtuCronJobProfileService;
 import com.hkt.btu.common.core.service.BtuSiteConfigService;
 import com.hkt.btu.common.core.service.bean.BtuCronJobProfileBean;
 import com.hkt.btu.common.core.service.bean.BtuSiteConfigBean;
-import com.hkt.btu.common.core.service.bean.BtuSqlReportBean;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

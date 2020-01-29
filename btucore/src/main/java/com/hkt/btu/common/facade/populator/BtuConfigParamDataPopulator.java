@@ -7,7 +7,7 @@ public class BtuConfigParamDataPopulator extends AbstractDataPopulator<BtuConfig
     public void populate(BtuConfigParamBean source, BtuConfigParamData target) {
         target.setConfigGroup(source.getConfigGroup());
         target.setConfigKey(source.getConfigKey());
-        target.setConfigValueType(source.getConfigValueType());
+        target.setConfigValueType(source.getConfigValueType().getTypeCode());
         target.setConfigValue(source.getConfigValue());
         target.setEncrypt(source.isEncrypt());
         target.setModifydate(source.getModifydate());

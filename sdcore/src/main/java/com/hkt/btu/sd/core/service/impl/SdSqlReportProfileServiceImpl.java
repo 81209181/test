@@ -6,7 +6,6 @@ import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.core.service.impl.BtuSqlReportProfileServiceImpl;
 import com.hkt.btu.sd.core.dao.entity.SdSqlReportEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdSqlReportMapper;
-import com.hkt.btu.sd.core.service.SdCronJobLogService;
 import com.hkt.btu.sd.core.service.SdSqlReportProfileService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdSqlReportBean;
@@ -31,9 +30,6 @@ public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImp
     @Resource(name = "userService")
     SdUserService sdUserService;
 
-    @Resource(name = "cronJobLogService")
-    SdCronJobLogService sdCronJobLogService;
-
     @Resource
     SdSqlReportMapper sdSqlReportMapper;
 
@@ -49,14 +45,13 @@ public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImp
         if (CollectionUtils.isEmpty(sqlReportData)) {
             return null;
         }
-        List<BtuSqlReportBean> jobProfileBeans = sqlReportData.stream()
+
+        return sqlReportData.stream()
                 .map(report -> {
                     SdSqlReportBean bean = new SdSqlReportBean();
                     reportBeanPopulator.populate(report, bean);
                     return bean;
                 }).collect(Collectors.toList());
-
-        return jobProfileBeans;
     }
 
     @Override
@@ -66,13 +61,11 @@ public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImp
             return null;
         }
 
-        List<SdSqlReportBean> reportBeans = sqlReportData.stream().map(report -> {
+        return sqlReportData.stream().map(report -> {
             SdSqlReportBean bean = new SdSqlReportBean();
             reportBeanPopulator.populate(report, bean);
             return bean;
         }).collect(Collectors.toList());
-
-        return reportBeans;
     }
 
     @Override
@@ -116,9 +109,7 @@ public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImp
             return "No such report.";
         }
         sdSqlReportMapper.deleteSqlReportDataByReportId(reportId);
-        String reportName = entity.getReportName();
-
-        return reportName;
+        return entity.getReportName();
     }
 
     @Override
@@ -133,7 +124,7 @@ public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImp
 
     @Override
     @Transactional
-    public void activeReportProfile(String reportId) throws InvalidInputException {
+    public void activateReportProfile(String reportId) throws InvalidInputException {
         int updateCount = updateRepeortProfileStatus(reportId, SdSqlReportBean.ACTIVE_STATUS);
         if (updateCount < 1) {
             throw new InvalidInputException("Cannot activate job");
@@ -141,19 +132,17 @@ public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImp
 
         // log
         LOG.info("activate job profile:{},{}", SdSqlReportBean.KEY_GROUP, reportId);
-        //sdCronJobLogService.logUserActivateJob(SdSqlReportBean.KEY_GROUP, reportId);
     }
 
     @Override
-    public void deactiveReportProfile(String reportId) throws InvalidInputException {
+    public void deactivateReportProfile(String reportId) throws InvalidInputException {
         int updateCount = updateRepeortProfileStatus(reportId, SdSqlReportBean.DEACTIVE_STATUS);
         if (updateCount < 1) {
-            throw new InvalidInputException("Cannot activate job");
+            throw new InvalidInputException("Cannot deactivate job");
         }
 
         // log
         LOG.info("activate job profile:{},{}", SdSqlReportBean.KEY_GROUP, reportId);
-        //sdCronJobLogService.logUserActivateJob(SdSqlReportBean.KEY_GROUP, reportId);
     }
 
     private int updateRepeortProfileStatus(String reportId, String status) {

@@ -1,7 +1,6 @@
 package com.hkt.btu.common.core.service.impl;
 
 import com.hkt.btu.common.core.exception.InvalidInputException;
-import com.hkt.btu.common.core.job.BtuSampleJob;
 import com.hkt.btu.common.core.service.BtuCronJobLogService;
 import com.hkt.btu.common.core.service.BtuCronJobProfileService;
 import com.hkt.btu.common.core.service.BtuSchedulerService;
@@ -28,9 +27,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static com.hkt.btu.common.core.service.bean.BtuSqlReportBean.REPORT_FOLDER_PATH;
 
 public class BtuSchedulerServiceImpl implements BtuSchedulerService {
     private static final Logger LOG = LogManager.getLogger(BtuSchedulerServiceImpl.class);
@@ -258,7 +255,7 @@ public class BtuSchedulerServiceImpl implements BtuSchedulerService {
         // Build Report Meta Data
         BtuReportMetaDataBean metaData = new BtuReportMetaDataBean();
         metaData.setSql(sqlReportBean.getSql());
-        metaData.setExportTo(REPORT_FOLDER_PATH);
+        metaData.setExportTo(BtuSqlReportBean.REPORT_FOLDER_PATH);
         metaData.setEmailTo(sqlReportBean.getEmailTo());
         metaData.setReportName(sqlReportBean.getReportName());
 

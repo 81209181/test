@@ -1,26 +1,8 @@
 package com.hkt.btu.sd.facade;
 
 
-import com.hkt.btu.sd.facade.data.SdConfigParamData;
+import com.hkt.btu.common.facade.BtuConfigParamFacade;
 
-import java.security.GeneralSecurityException;
-import java.util.List;
-import java.util.Optional;
+public interface SdConfigParamFacade extends BtuConfigParamFacade {
 
-public interface SdConfigParamFacade {
-    List<SdConfigParamData> getAllConfigParam();
-
-    Optional<SdConfigParamData> getConfigParamByGroupAndKey(String configGroup, String configKey);
-
-    List<String> getConfigTypeList();
-
-    boolean updateConfigParam(String configGroup, String configKey, String configValue, String configValueType, String encrypt) throws GeneralSecurityException;
-
-    List<String> getConfigGroupList();
-
-    boolean createConfigParam(String configGroup, String configKey, String configValue, String configValueType, String encrypt) throws GeneralSecurityException;
-
-    boolean checkConfigKey(String configGroup, String configKey);
-
-    boolean checkConfigParam(String configGroup, String configKey, String configValue, String configValueType);
 }

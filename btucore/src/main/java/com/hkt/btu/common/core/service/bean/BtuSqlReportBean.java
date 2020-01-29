@@ -4,13 +4,9 @@ package com.hkt.btu.common.core.service.bean;
 public class BtuSqlReportBean extends BaseBean {
 
     public static final String KEY_GROUP = "REPORT";
-
     public static final String ACTIVE_STATUS = "A";
-
     public static final String DEACTIVE_STATUS = "D";
-
     public static final String REPORT_FOLDER_PATH = "/opt/report/";
-
     public static final String REPORT_JOBDATAMAP_KEY = "reportMetaData";
 
     private String reportId;
@@ -19,6 +15,7 @@ public class BtuSqlReportBean extends BaseBean {
     private String status;
     private String jobClass;
     private String sql;
+    private String exportTo;
     private String emailTo;
 
 

@@ -200,7 +200,7 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
         }
 
         try {
-            reportService.activeReportProfile(reportId);
+            reportService.activateReportProfile(reportId);
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             return e.getMessage();
@@ -216,7 +216,7 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
         }
 
         try {
-            reportService.deactiveReportProfile(reportId);
+            reportService.deactivateReportProfile(reportId);
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             return e.getMessage();

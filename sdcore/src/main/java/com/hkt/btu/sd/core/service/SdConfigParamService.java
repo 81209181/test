@@ -9,10 +9,4 @@ import java.util.Optional;
 
 public interface SdConfigParamService extends BtuConfigParamService {
 
-    List<String> getConfigGroupList();
-
-    List<SdConfigParamBean> getAllConfigParam();
-
-    boolean checkConfigKey(String configGroup, String configKey);
-    boolean checkConfigParam(String configGroup, String configKey, String configValue, String configValueType);
 }

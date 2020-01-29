@@ -14,7 +14,6 @@ import javax.annotation.Resource;
 import java.security.GeneralSecurityException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 public class BtuApiClientFacadeImpl implements BtuApiClientFacade {
 
@@ -57,9 +56,9 @@ public class BtuApiClientFacadeImpl implements BtuApiClientFacade {
 
             String apiClient = String.format("%s.key", userBean.getName());
             BtuConfigParamBean configParamBean = new BtuConfigParamBean();
-            Optional<BtuConfigParamBean> btuConfigParamBean = btuConfigParamService.getConfigParamByGroupAndKey(BtuConfigParamEntity.API_CLIENT.CONFIG_GROUP, apiClient);
-            if (btuConfigParamBean.isPresent()) {
-                configParamBean = btuConfigParamBean.get();
+            BtuConfigParamBean btuConfigParamBean = btuConfigParamService.getConfigParamByGroupAndKey(BtuConfigParamEntity.API_CLIENT.CONFIG_GROUP, apiClient);
+            if (btuConfigParamBean!=null) {
+                configParamBean = btuConfigParamBean;
             }
 
             String configValue = configParamBean.getConfigValue();

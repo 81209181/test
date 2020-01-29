@@ -7,10 +7,16 @@ public class BtuEmailBean {
 
     // global email data
     public static final String EMAIL_GLOBAL_LOGO_CID = "email_global_logo_cid";
+    public static final String EMAIL_GLOBAL_LOGO_URL = "email_global_logo_url";
+    public static final String EMAIL_GLOBAL_LOGO_URL_VAL = "/img/logo-site.png";
     public static final ClassPathResource EMAIL_GLOBAL_LOGO_RESOURCE = new ClassPathResource("static/img/logo-site.png");
     public static final String EMAIL_GLOBAL_LOGO_HKT_CID = "email_global_logo_hkt_cid";
+    public static final String EMAIL_GLOBAL_LOGO_HKT_URL = "email_global_logo_hkt_url";
+    public static final String EMAIL_GLOBAL_LOGO_HKT_URL_VAL = "/img/logo-footer-hkt.png";
     public static final ClassPathResource EMAIL_GLOBAL_LOGO_HKT_RESOURCE = new ClassPathResource("static/img/logo-footer-hkt.png");
     public static final String EMAIL_GLOBAL_LOGO_PCCW_GRP_CID = "email_global_logo_pccw_grp_cid";
+    public static final String EMAIL_GLOBAL_LOGO_PCCW_GRP_URL = "email_global_logo_pccw_grp_url";
+    public static final String EMAIL_GLOBAL_LOGO_PCCW_GRP_URL_VAL = "/img/logo-footer-pccw.png";
     public static final ClassPathResource EMAIL_GLOBAL_LOGO_PCCW_GRP_RESOURCE = new ClassPathResource("static/img/logo-footer-pccw.png");
     public static final String EMAIL_GLOBAL_CONTACT_WEB_URL = "email_global_web_url";
     public static final String EMAIL_GLOBAL_CONTACT_WEB_NAME = "email_global_web_name";

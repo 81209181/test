@@ -23,7 +23,7 @@ public interface SdSqlReportProfileService extends BtuSqlReportProfileService {
     String updateReport(String reportId,String reportName,String cronExpression, String status,
                         String sql, String emailTo, String remarks);
 
-    void activeReportProfile(String reportId) throws InvalidInputException;
+    void activateReportProfile(String reportId) throws InvalidInputException;
 
-    void deactiveReportProfile(String reportId) throws InvalidInputException;
+    void deactivateReportProfile(String reportId) throws InvalidInputException;
 }

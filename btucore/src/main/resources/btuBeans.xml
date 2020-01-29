@@ -87,14 +87,20 @@
     <alias name="btuTemplateEngineService" alias="templateEngineService"/>
     <bean id="btuTemplateEngineService" class="com.hkt.btu.common.core.service.impl.BtuTemplateEngineServiceImpl"/>
 
-    <alias name="btuDateConverter" alias="dateConverter"/>
-    <bean id="btuDateConverter" class="com.hkt.btu.common.generator.impl.BtuDateConverterImpl"/>
-
     <alias name="btuCsvGenerator" alias="csvGenerator"/>
-    <bean id="btuCsvGenerator" class="com.hkt.btu.common.generator.impl.BtuSQL2CSVGeneratorImpl"/>
+    <bean id="btuCsvGenerator" class="com.hkt.btu.common.core.service.impl.BtuCsvServiceImpl"/>
 
     <alias name="btuApiClientService" alias="apiClientService"/>
     <bean id="btuApiClientService" class="com.hkt.btu.common.core.service.impl.BtuApiClientServiceImpl"/>
+
+    <alias name="btuCronJobLogService" alias="cronJobLogService"/>
+    <bean id="btuCronJobLogService" class="com.hkt.btu.common.core.service.impl.BtuCronJobLogServiceImpl"/>
+
+    <alias name="btuCronJobProfileService" alias="cronJobProfileService"/>
+    <bean id="btuCronJobProfileService" class="com.hkt.btu.common.core.service.impl.BtuCronJobProfileServiceImpl"/>
+
+    <alias name="btuSqlReportProfileService" alias="sqlReportProfileService"/>
+    <bean id="btuSqlReportProfileService" class="com.hkt.btu.common.core.service.impl.BtuSqlReportProfileServiceImpl"/>
 
     <!--  Bean Populator  -->
     <alias name="btuSiteConfigBeanPopulator" alias="siteConfigBeanPopulator"/>
@@ -103,6 +109,8 @@
     <alias name="btuCacheBeanPopulator" alias="cacheBeanPopulator"/>
     <bean id="btuCacheBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuCacheBeanPopulator"/>
 
+    <alias name="btuConfigParamBeanPopulator" alias="configParamBeanPopulator"/>
+    <bean id="btuConfigParamBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuConfigParamBeanPopulator"/>
 
 
     <!-- BTU Facade -->

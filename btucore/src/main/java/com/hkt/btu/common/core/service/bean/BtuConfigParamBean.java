@@ -1,6 +1,8 @@
 package com.hkt.btu.common.core.service.bean;
 
 
+import com.hkt.btu.common.core.service.constant.BtuConfigParamTypeEnum;
+
 public class BtuConfigParamBean extends BaseBean {
 
     public static class CONFIG_VALUE {
@@ -10,7 +12,8 @@ public class BtuConfigParamBean extends BaseBean {
     private String configGroup;
     private String configKey;
     private String configValue;
-    private String configValueType;
+    private String configValueRaw;
+    private BtuConfigParamTypeEnum configValueType;
     private boolean encrypt;
 
 
@@ -38,11 +41,19 @@ public class BtuConfigParamBean extends BaseBean {
         this.configValue = configValue;
     }
 
-    public String getConfigValueType() {
+    public String getConfigValueRaw() {
+        return configValueRaw;
+    }
+
+    public void setConfigValueRaw(String configValueRaw) {
+        this.configValueRaw = configValueRaw;
+    }
+
+    public BtuConfigParamTypeEnum getConfigValueType() {
         return configValueType;
     }
 
-    public void setConfigValueType(String configValueType) {
+    public void setConfigValueType(BtuConfigParamTypeEnum configValueType) {
         this.configValueType = configValueType;
     }
 

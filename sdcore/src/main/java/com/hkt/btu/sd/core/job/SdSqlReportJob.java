@@ -13,7 +13,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
@@ -36,7 +35,7 @@ public class SdSqlReportJob extends BtuSampleJob {
     SdUserMapper userMapper;
 
     @Override
-    protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+    protected void executeInternal(JobExecutionContext jobExecutionContext) {
         JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
         BtuReportMetaDataBean metaDataBean = (BtuReportMetaDataBean) jobDataMap.get(SdSqlReportBean.REPORT_JOBDATAMAP_KEY);
         if (metaDataBean == null) {

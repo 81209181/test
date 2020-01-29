@@ -6,6 +6,7 @@ import com.hkt.btu.common.core.service.BtuCacheService;
 import com.hkt.btu.common.core.service.BtuConfigParamService;
 import com.hkt.btu.common.core.service.BtuSensitiveDataService;
 import com.hkt.btu.common.core.service.constant.BtuCacheEnum;
+import com.hkt.btu.common.core.service.constant.BtuConfigParamTypeEnum;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -97,7 +98,7 @@ public class BtuApiClientServiceImpl implements BtuApiClientService {
 
         try{
             btuConfigParamService.updateConfigParam(BtuConfigParamEntity.API_CLIENT.CONFIG_GROUP, configKey, configValue,
-                    BtuConfigParamEntity.TYPE.STRING, BtuConfigParamEntity.ENCRYPT.YES);
+                    BtuConfigParamTypeEnum.STRING, BtuConfigParamEntity.ENCRYPT.YES);
             LOG.info("Re-generated API Client key: {}", apiName);
         } catch (GeneralSecurityException e) {
             LOG.error(e.getMessage(), e);
