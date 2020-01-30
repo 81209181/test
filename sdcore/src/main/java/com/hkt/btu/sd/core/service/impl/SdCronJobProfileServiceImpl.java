@@ -2,7 +2,6 @@ package com.hkt.btu.sd.core.service.impl;
 
 
 import com.hkt.btu.common.core.exception.InvalidInputException;
-import com.hkt.btu.common.core.service.BtuSiteConfigService;
 import com.hkt.btu.common.core.service.bean.BtuCronJobProfileBean;
 import com.hkt.btu.common.core.service.impl.BtuCronJobProfileServiceImpl;
 import com.hkt.btu.sd.core.dao.entity.SdCronJobEntity;
@@ -27,9 +26,6 @@ public class SdCronJobProfileServiceImpl extends BtuCronJobProfileServiceImpl im
 
     @Resource
     SdCronJobMapper sdCronJobMapper;
-
-    @Resource(name = "siteConfigService")
-    BtuSiteConfigService siteConfigService;
     @Resource(name = "userService")
     SdUserService sdUserService;
     @Resource(name = "cronJobLogService")
@@ -40,30 +36,21 @@ public class SdCronJobProfileServiceImpl extends BtuCronJobProfileServiceImpl im
 
 
     @Override
-    public List<BtuCronJobProfileBean> getAll() {
-        List<SdCronJobEntity> entityList = sdCronJobMapper.getAll();
+    protected List<BtuCronJobProfileBean> getJobProfileBeanInternal(String jobGroup, String jobName) {
+        List<SdCronJobEntity> entityList = sdCronJobMapper.getJobByJobGrpJobName(jobGroup, jobName);
         if(CollectionUtils.isEmpty(entityList)){
+            LOG.warn("Found no job profile.");
             return new ArrayList<>();
         }
+
         List<BtuCronJobProfileBean> beanList = new ArrayList<>();
-        for (SdCronJobEntity entity : entityList) {
+        for (SdCronJobEntity entity : entityList){
             SdCronJobProfileBean bean = new SdCronJobProfileBean();
             sdCronJobProfileBeanPopulator.populate(entity, bean);
             beanList.add(bean);
         }
+
         return beanList;
-    }
-
-    @Override
-    public BtuCronJobProfileBean getProfileBeanByGrpAndName(String jobGroup, String jobName) {
-        SdCronJobEntity entity = sdCronJobMapper.getJobByJobGrpJobName(jobGroup, jobName);
-        if(entity==null){
-            return null;
-        }
-
-        SdCronJobProfileBean bean = new SdCronJobProfileBean();
-        sdCronJobProfileBeanPopulator.populate(entity, bean);
-        return bean;
     }
 
     @Override
@@ -75,8 +62,8 @@ public class SdCronJobProfileServiceImpl extends BtuCronJobProfileServiceImpl im
         }
 
         // log
-        LOG.info("activate job profile:{},{}",jobGroup,jobName);
         sdCronJobLogService.logUserActivateJob(jobGroup, jobName);
+        super.activateJobProfile(jobGroup, jobName);
     }
 
     @Override
@@ -88,8 +75,8 @@ public class SdCronJobProfileServiceImpl extends BtuCronJobProfileServiceImpl im
         }
 
         // log
-        LOG.info("deactivate job profile:{},{}",jobGroup,jobName);
         sdCronJobLogService.logUserDeactivateJob(jobGroup, jobName);
+        super.deactivateJobProfile(jobGroup, jobName);
     }
 
     private int updateJobProfileStatus(String jobGroup, String jobName, String status){

@@ -3,10 +3,10 @@ package com.hkt.btu.sd.core.service.impl;
 import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.core.service.bean.BtuSqlReportBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
-import com.hkt.btu.common.core.service.impl.BtuSqlReportProfileServiceImpl;
+import com.hkt.btu.common.core.service.impl.BtuReportProfileServiceImpl;
 import com.hkt.btu.sd.core.dao.entity.SdSqlReportEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdSqlReportMapper;
-import com.hkt.btu.sd.core.service.SdSqlReportProfileService;
+import com.hkt.btu.sd.core.service.SdReportProfileService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdSqlReportBean;
 import com.hkt.btu.sd.core.service.populator.SdReportBeanPopulator;
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImpl implements SdSqlReportProfileService {
+public class SdReportProfileServiceImpl extends BtuReportProfileServiceImpl implements SdReportProfileService {
 
     @Resource(name = "reportBeanPopulator")
     SdReportBeanPopulator reportBeanPopulator;
@@ -35,7 +35,7 @@ public class SdSqlReportProfileServiceImpl extends BtuSqlReportProfileServiceImp
 
     private final TransactionTemplate transactionTemplate;
 
-    public SdSqlReportProfileServiceImpl(PlatformTransactionManager transactionManager) {
+    public SdReportProfileServiceImpl(PlatformTransactionManager transactionManager) {
         this.transactionTemplate = new TransactionTemplate(transactionManager);
     }
 

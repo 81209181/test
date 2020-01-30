@@ -4,7 +4,7 @@ import com.hkt.btu.common.core.service.bean.BtuSqlReportBean;
 
 import java.util.List;
 
-public interface BtuSqlReportProfileService {
+public interface BtuReportProfileService {
 
     List<BtuSqlReportBean> getAllReportData(String status);
 

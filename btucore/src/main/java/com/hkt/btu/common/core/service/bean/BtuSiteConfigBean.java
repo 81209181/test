@@ -15,6 +15,8 @@ public class BtuSiteConfigBean extends BaseBean {
     public static final Integer DEFAULT_MAIL_PORT = 25;
     public static final String DEFAULT_MAIL_USERNAME = "sdadmin@pccw.com";
 
+    public static final String DEFAULT_SYSTEM_SUPPORT_EMAIL = "jason.yh.kong@pccw.com";
+
 
     // server
     private String givenDomain;
@@ -55,6 +57,8 @@ public class BtuSiteConfigBean extends BaseBean {
     private String appHttpUrl;
     private String appHttpsUrl;
     private String appName;
+
+    private String systemSupportEmail;
 
 
     public String getContextPath() {
@@ -209,6 +213,14 @@ public class BtuSiteConfigBean extends BaseBean {
 
     public void setMailUsername(String mailUsername) {
         this.mailUsername = mailUsername;
+    }
+
+    public String getSystemSupportEmail() {
+        return systemSupportEmail;
+    }
+
+    public void setSystemSupportEmail(String systemSupportEmail) {
+        this.systemSupportEmail = systemSupportEmail;
     }
 
     @Override

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface BtuCronJobProfileService {
 
-    List<BtuCronJobProfileBean> getAll();
+    List<BtuCronJobProfileBean> getAllJobProfile();
 
     BtuCronJobProfileBean getProfileBeanByGrpAndName(String jobGroup, String jobName);
 

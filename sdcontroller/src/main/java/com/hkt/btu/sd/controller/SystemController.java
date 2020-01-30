@@ -1,8 +1,6 @@
 package com.hkt.btu.sd.controller;
 
-import com.hkt.btu.common.facade.data.BtuApiUserData;
-import com.hkt.btu.common.facade.data.BtuConfigParamData;
-import com.hkt.btu.common.facade.data.PageData;
+import com.hkt.btu.common.facade.data.*;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
 import com.hkt.btu.sd.facade.*;
@@ -149,7 +147,7 @@ public class SystemController {
 
     @GetMapping("/job/ajax-list-job-inst")
     public ResponseEntity<?> ajaxListJobInst() {
-        List<SdCronJobInstData> jobDataList = sdJobFacade.getAllJobInstance();
+        List<BtuCronJobInstData> jobDataList = sdJobFacade.getAllJobInstance();
 
         if (jobDataList == null) {
             return ResponseEntity.badRequest().body("Job inst list not found.");
@@ -196,7 +194,7 @@ public class SystemController {
 
     @GetMapping("/job/ajax-list-job-profile")
     public ResponseEntity<?> ajaxListJobProfile() {
-        List<SdCronJobProfileData> jobDataList = sdJobFacade.getAllJobProfile();
+        List<BtuCronJobProfileData> jobDataList = sdJobFacade.getAllJobProfile();
 
         if (jobDataList == null) {
             return ResponseEntity.badRequest().body("Job profile list not found.");

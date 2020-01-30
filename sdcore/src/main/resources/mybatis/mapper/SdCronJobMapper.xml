@@ -20,16 +20,17 @@
         <result column="REMARKS" property="remarks" />
     </resultMap>
 
-    <select id="getAll" resultMap="SdCronJobEntity" >
-        select *
-        from CRON_JOB
-    </select>
-
     <select id="getJobByJobGrpJobName" resultMap="SdCronJobEntity" >
         select *
         from CRON_JOB
-        where JOB_GROUP = #{jobGroup}
-        and JOB_NAME = #{jobName}
+        <where>
+            <if test="jobGroup != null">
+                JOB_GROUP = #{jobGroup}
+            </if>
+            <if test="jobName != null">
+                and JOB_NAME = #{jobName}
+            </if>
+        </where>
     </select>
 
     <update id="updateStatus">

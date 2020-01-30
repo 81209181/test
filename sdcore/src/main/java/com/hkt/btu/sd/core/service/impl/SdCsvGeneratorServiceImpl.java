@@ -3,7 +3,7 @@ package com.hkt.btu.sd.core.service.impl;
 import com.hkt.btu.common.core.service.bean.BtuReportMetaDataBean;
 import com.hkt.btu.common.core.service.BtuCsvService;
 import com.hkt.btu.sd.core.service.SdCsvGeneratorService;
-import com.hkt.btu.sd.core.service.SdSqlReportProfileService;
+import com.hkt.btu.sd.core.service.SdReportProfileService;
 import com.hkt.btu.sd.core.util.SqlFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -25,8 +25,8 @@ public class SdCsvGeneratorServiceImpl implements SdCsvGeneratorService {
     @Resource(name = "csvGenerator")
     BtuCsvService csvGenerator;
 
-    @Resource(name = "sqlReportProfileService")
-    SdSqlReportProfileService sqlReportProfileService;
+    @Resource(name = "reportProfileService")
+    SdReportProfileService sqlReportProfileService;
 
     @Override
     public File getCsvFile(BtuReportMetaDataBean metaDataBean) {
@@ -48,17 +48,22 @@ public class SdCsvGeneratorServiceImpl implements SdCsvGeneratorService {
         // full path: /opt/report/${reportName}/${reportName}_${yyyymmdd_hh24miss}
 
         // prepare file dir
-        String filePath = dirPath + File.separator + reportName;
-        File dir = new File(filePath);
-        if (!dir.exists()) {
-            dir.mkdirs();
+        String reportDirPath = dirPath + reportName;
+        File reportDir = new File(reportDirPath);
+        if (!reportDir.exists()) {
+            boolean succeed = reportDir.mkdirs();
+            if(succeed){
+                LOG.info("Created report dir: {}", reportDirPath);
+            }else {
+                LOG.error("Failed to create report dir: {}", reportDirPath);
+            }
         }
 
         // prepare file path
         String formatLocalDateTime = NOW.format(FILE_TIMESTAMP_FORMATTER);
         String fileName = reportName + "_" +formatLocalDateTime + CSV_SUFFIX;
 
-        return filePath + File.separator + fileName;
+        return reportDirPath + File.separator + fileName;
     }
 
 }

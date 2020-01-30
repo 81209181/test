@@ -27,7 +27,7 @@
         from CONFIG_PARAM
         <where>
             <if test="configGroup != null">
-                and CONFIG_GROUP = #{configGroup}
+                CONFIG_GROUP = #{configGroup}
             </if>
             <if test="configKey != null">
                 and CONFIG_KEY = #{configKey}

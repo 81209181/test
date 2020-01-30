@@ -1,11 +1,11 @@
 package com.hkt.btu.sd.facade.impl;
 
 import com.hkt.btu.common.core.exception.InvalidInputException;
+import com.hkt.btu.common.core.service.bean.BtuCronJobInstBean;
 import com.hkt.btu.sd.core.service.SdAuditTrailService;
 import com.hkt.btu.sd.core.service.SdSchedulerService;
-import com.hkt.btu.sd.core.service.SdSqlReportProfileService;
+import com.hkt.btu.sd.core.service.SdReportProfileService;
 import com.hkt.btu.sd.core.service.SdUserService;
-import com.hkt.btu.sd.core.service.bean.SdCronJobInstBean;
 import com.hkt.btu.sd.core.service.bean.SdSqlReportBean;
 import com.hkt.btu.sd.facade.SdSqlReportFacade;
 import com.hkt.btu.sd.facade.data.*;
@@ -42,8 +42,8 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
     @Resource(name = "reportDataPopulator")
     SdSqlReportDataPopulator reportDataPopulator;
 
-    @Resource(name = "sqlReportProfileService")
-    SdSqlReportProfileService reportService;
+    @Resource(name = "reportProfileService")
+    SdReportProfileService reportService;
 
     @Resource(name = "schedulerService")
     SdSchedulerService sdSchedulerService;
@@ -70,7 +70,7 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
 
     @Override
     public List<SdCronJobInstData> getAllReportJobInstance() {
-        List<SdCronJobInstBean> jobBeanInstList;
+        List<BtuCronJobInstBean> jobBeanInstList;
         try {
             jobBeanInstList = sdSchedulerService.getAllReportJobInstance();
             if (CollectionUtils.isEmpty(jobBeanInstList)) {
@@ -83,7 +83,7 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
 
         // populate
         List<SdCronJobInstData> jobDataList = new LinkedList<>();
-        for (SdCronJobInstBean cronJobInstBean : jobBeanInstList) {
+        for (BtuCronJobInstBean cronJobInstBean : jobBeanInstList) {
             SdCronJobInstData jobData = new SdCronJobInstData();
             sdCronJobInstDataPopulator.populate(cronJobInstBean, jobData);
             jobDataList.add(jobData);
@@ -149,7 +149,7 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
 
     @Override
     public ResponseReportData createReport(RequestReportData data) {
-        String reportId = "";
+        String reportId;
         try {
             checkReportData(data);
             reportId = reportService.createReport(data.getReportName(), data.getCronExp(), data.getStatus(),
@@ -304,8 +304,7 @@ public class SdSqlReportFacadeImpl implements SdSqlReportFacade {
             return null;
         }
 
-        String path = REPORT_FOLDER_PATH + reportName;
-        return path;
+        return REPORT_FOLDER_PATH + reportName;
     }
 
     private void checkReportData(RequestReportData data) throws InvalidInputException {

@@ -5,12 +5,12 @@ import com.hkt.btu.common.core.service.BtuCronJobProfileService;
 import com.hkt.btu.common.core.service.BtuSiteConfigService;
 import com.hkt.btu.common.core.service.bean.BtuCronJobProfileBean;
 import com.hkt.btu.common.core.service.bean.BtuSiteConfigBean;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 public class BtuCronJobProfileServiceImpl implements BtuCronJobProfileService {
@@ -19,36 +19,51 @@ public class BtuCronJobProfileServiceImpl implements BtuCronJobProfileService {
     @Resource(name = "siteConfigService")
     BtuSiteConfigService siteConfigService;
 
-    @Override
-    public List<BtuCronJobProfileBean> getAll() {
-        // create sample job
-        BtuCronJobProfileBean sampleJobBean = new BtuCronJobProfileBean();
-        sampleJobBean.setJobClass("com.hkt.btu.common.core.job.BtuSampleJob");
-        sampleJobBean.setKeyName("BtuSampleJob");
-        sampleJobBean.setKeyGroup("SYSTEM");
-        sampleJobBean.setCronExp("0 0/5 * * * ?");
-        sampleJobBean.setActive(true);
-        sampleJobBean.setMandatory(true);
+    protected List<BtuCronJobProfileBean> getJobProfileBeanInternal(String jobGroup, String jobName){
+        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        return null;
 
-        // return job bean list
-        List<BtuCronJobProfileBean> beanList = new ArrayList<>();
-        beanList.add(sampleJobBean);
-        return beanList;
+//        // create sample job
+//        BtuCronJobProfileBean sampleJobBean = new BtuCronJobProfileBean();
+//        sampleJobBean.setJobClass("com.hkt.btu.common.core.job.BtuSampleJob");
+//        sampleJobBean.setKeyName("BtuSampleJob");
+//        sampleJobBean.setKeyGroup("SYSTEM");
+//        sampleJobBean.setCronExp("0 0/5 * * * ?");
+//        sampleJobBean.setActive(true);
+//        sampleJobBean.setMandatory(true);
+//
+//        // return job bean list
+//        List<BtuCronJobProfileBean> beanList = new ArrayList<>();
+//        beanList.add(sampleJobBean);
+//        return beanList;
+    }
+
+    @Override
+    public List<BtuCronJobProfileBean> getAllJobProfile() {
+        LOG.info("Getting all job profiles...");
+        return getJobProfileBeanInternal(null, null);
     }
 
     @Override
     public BtuCronJobProfileBean getProfileBeanByGrpAndName(String jobGroup, String jobName) {
-        LOG.warn("get profile bean by group and name:{},{}", jobGroup, jobName);
-        return null;
+        if(StringUtils.isEmpty(jobGroup)){
+            LOG.error("Empty jobGroup. (group={}, name={})", jobGroup, jobName);
+            return null;
+        } else if(StringUtils.isEmpty(jobName)){
+            LOG.error("Empty jobName. (group={}, name={})", jobGroup, jobName);
+            return null;
+        }
+
+        LOG.info("Getting job profile... (group={}, name={})", jobGroup, jobName);
+        List<BtuCronJobProfileBean> beanList = getJobProfileBeanInternal(jobGroup, jobName);
+        if(CollectionUtils.isEmpty(beanList)){
+            LOG.error("Cannot find job profile. (group={}, name={})", jobGroup, jobName);
+            return null;
+        }
+
+        return beanList.get(0);
     }
 
-    @Override
-    public boolean isRunnable(BtuCronJobProfileBean sdCronJobProfileBean) {
-        boolean isWrongHostToRunJob = isWrongHostToRunJob(sdCronJobProfileBean);
-        boolean isActiveProfile = sdCronJobProfileBean.isActive();
-
-        return isActiveProfile && !isWrongHostToRunJob;
-    }
 
     private boolean isWrongHostToRunJob(BtuCronJobProfileBean sdCronJobProfileBean) {
         BtuSiteConfigBean sdSiteConfigBean = siteConfigService.getSiteConfigBean();
@@ -71,6 +86,14 @@ public class BtuCronJobProfileServiceImpl implements BtuCronJobProfileService {
     }
 
     @Override
+    public boolean isRunnable(BtuCronJobProfileBean sdCronJobProfileBean) {
+        boolean isWrongHostToRunJob = isWrongHostToRunJob(sdCronJobProfileBean);
+        boolean isActiveProfile = sdCronJobProfileBean.isActive();
+
+        return isActiveProfile && !isWrongHostToRunJob;
+    }
+
+    @Override
     public boolean isRunnable(String jobGroup, String jobName) {
         BtuCronJobProfileBean sdCronJobProfileBean = getProfileBeanByGrpAndName(jobGroup, jobName);
         if (sdCronJobProfileBean == null) {
@@ -82,11 +105,11 @@ public class BtuCronJobProfileServiceImpl implements BtuCronJobProfileService {
 
     @Override
     public void activateJobProfile(String jobGroup, String jobName) throws InvalidInputException {
-        LOG.warn("activate job profile :{},{}", jobGroup, jobName);
+        LOG.warn("Activated job profile :{}, {}", jobGroup, jobName);
     }
 
     @Override
     public void deactivateJobProfile(String jobGroup, String jobName) throws InvalidInputException {
-        LOG.warn("deactivate job profile:{},{}", jobGroup, jobName);
+        LOG.warn("Deactivated job profile:{}, {}", jobGroup, jobName);
     }
 }

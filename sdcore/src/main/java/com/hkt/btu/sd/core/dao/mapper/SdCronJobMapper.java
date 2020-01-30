@@ -9,8 +9,7 @@ import java.util.List;
 @Repository
 public interface SdCronJobMapper {
     // select
-    List<SdCronJobEntity> getAll();
-    SdCronJobEntity getJobByJobGrpJobName(String jobGroup, String jobName);
+    List<SdCronJobEntity> getJobByJobGrpJobName(String jobGroup, String jobName);
 
     // paged select
 

@@ -4,41 +4,51 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <!-- Service -->
-    <alias name="sdUserService" alias="userService"/>
-    <alias name="sdUserService" alias="btuUserService"/>
-    <bean id="sdUserService" class="com.hkt.btu.sd.core.service.impl.SdUserServiceImpl"/>
-
-    <alias name="sdPathCtrlService" alias="pathCtrlService"/>
-    <alias name="sdPathCtrlService" alias="btuPathCtrlService"/>
-    <bean id="sdPathCtrlService" class="com.hkt.btu.sd.core.service.impl.SdPathCtrlServiceImpl"/>
+    <alias name="sdApiClientService" alias="apiClientService"/>
+    <alias name="sdApiClientService" alias="btuApiClientService"/>
+    <bean id="sdApiClientService" class="com.hkt.btu.sd.core.service.impl.SdApiClientServiceImpl"/>
 
     <alias name="sdAuditTrailService" alias="auditTrailService"/>
     <alias name="sdAuditTrailService" alias="btuAuditTrailService"/>
     <bean id="sdAuditTrailService" class="com.hkt.btu.sd.core.service.impl.SdAuditTrailServiceImpl"/>
 
+    <alias name="sdCacheService" alias="cacheService"/>
+    <alias name="sdCacheService" alias="btuCacheService"/>
+    <bean class="com.hkt.btu.sd.core.service.impl.SdCacheServiceImpl" id="sdCacheService"/>
+
     <alias name="sdConfigParamService" alias="configParamService"/>
+    <alias name="sdConfigParamService" alias="btuConfigParamService"/>
     <bean id="sdConfigParamService" class="com.hkt.btu.sd.core.service.impl.SdConfigParamServiceImpl"/>
+
+    <alias name="sdCronJobLogService" alias="cronJobLogService"/>
+    <alias name="sdCronJobLogService" alias="btuCronJobLogService"/>
+    <bean id="sdCronJobLogService" class="com.hkt.btu.sd.core.service.impl.SdCronJobLogServiceImpl"/>
+
+    <alias name="sdCronJobProfileService" alias="cronJobProfileService"/>
+    <alias name="sdCronJobProfileService" alias="btuCronJobProfileService"/>
+    <bean id="sdCronJobProfileService" class="com.hkt.btu.sd.core.service.impl.SdCronJobProfileServiceImpl"/>
+
+    <alias name="sdEmailService" alias="emailService"/>
+    <alias name="sdEmailService" alias="btuEmailService"/>
+    <bean id="sdEmailService" class="com.hkt.btu.sd.core.service.impl.SdEmailServiceImpl"/>
+
+    <alias name="sdUserService" alias="userService"/>
+    <alias name="sdUserService" alias="btuUserService"/>
+    <bean id="sdUserService" class="com.hkt.btu.sd.core.service.impl.SdUserServiceImpl"/>
+
+    <alias name="sdHealthCheckService" alias="healthCheckService"/>
+    <alias name="sdHealthCheckService" alias="btuHealthCheckService"/>
+    <bean id="sdHealthCheckService" class="com.hkt.btu.sd.core.service.impl.SdHealthCheckServiceImpl"/>
+
+    <alias name="sdPathCtrlService" alias="pathCtrlService"/>
+    <alias name="sdPathCtrlService" alias="btuPathCtrlService"/>
+    <bean id="sdPathCtrlService" class="com.hkt.btu.sd.core.service.impl.SdPathCtrlServiceImpl"/>
 
     <alias name="sdOtpService" alias="otpService"/>
     <bean id="sdOtpService" class="com.hkt.btu.sd.core.service.impl.SdOtpServiceImpl"/>
 
-    <alias name="sdEmailService" alias="emailService"/>
-    <bean id="sdEmailService" class="com.hkt.btu.sd.core.service.impl.SdEmailServiceImpl"/>
-
-    <alias name="sdSchedulerService" alias="schedulerService"/>
-    <bean id="sdSchedulerService" class="com.hkt.btu.sd.core.service.impl.SdSchedulerServiceImpl"/>
-
-    <alias name="sdCronJobProfileService" alias="cronJobProfileService"/>
-    <bean id="sdCronJobProfileService" class="com.hkt.btu.sd.core.service.impl.SdCronJobProfileServiceImpl"/>
-
-    <alias name="sdCronJobLogService" alias="cronJobLogService"/>
-    <bean id="sdCronJobLogService" class="com.hkt.btu.sd.core.service.impl.SdCronJobLogServiceImpl"/>
-
     <alias name="sdInputCheckService" alias="inputCheckService"/>
     <bean id="sdInputCheckService" class="com.hkt.btu.sd.core.service.impl.SdInputCheckServiceImpl"/>
-
-    <alias name="sdHealthCheckService" alias="healthCheckService"/>
-    <bean id="sdHealthCheckService" class="com.hkt.btu.sd.core.service.impl.SdHealthCheckServiceImpl"/>
 
     <alias name="sdUserRoleService" alias="userRoleService"/>
     <bean id="sdUserRoleService" class="com.hkt.btu.sd.core.service.impl.SdUserRoleServiceImpl"/>
@@ -46,14 +56,19 @@
     <alias name="sdApiService" alias="apiService"/>
     <bean id="sdApiService" class="com.hkt.btu.sd.core.service.impl.SdApiServiceImpl"/>
 
+    <alias name="sdSchedulerService" alias="schedulerService"/>
+    <alias name="sdSchedulerService" alias="btuSchedulerService"/>
+    <bean id="sdSchedulerService" class="com.hkt.btu.sd.core.service.impl.SdSchedulerServiceImpl"/>
+
     <alias name="sdSiteService" alias="siteService"/>
     <bean id="sdSiteService" class="com.hkt.btu.sd.core.service.impl.SdSiteServiceImpl"/>
 
     <alias name="sdSiteConfigService" alias="siteConfigService"/>
+    <alias name="sdSiteConfigService" alias="btuSiteConfigService"/>
     <bean id="sdSiteConfigService" class="com.hkt.btu.sd.core.service.impl.SdSiteConfigServiceImpl"/>
 
     <alias name="sdSqlReportProfileService" alias="sqlReportProfileService"/>
-    <bean id="sdSqlReportProfileService" class="com.hkt.btu.sd.core.service.impl.SdSqlReportProfileServiceImpl"/>
+    <bean id="sdSqlReportProfileService" class="com.hkt.btu.sd.core.service.impl.SdReportProfileServiceImpl"/>
 
     <alias name="sdTicketService" alias="ticketService"/>
     <bean id="sdTicketService" class="com.hkt.btu.sd.core.service.impl.SdTicketServiceImpl"/>
@@ -76,13 +91,6 @@
     <alias name="sdCertService" alias="certService"/>
     <bean class="com.hkt.btu.sd.core.service.impl.SdCertServiceImpl" id="sdCertService"/>
 
-    <alias name="sdCacheService" alias="cacheService"/>
-    <alias name="sdCacheService" alias="btuCacheService"/>
-    <bean class="com.hkt.btu.sd.core.service.impl.SdCacheServiceImpl" id="sdCacheService"/>
-
-    <alias name="SdApiClientService" alias="apiClientService"/>
-    <bean id="SdApiClientService" class="com.hkt.btu.sd.core.service.impl.SdApiClientServiceImpl"/>
-
     <alias name="UTCallService" alias="utCallService"/>
     <bean class="com.hkt.btu.sd.core.service.impl.UTCallServiceImpl" id="UTCallService"/>
 
@@ -104,10 +112,11 @@
     <bean id="sdOperationHistBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdOperationHistBeanPopulator"/>
 
     <alias name="sdCronJobProfileBeanPopulator" alias="cronJobProfileBeanPopulator"/>
-    <bean id="sdCronJobProfileBeanPopulator"
-          class="com.hkt.btu.sd.core.service.populator.SdCronJobProfileBeanPopulator"/>
+    <alias name="sdCronJobProfileBeanPopulator" alias="btuCronJobProfileBeanPopulator"/>
+    <bean id="sdCronJobProfileBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdCronJobProfileBeanPopulator"/>
 
     <alias name="sdCronJobInstBeanPopulator" alias="cronJobInstBeanPopulator"/>
+    <alias name="sdCronJobInstBeanPopulator" alias="btuCronJobInstBeanPopulator"/>
     <bean id="sdCronJobInstBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdCronJobInstBeanPopulator"/>
 
     <alias name="sdUserRoleBeanPopulator" alias="userRoleBeanPopulator"/>

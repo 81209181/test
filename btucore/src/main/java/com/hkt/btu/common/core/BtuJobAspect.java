@@ -1,8 +1,8 @@
-package com.hkt.btu.sd.core;
+package com.hkt.btu.common.core;
 
-import com.hkt.btu.sd.core.dao.entity.SdConfigParamEntity;
-import com.hkt.btu.sd.core.service.*;
-import com.hkt.btu.sd.core.service.bean.SdSqlReportBean;
+import com.hkt.btu.common.core.service.*;
+import com.hkt.btu.common.core.service.bean.BtuSiteConfigBean;
+import com.hkt.btu.common.core.service.bean.BtuSqlReportBean;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,38 +20,23 @@ import java.util.Date;
 
 @Aspect
 @Configuration
-public class SdJobAspect {
-    private static final Logger LOG = LogManager.getLogger(SdJobAspect.class);
-
+public class BtuJobAspect {
+    private static final Logger LOG = LogManager.getLogger(BtuJobAspect.class);
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-
     @Resource(name = "cronJobProfileService")
-    SdCronJobProfileService sdCronJobProfileService;
+    BtuCronJobProfileService cronJobProfileService;
     @Resource(name = "cronJobLogService")
-    SdCronJobLogService sdCronJobLogService;
+    BtuCronJobLogService cronJobLogService;
     @Resource(name = "emailService")
-    SdEmailService sdEmailService;
-    @Resource(name = "configParamService")
-    SdConfigParamService sdConfigParamService;
-    @Resource(name = "sqlReportProfileService")
-    SdSqlReportProfileService sqlReportProfileService;
+    BtuEmailService btuEmailService;
+    @Resource(name = "reportProfileService")
+    BtuReportProfileService sqlReportProfileService;
+    @Resource(name = "siteConfigService")
+    BtuSiteConfigService siteConfigService;
 
 
-    private JobExecutionContext getJobExecutionContext(Object[] args) throws JobExecutionException {
-        if(args==null){
-            throw new JobExecutionException("Null args.");
-        }
-
-        for(Object arg : args){
-            if(arg instanceof JobExecutionContext){
-                return (JobExecutionContext) arg;
-            }
-        }
-        throw new JobExecutionException("Null jobExecutionContext.");
-    }
-
-    @Around("execution(* com.hkt.btu.*.*.job.*.executeInternal(..))")
+    @Around("execution(* com.hkt.btu.*.core.job.*.executeInternal(..))")
     public Object aroundExecuteInternal(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         JobExecutionContext jobExecutionContext;
         JobDetail jobDetail;
@@ -76,15 +61,16 @@ public class SdJobAspect {
         if(isCronTrigger) {
             // check if job should be run
             try {
-                boolean isRunnable = false;
-                if (SdSqlReportBean.KEY_GROUP.equals(jobKey.getGroup())) {
+                boolean isRunnable;
+                if (BtuSqlReportBean.KEY_GROUP.equals(jobKey.getGroup())) {
                     isRunnable = sqlReportProfileService.isRunnable(jobKey.getName());
                 } else {
-                    isRunnable = sdCronJobProfileService.isRunnable(jobKey.getGroup(), jobKey.getName());
+                    isRunnable = cronJobProfileService.isRunnable(jobKey.getGroup(), jobKey.getName());
                 }
+
                 if (!isRunnable) {
                     LOG.warn("Skipped non-runnable job: " + jobKey);
-                    sdCronJobLogService.logSkip(jobDetail);
+                    cronJobLogService.logSkip(jobDetail);
                     return null;
                 }
             } catch (Exception e) {
@@ -103,12 +89,12 @@ public class SdJobAspect {
             LOG.info("Firing time: "    + jobExecutionContext.getFireTime());
 
             Object returnObject = proceedingJoinPoint.proceed(); // executeInternal(..)
-            sdCronJobLogService.logComplete(jobDetail);
+            cronJobLogService.logComplete(jobDetail);
             return returnObject;
         } catch (Exception e){
             LOG.error("Cannot complete job: " + jobKey);
             LOG.error(e.getMessage(), e);
-            sdCronJobLogService.logError(jobDetail);
+            cronJobLogService.logError(jobDetail);
             emailJobError(e, jobKey.getName(), jobExecutionContext.getFireTime());
             throw new SchedulerException("Cannot complete job: " + jobKey);
         } finally {
@@ -116,11 +102,24 @@ public class SdJobAspect {
         }
     }
 
+    private JobExecutionContext getJobExecutionContext(Object[] args) throws JobExecutionException {
+        if(args==null){
+            throw new JobExecutionException("Null args.");
+        }
+
+        for(Object arg : args){
+            if(arg instanceof JobExecutionContext){
+                return (JobExecutionContext) arg;
+            }
+        }
+        throw new JobExecutionException("Null jobExecutionContext.");
+    }
+
     private void emailJobError(Exception error, String jobName, Date jobFireTime){
         try{
             // find recipient
-            String recipient = sdConfigParamService.getString(
-                    SdConfigParamEntity.CRONJOB.CONFIG_GROUP, SdConfigParamEntity.CRONJOB.CONFIG_KEY_ERROR_EMAIL);
+            BtuSiteConfigBean siteConfigBean = siteConfigService.getSiteConfigBean();
+            String recipient = siteConfigBean.getSystemSupportEmail();
             if(StringUtils.isEmpty(recipient)){
                 LOG.warn("Not sending cronjob error email.");
                 return;
@@ -132,7 +131,7 @@ public class SdJobAspect {
             String fireTime = fireDateTime==null ? null : fireDateTime.format(DATE_TIME_FORMATTER);
             String subject = String.format("[Job Error][%s] %s", fireTime, jobName);
 
-            sdEmailService.sendErrorStackTrace(recipient, subject, error);
+            btuEmailService.sendErrorStackTrace(recipient, subject, error);
             LOG.info("Sent job error email.");
         }catch (Exception e){
             LOG.error(e.getMessage(), e);

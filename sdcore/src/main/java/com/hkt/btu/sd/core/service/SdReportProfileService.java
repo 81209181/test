@@ -1,13 +1,13 @@
 package com.hkt.btu.sd.core.service;
 
 import com.hkt.btu.common.core.exception.InvalidInputException;
-import com.hkt.btu.common.core.service.BtuSqlReportProfileService;
+import com.hkt.btu.common.core.service.BtuReportProfileService;
 import com.hkt.btu.sd.core.service.bean.SdSqlReportBean;
 
 import java.util.List;
 import java.util.Map;
 
-public interface SdSqlReportProfileService extends BtuSqlReportProfileService {
+public interface SdReportProfileService extends BtuReportProfileService {
 
     List<SdSqlReportBean> getAllReportBean(String status);
 

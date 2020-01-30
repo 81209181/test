@@ -15,7 +15,6 @@ public class BtuSqlReportBean extends BaseBean {
     private String status;
     private String jobClass;
     private String sql;
-    private String exportTo;
     private String emailTo;
 
 

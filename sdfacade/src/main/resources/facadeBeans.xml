@@ -3,20 +3,31 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <alias name="sdUserFacadeImpl" alias="userFacade"/>
-    <bean id="sdUserFacadeImpl" class="com.hkt.btu.sd.facade.impl.SdUserFacadeImpl"/>
+
+    <alias name="sdCacheFacade" alias="cacheFacade"/>
+    <alias name="sdCacheFacade" alias="btuCacheFacade"/>
+    <bean id="sdCacheFacade" class="com.hkt.btu.sd.facade.impl.SdCacheFacadeImpl"/>
+
+    <alias name="sdApiClientFacade" alias="apiClientFacade"/>
+    <alias name="sdApiClientFacade" alias="btuApiClientFacade"/>
+    <bean id="sdApiClientFacade" class="com.hkt.btu.sd.facade.impl.SdApiClientFacadeImpl"/>
 
     <alias name="sdConfigParamFacade" alias="configParamFacade"/>
+    <alias name="sdConfigParamFacade" alias="btuConfigParamFacade"/>
     <bean id="sdConfigParamFacade" class="com.hkt.btu.sd.facade.impl.SdConfigParamFacadeImpl"/>
+
+    <alias name="sdJobFacade" alias="jobFacade"/>
+    <alias name="sdJobFacade" alias="btuJobFacade"/>
+    <bean id="sdJobFacade" class="com.hkt.btu.sd.facade.impl.SdJobFacadeImpl"/>
+
+    <alias name="sdUserFacadeImpl" alias="userFacade"/>
+    <bean id="sdUserFacadeImpl" class="com.hkt.btu.sd.facade.impl.SdUserFacadeImpl"/>
 
     <alias name="sdUserRoleFacade" alias="userRoleFacade"/>
     <bean id="sdUserRoleFacade" class="com.hkt.btu.sd.facade.impl.SdUserRoleFacadeImpl"/>
 
     <alias name="sdSiteConfigFacade" alias="siteConfigFacade"/>
     <bean id="sdSiteConfigFacade" class="com.hkt.btu.sd.facade.impl.SdSiteConfigFacadeImpl"/>
-
-    <alias name="sdJobFacade" alias="jobFacade"/>
-    <bean id="sdJobFacade" class="com.hkt.btu.sd.facade.impl.SdJobFacadeImpl"/>
 
     <alias name="sdHealthCheckFacade" alias="healthCheckFacade"/>
     <bean id="sdHealthCheckFacade" class="com.hkt.btu.sd.facade.impl.SdHealthCheckFacadeImpl"/>
@@ -46,17 +57,12 @@
     <alias name="sdServiceTypeFacade" alias="serviceTypeFacade" />
     <bean id="sdServiceTypeFacade" class="com.hkt.btu.sd.facade.impl.SdServiceTypeFacadeImpl"/>
 
-    <alias name="sdCachedFacade" alias="cachedFacade"/>
-    <bean id="sdCachedFacade" class="com.hkt.btu.sd.facade.impl.SdCacheFacadeImpl"/>
-
     <alias name="utCallFacade" alias="callFacade"/>
     <bean id="utCallFacade" class="com.hkt.btu.sd.facade.impl.UTCallFacadeImpl"/>
 
     <alias name="sdPublicHolidayFacade" alias="publicHolidayFacade"/>
     <bean id="sdPublicHolidayFacade" class="com.hkt.btu.sd.facade.impl.SdPublicHolidayFacadeImpl"/>
 
-    <alias name="sdApiClientFacade" alias="apiClientFacade"/>
-    <bean id="sdApiClientFacade" class="com.hkt.btu.sd.facade.impl.SdApiClientFacadeImpl"/>
 
     <!-- Populator -->
     <alias name="sdUserDataPopulator" alias="userDataPopulator"/>
@@ -72,13 +78,14 @@
     <bean id="sdSiteInstanceDataPopulator" class="com.hkt.btu.sd.facade.populator.SdSiteConfigDataPopulator"/>
 
     <alias name="sdCronJobProfileDataPopulator" alias="cronJobProfileDataPopulator"/>
+    <alias name="sdCronJobProfileDataPopulator" alias="btuCronJobProfileDataPopulator"/>
     <bean id="sdCronJobProfileDataPopulator" class="com.hkt.btu.sd.facade.populator.SdCronJobProfileDataPopulator"/>
 
     <alias name="sdCronJobInstDataPopulator" alias="cronJobInstDataPopulator"/>
+    <alias name="sdCronJobInstDataPopulator" alias="btuCronJobInstDataPopulator"/>
     <bean id="sdCronJobInstDataPopulator" class="com.hkt.btu.sd.facade.populator.SdCronJobInstDataPopulator"/>
 
-    <bean id="requestCreateSearchResultDataPopulator"
-          class="com.hkt.btu.sd.facade.populator.RequestCreateSearchResultDataPopulator"/>
+    <bean id="requestCreateSearchResultDataPopulator" class="com.hkt.btu.sd.facade.populator.RequestCreateSearchResultDataPopulator"/>
 
     <alias name="sdUserRoleDataPopulator" alias="userRoleDataPopulator"/>
     <bean id="sdUserRoleDataPopulator" class="com.hkt.btu.sd.facade.populator.SdUserRoleDataPopulator"/>

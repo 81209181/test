@@ -110,6 +110,8 @@ public class BtuSiteConfigServiceImpl implements BtuSiteConfigService {
         Integer mailPort = MapUtils.getInteger(map, BtuConfigParamEntity.SITE.CONFIG_KEY_MAIL_PORT);
         String mailUsername = MapUtils.getString(map, BtuConfigParamEntity.SITE.CONFIG_KEY_MAIL_USERNAME);
 
+        String systemSupportEmail = MapUtils.getString(map, BtuConfigParamEntity.SITE.CONFIG_KEY_SYSTEM_SUPPORT);
+
         // set config value from db (if not given may set hardcode value)
         siteConfigBean.setAppName(appName);
         siteConfigBean.setGivenDomain(givenDomain);
@@ -130,6 +132,9 @@ public class BtuSiteConfigServiceImpl implements BtuSiteConfigService {
                 mailPort==null ? BtuSiteConfigBean.DEFAULT_MAIL_PORT : mailPort );
         siteConfigBean.setMailUsername(
                 mailUsername==null ? BtuSiteConfigBean.DEFAULT_MAIL_USERNAME : mailUsername );// formatted var
+
+        siteConfigBean.setSystemSupportEmail(
+                systemSupportEmail==null ? BtuSiteConfigBean.DEFAULT_SYSTEM_SUPPORT_EMAIL : systemSupportEmail );
 
         // determine server type
         String serverHostname = siteConfigBean.getServerHostname();

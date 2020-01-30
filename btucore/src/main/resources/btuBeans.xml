@@ -63,6 +63,9 @@
     <alias name="btuHttpService" alias="httpService"/>
     <bean id="btuHttpService" class="com.hkt.btu.common.core.service.impl.BtuHttpServiceImpl"/>
 
+    <alias name="btuSchedulerService" alias="schedulerService"/>
+    <bean id="btuSchedulerService" class="com.hkt.btu.common.core.service.impl.BtuSchedulerServiceImpl"/>
+
     <alias name="btuSensitiveDataService" alias="sensitiveDataService"/>
     <bean id="btuSensitiveDataService" class="com.hkt.btu.common.core.service.impl.BtuSensitiveDataServiceImpl"/>
 
@@ -99,8 +102,8 @@
     <alias name="btuCronJobProfileService" alias="cronJobProfileService"/>
     <bean id="btuCronJobProfileService" class="com.hkt.btu.common.core.service.impl.BtuCronJobProfileServiceImpl"/>
 
-    <alias name="btuSqlReportProfileService" alias="sqlReportProfileService"/>
-    <bean id="btuSqlReportProfileService" class="com.hkt.btu.common.core.service.impl.BtuSqlReportProfileServiceImpl"/>
+    <alias name="btuReportProfileService" alias="reportProfileService"/>
+    <bean id="btuReportProfileService" class="com.hkt.btu.common.core.service.impl.BtuReportProfileServiceImpl"/>
 
     <!--  Bean Populator  -->
     <alias name="btuSiteConfigBeanPopulator" alias="siteConfigBeanPopulator"/>
@@ -112,13 +115,25 @@
     <alias name="btuConfigParamBeanPopulator" alias="configParamBeanPopulator"/>
     <bean id="btuConfigParamBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuConfigParamBeanPopulator"/>
 
+    <alias name="btuCronJobInstBeanPopulator" alias="cronJobInstBeanPopulator"/>
+    <bean id="btuCronJobInstBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuCronJobInstBeanPopulator"/>
+
+    <alias name="btuCronJobProfileBeanPopulator" alias="cronJobProfileBeanPopulator"/>
+    <bean id="btuCronJobProfileBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuCronJobProfileBeanPopulator"/>
+
 
     <!-- BTU Facade -->
-    <alias name="btuCacheFacadeImpl" alias="cacheFacadeImpl"/>
-    <bean id="btuCacheFacadeImpl" class="com.hkt.btu.common.facade.impl.BtuCacheFacadeImpl"/>
+    <alias name="btuCacheFacade" alias="cacheFacade"/>
+    <bean id="btuCacheFacade" class="com.hkt.btu.common.facade.impl.BtuCacheFacadeImpl"/>
 
-    <alias name="btuApiClientFacadeImpl" alias="apiClientFacadeImpl"/>
-    <bean id="btuApiClientFacadeImpl" class="com.hkt.btu.common.facade.impl.BtuApiClientFacadeImpl"/>
+    <alias name="btuApiClientFacade" alias="apiClientFacade"/>
+    <bean id="btuApiClientFacade" class="com.hkt.btu.common.facade.impl.BtuApiClientFacadeImpl"/>
+
+    <alias name="btuConfigParamFacade" alias="configParamFacade"/>
+    <bean id="btuConfigParamFacade" class="com.hkt.btu.common.facade.impl.BtuConfigParamFacadeImpl"/>
+
+    <alias name="btuJobFacade" alias="jobFacade"/>
+    <bean id="btuJobFacade" class="com.hkt.btu.common.facade.impl.BtuJobFacadeImpl"/>
 
     <!--  Data Populator  -->
     <alias name="btuCacheProfileDataPopulator" alias="cacheProfileDataPopulator"/>
@@ -126,4 +141,10 @@
 
     <alias name="btuConfigParamDataPopulator" alias="configParamDataPopulator"/>
     <bean id="btuConfigParamDataPopulator" class="com.hkt.btu.common.facade.populator.BtuConfigParamDataPopulator"/>
+
+    <alias name="btuCronJobInstDataPopulator" alias="cronJobInstDataPopulator"/>
+    <bean id="btuCronJobInstDataPopulator" class="com.hkt.btu.common.facade.populator.BtuCronJobInstDataPopulator"/>
+
+    <alias name="btuCronJobProfileDataPopulator" alias="cronJobProfileDataPopulator"/>
+    <bean id="btuCronJobProfileDataPopulator" class="com.hkt.btu.common.facade.populator.BtuCronJobProfileDataPopulator"/>
 </beans>

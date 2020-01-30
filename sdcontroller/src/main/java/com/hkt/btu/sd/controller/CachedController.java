@@ -16,26 +16,26 @@ import java.util.List;
 @RequestMapping("cached")
 public class CachedController {
 
-    @Resource(name = "cachedFacade")
-    SdCacheFacade cachedFacade;
+    @Resource(name = "cacheFacade")
+    SdCacheFacade cacheFacade;
 
     @GetMapping({"","/"})
     public String forwardToCachedPage(Model model) {
-        List<BtuCacheProfileData> cacheProfileDataList = cachedFacade.getCacheProfileDataList();
+        List<BtuCacheProfileData> cacheProfileDataList = cacheFacade.getCacheProfileDataList();
         model.addAttribute("cacheProfileDataList", cacheProfileDataList);
         return "system/cachedObject/cachedObjectList";
     }
 
     @GetMapping("info/{cacheName}")
     public String getCacheList(@PathVariable String cacheName, Model model) {
-        model.addAttribute("cacheProfile", cachedFacade.getCacheProfileDataByCacheName(cacheName));
+        model.addAttribute("cacheProfile", cacheFacade.getCacheProfileDataByCacheName(cacheName));
         return "system/cachedObject/cachedObjectInfo";
     }
 
     @GetMapping("getCacheInfo/{cacheName}")
     public ResponseEntity<?> getCacheInfo(@PathVariable String cacheName){
         try {
-            return ResponseEntity.ok(List.of(cachedFacade.getCachedObjectJson(cacheName), cachedFacade.getSourceObjectJson(cacheName)));
+            return ResponseEntity.ok(List.of(cacheFacade.getCachedObjectJson(cacheName), cacheFacade.getSourceObjectJson(cacheName)));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Get cache fail.");
         }
@@ -44,7 +44,7 @@ public class CachedController {
     @GetMapping("reloadCache/{cacheName}")
     public ResponseEntity<?> reloadCache(@PathVariable String cacheName) {
         try {
-            cachedFacade.reloadCacheByCacheName(cacheName);
+            cacheFacade.reloadCacheByCacheName(cacheName);
             return ResponseEntity.ok(true);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Reload cache fail.");
