@@ -1,7 +1,16 @@
 package com.hkt.btu.common.core.service.bean;
 
 
+import org.quartz.JobDataMap;
+
+
 public class BtuCronJobProfileBean extends BaseBean{
+
+    public static class STATUS{
+        public static final String ACTIVE = "Active";
+        public static final String DISABLE = "Disable";
+        public static final String UNKNOWN = "Unknown";
+    }
 
     private String keyGroup;
     private String keyName;
@@ -11,6 +20,8 @@ public class BtuCronJobProfileBean extends BaseBean{
     private boolean isActive;
     private boolean isMandatory;
     private String cronExp;
+
+    private JobDataMap jobDataMap;
 
     public String getKeyGroup() {
         return keyGroup;
@@ -68,4 +79,11 @@ public class BtuCronJobProfileBean extends BaseBean{
         this.cronExp = cronExp;
     }
 
+    public JobDataMap getJobDataMap() {
+        return jobDataMap;
+    }
+
+    public void setJobDataMap(JobDataMap jobDataMap) {
+        this.jobDataMap = jobDataMap;
+    }
 }

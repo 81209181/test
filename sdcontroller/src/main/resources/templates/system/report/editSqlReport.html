@@ -41,8 +41,8 @@
             <div class="form-group col-md-6">
                 <label >Status</label>
                 <select name="status" id="status" class="form-control">
-                    <option th:selected="${data.status == 'A'}" value="A">Active</option>
-                    <option th:selected="${data.status=='D'}" value="D">Disable</option>
+                    <option th:selected="${data.status == 'Active'}" value="A">Active</option>
+                    <option th:selected="${data.status == 'Disable'}" value="D">Disable</option>
                 </select>
             </div>
         </div>

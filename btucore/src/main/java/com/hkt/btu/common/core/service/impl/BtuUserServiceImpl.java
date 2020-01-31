@@ -54,6 +54,12 @@ public class BtuUserServiceImpl implements BtuUserService {
         return btuUser.getUserBean();
     }
 
+    @Override
+    public String getCurrentUserId() {
+        BtuUserBean userBean = getCurrentUserBean();
+        return userBean==null ? null : userBean.getUserId();
+    }
+
 
     public BtuUserBean getUserBeanByUsername(String username) {
         LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");

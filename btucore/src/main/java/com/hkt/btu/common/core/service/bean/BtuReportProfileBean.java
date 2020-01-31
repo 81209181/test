@@ -1,18 +1,20 @@
 package com.hkt.btu.common.core.service.bean;
 
 
-public class BtuSqlReportBean extends BaseBean {
+import com.hkt.btu.common.core.service.constant.BtuJobStatusEnum;
 
-    public static final String KEY_GROUP = "REPORT";
-    public static final String ACTIVE_STATUS = "A";
-    public static final String DEACTIVE_STATUS = "D";
-    public static final String REPORT_FOLDER_PATH = "/opt/report/";
+import java.io.File;
+
+public class BtuReportProfileBean extends BaseBean {
+
+    public static final String REPORT_RESERVED_JOB_GROUP = "REPORT";
+    public static final String REPORT_FOLDER_PATH = File.separator + "opt" + File.separator + "report" + File.separator;
     public static final String REPORT_JOBDATAMAP_KEY = "reportMetaData";
 
     private String reportId;
     private String reportName;
     private String cronExp;
-    private String status;
+    private BtuJobStatusEnum status;
     private String jobClass;
     private String sql;
     private String emailTo;
@@ -42,11 +44,11 @@ public class BtuSqlReportBean extends BaseBean {
         this.cronExp = cronExp;
     }
 
-    public String getStatus() {
+    public BtuJobStatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(BtuJobStatusEnum status) {
         this.status = status;
     }
 

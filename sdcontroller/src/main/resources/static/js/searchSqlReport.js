@@ -193,16 +193,16 @@ function createSqlReportTable() {
     });
 }
 
-function ajaxActivateJobProfile(reportName) {
+function ajaxActivateJobProfile(reportId) {
     $.ajax({
         type: "POST",
         contentType: "application/json",
-        url: "/system/report/ajax-active-report?reportName=" + reportName,
+        url: "/system/report/ajax-active-report?reportId=" + reportId,
         dataSrc: 'data',
         success: function (data) {
             clearAllMsg();
             if(data.success){
-                showInfoMsg("Activated job: " + reportName);
+                showInfoMsg("Activated job: " + reportId);
                 $('#sqlReportTable').DataTable().ajax.reload();
             }else{
                 showErrorMsg(data.feedback);
@@ -214,16 +214,16 @@ function ajaxActivateJobProfile(reportName) {
     });
 }
 
-function ajaxDeactivateJobProfile(reportName) {
+function ajaxDeactivateJobProfile(reportId) {
     $.ajax({
         type: "POST",
         contentType: "application/json",
-        url: "/system/report/ajax-deactivate-report?reportName=" + reportName,
+        url: "/system/report/ajax-deactivate-report?reportId=" + reportId,
         dataSrc: 'data',
         success: function (data) {
             clearAllMsg();
             if(data.success){
-                showInfoMsg("Deactivated job: " + reportName);
+                showInfoMsg("Deactivated job: " + reportId);
                 $('#sqlReportTable').DataTable().ajax.reload();
             }else{
                 showErrorMsg(data.feedback);
@@ -300,9 +300,9 @@ function showHistoryModal(reportId) {
                 targets: 1,
                 render: function (data, type, row, meta) {
                     let ctx = $("meta[name='_ctx']").attr("content");
-                    let reportName = row['reportName'].replace(" ", "%20");
-                    reportName = reportName.replace("'", "&#39;")
-                    let link = ctx + "/system/report/downLoadReport?reportName=" + reportName + "&reportId=" + row['reportId'];
+                    let reportFilename = row['reportName'].replace(" ", "%20");
+                    reportFilename = reportFilename.replace("'", "&#39;")
+                    let link = ctx + "/system/report/downloadReport?reportFilename=" + reportFilename + "&reportId=" + row['reportId'];
                     return '<a href=' + link + '><button class="btn btn-info">DownLoad</button></a>';
                 }
             }

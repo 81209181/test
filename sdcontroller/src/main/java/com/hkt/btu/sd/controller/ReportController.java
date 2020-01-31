@@ -1,8 +1,11 @@
 package com.hkt.btu.sd.controller;
 
+import com.hkt.btu.common.facade.data.BtuCronJobInstData;
+import com.hkt.btu.common.facade.data.BtuReportFileData;
+import com.hkt.btu.common.facade.data.BtuReportProfileData;
+import com.hkt.btu.common.facade.data.BtuSimpleResponseData;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
-import com.hkt.btu.sd.facade.SdSqlReportFacade;
-import com.hkt.btu.sd.facade.data.*;
+import com.hkt.btu.sd.facade.SdReportFacade;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
@@ -22,7 +25,7 @@ import java.util.List;
 public class ReportController {
 
     @Resource(name = "reportFacade")
-    SdSqlReportFacade sqlReportFacade;
+    SdReportFacade reportFacade;
 
     @GetMapping({"/search"})
     public String searchSqlReport() {
@@ -31,18 +34,18 @@ public class ReportController {
 
     @GetMapping("/ajax-list-sql-report")
     public ResponseEntity<?> ajaxListSqlReport() {
-        List<SdSqlReportData> sqlReportData = sqlReportFacade.getAllReportData();
+        List<BtuReportProfileData> reportProfileData = reportFacade.getAllReportProfiles();
 
-        if (CollectionUtils.isEmpty(sqlReportData)) {
+        if (CollectionUtils.isEmpty(reportProfileData)) {
             return ResponseEntity.badRequest().body("Sql Report list not found.");
         } else {
-            return ResponseEntity.ok(sqlReportData);
+            return ResponseEntity.ok(reportProfileData);
         }
     }
 
     @GetMapping("/ajax-list-report-job-inst")
     public ResponseEntity<?> ajaxListSqlReportJobInst() {
-        List<SdCronJobInstData> reportJobInstance = sqlReportFacade.getAllReportJobInstance();
+        List<BtuCronJobInstData> reportJobInstance = reportFacade.getAllReportJobInstance();
 
         if (reportJobInstance == null) {
             return ResponseEntity.badRequest().body("Report Job inst list not found.");
@@ -53,7 +56,7 @@ public class ReportController {
 
     @PostMapping("/ajax-resume-report")
     public ResponseEntity<?> ajaxResumeReport(@RequestParam String keyName) {
-        String errorMsg = sqlReportFacade.resumeReport(keyName);
+        String errorMsg = reportFacade.resumeReport(keyName);
 
         if (errorMsg == null) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
@@ -65,7 +68,7 @@ public class ReportController {
 
     @PostMapping("/ajax-pause-report")
     public ResponseEntity<?> ajaxPauseReport(@RequestParam String keyName) {
-        String errorMsg = sqlReportFacade.pauseReport(keyName);
+        String errorMsg = reportFacade.pauseReport(keyName);
 
         if (errorMsg == null) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
@@ -76,7 +79,7 @@ public class ReportController {
 
     @PostMapping("/ajax-trigger-report")
     public ResponseEntity<?> ajaxTriggerJob(@RequestParam String keyName) {
-        String errorMsg = sqlReportFacade.triggerReport(keyName);
+        String errorMsg = reportFacade.triggerReport(keyName);
 
         if (errorMsg == null) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
@@ -86,37 +89,37 @@ public class ReportController {
     }
 
     @GetMapping("/create")
-    public String showCreateConfigParam(@ModelAttribute("requestReportData") RequestReportData data) {
+    public String showCreateConfigParam(@ModelAttribute("requestReportData") BtuReportProfileData data) {
         return "system/report/createSqlReport";
     }
 
     @PostMapping("/createSqlReport")
     public String createSqlReport(final RedirectAttributes redirectAttributes,
-                                  RequestReportData data) {
-        ResponseReportData response = sqlReportFacade.createReport(data);
+                                  BtuReportProfileData data) {
+        BtuSimpleResponseData response = reportFacade.createReport(data);
         String errorMsg = response == null ? "No create result" : response.getErrorMsg();
-        if (response.getReportId() == null) {
+        if (response==null || StringUtils.isEmpty(response.getId())) {
             redirectAttributes.addFlashAttribute(PageMsgController.ERROR_MSG, errorMsg);
             redirectAttributes.addFlashAttribute("requestReportData", data);
             return "redirect:/system/report/create";
         } else {
             redirectAttributes.addFlashAttribute(PageMsgController.INFO_MSG, "Created Report.");
-            return "redirect:/system/report/edit-sql-report?reportId=" + response.getReportId();
+            return "redirect:/system/report/edit-sql-report?reportId=" + response.getId();
         }
     }
 
     @GetMapping("/edit-sql-report")
-    public String editUserRole(@RequestParam String reportId, Model model) {
+    public String editReportProfile(@RequestParam String reportId, Model model) {
         if (StringUtils.isNotEmpty(reportId)) {
-            SdSqlReportData data = sqlReportFacade.getSqlReportDataByReportId(reportId);
+            BtuReportProfileData data = reportFacade.getReportProfileById(reportId);
             model.addAttribute("data", data);
         }
         return "system/report/editSqlReport";
     }
 
-    @PostMapping("/updateSqlReport")
-    public ResponseEntity<?> updateSqlReport(RequestReportData data) {
-        ResponseReportData response = sqlReportFacade.updateReport(data);
+    @PostMapping("/update-report")
+    public ResponseEntity<?> updateSqlReport(BtuReportProfileData data) {
+        BtuSimpleResponseData response = reportFacade.updateReportProfile(data);
         if (response.getErrorMsg() == null) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         } else {
@@ -126,7 +129,7 @@ public class ReportController {
 
     @PostMapping("ajax-delete-report")
     public ResponseEntity<?> deleteReport(@RequestParam String reportId) {
-        ResponseReportData response = sqlReportFacade.deleteReport(reportId);
+        BtuSimpleResponseData response = reportFacade.deleteReportProfile(reportId);
         String errorMsg = response == null ? "Delete failed." : response.getErrorMsg();
         if (response != null) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
@@ -136,8 +139,8 @@ public class ReportController {
     }
 
     @PostMapping("/ajax-active-report")
-    public ResponseEntity<?> ajaxActiveReport(@RequestParam String reportName) {
-        String errorMsg = sqlReportFacade.activeReport(reportName);
+    public ResponseEntity<?> ajaxActiveReport(@RequestParam String reportId) {
+        String errorMsg = reportFacade.activateReportProfile(reportId);
 
         if (errorMsg == null) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
@@ -147,8 +150,8 @@ public class ReportController {
     }
 
     @PostMapping("/ajax-deactivate-report")
-    public ResponseEntity<?> ajaxDeactiveReport(@RequestParam String reportName) {
-        String errorMsg = sqlReportFacade.deactiveReport(reportName);
+    public ResponseEntity<?> ajaxDeactiveReport(@RequestParam String reportId) {
+        String errorMsg = reportFacade.deactivateReportProfile(reportId);
 
         if (errorMsg == null) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
@@ -159,7 +162,7 @@ public class ReportController {
 
     @PostMapping("/ajax-sync-report")
     public ResponseEntity<?> ajaxSyncJob(@RequestParam String reportName) {
-        String errorMsg = sqlReportFacade.syncReport(reportName);
+        String errorMsg = reportFacade.syncReport(reportName);
 
         if (errorMsg == null) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
@@ -170,23 +173,21 @@ public class ReportController {
 
     @GetMapping("/history")
     public ResponseEntity<?> ajaxListFile(@RequestParam String reportId) {
-        List<SdReportHistoryData> fileList = sqlReportFacade.getFileList(reportId);
+        List<BtuReportFileData> fileList = reportFacade.getFileList(reportId);
         return ResponseEntity.ok(fileList);
     }
 
     @ResponseBody
-    @GetMapping("/downLoadReport")
-    public ResponseEntity<?> downLoadReport(String reportId, String reportName) {
-        org.springframework.core.io.Resource resource = sqlReportFacade.downLoadReport(reportId, reportName);
+    @GetMapping("/downloadReport")
+    public ResponseEntity<?> downloadReport(String reportId, String reportFilename) {
+        org.springframework.core.io.Resource resource = reportFacade.downloadReportFile(reportId, reportFilename);
         if (resource != null) {
             HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment;filename=\"%s", reportName));
-            ResponseEntity<Object> responseEntity = ResponseEntity.ok()
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment;filename=\"%s", reportFilename));
+            return ResponseEntity.ok()
                     .headers(headers)
                     .contentType(MediaType.parseMediaType(MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE))
-                    .body(resource);
-
-            return responseEntity;
+                    .<Object>body(resource);
         } else {
             return ResponseEntity.badRequest().body("download failed.");
         }

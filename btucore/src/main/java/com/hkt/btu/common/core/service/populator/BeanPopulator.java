@@ -8,5 +8,6 @@ import com.hkt.btu.common.core.service.bean.BaseBean;
 public interface BeanPopulator<B extends BaseBean> {
 
     void populate(BaseEntity source, B target);
+    void populate(BaseBean source, B target);
 
 }

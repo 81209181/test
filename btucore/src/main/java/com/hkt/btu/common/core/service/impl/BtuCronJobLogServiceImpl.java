@@ -8,43 +8,45 @@ import org.quartz.JobDetail;
 public class BtuCronJobLogServiceImpl implements BtuCronJobLogService {
     public static final Logger LOG = LogManager.getLogger(BtuCronJobLogServiceImpl.class);
 
+
+
     @Override
     public void logUserActivateJob(String jobGroup, String jobName) {
-        LOG.info("log user active job:{},{}", jobGroup, jobName);
+        LOG.info("Activate job: {}, {}", jobGroup, jobName);
     }
 
     @Override
     public void logUserDeactivateJob(String jobGroup, String jobName) {
-        LOG.info("log user deactivate job :{},{}", jobGroup, jobName);
+        LOG.info("Deactivate job: {}, {}", jobGroup, jobName);
     }
 
     @Override
     public void logUserPauseJob(JobDetail jobDetail) {
-        LOG.warn("log user pause job:{}", jobDetail.getKey().getName());
+        LOG.warn("Pause job: {}", jobDetail.getKey().getName());
     }
 
     @Override
     public void logUserResumeJob(JobDetail jobDetail) {
-        LOG.info("log user resume job :{}", jobDetail.getKey().getName());
+        LOG.info("Resume job: {}", jobDetail.getKey().getName());
     }
 
     @Override
     public void logUserTriggerJob(JobDetail jobDetail) {
-        LOG.info("log user trigger job:{}", jobDetail.getKey().getName());
+        LOG.info("Trigger job: {}", jobDetail.getKey().getName());
     }
 
     @Override
     public void logSkip(JobDetail jobDetail) {
-        LOG.info("log skip:{}", jobDetail.getKey().getName());
+        LOG.info("Skip job: {}", jobDetail.getKey().getName());
     }
 
     @Override
     public void logComplete(JobDetail jobDetail) {
-        LOG.info("log complete :{}", jobDetail.getKey().getName());
+        LOG.info("Complete Job: {}", jobDetail.getKey().getName());
     }
 
     @Override
     public void logError(JobDetail jobDetail) {
-        LOG.info("log error:{}", jobDetail.getKey().getName());
+        LOG.info("Error in Job: {}", jobDetail.getKey().getName());
     }
 }

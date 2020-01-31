@@ -1,16 +1,15 @@
-package com.hkt.btu.sd.core.dao.entity;
+package com.hkt.btu.common.core.dao.entity;
 
-import com.hkt.btu.common.core.dao.entity.BaseEntity;
 
-public class SdSqlReportEntity extends BaseEntity {
+public class BtuReportProfileEntity extends BaseEntity {
 
     private String reportId;
     private String reportName;
     private String cronExp;
     private String status;
     private String sql;
+    private String reportClass;
     private String emailTo;
-    private String remarks;
 
     public String getReportId() {
         return reportId;
@@ -60,13 +59,11 @@ public class SdSqlReportEntity extends BaseEntity {
         this.emailTo = emailTo;
     }
 
-    @Override
-    public String getRemarks() {
-        return remarks;
+    public String getReportClass() {
+        return reportClass;
     }
 
-    @Override
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
+    public void setReportClass(String reportClass) {
+        this.reportClass = reportClass;
     }
 }

@@ -1,16 +1,13 @@
-package com.hkt.btu.sd.facade.data;
+package com.hkt.btu.common.facade.data;
 
-import com.hkt.btu.common.facade.data.DataInterface;
-
-public class RequestReportData implements DataInterface {
-
+public class BtuReportProfileData implements DataInterface {
     private String reportId;
     private String reportName;
     private String cronExp;
     private String status;
-    private String exportTo;
-    private String emailTo;
     private String sql;
+    private String emailTo;
+    private boolean isActive;
     private String remarks;
 
     public String getReportId() {
@@ -37,20 +34,12 @@ public class RequestReportData implements DataInterface {
         this.cronExp = cronExp;
     }
 
-    public String getExportTo() {
-        return exportTo;
+    public String getStatus() {
+        return status;
     }
 
-    public void setExportTo(String exportTo) {
-        this.exportTo = exportTo;
-    }
-
-    public String getEmailTo() {
-        return emailTo;
-    }
-
-    public void setEmailTo(String emailTo) {
-        this.emailTo = emailTo;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getSql() {
@@ -61,12 +50,12 @@ public class RequestReportData implements DataInterface {
         this.sql = sql;
     }
 
-    public String getStatus() {
-        return status;
+    public String getEmailTo() {
+        return emailTo;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setEmailTo(String emailTo) {
+        this.emailTo = emailTo;
     }
 
     public String getRemarks() {
@@ -75,5 +64,13 @@ public class RequestReportData implements DataInterface {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

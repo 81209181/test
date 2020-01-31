@@ -39,11 +39,11 @@ function getCurrentURL() {
 
     if (currentURL.endsWith("/servicedesk/")||currentURL.includes("/servicedesk/login")){
         isLoginPage = true;
-        console.log("it's login page")
+        // console.log("it's login page");
     }
     else {
         isLoginPage = false;
-        console.log("it's not login page");
+        // console.log("it's not login page");
     }
 }
 

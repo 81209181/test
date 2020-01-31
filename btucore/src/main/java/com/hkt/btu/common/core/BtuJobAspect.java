@@ -2,7 +2,7 @@ package com.hkt.btu.common.core;
 
 import com.hkt.btu.common.core.service.*;
 import com.hkt.btu.common.core.service.bean.BtuSiteConfigBean;
-import com.hkt.btu.common.core.service.bean.BtuSqlReportBean;
+import com.hkt.btu.common.core.service.bean.BtuReportProfileBean;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,8 +30,8 @@ public class BtuJobAspect {
     BtuCronJobLogService cronJobLogService;
     @Resource(name = "emailService")
     BtuEmailService btuEmailService;
-    @Resource(name = "reportProfileService")
-    BtuReportProfileService sqlReportProfileService;
+    @Resource(name = "reportService")
+    BtuReportService sqlReportService;
     @Resource(name = "siteConfigService")
     BtuSiteConfigService siteConfigService;
 
@@ -62,8 +62,8 @@ public class BtuJobAspect {
             // check if job should be run
             try {
                 boolean isRunnable;
-                if (BtuSqlReportBean.KEY_GROUP.equals(jobKey.getGroup())) {
-                    isRunnable = sqlReportProfileService.isRunnable(jobKey.getName());
+                if (BtuReportProfileBean.REPORT_RESERVED_JOB_GROUP.equals(jobKey.getGroup())) {
+                    isRunnable = sqlReportService.isRunnable(jobKey.getName());
                 } else {
                     isRunnable = cronJobProfileService.isRunnable(jobKey.getGroup(), jobKey.getName());
                 }

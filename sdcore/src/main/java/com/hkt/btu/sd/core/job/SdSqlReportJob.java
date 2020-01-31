@@ -7,7 +7,7 @@ import com.hkt.btu.sd.core.dao.mapper.SdUserMapper;
 import com.hkt.btu.sd.core.service.SdCsvGeneratorService;
 import com.hkt.btu.sd.core.service.SdEmailService;
 import com.hkt.btu.sd.core.service.bean.SdEmailBean;
-import com.hkt.btu.sd.core.service.bean.SdSqlReportBean;
+import com.hkt.btu.sd.core.service.bean.SdReportProfileBean;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,11 +37,12 @@ public class SdSqlReportJob extends BtuSampleJob {
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) {
         JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
-        BtuReportMetaDataBean metaDataBean = (BtuReportMetaDataBean) jobDataMap.get(SdSqlReportBean.REPORT_JOBDATAMAP_KEY);
+        BtuReportMetaDataBean metaDataBean = (BtuReportMetaDataBean) jobDataMap.get(SdReportProfileBean.REPORT_JOBDATAMAP_KEY);
         if (metaDataBean == null) {
             LOG.warn("No report meta data.");
             return;
         }
+
         File csvFile = csvGeneratorService.getCsvFile(metaDataBean);
         if (csvFile != null) {
             String email = metaDataBean.getEmailTo();
@@ -50,6 +51,7 @@ public class SdSqlReportJob extends BtuSampleJob {
                 LOG.error("User not found.");
                 return;
             }
+
             // Send Email
             if (StringUtils.isNotEmpty(email)) {
                 try {

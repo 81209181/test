@@ -1,7 +1,7 @@
 $().ready(function(){
     $('#btnEditSqlRoeport').on("click",function(){
         clearAllMsg();
-        $.post('/system/report/updateSqlReport',$('form').serialize(),function(res){
+        $.post('/system/report/update-report',$('form').serialize(),function(res){
             if (res.success) {
                 showInfoMsg("Update success.");
                 setTimeout("location.reload()",800);

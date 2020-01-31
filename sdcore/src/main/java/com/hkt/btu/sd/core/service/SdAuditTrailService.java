@@ -3,13 +3,6 @@ package com.hkt.btu.sd.core.service;
 import com.hkt.btu.common.core.service.BtuAuditTrailService;
 
 public interface SdAuditTrailService extends BtuAuditTrailService {
-    // generic
-    void insertAuditTrail(String action, String detail);
-    void insertAuditTrail(String userId, String action, String detail);
-
-    // user
-    void insertViewUserAuditTrail(String userId);
-    void insertKickAuditTrail(String user, String clickBy);
 
     // ticket
     void insertViewTicketAuditTrail(String user, String ticketMasId);
@@ -18,13 +11,4 @@ public interface SdAuditTrailService extends BtuAuditTrailService {
     void insertGetNgn3OneDayAdmin(String bsn, String companyId);
     void insertResetNgn3Account(String dn);
 
-    // house keep
-    void cleanAuditTrail();
-
-    //download Report
-    void insertDownLoadReportAuditTrail(String reportName, String userId);
-
-    void insertViewApiAuthAuditTrail(String apiName);
-
-    void insertRegenApiAuthAuditTrail(String apiName);
 }

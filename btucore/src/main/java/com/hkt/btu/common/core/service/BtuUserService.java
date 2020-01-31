@@ -9,6 +9,7 @@ public interface BtuUserService {
 
     BtuUser getCurrentUser();
     BtuUserBean getCurrentUserBean();
+    String getCurrentUserId();
     BtuUserBean getUserBeanByUsername(String username);
 
     List<BtuUserBean> getApiUser();

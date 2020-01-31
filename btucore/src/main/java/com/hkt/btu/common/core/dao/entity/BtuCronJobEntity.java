@@ -5,6 +5,7 @@ public class BtuCronJobEntity extends BaseEntity {
     public static class STATUS{
         public static final String ACTIVE = "A";
         public static final String DISABLE = "D";
+        public static final String UNKNOWN = "U";
     }
 
     public static class MANDATORY{

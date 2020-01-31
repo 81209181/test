@@ -12,4 +12,13 @@ public abstract class AbstractBeanPopulator<B extends BaseBean> implements BeanP
         target.setModifydate(source.getModifydate());
         target.setRemarks(source.getRemarks());
     }
+
+    @Override
+    public void populate(BaseBean source, B target) {
+        target.setCreateby(source.getCreateby());
+        target.setCreatedate(source.getCreatedate());
+        target.setModifyby(source.getModifyby());
+        target.setModifydate(source.getModifydate());
+        target.setRemarks(source.getRemarks());
+    }
 }

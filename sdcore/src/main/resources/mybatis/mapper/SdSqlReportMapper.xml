@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdSqlReportMapper">
-    <resultMap id="SdSqlReportEntity" type="com.hkt.btu.sd.core.dao.entity.SdSqlReportEntity">
+    <resultMap id="SdSqlReportEntity" type="com.hkt.btu.common.core.dao.entity.BtuReportProfileEntity">
         <result column="REPORT_ID" property="reportId"/>
         <result column="REPORT_NAME" property="reportName"/>
         <result column="CRON_EXP" property="cronExp"/>
@@ -17,23 +17,21 @@
         <result column="MODIFYBY" property="modifyby"/>
         <result column="REMARKS" property="remarks"/>
     </resultMap>
-    <select id="queryBySQL" parameterType="String" resultType="java.util.LinkedHashMap">
-        ${value}
-    </select>
 
-    <select id="getSqlReportData" resultMap="SdSqlReportEntity">
+    <select id="getReportProfile" resultMap="SdSqlReportEntity">
         select * from SQL_REPORT
         <where>
-            <if test="status != null">
-                STATUS = #{status}
+            <if test="reportId != null">
+                REPORT_ID = #{reportId}
+            </if>
+            <if test="reportName != null">
+                REPORT_NAME = #{reportName}
             </if>
         </where>
     </select>
 
-    <select id="getSqlReportDataByReportId" resultMap="SdSqlReportEntity">
-        select *
-        from SQL_REPORT
-        where REPORT_NAME = #{reportId}
+    <select id="queryWithSql" parameterType="String" resultType="java.util.LinkedHashMap">
+        ${sql}
     </select>
 
     <delete id="deleteSqlReportDataByReportId">
@@ -42,7 +40,7 @@
         where REPORT_ID = #{reportId}
     </delete>
 
-    <insert id="createSqlReport" parameterType="com.hkt.btu.sd.core.dao.entity.SdSqlReportEntity">
+    <insert id="createSqlReport" parameterType="com.hkt.btu.common.core.dao.entity.BtuReportProfileEntity">
         <selectKey keyProperty="reportId" resultType="string" order="BEFORE">
             SELECT SEQ_SQL_REPORT_REPORT_ID.nextval FROM DUAL
         </selectKey>
@@ -62,7 +60,7 @@
             <if test="emailTo != null">EMAIL_TO=#{emailTo},</if>
             <if test="cronExp != null">CRON_EXP=#{cronExp},</if>
             <if test="modifyBy != null">MODIFYBY=#{modifyBy},</if>
-            MODIFYDATE = CURRENT_TIMESTAMP
+            MODIFYDATE = SYSDATE
         </set>
         where REPORT_ID = #{reportId}
     </update>
@@ -73,10 +71,4 @@
             MODIFYBY = #{modifyby}
         where REPORT_ID = #{reportId}
     </update>
-
-    <select id="getSqlReportByReportId" resultMap="SdSqlReportEntity">
-        select *
-        from SQL_REPORT
-        where REPORT_ID = #{reportId}
-    </select>
 </mapper>

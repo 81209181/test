@@ -120,8 +120,15 @@ public class BtuJobFacadeImpl implements BtuJobFacade {
 
         try {
             schedulerService.destroyJob(keyGroup, keyName);
-            schedulerService.scheduleJob(keyGroup, keyName);
-        }catch (SchedulerException | InvalidInputException | ClassNotFoundException e){
+        }catch (SchedulerException | InvalidInputException e){
+            LOG.error(e.getMessage(), e);
+            return e.getMessage();
+        }
+
+        try {
+            BtuCronJobProfileBean jobProfileBean = cronJobProfileService.getProfileBeanByGrpAndName(keyGroup, keyName);
+            schedulerService.scheduleJob(jobProfileBean);
+        }catch (SchedulerException | ClassNotFoundException e){
             LOG.error(e.getMessage(), e);
             return e.getMessage();
         }

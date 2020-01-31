@@ -1,5 +1,7 @@
 package com.hkt.btu.sd.core.service;
 
-public interface SdSiteConfigService {
+import com.hkt.btu.common.core.service.BtuSiteConfigService;
+
+public interface SdSiteConfigService extends BtuSiteConfigService {
     void reload();
 }

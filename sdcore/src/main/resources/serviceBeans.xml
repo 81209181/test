@@ -60,15 +60,13 @@
     <alias name="sdSchedulerService" alias="btuSchedulerService"/>
     <bean id="sdSchedulerService" class="com.hkt.btu.sd.core.service.impl.SdSchedulerServiceImpl"/>
 
-    <alias name="sdSiteService" alias="siteService"/>
-    <bean id="sdSiteService" class="com.hkt.btu.sd.core.service.impl.SdSiteServiceImpl"/>
-
     <alias name="sdSiteConfigService" alias="siteConfigService"/>
     <alias name="sdSiteConfigService" alias="btuSiteConfigService"/>
     <bean id="sdSiteConfigService" class="com.hkt.btu.sd.core.service.impl.SdSiteConfigServiceImpl"/>
 
-    <alias name="sdSqlReportProfileService" alias="sqlReportProfileService"/>
-    <bean id="sdSqlReportProfileService" class="com.hkt.btu.sd.core.service.impl.SdReportProfileServiceImpl"/>
+    <alias name="sdReportService" alias="reportService"/>
+    <alias name="sdReportService" alias="btuReportService"/>
+    <bean id="sdReportService" class="com.hkt.btu.sd.core.service.impl.SdReportServiceImpl"/>
 
     <alias name="sdTicketService" alias="ticketService"/>
     <bean id="sdTicketService" class="com.hkt.btu.sd.core.service.impl.SdTicketServiceImpl"/>
@@ -122,8 +120,9 @@
     <alias name="sdUserRoleBeanPopulator" alias="userRoleBeanPopulator"/>
     <bean id="sdUserRoleBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserRoleBeanPopulator"/>
 
-    <alias name="sdReportBeanPopulator" alias="reportBeanPopulator"/>
-    <bean id="sdReportBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdReportBeanPopulator"/>
+    <alias name="sdReportProfileBeanPopulator" alias="reportProfileBeanPopulator"/>
+    <alias name="sdReportProfileBeanPopulator" alias="btuReportProfileBeanPopulator"/>
+    <bean id="sdReportProfileBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdReportProfileBeanPopulator"/>
 
     <alias name="sdTicketMasBeanPopulator" alias="ticketMasBeanPopulator"/>
     <bean id="sdTicketMasBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdTicketMasBeanPopulator"/>

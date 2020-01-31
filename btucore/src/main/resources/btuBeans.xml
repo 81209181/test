@@ -102,8 +102,8 @@
     <alias name="btuCronJobProfileService" alias="cronJobProfileService"/>
     <bean id="btuCronJobProfileService" class="com.hkt.btu.common.core.service.impl.BtuCronJobProfileServiceImpl"/>
 
-    <alias name="btuReportProfileService" alias="reportProfileService"/>
-    <bean id="btuReportProfileService" class="com.hkt.btu.common.core.service.impl.BtuReportProfileServiceImpl"/>
+    <alias name="btuReportService" alias="reportService"/>
+    <bean id="btuReportService" class="com.hkt.btu.common.core.service.impl.BtuReportServiceImpl"/>
 
     <!--  Bean Populator  -->
     <alias name="btuSiteConfigBeanPopulator" alias="siteConfigBeanPopulator"/>
@@ -121,6 +121,9 @@
     <alias name="btuCronJobProfileBeanPopulator" alias="cronJobProfileBeanPopulator"/>
     <bean id="btuCronJobProfileBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuCronJobProfileBeanPopulator"/>
 
+    <alias name="btuReportProfileBeanPopulator" alias="reportProfileBeanPopulator"/>
+    <bean id="btuReportProfileBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuReportProfileBeanPopulator"/>
+
 
     <!-- BTU Facade -->
     <alias name="btuCacheFacade" alias="cacheFacade"/>
@@ -135,6 +138,9 @@
     <alias name="btuJobFacade" alias="jobFacade"/>
     <bean id="btuJobFacade" class="com.hkt.btu.common.facade.impl.BtuJobFacadeImpl"/>
 
+    <alias name="btuReportFacade" alias="reportFacade"/>
+    <bean id="btuReportFacade" class="com.hkt.btu.common.facade.impl.BtuReportFacadeImpl"/>
+
     <!--  Data Populator  -->
     <alias name="btuCacheProfileDataPopulator" alias="cacheProfileDataPopulator"/>
     <bean id="btuCacheProfileDataPopulator" class="com.hkt.btu.common.facade.populator.BtuCacheProfileDataPopulator"/>
@@ -147,4 +153,7 @@
 
     <alias name="btuCronJobProfileDataPopulator" alias="cronJobProfileDataPopulator"/>
     <bean id="btuCronJobProfileDataPopulator" class="com.hkt.btu.common.facade.populator.BtuCronJobProfileDataPopulator"/>
+
+    <alias name="btuReportProfileDataPopulator" alias="reportProfileDataPopulator"/>
+    <bean id="btuReportProfileDataPopulator" class="com.hkt.btu.common.facade.populator.BtuReportProfileDataPopulator"/>
 </beans>

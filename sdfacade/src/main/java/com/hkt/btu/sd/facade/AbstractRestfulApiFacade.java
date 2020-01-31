@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.hkt.btu.common.facade.data.DataInterface;
-import com.hkt.btu.sd.core.service.SdSiteService;
+import com.hkt.btu.sd.core.service.SdSiteConfigService;
 import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -36,8 +36,8 @@ public abstract class AbstractRestfulApiFacade {
 
     private static final Logger LOG = LogManager.getLogger(AbstractRestfulApiFacade.class);
 
-    @Resource(name = "siteService")
-    SdSiteService siteService;
+    @Resource(name = "siteConfigService")
+    SdSiteConfigService sdSiteConfigService;
 
     private Gson gson;
 
@@ -60,7 +60,7 @@ public abstract class AbstractRestfulApiFacade {
         }
 
         ClientBuilder clientBuilder = ClientBuilder.newBuilder();
-        if (!siteService.isProductionServer()) {
+        if (!sdSiteConfigService.isProductionServer()) {
             // ignore SSL validation in non-Production environment
             SSLContext sslcontext;
             try {
@@ -154,7 +154,7 @@ public abstract class AbstractRestfulApiFacade {
             return null;
         }
     }
-    protected Response postEntity(String url,Entity<?> entity){
+    protected Response postEntity(String url, Entity<?> entity){
         WebTarget webTarget = getWebTarget(url, null);
         Invocation.Builder invocationBuilder = getInvocationBuilder(webTarget);
         return invocationBuilder.post(entity);

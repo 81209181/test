@@ -1,6 +1,6 @@
-package com.hkt.btu.sd.facade.data;
+package com.hkt.btu.common.facade.data;
 
-public class SdReportHistoryData {
+public class BtuReportFileData implements DataInterface{
 
     private String reportId;
     private String reportName;
