@@ -210,6 +210,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         if (CollectionUtils.isNotEmpty(jobProgressDataList)) {
             for (WfmJobProgressData bean : jobProgressDataList) {
                 SdTicketRemarkData data = new SdTicketRemarkData();
+                data.setTicketMasId(ticketMasId);
                 ticketRemarkDataPopulator.populateJobProgressData(bean, data);
                 dataList.add(data);
             }
@@ -218,6 +219,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         if (CollectionUtils.isNotEmpty(jobRemarkDataList)) {
             for (WfmJobRemarksData bean : jobRemarkDataList) {
                 SdTicketRemarkData data = new SdTicketRemarkData();
+                data.setTicketMasId(ticketMasId);
                 ticketRemarkDataPopulator.populateJobRemarkData(bean, data);
                 dataList.add(data);
             }
