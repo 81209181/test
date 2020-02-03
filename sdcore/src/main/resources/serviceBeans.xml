@@ -71,9 +71,6 @@
     <alias name="sdTicketService" alias="ticketService"/>
     <bean id="sdTicketService" class="com.hkt.btu.sd.core.service.impl.SdTicketServiceImpl"/>
 
-    <alias name="sdCsvGeneratorService" alias="csvGeneratorService"/>
-    <bean id="sdCsvGeneratorService" class="com.hkt.btu.sd.core.service.impl.SdCsvGeneratorServiceImpl"/>
-
     <alias name="sdSymptomService" alias="symptomService"/>
     <bean id="sdSymptomService" class="com.hkt.btu.sd.core.service.impl.SdSymptomServiceImpl"/>
 

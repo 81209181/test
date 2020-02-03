@@ -29,10 +29,10 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -141,7 +141,7 @@ public class BtuReportFacadeImpl implements BtuReportFacade {
 
     @Override
     public BtuReportProfileData getReportProfileById(String reportId) {
-        BtuReportProfileBean bean = reportService.getSqlReportProfileByReportId(reportId);
+        BtuReportProfileBean bean = reportService.getReportProfileByReportId(reportId);
         BtuReportProfileData data = new BtuReportProfileData();
         reportProfileDataPopulator.populate(bean, data);
         return data;
@@ -168,7 +168,7 @@ public class BtuReportFacadeImpl implements BtuReportFacade {
             throw new InvalidInputException("Empty reportId.");
         }
 
-        BtuReportProfileBean reportProfileBean = reportService.getSqlReportProfileByReportId(reportId);
+        BtuReportProfileBean reportProfileBean = reportService.getReportProfileByReportId(reportId);
         if(reportProfileBean==null){
             String errorMsg = "Cannot delete report profile. Report profile not found. (reportId=" + reportId + ")";
             LOG.error(errorMsg);
@@ -257,35 +257,38 @@ public class BtuReportFacadeImpl implements BtuReportFacade {
 
     @Override
     public List<BtuReportFileData> getFileList(String reportId) {
-        final String REPORT_ROOT_DIR = getReportPath(reportId);
-        if (StringUtils.isEmpty(REPORT_ROOT_DIR)) {
-            return new ArrayList<>();
-        }
-
-        LOG.info("Getting report files list... (reportId={}, reportDir={})", reportId, REPORT_ROOT_DIR);
-        try (Stream<Path> paths = Files.walk(Paths.get(REPORT_ROOT_DIR))) {
-            return paths.filter(Files::isRegularFile)
-                    .map(Path::getFileName)
-                    .map(Path::toString)
-                    .map(reportName -> {
-                        BtuReportFileData historyData = new BtuReportFileData();
-                        historyData.setReportId(reportId);
-                        historyData.setReportName(reportName);
-                        return historyData;
-                    }).collect(Collectors.toList());
-        } catch (NoSuchFileException e) {
-            LOG.warn(e.toString());
-            return new ArrayList<>();
+        Stream<Path> reportPathStream;
+        try {
+            reportPathStream = reportService.getReportFileList(reportId);
         } catch (IOException e) {
             LOG.error(e.getMessage(), e);
             return new ArrayList<>();
         }
+
+        return reportPathStream
+                .filter(Files::isRegularFile)
+                .sorted(Comparator.comparing(Path::getFileName).reversed())
+                .map(Path::getFileName)
+                .map(Path::toString)
+                .map(reportName -> {
+                    BtuReportFileData historyData = new BtuReportFileData();
+                    historyData.setReportId(reportId);
+                    historyData.setReportName(reportName);
+                    return historyData;
+                }).collect(Collectors.toList());
     }
 
     @Override
     public org.springframework.core.io.Resource downloadReportFile(String reportId, String reportFilename) {
-        final String REPORT_ROOT_DIR = getReportPath(reportId);
+        BtuReportProfileBean reportProfileBean = reportService.getReportProfileByReportId(reportId);
+        if(reportProfileBean==null){
+            LOG.error("Null reportProfileBean.");
+            return null;
+        }
+
+        final String REPORT_ROOT_DIR = reportService.getReportDirPath(reportProfileBean);
         if (StringUtils.isEmpty(REPORT_ROOT_DIR)) {
+            LOG.error("Empty REPORT_ROOT_DIR.");
             return null;
         }
 
@@ -310,24 +313,6 @@ public class BtuReportFacadeImpl implements BtuReportFacade {
             LOG.error(e.getMessage(), e);
             return null;
         }
-    }
-
-    private String getReportPath(String reportId) {
-        if (StringUtils.isEmpty(reportId)) {
-            return null;
-        }
-
-        BtuReportProfileBean bean = reportService.getSqlReportProfileByReportId(reportId);
-        if (bean == null) {
-            return null;
-        }
-
-        String reportName = bean.getReportName();
-        if (StringUtils.isEmpty(reportName)) {
-            return null;
-        }
-
-        return BtuReportProfileBean.REPORT_FOLDER_PATH + reportName;
     }
 
     private void checkReportData(BtuReportProfileData data) throws InvalidInputException {

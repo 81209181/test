@@ -90,8 +90,8 @@
     <alias name="btuTemplateEngineService" alias="templateEngineService"/>
     <bean id="btuTemplateEngineService" class="com.hkt.btu.common.core.service.impl.BtuTemplateEngineServiceImpl"/>
 
-    <alias name="btuCsvGenerator" alias="csvGenerator"/>
-    <bean id="btuCsvGenerator" class="com.hkt.btu.common.core.service.impl.BtuCsvServiceImpl"/>
+    <alias name="btuCsvService" alias="csvService"/>
+    <bean id="btuCsvService" class="com.hkt.btu.common.core.service.impl.BtuCsvServiceImpl"/>
 
     <alias name="btuApiClientService" alias="apiClientService"/>
     <bean id="btuApiClientService" class="com.hkt.btu.common.core.service.impl.BtuApiClientServiceImpl"/>

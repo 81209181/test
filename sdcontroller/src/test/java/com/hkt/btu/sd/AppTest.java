@@ -142,10 +142,7 @@ public class AppTest {
     }
 
     public static void main(String[] args) throws ClassNotFoundException {
-         Class<?> aClass = Class.forName("com.hkt.btu.sd.core.job.SdSqlReportJob");
+         Class<?> aClass = Class.forName("com.hkt.btu.common.core.job.BtuSqlReportJob");
          System.out.println(aClass.toString());
-
-        Class<?> bClass = Class.forName("com.hkt.btu.sd.core.job.SdSqlReportJob");
-        System.out.println(bClass.toString());
     }
 }

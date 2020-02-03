@@ -32,6 +32,7 @@ public class SdReportServiceImpl extends BtuReportServiceImpl implements SdRepor
     @Resource
     SdSqlReportMapper sdSqlReportMapper;
 
+    public SdReportServiceImpl() {}
     public SdReportServiceImpl(PlatformTransactionManager transactionManager) {
         super(transactionManager);
     }
@@ -78,7 +79,7 @@ public class SdReportServiceImpl extends BtuReportServiceImpl implements SdRepor
     @Override
     @Transactional
     public String deleteReportProfile(String reportId) {
-        BtuReportProfileBean bean = getSqlReportProfileByReportId(reportId);
+        BtuReportProfileBean bean = getReportProfileByReportId(reportId);
         if (bean == null) {
             String errorMsg = "Report not found. (reportId=" + reportId + ")";
             LOG.warn(errorMsg);

@@ -1,6 +1,7 @@
 package com.hkt.btu.common.core.service.bean;
 
 
+import com.hkt.btu.common.core.job.BtuSqlReportJob;
 import com.hkt.btu.common.core.service.constant.BtuJobStatusEnum;
 
 import java.io.File;
@@ -10,6 +11,7 @@ public class BtuReportProfileBean extends BaseBean {
     public static final String REPORT_RESERVED_JOB_GROUP = "REPORT";
     public static final String REPORT_FOLDER_PATH = File.separator + "opt" + File.separator + "report" + File.separator;
     public static final String REPORT_JOBDATAMAP_KEY = "reportMetaData";
+    public static final String SQL_REPORT_DEFAULT_JOB = BtuSqlReportJob.class.getName();
 
     private String reportId;
     private String reportName;

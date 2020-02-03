@@ -19,8 +19,8 @@ public class BtuReportProfileBeanPopulator extends AbstractBeanPopulator<BtuRepo
         target.setStatus(jobStatusEnum);
 
         if(StringUtils.isEmpty(source.getReportClass())){
-            target.setJobClass("com.hkt.btu.sd.core.job.SdSqlReportJob");
-        }else {
+            target.setJobClass(BtuReportProfileBean.SQL_REPORT_DEFAULT_JOB);
+        } else {
             target.setJobClass(source.getReportClass());
         }
     }

@@ -1,6 +1,7 @@
 package com.hkt.btu.common.core.service.impl;
 
 import com.hkt.btu.common.core.exception.InvalidInputException;
+import com.hkt.btu.common.core.service.BtuCsvService;
 import com.hkt.btu.common.core.service.BtuReportService;
 import com.hkt.btu.common.core.service.BtuSchedulerService;
 import com.hkt.btu.common.core.service.bean.BtuCronJobProfileBean;
@@ -19,14 +20,28 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class BtuReportServiceImpl implements BtuReportService {
     public static final Logger LOG = LogManager.getLogger(BtuReportServiceImpl.class);
 
+    private static final String CSV_SUFFIX = ".csv";
+    private static final DateTimeFormatter FILE_TIMESTAMP_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+    private static final String SQL_INJ_STR = "and|exec|insert|delete|update|\n\n|chr|mid|master|truncate|char|declare|;|-|,";
+
     @Resource(name = "schedulerService")
     BtuSchedulerService schedulerService;
+    @Resource(name = "csvService")
+    BtuCsvService csvService;
 
     @Resource(name = "cronJobProfileBeanPopulator")
     BtuCronJobProfileBeanPopulator cronJobProfileBeanPopulator;
@@ -62,7 +77,7 @@ public class BtuReportServiceImpl implements BtuReportService {
     }
 
     @Override
-    public BtuReportProfileBean getSqlReportProfileByReportId(String reportId) {
+    public BtuReportProfileBean getReportProfileByReportId(String reportId) {
         if(StringUtils.isEmpty(reportId)){
             LOG.error("Empty reportId.");
         }
@@ -110,7 +125,7 @@ public class BtuReportServiceImpl implements BtuReportService {
 
     @Override
     public boolean isRunnable(String reportId) {
-        BtuReportProfileBean bean = getSqlReportProfileByReportId(reportId);
+        BtuReportProfileBean bean = getReportProfileByReportId(reportId);
         if (bean == null) {
             LOG.warn("Report profile not found. (reportId={})", reportId);
             return false;
@@ -164,6 +179,81 @@ public class BtuReportServiceImpl implements BtuReportService {
 
         LOG.info("Deactivated job profile:{},{}", BtuReportProfileBean.REPORT_RESERVED_JOB_GROUP, reportId);
         return null;
+    }
+
+    @Override
+    public File getCsvFile(BtuReportMetaDataBean metaDataBean) {
+        String filePath = getFilePath(metaDataBean.getExportTo(), metaDataBean.getReportName());
+
+        String sql = metaDataBean.getSql();
+        if (StringUtils.isNotBlank(sql)) {
+            sql = sql.toLowerCase();
+            sql = sql.replaceAll(SQL_INJ_STR, StringUtils.EMPTY);
+        }
+
+        List<Map<String, Object>> results = executeSql(sql);
+        return csvService.generateCSV(filePath, null, results);
+    }
+
+    @Override
+    public String getReportDirPath(BtuReportProfileBean reportProfileBean) {
+        if (reportProfileBean==null) {
+            LOG.error("Null reportProfileBean.");
+            return null;
+        }
+
+        String reportName = reportProfileBean.getReportName();
+        if (StringUtils.isEmpty(reportName)) {
+            LOG.error("Empty reportName.");
+            return null;
+        }
+
+        return BtuReportProfileBean.REPORT_FOLDER_PATH + reportName;
+    }
+
+    @Override
+    public Stream<Path> getReportFileList(String reportId) throws IOException {
+        if (StringUtils.isEmpty(reportId)) {
+            LOG.error("Empty reportId.");
+            return null;
+        }
+
+        BtuReportProfileBean reportProfileBean = getReportProfileByReportId(reportId);
+        if (reportProfileBean == null) {
+            return null;
+        }
+
+        final String REPORT_ROOT_DIR = getReportDirPath(reportProfileBean);
+        if (StringUtils.isEmpty(REPORT_ROOT_DIR)) {
+            return null;
+        }
+
+        LOG.info("Getting report file path stream... (reportId={}, reportDir={})", reportId, REPORT_ROOT_DIR);
+        Path reportDirPath = Paths.get(REPORT_ROOT_DIR);
+        return Files.walk(reportDirPath);
+    }
+
+    private String getFilePath(String dirPath, String reportName) {
+        final LocalDateTime NOW = LocalDateTime.now();
+        // full path: /opt/report/${reportName}/${reportName}_${yyyymmdd_hh24miss}
+
+        // prepare file dir
+        String reportDirPath = dirPath + reportName;
+        File reportDir = new File(reportDirPath);
+        if (!reportDir.exists()) {
+            boolean succeed = reportDir.mkdirs();
+            if(succeed){
+                LOG.info("Created report dir: {}", reportDirPath);
+            }else {
+                LOG.error("Failed to create report dir: {}", reportDirPath);
+            }
+        }
+
+        // prepare file path
+        String formatLocalDateTime = NOW.format(FILE_TIMESTAMP_FORMATTER);
+        String fileName = reportName + "_" +formatLocalDateTime + CSV_SUFFIX;
+
+        return reportDirPath + File.separator + fileName;
     }
 
     @Override

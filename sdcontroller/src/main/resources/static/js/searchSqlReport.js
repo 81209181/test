@@ -303,10 +303,11 @@ function showHistoryModal(reportId) {
                     let reportFilename = row['reportName'].replace(" ", "%20");
                     reportFilename = reportFilename.replace("'", "&#39;")
                     let link = ctx + "/system/report/downloadReport?reportFilename=" + reportFilename + "&reportId=" + row['reportId'];
-                    return '<a href=' + link + '><button class="btn btn-info">DownLoad</button></a>';
+                    return '<a href=' + link + '><button class="btn btn-info">Download</button></a>';
                 }
             }
-        ]
+        ],
+        order: [[ 0, "desc" ]]
     });
     $(".history").modal('show');
 }

@@ -93,7 +93,9 @@ public class BtuEmailServiceImpl implements BtuEmailService {
         String bodyTemplate = EMAIL_TEMPLATE_DIR + templateId + EMAIL_TEMPLATE_BODY_SUFFIX;
 
         // inject common data to dataMap
+        dataMap = dataMap==null ? new HashMap<>() : dataMap;
         injectGlobalEmailData(dataMap, sdSiteConfigBean);
+
         dataMap.put(EMAIL_BASIC_TEMPLATE_ID, templateId);
         dataMap.put(EMAIL_BASIC_RECIPIENT, recipient);
 
