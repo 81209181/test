@@ -2,12 +2,10 @@ package com.hkt.btu.sd.core.service.impl;
 
 
 import com.hkt.btu.common.core.service.BtuSiteConfigService;
-import com.hkt.btu.common.core.service.bean.BtuCronJobProfileBean;
 import com.hkt.btu.common.core.service.bean.BtuSiteConfigBean;
 import com.hkt.btu.common.core.service.impl.BtuCronJobLogServiceImpl;
 import com.hkt.btu.sd.core.dao.mapper.SdCronJobLogMapper;
 import com.hkt.btu.sd.core.service.SdCronJobLogService;
-import com.hkt.btu.sd.core.service.SdCronJobProfileService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
