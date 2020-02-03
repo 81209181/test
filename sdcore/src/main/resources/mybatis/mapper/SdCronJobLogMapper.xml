@@ -5,8 +5,8 @@
 <mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdCronJobLogMapper" >
 
     <insert id="insertLog">
-        insert into CRON_JOB_LOG (SERVER_IP, JOB_GROUP, JOB_NAME, JOB_CLASS, ACTION, CREATEBY)
-        values (#{serverIp}, #{jobGroup}, #{jobName}, #{jobClass}, #{action}, #{createby})
+        insert into CRON_JOB_LOG (SERVER_HOSTNAME, SERVER_IP, JOB_GROUP, JOB_NAME, JOB_CLASS, ACTION, CREATEBY)
+        values (#{serverHostname}, #{serverIp}, #{jobGroup}, #{jobName}, #{jobClass}, #{action}, #{createby})
     </insert>
 
 

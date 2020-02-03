@@ -248,7 +248,6 @@ public class BtuSchedulerServiceImpl implements BtuSchedulerService {
 
         LOG.info("Triggered job: " + targetJobKey);
         btuCronJobLogService.logUserTriggerJob(jobDetail);
-
     }
 
     @Override

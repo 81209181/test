@@ -32,7 +32,7 @@ public class SdReportServiceImpl extends BtuReportServiceImpl implements SdRepor
     @Resource
     SdSqlReportMapper sdSqlReportMapper;
 
-    public SdReportServiceImpl() {}
+
     public SdReportServiceImpl(PlatformTransactionManager transactionManager) {
         super(transactionManager);
     }
@@ -122,4 +122,5 @@ public class SdReportServiceImpl extends BtuReportServiceImpl implements SdRepor
         entity.setCreateby(createBy);
         entity.setModifyby(createBy);
     }
+
 }

@@ -1,6 +1,6 @@
 package com.hkt.btu.sd.core.dao.mapper;
 
-import com.hkt.btu.sd.core.dao.entity.SdCronJobLogEntity;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 
@@ -16,5 +16,7 @@ public interface SdCronJobLogMapper {
 
 
     // insert
-    void insertLog(SdCronJobLogEntity sdCronJobLogEntity);
+    void insertLog(@Param("serverHostname") String serverHostname, @Param("serverIp") String serverIp,
+                   @Param("jobGroup") String jobGroup, @Param("jobName") String jobName, @Param("jobClass") String jobClass,
+                   @Param("action") String action, @Param("createby") String createby);
 }

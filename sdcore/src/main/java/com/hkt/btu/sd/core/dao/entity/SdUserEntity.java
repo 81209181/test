@@ -1,21 +1,11 @@
 package com.hkt.btu.sd.core.dao.entity;
 
-import com.hkt.btu.common.core.dao.entity.BaseEntity;
+import com.hkt.btu.common.core.dao.entity.BtuUserEntity;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class SdUserEntity extends BaseEntity {
-
-    public static class SYSTEM{
-        public static final String USER_ID = "SERVDESK";
-    }
-
-    public static class STATUS{
-        public static final String ACTIVE = "A";
-        public static final String LOCKED = "L";
-        public static final String DISABLE = "D";
-    }
+public class SdUserEntity extends BtuUserEntity {
 
     private String userId;
     private String name;
@@ -24,8 +14,6 @@ public class SdUserEntity extends BaseEntity {
     private Integer companyId;
     private String mobile;
     private String staffId;
-    //private byte[] mobile;
-    //private byte[] staffId;
 
     private String ldapDomain;
     private String domainEmail;

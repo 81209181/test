@@ -16,7 +16,7 @@ public class SdCacheServiceImpl extends BtuCacheServiceImpl implements SdCacheSe
     private static final Logger LOG = LogManager.getLogger(SdCacheServiceImpl.class);
 
     @Resource(name = "cacheBeanPopulator")
-    SdCacheBeanPopulator sdCacheBeanPopulator;
+    SdCacheBeanPopulator cacheBeanPopulator;
 
     @Override
     public List<BtuCacheBean> getAllCacheBeanProfile() {
@@ -43,7 +43,7 @@ public class SdCacheServiceImpl extends BtuCacheServiceImpl implements SdCacheSe
         }
 
         SdCacheBean sdCacheBean = new SdCacheBean();
-        sdCacheBeanPopulator.populate(sdCacheEnum, sdCacheBean);
+        cacheBeanPopulator.populate(sdCacheEnum, sdCacheBean);
         return sdCacheBean;
     }
 }

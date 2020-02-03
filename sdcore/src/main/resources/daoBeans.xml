@@ -3,7 +3,5 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <!-- Populator -->
-    <alias name="sdCronJobLogEntityPopulator" alias="cronJobLogEntityPopulator"/>
-    <bean id="sdCronJobLogEntityPopulator" class="com.hkt.btu.sd.core.dao.populator.SdCronJobLogEntityPopulator"/>
+
 </beans>
