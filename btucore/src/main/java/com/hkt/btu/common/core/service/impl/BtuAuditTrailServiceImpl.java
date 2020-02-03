@@ -1,6 +1,7 @@
 package com.hkt.btu.common.core.service.impl;
 
 import com.hkt.btu.common.core.dao.entity.BtuAuditTrailEntity;
+import com.hkt.btu.common.core.exception.BtuMissingImplException;
 import com.hkt.btu.common.core.service.BtuAuditTrailService;
 import com.hkt.btu.common.core.service.BtuHealthCheckService;
 import com.hkt.btu.common.core.service.BtuUserService;
@@ -22,11 +23,13 @@ public class BtuAuditTrailServiceImpl implements BtuAuditTrailService {
     BtuUserService userService;
 
     protected void insertAuditTrailInternal(String userId, String action, String detail){
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        LOG.error("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        throw new BtuMissingImplException();
     }
 
     protected void cleanAuditTrailInternal(LocalDate cutoffDate){
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        LOG.error("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        throw new BtuMissingImplException();
     }
 
     private void insertAuditTrail(BtuUser btuUser, String action, String detail) {

@@ -1,5 +1,6 @@
 package com.hkt.btu.common.core.service.impl;
 
+import com.hkt.btu.common.core.exception.BtuMissingImplException;
 import com.hkt.btu.common.core.service.BtuConfigParamService;
 import com.hkt.btu.common.core.service.BtuSensitiveDataService;
 import com.hkt.btu.common.core.service.bean.BtuConfigParamBean;
@@ -30,25 +31,25 @@ public class BtuConfigParamServiceImpl implements BtuConfigParamService {
 
     @Override
     public boolean createConfigParam(String configGroup, String configKey, String configValue, BtuConfigParamTypeEnum configValueType, String encrypt) throws GeneralSecurityException {
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
-        return false;
+        LOG.error("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        throw new BtuMissingImplException();
     }
 
     @Override
     public boolean updateConfigParam(String configGroup, String configKey, String configValue, BtuConfigParamTypeEnum configValueType, String encrypt) throws GeneralSecurityException {
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
-        return false;
+        LOG.error("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        throw new BtuMissingImplException();
     }
 
     @Override
     public List<String> getConfigGroupList() {
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
-        return null;
+        LOG.error("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        throw new BtuMissingImplException();
     }
 
     protected List<BtuConfigParamBean> getConfigParamBeanListInternal(String configGroup, String configKey){
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
-        return null;
+        LOG.error("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        throw new BtuMissingImplException();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.hkt.btu.common.core.service.impl;
 
+import com.hkt.btu.common.core.exception.BtuMissingImplException;
 import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.core.service.BtuCronJobProfileService;
 import com.hkt.btu.common.core.service.BtuSiteConfigService;
@@ -20,8 +21,8 @@ public class BtuCronJobProfileServiceImpl implements BtuCronJobProfileService {
     BtuSiteConfigService siteConfigService;
 
     protected List<BtuCronJobProfileBean> getJobProfileBeanInternal(String jobGroup, String jobName){
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
-        return null;
+        LOG.error("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        throw new BtuMissingImplException();
 
 //        // create sample job
 //        BtuCronJobProfileBean sampleJobBean = new BtuCronJobProfileBean();

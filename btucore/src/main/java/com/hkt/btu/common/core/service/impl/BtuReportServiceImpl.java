@@ -1,5 +1,6 @@
 package com.hkt.btu.common.core.service.impl;
 
+import com.hkt.btu.common.core.exception.BtuMissingImplException;
 import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.core.service.BtuCsvService;
 import com.hkt.btu.common.core.service.BtuReportService;
@@ -54,8 +55,8 @@ public class BtuReportServiceImpl implements BtuReportService {
     }
 
     protected List<BtuReportProfileBean> getReportProfileInternal(String reportId, String reportName){
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
-        return null;
+        LOG.error("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        throw new BtuMissingImplException();
 
 //        // create sample job
 //        BtuSqlReportBean sampleJobBean = new BtuSqlReportBean();
@@ -114,8 +115,8 @@ public class BtuReportServiceImpl implements BtuReportService {
 
     @Override
     public List<Map<String, Object>> executeSql(String sql) {
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
-        return null;
+        LOG.error("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        throw new BtuMissingImplException();
     }
 
     @Override
@@ -136,21 +137,21 @@ public class BtuReportServiceImpl implements BtuReportService {
     @Override
     public String createReportProfile(String reportName, String cronExpression, BtuJobStatusEnum status,
                                       String sql, String emailTo, String remarks) {
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
-        return null;
+        LOG.error("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        throw new BtuMissingImplException();
     }
 
     @Override
     public String deleteReportProfile(String reportId) {
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
-        return null;
+        LOG.error("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        throw new BtuMissingImplException();
     }
 
     @Override
     public String updateReportProfile(String reportId, String reportName, String cronExpression, BtuJobStatusEnum status,
                                       String sql, String emailTo, String remarks) {
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
-        return "Cannot update report profile with btu impl.";
+        LOG.error("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        throw new BtuMissingImplException();
     }
 
     @Override

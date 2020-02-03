@@ -1,5 +1,6 @@
 package com.hkt.btu.common.core.service.impl;
 
+import com.hkt.btu.common.core.exception.BtuMissingImplException;
 import com.hkt.btu.common.core.exception.UserNotFoundException;
 import com.hkt.btu.common.core.service.BtuLdapService;
 import com.hkt.btu.common.core.service.BtuUserService;
@@ -62,55 +63,59 @@ public class BtuUserServiceImpl implements BtuUserService {
 
 
     public BtuUserBean getUserBeanByUsername(String username) {
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        LOG.error("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        throw new BtuMissingImplException();
 
-        if (StringUtils.equals(username, "admin")){
-            BtuUserBean btuUserBean = new BtuUserBean();
-            btuUserBean.setUsername(username);
-            btuUserBean.setPassword( btuPasswordEncoder.encode("admin") );
-
-            Set<GrantedAuthority> grantedAuthSet = new HashSet<>();
-            grantedAuthSet.add(new SimpleGrantedAuthority("ADMIN"));
-            grantedAuthSet.add(new SimpleGrantedAuthority("USER"));
-            btuUserBean.setAuthorities(grantedAuthSet);
-
-            return btuUserBean;
-        } else if (StringUtils.equals(username, "user1")){
-
-            BtuUserBean btuUserBean = new BtuUserBean();
-            btuUserBean.setUsername(username);
-            btuUserBean.setPassword( btuPasswordEncoder.encode("user1") );
-
-            Set<GrantedAuthority> grantedAuthSet = new HashSet<>();
-            grantedAuthSet.add(new SimpleGrantedAuthority("USER"));
-            btuUserBean.setAuthorities(grantedAuthSet);
-
-            return btuUserBean;
-        }
-
-        return null;
+//        if (StringUtils.equals(username, "admin")){
+//            BtuUserBean btuUserBean = new BtuUserBean();
+//            btuUserBean.setUsername(username);
+//            btuUserBean.setPassword( btuPasswordEncoder.encode("admin") );
+//
+//            Set<GrantedAuthority> grantedAuthSet = new HashSet<>();
+//            grantedAuthSet.add(new SimpleGrantedAuthority("ADMIN"));
+//            grantedAuthSet.add(new SimpleGrantedAuthority("USER"));
+//            btuUserBean.setAuthorities(grantedAuthSet);
+//
+//            return btuUserBean;
+//        } else if (StringUtils.equals(username, "user1")){
+//
+//            BtuUserBean btuUserBean = new BtuUserBean();
+//            btuUserBean.setUsername(username);
+//            btuUserBean.setPassword( btuPasswordEncoder.encode("user1") );
+//
+//            Set<GrantedAuthority> grantedAuthSet = new HashSet<>();
+//            grantedAuthSet.add(new SimpleGrantedAuthority("USER"));
+//            btuUserBean.setAuthorities(grantedAuthSet);
+//
+//            return btuUserBean;
+//        }
+//        return null;
     }
 
     @Override
     public List<BtuUserBean> getApiUser() {
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
-        return null;
+        LOG.error("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        throw new BtuMissingImplException();
     }
 
     public void resetLoginTriedByUsername(String username) {
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        LOG.error("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        throw new BtuMissingImplException();
     }
 
     public void addLoginTriedByUsername(String username) {
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        LOG.error("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        throw new BtuMissingImplException();
     }
 
     public void lockUserByUsername(String username) {
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        LOG.error("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        throw new BtuMissingImplException();
     }
 
     public void activateUserByUsername(String username) {
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        LOG.error("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        throw new BtuMissingImplException();
     }
 
     @Override
@@ -170,7 +175,8 @@ public class BtuUserServiceImpl implements BtuUserService {
 
     @Override
     public void updateLdapInfo(String userId, String username, String ldapEmail) {
-        LOG.warn("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        LOG.error("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        throw new BtuMissingImplException();
     }
 
     protected String encodePassword(CharSequence plaintext) {
