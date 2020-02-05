@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hkt.btu.sd.core.dao.mapper.UtCallResultRecordMapper">
+
+    <insert id="insertNewUTCallResultRecord">
+        INSERT INTO UT_CALL_RESULT_RECORD (UT_CALL_ID, CODE, MSG, UT_SUMMARY, CREATEDATE, CREATEBY)
+        VALUES (#{utCallId}, #{code}, #{msg}, #{utSummaryString}, CURRENT_TIMESTAMP, #{createBy})
+    </insert>
+
+    <update id="updateUTCallResultRecord">
+        UPDATE UT_CALL_RESULT_RECORD
+        SET CODE = #{code},
+            MSG = #{msg},
+            UT_SUMMARY = #{utSummaryString},
+            MODIFYBY   = #{modifyBy},
+            MODIFYDATE = CURRENT_TIMESTAMP
+        WHERE UT_CALL_ID = #{utCallId}
+    </update>
+
+    <select id="utCallResultRecordExist" resultType="Integer">
+        SELECT count(1)
+        FROM UT_CALL_RESULT_RECORD
+        WHERE UT_CALL_ID = #{utCallId}
+    </select>
+
+</mapper>

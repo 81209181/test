@@ -5,6 +5,12 @@ import com.hkt.btu.sd.core.exception.ApiException;
 import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
 import com.hkt.btu.sd.facade.data.*;
+import com.hkt.btu.sd.facade.data.bes.BesCustomerData;
+import com.hkt.btu.sd.facade.data.bes.BesFaultInfoData;
+import com.hkt.btu.sd.facade.data.bes.BesSubscriberData;
+import com.hkt.btu.sd.facade.data.bes.BesSubscriberInfoResourceData;
+import com.hkt.btu.sd.facade.data.itsm.ItsmProfileData;
+import com.hkt.btu.sd.facade.data.itsm.ItsmSearchProfileResponseData;
 import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
 import com.hkt.btu.sd.facade.populator.RequestCreateSearchResultDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdTicketInfoDataPopulator;
@@ -49,8 +55,8 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     }
 
     @Override
-    public RequestCreateSearchResultsData searchProductList(String searchKey, String searchValue) {
-        RequestCreateSearchResultsData resultsData = new RequestCreateSearchResultsData();
+    public SdRequestCreateSearchResultsData searchProductList(String searchKey, String searchValue) {
+        SdRequestCreateSearchResultsData resultsData = new SdRequestCreateSearchResultsData();
         ServiceSearchEnum serviceSearchEnum = ServiceSearchEnum.getEnum(searchKey);
         if (serviceSearchEnum == null) {
             String errorMsg = "Unknown search key: " + searchKey + ", search value: " + searchValue;
@@ -109,7 +115,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     @Override
     public SdTicketServiceInfoData getServiceInfoInApi(String serviceNumber) {
         SdTicketServiceInfoData serviceInfoData = new SdTicketServiceInfoData();
-        RequestCreateSearchResultData resultData = new RequestCreateSearchResultData();
+        SdRequestCreateSearchResultData resultData = new SdRequestCreateSearchResultData();
         List<ItsmProfileData> itsmProfileDataList = itsmApiFacade.searchProfileByServiceNo(serviceNumber).getList();
         if (CollectionUtils.isNotEmpty(itsmProfileDataList)) {
             ItsmProfileData itsmProfileData = itsmProfileDataList.get(0);
@@ -147,21 +153,21 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
                 }).orElse(new BesFaultInfoData());
     }
 
-    private RequestCreateSearchResultsData findData4Bsn(String bsn) {
+    private SdRequestCreateSearchResultsData findData4Bsn(String bsn) {
         // search basic customer and service info
-        RequestCreateSearchResultsData resultsData = findCustomerServiceInfo(bsn);
+        SdRequestCreateSearchResultsData resultsData = findCustomerServiceInfo(bsn);
 
         // service not found
-        List<RequestCreateSearchResultData> besSubscriberInfoDataList = resultsData == null ? null : resultsData.getList();
+        List<SdRequestCreateSearchResultData> besSubscriberInfoDataList = resultsData == null ? null : resultsData.getList();
         if (CollectionUtils.isEmpty(besSubscriberInfoDataList)) {
-            resultsData = new RequestCreateSearchResultsData();
+            resultsData = new SdRequestCreateSearchResultsData();
             resultsData.setErrorMsg(String.format("Service(s) not found with %s.", bsn));
             return resultsData;
         }
 
         // fill in detail info
         try {
-            for (RequestCreateSearchResultData resultData : besSubscriberInfoDataList) {
+            for (SdRequestCreateSearchResultData resultData : besSubscriberInfoDataList) {
                 fillBnData(bsn, resultData);
                 fillPendingOrderData(bsn, resultData);
             }
@@ -174,21 +180,21 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         return resultsData;
     }
 
-    private RequestCreateSearchResultsData findData4Dn(String dn) {
+    private SdRequestCreateSearchResultsData findData4Dn(String dn) {
         // search basic customer and service info
-        RequestCreateSearchResultsData resultsData = findCustomerServiceInfo(dn);
+        SdRequestCreateSearchResultsData resultsData = findCustomerServiceInfo(dn);
 
         // service not found
-        List<RequestCreateSearchResultData> besSubscriberInfoDataList = resultsData == null ? null : resultsData.getList();
+        List<SdRequestCreateSearchResultData> besSubscriberInfoDataList = resultsData == null ? null : resultsData.getList();
         if (CollectionUtils.isEmpty(besSubscriberInfoDataList)) {
-            resultsData = new RequestCreateSearchResultsData();
+            resultsData = new SdRequestCreateSearchResultsData();
             resultsData.setErrorMsg(String.format("Service(s) not found with %s.", dn));
             return resultsData;
         }
 
         // fill in detail info
         try {
-            for (RequestCreateSearchResultData resultData : besSubscriberInfoDataList) {
+            for (SdRequestCreateSearchResultData resultData : besSubscriberInfoDataList) {
                 String bnBsn = norarsApiFacade.getBsnByDn(dn);
                 if (StringUtils.isNotEmpty(bnBsn)) {
                     resultData.setRelatedBsn(bnBsn);
@@ -206,14 +212,14 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         return resultsData;
     }
 
-    private RequestCreateSearchResultsData findData4Tenant(String tenantId) {
-        RequestCreateSearchResultsData resultsData = new RequestCreateSearchResultsData();
-        List<RequestCreateSearchResultData> resultDataList = new ArrayList<>();
-        RequestCreateSearchResultData resultData;
+    private SdRequestCreateSearchResultsData findData4Tenant(String tenantId) {
+        SdRequestCreateSearchResultsData resultsData = new SdRequestCreateSearchResultsData();
+        List<SdRequestCreateSearchResultData> resultDataList = new ArrayList<>();
+        SdRequestCreateSearchResultData resultData;
         for (ItsmProfileData itsmProfileData : itsmApiFacade.searchProfileByTenantId(tenantId).getList()) {
             if (StringUtils.isNotEmpty(itsmProfileData.getCustCode())) {
                 if (!itsmProfileData.getServiceNo().equals(tenantId)) {
-                    resultData = new RequestCreateSearchResultData();
+                    resultData = new SdRequestCreateSearchResultData();
                     requestCreateSearchResultDataPopulator.populateFromItsmProfileData(itsmProfileData, resultData);
                     BesSubscriberInfoResourceData besSubscriberInfoResourceData = besApiFacade.querySubscriberByServiceNumber(itsmProfileData.getServiceNo()).getSubscriberInfos().get(0);
                     BesCustomerData besCustomerData = besApiFacade.queryCustomerByServiceCode(itsmProfileData.getServiceNo());
@@ -224,7 +230,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
                     resultDataList.add(resultData);
                 }
             } else {
-                resultData = new RequestCreateSearchResultData();
+                resultData = new SdRequestCreateSearchResultData();
                 requestCreateSearchResultDataPopulator.populateFromItsmProfileData(itsmProfileData, resultData);
                 SdServiceTypeData serviceTypeData = serviceTypeFacade.getServiceTypeByOfferName(itsmProfileData.getOfferName());
                 requestCreateSearchResultDataPopulator.populateFromServiceTypeData(serviceTypeData, resultData);
@@ -240,9 +246,9 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     }
 
 
-    private RequestCreateSearchResultsData findCustomerServiceInfo(String serviceNumber) {
-        RequestCreateSearchResultsData resultData = new RequestCreateSearchResultsData();
-        List<RequestCreateSearchResultData> requestSearchResultDataList = new ArrayList<>();
+    private SdRequestCreateSearchResultsData findCustomerServiceInfo(String serviceNumber) {
+        SdRequestCreateSearchResultsData resultData = new SdRequestCreateSearchResultsData();
+        List<SdRequestCreateSearchResultData> requestSearchResultDataList = new ArrayList<>();
 
         // get service data list
         BesSubscriberData besSubscriberData = besApiFacade.querySubscriberByServiceNumber(serviceNumber);
@@ -256,7 +262,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
 
         // transform service data list
         for (BesSubscriberInfoResourceData besSubscriberInfoData : besSubscriberInfoDataList) {
-            RequestCreateSearchResultData searchResultData = new RequestCreateSearchResultData();
+            SdRequestCreateSearchResultData searchResultData = new SdRequestCreateSearchResultData();
 
             // fill in service info
             requestCreateSearchResultDataPopulator.populateFromBesSubscriberInfoResourceData(besSubscriberInfoData, searchResultData);
@@ -277,9 +283,9 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         return resultData;
     }
 
-    private void fillBnData(String bnBsn, RequestCreateSearchResultData resultData) {
+    private void fillBnData(String bnBsn, SdRequestCreateSearchResultData resultData) {
         // find service address
-        ServiceAddressData serviceAddressData = norarsApiFacade.getServiceAddressByBsn(bnBsn);
+        SdServiceAddressData serviceAddressData = norarsApiFacade.getServiceAddressByBsn(bnBsn);
         if (serviceAddressData != null) {
             requestCreateSearchResultDataPopulator.populateFromServiceAddressData(serviceAddressData, resultData);
         }
@@ -289,7 +295,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         resultData.setDescription(l1Info);
     }
 
-    private void fillPendingOrderData(String serviceNumber, RequestCreateSearchResultData resultData) throws ApiException {
+    private void fillPendingOrderData(String serviceNumber, SdRequestCreateSearchResultData resultData) throws ApiException {
         WfmPendingOrderData wfmPendingOrderData = wfmApiFacade.getPendingOrderByBsn(serviceNumber);
         if (wfmPendingOrderData == null) {
             throw new ApiException("WFM API response is null.");

@@ -15,17 +15,17 @@ public enum SdCacheEnum {
             "userRoleService","loadUserRoleTree"),
 
     // API Profile
-    API_BES (SdConfigParamEntity.API.CONFIG_GROUP.API_BES, 201, false,false,
+    API_BES (SdConfigParamEntity.API.CONFIG_GROUP.API_BES, 201, false,true,
             "apiService","loadBesApiProfileBean"),
-    API_ITSM (SdConfigParamEntity.API.CONFIG_GROUP.API_ITSM_RESTFUL, 202, false,false,
+    API_ITSM (SdConfigParamEntity.API.CONFIG_GROUP.API_ITSM_RESTFUL, 202, false,true,
             "apiService","loadItsmApiProfileBean"),
-    API_ITSM_RESTFUL (SdConfigParamEntity.API.CONFIG_GROUP.API_ITSM, 204, false,false,
+    API_ITSM_RESTFUL (SdConfigParamEntity.API.CONFIG_GROUP.API_ITSM, 204, false,true,
             "apiService","loadItsmRestfulApiProfileBean"),
-    API_NORARS (SdConfigParamEntity.API.CONFIG_GROUP.API_NORARS, 205, false,false,
+    API_NORARS (SdConfigParamEntity.API.CONFIG_GROUP.API_NORARS, 205, false,true,
             "apiService","loadNorarsApiProfileBean"),
-    API_WFM (SdConfigParamEntity.API.CONFIG_GROUP.API_WFM, 206, false,false,
+    API_WFM (SdConfigParamEntity.API.CONFIG_GROUP.API_WFM, 206, false,true,
             "apiService","loadWfmApiProfileBean"),
-    API_UT_CALL (SdConfigParamEntity.API.CONFIG_GROUP.API_UT_CALL, 207, false,false,
+    API_UT_CALL (SdConfigParamEntity.API.CONFIG_GROUP.API_UT_CALL, 207, false,true,
             "apiService","loadUtApiProfileBean"),
     ;
 

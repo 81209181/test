@@ -99,7 +99,7 @@ public class SdSymptomFacadeImpl implements SdSymptomFacade {
     }
 
     @Override
-    public String editSymptomMapping(UpdateSymptomFormData symptomFormData) {
+    public String editSymptomMapping(SdUpdateSymptomFormData symptomFormData) {
         String symptomCode = symptomFormData.getSymptomCode();
         String symptomGroupCode = symptomFormData.getSymptomGroupCode();
         String symptomDescription = symptomFormData.getSymptomDescription();

@@ -47,7 +47,7 @@ public class ManageUserController {
     @GetMapping({"create-ldap-user", "create-user", "create-non-pccw-hkt-user"})
     public String createPccwOrHktUser(final Model model,
                                       final HttpServletRequest request,
-                                      @ModelAttribute("createUserFormData") CreateUserFormData createUserFormData,
+                                      @ModelAttribute("createUserFormData") SdCreateUserFormData createUserFormData,
                                       @ModelAttribute("userRoleOptionDataMap") HashMap<String, SdUserRoleData> userRoleOptionDataMap) {
         // user role info
         List<SdUserRoleData> userRoleDataList = userRoleFacade.getEligibleUserRoleList();
@@ -61,8 +61,8 @@ public class ManageUserController {
 
     @PostMapping("/create-pccw-hkt-user")
     public String createPccwOrHktUser(final RedirectAttributes redirectAttributes,
-                                      @ModelAttribute("inputUserData") CreateUserFormData createUserFormData) {
-        CreateResultData createResultData = userFacade.createPccwHktUser(createUserFormData);
+                                      @ModelAttribute("inputUserData") SdCreateUserFormData createUserFormData) {
+        SdCreateResultData createResultData = userFacade.createPccwHktUser(createUserFormData);
         String newUserId = createResultData == null ? null : createResultData.getNewId();
         String errorMsg = createResultData == null ? "No create result." : createResultData.getErrorMsg();
         if (newUserId == null) {
@@ -80,8 +80,8 @@ public class ManageUserController {
 
     @PostMapping("/create-non-pccw-hkt-user")
     public String createNonPccwOrHktUser(final RedirectAttributes redirectAttributes,
-                                         @ModelAttribute("inputUserData") CreateUserFormData createUserFormData) {
-        CreateResultData createResultData = userFacade.createNonPccwHktUser(createUserFormData);
+                                         @ModelAttribute("inputUserData") SdCreateUserFormData createUserFormData) {
+        SdCreateResultData createResultData = userFacade.createNonPccwHktUser(createUserFormData);
         String newUserId = createResultData == null ? null : createResultData.getNewId();
         String errorMsg = createResultData == null ? "No create result." : createResultData.getErrorMsg();
         if (newUserId == null) {
@@ -98,8 +98,8 @@ public class ManageUserController {
 
     @PostMapping("/create-ldap-user")
     public String createLdapUser(final RedirectAttributes redirectAttributes,
-                                 @ModelAttribute("inputUserData") CreateUserFormData createUserFormData) {
-        CreateResultData createResultData = userFacade.createLdapUser(createUserFormData);
+                                 @ModelAttribute("inputUserData") SdCreateUserFormData createUserFormData) {
+        SdCreateResultData createResultData = userFacade.createLdapUser(createUserFormData);
         String newUserId = createResultData == null ? null : createResultData.getNewId();
         String errorMsg = createResultData == null ? "No create result." : createResultData.getErrorMsg();
         if (newUserId == null) {
@@ -144,13 +144,13 @@ public class ManageUserController {
     public String changeUserType(final Model model,
                                  String userId,
                                  @RequestParam String userType,
-                                 @ModelAttribute("changeUserTypeFormData") ChangeUserTypeFormData changeUserTypeFormData) {
+                                 @ModelAttribute("changeUserTypeFormData") SdChangeUserTypeFormData changeUserTypeFormData) {
         model.addAttribute("oldUserId", userId);
-        if (ChangeUserTypeFormData.PCCW_HKT_USER.equals(userType)) {
+        if (SdChangeUserTypeFormData.PCCW_HKT_USER.equals(userType)) {
             return "/admin/manageUser/changeUserType/updateUserTypeToPccwOrHktUser";
-        } else if (ChangeUserTypeFormData.LDAP_USER.equals(userType)) {
+        } else if (SdChangeUserTypeFormData.LDAP_USER.equals(userType)) {
             return "/admin/manageUser/changeUserType/updateUserTypeToLdapUser";
-        } else if (ChangeUserTypeFormData.NON_PCCW_HKT_USER.equals(userType)) {
+        } else if (SdChangeUserTypeFormData.NON_PCCW_HKT_USER.equals(userType)) {
             return "/admin/manageUser/changeUserType/updateUserTypeToNonPccwOrHktUser";
         }
         return null;
@@ -159,15 +159,15 @@ public class ManageUserController {
 
     @PostMapping("/changeUserType/pccw-hkt-user")
     public String changeUserType(final RedirectAttributes redirectAttributes,
-                                 @ModelAttribute("changeUserTypeFormData") ChangeUserTypeFormData changeUserTypeFormData) {
+                                 @ModelAttribute("changeUserTypeFormData") SdChangeUserTypeFormData changeUserTypeFormData) {
         // Change User to  PCCW_HKT_USER
-        ChangeUserTypeResultData changeUserTypeResultData = userFacade.changeUserTypeToPccwOrHktUser(changeUserTypeFormData);
+        SdChangeUserTypeResultData changeUserTypeResultData = userFacade.changeUserTypeToPccwOrHktUser(changeUserTypeFormData);
         String newUserId = changeUserTypeResultData == null ? null : changeUserTypeResultData.getUserId();
         String errorMsg = changeUserTypeResultData == null ? "No create result." : changeUserTypeResultData.getErrorMsg();
         if (newUserId == null) {
             redirectAttributes.addFlashAttribute(PageMsgController.ERROR_MSG, errorMsg);
             redirectAttributes.addFlashAttribute("createUserFormData", changeUserTypeResultData);
-            return "redirect:/admin/manage-user/edit-user/changeUserType?userType=" + ChangeUserTypeFormData.PCCW_HKT_USER + "&userId=" + changeUserTypeFormData.getUserId();
+            return "redirect:/admin/manage-user/edit-user/changeUserType?userType=" + SdChangeUserTypeFormData.PCCW_HKT_USER + "&userId=" + changeUserTypeFormData.getUserId();
         } else {
             redirectAttributes.addFlashAttribute(PageMsgController.INFO_MSG, "Change user.");
             return "redirect:/admin/manage-user/edit-user?userId=" + newUserId;
@@ -176,15 +176,15 @@ public class ManageUserController {
 
     @PostMapping("/changeUserType/non-pccw-hkt-user")
     public String changeNonPCCWOrUserType(final RedirectAttributes redirectAttributes,
-                                          @ModelAttribute("changeUserTypeFormData") ChangeUserTypeFormData changeUserTypeFormData) {
+                                          @ModelAttribute("changeUserTypeFormData") SdChangeUserTypeFormData changeUserTypeFormData) {
         // Change User to  PCCW_HKT_USER
-        ChangeUserTypeResultData changeUserTypeResultData = userFacade.changeUserTypeToNonPccwOrHktUser(changeUserTypeFormData);
+        SdChangeUserTypeResultData changeUserTypeResultData = userFacade.changeUserTypeToNonPccwOrHktUser(changeUserTypeFormData);
         String newUserId = changeUserTypeResultData == null ? null : changeUserTypeResultData.getUserId();
         String errorMsg = changeUserTypeResultData == null ? "No create result." : changeUserTypeResultData.getErrorMsg();
         if (newUserId == null) {
             redirectAttributes.addFlashAttribute(PageMsgController.ERROR_MSG, errorMsg);
             redirectAttributes.addFlashAttribute("createUserFormData", changeUserTypeResultData);
-            return "redirect:/admin/manage-user/edit-user/changeUserType?userType=" + ChangeUserTypeFormData.NON_PCCW_HKT_USER + "&userId=" + changeUserTypeFormData.getUserId();
+            return "redirect:/admin/manage-user/edit-user/changeUserType?userType=" + SdChangeUserTypeFormData.NON_PCCW_HKT_USER + "&userId=" + changeUserTypeFormData.getUserId();
         } else {
             redirectAttributes.addFlashAttribute(PageMsgController.INFO_MSG, "Change user.");
             return "redirect:/admin/manage-user/edit-user?userId=" + newUserId;
@@ -194,15 +194,15 @@ public class ManageUserController {
 
     @PostMapping("/changeUserType/ldap-user")
     public String changeLdapUserType(final RedirectAttributes redirectAttributes,
-                                     @ModelAttribute("changeUserTypeFormData") ChangeUserTypeFormData changeUserTypeFormData) {
+                                     @ModelAttribute("changeUserTypeFormData") SdChangeUserTypeFormData changeUserTypeFormData) {
         // Change User to LDAP_USER
-        ChangeUserTypeResultData changeUserTypeResultData = userFacade.changeUserTypeToLdapUser(changeUserTypeFormData);
+        SdChangeUserTypeResultData changeUserTypeResultData = userFacade.changeUserTypeToLdapUser(changeUserTypeFormData);
         String newUserId = changeUserTypeResultData == null ? null : changeUserTypeResultData.getUserId();
         String errorMsg = changeUserTypeResultData == null ? "No create result." : changeUserTypeResultData.getErrorMsg();
         if (newUserId == null) {
             redirectAttributes.addFlashAttribute(PageMsgController.ERROR_MSG, errorMsg);
             redirectAttributes.addFlashAttribute("createUserFormData", changeUserTypeResultData);
-            return "redirect:/admin/manage-user/edit-user/changeUserType?userType=" + ChangeUserTypeFormData.LDAP_USER + "&userId=" + changeUserTypeFormData.getUserId();
+            return "redirect:/admin/manage-user/edit-user/changeUserType?userType=" + SdChangeUserTypeFormData.LDAP_USER + "&userId=" + changeUserTypeFormData.getUserId();
         } else {
             redirectAttributes.addFlashAttribute(PageMsgController.INFO_MSG, "Change user.");
             return "redirect:/admin/manage-user/edit-user?userId=" + newUserId;
@@ -226,7 +226,7 @@ public class ManageUserController {
     }
 
     @PostMapping("/edit-user")
-    public ResponseEntity<?> editUserForm(@RequestBody UpdateUserFormData updateUserFormData) {
+    public ResponseEntity<?> editUserForm(@RequestBody SdUpdateUserFormData updateUserFormData) {
         String errorMsg = userFacade.updateUser(updateUserFormData);
         if (errorMsg == null) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());

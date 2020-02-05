@@ -2,7 +2,7 @@ package com.hkt.btu.sd.facade;
 
 import com.hkt.btu.sd.facade.data.SdServiceTypeData;
 import com.hkt.btu.sd.facade.data.SdServiceTypeOfferMappingData;
-import com.hkt.btu.sd.facade.data.UpdateServiceTypeOfferMappingData;
+import com.hkt.btu.sd.facade.data.SdUpdateServiceTypeOfferMappingData;
 
 import java.util.List;
 
@@ -16,6 +16,6 @@ public interface SdServiceTypeFacade {
     boolean needCheckPendingOrder(String serviceType);
 
     boolean createServiceTypeOfferMapping(String serviceTypeCode, String offerName);
-    boolean updateServiceTypeOfferMapping(UpdateServiceTypeOfferMappingData data);
+    boolean updateServiceTypeOfferMapping(SdUpdateServiceTypeOfferMappingData data);
     boolean deleteServiceTypeOfferMapping(String serviceTypeCode, String offerName);
 }

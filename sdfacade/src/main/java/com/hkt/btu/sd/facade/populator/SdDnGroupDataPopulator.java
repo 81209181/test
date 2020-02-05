@@ -4,7 +4,7 @@ package com.hkt.btu.sd.facade.populator;
 import com.hkt.btu.common.facade.populator.AbstractDataPopulator;
 import com.hkt.btu.sd.facade.data.SdCronJobInstData;
 import com.hkt.btu.sd.facade.data.SdDnGroupData;
-import com.hkt.btu.sd.facade.data.nora.NoraDnGroupData;
+import com.hkt.btu.sd.facade.data.norars.NoraDnGroupData;
 
 public class SdDnGroupDataPopulator extends AbstractDataPopulator<SdCronJobInstData> {
 

@@ -6,7 +6,7 @@ import com.hkt.btu.sd.core.service.bean.SdServiceTypeOfferMappingBean;
 import com.hkt.btu.sd.facade.SdServiceTypeFacade;
 import com.hkt.btu.sd.facade.data.SdServiceTypeData;
 import com.hkt.btu.sd.facade.data.SdServiceTypeOfferMappingData;
-import com.hkt.btu.sd.facade.data.UpdateServiceTypeOfferMappingData;
+import com.hkt.btu.sd.facade.data.SdUpdateServiceTypeOfferMappingData;
 import com.hkt.btu.sd.facade.populator.SdServiceTypeDataPopulator;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -106,7 +106,7 @@ public class SdServiceTypeFacadeImpl implements SdServiceTypeFacade {
     }
 
     @Override
-    public boolean updateServiceTypeOfferMapping(UpdateServiceTypeOfferMappingData data) {
+    public boolean updateServiceTypeOfferMapping(SdUpdateServiceTypeOfferMappingData data) {
         try {
             SdServiceTypeOfferMappingBean bean = serviceTypeService.
                     getServiceTypeOfferMappingBeanByCodeAndOfferName(data.getServiceTypeCode(), data.getOfferName());

@@ -1,8 +1,11 @@
 package com.hkt.btu.sd.facade.populator;
 
 import com.hkt.btu.common.facade.populator.AbstractDataPopulator;
-import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
 import com.hkt.btu.sd.facade.data.*;
+import com.hkt.btu.sd.facade.data.bes.BesCustBasicInfoData;
+import com.hkt.btu.sd.facade.data.bes.BesCustomerData;
+import com.hkt.btu.sd.facade.data.bes.BesCustomerInfosData;
+import com.hkt.btu.sd.facade.data.itsm.ItsmProfileData;
 
 import java.util.Optional;
 

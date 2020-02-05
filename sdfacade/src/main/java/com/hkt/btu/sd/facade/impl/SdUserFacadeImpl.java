@@ -50,7 +50,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
      * @return userId
      */
     @Override
-    public CreateResultData createPccwHktUser(CreateUserFormData createUserFormData) {
+    public SdCreateResultData createPccwHktUser(SdCreateUserFormData createUserFormData) {
         if (createUserFormData == null) {
             LOG.warn("Null sdUserData.");
             return null;
@@ -77,9 +77,9 @@ public class SdUserFacadeImpl implements SdUserFacade {
             resultBean = sdUserService.createUser(employeeNumber, name, mobile, email, primaryRoleId, userRoleIdList);
         } catch (InvalidInputException | UserNotFoundException | DuplicateUserEmailException e) {
             LOG.warn(e.getMessage());
-            return CreateResultData.of(e.getMessage());
+            return SdCreateResultData.of(e.getMessage());
         }
-        return new CreateResultData(resultBean.getUserId(), null, resultBean.getPassword(), null);
+        return new SdCreateResultData(resultBean.getUserId(), null, resultBean.getPassword(), null);
     }
 
     /**
@@ -89,7 +89,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
      * @return userId
      */
     @Override
-    public CreateResultData createNonPccwHktUser(CreateUserFormData createUserFormData) {
+    public SdCreateResultData createNonPccwHktUser(SdCreateUserFormData createUserFormData) {
         if (createUserFormData == null) {
             LOG.warn("Null sdUserData.");
             return null;
@@ -118,10 +118,10 @@ public class SdUserFacadeImpl implements SdUserFacade {
             resultBean = sdUserService.createUser(employeeNumber, name, mobile, email,primaryRoleId, userRoleIdList);
         } catch (InvalidInputException | UserNotFoundException | DuplicateUserEmailException e) {
             LOG.warn(e.getMessage());
-            return CreateResultData.of(e.getMessage());
+            return SdCreateResultData.of(e.getMessage());
         }
 
-        return new CreateResultData(resultBean.getUserId(), null, resultBean.getPassword(), null);
+        return new SdCreateResultData(resultBean.getUserId(), null, resultBean.getPassword(), null);
     }
 
     private String checkPrimaryRole(String primaryRoleId, List<String> userRoleIdList) {
@@ -145,7 +145,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
      * @return userId
      */
     @Override
-    public CreateResultData createLdapUser(CreateUserFormData createUserFormData) {
+    public SdCreateResultData createLdapUser(SdCreateUserFormData createUserFormData) {
         if (createUserFormData == null) {
             LOG.warn("Null sdUserData.");
             return null;
@@ -172,14 +172,14 @@ public class SdUserFacadeImpl implements SdUserFacade {
             newUserId = sdUserService.createLdapUser(name, mobile, employeeNumber, ldapDomain, email, primaryRoleId, userRoleIdList);
         } catch (DuplicateUserEmailException | UserNotFoundException | InvalidInputException e) {
             LOG.warn(e.getMessage());
-            return CreateResultData.of(e.getMessage());
+            return SdCreateResultData.of(e.getMessage());
         }
 
-        return new CreateResultData(newUserId, null);
+        return new SdCreateResultData(newUserId, null);
     }
 
     @Override
-    public String updateUser(UpdateUserFormData updateUserFormData) {
+    public String updateUser(SdUpdateUserFormData updateUserFormData) {
         if (updateUserFormData == null) {
             return "Null input.";
         } else if (updateUserFormData.getUserId() == null) {
@@ -228,13 +228,13 @@ public class SdUserFacadeImpl implements SdUserFacade {
     }
 
     @Override
-    public ChangeUserTypeResultData changeUserTypeToPccwOrHktUser(ChangeUserTypeFormData changeUserTypeFormData) {
+    public SdChangeUserTypeResultData changeUserTypeToPccwOrHktUser(SdChangeUserTypeFormData changeUserTypeFormData) {
         if (changeUserTypeFormData == null) {
-            return ChangeUserTypeResultData.ofMsg("Null input.");
+            return SdChangeUserTypeResultData.ofMsg("Null input.");
         }
         // Check UserId
         if (StringUtils.isEmpty(changeUserTypeFormData.getUserId()) || StringUtils.isEmpty(changeUserTypeFormData.getNewUserId())) {
-            return ChangeUserTypeResultData.ofMsg("Empty User Id");
+            return SdChangeUserTypeResultData.ofMsg("Empty User Id");
         }
         String oldUserId = changeUserTypeFormData.getUserId();
         String name = StringUtils.trim(changeUserTypeFormData.getName());
@@ -250,21 +250,21 @@ public class SdUserFacadeImpl implements SdUserFacade {
             sdInputCheckService.checkEmail(email);
             // change user type
             userId = sdUserService.changeUserTypeToPCCWOrHktUser(oldUserId, name, mobile, employeeNumber, email);
-            return ChangeUserTypeResultData.ofUser(userId);
+            return SdChangeUserTypeResultData.ofUser(userId);
         } catch (InvalidInputException | UserNotFoundException e) {
             LOG.warn(e.getMessage());
-            return ChangeUserTypeResultData.ofMsg(e.getMessage());
+            return SdChangeUserTypeResultData.ofMsg(e.getMessage());
         }
     }
 
     @Override
-    public ChangeUserTypeResultData changeUserTypeToNonPccwOrHktUser(ChangeUserTypeFormData changeUserTypeFormData) {
+    public SdChangeUserTypeResultData changeUserTypeToNonPccwOrHktUser(SdChangeUserTypeFormData changeUserTypeFormData) {
         if (changeUserTypeFormData == null) {
-            return ChangeUserTypeResultData.ofMsg("Null input.");
+            return SdChangeUserTypeResultData.ofMsg("Null input.");
         }
         // Check UserId
         if (StringUtils.isEmpty(changeUserTypeFormData.getUserId()) || StringUtils.isEmpty(changeUserTypeFormData.getNewUserId())) {
-            return ChangeUserTypeResultData.ofMsg("Empty User Id");
+            return SdChangeUserTypeResultData.ofMsg("Empty User Id");
         }
         String oldUserId = changeUserTypeFormData.getUserId();
         String name = StringUtils.trim(changeUserTypeFormData.getName());
@@ -282,21 +282,21 @@ public class SdUserFacadeImpl implements SdUserFacade {
             }
             // change user type
             userId = sdUserService.changeUserTypeToNonPCCWOrHktUser(oldUserId, name, mobile, employeeNumber, email);
-            return ChangeUserTypeResultData.ofUser(userId);
+            return SdChangeUserTypeResultData.ofUser(userId);
         } catch (InvalidInputException | UserNotFoundException e) {
             LOG.warn(e.getMessage());
-            return ChangeUserTypeResultData.ofMsg(e.getMessage());
+            return SdChangeUserTypeResultData.ofMsg(e.getMessage());
         }
     }
 
     @Override
-    public ChangeUserTypeResultData changeUserTypeToLdapUser(ChangeUserTypeFormData changeUserTypeFormData) {
+    public SdChangeUserTypeResultData changeUserTypeToLdapUser(SdChangeUserTypeFormData changeUserTypeFormData) {
         if (changeUserTypeFormData == null) {
-            return ChangeUserTypeResultData.ofMsg("Null input.");
+            return SdChangeUserTypeResultData.ofMsg("Null input.");
         }
 
         if (StringUtils.isEmpty(changeUserTypeFormData.getUserId()) || StringUtils.isEmpty(changeUserTypeFormData.getNewUserId())) {
-            return ChangeUserTypeResultData.ofMsg("Empty User Id");
+            return SdChangeUserTypeResultData.ofMsg("Empty User Id");
         }
         String oldUserId = changeUserTypeFormData.getUserId();
         String name = StringUtils.trim(changeUserTypeFormData.getName());
@@ -314,10 +314,10 @@ public class SdUserFacadeImpl implements SdUserFacade {
             sdInputCheckService.checkEmployeeNumber(employeeNumber);
             // oldUserId, name , mobile, employeeNumber , ldapDomain.
             userId = sdUserService.changeUserTypeToLdapUser(oldUserId, name, mobile, employeeNumber, ldapDomain, email);
-            return ChangeUserTypeResultData.ofUser(userId);
+            return SdChangeUserTypeResultData.ofUser(userId);
         } catch (InvalidInputException | UserNotFoundException e) {
             LOG.warn(e.getMessage());
-            return ChangeUserTypeResultData.ofMsg(e.getMessage());
+            return SdChangeUserTypeResultData.ofMsg(e.getMessage());
         }
     }
 
@@ -354,7 +354,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
     }
 
     @Override
-    public String updateCurrentUserPwd(UpdatePwdFormData updatePwdFormData) {
+    public String updateCurrentUserPwd(SdUpdatePwdFormData updatePwdFormData) {
         SdUserData sdUserData = getCurrentUser();
         String oldPassword = updatePwdFormData.getOldPassword();
         String newPassword = updatePwdFormData.getNewPassword();
@@ -389,7 +389,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
     }
 
     @Override
-    public String resetPassword(ResetPwdFormData resetPwdFormData) {
+    public String resetPassword(SdResetPwdFormData resetPwdFormData) {
         String otp = resetPwdFormData.getResetOtp();
         String newPassword = resetPwdFormData.getNewPassword();
         String newPasswordRe = resetPwdFormData.getNewPasswordRe();

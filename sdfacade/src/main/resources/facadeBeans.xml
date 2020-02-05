@@ -20,6 +20,10 @@
     <alias name="sdJobFacade" alias="btuJobFacade"/>
     <bean id="sdJobFacade" class="com.hkt.btu.sd.facade.impl.SdJobFacadeImpl"/>
 
+    <alias name="sdReportFacade" alias="reportFacade"/>
+    <alias name="sdReportFacade" alias="btuReportFacade"/>
+    <bean id="sdReportFacade" class="com.hkt.btu.sd.facade.impl.SdReportFacadeImpl"/>
+
     <alias name="sdUserFacadeImpl" alias="userFacade"/>
     <bean id="sdUserFacadeImpl" class="com.hkt.btu.sd.facade.impl.SdUserFacadeImpl"/>
 
@@ -38,17 +42,6 @@
     <alias name="sdRequestCreateFacade" alias="requestCreateFacade"/>
     <bean id="sdRequestCreateFacade" class="com.hkt.btu.sd.facade.impl.SdRequestCreateFacadeImpl"/>
 
-    <alias name="sdReportFacade" alias="reportFacade"/>
-    <alias name="sdReportFacade" alias="btuReportFacade"/>
-    <bean id="sdReportFacade" class="com.hkt.btu.sd.facade.impl.SdReportFacadeImpl"/>
-
-    <bean name="besApiFacade" class="com.hkt.btu.sd.facade.impl.BesApiFacadeImpl"/>
-    <bean name="itsmApiFacade" class="com.hkt.btu.sd.facade.impl.ItsmApiFacadeImpl"/>
-    <bean name="norarsApiFacade" class="com.hkt.btu.sd.facade.impl.NorarsApiFacadeImpl"/>
-    <bean name="wfmApiFacade" class="com.hkt.btu.sd.facade.impl.WfmApiFacadeImpl"/>
-
-    <bean name="cloudApiFacade" class="com.hkt.btu.sd.facade.impl.CloudApiFacadeImpl"/>
-
     <alias name="sdTicketFacade" alias="ticketFacade"/>
     <bean id="sdTicketFacade" class="com.hkt.btu.sd.facade.impl.SdTicketFacadeImpl"/>
 
@@ -58,25 +51,32 @@
     <alias name="sdServiceTypeFacade" alias="serviceTypeFacade" />
     <bean id="sdServiceTypeFacade" class="com.hkt.btu.sd.facade.impl.SdServiceTypeFacadeImpl"/>
 
-    <alias name="utCallFacade" alias="callFacade"/>
-    <bean id="utCallFacade" class="com.hkt.btu.sd.facade.impl.UtCallFacadeImpl"/>
-
     <alias name="sdPublicHolidayFacade" alias="publicHolidayFacade"/>
     <bean id="sdPublicHolidayFacade" class="com.hkt.btu.sd.facade.impl.SdPublicHolidayFacadeImpl"/>
 
+    <!--  API Facade  -->
+    <alias name="sdBesApiFacade" alias="besApiFacade"/>
+    <bean name="sdBesApiFacade" class="com.hkt.btu.sd.facade.impl.BesApiFacadeImpl"/>
+
+    <alias name="sdItsmApiFacade" alias="itsmApiFacade"/>
+    <bean name="sdItsmApiFacade" class="com.hkt.btu.sd.facade.impl.ItsmApiFacadeImpl"/>
+
+    <alias name="sdNorarsApiFacade" alias="norarsApiFacade"/>
+    <bean name="sdNorarsApiFacade" class="com.hkt.btu.sd.facade.impl.NorarsApiFacadeImpl"/>
+
+    <alias name="sdWfmApiFacade" alias="wfmApiFacade"/>
+    <bean name="sdWfmApiFacade" class="com.hkt.btu.sd.facade.impl.WfmApiFacadeImpl"/>
+
+    <alias name="sdCloudApiFacade" alias="cloudApiFacade"/>
+    <bean name="sdCloudApiFacade" class="com.hkt.btu.sd.facade.impl.CloudApiFacadeImpl"/>
+
+    <alias name="sdUtApiFacade" alias="utApiFacade"/>
+    <bean id="sdUtApiFacade" class="com.hkt.btu.sd.facade.impl.UtApiFacadeImpl"/>
 
     <!-- Populator -->
-    <alias name="sdUserDataPopulator" alias="userDataPopulator"/>
-    <bean id="sdUserDataPopulator" class="com.hkt.btu.sd.facade.populator.SdUserDataPopulator"/>
-
-    <alias name="sdUserGroupDataPopulator" alias="userGroupDataPopulator"/>
-    <bean id="sdUserGroupDataPopulator" class="com.hkt.btu.sd.facade.populator.SdUserGroupDataPopulator"/>
-
     <alias name="sdConfigParamDataPopulator" alias="configParamDataPopulator"/>
+    <alias name="sdConfigParamDataPopulator" alias="btuConfigParamDataPopulator"/>
     <bean id="sdConfigParamDataPopulator" class="com.hkt.btu.sd.facade.populator.SdConfigParamDataPopulator"/>
-
-    <alias name="sdSiteInstanceDataPopulator" alias="siteInstanceDataPopulator"/>
-    <bean id="sdSiteInstanceDataPopulator" class="com.hkt.btu.sd.facade.populator.SdSiteConfigDataPopulator"/>
 
     <alias name="sdCronJobProfileDataPopulator" alias="cronJobProfileDataPopulator"/>
     <alias name="sdCronJobProfileDataPopulator" alias="btuCronJobProfileDataPopulator"/>
@@ -86,14 +86,23 @@
     <alias name="sdCronJobInstDataPopulator" alias="btuCronJobInstDataPopulator"/>
     <bean id="sdCronJobInstDataPopulator" class="com.hkt.btu.sd.facade.populator.SdCronJobInstDataPopulator"/>
 
+    <alias name="sdReportProfileDataPopulator" alias="reportProfileDataPopulator"/>
+    <alias name="sdReportProfileDataPopulator" alias="btuReportProfileDataPopulator"/>
+    <bean id="sdReportProfileDataPopulator" class="com.hkt.btu.sd.facade.populator.SdReportProfileDataPopulator"/>
+
+    <alias name="sdUserDataPopulator" alias="userDataPopulator"/>
+    <bean id="sdUserDataPopulator" class="com.hkt.btu.sd.facade.populator.SdUserDataPopulator"/>
+
+    <alias name="sdUserGroupDataPopulator" alias="userGroupDataPopulator"/>
+    <bean id="sdUserGroupDataPopulator" class="com.hkt.btu.sd.facade.populator.SdUserGroupDataPopulator"/>
+
+    <alias name="sdSiteInstanceDataPopulator" alias="siteInstanceDataPopulator"/>
+    <bean id="sdSiteInstanceDataPopulator" class="com.hkt.btu.sd.facade.populator.SdSiteConfigDataPopulator"/>
+
     <bean id="requestCreateSearchResultDataPopulator" class="com.hkt.btu.sd.facade.populator.RequestCreateSearchResultDataPopulator"/>
 
     <alias name="sdUserRoleDataPopulator" alias="userRoleDataPopulator"/>
     <bean id="sdUserRoleDataPopulator" class="com.hkt.btu.sd.facade.populator.SdUserRoleDataPopulator"/>
-
-    <alias name="sdReportProfileDataPopulator" alias="reportProfileDataPopulator"/>
-    <alias name="sdReportProfileDataPopulator" alias="btuReportProfileDataPopulator"/>
-    <bean id="sdReportProfileDataPopulator" class="com.hkt.btu.sd.facade.populator.SdReportProfileDataPopulator"/>
 
     <alias name="sdUserRolePathCtrlPopulator" alias="userRolePathCtrlDataPopulator"/>
     <bean id="sdUserRolePathCtrlPopulator" class="com.hkt.btu.sd.facade.populator.SdUserRolePathCtrlPopulator"/>

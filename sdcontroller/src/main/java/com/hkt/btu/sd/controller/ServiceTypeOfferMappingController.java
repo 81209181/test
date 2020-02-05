@@ -4,7 +4,7 @@ import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.facade.SdServiceTypeFacade;
 import com.hkt.btu.sd.facade.data.SdServiceTypeData;
 import com.hkt.btu.sd.facade.data.SdServiceTypeOfferMappingData;
-import com.hkt.btu.sd.facade.data.UpdateServiceTypeOfferMappingData;
+import com.hkt.btu.sd.facade.data.SdUpdateServiceTypeOfferMappingData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -56,7 +56,7 @@ public class ServiceTypeOfferMappingController {
     }
 
     @PostMapping("/update-service-type-mapping")
-    public ResponseEntity<?> updateServiceTypeOfferMapping(@Validated UpdateServiceTypeOfferMappingData data,
+    public ResponseEntity<?> updateServiceTypeOfferMapping(@Validated SdUpdateServiceTypeOfferMappingData data,
                                                            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body("service type code/offer name is empty or this mapping already existed.");

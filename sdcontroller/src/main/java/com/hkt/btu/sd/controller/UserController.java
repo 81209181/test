@@ -4,7 +4,7 @@ import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.facade.SdAuditTrailFacade;
 import com.hkt.btu.sd.facade.SdUserFacade;
 import com.hkt.btu.sd.facade.data.SdUserData;
-import com.hkt.btu.sd.facade.data.UpdatePwdFormData;
+import com.hkt.btu.sd.facade.data.SdUpdatePwdFormData;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +28,7 @@ public class UserController {
     }
 
     @GetMapping("/my-account")
-    public String myAccount(@ModelAttribute("updatePwdFormData") UpdatePwdFormData updatePwdFormData) {
+    public String myAccount(@ModelAttribute("updatePwdFormData") SdUpdatePwdFormData updatePwdFormData) {
         return "user/myAccount";
     }
 
@@ -44,7 +44,7 @@ public class UserController {
     }
 
     @PostMapping("/my-account/update-pwd")
-    public ResponseEntity<?> updatePwd(@Valid @RequestBody UpdatePwdFormData updatePwdFormData) {
+    public ResponseEntity<?> updatePwd(@Valid @RequestBody SdUpdatePwdFormData updatePwdFormData) {
         String errorMsg = userFacade.updateCurrentUserPwd(updatePwdFormData);
         if(errorMsg==null){
             return ResponseEntity.ok(SimpleAjaxResponse.of());

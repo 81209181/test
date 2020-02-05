@@ -1,8 +1,7 @@
 package com.hkt.btu.sd.facade;
 
-import com.hkt.btu.sd.facade.data.BesCustomerData;
-import com.hkt.btu.sd.facade.data.BesSubFaultData;
-import com.hkt.btu.sd.facade.data.BesSubscriberData;
+import com.hkt.btu.sd.facade.data.bes.BesCustomerData;
+import com.hkt.btu.sd.facade.data.bes.BesSubscriberData;
 
 public interface BesApiFacade {
 

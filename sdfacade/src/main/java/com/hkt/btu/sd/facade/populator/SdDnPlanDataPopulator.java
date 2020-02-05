@@ -5,7 +5,7 @@ import com.hkt.btu.common.facade.populator.AbstractDataPopulator;
 import com.hkt.btu.sd.facade.constant.DnPlanActionEnum;
 import com.hkt.btu.sd.facade.data.SdCronJobInstData;
 import com.hkt.btu.sd.facade.data.SdDnPlanData;
-import com.hkt.btu.sd.facade.data.nora.NoraDnPlanData;
+import com.hkt.btu.sd.facade.data.norars.NoraDnPlanData;
 
 public class SdDnPlanDataPopulator extends AbstractDataPopulator<SdCronJobInstData> {
 

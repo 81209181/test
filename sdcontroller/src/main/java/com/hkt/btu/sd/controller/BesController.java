@@ -1,7 +1,7 @@
 package com.hkt.btu.sd.controller;
 
 import com.hkt.btu.sd.facade.SdTicketFacade;
-import com.hkt.btu.sd.facade.data.BesSubFaultData;
+import com.hkt.btu.sd.facade.data.bes.BesSubFaultData;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;

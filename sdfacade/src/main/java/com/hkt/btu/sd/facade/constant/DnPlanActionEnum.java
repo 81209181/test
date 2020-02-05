@@ -2,7 +2,7 @@ package com.hkt.btu.sd.facade.constant;
 
 import org.apache.commons.lang3.StringUtils;
 
-import static com.hkt.btu.sd.facade.data.nora.NoraDnPlanData.ACTION;
+import static com.hkt.btu.sd.facade.data.norars.NoraDnPlanData.ACTION;
 
 
 public enum DnPlanActionEnum {

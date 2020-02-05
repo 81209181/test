@@ -12,27 +12,27 @@ public interface SdUserFacade {
 
     SdUserData getUserByUserId(String userId);
 
-    CreateResultData createPccwHktUser(CreateUserFormData createUserFormData);
+    SdCreateResultData createPccwHktUser(SdCreateUserFormData createUserFormData);
 
-    CreateResultData createNonPccwHktUser(CreateUserFormData createUserFormData);
+    SdCreateResultData createNonPccwHktUser(SdCreateUserFormData createUserFormData);
 
-    CreateResultData createLdapUser(CreateUserFormData createUserFormData);
+    SdCreateResultData createLdapUser(SdCreateUserFormData createUserFormData);
 
-    String updateUser(UpdateUserFormData updateUserFormData);
+    String updateUser(SdUpdateUserFormData updateUserFormData);
 
-    ChangeUserTypeResultData changeUserTypeToPccwOrHktUser(ChangeUserTypeFormData changeUserTypeFormData);
+    SdChangeUserTypeResultData changeUserTypeToPccwOrHktUser(SdChangeUserTypeFormData changeUserTypeFormData);
 
-    ChangeUserTypeResultData changeUserTypeToNonPccwOrHktUser(ChangeUserTypeFormData changeUserTypeFormData);
+    SdChangeUserTypeResultData changeUserTypeToNonPccwOrHktUser(SdChangeUserTypeFormData changeUserTypeFormData);
 
-    ChangeUserTypeResultData changeUserTypeToLdapUser(ChangeUserTypeFormData changeUserTypeFormData);
+    SdChangeUserTypeResultData changeUserTypeToLdapUser(SdChangeUserTypeFormData changeUserTypeFormData);
 
     String activateUser(String userId);
 
     String deactivateUser(String userId);
 
-    String updateCurrentUserPwd(UpdatePwdFormData updatePwdFormData);
+    String updateCurrentUserPwd(SdUpdatePwdFormData updatePwdFormData);
 
-    String resetPassword(ResetPwdFormData resetPwdFormData);
+    String resetPassword(SdResetPwdFormData resetPwdFormData);
 
     String requestResetPassword(String email);
 

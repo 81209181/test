@@ -1,7 +1,7 @@
 package com.hkt.btu.sd.facade;
 
-import com.hkt.btu.sd.facade.data.ItsmSearchProfileResponseData;
-import com.hkt.btu.sd.facade.data.ItsmTenantData;
+import com.hkt.btu.sd.facade.data.itsm.ItsmSearchProfileResponseData;
+import com.hkt.btu.sd.facade.data.itsm.ItsmTenantData;
 
 public interface ItsmApiFacade {
     ItsmSearchProfileResponseData searchProfileByCustName(String custName);

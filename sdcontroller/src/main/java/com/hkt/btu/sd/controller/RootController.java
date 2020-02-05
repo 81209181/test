@@ -3,7 +3,7 @@ package com.hkt.btu.sd.controller;
 import com.hkt.btu.common.spring.security.web.authentication.BtuLoginUrlAuthenticationEntryPoint.LOGIN_ERROR;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.facade.SdUserFacade;
-import com.hkt.btu.sd.facade.data.ResetPwdFormData;
+import com.hkt.btu.sd.facade.data.SdResetPwdFormData;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 
@@ -53,7 +52,7 @@ public class RootController {
                                 @RequestParam(defaultValue = "false") boolean init,
                                 @RequestParam(required = false) String otp,
                                 @ModelAttribute("isInit") String isInit,
-                                @ModelAttribute("resetPwdFormData") ResetPwdFormData resetPwdFormData) {
+                                @ModelAttribute("resetPwdFormData") SdResetPwdFormData resetPwdFormData) {
         model.addAttribute("isInit", init);
 
         if (!StringUtils.isEmpty(otp)) {
@@ -65,7 +64,7 @@ public class RootController {
     }
 
     @PostMapping(value = "reset-password")
-    public ResponseEntity<?> resetPassword(@Valid ResetPwdFormData resetPwdFormData) {
+    public ResponseEntity<?> resetPassword(@Valid SdResetPwdFormData resetPwdFormData) {
         String errorMsg = sdUserFacade.resetPassword(resetPwdFormData);
         if (errorMsg == null) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());

@@ -11,8 +11,8 @@ import com.hkt.btu.sd.facade.NorarsApiFacade;
 import com.hkt.btu.sd.facade.SdAuditTrailFacade;
 import com.hkt.btu.sd.facade.data.SdDnGroupData;
 import com.hkt.btu.sd.facade.data.SdDnPlanData;
-import com.hkt.btu.sd.facade.data.ServiceAddressData;
-import com.hkt.btu.sd.facade.data.nora.*;
+import com.hkt.btu.sd.facade.data.SdServiceAddressData;
+import com.hkt.btu.sd.facade.data.norars.*;
 import com.hkt.btu.sd.facade.populator.SdDnGroupDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdDnPlanDataPopulator;
 import org.apache.commons.collections4.CollectionUtils;
@@ -155,11 +155,11 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
     }
 
     @Override
-    public ServiceAddressData getServiceAddressByBsn(String bsn) {
+    public SdServiceAddressData getServiceAddressByBsn(String bsn) {
         String apiPath = "/norars/api/v1/onecomm/address/" + bsn;
         NoraAddressInfoData noraAddressInfoData = getData(apiPath, NoraAddressInfoData.class, null);
         if (noraAddressInfoData != null) {
-            ServiceAddressData data = new ServiceAddressData();
+            SdServiceAddressData data = new SdServiceAddressData();
             data.setServiceAddress(getAddressString(noraAddressInfoData));
             data.setGridId(noraAddressInfoData.getAddr14());
             data.setExchangeBuildingId(noraAddressInfoData.getAddr15());

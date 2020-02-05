@@ -1,12 +1,12 @@
 package com.hkt.btu.sd.facade.populator;
 
 import com.hkt.btu.common.facade.populator.AbstractDataPopulator;
-import com.hkt.btu.sd.facade.data.RequestCreateSearchResultData;
+import com.hkt.btu.sd.facade.data.SdRequestCreateSearchResultData;
 import com.hkt.btu.sd.facade.data.SdTicketServiceInfoData;
 
 public class SdTicketServiceInfoDataPopulator extends AbstractDataPopulator<SdTicketServiceInfoData> {
 
-    public void populateFormRequestCreateSearchResultData(RequestCreateSearchResultData source, SdTicketServiceInfoData target) {
+    public void populateFormRequestCreateSearchResultData(SdRequestCreateSearchResultData source, SdTicketServiceInfoData target) {
         target.setServiceStatus(source.getServiceStatus());
         target.setServiceStatusDesc(source.getServiceStatusDesc());
         target.setSubsId(source.getSubsId());

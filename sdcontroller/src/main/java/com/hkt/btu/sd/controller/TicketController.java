@@ -1,13 +1,14 @@
 package com.hkt.btu.sd.controller;
 
 import com.hkt.btu.common.core.exception.InvalidInputException;
+import com.hkt.btu.common.facade.data.BtuCodeDescData;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
 import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.data.*;
-import com.hkt.btu.sd.facade.data.nora.NoraAccountData;
-import com.hkt.btu.sd.facade.data.nora.NoraBroadbandInfoData;
+import com.hkt.btu.sd.facade.data.norars.NoraAccountData;
+import com.hkt.btu.sd.facade.data.norars.NoraBroadbandInfoData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
 import com.hkt.btu.sd.facade.data.wfm.WfmMakeApptData;
 import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
@@ -66,7 +67,7 @@ public class TicketController {
         List<SdTicketMasData> pendingTicketDataList = ticketFacade.getPendingTicketList(searchValue);
 
         // search service
-        RequestCreateSearchResultsData resultsData = requestCreateFacade.searchProductList(searchKey, searchValue);
+        SdRequestCreateSearchResultsData resultsData = requestCreateFacade.searchProductList(searchKey, searchValue);
         if (StringUtils.isNotEmpty(resultsData.getErrorMsg())) {
             return ResponseEntity.badRequest().body(resultsData.getErrorMsg());
         } else {
@@ -80,7 +81,7 @@ public class TicketController {
     }
 
     @PostMapping("service-identity/checkPendingOrder")
-    public ResponseEntity<?> checkPendingOrder(QueryTicketRequestData queryTicketRequestData) {
+    public ResponseEntity<?> checkPendingOrder(SdQueryTicketRequestData queryTicketRequestData) {
         if (StringUtils.isEmpty(queryTicketRequestData.getServiceNo()) || StringUtils.isEmpty(queryTicketRequestData.getServiceType())) {
             return ResponseEntity.badRequest().body("Service No. / Service Type is empty.");
         }
@@ -94,7 +95,7 @@ public class TicketController {
             } else if (StringUtils.isNotEmpty(pendingOrderData.getErrorMsg())) {
                 return ResponseEntity.badRequest().body(pendingOrderData.getErrorMsg());
             } else if (pendingOrderData.getOrderId() != null) {
-                return ResponseEntity.ok(ResponseTicketData.of(false, pendingOrderData.getOrderId()));
+                return ResponseEntity.ok(SdResponseTicketData.of(false, pendingOrderData.getOrderId()));
             }
         }
 
@@ -102,7 +103,7 @@ public class TicketController {
     }
 
     @PostMapping("service-identity/createQueryTicket")
-    public ResponseEntity<?> createQueryTicket(QueryTicketRequestData queryTicketRequestData) {
+    public ResponseEntity<?> createQueryTicket(SdQueryTicketRequestData queryTicketRequestData) {
         if (StringUtils.isEmpty(queryTicketRequestData.getServiceNo()) || StringUtils.isEmpty(queryTicketRequestData.getServiceType())) {
             return ResponseEntity.badRequest().body("Service No. / Service Type is empty.");
         }
@@ -110,12 +111,12 @@ public class TicketController {
         // check pending ticket of same service number
         List<SdTicketMasData> dataList = ticketFacade.getPendingTicketList(queryTicketRequestData.getServiceNo());
         if (CollectionUtils.isNotEmpty(dataList)) {
-            return ResponseEntity.ok(ResponseTicketData.of(false, dataList));
+            return ResponseEntity.ok(SdResponseTicketData.of(false, dataList));
         }
 
         // create ticket
         try {
-            return ResponseEntity.ok(ResponseTicketData.of(true, ticketFacade.createQueryTicket(queryTicketRequestData)));
+            return ResponseEntity.ok(SdResponseTicketData.of(true, ticketFacade.createQueryTicket(queryTicketRequestData)));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -156,12 +157,12 @@ public class TicketController {
 
     @GetMapping("/search-ticket")
     public String searchTicket(Model model) {
-        List<CodeDescData> ticketStatusList = ticketFacade.getTicketStatusList();
+        List<BtuCodeDescData> ticketStatusList = ticketFacade.getTicketStatusList();
         if (CollectionUtils.isNotEmpty(ticketStatusList)) {
             model.addAttribute("ticketStatusList", ticketStatusList);
         }
 
-        List<CodeDescData> ticketTypeList = ticketFacade.getTicketTypeList();
+        List<BtuCodeDescData> ticketTypeList = ticketFacade.getTicketTypeList();
         if (CollectionUtils.isNotEmpty(ticketTypeList)) {
             model.addAttribute("ticketTypeList", ticketTypeList);
         }
@@ -215,9 +216,9 @@ public class TicketController {
     }
 
     @PostMapping("/service/update")
-    public ResponseEntity<?> updateServiceInfo(@RequestBody List<RequestTicketServiceData> ticketServiceList) {
+    public ResponseEntity<?> updateServiceInfo(@RequestBody List<SdRequestTicketServiceData> ticketServiceList) {
         try {
-            ticketServiceList.stream().map(RequestTicketServiceData::getTicketMasId).findFirst().ifPresent(ticketMasId -> {
+            ticketServiceList.stream().map(SdRequestTicketServiceData::getTicketMasId).findFirst().ifPresent(ticketMasId -> {
                 ticketFacade.isAllow(ticketMasId, StringUtils.EMPTY);
             });
         } catch (Exception e) {
@@ -360,7 +361,7 @@ public class TicketController {
 
     @GetMapping("/getAppointmentInfo")
     public ResponseEntity<?> getAppointmentInfo(@RequestParam Integer ticketMasId) {
-        AppointmentData appointmentData = ticketFacade.getAppointmentData(ticketMasId);
+        SdAppointmentData appointmentData = ticketFacade.getAppointmentData(ticketMasId);
         if (appointmentData != null) {
             return ResponseEntity.ok(appointmentData);
         }

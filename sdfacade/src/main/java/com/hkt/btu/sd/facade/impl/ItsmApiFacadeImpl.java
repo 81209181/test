@@ -4,9 +4,9 @@ import com.hkt.btu.common.core.service.bean.BtuApiProfileBean;
 import com.hkt.btu.common.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.core.service.SdApiService;
 import com.hkt.btu.sd.facade.ItsmApiFacade;
-import com.hkt.btu.sd.facade.data.ItsmProfileData;
-import com.hkt.btu.sd.facade.data.ItsmSearchProfileResponseData;
-import com.hkt.btu.sd.facade.data.ItsmTenantData;
+import com.hkt.btu.sd.facade.data.itsm.ItsmProfileData;
+import com.hkt.btu.sd.facade.data.itsm.ItsmSearchProfileResponseData;
+import com.hkt.btu.sd.facade.data.itsm.ItsmTenantData;
 import org.apache.commons.collections4.CollectionUtils;
 
 import javax.annotation.Resource;

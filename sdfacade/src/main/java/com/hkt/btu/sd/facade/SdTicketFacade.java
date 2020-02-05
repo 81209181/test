@@ -1,9 +1,11 @@
 package com.hkt.btu.sd.facade;
 
 import com.hkt.btu.common.core.exception.InvalidInputException;
+import com.hkt.btu.common.facade.data.BtuCodeDescData;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.core.exception.ApiException;
 import com.hkt.btu.sd.facade.data.*;
+import com.hkt.btu.sd.facade.data.bes.BesSubFaultData;
 import com.hkt.btu.sd.facade.data.cloud.HktCloudCaseData;
 import com.hkt.btu.sd.facade.data.cloud.HktCloudViewData;
 import com.hkt.btu.sd.facade.data.wfm.WfmMakeApptData;
@@ -14,7 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface SdTicketFacade {
-    int createQueryTicket(QueryTicketRequestData queryTicketRequestData);
+    int createQueryTicket(SdQueryTicketRequestData queryTicketRequestData);
 
     Optional<SdTicketMasData> getTicket(Integer ticketId);
 
@@ -28,7 +30,7 @@ public interface SdTicketFacade {
 
     List<SdTicketServiceData> getServiceInfo(Integer ticketMasId);
 
-    String updateServiceInfo(List<RequestTicketServiceData> serviceList);
+    String updateServiceInfo(List<SdRequestTicketServiceData> serviceList);
 
     List<SdTicketRemarkData> getTicketRemarksByTicketId(Integer ticketMasId);
 
@@ -36,7 +38,7 @@ public interface SdTicketFacade {
 
     void updateJobIdInService(Integer jobId, int ticketMasId);
 
-    AppointmentData getAppointmentData(Integer ticketMasId);
+    SdAppointmentData getAppointmentData(Integer ticketMasId);
 
     List<SdSymptomData> getSymptom(Integer ticketMasId);
 
@@ -55,11 +57,11 @@ public interface SdTicketFacade {
 
     void createJob4Wfm(int ticketMasId) throws InvalidInputException, ApiException;
 
-    List<CodeDescData> getTicketStatusList();
+    List<BtuCodeDescData> getTicketStatusList();
 
-    List<CodeDescData> getTicketTypeList();
+    List<BtuCodeDescData> getTicketTypeList();
 
-    TeamSummaryData getTeamSummary();
+    SdTeamSummaryData getTeamSummary();
 
     WfmMakeApptData getMakeApptDataByTicketDetId(Integer ticketDetId);
 

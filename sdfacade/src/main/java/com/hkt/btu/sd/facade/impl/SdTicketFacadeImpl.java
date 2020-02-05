@@ -2,6 +2,7 @@ package com.hkt.btu.sd.facade.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hkt.btu.common.core.exception.InvalidInputException;
+import com.hkt.btu.common.facade.data.BtuCodeDescData;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.core.exception.ApiException;
 import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
@@ -16,6 +17,8 @@ import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.WfmApiFacade;
 import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
 import com.hkt.btu.sd.facade.data.*;
+import com.hkt.btu.sd.facade.data.bes.BesFaultInfoData;
+import com.hkt.btu.sd.facade.data.bes.BesSubFaultData;
 import com.hkt.btu.sd.facade.data.cloud.Attachment;
 import com.hkt.btu.sd.facade.data.cloud.Attribute;
 import com.hkt.btu.sd.facade.data.cloud.HktCloudCaseData;
@@ -76,7 +79,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     SdTicketUploadFileDataPopulator ticketUploadFileDataPopulator;
 
     @Override
-    public int createQueryTicket(QueryTicketRequestData queryTicketRequestData) {
+    public int createQueryTicket(SdQueryTicketRequestData queryTicketRequestData) {
         if (!ServiceSearchEnum.TENANT_ID.getKey().equalsIgnoreCase(queryTicketRequestData.getSearchKey())) {
             if (StringUtils.isBlank(queryTicketRequestData.getCustCode())) {
                 throw new InvalidInputException("Customer Code is Empty.");
@@ -262,7 +265,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public String updateServiceInfo(List<RequestTicketServiceData> serviceList) {
+    public String updateServiceInfo(List<SdRequestTicketServiceData> serviceList) {
         if (CollectionUtils.isEmpty(serviceList)) {
             return "update service info failed.";
         }
@@ -318,7 +321,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public AppointmentData getAppointmentData(Integer ticketMasId) {
+    public SdAppointmentData getAppointmentData(Integer ticketMasId) {
         if (ticketMasId == null) {
             LOG.warn("Empty ticketMasId.");
             return null;
@@ -351,7 +354,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             String appointmentEndStr = appointmentEndDateTime == null ? StringUtils.EMPTY : "-" + appointmentEndDateTime.toLocalTime().toString();
             String appointmentDateStr = String.format("%s%s", appointmentStartStr, appointmentEndStr);
 
-            AppointmentData appointmentData = new AppointmentData();
+            SdAppointmentData appointmentData = new SdAppointmentData();
             appointmentData.setAppointmentDateStr(appointmentDateStr);
             return appointmentData;
         } catch (DateTimeParseException e) {
@@ -553,15 +556,15 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public List<CodeDescData> getTicketStatusList() {
+    public List<BtuCodeDescData> getTicketStatusList() {
         List<TicketStatusEnum> ticketStatusEnumList = ticketService.getTicketStatusList();
         if (CollectionUtils.isEmpty(ticketStatusEnumList)) {
             return null;
         }
 
-        List<CodeDescData> codeDescDataList = new ArrayList<>();
+        List<BtuCodeDescData> codeDescDataList = new ArrayList<>();
         for (TicketStatusEnum ticketStatusEnum : ticketStatusEnumList) {
-            CodeDescData codeDescData = new CodeDescData();
+            BtuCodeDescData codeDescData = new BtuCodeDescData();
             codeDescData.setCode(ticketStatusEnum.getStatusCode());
             codeDescData.setCodeDesc(ticketStatusEnum.getStatusDesc());
             codeDescDataList.add(codeDescData);
@@ -570,15 +573,15 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public List<CodeDescData> getTicketTypeList() {
+    public List<BtuCodeDescData> getTicketTypeList() {
         List<TicketTypeEnum> ticketTypeEnumList = ticketService.getTicketTypeList();
         if (CollectionUtils.isEmpty(ticketTypeEnumList)) {
             return null;
         }
 
-        List<CodeDescData> codeDescDataList = new ArrayList<>();
+        List<BtuCodeDescData> codeDescDataList = new ArrayList<>();
         for (TicketTypeEnum ticketTypeEnum : ticketTypeEnumList) {
-            CodeDescData codeDescData = new CodeDescData();
+            BtuCodeDescData codeDescData = new BtuCodeDescData();
             codeDescData.setCode(ticketTypeEnum.getTypeCode());
             codeDescData.setCodeDesc(ticketTypeEnum.getTypeDesc());
             codeDescDataList.add(codeDescData);
@@ -587,8 +590,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public TeamSummaryData getTeamSummary() {
-        TeamSummaryData data = new TeamSummaryData();
+    public SdTeamSummaryData getTeamSummary() {
+        SdTeamSummaryData data = new SdTeamSummaryData();
         TeamSummaryBean summaryBean = ticketService.getTeamSummary();
         teamSummaryDataPopulator.populate(summaryBean, data);
         return data;
