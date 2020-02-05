@@ -1,11 +1,11 @@
 package com.hkt.btu.sd.facade.populator;
 
 import com.hkt.btu.common.facade.populator.AbstractDataPopulator;
-import com.hkt.btu.sd.core.service.bean.UTCallPageBean;
+import com.hkt.btu.sd.core.service.bean.SdUtCallPageBean;
 import com.hkt.btu.sd.facade.data.*;
 
 public class UTCallPageDataPopulator extends AbstractDataPopulator<SdUtCallPageData> {
-    public void populate(UTCallPageBean source, SdUtCallPageData target) {
+    public void populate(SdUtCallPageBean source, SdUtCallPageData target) {
         target.setUtCallId(source.getUtCallId());
         target.setBsnNum(source.getBsnNum());
         target.setCode(source.getCode());

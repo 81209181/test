@@ -2,13 +2,10 @@ package com.hkt.btu.sd.core.service.populator;
 
 import com.hkt.btu.common.core.service.populator.AbstractBeanPopulator;
 import com.hkt.btu.sd.core.dao.entity.UTCallPageEntity;
-import com.hkt.btu.sd.core.service.bean.UTCallPageBean;
-import org.apache.commons.lang3.StringUtils;
+import com.hkt.btu.sd.core.service.bean.SdUtCallPageBean;
 
-import java.util.Map;
-
-public class UTCallPageBeanPopulator extends AbstractBeanPopulator<UTCallPageBean> {
-    public void populate(UTCallPageEntity source, UTCallPageBean target) {
+public class UTCallPageBeanPopulator extends AbstractBeanPopulator<SdUtCallPageBean> {
+    public void populate(UTCallPageEntity source, SdUtCallPageBean target) {
         super.populate(source, target);
 
         target.setUtCallId(source.getUtCallId());

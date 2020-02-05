@@ -3,7 +3,7 @@ package com.hkt.btu.sd.core.service.bean;
 import com.hkt.btu.common.core.service.bean.BaseBean;
 import java.time.LocalDateTime;
 
-public class UTCallRequestBean extends BaseBean{
+public class SdUtCallPageBean extends BaseBean{
     private Integer utCallId;
     private String bsnNum;
     private String code;
@@ -11,6 +11,7 @@ public class UTCallRequestBean extends BaseBean{
     private String serviceCode;
     private String seq;
     private String seqType;
+    private String testStatus;
     private LocalDateTime lastCheckDate;
     private Integer ticketDetId;
 
@@ -68,6 +69,14 @@ public class UTCallRequestBean extends BaseBean{
 
     public void setSeqType(String seqType) {
         this.seqType = seqType;
+    }
+
+    public String getTestStatus() {
+        return testStatus;
+    }
+
+    public void setTestStatus(String testStatus) {
+        this.testStatus = testStatus;
     }
 
     public LocalDateTime getLastCheckDate() {

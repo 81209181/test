@@ -1,7 +1,6 @@
 package com.hkt.btu.sd.core.service;
 
-import com.hkt.btu.sd.core.service.bean.UTCallRequestBean;
-import com.hkt.btu.sd.core.service.bean.UTCallPageBean;
+import com.hkt.btu.sd.core.service.bean.SdUtCallPageBean;
 
 import java.util.List;
 import java.util.Map;
@@ -13,5 +12,5 @@ public interface SdUtCallService {
     void updateUTCallResultRecord(String utCallId, String code, String msg, List<Map<String, String>> utSummary);
     void updateRequestAfterGetResult(String utCallId);
     boolean utCallResultRecordExist(String utCallId);
-    List<UTCallPageBean> getUTCallRequestRecordList();
+    List<SdUtCallPageBean> getUTCallRequestRecordList();
 }

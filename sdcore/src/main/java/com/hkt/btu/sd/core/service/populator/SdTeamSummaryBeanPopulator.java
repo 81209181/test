@@ -2,11 +2,11 @@ package com.hkt.btu.sd.core.service.populator;
 
 import com.hkt.btu.common.core.service.populator.AbstractBeanPopulator;
 import com.hkt.btu.sd.core.dao.entity.StatusSummaryEntity;
-import com.hkt.btu.sd.core.service.bean.TeamSummaryBean;
+import com.hkt.btu.sd.core.service.bean.SdTeamSummaryBean;
 
-public class SdTeamSummaryBeanPopulator extends AbstractBeanPopulator<TeamSummaryBean> {
+public class SdTeamSummaryBeanPopulator extends AbstractBeanPopulator<SdTeamSummaryBean> {
 
-    public void populate(StatusSummaryEntity source, TeamSummaryBean target) {
+    public void populate(StatusSummaryEntity source, SdTeamSummaryBean target) {
         switch (source.getStatus()) {
             case "O":
                 target.setOpenQueryCount(source.getQueryCnt());

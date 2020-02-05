@@ -592,7 +592,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     @Override
     public SdTeamSummaryData getTeamSummary() {
         SdTeamSummaryData data = new SdTeamSummaryData();
-        TeamSummaryBean summaryBean = ticketService.getTeamSummary();
+        SdTeamSummaryBean summaryBean = ticketService.getTeamSummary();
         teamSummaryDataPopulator.populate(summaryBean, data);
         return data;
     }

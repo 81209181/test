@@ -3,7 +3,7 @@ package com.hkt.btu.sd.core.service.bean;
 import com.hkt.btu.common.core.service.bean.BaseBean;
 import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
 
-public class StatusSummaryBean extends BaseBean {
+public class SdStatusSummaryBean extends BaseBean {
 
     private TicketStatusEnum status;
     private int queryCnt;

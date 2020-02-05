@@ -7,7 +7,7 @@ import com.hkt.btu.sd.core.dao.mapper.UtCallResultRecordMapper;
 import com.hkt.btu.sd.core.dao.mapper.UTCallMapper;
 //import com.hkt.btu.sd.core.service.SdConfigParamService;
 import com.hkt.btu.sd.core.dao.entity.UTCallPageEntity;
-import com.hkt.btu.sd.core.service.bean.UTCallPageBean;
+import com.hkt.btu.sd.core.service.bean.SdUtCallPageBean;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
 import com.hkt.btu.common.core.exception.InvalidInputException;
@@ -133,12 +133,12 @@ public class SdUtCallServiceImpl implements SdUtCallService {
     }
 
     @Override
-    public List<UTCallPageBean> getUTCallRequestRecordList(){
-        List<UTCallPageBean> utCallRecordListBean = new ArrayList();
+    public List<SdUtCallPageBean> getUTCallRequestRecordList(){
+        List<SdUtCallPageBean> utCallRecordListBean = new ArrayList();
         List<UTCallPageEntity> utCallRecordList = utCallMapper.getUTCallRecord();
 
         for (UTCallPageEntity entity : utCallRecordList){
-            UTCallPageBean bean = new UTCallPageBean();
+            SdUtCallPageBean bean = new SdUtCallPageBean();
             utCallPageBeanPopulator.populate(entity, bean);
             utCallRecordListBean.add(bean);
         }

@@ -413,11 +413,11 @@ public class SdTicketServiceImpl implements SdTicketService {
     }
 
     @Override
-    public TeamSummaryBean getTeamSummary() {
+    public SdTeamSummaryBean getTeamSummary() {
         SdUserBean currentUserBean = userService.getCurrentSdUserBean();
         String owningRole = currentUserBean.getPrimaryRoleId();
 
-        TeamSummaryBean teamSummaryBean = new TeamSummaryBean();
+        SdTeamSummaryBean teamSummaryBean = new SdTeamSummaryBean();
 
         // get data
         List<StatusSummaryEntity> countStatus = ticketMasMapper.getCountStatusByTicketType(owningRole);

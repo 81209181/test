@@ -6,7 +6,7 @@ import com.hkt.btu.common.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.core.service.SdApiService;
 import com.hkt.btu.sd.core.service.SdUtCallService;
 import com.hkt.btu.sd.core.service.bean.SdApiProfileBean;
-import com.hkt.btu.sd.core.service.bean.UTCallPageBean;
+import com.hkt.btu.sd.core.service.bean.SdUtCallPageBean;
 import com.hkt.btu.sd.facade.UtApiFacade;
 import com.hkt.btu.sd.facade.data.SdUtCallPageData;
 import com.hkt.btu.sd.facade.data.ut.UtCallProgressData;
@@ -144,9 +144,9 @@ public class UtApiFacadeImpl extends AbstractRestfulApiFacade implements UtApiFa
     @Override
     public List<SdUtCallPageData> getUTCallRequestRecordList(){
         List<SdUtCallPageData> utCallRecordListData = new ArrayList<>();
-        List<UTCallPageBean> utCallRecordList = sdUtCallService.getUTCallRequestRecordList();
+        List<SdUtCallPageBean> utCallRecordList = sdUtCallService.getUTCallRequestRecordList();
 
-        for (UTCallPageBean bean : utCallRecordList){
+        for (SdUtCallPageBean bean : utCallRecordList){
             SdUtCallPageData data = new SdUtCallPageData();
             utCallPageDataPopulator.populate(bean, data);
             utCallRecordListData.add(data);

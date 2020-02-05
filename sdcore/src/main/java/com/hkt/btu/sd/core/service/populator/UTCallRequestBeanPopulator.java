@@ -3,13 +3,10 @@ package com.hkt.btu.sd.core.service.populator;
 
 import com.hkt.btu.common.core.service.populator.AbstractBeanPopulator;
 import com.hkt.btu.sd.core.dao.entity.UTCallRequestEntity;
-import com.hkt.btu.sd.core.service.bean.UTCallRequestBean;
-import org.apache.commons.lang3.StringUtils;
+import com.hkt.btu.sd.core.service.bean.SdUtCallRequestBean;
 
-import java.util.Map;
-
-public class UTCallRequestBeanPopulator extends AbstractBeanPopulator<UTCallRequestBean> {
-    public void populate(UTCallRequestEntity source, UTCallRequestBean target) {
+public class UTCallRequestBeanPopulator extends AbstractBeanPopulator<SdUtCallRequestBean> {
+    public void populate(UTCallRequestEntity source, SdUtCallRequestBean target) {
         super.populate(source, target);
 
         target.setUtCallId(source.getUtCallId());

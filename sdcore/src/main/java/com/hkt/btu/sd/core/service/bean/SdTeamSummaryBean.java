@@ -2,7 +2,7 @@ package com.hkt.btu.sd.core.service.bean;
 
 import com.hkt.btu.common.core.service.bean.BaseBean;
 
-public class TeamSummaryBean extends BaseBean {
+public class SdTeamSummaryBean extends BaseBean {
 
     private int queryTotal;
     private int jobTotal;

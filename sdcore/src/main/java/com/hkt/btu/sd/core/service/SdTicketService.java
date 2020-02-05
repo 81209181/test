@@ -66,7 +66,7 @@ public interface SdTicketService {
 
     List<TicketTypeEnum> getTicketTypeList();
 
-    TeamSummaryBean getTeamSummary();
+    SdTeamSummaryBean getTeamSummary();
 
     long countServiceBySubscriberId(String subscriberId);
 

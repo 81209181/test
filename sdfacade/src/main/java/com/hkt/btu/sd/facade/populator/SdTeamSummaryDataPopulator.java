@@ -1,12 +1,12 @@
 package com.hkt.btu.sd.facade.populator;
 
 import com.hkt.btu.common.facade.populator.AbstractDataPopulator;
-import com.hkt.btu.sd.core.service.bean.TeamSummaryBean;
+import com.hkt.btu.sd.core.service.bean.SdTeamSummaryBean;
 import com.hkt.btu.sd.facade.data.SdTeamSummaryData;
 
 public class SdTeamSummaryDataPopulator extends AbstractDataPopulator<SdTeamSummaryData> {
 
-    public void populate(TeamSummaryBean source, SdTeamSummaryData target) {
+    public void populate(SdTeamSummaryBean source, SdTeamSummaryData target) {
         target.setQueryTotal(source.getQueryTotal());
         target.setJobTotal(source.getJobTotal());
         target.setOpenQueryCount(source.getOpenQueryCount());
