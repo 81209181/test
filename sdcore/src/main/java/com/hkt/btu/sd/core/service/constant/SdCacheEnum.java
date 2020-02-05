@@ -1,14 +1,32 @@
 package com.hkt.btu.sd.core.service.constant;
 
+import com.hkt.btu.sd.core.dao.entity.SdConfigParamEntity;
 import org.apache.commons.lang3.StringUtils;
 
 public enum SdCacheEnum {
-    SERVICE_TYPE_LIST ("Service Type List", 20, false,false,
+    // servicedesk service
+    SERVICE_TYPE_LIST ("Service Type List", 101, false,false,
             "serviceTypeService","loadServiceTypeList"),
-    SERVICE_TYPE_OFFER_MAPPING ("Service Type Offer Mapping", 21, false,false,
+    SERVICE_TYPE_OFFER_MAPPING ("Service Type Offer Mapping", 102, false,false,
             "serviceTypeService","loadServiceTypeOfferMapping"),
-    USER_ROLE_TREE ("User Role Tree", 22, false,false,
+
+    // user role
+    USER_ROLE_TREE ("User Role Tree", 120, false,false,
             "userRoleService","loadUserRoleTree"),
+
+    // API Profile
+    API_BES (SdConfigParamEntity.API.CONFIG_GROUP.API_BES, 201, false,false,
+            "apiService","loadBesApiProfileBean"),
+    API_ITSM (SdConfigParamEntity.API.CONFIG_GROUP.API_ITSM_RESTFUL, 202, false,false,
+            "apiService","loadItsmApiProfileBean"),
+    API_ITSM_RESTFUL (SdConfigParamEntity.API.CONFIG_GROUP.API_ITSM, 204, false,false,
+            "apiService","loadItsmRestfulApiProfileBean"),
+    API_NORARS (SdConfigParamEntity.API.CONFIG_GROUP.API_NORARS, 205, false,false,
+            "apiService","loadNorarsApiProfileBean"),
+    API_WFM (SdConfigParamEntity.API.CONFIG_GROUP.API_WFM, 206, false,false,
+            "apiService","loadWfmApiProfileBean"),
+    API_UT_CALL (SdConfigParamEntity.API.CONFIG_GROUP.API_UT_CALL, 207, false,false,
+            "apiService","loadUtApiProfileBean"),
     ;
 
 

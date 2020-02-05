@@ -1,11 +1,25 @@
 package com.hkt.btu.sd.core.service;
 
-import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
+import com.hkt.btu.common.core.service.BtuApiService;
+import com.hkt.btu.sd.core.service.bean.SdApiProfileBean;
 
 
-public interface SdApiService {
-    SiteInterfaceBean getSiteInterfaceBean(String apiName);
+public interface SdApiService extends BtuApiService {
+    SdApiProfileBean loadBesApiProfileBean();
+    SdApiProfileBean getBesApiProfileBean();
 
-    void reloadAllCached();
-    void reloadCached(String apiName);
+    SdApiProfileBean loadItsmApiProfileBean();
+    SdApiProfileBean getItsmApiProfileBean();
+
+    SdApiProfileBean loadItsmRestfulApiProfileBean();
+    SdApiProfileBean getItsmRestfulApiProfileBean();
+
+    SdApiProfileBean loadNorarsApiProfileBean();
+    SdApiProfileBean getNorarsApiProfileBean();
+
+    SdApiProfileBean loadWfmApiProfileBean();
+    SdApiProfileBean getWfmApiProfileBean();
+
+    SdApiProfileBean loadUtApiProfileBean();
+    SdApiProfileBean getUtApiProfileBean();
 }

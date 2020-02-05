@@ -124,6 +124,9 @@
     <alias name="btuReportProfileBeanPopulator" alias="reportProfileBeanPopulator"/>
     <bean id="btuReportProfileBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuReportProfileBeanPopulator"/>
 
+    <alias name="btuApiProfileBeanPopulator" alias="apiProfileBeanPopulator"/>
+    <bean id="btuApiProfileBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuApiProfileBeanPopulator"/>
+
 
     <!-- BTU Facade -->
     <alias name="btuCacheFacade" alias="cacheFacade"/>

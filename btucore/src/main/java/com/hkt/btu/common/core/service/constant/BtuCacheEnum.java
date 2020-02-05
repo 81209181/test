@@ -5,13 +5,13 @@ import org.apache.commons.lang3.StringUtils;
 
 
 public enum BtuCacheEnum {
-    RESOURCE_MAP ("Security Resource Map", 100, false,false,
+    RESOURCE_MAP ("Security Resource Map", 10, false,false,
         "customBtuSecurityMetadataSource","buildResourceMapFromDb"),
-    SITE_CONFIG_MAP("Site Config Map",101,true,false,
+    SITE_CONFIG_MAP("Site Config Map",11,true,false,
             "siteConfigService","loadSiteConfigBean"),
-    SENSITIVE_DATA("Sensitive Data Map",102,false,true,
+    SENSITIVE_DATA("Sensitive Data Map",12,false,true,
             "sensitiveDataService","loadCachedKey"),
-    API_CLIENT_MAP("Api Client Map",103,false,true,
+    API_CLIENT_MAP("Api Client Map",13,false,true,
             "apiClientService","loadApiClientBean")
     ;
 

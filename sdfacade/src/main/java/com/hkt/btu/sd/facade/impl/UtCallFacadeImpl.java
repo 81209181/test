@@ -2,12 +2,12 @@ package com.hkt.btu.sd.facade.impl;
 
 import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.core.exception.UserNotFoundException;
+import com.hkt.btu.common.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.core.service.SdApiService;
 import com.hkt.btu.sd.core.service.UTCallService;
-import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
+import com.hkt.btu.sd.core.service.bean.SdApiProfileBean;
 import com.hkt.btu.sd.core.service.bean.UTCallPageBean;
-import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
-import com.hkt.btu.sd.facade.UTCallFacade;
+import com.hkt.btu.sd.facade.UtCallFacade;
 import com.hkt.btu.sd.facade.data.UTCallPageData;
 import com.hkt.btu.sd.facade.data.UTCallRequestTempData;
 import com.hkt.btu.sd.facade.data.ut.UTCallProgressData;
@@ -16,47 +16,27 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Resource;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class UTCallFacadeImpl extends AbstractRestfulApiFacade implements UTCallFacade{
-    private static final Logger LOG = LogManager.getLogger(UTCallFacadeImpl.class);
+public class UtCallFacadeImpl extends AbstractRestfulApiFacade implements UtCallFacade {
+    private static final Logger LOG = LogManager.getLogger(UtCallFacadeImpl.class);
 
-    //services
     @Resource(name = "apiService")
     SdApiService apiService;
     @Resource(name = "utCallService")
     UTCallService utCallService;
 
-    //populators
     @Resource(name = "callPageDataPopulator")
     UTCallPageDataPopulator utCallPageDataPopulator;
 
     @Override
-    protected SiteInterfaceBean getTargetApiSiteInterfaceBean() {
-        return apiService.getSiteInterfaceBean(SiteInterfaceBean.API_UT_CALL.API_NAME);
+    protected SdApiProfileBean getTargetApiProfile() {
+        return apiService.getUtApiProfileBean();
     }
-
-    @Override
-    protected Invocation.Builder getInvocationBuilder(WebTarget webTarget) {
-        SiteInterfaceBean siteInterfaceBean = getTargetApiSiteInterfaceBean();
-        webTarget = webTarget.queryParam("fid", siteInterfaceBean.getBeId());
-        webTarget = webTarget.queryParam("user", siteInterfaceBean.getUserName());
-        webTarget = webTarget.queryParam("pwd", siteInterfaceBean.getPassword());
-
-        webTarget = webTarget.queryParam("sys", siteInterfaceBean.getSystemName());
-
-        webTarget = webTarget.queryParam("seq", "2");
-        webTarget = webTarget.queryParam("type", siteInterfaceBean.getChannelType());
-        return webTarget.request(MediaType.APPLICATION_JSON);
-    }
-
-    //own implementation
 
     @Override
     public String newUtCallRequest(String triggerNewBSNNum, Integer ticketDetId){
@@ -67,8 +47,21 @@ public class UTCallFacadeImpl extends AbstractRestfulApiFacade implements UTCall
     private UTCallRequestTempData triggerNewUTCall(String BSNNum){
         String apiPath = "/utapi/enquiry";
 
+        // prepare common query param
+        SdApiProfileBean apiProfileBean = getTargetApiProfile();
+        MultivaluedMap<String, Object> otherParamMap = apiProfileBean.getOtherParamMap();
+        String fid = otherParamMap.getFirst(SdApiProfileBean.API_UT_CALL.QUERY_PARAM.FID).toString();
+        String user = otherParamMap.getFirst(SdApiProfileBean.API_UT_CALL.QUERY_PARAM.USER).toString();
+        String pwd = otherParamMap.getFirst(SdApiProfileBean.API_UT_CALL.QUERY_PARAM.PWD).toString();
+        String sys = otherParamMap.getFirst(SdApiProfileBean.API_UT_CALL.QUERY_PARAM.SYS).toString();
+
+        // add query param
         Map<String, String> queryParamMap = new HashMap<>();
-        queryParamMap.put("xid", BSNNum);
+        queryParamMap.put(SdApiProfileBean.API_UT_CALL.QUERY_PARAM.FID, fid);
+        queryParamMap.put(SdApiProfileBean.API_UT_CALL.QUERY_PARAM.USER, user);
+        queryParamMap.put(SdApiProfileBean.API_UT_CALL.QUERY_PARAM.PWD, pwd);
+        queryParamMap.put(SdApiProfileBean.API_UT_CALL.QUERY_PARAM.SYS, sys);
+        queryParamMap.put(SdApiProfileBean.API_UT_CALL.QUERY_PARAM.XID, BSNNum);
 
         return getData(apiPath, UTCallRequestTempData.class, queryParamMap);
     }
@@ -104,8 +97,19 @@ public class UTCallFacadeImpl extends AbstractRestfulApiFacade implements UTCall
     private UTCallProgressData checkNewUTCallProgress(String serviceCode){
         String apiPath = "/utapi/getresultt4";
 
+        // prepare common query param
+        SdApiProfileBean apiProfileBean = getTargetApiProfile();
+        MultivaluedMap<String, Object> otherParamMap = apiProfileBean.getOtherParamMap();
+        String seq = otherParamMap.getFirst(SdApiProfileBean.API_UT_CALL.QUERY_PARAM.SEQ).toString();
+        String sys = otherParamMap.getFirst(SdApiProfileBean.API_UT_CALL.QUERY_PARAM.SYS).toString();
+        String type = otherParamMap.getFirst(SdApiProfileBean.API_UT_CALL.QUERY_PARAM.TYPE).toString();
+
+        // add query param
         Map<String, String> queryParamMap = new HashMap<>();
-        queryParamMap.put("servicecode", serviceCode);
+        queryParamMap.put(SdApiProfileBean.API_UT_CALL.QUERY_PARAM.SEQ, seq);
+        queryParamMap.put(SdApiProfileBean.API_UT_CALL.QUERY_PARAM.SYS, sys);
+        queryParamMap.put(SdApiProfileBean.API_UT_CALL.QUERY_PARAM.TYPE, type);
+        queryParamMap.put(SdApiProfileBean.API_UT_CALL.QUERY_PARAM.SERVICE_CODE, serviceCode);
 
         return getData(apiPath, UTCallProgressData.class, queryParamMap);
     }

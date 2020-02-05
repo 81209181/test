@@ -1,8 +1,8 @@
 package com.hkt.btu.sd.facade.impl;
 
 import com.hkt.btu.sd.core.service.SdApiService;
-import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
-import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
+import com.hkt.btu.sd.core.service.bean.SdApiProfileBean;
+import com.hkt.btu.common.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.CloudApiFacade;
 
 import javax.annotation.Resource;
@@ -17,13 +17,8 @@ public class CloudApiFacadeImpl extends AbstractRestfulApiFacade implements Clou
     SdApiService apiService;
 
     @Override
-    protected SiteInterfaceBean getTargetApiSiteInterfaceBean() {
+    protected SdApiProfileBean getTargetApiProfile() {
         return null;
-    }
-
-    @Override
-    protected Invocation.Builder getInvocationBuilder(WebTarget webTarget) {
-        return webTarget.request(MediaType.APPLICATION_JSON).header(HttpHeaders.AUTHORIZATION,getBtuHeaderAuthKey(getTargetApiSiteInterfaceBean()));
     }
 
     @Override

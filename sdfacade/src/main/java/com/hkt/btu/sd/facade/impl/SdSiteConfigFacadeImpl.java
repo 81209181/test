@@ -30,7 +30,6 @@ public class SdSiteConfigFacadeImpl implements SdSiteConfigFacade {
     @Override
     public void reload() {
         siteConfigService.reload();
-        apiService.reloadAllCached();
         userRoleService.reloadCachedRoleTree();
     }
 

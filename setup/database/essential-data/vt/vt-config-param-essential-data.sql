@@ -11,15 +11,15 @@ values ('API_BES', 'systemName', 'BES', 'String', current_timestamp, 0, current_
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('API_BES', 'url', 'https://10.50.68.110:1443', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
-values ('API_BES', 'userName', '999007', 'String', current_timestamp, 0, current_timestamp, 0);
+values ('API_BES', 'header.Authorization', 'Bearer fcb98614187cf228da1d844e787b28dd', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
-values ('API_BES', 'password', 'Bearer fcb98614187cf228da1d844e787b28dd', 'String', current_timestamp, 0, current_timestamp, 0);
+values ('API_BES', 'header.OperatorId', '999007', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
-values ('API_BES', 'xAppKey', 'b0025e19d6a649278cdfeb520c224ef2', 'String', current_timestamp, 0, current_timestamp, 0);
+values ('API_BES', 'header.X-APP-Key', 'b0025e19d6a649278cdfeb520c224ef2', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
-values ('API_BES', 'beId', '101', 'String', current_timestamp, 0, current_timestamp, 0);
+values ('API_BES', 'header.BeId', '101', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
-values ('API_BES', 'channelType', '613', 'String', current_timestamp, 0, current_timestamp, 0);
+values ('API_BES', 'header.ChannelType', '613', 'String', current_timestamp, 0, current_timestamp, 0);
 
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('API_ITSM_RESTFUL', 'systemName', 'ITSM_RESTFUL', 'String', current_timestamp, 0, current_timestamp, 0);
@@ -44,9 +44,28 @@ values ('API_NORARS', 'userName', 'sd', 'String', current_timestamp, 0, current_
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('API_NORARS', 'password', 'g$Hw0#MG-3', 'String', current_timestamp, 0, current_timestamp, 0);
 
+insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
+values ('API_WFM', 'systemName', 'WFM', 'String', current_timestamp, 0, current_timestamp, 0);
 Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
 values ('API_WFM','url','https://yecvm-wfmvt01.pccw.com/wfm','String',current_timestamp,0,current_timestamp,0);
 Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
-values ('API_WFM','userName','sd','String',current_timestamp,0,current_timestamp,0);
+values ('API_WFM','userName','sd','String', current_timestamp, 0, current_timestamp, 0);
 Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
-values ('API_WFM','password','Ki6/rEDs47*^5','String',current_timestamp,0,current_timestamp,0);
+values ('API_WFM','password','Ki6/rEDs47*^5','String', current_timestamp, 0, current_timestamp, 0);
+
+insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
+values ('API_UT_CALL', 'systemName', 'UT_CALL', 'String', current_timestamp, 0, current_timestamp, 0);
+Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
+values ('API_UT_CALL','url','http://10.252.16.151:8080','String',current_timestamp,0,current_timestamp,0);
+Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
+values ('API_UT_CALL','fid','f023000000','String', current_timestamp, 0, current_timestamp, 0);
+Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
+values ('API_UT_CALL','user','SERVDESK','String', current_timestamp, 0, current_timestamp, 0);
+Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
+values ('API_UT_CALL','pwd','nvng[kGZE\C^','String', current_timestamp, 0, current_timestamp, 0);
+Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
+values ('API_UT_CALL','sys','servdesk','String', current_timestamp, 0, current_timestamp, 0);
+Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
+values ('API_UT_CALL','seq','2','String', current_timestamp, 0, current_timestamp, 0);
+Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
+values ('API_UT_CALL','type','v1','String', current_timestamp, 0, current_timestamp, 0);

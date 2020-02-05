@@ -5,7 +5,7 @@ import com.hkt.btu.sd.facade.data.*;
 import java.util.List;
 import java.util.Map;
 
-public interface UTCallFacade {
+public interface UtCallFacade {
     String newUtCallRequest(String triggerNewBSNNum, Integer ticketDetId);
 //    UTCallRequestTempData triggerNewUTCall(String BSNNum);
 //    String insertNewUTCallRequestRecord(String triggerNewBSNNum, String code, String msg,

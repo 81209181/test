@@ -2,11 +2,11 @@ package com.hkt.btu.sd.facade.impl;
 
 import com.google.gson.Gson;
 import com.hkt.btu.common.core.exception.InvalidInputException;
+import com.hkt.btu.common.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.core.exception.ApiException;
 import com.hkt.btu.sd.core.service.SdApiService;
 import com.hkt.btu.sd.core.service.SdUserService;
-import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
-import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
+import com.hkt.btu.sd.core.service.bean.SdApiProfileBean;
 import com.hkt.btu.sd.facade.NorarsApiFacade;
 import com.hkt.btu.sd.facade.SdAuditTrailFacade;
 import com.hkt.btu.sd.facade.data.SdDnGroupData;
@@ -21,10 +21,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Resource;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
 import java.util.*;
 
 public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements NorarsApiFacade {
@@ -45,6 +41,11 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
     @Resource(name = "dnPlanDataPopulator")
     SdDnPlanDataPopulator dnPlanDataPopulator;
 
+
+    @Override
+    protected SdApiProfileBean getTargetApiProfile() {
+        return apiService.getNorarsApiProfileBean();
+    }
 
     @Override
     public String getBsnByDn(String dn) {
@@ -151,20 +152,6 @@ public class NorarsApiFacadeImpl extends AbstractRestfulApiFacade implements Nor
         }
 
         return complexPwd;
-    }
-
-    @Override
-    protected SiteInterfaceBean getTargetApiSiteInterfaceBean() {
-        return apiService.getSiteInterfaceBean(SiteInterfaceBean.API_NORARS.API_NAME);
-    }
-
-    @Override
-    protected Invocation.Builder getInvocationBuilder(WebTarget webTarget) {
-        SiteInterfaceBean siteInterfaceBean = getTargetApiSiteInterfaceBean();
-        String headerAuth = getBtuHeaderAuthKey(siteInterfaceBean);
-        return webTarget
-                .request(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, headerAuth);
     }
 
     @Override

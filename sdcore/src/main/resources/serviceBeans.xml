@@ -44,18 +44,6 @@
     <alias name="sdPathCtrlService" alias="btuPathCtrlService"/>
     <bean id="sdPathCtrlService" class="com.hkt.btu.sd.core.service.impl.SdPathCtrlServiceImpl"/>
 
-    <alias name="sdOtpService" alias="otpService"/>
-    <bean id="sdOtpService" class="com.hkt.btu.sd.core.service.impl.SdOtpServiceImpl"/>
-
-    <alias name="sdInputCheckService" alias="inputCheckService"/>
-    <bean id="sdInputCheckService" class="com.hkt.btu.sd.core.service.impl.SdInputCheckServiceImpl"/>
-
-    <alias name="sdUserRoleService" alias="userRoleService"/>
-    <bean id="sdUserRoleService" class="com.hkt.btu.sd.core.service.impl.SdUserRoleServiceImpl"/>
-
-    <alias name="sdApiService" alias="apiService"/>
-    <bean id="sdApiService" class="com.hkt.btu.sd.core.service.impl.SdApiServiceImpl"/>
-
     <alias name="sdSchedulerService" alias="schedulerService"/>
     <alias name="sdSchedulerService" alias="btuSchedulerService"/>
     <bean id="sdSchedulerService" class="com.hkt.btu.sd.core.service.impl.SdSchedulerServiceImpl"/>
@@ -67,6 +55,18 @@
     <alias name="sdReportService" alias="reportService"/>
     <alias name="sdReportService" alias="btuReportService"/>
     <bean id="sdReportService" class="com.hkt.btu.sd.core.service.impl.SdReportServiceImpl"/>
+
+    <alias name="sdOtpService" alias="otpService"/>
+    <bean id="sdOtpService" class="com.hkt.btu.sd.core.service.impl.SdOtpServiceImpl"/>
+
+    <alias name="sdInputCheckService" alias="inputCheckService"/>
+    <bean id="sdInputCheckService" class="com.hkt.btu.sd.core.service.impl.SdInputCheckServiceImpl"/>
+
+    <alias name="sdUserRoleService" alias="userRoleService"/>
+    <bean id="sdUserRoleService" class="com.hkt.btu.sd.core.service.impl.SdUserRoleServiceImpl"/>
+
+    <alias name="sdApiService" alias="apiService"/>
+    <bean id="sdApiService" class="com.hkt.btu.sd.core.service.impl.SdApiServiceImpl"/>
 
     <alias name="sdTicketService" alias="ticketService"/>
     <bean id="sdTicketService" class="com.hkt.btu.sd.core.service.impl.SdTicketServiceImpl"/>
@@ -90,21 +90,9 @@
     <bean class="com.hkt.btu.sd.core.service.impl.UTCallServiceImpl" id="UTCallService"/>
 
     <!-- Populator -->
-    <alias name="sdUserBeanPopulator" alias="userBeanPopulator"/>
-    <bean id="sdUserBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserBeanPopulator"/>
-
-    <alias name="sdUserRolePathCtrlBeanPopulator" alias="pathCtrlBeanPopulator"/>
-    <bean id="sdUserRolePathCtrlBeanPopulator"
-          class="com.hkt.btu.sd.core.service.populator.SdUserRolePathCtrlBeanPopulator"/>
-
-    <alias name="sdOtpBeanPopulator" alias="otpBeanPopulator"/>
-    <bean id="sdOtpBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdOtpBeanPopulator"/>
-
     <alias name="sdConfigParamBeanPopulator" alias="configParamBeanPopulator"/>
+    <alias name="sdConfigParamBeanPopulator" alias="btuConfigParamBeanPopulator"/>
     <bean id="sdConfigParamBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdConfigParamBeanPopulator"/>
-
-    <alias name="sdOperationHistBeanPopulator" alias="operationHistBeanPopulator"/>
-    <bean id="sdOperationHistBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdOperationHistBeanPopulator"/>
 
     <alias name="sdCronJobProfileBeanPopulator" alias="cronJobProfileBeanPopulator"/>
     <alias name="sdCronJobProfileBeanPopulator" alias="btuCronJobProfileBeanPopulator"/>
@@ -114,12 +102,32 @@
     <alias name="sdCronJobInstBeanPopulator" alias="btuCronJobInstBeanPopulator"/>
     <bean id="sdCronJobInstBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdCronJobInstBeanPopulator"/>
 
-    <alias name="sdUserRoleBeanPopulator" alias="userRoleBeanPopulator"/>
-    <bean id="sdUserRoleBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserRoleBeanPopulator"/>
-
     <alias name="sdReportProfileBeanPopulator" alias="reportProfileBeanPopulator"/>
     <alias name="sdReportProfileBeanPopulator" alias="btuReportProfileBeanPopulator"/>
     <bean id="sdReportProfileBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdReportProfileBeanPopulator"/>
+
+    <alias name="sdApiProfileBeanPopulator" alias="apiProfileBeanPopulator"/>
+    <alias name="sdApiProfileBeanPopulator" alias="btuApiProfileBeanPopulator"/>
+    <bean id="sdApiProfileBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdApiProfileBeanPopulator"/>
+
+    <alias name="sdCacheBeanPopulator" alias="cacheBeanPopulator"/>
+    <alias name="sdCacheBeanPopulator" alias="btuCacheBeanPopulator"/>
+    <bean id="sdCacheBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdCacheBeanPopulator"/>
+
+    <alias name="sdUserBeanPopulator" alias="userBeanPopulator"/>
+    <bean id="sdUserBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserBeanPopulator"/>
+
+    <alias name="sdUserRolePathCtrlBeanPopulator" alias="pathCtrlBeanPopulator"/>
+    <bean id="sdUserRolePathCtrlBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserRolePathCtrlBeanPopulator"/>
+
+    <alias name="sdOtpBeanPopulator" alias="otpBeanPopulator"/>
+    <bean id="sdOtpBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdOtpBeanPopulator"/>
+
+    <alias name="sdOperationHistBeanPopulator" alias="operationHistBeanPopulator"/>
+    <bean id="sdOperationHistBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdOperationHistBeanPopulator"/>
+
+    <alias name="sdUserRoleBeanPopulator" alias="userRoleBeanPopulator"/>
+    <bean id="sdUserRoleBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserRoleBeanPopulator"/>
 
     <alias name="sdTicketMasBeanPopulator" alias="ticketMasBeanPopulator"/>
     <bean id="sdTicketMasBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdTicketMasBeanPopulator"/>
@@ -153,9 +161,6 @@
 
     <alias name="sdPublicHolidayBeanPopulator" alias="publicHolidayBeanPopulator"/>
     <bean id="sdPublicHolidayBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdPublicHolidayBeanPopulator"/>
-
-    <alias name="sdCacheBeanPopulator" alias="cacheBeanPopulator"/>
-    <bean id="sdCacheBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdCacheBeanPopulator"/>
 
     <alias name="utCallRequestBeanPopulator" alias="callRequestBeanPopulator"/>
     <bean id="utCallRequestBeanPopulator" class="com.hkt.btu.sd.core.service.populator.UTCallRequestBeanPopulator"/>

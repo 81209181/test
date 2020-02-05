@@ -11,6 +11,8 @@ import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdReportProfileBean;
 import com.hkt.btu.sd.core.service.populator.SdReportProfileBeanPopulator;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -22,6 +24,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SdReportServiceImpl extends BtuReportServiceImpl implements SdReportService {
+    private static final Logger LOG = LogManager.getLogger(SdReportServiceImpl.class);
 
     @Resource(name = "userService")
     SdUserService sdUserService;

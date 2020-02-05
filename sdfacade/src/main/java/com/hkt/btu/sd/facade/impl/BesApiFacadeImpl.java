@@ -1,18 +1,14 @@
 package com.hkt.btu.sd.facade.impl;
 
+import com.hkt.btu.common.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.core.service.SdApiService;
-import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
-import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
+import com.hkt.btu.sd.core.service.bean.SdApiProfileBean;
 import com.hkt.btu.sd.facade.BesApiFacade;
 import com.hkt.btu.sd.facade.data.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Resource;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,21 +22,9 @@ public class BesApiFacadeImpl extends AbstractRestfulApiFacade implements BesApi
     SdApiService apiService;
 
     @Override
-    protected SiteInterfaceBean getTargetApiSiteInterfaceBean() {
-        return apiService.getSiteInterfaceBean(SiteInterfaceBean.API_BES.API_NAME);
+    protected SdApiProfileBean getTargetApiProfile() {
+        return apiService.getBesApiProfileBean();
     }
-
-    @Override
-    protected Invocation.Builder getInvocationBuilder(WebTarget webTarget) {
-        SiteInterfaceBean siteInterfaceBean = getTargetApiSiteInterfaceBean();
-        return webTarget.request(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, siteInterfaceBean.getPassword())
-                .header(SiteInterfaceBean.API_BES.API_HEADER.OPERATOR_ID, siteInterfaceBean.getUserName())
-                .header(SiteInterfaceBean.API_BES.API_HEADER.CHANNEL_TYPE, siteInterfaceBean.getChannelType())
-                .header(SiteInterfaceBean.API_BES.API_HEADER.BE_ID, siteInterfaceBean.getBeId())
-                .header(SiteInterfaceBean.API_BES.API_HEADER.X_APP_KEY, siteInterfaceBean.getxAppkey());
-    }
-
 
     @Override
     public BesCustomerData queryCustomerByCustomerCode(String CustomerCode) {

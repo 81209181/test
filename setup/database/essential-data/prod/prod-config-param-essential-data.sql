@@ -57,3 +57,21 @@ insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TY
 values ('API_NORARS', 'userName', 'sd', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('API_NORARS', 'password', 'input on page', 'String', current_timestamp, 0, current_timestamp, 0);
+
+-- UT
+insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
+values ('API_UT_CALL', 'systemName', 'UT_CALL', 'String', current_timestamp, 0, current_timestamp, 0);
+Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
+values ('API_UT_CALL','url','http://10.252.16.151:8080','String',current_timestamp,0,current_timestamp,0);
+Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
+values ('API_UT_CALL','fid','f023000000','String', current_timestamp, 0, current_timestamp, 0);
+Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
+values ('API_UT_CALL','user','SERVDESK','String', current_timestamp, 0, current_timestamp, 0);
+Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
+values ('API_UT_CALL','pwd','input on page','String', current_timestamp, 0, current_timestamp, 0);
+Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
+values ('API_UT_CALL','sys','servdesk','String', current_timestamp, 0, current_timestamp, 0);
+Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
+values ('API_UT_CALL','seq','2','String', current_timestamp, 0, current_timestamp, 0);
+Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
+values ('API_UT_CALL','type','v1','String', current_timestamp, 0, current_timestamp, 0);

@@ -1,8 +1,8 @@
 package com.hkt.btu.sd.facade.impl;
 
+import com.hkt.btu.common.core.service.bean.BtuApiProfileBean;
+import com.hkt.btu.common.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.core.service.SdApiService;
-import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
-import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.ItsmApiFacade;
 import com.hkt.btu.sd.facade.data.ItsmProfileData;
 import com.hkt.btu.sd.facade.data.ItsmSearchProfileResponseData;
@@ -10,10 +10,6 @@ import com.hkt.btu.sd.facade.data.ItsmTenantData;
 import org.apache.commons.collections4.CollectionUtils;
 
 import javax.annotation.Resource;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 public class ItsmApiFacadeImpl extends AbstractRestfulApiFacade implements ItsmApiFacade {
@@ -22,17 +18,10 @@ public class ItsmApiFacadeImpl extends AbstractRestfulApiFacade implements ItsmA
     SdApiService apiService;
 
     @Override
-    protected SiteInterfaceBean getTargetApiSiteInterfaceBean() {
-        return apiService.getSiteInterfaceBean(SiteInterfaceBean.API_ITSM_RESTFUL.API_NAME);
+    protected BtuApiProfileBean getTargetApiProfile() {
+        return apiService.getBesApiProfileBean();
     }
 
-    @Override
-    protected Invocation.Builder getInvocationBuilder(WebTarget webTarget) {
-        SiteInterfaceBean siteInterfaceBean = getTargetApiSiteInterfaceBean();
-        String headerAuth = getBtuHeaderAuthKey(siteInterfaceBean);
-        return webTarget.request(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, headerAuth);
-    }
 
     @Override
     public ItsmSearchProfileResponseData searchProfileByCustName(String custName) {
@@ -77,7 +66,7 @@ public class ItsmApiFacadeImpl extends AbstractRestfulApiFacade implements ItsmA
         }
 
         // fill-in itsm linking url
-        SiteInterfaceBean itsmSiteBean = apiService.getSiteInterfaceBean(SiteInterfaceBean.API_ITSM.API_NAME);
+        BtuApiProfileBean itsmSiteBean = apiService.getItsmApiProfileBean();
         String itsmUrl = itsmSiteBean.getUrl();
         String resourcePoolApiPath = "/info/ResourcePoolTab.action?resourceId=";
         for( ItsmProfileData itsmProfileData : itsmProfileDataList ){

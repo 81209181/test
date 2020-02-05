@@ -1,36 +1,24 @@
 package com.hkt.btu.sd.controller;
 
-import com.hkt.btu.sd.facade.UTCallFacade;
+import com.hkt.btu.sd.facade.UtCallFacade;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.session.SessionInformation;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
-import javax.annotation.Resource;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/system/ut-call")
 public class UTCallController {
 
     @Resource
-    UTCallFacade utCallFacade;
+    UtCallFacade utCallFacade;
 
     @GetMapping("")
     public String redirectToUTCall() {

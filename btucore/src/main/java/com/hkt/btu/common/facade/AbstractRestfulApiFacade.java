@@ -1,13 +1,13 @@
-package com.hkt.btu.sd.facade;
+package com.hkt.btu.common.facade;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.hkt.btu.common.core.service.BtuSiteConfigService;
+import com.hkt.btu.common.core.service.bean.BtuApiProfileBean;
 import com.hkt.btu.common.facade.data.DataInterface;
-import com.hkt.btu.sd.core.service.SdSiteConfigService;
-import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,6 +19,8 @@ import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
 import java.security.KeyManagementException;
@@ -37,30 +39,48 @@ public abstract class AbstractRestfulApiFacade {
     private static final Logger LOG = LogManager.getLogger(AbstractRestfulApiFacade.class);
 
     @Resource(name = "siteConfigService")
-    SdSiteConfigService sdSiteConfigService;
+    BtuSiteConfigService siteConfigService;
 
     private Gson gson;
 
     // API dependent methods
-    protected abstract SiteInterfaceBean getTargetApiSiteInterfaceBean();
+    protected abstract BtuApiProfileBean getTargetApiProfile();
+    protected Invocation.Builder getInvocationBuilder(WebTarget webTarget){
+        BtuApiProfileBean apiProfileBean = getTargetApiProfile();
 
-    protected abstract Invocation.Builder getInvocationBuilder(WebTarget webTarget);
+        // get config header and config query param from API profile
+        MultivaluedMap<String, Object> headerMap = apiProfileBean.getHeaderMap();
+        MultivaluedMap<String, Object> queryParamMap = apiProfileBean.getQueryParamMap();
 
-    protected String getBtuHeaderAuthKey(SiteInterfaceBean siteInterfaceBean) {
-        String authPlainText = String.format("%s:%s", siteInterfaceBean.getUserName(), siteInterfaceBean.getPassword());
+        // add config query param
+        if (MapUtils.isNotEmpty(queryParamMap)) {
+            for (String key : queryParamMap.keySet()) {
+                Object value = queryParamMap.get(key);
+                if (value == null) {
+                    continue;
+                }
+                webTarget = webTarget.queryParam(key, value.toString());
+            }
+        }
+
+        return webTarget.request(MediaType.APPLICATION_JSON).headers(headerMap);
+    }
+
+    protected String getBtuHeaderAuthKey(BtuApiProfileBean apiProfileBean) {
+        String authPlainText = String.format("%s:%s", apiProfileBean.getUserName(), apiProfileBean.getPassword());
         String encodedAuth = Base64.getEncoder().encodeToString(authPlainText.getBytes());
         return String.format("Basic %s", encodedAuth);
     }
 
     private WebTarget getWebTarget(String path, Map<String, String> queryParamMap) {
-        SiteInterfaceBean siteInterfaceBean = getTargetApiSiteInterfaceBean();
+        BtuApiProfileBean siteInterfaceBean = getTargetApiProfile();
         if (siteInterfaceBean == null) {
             LOG.error("API config not found.");
             return null;
         }
 
         ClientBuilder clientBuilder = ClientBuilder.newBuilder();
-        if (!sdSiteConfigService.isProductionServer()) {
+        if (!siteConfigService.isProductionServer()) {
             // ignore SSL validation in non-Production environment
             SSLContext sslcontext;
             try {
@@ -97,7 +117,7 @@ public abstract class AbstractRestfulApiFacade {
                 .path(path);
 
         // add query parameter
-        if (!MapUtils.isEmpty(queryParamMap)) {
+        if (MapUtils.isNotEmpty(queryParamMap)) {
             for (String key : queryParamMap.keySet()) {
                 String value = queryParamMap.get(key);
                 if (value == null) {

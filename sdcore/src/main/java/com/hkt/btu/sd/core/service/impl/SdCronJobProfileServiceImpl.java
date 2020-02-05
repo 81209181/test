@@ -23,9 +23,9 @@ import java.util.List;
 public class SdCronJobProfileServiceImpl extends BtuCronJobProfileServiceImpl implements SdCronJobProfileService {
     private static final Logger LOG = LogManager.getLogger(SdCronJobProfileServiceImpl.class);
 
-
     @Resource
     SdCronJobMapper sdCronJobMapper;
+
     @Resource(name = "userService")
     SdUserService sdUserService;
     @Resource(name = "cronJobLogService")

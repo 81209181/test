@@ -1,8 +1,5 @@
 package com.hkt.btu.common.core.dao.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class BtuConfigParamEntity extends BaseEntity {
 
     // reserved config groups
@@ -32,6 +29,18 @@ public class BtuConfigParamEntity extends BaseEntity {
 
     public static class API_CLIENT {
         public static final String CONFIG_GROUP = "API_CLIENT";
+    }
+
+    public static class API {
+        public static class CONFIG_KEY {
+            public static final String PREFIX_HEADER = "header.";
+            public static final String PREFIX_QUERY_PARAM = "queryParam.";
+
+            public static final String SYSTEM_NAME = "systemName";
+            public static final String URL = "url";
+            public static final String USER_NAME = "userName";
+            public static final String PASSWORD = "password";
+        }
     }
 
     public static class TYPE {

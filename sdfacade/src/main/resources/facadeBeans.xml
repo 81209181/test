@@ -59,7 +59,7 @@
     <bean id="sdServiceTypeFacade" class="com.hkt.btu.sd.facade.impl.SdServiceTypeFacadeImpl"/>
 
     <alias name="utCallFacade" alias="callFacade"/>
-    <bean id="utCallFacade" class="com.hkt.btu.sd.facade.impl.UTCallFacadeImpl"/>
+    <bean id="utCallFacade" class="com.hkt.btu.sd.facade.impl.UtCallFacadeImpl"/>
 
     <alias name="sdPublicHolidayFacade" alias="publicHolidayFacade"/>
     <bean id="sdPublicHolidayFacade" class="com.hkt.btu.sd.facade.impl.SdPublicHolidayFacadeImpl"/>

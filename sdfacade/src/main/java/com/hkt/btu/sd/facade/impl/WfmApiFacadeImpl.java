@@ -4,11 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hkt.btu.common.core.exception.InvalidInputException;
+import com.hkt.btu.common.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.core.service.SdApiService;
+import com.hkt.btu.sd.core.service.bean.SdApiProfileBean;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeOfferMappingBean;
-import com.hkt.btu.sd.core.service.bean.SiteInterfaceBean;
 import com.hkt.btu.sd.core.util.JsonUtils;
-import com.hkt.btu.sd.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.facade.WfmApiFacade;
 import com.hkt.btu.sd.facade.data.SdTicketData;
 import com.hkt.btu.sd.facade.data.wfm.*;
@@ -20,14 +20,10 @@ import org.apache.logging.log4j.Logger;
 import javax.annotation.Resource;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
@@ -45,15 +41,8 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
     SdApiService apiService;
 
     @Override
-    protected SiteInterfaceBean getTargetApiSiteInterfaceBean() {
-        return apiService.getSiteInterfaceBean(SiteInterfaceBean.API_WFM.API_NAME);
-    }
-
-    @Override
-    protected Invocation.Builder getInvocationBuilder(WebTarget webTarget) {
-        SiteInterfaceBean siteInterfaceBean = getTargetApiSiteInterfaceBean();
-        return webTarget.request(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, getBtuHeaderAuthKey(siteInterfaceBean));
+    protected SdApiProfileBean getTargetApiProfile() {
+        return apiService.getWfmApiProfileBean();
     }
 
     @Override
@@ -198,7 +187,7 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
 
         // call WFM API
         try {
-            String url = getTargetApiSiteInterfaceBean().getUrl();
+            String url = getTargetApiProfile().getUrl();
             String jwt = getData("/api/v1/sd/token", queryParam);
             if (StringUtils.isEmpty(jwt)) {
                 return null;
