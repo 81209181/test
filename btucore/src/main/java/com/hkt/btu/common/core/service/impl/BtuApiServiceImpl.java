@@ -40,7 +40,7 @@ public class BtuApiServiceImpl implements BtuApiService {
 
     @Override
     public BtuApiProfileBean loadApiProfileBeanInternal(String apiName) {
-        LOG.info("Loading API Profile Bean... (apiName={})", apiName);
+        LOG.info("Getting config param for API Profile Bean... (apiName={})", apiName);
 
         // get api profile from config param
         Map<String, Object> configParamGroupMap = configParamService.getConfigParamByConfigGroup(apiName, true);

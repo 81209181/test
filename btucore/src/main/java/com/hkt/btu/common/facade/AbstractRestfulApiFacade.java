@@ -29,7 +29,6 @@ import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -64,12 +63,6 @@ public abstract class AbstractRestfulApiFacade {
         }
 
         return webTarget.request(MediaType.APPLICATION_JSON).headers(headerMap);
-    }
-
-    protected String getBtuHeaderAuthKey(BtuApiProfileBean apiProfileBean) {
-        String authPlainText = String.format("%s:%s", apiProfileBean.getUserName(), apiProfileBean.getPassword());
-        String encodedAuth = Base64.getEncoder().encodeToString(authPlainText.getBytes());
-        return String.format("Basic %s", encodedAuth);
     }
 
     private WebTarget getWebTarget(String path, Map<String, String> queryParamMap) {
@@ -132,10 +125,9 @@ public abstract class AbstractRestfulApiFacade {
     }
 
     protected String getData(String path, Map<String, String> queryParamMap) {
-        LOG.info("Getting from API: " + path);
-
         WebTarget webTarget = getWebTarget(path, queryParamMap);
         Invocation.Builder invocationBuilder = getInvocationBuilder(webTarget);
+        LOG.info("Getting data from API: {}", webTarget==null ? null : webTarget.getUri());
         try {
             return invocationBuilder.get(String.class);
         } catch (ProcessingException | WebApplicationException e) {
