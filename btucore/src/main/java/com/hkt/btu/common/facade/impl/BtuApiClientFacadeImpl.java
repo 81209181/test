@@ -2,6 +2,7 @@ package com.hkt.btu.common.facade.impl;
 
 import com.hkt.btu.common.core.dao.entity.BtuConfigParamEntity;
 import com.hkt.btu.common.core.service.BtuApiClientService;
+import com.hkt.btu.common.core.service.BtuAuditTrailService;
 import com.hkt.btu.common.core.service.BtuConfigParamService;
 import com.hkt.btu.common.core.service.BtuUserService;
 import com.hkt.btu.common.core.service.bean.BtuConfigParamBean;
@@ -19,33 +20,40 @@ public class BtuApiClientFacadeImpl implements BtuApiClientFacade {
 
 
     @Resource(name = "userService")
-    BtuUserService btuUserService;
+    BtuUserService userService;
     @Resource(name = "configParamService")
-    BtuConfigParamService btuConfigParamService;
+    BtuConfigParamService configParamService;
     @Resource(name = "apiClientService")
-    BtuApiClientService btuApiClientService;
+    BtuApiClientService apiClientService;
+    @Resource(name = "auditTrailService")
+    BtuAuditTrailService auditTrailService;
 
 
     @Override
     public String getApiAuthKey(String apiName){
-        return btuApiClientService.getApiClientKey(apiName);
+        auditTrailService.insertViewApiAuthAuditTrail(apiName);
+        return apiClientService.getApiClientKey(apiName);
     }
 
     @Override
     public void regenerateApiClientKey(String apiName) throws GeneralSecurityException {
-        btuApiClientService.regenerateApiClientKey(apiName);
+        // add audit trail
+        auditTrailService.insertRegenApiAuthAuditTrail(apiName);
+
+        // re-generate a new key and update config param
+        apiClientService.regenerateApiClientKey(apiName);
     }
 
 
 
     @Override
     public void reloadCache(String apiName) {
-        btuApiClientService.reloadApiClientKey(apiName);
+        apiClientService.reloadApiClientKey(apiName);
     }
 
     @Override
     public List<BtuApiUserData> getApiUser() {
-        List<BtuUserBean> beanList = btuUserService.getApiUser();
+        List<BtuUserBean> beanList = userService.getApiUser();
         if(CollectionUtils.isEmpty(beanList)){
             return new LinkedList<>();
         }
@@ -56,13 +64,13 @@ public class BtuApiClientFacadeImpl implements BtuApiClientFacade {
 
             String apiClient = String.format("%s.key", userBean.getName());
             BtuConfigParamBean configParamBean = new BtuConfigParamBean();
-            BtuConfigParamBean btuConfigParamBean = btuConfigParamService.getConfigParamByGroupAndKey(BtuConfigParamEntity.API_CLIENT.CONFIG_GROUP, apiClient);
+            BtuConfigParamBean btuConfigParamBean = configParamService.getConfigParamByGroupAndKey(BtuConfigParamEntity.API_CLIENT.CONFIG_GROUP, apiClient);
             if (btuConfigParamBean!=null) {
                 configParamBean = btuConfigParamBean;
             }
 
             String configValue = configParamBean.getConfigValue();
-            boolean validCacheSync = btuApiClientService.checkApiClientKey(userBean.getName(), configValue);
+            boolean validCacheSync = apiClientService.checkApiClientKey(userBean.getName(), configValue);
             if (validCacheSync) {
                 data.setCacheSync(BtuApiUserData.CACHE_SYNC.YES);
             } else {

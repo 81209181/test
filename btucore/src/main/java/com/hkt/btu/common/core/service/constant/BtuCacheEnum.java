@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 public enum BtuCacheEnum {
     RESOURCE_MAP ("Security Resource Map", 10, false,false,
         "customBtuSecurityMetadataSource","buildResourceMapFromDb"),
-    SITE_CONFIG_MAP("Site Config Map",11,true,false,
+    SITE_CONFIG_MAP("Site Config Map",11,false,false,
             "siteConfigService","loadSiteConfigBean"),
     SENSITIVE_DATA("Sensitive Data Map",12,false,true,
             "sensitiveDataService","loadCachedKey"),

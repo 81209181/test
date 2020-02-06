@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdSqlReportMapper">
-    <resultMap id="SdSqlReportEntity" type="com.hkt.btu.common.core.dao.entity.BtuReportProfileEntity">
+    <resultMap id="BtuReportProfileEntity" type="com.hkt.btu.common.core.dao.entity.BtuReportProfileEntity">
         <result column="REPORT_ID" property="reportId"/>
         <result column="REPORT_NAME" property="reportName"/>
         <result column="CRON_EXP" property="cronExp"/>
@@ -18,7 +18,7 @@
         <result column="REMARKS" property="remarks"/>
     </resultMap>
 
-    <select id="getReportProfile" resultMap="SdSqlReportEntity">
+    <select id="getReportProfile" resultMap="BtuReportProfileEntity">
         select * from SQL_REPORT
         <where>
             <if test="reportId != null">
@@ -62,13 +62,6 @@
             <if test="modifyBy != null">MODIFYBY=#{modifyBy},</if>
             MODIFYDATE = SYSDATE
         </set>
-        where REPORT_ID = #{reportId}
-    </update>
-
-    <update id="updateReportStatus">
-        update SQL_REPORT
-        set STATUS   = #{status},
-            MODIFYBY = #{modifyby}
         where REPORT_ID = #{reportId}
     </update>
 </mapper>
