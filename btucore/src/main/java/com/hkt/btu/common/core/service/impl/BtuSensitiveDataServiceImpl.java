@@ -191,9 +191,11 @@ public class BtuSensitiveDataServiceImpl implements BtuSensitiveDataService {
             LOG.error("StorePass is empty.");
             return null;
         }
-        // get keystore
+
+        LOG.info("Loading keystore... (path={})", KEYSTORE_PATH);
         Map<Integer, Key> keyMap = new HashMap<>();
         try {
+            // get keystore
             InputStream keystoreStream = new FileInputStream(KEYSTORE_PATH);
             KeyStore keystore = KeyStore.getInstance("JCEKS");
             keystore.load(keystoreStream, STORE_PASS.toCharArray());
