@@ -1,12 +1,14 @@
 package com.hkt.btu.common.core.service.impl;
 
+import com.hkt.btu.common.core.exception.BtuMissingImplException;
 import com.hkt.btu.common.core.service.BtuCacheService;
 import com.hkt.btu.common.core.service.BtuSensitiveDataService;
+import com.hkt.btu.common.core.service.bean.BtuKeyStoreConfigBean;
 import com.hkt.btu.common.core.service.constant.BtuCacheEnum;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.Resource;
 import javax.crypto.Cipher;
@@ -18,6 +20,9 @@ import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.security.*;
 import java.security.cert.CertificateException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 // ref: https://stackoverflow.com/questions/15554296/simple-java-aes-encrypt-decrypt-example
 // encryption :     AES-256
@@ -27,7 +32,6 @@ import java.security.cert.CertificateException;
 // output length:   4(alias length) + 16(iv length)  + encrypted input byte length + 16(GCM auth tag length)
 //                  = 36 byte + input byte length
 public class BtuSensitiveDataServiceImpl implements BtuSensitiveDataService {
-
     private static final Logger LOG = LogManager.getLogger(BtuSensitiveDataServiceImpl.class);
 
     private final SecureRandom SECURE_RANDOM = new SecureRandom();
@@ -38,18 +42,14 @@ public class BtuSensitiveDataServiceImpl implements BtuSensitiveDataService {
     private static final int IV_BIT_LENGTH = 128;
     private static final int IV_BYTE_LENGTH = IV_BIT_LENGTH / 8;
 
-    // keystore
-    @Value("${servicedesk.aesKeystore.path}")
-    private String KEYSTORE_PATH;
-    @Value("${servicedesk.aesKeystore.storePass}")
-    private String STORE_PASS;
-
-    // key
-    private static final int LATEST_KEY_ALIAS = 1; // [INPUT] alias of latest key
-    private static final char[] KEY_PASS = {'s', 'e', 'r', 'v', 'i', 'c', 'e', 'd', 'e', 's', 'k'};
 
     @Resource(name = "cacheService")
     BtuCacheService cacheService;
+
+    protected BtuKeyStoreConfigBean getBtuKeyStoreBeanInternal(){
+        LOG.error("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
+        throw new BtuMissingImplException();
+    }
 
     @Override
     public String decryptToStringSafe(byte[] cipherMessage) {
@@ -79,8 +79,8 @@ public class BtuSensitiveDataServiceImpl implements BtuSensitiveDataService {
         ByteBuffer byteBuffer = ByteBuffer.wrap(cipherMessage);
 
         // 1a. get key
-        int alias = byteBuffer.getInt();
-        Key key = getKey();
+        Integer alias = byteBuffer.getInt();
+        Key key = getKey( alias );
         if (key == null) {
             throw new GeneralSecurityException("Key not found. (alias=" + alias + ")");
         }
@@ -127,7 +127,8 @@ public class BtuSensitiveDataServiceImpl implements BtuSensitiveDataService {
     @Override
     public byte[] encrypt(byte[] plaintext) throws GeneralSecurityException {
         // 0. get latest key
-        Key latestKey = getKey();
+        Integer latestKeyAlias = getLatestKeyAlias();
+        Key latestKey = getKey(latestKeyAlias);
 
         // 1. create initialization vector (so that the same plaintext and key will always create different ciphertext)
         byte[] iv = new byte[IV_BYTE_LENGTH];
@@ -141,7 +142,7 @@ public class BtuSensitiveDataServiceImpl implements BtuSensitiveDataService {
 
         // 3. serialize to a byte message: key alias + iv + ciphertext(with auth tag)
         ByteBuffer byteBuffer = ByteBuffer.allocate(KEY_ALIAS_BYTE_LENGTH + iv.length + ciphertext.length);
-        byteBuffer.putInt(LATEST_KEY_ALIAS);
+        byteBuffer.putInt(latestKeyAlias);
         byteBuffer.put(iv);
         byteBuffer.put(ciphertext);
 
@@ -153,31 +154,75 @@ public class BtuSensitiveDataServiceImpl implements BtuSensitiveDataService {
         cacheService.reloadCachedObject(BtuCacheEnum.SENSITIVE_DATA.getCacheName());
     }
 
-    private Key getKey() {
-        return (Key) cacheService.getCachedObjectByCacheName(BtuCacheEnum.SENSITIVE_DATA.getCacheName());
+    private Map<Integer, Key> getKeyMap() {
+        return (Map<Integer, Key>) cacheService.getCachedObjectByCacheName(BtuCacheEnum.SENSITIVE_DATA.getCacheName());
+    }
+
+    private Key getKey(Integer alias){
+        Map<Integer, Key> keyMap = getKeyMap();
+        if(MapUtils.isEmpty(keyMap)){
+            LOG.error("Empty key map.");
+            return null;
+        }
+
+        Key key = keyMap.get(alias);
+        if(key==null){
+            LOG.warn("Key with alias={} not found.", alias);
+        }
+        return keyMap.get(alias);
+    }
+
+    private Integer getLatestKeyAlias(){
+        Map<Integer, Key> keyMap = getKeyMap();
+        if(MapUtils.isEmpty(keyMap)){
+            return -1;
+        }
+        return keyMap.keySet().stream().mapToInt(v->v).max().orElse(-2);
     }
 
     @Override
-    public Key loadCachedKey() {
-        LOG.info("Cached key (alias={})",LATEST_KEY_ALIAS);
-        final String aliasString = String.valueOf(LATEST_KEY_ALIAS);
+    public Map<Integer, Key> loadCachedKey() {
+        BtuKeyStoreConfigBean keyStoreConfigBean = getBtuKeyStoreBeanInternal();
+        final String KEYSTORE_PATH = keyStoreConfigBean.getKeystorePath();
+        final String STORE_PASS = keyStoreConfigBean.getStorePass();
+        final char [] KEY_PASS = keyStoreConfigBean.getKeyPass();
+
         if (StringUtils.isEmpty(STORE_PASS)) {
             LOG.error("StorePass is empty.");
             return null;
         }
         // get keystore
-        InputStream keystoreStream;
+        Map<Integer, Key> keyMap = new HashMap<>();
         try {
-            keystoreStream = new FileInputStream(KEYSTORE_PATH);
+            InputStream keystoreStream = new FileInputStream(KEYSTORE_PATH);
             KeyStore keystore = KeyStore.getInstance("JCEKS");
             keystore.load(keystoreStream, STORE_PASS.toCharArray());
-            // check key exist in keystore
-            if (!keystore.containsAlias(aliasString)) {
-                LOG.error("Alias " + aliasString + " not found in keystore.");
-                return null;
+
+            // loop all key in keystore
+            Enumeration<String> keyAliasEnum = keystore.aliases();
+            while(keyAliasEnum.hasMoreElements()){
+                String keyAlias = keyAliasEnum.nextElement();
+                if(!StringUtils.isNumeric(keyAlias)){
+                    LOG.info("Not loading key with non-numeric alias. (alias={})", keyAlias);
+                    continue;
+                }
+
+                // load a key
+                try{
+                    Key key = keystore.getKey(keyAlias, KEY_PASS);
+
+                    Integer keyAliasInt = Integer.parseInt(keyAlias);
+                    keyMap.put(keyAliasInt, key);
+                    LOG.info("Loaded key (keyAlias={})", keyAliasInt);
+                }catch (KeyStoreException | NoSuchAlgorithmException e){
+                    LOG.warn("Cannot load key with alias={}.", keyAlias);
+                    LOG.warn(e.getMessage(), e);
+                }
             }
-            return keystore.getKey(aliasString, KEY_PASS);
-        } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException | UnrecoverableKeyException e) {
+
+            return keyMap;
+        } catch (IOException | CertificateException | UnrecoverableKeyException | NoSuchAlgorithmException | KeyStoreException e) {
+            LOG.error("Cannot load key store key map.");
             LOG.error(e.getMessage(), e);
             return null;
         }

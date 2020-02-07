@@ -56,6 +56,10 @@
     <alias name="sdReportService" alias="btuReportService"/>
     <bean id="sdReportService" class="com.hkt.btu.sd.core.service.impl.SdReportServiceImpl"/>
 
+    <alias name="sdSensitiveDataService" alias="sensitiveDataService"/>
+    <alias name="sdSensitiveDataService" alias="btuSensitiveDataService"/>
+    <bean id="sdSensitiveDataService" class="com.hkt.btu.sd.core.service.impl.SdSensitiveDataServiceImpl"/>
+
     <alias name="sdOtpService" alias="otpService"/>
     <bean id="sdOtpService" class="com.hkt.btu.sd.core.service.impl.SdOtpServiceImpl"/>
 

@@ -2,6 +2,7 @@ package com.hkt.btu.common.core.service;
 
 import java.security.GeneralSecurityException;
 import java.security.Key;
+import java.util.Map;
 
 public interface BtuSensitiveDataService {
     String decryptToStringSafe(byte[] cipherMessage);
@@ -15,5 +16,5 @@ public interface BtuSensitiveDataService {
     @SuppressWarnings("unused") // used in BtuCacheEnum
     void reloadCachedKeys();
     @SuppressWarnings("unused") // used in BtuCacheEnum
-    Key loadCachedKey();
+    Map<Integer, Key> loadCachedKey();
 }
