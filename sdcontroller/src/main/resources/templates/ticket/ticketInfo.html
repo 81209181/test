@@ -112,7 +112,6 @@
                         <button type="button" class="btn btn-info ml-3 voIpBtn" onclick='getRelatedOfferInfo(bsn);'>VoIP Detail</button>
                         <button type="button" class="btn btn-info ml-3 ngn3Btn" onclick="resetNgn3AccountPwd()">Reset NGN3 Account Password</button>
                         <button type="button" class="btn btn-info ml-3 ngn3Btn" onclick="getNGN3OneDayAdminAccount();">Get NGN3 1-Day Admin Account</button>
-                        <button type="button" class="btn btn-info ml-3 utCallBtn">Trigger UT Call</button>
                     </h3>
                 </div>
                 <div class="col-md-12">
@@ -162,6 +161,14 @@
                             <input type="text" class="form-control col-md-6" name="serviceSession"  readonly/>
                         </div>
                     </div>
+                </div>
+                <div class="offset-md-11">
+                    <button type="button" class="btn btn-primary mt-2" id="btnUpdateService" th:disabled="*{ticketStatusDesc} ne 'OPEN'">
+                        Update
+                    </button>
+                </div>
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-info mb-3 utCallBtn">Trigger UT Call</button>
                     <table id="utCallRecordTable" class="display">
                         <thead>
                         <tr>
@@ -191,11 +198,6 @@
                         </tr>
                         </tfoot>
                     </table>
-                </div>
-                <div class="offset-md-11">
-                    <button type="button" class="btn btn-primary mt-2" id="btnUpdateService" th:disabled="*{ticketStatusDesc} ne 'OPEN'">
-                        Update
-                    </button>
                 </div>
             </form>
             <hr>
