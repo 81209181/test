@@ -13,4 +13,5 @@ public interface SdUtCallService {
     void updateRequestAfterGetResult(String utCallId);
     boolean utCallResultRecordExist(String utCallId);
     List<SdUtCallPageBean> getUTCallRequestRecordList();
+    List<SdUtCallPageBean> getUTCallRequestRecordListByBsnNum(String bsnNum);
 }

@@ -146,6 +146,20 @@ public class SdUtCallServiceImpl implements SdUtCallService {
         return utCallRecordListBean;
     }
 
+    @Override
+    public List<SdUtCallPageBean> getUTCallRequestRecordListByBsnNum(String bsnNum) {
+        List<SdUtCallPageBean> utCallRecordListBean = new ArrayList();
+        List<UTCallPageEntity> utCallRecordList = utCallMapper.getUTCallRecordByBsnNum(bsnNum);
+
+        for (UTCallPageEntity entity : utCallRecordList){
+            SdUtCallPageBean bean = new SdUtCallPageBean();
+            utCallPageBeanPopulator.populate(entity, bean);
+            utCallRecordListBean.add(bean);
+        }
+
+        return utCallRecordListBean;
+    }
+
     private String getUTSummaryString(List<Map<String, String>> utSummary){
         if (utSummary==null)
             return null;

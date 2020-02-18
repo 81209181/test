@@ -154,4 +154,18 @@ public class UtApiFacadeImpl extends AbstractRestfulApiFacade implements UtApiFa
 
         return utCallRecordListData;
     }
+
+    @Override
+    public List<SdUtCallPageData> getUTCallRequestRecordListByBsnNum(String bsnNum) {
+        List<SdUtCallPageData> utCallRecordListData = new ArrayList<>();
+        List<SdUtCallPageBean> utCallRecordList = sdUtCallService.getUTCallRequestRecordListByBsnNum(bsnNum);
+
+        for (SdUtCallPageBean bean : utCallRecordList){
+            SdUtCallPageData data = new SdUtCallPageData();
+            utCallPageDataPopulator.populate(bean, data);
+            utCallRecordListData.add(data);
+        }
+
+        return utCallRecordListData;
+    }
 }

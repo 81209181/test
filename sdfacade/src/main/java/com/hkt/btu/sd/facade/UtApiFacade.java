@@ -16,4 +16,6 @@ public interface UtApiFacade {
 //    String updateRequestAfterGetResult(String utCallId);
 
     List<SdUtCallPageData> getUTCallRequestRecordList();
+
+    List<SdUtCallPageData> getUTCallRequestRecordListByBsnNum(String bsnNum);
 }
