@@ -65,4 +65,6 @@ public interface SdUserMapper {
     Integer countTeamHeadUser(String teamHead, String roleId);
 
     List<SdUserEntity> getApiUser();
+
+    void deleteOutDatePwdHistData();
 }

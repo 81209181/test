@@ -230,4 +230,19 @@
         ON ur.ROLE_ID = uur.ROLE_ID
         AND ur.PARENT_ROLE_ID = 'API'
     </select>
+
+    <delete id="deleteOutDatePwdHistData">
+        delete
+        from USER_PWD_HIST uph
+        where
+            exists
+        (select * from (select USER_ID, CREATEDATE
+                        from
+                            (
+                                select USER_ID, CREATEDATE,row_number() over(
+                                    partition by USER_ID order by CREATEDATE desc) rn
+                                from USER_PWD_HIST)
+                        where rn > 5) t
+         where t.USER_ID = uph.USER_ID and t.CREATEDATE = uph.CREATEDATE)
+    </delete>
 </mapper>
