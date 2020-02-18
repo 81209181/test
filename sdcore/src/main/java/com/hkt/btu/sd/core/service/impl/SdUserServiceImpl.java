@@ -465,7 +465,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     }
 
     private void checkValidPassword(String plaintext) throws InvalidPasswordException {
-        final int MIN_LENGTH = 8;
+        final int MIN_LENGTH = 12;
         final int MAX_LENGTH = 20;
 
         // check length
@@ -709,6 +709,12 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         }
 
         return new PageImpl<>(sdUserBeanList, pageable, totalCount);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void cleanOutDatePwdHistData() {
+        sdUserMapper.deleteOutDatePwdHistData();
     }
 
     @Override
