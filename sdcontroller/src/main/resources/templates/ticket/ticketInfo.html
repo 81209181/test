@@ -36,7 +36,7 @@
                 </div>
                 <div class="col-md-3 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Search Key:</label>
-                    <font class="form-control-plaintext col-md-5" th:text="*{searchKeyDesc}"></font>
+                    <font class="form-control-plaintext col-md-5" name="searchKey" th:text="*{searchKeyDesc}"></font>
                 </div>
                 <div class="col-md-3 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Search Value:</label>
@@ -112,6 +112,7 @@
                         <button type="button" class="btn btn-info ml-3 voIpBtn" onclick='getRelatedOfferInfo(bsn);'>VoIP Detail</button>
                         <button type="button" class="btn btn-info ml-3 ngn3Btn" onclick="resetNgn3AccountPwd()">Reset NGN3 Account Password</button>
                         <button type="button" class="btn btn-info ml-3 ngn3Btn" onclick="getNGN3OneDayAdminAccount();">Get NGN3 1-Day Admin Account</button>
+                        <button type="button" class="btn btn-info ml-3 utCallBtn">Trigger UT Call</button>
                     </h3>
                 </div>
                 <div class="col-md-12">
@@ -156,7 +157,40 @@
                             <label class="col-form-label col-md-3 justify-content-end">Exchange: </label>
                             <input type="text" class="form-control col-md-6" name="exchangeBuildingId"  readonly/>
                         </div>
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Service Session: </label>
+                            <input type="text" class="form-control col-md-6" name="serviceSession"  readonly/>
+                        </div>
                     </div>
+                    <table id="utCallRecordTable" class="display">
+                        <thead>
+                        <tr>
+                            <th>UT Call ID</th>
+                            <th>Service Code</th>
+                            <th>Trigger Time</th>
+                            <th>Trigger Status</th>
+                            <th>Testing Status</th>
+                            <th>Last Check Time</th>
+                            <th>Ticket Detail Id</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot>
+                        <tr>
+                            <th>UT Call ID</th>
+                            <th>Service Code</th>
+                            <th>Trigger Time</th>
+                            <th>Trigger Status</th>
+                            <th>Testing Status</th>
+                            <th>Last Check Time</th>
+                            <th>Ticket Detail Id</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        </tfoot>
+                    </table>
                 </div>
                 <div class="offset-md-11">
                     <button type="button" class="btn btn-primary mt-2" id="btnUpdateService" th:disabled="*{ticketStatusDesc} ne 'OPEN'">

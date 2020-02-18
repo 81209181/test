@@ -11,4 +11,5 @@ import java.util.Map;
 @Repository
 public interface UTCallMapper {
     List<UTCallPageEntity> getUTCallRecord();
+    List<UTCallPageEntity> getUTCallRecordByBsnNum(String bsnNum);
 }

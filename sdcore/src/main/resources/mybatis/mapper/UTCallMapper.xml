@@ -28,4 +28,11 @@
         LEFT JOIN UT_CALL_RESULT_RECORD UCRES on UCREQ.UT_CALL_ID = UCRES.UT_CALL_ID
     </select>
 
+    <select id="getUTCallRecordByBsnNum" resultMap="UTCallPageEntity">
+        SELECT UCREQ.*, UCRES.MSG as TEST_STATUS
+        FROM UT_CALL_REQUEST_RECORD UCREQ
+        LEFT JOIN UT_CALL_RESULT_RECORD UCRES on UCREQ.UT_CALL_ID = UCRES.UT_CALL_ID
+        WHERE UCREQ.BSN_NUM = #{bsnNum}
+    </select>
+
 </mapper>

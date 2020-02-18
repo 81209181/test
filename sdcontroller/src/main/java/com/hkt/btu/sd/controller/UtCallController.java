@@ -73,4 +73,10 @@ public class UtCallController {
             return ResponseEntity.badRequest().body("trigger failed.");
         }
     }
+
+    @GetMapping("ajax-ut-call-record-list")
+    public ResponseEntity<?> getUTCallRequestRecordList(@RequestParam String bsnNum) {
+        List<SdUtCallPageData> dataList = utApiFacade.getUTCallRequestRecordListByBsnNum(bsnNum);
+        return ResponseEntity.ok(dataList);
+    }
 }

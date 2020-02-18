@@ -36,13 +36,13 @@ function getAjaxUTCallRecordDataTable() {
             {
                 targets: 8,
                 render: function (data, type, row, meta) {
-                    return "<button class='btn btn-info' onclick='triggerUTCall(\"" + row['bsnNum'] +"\")' ><i class='fas fa-stopwatch'></i> Re-Trigger</button>";
+                    return "<button class='btn btn-info' type='button' onclick='triggerUTCall(\"" + row['bsnNum'] +"\")' ><i class='fas fa-stopwatch'></i> Re-Trigger</button>";
                 }
             },
             {
                 targets: 9,
                 render: function (data, type, row, meta) {
-                    return "<button class='btn btn-success' onclick='getUTCallRequestResult(\"" + row['utCallId'] + "\",\"" + row['serviceCode'] +"\")' ><i class='fas fa-play'></i> Get Result</button>";
+                    return "<button class='btn btn-success' type='button' onclick='getUTCallRequestResult(\"" + row['utCallId'] + "\",\"" + row['serviceCode'] +"\")' ><i class='fas fa-play'></i> Get Result</button>";
                 }
             }
         ]
@@ -50,6 +50,7 @@ function getAjaxUTCallRecordDataTable() {
 }
 
 function triggerUTCall(bsnNum) {
+    clearAllMsg();
     $.post('/system/ut-call/ajax-trigger-ut-call', {
         bsnNum: bsnNum
     }, function (res) {
@@ -65,6 +66,7 @@ function triggerUTCall(bsnNum) {
 }
 
 function getUTCallRequestResult(utCallId, serviceCode) {
+    clearAllMsg();
     $.post('/system/ut-call/ajax-ut-call-get-request-result', {
         utCallId: utCallId,
         serviceCode: serviceCode
