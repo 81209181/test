@@ -1,0 +1,30 @@
+${app_name} = servicedesk
+
+
+----- Database Connection ------
+1. copy tomcat conf/server.xml from /setup/server/tomcat/conf/server.xml
+2. concat setup/server/tomcat/conf/local_catalina.properties to conf/catalina.properties
+    - ${app_name}.db.url
+    - ${app_name}.db.username
+    - ${app_name}.db.password
+
+------ Keystore ------
+1. copy /setup/keystore/dev/aes-keystore.jck to /opt/keystore/aes-keystore.jck
+2. concat setup/server/tomcat/conf/local_catalina.properties to conf/catalina.properties
+    - ${app_name}.aesKeystore.storePass
+    - ${app_name}.aesKeystore.path
+
+------ JVM Option (local development only) ------
+Add VM Option for local development
+-Dcom.sun.jndi.ldap.object.disableEndpointIdentification=true
+
+
+
+
+------ Server Deployment Setup ------
+1. copy deploy_${app_name}.sh to /home/root
+2. copy setup/server/WEB-INF to /home/root
+
+------ Server Deployment ------
+1. upload ${app_name}.war to sysop
+2. run deploy_${app_name}.sh

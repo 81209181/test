@@ -51,13 +51,17 @@ echo_log "Stopping Tomcat Server..."
 /etc/init.d/tomcat stop 1>>${JOBLOG} 2>>sed  '/^NOTE: /d' ${JOBERR}
 f_checkpoint
 
+# Force http to https
+echo_log "Append Security Constraint to web.xml ..."
+zip -u ${SYSOP_HOME_DIR}/${APP_FILENAME} WEB-INF/web.xml 1>>${JOBLOG} 2>>${JOBERR}
+f_checkpoint
+
 # Copy to-be-deployed application
 echo ""
 echo_log "Copying to-be-deployed ${APP_FILENAME}..."
-cp "${SYSOP_HOME_DIR}/${APP_FILENAME}" "${SYSOP_HOME_DIR}/${APP_FILENAME}.${TIMESTAMP}" 1>>${JOBLOG} 2>>${JOBERR}
 cp "${SYSOP_HOME_DIR}/${APP_FILENAME}" "${CATALINA_HOME}/webapps/${APP_FILENAME}" 1>>${JOBLOG} 2>>${JOBERR}
 chown tomcat:tomcat "${CATALINA_HOME}/webapps/${APP_FILENAME}" 1>>${JOBLOG} 2>>${JOBERR}
-rm -f "${SYSOP_HOME_DIR}/${APP_FILENAME}" 1>>${JOBLOG} 2>>${JOBERR}
+mv "${SYSOP_HOME_DIR}/${APP_FILENAME}" "${SYSOP_HOME_DIR}/${APP_FILENAME}.${TIMESTAMP}" 1>>${JOBLOG} 2>>${JOBERR}
 f_checkpoint
 
 # Ensure permission for tomcat work dir
