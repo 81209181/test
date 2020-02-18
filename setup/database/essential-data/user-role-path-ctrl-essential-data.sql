@@ -49,4 +49,9 @@ select 'API_CLOUD', PATH_CTRL_ID, '01634476'
 from PATH_CTRL
 where PATH = '/hkt-cloud-api/**';
 
+insert into USER_ROLE_PATH_CTRL (ROLE_ID, PATH_CTRL_ID, CREATEBY)
+select 'API_OSS', PATH_CTRL_ID, '01634476'
+from PATH_CTRL
+where PATH = '/oss-api/**';
+
 commit;

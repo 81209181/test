@@ -7,4 +7,6 @@ insert into PATH_CTRL(PATH, STATUS, DESCRIPTION,CREATEBY, MODIFYBY) values('/adm
 insert into PATH_CTRL(PATH, STATUS, DESCRIPTION,CREATEBY, MODIFYBY) values('/admin/manage-role/**', 'A', 'Manage User Role', '81149189', '81149189');
 insert into PATH_CTRL(PATH, STATUS, DESCRIPTION,CREATEBY, MODIFYBY) values('/wfm-api/**', 'A', 'WFM API', '01634476', '01634476');
 insert into PATH_CTRL(PATH, STATUS, DESCRIPTION,CREATEBY, MODIFYBY) values('/bes-api/**', 'A', 'BES API', '01634476', '01634476');
+insert into PATH_CTRL(PATH, STATUS, DESCRIPTION, CREATEBY, MODIFYBY) values ('/hkt-cloud-api/**', 'A', 'HKT Could API', '80883564', '80883564');
+insert into PATH_CTRL(PATH, STATUS, DESCRIPTION,CREATEBY, MODIFYBY) values ('/oss-api/**', 'A', 'OSS API', '81209181', '81209181');
 commit;
