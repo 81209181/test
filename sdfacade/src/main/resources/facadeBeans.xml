@@ -73,6 +73,9 @@
     <alias name="sdUtApiFacade" alias="utApiFacade"/>
     <bean id="sdUtApiFacade" class="com.hkt.btu.sd.facade.impl.UtApiFacadeImpl"/>
 
+    <alias name="sdOssApiFacade" alias="ossApiFacade"/>
+    <bean id="sdOssApiFacade" class="com.hkt.btu.sd.facade.impl.OssApiFacadeImpl"/>
+
     <!-- Populator -->
     <alias name="sdConfigParamDataPopulator" alias="configParamDataPopulator"/>
     <alias name="sdConfigParamDataPopulator" alias="btuConfigParamDataPopulator"/>
