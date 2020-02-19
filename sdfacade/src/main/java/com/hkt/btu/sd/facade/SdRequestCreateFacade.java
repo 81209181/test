@@ -14,5 +14,5 @@ public interface SdRequestCreateFacade {
 
     BesFaultInfoData getCustomerInfo(String serviceCode);
 
-    SdTicketServiceInfoData getServiceInfoInApi(String serviceNumber);
+    SdTicketServiceInfoData getServiceInfoInApi(String serviceTypeCode, String serviceNumber);
 }

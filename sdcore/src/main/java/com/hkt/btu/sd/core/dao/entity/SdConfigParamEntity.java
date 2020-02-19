@@ -13,6 +13,7 @@ public class SdConfigParamEntity extends BtuConfigParamEntity {
             public static final String API_WFM = "API_WFM";
             public static final String API_NORARS = "API_NORARS";
             public static final String API_UT_CALL = "API_UT_CALL";
+            public static final String API_OSS = "API_OSS";
         }
     }
 

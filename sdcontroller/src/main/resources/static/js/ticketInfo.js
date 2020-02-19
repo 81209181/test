@@ -2,7 +2,8 @@ var ngn3Btn = $('.ngn3Btn'),
     voIpBtn = $('.voIpBtn'),
     bbBtn = $('.bbBtn'),
     inventoryBtn = $('.inventoryBtn'),
-    eCloudBtn =$('.eCloudBtn');
+    eCloudBtn =$('.eCloudBtn'),
+    utDiv = $('#service-ut');
 
 $().ready(function(){
 
@@ -25,11 +26,11 @@ $().ready(function(){
         }
         $('.selectpicker').selectpicker('refresh');
 
-        $.get('/ticket/service?ticketMasId='+ticketMasId,function(res){
+        $.get('/ticket/service?ticketMasId='+ticketMasId, function(res){
             if (res.length > 0) {
-                $.each(res,function(index,j){
+                $.each(res, function(index,j){
                     let service =$('#service');
-                    getExternalServiceData(j.serviceCode);
+                    getExternalServiceData(j.serviceType, j.serviceCode);
                     bnButtonCtrl(j.bnCtrl);
                     voIpButtonCtrl(j.voIpCtrl);
                     eCloudButtonCtrl(j.cloudCtrl);
@@ -584,17 +585,6 @@ function resetNgn3AccountPwd(){
     }).then(function(){
         $('.ngn3').modal({backdrop: 'static', keyboard: false});
     });
-    //
-    // let accountSelect = $('select[name=ngn3Account]');
-    // accountSelect.find('option:not(:first)').remove();
-    // $('input[name=ngn3pwd]').val('');
-    // $.get('/ticket/getNgn3AccountList/'+bsn, function(res){
-    //     $.each(res,function(k,v){
-    //         accountSelect.append('<option>'+v+'</option>');
-    //     })
-    // }).then(function(){
-    //     $('.ngn3').modal({backdrop: 'static', keyboard: false});
-    // });
 }
 
 function eCloudButtonCtrl(flag) {
@@ -603,6 +593,7 @@ function eCloudButtonCtrl(flag) {
         bbBtn.attr('disabled', true);
         voIpBtn.attr('disabled', true);
         ngn3Btn.hide();
+        utDiv.hide();
     }
 }
 
@@ -613,6 +604,7 @@ function bnButtonCtrl(val){
         bbBtn.attr('disabled', false);
         voIpBtn.attr('disabled', true);
         ngn3Btn.hide();
+        utDiv.hide(); // todo: SERVDESK-323 to-be-enabled for testing
     }
 }
 
@@ -625,10 +617,11 @@ function voIpButtonCtrl(val){
         inventoryBtn.attr('disabled', true);
         bbBtn.attr('disabled', true);
         voIpBtn.attr('disabled', true);
+        utDiv.hide(); // todo: SERVDESK-323 to-be-enabled for testing
     }
 }
-function getExternalServiceData(code){
-    $.get('/ticket/get-external-service-data/'+code,function(res){
+function getExternalServiceData(serviceTypeCode, serviceNumber){
+    $.get('/ticket/get-external-service-data/' + serviceTypeCode + '/' + serviceNumber, function(res){
         eCloudBtn.data('url',res.couldUrl);
         $.each(res,function(key,val){
             $('#service').find('input[name='+key+']').val(val);

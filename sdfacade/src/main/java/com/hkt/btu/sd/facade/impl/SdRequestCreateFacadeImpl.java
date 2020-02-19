@@ -2,6 +2,7 @@ package com.hkt.btu.sd.facade.impl;
 
 import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.sd.core.exception.ApiException;
+import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
 import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
 import com.hkt.btu.sd.facade.data.*;
@@ -118,23 +119,30 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     }
 
     @Override
-    public SdTicketServiceInfoData getServiceInfoInApi(String serviceNumber) {
-        SdTicketServiceInfoData serviceInfoData = new SdTicketServiceInfoData();
+    public SdTicketServiceInfoData getServiceInfoInApi(String serviceTypeCode, String serviceNumber) {
         SdRequestCreateSearchResultData resultData = new SdRequestCreateSearchResultData();
-        List<ItsmProfileData> itsmProfileDataList = itsmApiFacade.searchProfileByServiceNo(serviceNumber).getList();
-        if (CollectionUtils.isNotEmpty(itsmProfileDataList)) {
-            ItsmProfileData itsmProfileData = itsmProfileDataList.get(0);
-            requestCreateSearchResultDataPopulator.populateFromItsmProfileData(itsmProfileData, resultData);
+
+        if(StringUtils.equals(serviceTypeCode, SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD) ||
+                StringUtils.equals(serviceTypeCode, SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD_365)) {
+            ItsmSearchProfileResponseData itsmSearchProfileResponseData = itsmApiFacade.searchProfileByServiceNo(serviceNumber);
+            List<ItsmProfileData> itsmProfileDataList = itsmSearchProfileResponseData == null ? null : itsmSearchProfileResponseData.getList();
+            if (CollectionUtils.isNotEmpty(itsmProfileDataList)) {
+                ItsmProfileData itsmProfileData = itsmProfileDataList.get(0);
+                requestCreateSearchResultDataPopulator.populateFromItsmProfileData(itsmProfileData, resultData);
+            }
         }
+
         BesSubscriberData besSubscriberData = besApiFacade.querySubscriberByServiceNumber(serviceNumber);
         if (!Objects.isNull(besSubscriberData)) {
             BesSubscriberInfoResourceData besSubscriberInfoResourceData = besSubscriberData.getSubscriberInfos().get(0);
             requestCreateSearchResultDataPopulator.populateFromBesSubscriberInfoResourceData(besSubscriberInfoResourceData, resultData);
         }
+
         BesCustomerData besCustomerData = besApiFacade.queryCustomerByServiceCode(serviceNumber);
         if (!Objects.isNull(besCustomerData)) {
             requestCreateSearchResultDataPopulator.populateFromBesCustomerDataData(besCustomerData, resultData);
         }
+
         String bnBsn = norarsApiFacade.getBsnByDn(serviceNumber);
         if (StringUtils.isNotEmpty(bnBsn)) {
             resultData.setRelatedBsn(bnBsn);
@@ -142,7 +150,10 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         } else {
             fillBnData(serviceNumber, resultData);
         }
+
         fillPendingOrderData(serviceNumber, resultData);
+
+        SdTicketServiceInfoData serviceInfoData = new SdTicketServiceInfoData();
         ticketServiceInfoDataPopulator.populateFormRequestCreateSearchResultData(resultData, serviceInfoData);
         return serviceInfoData;
     }
