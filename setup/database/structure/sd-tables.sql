@@ -172,7 +172,7 @@ CREATE TABLE UT_CALL_REQUEST_RECORD
     CREATEDATE                    date                     default SYSDATE not null,
     CREATEBY                      varchar2(10)             not null,
     MODIFYDATE                    date,
-    MODIFYBY                      varchar2(10),
+    MODIFYBY                      varchar2(10)
 );
 CREATE INDEX IDX_UT_CALL_REQUEST_RECORD_1 ON UT_CALL_REQUEST_RECORD (BSN_NUM);
 --------------------------------------------------------------------------------------------------

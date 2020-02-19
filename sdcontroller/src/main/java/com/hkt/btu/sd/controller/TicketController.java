@@ -412,10 +412,11 @@ public class TicketController {
         return "ticket/teamSummary";
     }
 
-    @GetMapping("get-external-service-data/{serviceCode}")
-    public ResponseEntity<?> getExternalServiceData(@PathVariable String serviceCode) {
+    @GetMapping("get-external-service-data/{serviceTypeCode}/{serviceNumber}")
+    public ResponseEntity<?> getExternalServiceData(@PathVariable String serviceTypeCode, @PathVariable String serviceNumber) {
         try {
-            return ResponseEntity.ok(requestCreateFacade.getServiceInfoInApi(serviceCode));
+            SdTicketServiceInfoData serviceInfoData = requestCreateFacade.getServiceInfoInApi(serviceTypeCode, serviceNumber);
+            return ResponseEntity.ok(serviceInfoData);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
