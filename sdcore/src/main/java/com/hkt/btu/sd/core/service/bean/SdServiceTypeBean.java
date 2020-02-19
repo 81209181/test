@@ -11,6 +11,7 @@ public class SdServiceTypeBean extends BaseBean {
         public static final String ENTERPRISE_CLOUD  = "E_CLOUD";
         public static final String SMART_METER  = "METER";
         public static final String UNKNOWN = "UNKNOWN";
+        public static final String SMART_METER = "METER";
     }
 
     private String serviceTypeCode;

@@ -39,6 +39,7 @@ public class OssApiFacadeImpl extends AbstractRestfulApiFacade implements OssApi
         testingData.setExchange("LHK");
         testingData.setSb("229119");
         testingData.setRegion("Kowloon");
+        testingData.setDistrict("Sham Shui Po");
         testingData.setStreet("Yuet Lun Street");
         testingData.setStreetSection("Manhattan Hill");
         testingData.setLatitude(22.2388);

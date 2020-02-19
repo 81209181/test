@@ -6,7 +6,8 @@ import org.apache.commons.lang3.StringUtils;
 public enum ServiceSearchEnum {
     BSN ("bsn", "BSN"),
     TENANT_ID ("tenantId", "Tenant ID"),
-    DN ("dn", "DN")
+    DN ("dn", "DN"),
+    POLE_ID("poleId", "Pole ID")
     ;
 
 

@@ -19,7 +19,7 @@ public class OssSmartMeterData implements DataInterface {
         return poleId;
     }
 
-    public void setPoleId(String poleID) {
+    public void setPoleId(String poleId) {
         this.poleId = poleId;
     }
 

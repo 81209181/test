@@ -5,6 +5,7 @@ import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.bes.*;
 import com.hkt.btu.sd.facade.data.itsm.ItsmProfileData;
+import com.hkt.btu.sd.facade.data.oss.OssSmartMeterData;
 import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -205,5 +206,18 @@ public class RequestCreateSearchResultDataPopulator extends AbstractDataPopulato
                 break;
 
         }
+    }
+
+    public void populateFromOssSmartMeterData(OssSmartMeterData source, SdRequestCreateSearchResultData target){
+        target.setServiceType(SdServiceTypeBean.SERVICE_TYPE.SMART_METER);
+        target.setServiceTypeDesc("Smart Meter");
+        target.setServiceNo(source.getPoleId());
+        target.setExchangeBuildingId(source.getExchange());
+        target.setServiceAddress((StringUtils.isEmpty(source.getSb()) ? "" : source.getSb()) + " "
+                + (StringUtils.isEmpty(source.getStreetSection()) ? "" : source.getStreetSection()) + ","
+                + (StringUtils.isEmpty(source.getStreet()) ? "" : source.getStreet()) + ","
+                + (StringUtils.isEmpty(source.getDistrict()) ? "" : source.getDistrict()) + ","
+                + (StringUtils.isEmpty(source.getRegion()) ? "" : source.getRegion())
+        );
     }
 }
