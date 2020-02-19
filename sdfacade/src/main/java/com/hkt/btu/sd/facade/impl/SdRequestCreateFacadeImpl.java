@@ -11,6 +11,7 @@ import com.hkt.btu.sd.facade.data.bes.BesSubscriberData;
 import com.hkt.btu.sd.facade.data.bes.BesSubscriberInfoResourceData;
 import com.hkt.btu.sd.facade.data.itsm.ItsmProfileData;
 import com.hkt.btu.sd.facade.data.itsm.ItsmSearchProfileResponseData;
+import com.hkt.btu.sd.facade.data.oss.OssSmartMeterData;
 import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
 import com.hkt.btu.sd.facade.populator.RequestCreateSearchResultDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdTicketInfoDataPopulator;
@@ -41,6 +42,8 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     WfmApiFacade wfmApiFacade;
     @Resource(name = "serviceTypeFacade")
     SdServiceTypeFacade serviceTypeFacade;
+    @Resource(name = "ossApiFacade")
+    OssApiFacade ossApiFacade;
 
     @Resource(name = "requestCreateSearchResultDataPopulator")
     RequestCreateSearchResultDataPopulator requestCreateSearchResultDataPopulator;
@@ -72,6 +75,8 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
                     return findData4Dn(searchValue);
                 case TENANT_ID:
                     return findData4Tenant(searchValue);
+                case POLE_ID:
+                    return findData4SmartMeter(searchValue);
                 default:
                     String errorMsg = "Unexpected search key: " + searchKey + ", search value: " + searchValue;
                     LOG.warn(errorMsg);
@@ -245,6 +250,27 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         return resultsData;
     }
 
+    private SdRequestCreateSearchResultsData findData4SmartMeter(String searchValue) {
+        SdRequestCreateSearchResultsData resultsData = new SdRequestCreateSearchResultsData();
+        List<SdRequestCreateSearchResultData> resultDataList = new ArrayList<>();
+        SdRequestCreateSearchResultData resultData = new SdRequestCreateSearchResultData();
+
+        Integer poleId = Integer.parseInt(searchValue);
+        OssSmartMeterData ossSmartMeterData = ossApiFacade.queryMeterInfo(poleId);
+
+        if (ossSmartMeterData != null) {
+            requestCreateSearchResultDataPopulator.populateFromOssSmartMeterData(ossSmartMeterData, resultData);
+            fillPendingOrderData(searchValue, resultData);
+            resultDataList.add(resultData);
+        }
+
+        if (CollectionUtils.isEmpty(resultDataList)) {
+            resultsData.setErrorMsg(String.format("Service(s) not found with %s .", poleId));
+        } else {
+            resultsData.setList(resultDataList);
+        }
+        return resultsData;
+    }
 
     private SdRequestCreateSearchResultsData findCustomerServiceInfo(String serviceNumber) {
         SdRequestCreateSearchResultsData resultData = new SdRequestCreateSearchResultsData();
