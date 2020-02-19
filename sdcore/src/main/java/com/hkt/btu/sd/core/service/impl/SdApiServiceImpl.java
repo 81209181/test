@@ -67,4 +67,14 @@ public class SdApiServiceImpl extends BtuApiServiceImpl implements SdApiService 
     public SdApiProfileBean getUtApiProfileBean() {
         return (SdApiProfileBean) getApiProfileBeanInternal(SdCacheEnum.API_UT_CALL.getCacheName());
     }
+
+    @Override
+    public SdApiProfileBean loadOssApiProfileBean() {
+        return (SdApiProfileBean) loadApiProfileBeanInternal(SdCacheEnum.API_OSS.getCacheName());
+    }
+
+    @Override
+    public SdApiProfileBean getOssApiProfileBean() {
+        return (SdApiProfileBean) getApiProfileBeanInternal(SdCacheEnum.API_OSS.getCacheName());
+    }
 }

@@ -27,6 +27,8 @@ public enum SdCacheEnum {
             "apiService","loadWfmApiProfileBean"),
     API_UT_CALL (SdConfigParamEntity.API.CONFIG_GROUP.API_UT_CALL, 207, false,true,
             "apiService","loadUtApiProfileBean"),
+    API_OSS (SdConfigParamEntity.API.CONFIG_GROUP.API_OSS, 208, false,true,
+            "apiService","loadOssApiProfileBean"),
     ;
 
 
