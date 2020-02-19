@@ -20,6 +20,7 @@ public class SdTicketServiceBeanPopulator extends AbstractBeanPopulator<SdTicket
         target.setServiceTypeCode(source.getServiceTypeCode());
         target.setJobId(source.getJobId());
         target.setSubsId(source.getSubsId());
+        target.setReportTime(source.getReportTime());
         Optional.ofNullable(source.getSymptomList()).ifPresent(entities -> target.setFaultsList(entities.stream().map(entity -> {
             SdSymptomBean bean = new SdSymptomBean();
             bean.setSymptomCode(entity.getSymptomCode());

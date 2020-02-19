@@ -2,6 +2,7 @@ package com.hkt.btu.sd.core.service.bean;
 
 import com.hkt.btu.common.core.service.bean.BaseBean;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class SdTicketServiceBean extends BaseBean {
@@ -14,6 +15,7 @@ public class SdTicketServiceBean extends BaseBean {
     private List<SdSymptomBean> faultsList;
     private String jobId;
     private String subsId;
+    private LocalDateTime reportTime;
 
     public String getSubsId() {
         return subsId;
@@ -77,5 +79,13 @@ public class SdTicketServiceBean extends BaseBean {
 
     public void setFaultsList(List<SdSymptomBean> faultsList) {
         this.faultsList = faultsList;
+    }
+
+    public LocalDateTime getReportTime() {
+        return reportTime;
+    }
+
+    public void setReportTime(LocalDateTime reportTime) {
+        this.reportTime = reportTime;
     }
 }

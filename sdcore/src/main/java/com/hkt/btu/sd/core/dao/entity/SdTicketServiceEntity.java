@@ -2,6 +2,7 @@ package com.hkt.btu.sd.core.dao.entity;
 
 import com.hkt.btu.common.core.dao.entity.BaseEntity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class SdTicketServiceEntity extends BaseEntity {
@@ -13,6 +14,7 @@ public class SdTicketServiceEntity extends BaseEntity {
     private List<SdSymptomEntity> symptomList;
     private String jobId;
     private String subsId;
+    private LocalDateTime reportTime;
 
     public String getJobId() {
         return jobId;
@@ -70,6 +72,14 @@ public class SdTicketServiceEntity extends BaseEntity {
         this.symptomList = symptomList;
     }
 
+    public LocalDateTime getReportTime() {
+        return reportTime;
+    }
+
+    public void setReportTime(LocalDateTime reportTime) {
+        this.reportTime = reportTime;
+    }
+
     @Override
     public String toString() {
         return "SdTicketServiceEntity{" +
@@ -80,6 +90,7 @@ public class SdTicketServiceEntity extends BaseEntity {
                 ", symptomList=" + symptomList +
                 ", jobId='" + jobId + '\'' +
                 ", subsId='" + subsId + '\'' +
+                ", reportTime='" + reportTime + '\'' +
                 '}';
     }
 }

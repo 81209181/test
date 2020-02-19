@@ -2,6 +2,7 @@ package com.hkt.btu.sd.facade.data;
 
 import com.hkt.btu.common.facade.data.DataInterface;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class SdTicketServiceData implements DataInterface {
@@ -13,10 +14,13 @@ public class SdTicketServiceData implements DataInterface {
     private List<SdSymptomData> faultsList;
     private String jobId;
 
+    private LocalDateTime reportTime;
+
     // button control
     private boolean bnCtrl;
     private boolean voIpCtrl;
     private boolean cloudCtrl;
+    private boolean meterCtrl;
 
     public String getJobId() {
         return jobId;
@@ -66,6 +70,14 @@ public class SdTicketServiceData implements DataInterface {
         this.serviceTypeDesc = serviceTypeDesc;
     }
 
+    public LocalDateTime getReportTime() {
+        return reportTime;
+    }
+
+    public void setReportTime(LocalDateTime reportTime) {
+        this.reportTime = reportTime;
+    }
+
     public boolean isBnCtrl() {
         return bnCtrl;
     }
@@ -88,5 +100,13 @@ public class SdTicketServiceData implements DataInterface {
 
     public void setCloudCtrl(boolean cloudCtrl) {
         this.cloudCtrl = cloudCtrl;
+    }
+
+    public boolean isMeterCtrl() {
+        return meterCtrl;
+    }
+
+    public void setMeterCtrl(boolean meterCtrl) {
+        this.meterCtrl = meterCtrl;
     }
 }

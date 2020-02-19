@@ -54,6 +54,9 @@
     <alias name="sdPublicHolidayFacade" alias="publicHolidayFacade"/>
     <bean id="sdPublicHolidayFacade" class="com.hkt.btu.sd.facade.impl.SdPublicHolidayFacadeImpl"/>
 
+    <alias name="sdSmartMeterFacade" alias="smartMeterFacade"/>
+    <bean id="sdSmartMeterFacade" class="com.hkt.btu.sd.facade.impl.SdSmartMeterFacadeImpl"/>
+
     <!--  API Facade  -->
     <alias name="sdBesApiFacade" alias="besApiFacade"/>
     <bean name="sdBesApiFacade" class="com.hkt.btu.sd.facade.impl.BesApiFacadeImpl"/>

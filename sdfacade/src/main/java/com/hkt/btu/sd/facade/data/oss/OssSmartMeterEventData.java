@@ -10,7 +10,7 @@ public class OssSmartMeterEventData implements DataInterface {
     private String eventCode;
     private String eventDesc;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime eventTime;
 
 

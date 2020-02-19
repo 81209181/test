@@ -10,6 +10,7 @@
         <result column="SERVICE_ID" property="serviceId"/>
         <result column="SUBS_ID" property="subsId"/>
         <result column="JOB_ID" property="jobId"/>
+        <result column="REPORT_TIME" property="reportTime"/>
 
         <result column="CREATEDATE" property="createdate"/>
         <result column="CREATEBY" property="createby"/>
@@ -39,6 +40,7 @@
                td.SYMPTOM_CODE,
                td.SERVICE_TYPE_CODE,
                td.JOB_ID,
+               td.REPORT_TIME,
                s.SYMPTOM_DESCRIPTION
         from TICKET_DET td
         left join SYMPTOM s

@@ -17,6 +17,7 @@ public class SdTicketServiceDataPopulator extends AbstractDataPopulator<SdTicket
         target.setServiceType(source.getServiceTypeCode());
         target.setServiceCode(source.getServiceId());
         target.setJobId(source.getJobId());
+        target.setReportTime(source.getReportTime());
         Optional.ofNullable(source.getFaultsList()).ifPresent(beans -> target.setFaultsList(beans.stream().map(bean -> {
             SdSymptomData data = new SdSymptomData();
             data.setSymptomCode(bean.getSymptomCode());
