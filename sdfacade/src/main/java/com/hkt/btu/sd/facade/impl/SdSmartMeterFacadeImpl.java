@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
@@ -48,8 +49,9 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
     @Override
     public SdTicketData getTicketInfo(Integer ticketMasId) {
         SdTicketData ticketData = ticketFacade.getTicketInfo(ticketMasId);
-        SdTicketMasData ticketMasData = ticketData==null ? null : ticketData.getTicketMasInfo();
-        String serviceType = ticketMasData==null ? null : ticketMasData.getServiceType();
+        List<SdTicketServiceData> serviceDataList = ticketData==null ? null : ticketData.getServiceInfo();
+        SdTicketServiceData serviceData = serviceDataList==null ? null : serviceDataList.get(0);
+        String serviceType = serviceData==null ? null : serviceData.getServiceType();
         if(StringUtils.equals(serviceType, SdServiceTypeBean.SERVICE_TYPE.SMART_METER)){
             return ticketData;
         }else {

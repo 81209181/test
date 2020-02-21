@@ -89,7 +89,7 @@
     </sql>
 
     <select id="searchTicketList" resultMap="TicketMasEntity">
-        select tm.*,td.SERVICE_ID,st.SERVICE_TYPE_NAME
+        select tm.*, td.SERVICE_ID, st.SERVICE_TYPE_NAME
         <include refid="searchTicketSql"/>
         order by tm.TICKET_MAS_ID desc
         OFFSET #{offset} ROWS FETCH NEXT #{pageSize} ROWS ONLY

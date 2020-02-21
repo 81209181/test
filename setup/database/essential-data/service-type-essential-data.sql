@@ -9,5 +9,7 @@ insert into service_type(service_type_code,service_type_name,createby,modifyby)
 values('BN','Broadaband','system','system');
 insert into service_type(service_type_code,service_type_name,createby,modifyby)
 values('FN','Fix Number','system','system');
+insert into service_type(service_type_code,service_type_name,createby,modifyby)
+values('METER','Smart Meter','system','system');
 
 commit;
