@@ -1,11 +1,13 @@
 package com.hkt.btu.sd.facade.impl;
 
+import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.core.service.bean.BtuApiProfileBean;
 import com.hkt.btu.common.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.core.service.SdApiService;
 import com.hkt.btu.sd.facade.OssApiFacade;
 import com.hkt.btu.sd.facade.data.oss.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -69,10 +71,30 @@ public class OssApiFacadeImpl extends AbstractRestfulApiFacade implements OssApi
 
     @Override
     public PageData<OssSmartMeterEventData> queryMeterEvents(Integer page, Integer pageSize, Integer poleId, LocalDateTime fromTime, LocalDateTime toTime) {
-        String apiPath = "/govpm-web/api/servicedesk/meterInfo";
+        // check input
+        if(page==null){
+            String errorMsg = "Null page.";
+            LOG.error(errorMsg);
+            throw new InvalidInputException(errorMsg);
+        } else if (pageSize==null){
+            String errorMsg = "Null pageSize.";
+            LOG.error(errorMsg);
+            throw new InvalidInputException(errorMsg);
+        } else if (poleId==null){
+            String errorMsg = "Null poleId.";
+            LOG.error(errorMsg);
+            throw new InvalidInputException(errorMsg);
+        } else if (fromTime==null){
+            String errorMsg = "Null fromTime.";
+            LOG.error(errorMsg);
+            throw new InvalidInputException(errorMsg);
+        }
 
-        String fromTimeStr = fromTime==null ? null : fromTime.format(DateTimeFormatter.ISO_DATE_TIME);
-        String toTimeStr = toTime==null ? null : toTime.format(DateTimeFormatter.ISO_DATE_TIME);
+        String apiPath = "/govpm-web/api/servicedesk/meterEvents";
+        pageSize = pageSize>100 ? 10 : pageSize;
+
+        String fromTimeStr = fromTime.format(DateTimeFormatter.ISO_DATE_TIME);
+        String toTimeStr = toTime==null ? StringUtils.EMPTY : toTime.format(DateTimeFormatter.ISO_DATE_TIME);
 
         Map<String, String> queryParamMap = Map.of(
                 "poleID", String.valueOf(poleId),
@@ -80,6 +102,7 @@ public class OssApiFacadeImpl extends AbstractRestfulApiFacade implements OssApi
                 "toTime", toTimeStr,
                 "page", String.valueOf(page),
                 "pageSize", String.valueOf(pageSize));
+
         OssSmartMeterEventWrapData pagedEventData = getData(
                 apiPath, OssSmartMeterEventWrapData.class, queryParamMap);
         return pagedEventData.getEvents();

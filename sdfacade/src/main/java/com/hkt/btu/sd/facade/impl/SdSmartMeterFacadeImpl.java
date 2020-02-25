@@ -14,7 +14,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Pageable;
 
 import javax.annotation.Resource;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -61,15 +63,20 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
     }
 
     @Override
-    public PageData<SdTicketMasData> searchTicketList(Pageable pageable, Integer poleId) {
+    public PageData<SdTicketMasData> searchTicketList(Pageable pageable, Integer poleId, String createDateFromStr, String createDateToStr) {
         if(poleId==null){
             LOG.warn("Null pole ID.");
             return null;
         }
 
+        createDateFromStr = createDateFromStr==null ? StringUtils.EMPTY : createDateFromStr;
+        createDateToStr = createDateToStr==null ? StringUtils.EMPTY : createDateToStr;
+
         Map<String, String> searchFormData = Map.of(
                 "serviceType", SdServiceTypeBean.SERVICE_TYPE.SMART_METER,
-                "serviceNumber", String.valueOf(poleId)
+                "serviceNumber", String.valueOf(poleId),
+                "createDateFrom", createDateFromStr,
+                "createDateTo", createDateToStr
         );
 
         return ticketFacade.searchTicketList(pageable, searchFormData);

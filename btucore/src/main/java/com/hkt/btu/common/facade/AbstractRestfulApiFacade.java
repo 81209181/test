@@ -3,7 +3,6 @@ package com.hkt.btu.common.facade;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
 import com.hkt.btu.common.core.service.BtuSiteConfigService;
 import com.hkt.btu.common.core.service.bean.BtuApiProfileBean;
 import com.hkt.btu.common.facade.data.DataInterface;
@@ -26,9 +25,9 @@ import java.lang.reflect.Type;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -227,19 +226,12 @@ public abstract class AbstractRestfulApiFacade {
 
     private Gson getGson() {
         GsonBuilder builder = new GsonBuilder();
-
-        builder.registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (json, typeOfT, context) -> getDate(json));
+        builder.registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (json, typeOfT, jsonDeserializationContext) ->
+                        json == null ? null : new Date(json.getAsLong()));
+        builder.registerTypeAdapter(LocalDateTime.class, (JsonDeserializer<LocalDateTime>) (json, type, jsonDeserializationContext) ->
+                ZonedDateTime.parse(json.getAsJsonPrimitive().getAsString()).toLocalDateTime());
+        builder.registerTypeAdapter(LocalDate.class, (JsonDeserializer<LocalDate>) (json, type, jsonDeserializationContext) ->
+                ZonedDateTime.parse(json.getAsJsonPrimitive().getAsString()).toLocalDate());
         return builder.create();
-    }
-
-    private Date getDate(JsonElement json) {
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        String dfString = format.format(json.getAsJsonPrimitive().getAsLong());
-        try {
-            return format.parse(dfString);
-        } catch (ParseException e) {
-            LOG.error(e.getMessage(), e);
-        }
-        return null;
     }
 }

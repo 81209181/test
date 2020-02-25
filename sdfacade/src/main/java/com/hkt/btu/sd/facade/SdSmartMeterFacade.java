@@ -11,5 +11,6 @@ import java.time.LocalDateTime;
 public interface SdSmartMeterFacade {
     BtuSimpleResponseData createTicket(Integer poleId, LocalDateTime reportTime);
     SdTicketData getTicketInfo(Integer ticketMasId);
-    PageData<SdTicketMasData> searchTicketList(Pageable pageable, Integer poleId);
+    PageData<SdTicketMasData> searchTicketList(Pageable pageable,
+                                               Integer poleId, String createDateFrom, String createDateTo);
 }
