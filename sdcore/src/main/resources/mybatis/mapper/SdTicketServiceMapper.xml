@@ -73,6 +73,7 @@
     <update id="updateTicketServiceSymptomByTicketMasId">
         update TICKET_DET
         set SYMPTOM_CODE = #{symptomCode},
+            REPORT_TIME = #{reportTime},
             MODIFYBY = #{modifyby},
             MODIFYDATE = sysdate
         where TICKET_MAS_ID = #{ticketMasId}

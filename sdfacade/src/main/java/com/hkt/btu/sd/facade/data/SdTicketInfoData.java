@@ -3,6 +3,8 @@ package com.hkt.btu.sd.facade.data;
 
 import com.hkt.btu.common.facade.data.DataInterface;
 
+import java.time.LocalDateTime;
+
 public class SdTicketInfoData implements DataInterface {
 
     // ticket
@@ -14,6 +16,7 @@ public class SdTicketInfoData implements DataInterface {
     private String searchKeyDesc;
     private String searchValue;
     private String owningRole;
+    private LocalDateTime completeDate;
 
     // customer info
     private String custCode;
@@ -79,6 +82,22 @@ public class SdTicketInfoData implements DataInterface {
         this.searchValue = searchValue;
     }
 
+    public String getOwningRole() {
+        return owningRole;
+    }
+
+    public void setOwningRole(String owningRole) {
+        this.owningRole = owningRole;
+    }
+
+    public LocalDateTime getCompleteDate() {
+        return completeDate;
+    }
+
+    public void setCompleteDate(LocalDateTime completeDate) {
+        this.completeDate = completeDate;
+    }
+
     public String getCustCode() {
         return custCode;
     }
@@ -125,13 +144,5 @@ public class SdTicketInfoData implements DataInterface {
 
     public void setAsap(String asap) {
         this.asap = asap;
-    }
-
-    public String getOwningRole() {
-        return owningRole;
-    }
-
-    public void setOwningRole(String owningRole) {
-        this.owningRole = owningRole;
     }
 }

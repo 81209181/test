@@ -342,11 +342,11 @@ public class SdTicketServiceImpl implements SdTicketService {
 
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
-    public void updateServiceSymptom(Integer ticketMasId, String symptomCode) {
+    public void updateServiceSymptom(Integer ticketMasId, String symptomCode, LocalDateTime reportTime) {
         BtuUserBean currentUserBean = userService.getCurrentUserBean();
         String modifyby = currentUserBean.getUserId();
 
-        ticketServiceMapper.updateTicketServiceSymptomByTicketMasId(ticketMasId, symptomCode, modifyby);
+        ticketServiceMapper.updateTicketServiceSymptomByTicketMasId(ticketMasId, symptomCode, modifyby, reportTime);
     }
 
     @Override

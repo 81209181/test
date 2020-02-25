@@ -13,6 +13,7 @@
         var ticketMasId = '[[${ticketInfo.ticketMasId}]]';
         var ticketStatusDesc = '[[${ticketInfo.ticketStatusDesc}]]';
         var bsn = '[[${ticketInfo.searchValue}]]';
+        var completeDate = '[[${ticketInfo.completeDate}]]';
     </script>
     <div class="card" style="margin-bottom: 75px;" th:object="${ticketInfo}">
         <div class="card-header bg-primary text-white">Ticket - <span th:text="*{ticketMasId}"></span></div>
@@ -160,6 +161,10 @@
                             <label class="col-form-label col-md-3 justify-content-end">Service Session: </label>
                             <input type="text" class="form-control col-md-6" name="serviceSession"  readonly/>
                         </div>
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Report Time: </label>
+                            <input type="datetime-local" class="form-control col-md-6" name="reportTime"/>
+                        </div>
                     </div>
                 </div>
                 <div class="offset-md-11">
@@ -195,6 +200,27 @@
                             <th>Ticket Detail Id</th>
                             <th></th>
                             <th></th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div th:id="service-event" class="col-md-12">
+                    <table id="eventOfPoleTable" class="display">
+                        <thead>
+                        <tr>
+                            <th>Event ID</th>
+                            <th>Event Code</th>
+                            <th>Event Desc</th>
+                            <th>Event Time</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot>
+                        <tr>
+                            <th>Event ID</th>
+                            <th>Event Code</th>
+                            <th>Event Desc</th>
+                            <th>Event Time</th>
                         </tr>
                         </tfoot>
                     </table>

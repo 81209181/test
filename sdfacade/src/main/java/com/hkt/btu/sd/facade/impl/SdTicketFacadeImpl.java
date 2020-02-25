@@ -79,7 +79,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
     @Override
     public int createQueryTicket(SdQueryTicketRequestData queryTicketRequestData) {
-        if (!ServiceSearchEnum.TENANT_ID.getKey().equalsIgnoreCase(queryTicketRequestData.getSearchKey())) {
+        if (!ServiceSearchEnum.TENANT_ID.getKey().equalsIgnoreCase(queryTicketRequestData.getSearchKey())
+                && !ServiceSearchEnum.POLE_ID.getKey().equalsIgnoreCase(queryTicketRequestData.getSearchKey()) ) {
             if (StringUtils.isBlank(queryTicketRequestData.getCustCode())) {
                 throw new InvalidInputException("Customer Code is Empty.");
             }
@@ -285,6 +286,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                 bean.setServiceTypeCode(requestData.getServiceType());
                 bean.setServiceId(requestData.getServiceCode());
                 bean.setFaults(requestData.getFaults());
+                bean.setReportTime(requestData.getReportTime());
                 return bean;
             }).collect(Collectors.toList());
 
@@ -294,7 +296,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                     return "Please select symptom.";
                 }
                 faults.forEach(symptom ->
-                        ticketService.updateServiceSymptom(serviceInfo.getTicketMasId(), symptom));
+                        ticketService.updateServiceSymptom(serviceInfo.getTicketMasId(), symptom, serviceInfo.getReportTime()));
             }
         } catch (Exception e) {
             LOG.error(e);

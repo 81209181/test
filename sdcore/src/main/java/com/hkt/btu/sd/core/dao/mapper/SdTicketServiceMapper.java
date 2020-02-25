@@ -6,6 +6,7 @@ import com.hkt.btu.sd.core.dao.entity.SdTicketServiceEntity;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -21,7 +22,8 @@ public interface SdTicketServiceMapper {
 
     void updateTicketServiceSymptomByTicketMasId(@Param("ticketMasId") Integer ticketMasId,
                                                  @Param("symptomCode") String symptomCode,
-                                                 @Param("modifyby") String modifyby);
+                                                 @Param("modifyby") String modifyby,
+                                                 @Param("reportTime") LocalDateTime reportTime);
 
     List<SdSymptomEntity> getSymptomListByTicketMasId(Integer ticketMasId);
 

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +34,7 @@ public interface SdTicketService {
 
     int updateServiceInfo(SdTicketServiceBean bean);
 
-    void updateServiceSymptom(Integer ticketMasId, String symptomCode);
+    void updateServiceSymptom(Integer ticketMasId, String symptomCode, LocalDateTime reportTime);
 
     List<SdTicketRemarkBean> getTicketRemarksByTicketId(Integer ticketMasId);
 

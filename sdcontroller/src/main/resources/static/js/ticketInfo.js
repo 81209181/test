@@ -3,11 +3,15 @@ var ngn3Btn = $('.ngn3Btn'),
     bbBtn = $('.bbBtn'),
     inventoryBtn = $('.inventoryBtn'),
     eCloudBtn =$('.eCloudBtn'),
-    utDiv = $('#service-ut');
+    utDiv = $('#service-ut'),
+    searchKey = $("#ticket").find('font[name=searchKey]').text();
 
 $().ready(function(){
 
     let ticketDetId = "";
+
+    $('input[name=reportTime]').attr('pattern','[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}');
+    $('input[name=reportTime]').attr('placeholder','1900-01-01T01:00');
 
     $('.selectpicker').selectpicker({});
 
@@ -48,6 +52,11 @@ $().ready(function(){
                 })
                 $('.selectpicker').selectpicker('refresh');
                 $('.selectpicker').selectpicker('render');
+
+                $("#service-event").hide();
+                if (searchKey === 'Pole ID') {
+                    getAjaxEventOfPoleDataTable();
+                }
             } else {
                 $('#btnMakeAppointment').attr('disabled', true);
             }
@@ -345,7 +354,6 @@ $().ready(function(){
 
     $('.utCallBtn').on('click',function(){
         let bsnNum = '';
-        let searchKey = $("#ticket").find('font[name=searchKey]').text();
 
         if (searchKey === 'BSN') {
             bsnNum = bsn;
@@ -636,7 +644,6 @@ function getExternalServiceData(serviceTypeCode, serviceNumber){
 
 function getAjaxUTCallRecordDataTable() {
     let bsnNum = '';
-    let searchKey = $("#ticket").find('font[name=searchKey]').text();
 
     if (searchKey === 'BSN') {
         bsnNum = bsn;
@@ -715,5 +722,43 @@ function getUTCallRequestResult(utCallId, serviceCode) {
         var responseError = e.responseText ? e.responseText : "get result failed.";
         console.log("ERROR : ", responseError);
         showErrorMsg(responseError);
+    });
+}
+
+function getAjaxEventOfPoleDataTable() {
+    $("#service-event").show();
+
+    let poleId = bsn;
+    let fromTime = $("#service").find('input[name=reportTime]').val();
+    let toTime = completeDate;
+
+    $('#eventOfPoleTable').DataTable({
+        processing: true,
+        serverSide: true,
+        searching: false,
+        ajax: {
+            type: "GET",
+            contentType: "application/json",
+            url: "/ticket/service/ajax-event-of-pole-list",
+            dataSrc: 'data',
+            data: function(d){
+                d.poleId = poleId;
+                d.fromTime = fromTime;
+                d.toTime = toTime;
+            },
+            error: function (e) {
+                if(e.responseText){
+                    showErrorMsg(e.responseText);
+                } else {
+                    showErrorMsg("Cannot load result.");
+                }
+            }
+        },
+        columns: [
+            {data: 'eventId'},
+            {data: 'eventCode'},
+            {data: 'eventDesc'},
+            {data: 'eventTime'}
+        ]
     });
 }

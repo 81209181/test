@@ -9,6 +9,7 @@ import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.norars.NoraAccountData;
 import com.hkt.btu.sd.facade.data.norars.NoraBroadbandInfoData;
+import com.hkt.btu.sd.facade.data.oss.OssSmartMeterEventData;
 import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
 import com.hkt.btu.sd.facade.data.wfm.WfmMakeApptData;
 import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
@@ -19,6 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +55,8 @@ public class TicketController {
     NorarsApiFacade norarsApiFacade;
     @Resource(name = "cloudApiFacade")
     CloudApiFacade cloudApiFacade;
+    @Resource(name = "ossApiFacade")
+    OssApiFacade ossApiFacade;
 
     public static final String O_CLOUD_SH = "O_CLOUD_SH";
 
@@ -425,5 +430,19 @@ public class TicketController {
     @PostMapping("get-upload-files")
     public ResponseEntity<?> getUploadFiles(int ticketMasId) {
         return ResponseEntity.ok(ticketFacade.getUploadFiles(ticketMasId));
+    }
+
+    @GetMapping("/service/ajax-event-of-pole-list")
+    public ResponseEntity<?> getEventOfPoleList(@RequestParam(defaultValue = "0") int draw,
+                                                @RequestParam(defaultValue = "0") int start,
+                                                @RequestParam(defaultValue = "10") int length,
+                                                @RequestParam Integer poleId,
+                                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fromTime,
+                                                @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime toTime) {
+        int page = start / length;
+        toTime = toTime == null ? LocalDateTime.now() : toTime;
+
+        PageData<OssSmartMeterEventData> pageData = ossApiFacade.queryMeterEvents(page, length, poleId, fromTime, toTime);
+        return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
     }
 }
