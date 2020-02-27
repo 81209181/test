@@ -3,7 +3,7 @@ package com.hkt.btu.sd.facade.impl;
 import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.core.service.bean.BtuApiProfileBean;
 import com.hkt.btu.common.facade.AbstractRestfulApiFacade;
-import com.hkt.btu.common.facade.data.PageData;
+import com.hkt.btu.common.facade.data.BtuPageData;
 import com.hkt.btu.sd.core.service.SdApiService;
 import com.hkt.btu.sd.facade.OssApiFacade;
 import com.hkt.btu.sd.facade.data.oss.*;
@@ -70,7 +70,7 @@ public class OssApiFacadeImpl extends AbstractRestfulApiFacade implements OssApi
     }
 
     @Override
-    public PageData<OssSmartMeterEventData> queryMeterEvents(Integer page, Integer pageSize, Integer poleId, LocalDateTime fromTime, LocalDateTime toTime) {
+    public BtuPageData<OssSmartMeterEventData> queryMeterEvents(Integer page, Integer pageSize, Integer poleId, LocalDateTime fromTime, LocalDateTime toTime) {
         // check input
         if(page==null){
             String errorMsg = "Null page.";

@@ -1,21 +1,21 @@
 package com.hkt.btu.sd.facade.data.oss;
 
+import com.hkt.btu.common.facade.data.BtuPageData;
 import com.hkt.btu.common.facade.data.DataInterface;
-import com.hkt.btu.common.facade.data.PageData;
 
 public class OssSmartMeterEventWrapData implements DataInterface {
 
     public OssSmartMeterEventWrapData() {
-        events = new PageData<>();
+        events = new BtuPageData<>();
     }
 
-    private PageData<OssSmartMeterEventData> events;
+    private BtuPageData<OssSmartMeterEventData> events;
 
-    public PageData<OssSmartMeterEventData> getEvents() {
+    public BtuPageData<OssSmartMeterEventData> getEvents() {
         return events;
     }
 
-    public void setEvents(PageData<OssSmartMeterEventData> events) {
+    public void setEvents(BtuPageData<OssSmartMeterEventData> events) {
         this.events = events;
     }
 }

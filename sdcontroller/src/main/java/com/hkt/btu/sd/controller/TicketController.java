@@ -2,6 +2,7 @@ package com.hkt.btu.sd.controller;
 
 import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.facade.data.BtuCodeDescData;
+import com.hkt.btu.common.facade.data.BtuPageData;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
@@ -442,7 +443,17 @@ public class TicketController {
         int page = start / length;
         toTime = toTime == null ? LocalDateTime.now() : toTime;
 
-        PageData<OssSmartMeterEventData> pageData = ossApiFacade.queryMeterEvents(page, length, poleId, fromTime, toTime);
-        return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
+        BtuPageData<OssSmartMeterEventData> btuPageData = ossApiFacade.queryMeterEvents(page, length, poleId, fromTime, toTime);
+
+        if (btuPageData == null) {
+            return ResponseEntityHelper.buildDataTablesResponse(draw, new PageData());
+        } else {
+            PageData pageData = new PageData(
+                btuPageData.getContent(), page,  length,
+                btuPageData.getTotalElements(),  null,  btuPageData.isLast(),
+                btuPageData.getTotalPages(), null, btuPageData.isFirst(),
+                btuPageData.getNumberOfElements());
+            return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
+        }
     }
 }

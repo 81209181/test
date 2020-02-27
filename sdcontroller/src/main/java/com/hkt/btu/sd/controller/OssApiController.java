@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.controller;
 
+import com.hkt.btu.common.facade.data.BtuPageData;
 import com.hkt.btu.common.facade.data.BtuSimpleResponseData;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.facade.OssApiFacade;
@@ -73,7 +74,7 @@ public class OssApiController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fromTime,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime toTime ) {
         int pageSize = 10;
-        PageData<OssSmartMeterEventData> result = ossApiFacade.queryMeterEvents(page, pageSize, poleId, fromTime, toTime);
+        BtuPageData<OssSmartMeterEventData> result = ossApiFacade.queryMeterEvents(page, pageSize, poleId, fromTime, toTime);
 
         if(result==null){
             return ResponseEntity.badRequest().body(String.format("Cannot search Smart Meter tickets. (poleId=%d, page=%d, pageSize=%d)", poleId, page, pageSize));
