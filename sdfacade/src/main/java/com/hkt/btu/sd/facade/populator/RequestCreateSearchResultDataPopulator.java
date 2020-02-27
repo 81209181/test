@@ -213,11 +213,15 @@ public class RequestCreateSearchResultDataPopulator extends AbstractDataPopulato
         target.setServiceTypeDesc("Smart Meter");
         target.setServiceNo(source.getPoleId());
         target.setExchangeBuildingId(source.getExchange());
-        target.setServiceAddress((StringUtils.isEmpty(source.getSb()) ? "" : source.getSb()) + " "
-                + (StringUtils.isEmpty(source.getStreetSection()) ? "" : source.getStreetSection()) + ","
-                + (StringUtils.isEmpty(source.getStreet()) ? "" : source.getStreet()) + ","
-                + (StringUtils.isEmpty(source.getDistrict()) ? "" : source.getDistrict()) + ","
-                + (StringUtils.isEmpty(source.getRegion()) ? "" : source.getRegion())
-        );
+
+        String formattedAddress =
+                (StringUtils.isEmpty(source.getStreetSection()) ? StringUtils.EMPTY : source.getStreetSection()+", ") +
+                (StringUtils.isEmpty(source.getStreet()) ? StringUtils.EMPTY : source.getStreet()+ ", ") +
+                (StringUtils.isEmpty(source.getDistrict()) ? StringUtils.EMPTY : source.getDistrict()+", ") +
+                (StringUtils.isEmpty(source.getRegion()) ? StringUtils.EMPTY : source.getRegion()) +
+                " (" + source.getLatitude() + "," + source.getLongitude() + ")" +
+                " (SB: " + source.getSb() + ") "
+                ;
+        target.setServiceAddress(formattedAddress);
     }
 }
