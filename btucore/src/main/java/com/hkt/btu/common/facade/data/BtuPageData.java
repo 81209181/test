@@ -9,7 +9,7 @@ public class BtuPageData<T extends DataInterface> {
     private String errorMsg;
     private Long total;
     private List<T> content;
-    private BtuPageable pageable;
+    private BtuPageableData pageable;
     private boolean last;
     private int totalPages;
     private Long totalElements;
@@ -48,11 +48,11 @@ public class BtuPageData<T extends DataInterface> {
         this.content = content;
     }
 
-    public BtuPageable getPageable() {
+    public BtuPageableData getPageable() {
         return pageable;
     }
 
-    public void setPageable(BtuPageable pageable) {
+    public void setPageable(BtuPageableData pageable) {
         this.pageable = pageable;
     }
 

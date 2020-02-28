@@ -7,9 +7,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated // replaced by BtuPageData
 public class PageData<T extends DataInterface> extends PageImpl<T> implements PageDataInterface<T> {
 
     private String errorMsg;

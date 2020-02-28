@@ -2,7 +2,7 @@ package com.hkt.btu.common.facade.data;
 
 import org.springframework.data.domain.Sort;
 
-public class BtuPageable implements DataInterface {
+public class BtuPageableData implements DataInterface {
 
     private int pageNumber;
     private int pageSize;
@@ -11,7 +11,7 @@ public class BtuPageable implements DataInterface {
     private boolean unpaged;
     private Sort sort;
 
-    public BtuPageable(int pageNumber, int pageSize, long offset, boolean paged, boolean unpaged, Sort sort) {
+    public BtuPageableData(int pageNumber, int pageSize, long offset, boolean paged, boolean unpaged, Sort sort) {
         this.pageNumber = pageNumber;
         this.pageSize = pageSize;
         this.offset = offset;
