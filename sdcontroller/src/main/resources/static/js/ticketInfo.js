@@ -742,6 +742,8 @@ function getAjaxEventOfPoleDataTable() {
             processing: true,
             serverSide: true,
             searching: false,
+            bLengthChange: false,
+            iDisplayLength : 20,
             ajax: {
                 type: "GET",
                 contentType: "application/json",
@@ -761,8 +763,8 @@ function getAjaxEventOfPoleDataTable() {
                 }
             },
             columns: [
-                {data: 'eventId'},
-                {data: 'eventCode'},
+                {data: 'eventID'},
+                {data: 'hwUnitName'},
                 {data: 'eventDesc'},
                 {data: 'eventTime'}
             ]
