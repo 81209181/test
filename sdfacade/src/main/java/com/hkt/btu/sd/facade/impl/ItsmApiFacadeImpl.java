@@ -19,7 +19,7 @@ public class ItsmApiFacadeImpl extends AbstractRestfulApiFacade implements ItsmA
 
     @Override
     protected BtuApiProfileBean getTargetApiProfile() {
-        return apiService.getBesApiProfileBean();
+        return apiService.getItsmRestfulApiProfileBean();
     }
 
 
