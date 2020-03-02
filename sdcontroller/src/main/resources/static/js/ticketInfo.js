@@ -10,9 +10,6 @@ $().ready(function(){
 
     let ticketDetId = "";
 
-    $('input[name=reportTime]').attr('pattern','[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}');
-    $('input[name=reportTime]').attr('placeholder','1900-01-01T01:00');
-
     $('.selectpicker').selectpicker({});
 
     if(ticketStatusDesc === "OPEN"){
@@ -54,7 +51,12 @@ $().ready(function(){
                 $('.selectpicker').selectpicker('render');
 
                 $("#service-event").hide();
+                $('input[name=reportTime]').attr('disabled', true);
                 if (searchKey === 'Pole ID') {
+                    $('input[name=reportTime]').attr('disabled', false);
+                    $('input[name=reportTime]').attr('pattern','[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}');
+                    $('input[name=reportTime]').attr('placeholder','1900-01-01T01:00');
+                    utDiv.hide();
                     getAjaxEventOfPoleDataTable();
                 }
             } else {
@@ -732,33 +734,38 @@ function getAjaxEventOfPoleDataTable() {
     let fromTime = $("#service").find('input[name=reportTime]').val();
     let toTime = completeDate;
 
-    $('#eventOfPoleTable').DataTable({
-        processing: true,
-        serverSide: true,
-        searching: false,
-        ajax: {
-            type: "GET",
-            contentType: "application/json",
-            url: "/ticket/service/ajax-event-of-pole-list",
-            dataSrc: 'data',
-            data: function(d){
-                d.poleId = poleId;
-                d.fromTime = fromTime;
-                d.toTime = toTime;
-            },
-            error: function (e) {
-                if(e.responseText){
-                    showErrorMsg(e.responseText);
-                } else {
-                    showErrorMsg("Cannot load result.");
+    if (fromTime === "") {
+        // showErrorMsg("Null fromTime.");
+        $('#eventOfPoleTable').DataTable();
+    } else {
+        $('#eventOfPoleTable').DataTable({
+            processing: true,
+            serverSide: true,
+            searching: false,
+            ajax: {
+                type: "GET",
+                contentType: "application/json",
+                url: "/ticket/service/ajax-event-of-pole-list",
+                dataSrc: 'data',
+                data: function(d){
+                    d.poleId = poleId;
+                    d.fromTime = fromTime;
+                    d.toTime = toTime;
+                },
+                error: function (e) {
+                    if(e.responseText){
+                        showErrorMsg(e.responseText);
+                    } else {
+                        showErrorMsg("Cannot load result.");
+                    }
                 }
-            }
-        },
-        columns: [
-            {data: 'eventId'},
-            {data: 'eventCode'},
-            {data: 'eventDesc'},
-            {data: 'eventTime'}
-        ]
-    });
+            },
+            columns: [
+                {data: 'eventId'},
+                {data: 'eventCode'},
+                {data: 'eventDesc'},
+                {data: 'eventTime'}
+            ]
+        });
+    }
 }
