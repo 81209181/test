@@ -19,6 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,9 +100,9 @@ public class SdTicketServiceImpl implements SdTicketService {
     }
 
     @Override
-    public Optional<SdTicketMasBean> getTicket(Integer ticketId) {
+    public Optional<SdTicketMasBean> getTicket(Integer ticketMasId) {
         SdTicketMasBean bean = new SdTicketMasBean();
-        return Optional.ofNullable(ticketMasMapper.findTicketById(ticketId)).map(sdTicketMasEntity -> {
+        return Optional.ofNullable(ticketMasMapper.findTicketById(ticketMasId)).map(sdTicketMasEntity -> {
             ticketMasBeanPopulator.populate(sdTicketMasEntity, bean);
             return bean;
         });
@@ -240,16 +241,6 @@ public class SdTicketServiceImpl implements SdTicketService {
     }
 
     @Override
-    public void updateAppointment(String appointmentDate, boolean asap, String userId, String ticketMasId) {
-        ticketMasMapper.updateAppointmentInMas(LocalDateTime.parse(appointmentDate), asap ? "Y" : "N", userId, ticketMasId);
-    }
-
-    @Override
-    public boolean checkAppointmentDate(String appointmentDate) {
-        return LocalDateTime.now().plusHours(2).plusMinutes(-1).isBefore(LocalDateTime.parse(appointmentDate));
-    }
-
-    @Override
     public List<SdSymptomBean> getSymptomList(Integer ticketMasId) {
         List<SdSymptomEntity> symptomEntities = ticketServiceMapper.getSymptomListByTicketMasId(ticketMasId);
 
@@ -291,13 +282,6 @@ public class SdTicketServiceImpl implements SdTicketService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void updateTicketStatus(int ticketMasId, String status, String userId) {
-        ticketMasMapper.updateTicketStatus(ticketMasId, status, userId);
-        createTicketSysRemarks(ticketMasId, "Cancel ticket.");
-    }
-
-    @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public void increaseCallInCount(Integer ticketMasId) {
         // update count
@@ -325,23 +309,6 @@ public class SdTicketServiceImpl implements SdTicketService {
 
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
-    public int updateServiceInfo(SdTicketServiceBean bean) {
-        BtuUserBean currentUserBean = userService.getCurrentUserBean();
-        String createby = currentUserBean.getUserId();
-
-        SdTicketServiceEntity entity = new SdTicketServiceEntity();
-        entity.setCreateby(createby);
-        entity.setModifyby(createby);
-        entity.setServiceId(bean.getServiceId());
-        entity.setTicketMasId(bean.getTicketMasId());
-        entity.setServiceTypeCode(bean.getServiceTypeCode());
-
-        ticketServiceMapper.insertServiceInfo(entity);
-        return entity.getTicketDetId();
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public void updateServiceSymptom(Integer ticketMasId, String symptomCode, LocalDateTime reportTime) {
         BtuUserBean currentUserBean = userService.getCurrentUserBean();
         String modifyby = currentUserBean.getUserId();
@@ -358,6 +325,36 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Override
     public List<SdTicketMasBean> getPendingTicketList(String serviceNo) {
         return getTicketByServiceNo(serviceNo, SdTicketMasEntity.TICKET_TYPE.JOB, SdTicketMasEntity.STATUS.COMPLETE);
+    }
+
+    @Override
+    public boolean isMatchTicketJobType(Integer ticketMasId, TicketTypeEnum ticketTypeEnum) {
+        if(ticketMasId==null){
+            LOG.warn("Null ticketMasId.");
+            return false;
+        }
+
+        Page<SdTicketMasBean> pageResult = searchTicketList(
+                PageRequest.of(0, 10), null, null,
+                null, null, null,
+                null, String.valueOf(ticketMasId), null,
+                null, ticketTypeEnum.getTypeCode(), null, false, null);
+        return pageResult.getTotalElements() > 0;
+    }
+
+    @Override
+    public boolean isMatchTicketServiceType(Integer ticketMasId, String ticketServiceType) {
+        if(ticketMasId==null){
+            LOG.warn("Null ticketMasId.");
+            return false;
+        }
+
+        Page<SdTicketMasBean> pageResult = searchTicketList(
+                PageRequest.of(0, 10), null, null,
+                null, null, null,
+                null, String.valueOf(ticketMasId), null,
+                null, null, ticketServiceType, false, null);
+        return pageResult.getTotalElements() > 0;
     }
 
     @Override
