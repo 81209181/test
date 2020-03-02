@@ -17,6 +17,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class OssApiFacadeImpl extends AbstractRestfulApiFacade implements OssApiFacade {
@@ -103,26 +105,36 @@ public class OssApiFacadeImpl extends AbstractRestfulApiFacade implements OssApi
                 "page", String.valueOf(page),
                 "pageSize", String.valueOf(pageSize));
 
-        OssSmartMeterEventWrapData pagedEventData = getData(
-                apiPath, OssSmartMeterEventWrapData.class, queryParamMap);
+//        OssSmartMeterEventWrapData pagedEventData = getData(
+//                apiPath, OssSmartMeterEventWrapData.class, queryParamMap);
+//        return pagedEventData.getEvents();
+
+        OssSmartMeterEventData eventData = new OssSmartMeterEventData();
+        eventData.setEventId(1234);
+        eventData.setEventCode("TEST");
+        eventData.setEventDesc("Testing 1.");
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        eventData.setEventTime(df.format(LocalDateTime.of(2020, 1, 1, 1, 1, 2)));
+
+        OssSmartMeterEventData eventData2 = new OssSmartMeterEventData();
+        eventData2.setEventId(2345);
+        eventData2.setEventCode("TEST-2");
+        eventData2.setEventDesc("Testing 2.");
+        eventData2.setEventTime(df.format(LocalDateTime.of(2020, 2, 2, 2, 2, 2)));
+
+        List<OssSmartMeterEventData> dataList = new LinkedList<>();
+        dataList.add(eventData);
+        dataList.add(eventData2);
+
+        OssSmartMeterEventWrapData pagedEventData = new OssSmartMeterEventWrapData();
+        BtuPageData<OssSmartMeterEventData> events = new BtuPageData<>();
+        events.setContent(dataList);
+        events.setNumber(page);
+        events.setSize(pageSize);
+        events.setTotalElements((pageSize.longValue()));
+        pagedEventData.setEvents(events);
         return pagedEventData.getEvents();
 
-//        OssSmartMeterEventData eventData = new OssSmartMeterEventData();
-//        eventData.setEventId(1234);
-//        eventData.setEventCode("TEST");
-//        eventData.setEventDesc("Testing 1.");
-//        eventData.setEventTime(LocalDateTime.of(2020, 1, 1, 1, 1, 2));
-//
-//        OssSmartMeterEventData eventData2 = new OssSmartMeterEventData();
-//        eventData2.setEventId(2345);
-//        eventData2.setEventCode("TEST-2");
-//        eventData2.setEventDesc("Testing 2.");
-//        eventData2.setEventTime(LocalDateTime.of(2020, 2, 2, 2, 2, 2));
-//
-//        List <OssSmartMeterEventData> dataList = new LinkedList<>();
-//        dataList.add(eventData);
-//        dataList.add(eventData2);
-//
 //        Pageable pageable = PageRequest.of(page, pageSize);
 //        return new PageData<>(dataList, pageable, 1);
     }
