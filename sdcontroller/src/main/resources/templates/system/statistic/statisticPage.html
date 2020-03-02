@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Statistic</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+    <h2>Statistic</h2>
+    <div id="loginCountLast90Days" class="col-md-6"></div>
+    <br>
+    <div id="loginCountLastTwoWeeks" class="col-md-6"></div>
+    <br>
+    <div id="statisticTicketType" class="col-md-6"></div>
+    <br>
+    <div id="statisticTicketStatus" class="col-md-6"></div>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" th:src="@{/js/statisticPage.js}"></script>
+</div>
+</body>
+</html>

@@ -93,6 +93,9 @@
     <alias name="sdUtCallService" alias="utCallService"/>
     <bean id="sdUtCallService" class="com.hkt.btu.sd.core.service.impl.SdUtCallServiceImpl"/>
 
+    <alias name="StatisticService" alias="statisticService"/>
+    <bean class="com.hkt.btu.sd.core.service.impl.SdStatisticServiceImpl" id="StatisticService"/>
+
     <!-- Populator -->
     <alias name="sdConfigParamBeanPopulator" alias="configParamBeanPopulator"/>
     <alias name="sdConfigParamBeanPopulator" alias="btuConfigParamBeanPopulator"/>
@@ -171,6 +174,9 @@
 
     <alias name="sdTicketUploadFileBeanPopulator" alias="ticketUploadFileBeanPopulator" />
     <bean class="com.hkt.btu.sd.core.service.populator.SdTicketUploadFileBeanPopulator" id="sdTicketUploadFileBeanPopulator"/>
+
+    <alias name="sdStatisticBeanPopulator" alias="statisticBeanPopulator"/>
+    <bean id="sdStatisticBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdStatisticBeanPopulator"/>
 
     <alias name="utCallPageBeanPopulator" alias="callPageBeanPopulator"/>
     <bean id="utCallPageBeanPopulator" class="com.hkt.btu.sd.core.service.populator.UTCallPageBeanPopulator"/>
