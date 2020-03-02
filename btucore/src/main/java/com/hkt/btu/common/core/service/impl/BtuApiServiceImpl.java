@@ -75,7 +75,7 @@ public class BtuApiServiceImpl implements BtuApiService {
         bean.setOtherParamMap(otherParamMap);
 
         // form btu auth key into header (if applicable)
-        String btuHeaderAuthKey = formBtuHeaderAuthKey(bean.getUserName(), bean.getPassword());
+        String btuHeaderAuthKey = formBasicHeaderAuthKey(bean.getUserName(), bean.getPassword());
         if(StringUtils.isNotEmpty(btuHeaderAuthKey)){
             headerMap.add(HttpHeaders.AUTHORIZATION, btuHeaderAuthKey);
         }
@@ -84,7 +84,8 @@ public class BtuApiServiceImpl implements BtuApiService {
         return bean;
     }
 
-    private String formBtuHeaderAuthKey(String userName, String password) {
+    // https://en.wikipedia.org/wiki/Basic_access_authentication
+    private String formBasicHeaderAuthKey(String userName, String password) {
         if(StringUtils.isEmpty(userName) || StringUtils.isEmpty(password)){
             return null;
         }

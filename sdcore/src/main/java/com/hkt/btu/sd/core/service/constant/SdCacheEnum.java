@@ -17,9 +17,9 @@ public enum SdCacheEnum {
     // API Profile
     API_BES (SdConfigParamEntity.API.CONFIG_GROUP.API_BES, 201, false,true,
             "apiService","loadBesApiProfileBean"),
-    API_ITSM (SdConfigParamEntity.API.CONFIG_GROUP.API_ITSM_RESTFUL, 202, false,true,
+    API_ITSM (SdConfigParamEntity.API.CONFIG_GROUP.API_ITSM, 202, false, true,
             "apiService","loadItsmApiProfileBean"),
-    API_ITSM_RESTFUL (SdConfigParamEntity.API.CONFIG_GROUP.API_ITSM, 204, false,true,
+    API_ITSM_RESTFUL (SdConfigParamEntity.API.CONFIG_GROUP.API_ITSM_RESTFUL, 204, false, true,
             "apiService","loadItsmRestfulApiProfileBean"),
     API_NORARS (SdConfigParamEntity.API.CONFIG_GROUP.API_NORARS, 205, false,true,
             "apiService","loadNorarsApiProfileBean"),

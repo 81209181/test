@@ -37,8 +37,6 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     ItsmApiFacade itsmApiFacade;
     @Resource(name = "norarsApiFacade")
     NorarsApiFacade norarsApiFacade;
-    @Resource(name = "ticketFacade")
-    SdTicketFacade ticketFacade;
     @Resource(name = "wfmApiFacade")
     WfmApiFacade wfmApiFacade;
     @Resource(name = "serviceTypeFacade")
@@ -122,9 +120,25 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     public SdTicketServiceInfoData getServiceInfoInApi(String serviceTypeCode, String serviceNumber) {
         SdRequestCreateSearchResultData resultData = new SdRequestCreateSearchResultData();
 
-        if(StringUtils.equals(serviceTypeCode, SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD) ||
-                StringUtils.equals(serviceTypeCode, SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD_365)) {
-            ItsmSearchProfileResponseData itsmSearchProfileResponseData = itsmApiFacade.searchProfileByServiceNo(serviceNumber);
+        String bsn = null;
+        String bnBsn = null;
+        String eCloudServiceNo = null;
+        if ( StringUtils.equals(serviceTypeCode, SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD) ||
+                StringUtils.equals(serviceTypeCode, SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD_365) ) {
+            eCloudServiceNo = serviceNumber;
+            bsn = serviceNumber; // some new enterprise cloud is in BSE
+        } else if ( StringUtils.equals(serviceTypeCode, SdServiceTypeBean.SERVICE_TYPE.BROADBAND )){
+            bsn = serviceNumber;
+            bnBsn = serviceNumber;
+        } else if ( StringUtils.equals(serviceTypeCode, SdServiceTypeBean.SERVICE_TYPE.VOIP) ){
+            bsn = serviceNumber;
+            bnBsn = norarsApiFacade.getBsnByDn(serviceNumber);
+            resultData.setRelatedBsn(bnBsn);
+        }
+
+        // get data with e-cloud service number
+        if (eCloudServiceNo!=null){
+            ItsmSearchProfileResponseData itsmSearchProfileResponseData = itsmApiFacade.searchProfileByServiceNo(eCloudServiceNo);
             List<ItsmProfileData> itsmProfileDataList = itsmSearchProfileResponseData == null ? null : itsmSearchProfileResponseData.getList();
             if (CollectionUtils.isNotEmpty(itsmProfileDataList)) {
                 ItsmProfileData itsmProfileData = itsmProfileDataList.get(0);
@@ -132,26 +146,26 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
             }
         }
 
-        BesSubscriberData besSubscriberData = besApiFacade.querySubscriberByServiceNumber(serviceNumber);
-        if (!Objects.isNull(besSubscriberData)) {
-            BesSubscriberInfoResourceData besSubscriberInfoResourceData = besSubscriberData.getSubscriberInfos().get(0);
-            requestCreateSearchResultDataPopulator.populateFromBesSubscriberInfoResourceData(besSubscriberInfoResourceData, resultData);
+        // get data with bsn
+        if ( bsn!=null ) {
+            BesSubscriberData besSubscriberData = besApiFacade.querySubscriberByServiceNumber(bsn);
+            if (!Objects.isNull(besSubscriberData)) {
+                BesSubscriberInfoResourceData besSubscriberInfoResourceData = besSubscriberData.getSubscriberInfos().get(0);
+                requestCreateSearchResultDataPopulator.populateFromBesSubscriberInfoResourceData(besSubscriberInfoResourceData, resultData);
+            }
+
+            BesCustomerData besCustomerData = besApiFacade.queryCustomerByServiceCode(bsn);
+            if (!Objects.isNull(besCustomerData)) {
+                requestCreateSearchResultDataPopulator.populateFromBesCustomerDataData(besCustomerData, resultData);
+            }
+
+            fillPendingOrderDataByBsn(bsn, resultData);
         }
 
-        BesCustomerData besCustomerData = besApiFacade.queryCustomerByServiceCode(serviceNumber);
-        if (!Objects.isNull(besCustomerData)) {
-            requestCreateSearchResultDataPopulator.populateFromBesCustomerDataData(besCustomerData, resultData);
-        }
-
-        String bnBsn = norarsApiFacade.getBsnByDn(serviceNumber);
-        if (StringUtils.isNotEmpty(bnBsn)) {
-            resultData.setRelatedBsn(bnBsn);
+        // get data with bn bsn
+        if ( bnBsn!=null ) {
             fillBnData(bnBsn, resultData);
-        } else {
-            fillBnData(serviceNumber, resultData);
         }
-
-        fillPendingOrderData(serviceNumber, resultData);
 
         SdTicketServiceInfoData serviceInfoData = new SdTicketServiceInfoData();
         ticketServiceInfoDataPopulator.populateFormRequestCreateSearchResultData(resultData, serviceInfoData);
@@ -185,7 +199,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         try {
             for (SdRequestCreateSearchResultData resultData : besSubscriberInfoDataList) {
                 fillBnData(bsn, resultData);
-                fillPendingOrderData(bsn, resultData);
+                fillPendingOrderDataByBsn(bsn, resultData);
             }
         } catch (ApiException e) {
             LOG.warn(e.getMessage(), e);
@@ -217,7 +231,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
                     fillBnData(bnBsn, resultData);
                 }
 
-                fillPendingOrderData(dn, resultData);
+                fillPendingOrderDataByBsn(dn, resultData);
             }
         } catch (ApiException e) {
             LOG.warn(e.getMessage(), e);
@@ -229,30 +243,37 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     }
 
     private SdRequestCreateSearchResultsData findData4Tenant(String tenantId) {
-        SdRequestCreateSearchResultsData resultsData = new SdRequestCreateSearchResultsData();
+        ItsmSearchProfileResponseData searchProfileResponseData = itsmApiFacade.searchProfileByTenantId(tenantId);
+        List<ItsmProfileData> profileDataList = searchProfileResponseData==null ? null : searchProfileResponseData.getList();
+
         List<SdRequestCreateSearchResultData> resultDataList = new ArrayList<>();
         SdRequestCreateSearchResultData resultData;
-        for (ItsmProfileData itsmProfileData : itsmApiFacade.searchProfileByTenantId(tenantId).getList()) {
-            if (StringUtils.isNotEmpty(itsmProfileData.getCustCode())) {
-                if (!itsmProfileData.getServiceNo().equals(tenantId)) {
+        if(CollectionUtils.isNotEmpty(profileDataList)){
+            for (ItsmProfileData itsmProfileData : profileDataList) {
+                if (StringUtils.isNotEmpty(itsmProfileData.getCustCode())) {
+                    if (!itsmProfileData.getServiceNo().equals(tenantId)) {
+                        resultData = new SdRequestCreateSearchResultData();
+                        requestCreateSearchResultDataPopulator.populateFromItsmProfileData(itsmProfileData, resultData);
+                        BesSubscriberInfoResourceData besSubscriberInfoResourceData = besApiFacade.querySubscriberByServiceNumber(itsmProfileData.getServiceNo()).getSubscriberInfos().get(0);
+                        BesCustomerData besCustomerData = besApiFacade.queryCustomerByServiceCode(itsmProfileData.getServiceNo());
+                        requestCreateSearchResultDataPopulator.populateFromBesSubscriberInfoResourceData(besSubscriberInfoResourceData, resultData);
+                        requestCreateSearchResultDataPopulator.populateFromBesCustomerDataData(besCustomerData, resultData);
+                        SdServiceTypeData serviceTypeData = serviceTypeFacade.getServiceTypeByOfferName(resultData.getOfferName());
+                        requestCreateSearchResultDataPopulator.populateFromServiceTypeData(serviceTypeData, resultData);
+                        resultDataList.add(resultData);
+                    }
+                } else {
                     resultData = new SdRequestCreateSearchResultData();
                     requestCreateSearchResultDataPopulator.populateFromItsmProfileData(itsmProfileData, resultData);
-                    BesSubscriberInfoResourceData besSubscriberInfoResourceData = besApiFacade.querySubscriberByServiceNumber(itsmProfileData.getServiceNo()).getSubscriberInfos().get(0);
-                    BesCustomerData besCustomerData = besApiFacade.queryCustomerByServiceCode(itsmProfileData.getServiceNo());
-                    requestCreateSearchResultDataPopulator.populateFromBesSubscriberInfoResourceData(besSubscriberInfoResourceData, resultData);
-                    requestCreateSearchResultDataPopulator.populateFromBesCustomerDataData(besCustomerData, resultData);
-                    SdServiceTypeData serviceTypeData = serviceTypeFacade.getServiceTypeByOfferName(resultData.getOfferName());
+                    SdServiceTypeData serviceTypeData = serviceTypeFacade.getServiceTypeByOfferName(itsmProfileData.getOfferName());
                     requestCreateSearchResultDataPopulator.populateFromServiceTypeData(serviceTypeData, resultData);
                     resultDataList.add(resultData);
                 }
-            } else {
-                resultData = new SdRequestCreateSearchResultData();
-                requestCreateSearchResultDataPopulator.populateFromItsmProfileData(itsmProfileData, resultData);
-                SdServiceTypeData serviceTypeData = serviceTypeFacade.getServiceTypeByOfferName(itsmProfileData.getOfferName());
-                requestCreateSearchResultDataPopulator.populateFromServiceTypeData(serviceTypeData, resultData);
-                resultDataList.add(resultData);
             }
         }
+
+        // build response
+        SdRequestCreateSearchResultsData resultsData = new SdRequestCreateSearchResultsData();
         if (CollectionUtils.isEmpty(resultDataList)) {
             resultsData.setErrorMsg(String.format("Service(s) not found with %s .", tenantId));
         } else {
@@ -271,7 +292,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
 
         if (ossSmartMeterData != null) {
             requestCreateSearchResultDataPopulator.populateFromOssSmartMeterData(ossSmartMeterData, resultData);
-            fillPendingOrderData(searchValue, resultData);
+            fillPendingOrderDataByBsn(searchValue, resultData);
             resultDataList.add(resultData);
         }
 
@@ -332,8 +353,8 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         resultData.setDescription(l1Info);
     }
 
-    private void fillPendingOrderData(String serviceNumber, SdRequestCreateSearchResultData resultData) throws ApiException {
-        WfmPendingOrderData wfmPendingOrderData = wfmApiFacade.getPendingOrderByBsn(serviceNumber);
+    private void fillPendingOrderDataByBsn(String bsn, SdRequestCreateSearchResultData resultData) throws ApiException {
+        WfmPendingOrderData wfmPendingOrderData = wfmApiFacade.getPendingOrderByBsn(bsn);
         if (wfmPendingOrderData == null) {
             throw new ApiException("WFM API response is null.");
         } else if (StringUtils.isNotEmpty(wfmPendingOrderData.getErrorMsg())) {
