@@ -36,7 +36,7 @@ $().ready(function(){
                     bnButtonCtrl(j.bnCtrl);
                     voIpButtonCtrl(j.voIpCtrl);
                     eCloudButtonCtrl(j.cloudCtrl);
-                    meterUiCtrl(j.meterCtrl)
+                    meterUiCtrl(j.meterCtrl);
 
                     ticketDetId = j.ticketDetId;
                     let faultsList = j.faultsList;
@@ -48,8 +48,12 @@ $().ready(function(){
                     }
                     $.each(j,function(key,value){
                         service.find('input[name='+key+']').val(value);
-                    })
-                })
+                    });
+
+                   if(j.meterCtrl){
+                       getAjaxEventOfPoleDataTable();
+                   }
+                });
                 $('.selectpicker').selectpicker('refresh');
                 $('.selectpicker').selectpicker('render');
 
@@ -57,7 +61,7 @@ $().ready(function(){
                 $('#btnMakeAppointment').attr('disabled', true);
             }
         });
-    })
+    });
 
     getRemarksTableData();
 
@@ -625,7 +629,7 @@ function meterUiCtrl(val){
         $('input[name=reportTime]').attr('disabled', false);
         $('input[name=reportTime]').attr('pattern','[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}');
         $('input[name=reportTime]').attr('placeholder','1900-01-01T01:00');
-        getAjaxEventOfPoleDataTable();
+        meterEventDiv.show();
     } else {
         $('input[name=reportTime]').attr('disabled', true);
         meterEventDiv.hide();
@@ -742,8 +746,6 @@ function getUTCallRequestResult(utCallId, serviceCode) {
 }
 
 function getAjaxEventOfPoleDataTable() {
-    meterEventDiv.show();
-
     let poleId = bsn;
     let fromTime = $("#service").find('input[name=reportTime]').val();
     let toTime = completeDate;
