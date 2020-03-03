@@ -36,7 +36,6 @@ $().ready(function(){
                     bnButtonCtrl(j.bnCtrl);
                     voIpButtonCtrl(j.voIpCtrl);
                     eCloudButtonCtrl(j.cloudCtrl);
-                    meterUiCtrl(j.meterCtrl)
 
                     ticketDetId = j.ticketDetId;
                     let faultsList = j.faultsList;
@@ -49,6 +48,7 @@ $().ready(function(){
                     $.each(j,function(key,value){
                         service.find('input[name='+key+']').val(value);
                     })
+                    meterUiCtrl(j.meterCtrl);
                 })
                 $('.selectpicker').selectpicker('refresh');
                 $('.selectpicker').selectpicker('render');
@@ -747,7 +747,7 @@ function getAjaxEventOfPoleDataTable() {
     let fromTime = $("#service").find('input[name=reportTime]').val();
     let toTime = completeDate;
 
-    if (fromTime === "") {
+    if (poleId.indexOf("D") != -1 || fromTime === "") {
         $('#eventOfPoleTable').DataTable();
     } else {
         $('#eventOfPoleTable').DataTable({
