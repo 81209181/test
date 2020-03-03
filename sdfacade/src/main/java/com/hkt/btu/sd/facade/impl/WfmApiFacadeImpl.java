@@ -126,7 +126,7 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
         Type type = new TypeToken<List<WfmJobData>>() {}.getType();
         List<WfmJobData> dataList = this.getDataList("/api/v1/sd/GetJobListByTicketId/" + ticketMasId, type, null);
         if (CollectionUtils.isEmpty(dataList)) {
-            return null;
+            return List.of();
         }
 
         formatJobInfoDate(dataList);
