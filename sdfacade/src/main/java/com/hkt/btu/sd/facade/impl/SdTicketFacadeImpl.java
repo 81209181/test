@@ -42,6 +42,7 @@ import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -85,6 +86,18 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                 throw new InvalidInputException("Customer Code is Empty.");
             }
         }
+
+        // if poleId is null, generate new a dummy poleId for create dummy meter ticket
+        if (ServiceSearchEnum.POLE_ID.getKey().equalsIgnoreCase(queryTicketRequestData.getSearchKey())) {
+            if (StringUtils.isEmpty(queryTicketRequestData.getSearchValue())) {
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+                String searchValue = "D"+LocalDateTime.now().format(dtf);
+                queryTicketRequestData.setSearchValue(searchValue);
+                queryTicketRequestData.setServiceNo(searchValue);
+                queryTicketRequestData.setServiceType(SdServiceTypeBean.SERVICE_TYPE.SMART_METER);
+            }
+        }
+
         return ticketService.createQueryTicket(
                 queryTicketRequestData.getCustCode(),
                 queryTicketRequestData.getServiceNo(),
