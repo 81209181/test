@@ -750,7 +750,7 @@ function getAjaxEventOfPoleDataTable() {
     let fromTime = $("#service").find('input[name=reportTime]').val();
     let toTime = completeDate;
 
-    if (fromTime === "") {
+    if (poleId.indexOf("D") != -1 || fromTime === "") {
         $('#eventOfPoleTable').DataTable();
     } else {
         $('#eventOfPoleTable').DataTable({

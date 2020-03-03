@@ -110,10 +110,6 @@ public class TicketController {
 
     @PostMapping("service-identity/createQueryTicket")
     public ResponseEntity<?> createQueryTicket(SdQueryTicketRequestData queryTicketRequestData) {
-        if (StringUtils.isEmpty(queryTicketRequestData.getServiceNo()) || StringUtils.isEmpty(queryTicketRequestData.getServiceType())) {
-            return ResponseEntity.badRequest().body("Service No. / Service Type is empty.");
-        }
-
         // check pending ticket of same service number
         List<SdTicketMasData> dataList = ticketFacade.getPendingTicketList(queryTicketRequestData.getServiceNo());
         if (CollectionUtils.isNotEmpty(dataList)) {
