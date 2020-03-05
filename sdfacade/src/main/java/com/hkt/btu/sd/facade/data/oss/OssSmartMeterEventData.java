@@ -3,26 +3,25 @@ package com.hkt.btu.sd.facade.data.oss;
 import com.hkt.btu.common.facade.data.DataInterface;
 
 public class OssSmartMeterEventData implements DataInterface {
-    private Integer eventId;
-    private String eventCode;
+    private Integer eventID;
+    private String hwUnitName;
     private String eventDesc;
     private String eventTime;
 
-
-    public Integer getEventId() {
-        return eventId;
+    public Integer getEventID() {
+        return eventID;
     }
 
-    public void setEventId(Integer eventId) {
-        this.eventId = eventId;
+    public void setEventID(Integer eventID) {
+        this.eventID = eventID;
     }
 
-    public String getEventCode() {
-        return eventCode;
+    public String getHwUnitName() {
+        return hwUnitName;
     }
 
-    public void setEventCode(String eventCode) {
-        this.eventCode = eventCode;
+    public void setHwUnitName(String hwUnitName) {
+        this.hwUnitName = hwUnitName;
     }
 
     public String getEventDesc() {

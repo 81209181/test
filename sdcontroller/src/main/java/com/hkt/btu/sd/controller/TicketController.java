@@ -110,10 +110,6 @@ public class TicketController {
 
     @PostMapping("service-identity/createQueryTicket")
     public ResponseEntity<?> createQueryTicket(SdQueryTicketRequestData queryTicketRequestData) {
-        if (StringUtils.isEmpty(queryTicketRequestData.getServiceNo()) || StringUtils.isEmpty(queryTicketRequestData.getServiceType())) {
-            return ResponseEntity.badRequest().body("Service No. / Service Type is empty.");
-        }
-
         // check pending ticket of same service number
         List<SdTicketMasData> dataList = ticketFacade.getPendingTicketList(queryTicketRequestData.getServiceNo());
         if (CollectionUtils.isNotEmpty(dataList)) {
@@ -436,7 +432,7 @@ public class TicketController {
     @GetMapping("/service/ajax-event-of-pole-list")
     public ResponseEntity<?> getEventOfPoleList(@RequestParam(defaultValue = "0") int draw,
                                                 @RequestParam(defaultValue = "0") int start,
-                                                @RequestParam(defaultValue = "10") int length,
+                                                @RequestParam(defaultValue = "20") int length,
                                                 @RequestParam Integer poleId,
                                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fromTime,
                                                 @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime toTime) {

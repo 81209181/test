@@ -6,6 +6,29 @@ var voIpBtn = $('.voIpBtn'),
 
 $().ready(function(){
 
+    $(".dummy").hide();
+    $('#searchKey').change(function(){
+        $('#btnSearchInfo').attr('disabled',false);
+        let selected = $(this).children('option:selected').val();
+        if(selected =='poleId'){
+            $(".dummy").show();
+            if($("#chkDummy").is(":checked") == true){
+                $('#btnSearchInfo').attr('disabled',true);
+            }
+        }else{
+            $(".dummy").hide();
+        }
+    })
+
+    $("#chkDummy").click(function() {
+        $('input[name=searchKey]').val($('#searchKey').val());
+        if ($(this).is(":checked") == true) {
+            $('#btnSearchInfo').attr('disabled',true);
+        } else {
+            $('#btnSearchInfo').attr('disabled',false);
+        }
+    });
+
     $(document).keydown(function(event){
         if(event.keyCode==13){
            $('#btnSearchInfo').click();
@@ -14,6 +37,10 @@ $().ready(function(){
 
     $('#btnSearchCustomerNext').on('click',function(){
         clearAllMsg();
+        if ($('#searchKey').val() === "poleId") {
+            createTicket();
+            return;
+        }
         $.post('/ticket/service-identity/checkPendingOrder',$('form').serialize(),function(res){
             if (res.success) {
                 createTicket();

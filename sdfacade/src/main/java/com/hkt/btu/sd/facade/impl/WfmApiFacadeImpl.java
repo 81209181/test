@@ -6,8 +6,10 @@ import com.google.gson.reflect.TypeToken;
 import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.facade.AbstractRestfulApiFacade;
 import com.hkt.btu.sd.core.service.SdApiService;
+import com.hkt.btu.sd.core.service.SdTicketService;
 import com.hkt.btu.sd.core.service.bean.SdApiProfileBean;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeOfferMappingBean;
+import com.hkt.btu.sd.core.service.constant.TicketTypeEnum;
 import com.hkt.btu.sd.core.util.JsonUtils;
 import com.hkt.btu.sd.facade.WfmApiFacade;
 import com.hkt.btu.sd.facade.data.SdTicketData;
@@ -25,10 +27,7 @@ import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApiFacade {
@@ -39,6 +38,8 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
 
     @Resource(name = "apiService")
     SdApiService apiService;
+    @Resource(name = "ticketService")
+    SdTicketService ticketService;
 
     @Override
     protected SdApiProfileBean getTargetApiProfile() {
@@ -116,14 +117,20 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
             return null;
         }
 
+        // check ticket type: only get job info for job ticket
+        boolean isJobTypeTicket = ticketService.isMatchTicketJobType(ticketMasId, TicketTypeEnum.JOB);
+        if(!isJobTypeTicket){
+            return List.of();
+        }
+
         Type type = new TypeToken<List<WfmJobData>>() {}.getType();
         List<WfmJobData> dataList = this.getDataList("/api/v1/sd/GetJobListByTicketId/" + ticketMasId, type, null);
         if (CollectionUtils.isEmpty(dataList)) {
-            return null;
+            return List.of();
         }
 
         formatJobInfoDate(dataList);
-        return dataList.stream().filter(jobInfo -> !WfmJobData.LOCKED_STATUS.equals(jobInfo.getStatus())).collect(Collectors.toList());
+        return dataList;
     }
 
     @Override

@@ -128,6 +128,9 @@ public class SdUserFacadeImpl implements SdUserFacade {
         if (StringUtils.isBlank(primaryRoleId)) {
             throw new InvalidInputException("Empty input primary role");
         }
+        if (CollectionUtils.isEmpty(userRoleIdList)) {
+            throw new InvalidInputException("Please select at least one user role");
+        }
         if (userRoleIdList.contains(primaryRoleId)) {
             List<String> primaryRoles = userRoleService.getPrimaryRoles();
             if (!primaryRoles.contains(primaryRoleId)) {
