@@ -27,6 +27,7 @@ public interface BtuConfigParamService {
 
     // get by config group and key
     BtuConfigParamBean getConfigParamByGroupAndKey(String configGroup, String configKey);
+    List<BtuConfigParamBean> getConfigParamBeanListInternal(String configGroup, String configKey);
 
     // config value type
     String getString(String configGroup, String configKey);

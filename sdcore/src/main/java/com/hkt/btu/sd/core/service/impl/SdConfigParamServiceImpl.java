@@ -70,7 +70,7 @@ public class SdConfigParamServiceImpl extends BtuConfigParamServiceImpl implemen
     }
 
     @Override
-    protected List<BtuConfigParamBean> getConfigParamBeanListInternal(String configGroup, String configKey){
+    public List<BtuConfigParamBean> getConfigParamBeanListInternal(String configGroup, String configKey){
         List<SdConfigParamEntity> entityList = sdConfigParamMapper.getConfigParamByGroupAndKey(configGroup, configKey);
         if (CollectionUtils.isEmpty(entityList)) {
             return null;

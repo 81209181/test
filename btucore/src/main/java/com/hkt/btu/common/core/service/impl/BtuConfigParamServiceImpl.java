@@ -47,7 +47,7 @@ public class BtuConfigParamServiceImpl implements BtuConfigParamService {
         throw new BtuMissingImplException();
     }
 
-    protected List<BtuConfigParamBean> getConfigParamBeanListInternal(String configGroup, String configKey){
+    public List<BtuConfigParamBean> getConfigParamBeanListInternal(String configGroup, String configKey){
         LOG.error("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
         throw new BtuMissingImplException();
     }
