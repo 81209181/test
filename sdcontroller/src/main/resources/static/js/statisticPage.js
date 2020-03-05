@@ -79,7 +79,7 @@ function drawLoginCount90DaysChart() {
             maxZoomIn: .1,
             maxZoomOut: 8
         },
-        title: 'The number of login per month',
+        title: 'The number of login per month over last 90 days',
         height: 300,
         width: 1100,
         colors: ['#76A7FA'],
@@ -125,7 +125,7 @@ function drawLoginCountTwoWeeksChart() {
     data.addRows(array);
 
     var options = {
-        title: 'The number of login per hours',
+        title: 'The number of login per hours over last two weeks',
         height: 300,
         width: 1100,
         colors: ['#76A7FA'],
