@@ -1,17 +1,16 @@
 package com.hkt.btu.sd.controller;
 
-import com.hkt.btu.sd.facade.UtApiFacade;
-import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
+import com.hkt.btu.sd.facade.UtApiFacade;
+import com.hkt.btu.sd.facade.data.SdUtCallPageData;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.List;
 
 @Controller
 @RequestMapping("/system/ut-call")
