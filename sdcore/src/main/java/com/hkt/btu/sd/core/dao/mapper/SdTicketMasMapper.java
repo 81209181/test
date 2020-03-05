@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.core.dao.mapper;
 
 import com.hkt.btu.sd.core.dao.entity.SdTicketMasEntity;
+import com.hkt.btu.sd.core.dao.entity.SdTicketStatisticEntity;
 import com.hkt.btu.sd.core.dao.entity.StatusSummaryEntity;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -69,4 +70,8 @@ public interface SdTicketMasMapper {
     void createHktCloudTicket(@Param("ticketId")int ticketId, @Param("createBy")String createBy, @Param("tenantId")String tenantId);
 
     List<SdTicketMasEntity> getTicket4HktCloud(@Param("tenantId") String tenantId, @Param("username")String username);
+
+    List<SdTicketStatisticEntity> ticketTypeCountPerOwnerGroup();
+
+    List<SdTicketStatisticEntity> ticketStatusCountPerOwnerGroup();
 }

@@ -2,6 +2,7 @@ package com.hkt.btu.sd.facade.impl;
 
 import com.hkt.btu.sd.core.service.SdStatisticService;
 import com.hkt.btu.sd.core.service.bean.SdAuditTrailStatisticBean;
+import com.hkt.btu.sd.core.service.bean.SdTicketChartBean;
 import com.hkt.btu.sd.facade.SdStatisticFacade;
 import com.hkt.btu.sd.facade.data.SdAuditTrailStatisticData;
 import com.hkt.btu.sd.facade.data.SdStatisticData;
@@ -31,6 +32,30 @@ public class SdStatisticFacadeImpl implements SdStatisticFacade {
     public SdStatisticData getLoginCountLastTwoWeeks() {
         List<SdAuditTrailStatisticBean> statisticBeans = statisticService.getLoginCountLastTwoWeeks();
         return getSdAuditTrailStatisticData(statisticBeans);
+    }
+
+    @Override
+    public SdStatisticData ticketTypeCountPerOwnerGroup() {
+        SdTicketChartBean sdTicketChartBean = statisticService.ticketTypeCountPerOwnerGroup();
+        return getSdStatisticData(sdTicketChartBean);
+    }
+
+    @Override
+    public SdStatisticData ticketStatusCountPerOwnerGroup() {
+        SdTicketChartBean sdTicketChartBean = statisticService.ticketStatusCountPerOwnerGroup();
+        return getSdStatisticData(sdTicketChartBean);
+    }
+
+    private SdStatisticData getSdStatisticData(SdTicketChartBean sdTicketChartBean) {
+        if (sdTicketChartBean == null) {
+            return null;
+        }
+
+        SdStatisticData data = new SdStatisticData();
+        data.setMaxTotal(sdTicketChartBean.getMax());
+        data.setHeader(sdTicketChartBean.getHeader());
+        data.setData(sdTicketChartBean.getStatisticList());
+        return data;
     }
 
     private SdStatisticData<SdAuditTrailStatisticData> getSdAuditTrailStatisticData(List<SdAuditTrailStatisticBean> statisticBeans) {

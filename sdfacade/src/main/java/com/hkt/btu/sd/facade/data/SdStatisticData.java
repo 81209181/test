@@ -6,6 +6,7 @@ public class SdStatisticData<T> {
 
     private int maxTotal;
     private List<T> data;
+    private List<String> header;
 
     public int getMaxTotal() {
         return maxTotal;
@@ -21,5 +22,13 @@ public class SdStatisticData<T> {
 
     public void setData(List<T> data) {
         this.data = data;
+    }
+
+    public List<String> getHeader() {
+        return header;
+    }
+
+    public void setHeader(List<String> header) {
+        this.header = header;
     }
 }

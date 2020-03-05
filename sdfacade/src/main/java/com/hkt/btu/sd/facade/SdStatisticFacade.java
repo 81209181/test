@@ -7,4 +7,8 @@ public interface SdStatisticFacade {
     SdStatisticData getLoginCountLast90Days();
 
     SdStatisticData getLoginCountLastTwoWeeks();
+
+    SdStatisticData ticketTypeCountPerOwnerGroup();
+
+    SdStatisticData ticketStatusCountPerOwnerGroup();
 }

@@ -45,4 +45,26 @@ public class StatisticController {
             return ResponseEntity.ok(data);
         }
     }
+
+    @GetMapping("getTicketTypeCountPerOwnerGroup")
+    public ResponseEntity<?> getTicketTypeCountPerOwnerGroup() {
+        SdStatisticData data = statisticFacade.ticketTypeCountPerOwnerGroup();
+
+        if (ObjectUtils.isEmpty(data)) {
+            return ResponseEntity.badRequest().body("get failed.");
+        } else {
+            return ResponseEntity.ok(data);
+        }
+    }
+
+    @GetMapping("getTicketStatusCountPerOwnerGroup")
+    public ResponseEntity<?> getTicketStatusCountPerOwnerGroup() {
+        SdStatisticData data = statisticFacade.ticketStatusCountPerOwnerGroup();
+
+        if (ObjectUtils.isEmpty(data)) {
+            return ResponseEntity.badRequest().body("get failed.");
+        } else {
+            return ResponseEntity.ok(data);
+        }
+    }
 }

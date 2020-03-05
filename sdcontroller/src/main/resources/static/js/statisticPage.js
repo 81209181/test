@@ -166,31 +166,63 @@ function drawLoginCountTwoWeeksChart() {
     chart.draw(data, options);
 }
 
-function drawTicketTypeCountOwnerGroupOverLast90days() {
-    var data = new google.visualization.DataTable();
-    data.addColumn('date', 'Days');
-    data.addColumn('number', 'Query');
-    data.addColumn('number', 'Job');
+function getTicketTypeCountOwnerGroupOverLast90days() {
+    let array = new Array();
+    let header = new Array();
+    let maxCount = 0;
+    $.ajax({
+        type: 'GET',
+        async: false,
+        url: '/system/statistic/getTicketTypeCountPerOwnerGroup',
+        success: function (res) {
+            maxCount = res.maxTotal;
+            for (item of res.data) {
+                let statisticDate = item[0].replace(/-/g, '/');
+                item[0] = new Date(statisticDate);
+                for (i = 1 ; i< res.header.length ; i++) {
+                    if (!item[i]) {
+                        item[i] = 0;
+                    } else {
+                        item[i] = parseInt(item[i]);
+                    }
+                }
+            }
+            array = res.data;
+            header = res.header;
+        }
+    }).fail(function (e) {
+        var responseError = e.responseText ? e.responseText : "Get failed.";
+        console.log("ERROR : ", responseError);
+        showErrorMsg(responseError);
+    });
 
-    data.addRows([
-        [new Date('2019/12/01'), 0, 0],
-        [new Date('2019/12/02'), 10, 5],
-        [new Date('2019/12/03'), 23, 15],
-        [new Date('2019/12/04'), 17, 9],
-        [new Date('2019/12/05'), 18, 10],
-        [new Date('2019/12/06'), 9, 5]
-    ]);
+    return {array: array, maxCount: maxCount, header: header};
+}
+
+function drawTicketTypeCountOwnerGroupOverLast90days() {
+    let {array, maxCount, header} = getTicketTypeCountOwnerGroupOverLast90days();
+    var data = new google.visualization.DataTable();
+    for (item of header) {
+        if (item === 'Days') {
+            data.addColumn('date', item);
+        } else {
+            data.addColumn('number', item);
+        }
+    }
+
+    data.addRows(array);
 
     var options = {
-        title: 'The number of ticket type per month',
+        title: 'The number of ticket type per group over last 90 days',
         height: 300,
         width: 1100,
+        seriesType: 'bars',
         explorer: {
             axis: 'horizontal',
             action: ['dragToZoom', 'rightClickToReset'],
             keepInBounds: true,
             maxZoomIn: .1,
-            maxZoomOut: 8
+            maxZoomOut: 5
         },
         titleTextStyle: {
             bold: true,
@@ -208,43 +240,75 @@ function drawTicketTypeCountOwnerGroupOverLast90days() {
 
         },
         vAxis: {
-            title: 'The number of ticket type',
+            title: 'The number of ticket type per group',
             viewWindow: {
-                max: 30
+                max: maxCount
             }
         }
     };
 
-    var chart = new google.visualization.LineChart(document.getElementById('statisticTicketType'));
+    var chart = new google.visualization.ComboChart(document.getElementById('statisticTicketType'));
     chart.draw(data, options);
 }
 
-function drawTicketStatusCountOwnerGroupOverLast90days() {
-    var data = new google.visualization.DataTable();
-    data.addColumn('date', 'Days');
-    data.addColumn('number', 'W');
-    data.addColumn('number', 'CP');
-    data.addColumn('number', 'O');
+function getTicketStatusCountOwnerGroupOverLast90days() {
+    let array = new Array();
+    let header = new Array();
+    let maxCount = 0;
+    $.ajax({
+        type: 'GET',
+        async: false,
+        url: '/system/statistic/getTicketStatusCountPerOwnerGroup',
+        success: function (res) {
+            maxCount = res.maxTotal;
+            for (item of res.data) {
+                let statisticDate = item[0].replace(/-/g, '/');
+                item[0] = new Date(statisticDate);
+                for (i = 1 ; i< res.header.length ; i++) {
+                    if (!item[i]) {
+                        item[i] = 0;
+                    } else {
+                        item[i] = parseInt(item[i]);
+                    }
+                }
+            }
+            array = res.data;
+            header = res.header;
+        }
+    }).fail(function (e) {
+        var responseError = e.responseText ? e.responseText : "Get failed.";
+        console.log("ERROR : ", responseError);
+        showErrorMsg(responseError);
+    });
 
-    data.addRows([
-        [new Date('2019/12/01'), 0, 0, 1],
-        [new Date('2019/12/02'), 10, 5, 3],
-        [new Date('2019/12/03'), 23, 15, 23],
-        [new Date('2019/12/04'), 17, 9, 24],
-        [new Date('2019/12/05'), 18, 10,5],
-        [new Date('2019/12/06'), 9, 5,6]
-    ]);
+    return {array: array, maxCount: maxCount, header: header};
+}
+
+
+function drawTicketStatusCountOwnerGroupOverLast90days() {
+    let {array, maxCount, header} = getTicketStatusCountOwnerGroupOverLast90days();
+    var data = new google.visualization.DataTable();
+    for (item of header) {
+        if (item === 'Days') {
+            data.addColumn('date', item);
+        } else {
+            data.addColumn('number', item);
+        }
+    }
+
+    data.addRows(array);
 
     var options = {
-        title: 'The number of ticket status per month',
+        title: 'The number of ticket status per group over last 90 days',
         height: 300,
         width: 1100,
+        seriesType: 'bars',
         explorer: {
             axis: 'horizontal',
             action: ['dragToZoom', 'rightClickToReset'],
             keepInBounds: true,
             maxZoomIn: .1,
-            maxZoomOut: 8
+            maxZoomOut: 5
         },
         titleTextStyle: {
             bold: true,
@@ -262,13 +326,13 @@ function drawTicketStatusCountOwnerGroupOverLast90days() {
 
         },
         vAxis: {
-            title: 'The number of ticket status',
+            title: 'The number of ticket status per group',
             viewWindow: {
-                max: 30
+                max: maxCount
             }
         }
     };
 
-    var chart = new google.visualization.LineChart(document.getElementById('statisticTicketStatus'));
+    var chart = new google.visualization.ComboChart(document.getElementById('statisticTicketStatus'));
     chart.draw(data, options);
 }
