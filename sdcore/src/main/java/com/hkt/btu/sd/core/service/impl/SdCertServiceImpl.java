@@ -125,10 +125,14 @@ public class SdCertServiceImpl implements SdCertService {
 
             final long MIN_REMAINING_DAYS = 60;
             String htmlFeedback;
-            if( remainingDays < MIN_REMAINING_DAYS || StringUtils.isNotEmpty(errorMsg) ){
+            if(  StringUtils.isNotEmpty(errorMsg) ){
+                // alerting
+                LOG.error(plaintextFeedback);
+                htmlFeedback = String.format("<span style='color:red'>%s</span><br/>", plaintextFeedback);
+            } else if (remainingDays < MIN_REMAINING_DAYS) {
                 // alerting
                 LOG.warn(plaintextFeedback);
-                htmlFeedback = String.format("<span style='color:red'>%s</span><br/>", plaintextFeedback);
+                htmlFeedback = String.format("<span style='color:orange'>%s</span><br/>", plaintextFeedback);
             } else {
                 // normal
                 LOG.info(plaintextFeedback);
