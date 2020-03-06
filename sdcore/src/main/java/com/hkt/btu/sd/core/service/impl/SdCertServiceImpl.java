@@ -1,6 +1,5 @@
 package com.hkt.btu.sd.core.service.impl;
 
-import com.hkt.btu.common.core.service.bean.BtuConfigParamBean;
 import com.hkt.btu.common.javax.net.ssl.DummyTrustManager;
 import com.hkt.btu.sd.core.service.SdCertService;
 import com.hkt.btu.sd.core.service.bean.SdCheckCertBean;
@@ -90,16 +89,15 @@ public class SdCertServiceImpl implements SdCertService {
     }
 
     @Override
-    public List<SdCheckCertBean> checkCert(List<BtuConfigParamBean> configParamBeanList) {
-        if(CollectionUtils.isEmpty(configParamBeanList)){
+    public List<SdCheckCertBean> checkCert(List<String> hostList) {
+        if(CollectionUtils.isEmpty(hostList)){
             LOG.warn("No url found for checking cert.");
             return null;
         }
 
         List<SdCheckCertBean> checkCertBeanList = new ArrayList<>();
-        for (BtuConfigParamBean configParamBean : configParamBeanList) {
-            String path = configParamBean.getConfigValue();
-            SdCheckCertBean checkCertBean = checkCert(path);
+        for (String url : hostList) {
+            SdCheckCertBean checkCertBean = checkCert(url);
             checkCertBeanList.add(checkCertBean);
         }
         return checkCertBeanList;
