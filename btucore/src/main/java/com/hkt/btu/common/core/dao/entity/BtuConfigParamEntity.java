@@ -27,6 +27,10 @@ public class BtuConfigParamEntity extends BaseEntity {
         public static final String CONFIG_KEY_SYSTEM_SUPPORT = "systemSupportEmail";
     }
 
+    public static class CHECK_CERT_JOB {
+        public static final String CONFIG_GROUP = "CHECK_CERT_JOB";
+    }
+
     public static class API_CLIENT {
         public static final String CONFIG_GROUP = "API_CLIENT";
     }

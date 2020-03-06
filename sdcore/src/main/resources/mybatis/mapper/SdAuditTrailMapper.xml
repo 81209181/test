@@ -3,6 +3,10 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdAuditTrailMapper" >
+    <resultMap id="UserLoginAuditTrailStatisticEntity" type="com.hkt.btu.sd.core.dao.entity.SdAuditTrailStatisticEntity">
+        <result column="TOTAL" property="total"/>
+        <result column="STATISTICAL_DATE" property="statisticDate"/>
+    </resultMap>
 
     <insert id="insertAuditTrail" useGeneratedKeys="true" >
         insert into AUDIT_TRAIL (AUDIT_ID,USER_ID, ACTION, DETAIL)
@@ -14,4 +18,33 @@
         where trunc(CREATEDATE) &lt; trunc(#{cutoffDate})
     </delete>
 
+    <select id="getLoginCountLast90Days" resultMap="UserLoginAuditTrailStatisticEntity">
+        SELECT COUNT(uat.AUDIT_ID) AS TOTAL, d.STATISTICAL_DATE
+        FROM AUDIT_TRAIL uat
+                 RIGHT JOIN (
+            SELECT to_char(SYSDATE - LEVEL + 1, 'yyyy-mm-dd') AS STATISTICAL_DATE
+            FROM DUAL
+            connect BY 90 &gt;= LEVEL) d
+                            ON to_char(uat.CREATEDATE, 'yyyy-mm-dd') = d.STATISTICAL_DATE
+                                AND uat.ACTION = 'LOGIN'
+        GROUP BY d.STATISTICAL_DATE
+        ORDER BY d.STATISTICAL_DATE
+    </select>
+
+    <select id="getLoginCountLastTwoWeeks" resultMap="UserLoginAuditTrailStatisticEntity">
+        SELECT COUNT(t.AUDIT_ID) AS TOTAL,
+        t.hours as STATISTICAL_DATE
+        FROM (
+        SELECT uat.AUDIT_ID,
+        to_char(to_date(d.STATISTICAL_DATE, 'yyyy-mm-dd hh24'), 'hh24') hours
+        FROM AUDIT_TRAIL uat
+        RIGHT JOIN (
+        SELECT to_char(SYSDATE + (ROWNUM - 336) / 24, 'yyyy-mm-dd hh24') AS STATISTICAL_DATE
+        FROM dual
+        CONNECT BY ROWNUM &lt;= 336) d
+        ON to_char(uat.CREATEDATE, 'yyyy-mm-dd hh24') = d.STATISTICAL_DATE
+        AND uat.ACTION = 'LOGIN') t
+        GROUP BY t.hours
+        ORDER BY t.hours
+    </select>
 </mapper>
