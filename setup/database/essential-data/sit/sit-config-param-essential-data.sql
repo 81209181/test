@@ -16,11 +16,11 @@ values ('SITE', 'cronjobHostname', 'yecvm-sasit01', 'String', current_timestamp,
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('API_BES', 'systemName', 'BES', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
-values ('API_BES', 'url', 'https://10.50.36.110:2443', 'String', current_timestamp, 0, current_timestamp, 0);
+values ('API_BES', 'url', 'https://10.50.68.110:2443', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('API_BES', 'userName', '999007', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
-values ('API_BES', 'password', 'Bearer 5b4bf68e5dae6376ac9d569b31b09800', 'String', current_timestamp, 0, current_timestamp, 0);
+values ('API_BES', 'password', 'Bearer 6947e99956c092e49764dee6c36f1a55', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('API_BES', 'xAppKey', '16fdcfc5512645ebab925357499928ff', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
