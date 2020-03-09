@@ -8,11 +8,14 @@ $().ready(function(){
 
     $(".dummy").hide();
     $('#searchKey').change(function(){
+        $('#searchValue').attr('disabled',false);
         $('#btnSearchInfo').attr('disabled',false);
         let selected = $(this).children('option:selected').val();
         if(selected =='poleId'){
             $(".dummy").show();
             if($("#chkDummy").is(":checked") == true){
+                $('#searchValue').val('');
+                $('#searchValue').attr('disabled',true);
                 $('#btnSearchInfo').attr('disabled',true);
             }
         }else{
@@ -23,8 +26,11 @@ $().ready(function(){
     $("#chkDummy").click(function() {
         $('input[name=searchKey]').val($('#searchKey').val());
         if ($(this).is(":checked") == true) {
+            $('#searchValue').val('');
+            $('#searchValue').attr('disabled',true);
             $('#btnSearchInfo').attr('disabled',true);
         } else {
+            $('#searchValue').attr('disabled',false);
             $('#btnSearchInfo').attr('disabled',false);
         }
     });
@@ -307,6 +313,10 @@ function reset(){
     $('.eCloudBtn').removeData('url');
     $('.serviceButtons').find('button').attr('disabled',true);
     $("#relatedTicketTable").hide();
+    $("#chkDummy").prop('checked', false);
+    $('#searchValue').attr('disabled',false);
+    $('#btnSearchInfo').attr('disabled',false);
+    $(".dummy").hide();
     $('.panel').find('.panel-body').slideUp();
     $('.panel').find('.panel-heading').find('span').addClass('panel-collapsed');
 }
