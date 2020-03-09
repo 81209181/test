@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 @RequestMapping("/oss-api")
@@ -27,7 +28,8 @@ public class OssApiController {
     @GetMapping("/create-ticket")
     public ResponseEntity<?> createTicket(
             @RequestParam Integer poleId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime triggerTime) {
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime triggerTime,
+            @RequestParam List<String> workingPartyList ) {
         BtuSimpleResponseData simpleResponseData = smartMeterFacade.createTicket(poleId, triggerTime);
         return ResponseEntity.ok(simpleResponseData);
     }
