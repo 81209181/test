@@ -11,10 +11,7 @@ import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.*;
 import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
 import com.hkt.btu.sd.core.service.constant.TicketTypeEnum;
-import com.hkt.btu.sd.facade.SdAuditTrailFacade;
-import com.hkt.btu.sd.facade.SdServiceTypeFacade;
-import com.hkt.btu.sd.facade.SdTicketFacade;
-import com.hkt.btu.sd.facade.WfmApiFacade;
+import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.bes.BesFaultInfoData;
@@ -45,6 +42,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class SdTicketFacadeImpl implements SdTicketFacade {
@@ -60,6 +58,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     WfmApiFacade wfmApiFacade;
     @Resource(name = "serviceTypeFacade")
     SdServiceTypeFacade serviceTypeFacade;
+    @Resource(name = "ossApiFacade")
+    OssApiFacade ossApiFacade;
 
     @Resource(name = "ticketMasDataPopulator")
     SdTicketMasDataPopulator ticketMasDataPopulator;
@@ -491,7 +491,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public String closeTicket(int ticketMasId, String reasonType, String reasonContent, String contactName, String contactNumber) {
+    public String closeTicket(String serviceType, String serviceNo, int ticketMasId, String reasonType, String reasonContent, String contactName, String contactNumber) {
         LOG.info(String.format("Closing ticket. (ticketMasId: %d)", ticketMasId));
 
         // close ticket in servicedesk
@@ -502,12 +502,20 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             return e.getMessage();
         }
 
-        // notify wfm to close ticket
-        boolean isClosedInWfm = wfmApiFacade.closeTicket(ticketMasId);
-        if (!isClosedInWfm) {
-            String wfmFail = "Cannot notify WFM to close ticket! (ticketMasId: " + ticketMasId + ")";
-            LOG.warn(wfmFail);
-            return wfmFail;
+        if (serviceType.equalsIgnoreCase(ServiceSearchEnum.POLE_ID.getKeyDesc())) {
+            Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+            if (pattern.matcher(serviceNo).matches()) {
+                Integer poleId = Integer.parseInt(serviceNo);
+                ossApiFacade.notifyTicketStatus(poleId, ticketMasId, LocalDateTime.now(), "Close");
+            }
+        } else {
+            // notify wfm to close ticket
+            boolean isClosedInWfm = wfmApiFacade.closeTicket(ticketMasId);
+            if (!isClosedInWfm) {
+                String wfmFail = "Cannot notify WFM to close ticket! (ticketMasId: " + ticketMasId + ")";
+                LOG.warn(wfmFail);
+                return wfmFail;
+            }
         }
 
         return null;
