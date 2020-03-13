@@ -759,8 +759,7 @@ function getAjaxEventOfPoleDataTable() {
             processing: true,
             serverSide: true,
             searching: false,
-            bLengthChange: false,
-            iDisplayLength : 20,
+            ordering : false,
             ajax: {
                 type: "GET",
                 contentType: "application/json",
