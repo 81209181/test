@@ -290,7 +290,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
 
         Integer poleId = Integer.parseInt(searchValue);
         OssSmartMeterData ossSmartMeterData = ossApiFacade.queryMeterInfo(poleId);
-        ossApiFacade.notifyTicketStatus(poleId, 1, LocalDateTime.now(), "test");
+//        ossApiFacade.notifyTicketStatus(poleId, 1, LocalDateTime.now(), "test"); // todo: for testing SERVDESK[350]
 
         if (ossSmartMeterData != null) {
             requestCreateSearchResultDataPopulator.populateFromOssSmartMeterData(ossSmartMeterData, resultData);
