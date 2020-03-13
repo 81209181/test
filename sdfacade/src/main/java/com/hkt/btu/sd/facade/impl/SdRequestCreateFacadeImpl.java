@@ -23,6 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -289,6 +290,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
 
         Integer poleId = Integer.parseInt(searchValue);
         OssSmartMeterData ossSmartMeterData = ossApiFacade.queryMeterInfo(poleId);
+        ossApiFacade.notifyTicketStatus(poleId, 1, LocalDateTime.now(), "test");
 
         if (ossSmartMeterData != null) {
             requestCreateSearchResultDataPopulator.populateFromOssSmartMeterData(ossSmartMeterData, resultData);

@@ -96,6 +96,10 @@
     <alias name="StatisticService" alias="statisticService"/>
     <bean class="com.hkt.btu.sd.core.service.impl.SdStatisticServiceImpl" id="StatisticService"/>
 
+    <alias name="sdAutoRetryService" alias="autoRetryService"/>
+    <alias name="sdAutoRetryService" alias="btuAutoRetryService"/>
+    <bean class="com.hkt.btu.sd.core.service.impl.SdAutoRetryServiceImpl" id="sdAutoRetryService"/>
+
     <!-- Populator -->
     <alias name="sdConfigParamBeanPopulator" alias="configParamBeanPopulator"/>
     <alias name="sdConfigParamBeanPopulator" alias="btuConfigParamBeanPopulator"/>

@@ -1,5 +1,7 @@
 package com.hkt.btu.sd.facade.impl;
 
+import com.hkt.btu.common.core.annotation.AutoRetry;
+import com.hkt.btu.common.core.exception.BtuApiCallException;
 import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.core.service.bean.BtuApiProfileBean;
 import com.hkt.btu.common.facade.AbstractRestfulApiFacade;
@@ -54,8 +56,9 @@ public class OssApiFacadeImpl extends AbstractRestfulApiFacade implements OssApi
 //        return testingData;
     }
 
+    @AutoRetry(minWaitSecond = 600)
     @Override
-    public String notifyTicketStatus(Integer poleId, Integer ticketId, LocalDateTime time, String action) {
+    public void notifyTicketStatus(Integer poleId, Integer ticketId, LocalDateTime time, String action) {
         LOG.info("Notifying ticket status... (poleId={}, ticket={}, status={})", poleId, ticketId, action);
         String apiPath = "/govpm-web/api/servicedesk/notifyTicketStatus";
 
@@ -67,9 +70,15 @@ public class OssApiFacadeImpl extends AbstractRestfulApiFacade implements OssApi
         statusUpdateData.setAction(action);
         Entity<OssSmartMeterStatusUpdateData> postBodyEntity = Entity.entity(statusUpdateData, MediaType.APPLICATION_JSON_TYPE);
 
+        // check response
         Response response = postEntity(apiPath, postBodyEntity);
-        return response.toString();
+        String result = response==null ? null : response.toString();
+        if(!StringUtils.equalsIgnoreCase("Success", result)){
+            // add to auto retry
+            throw new BtuApiCallException("API call not success.");
+        }
     }
+
 
     @Override
     public BtuPageData<OssSmartMeterEventData> queryMeterEvents(Integer page, Integer pageSize, Integer poleId, LocalDateTime fromTime, LocalDateTime toTime) {

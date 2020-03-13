@@ -9,6 +9,7 @@ public class BaseEntity {
     private String modifyby;
     private String remarks;
 
+    private Integer totalCount;
 
     public LocalDateTime getCreatedate() {
         return createdate;
@@ -49,5 +50,13 @@ public class BaseEntity {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public Integer getTotalCount() {
+        return totalCount;
+    }
+
+    public void setTotalCount(Integer totalCount) {
+        this.totalCount = totalCount;
     }
 }

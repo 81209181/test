@@ -395,3 +395,46 @@ CREATE TABLE SQL_REPORT
     constraint SQL_REPORT_PK primary key (REPORT_ID)
 );
 CREATE UNIQUE INDEX IDX_SQL_REPORT_1 ON SQL_REPORT (REPORT_NAME);
+
+-- Auto Retry (re-execute certain methods)
+CREATE SEQUENCE  SEQ_AUTO_RETRY_ID START WITH 1;
+CREATE TABLE AUTO_RETRY
+(
+    RETRY_ID                NUMBER              default SEQ_AUTO_RETRY_ID.nextval,
+
+    CLAZZ                   VARCHAR2(100)       not null,
+    METHOD_NAME             VARCHAR2(50)        not null,
+    METHOD_PARAM            VARCHAR2(500)       not null,
+
+    STATUS                  VARCHAR2(2)         not null,
+    TRY_COUNT               NUMBER              not null,
+    MIN_WAIT_SECOND         NUMBER,
+    NEXT_TARGET_TIME        DATE,
+
+    CREATEDATE              DATE                default SYSDATE not null,
+    CREATEBY                VARCHAR2(10)        not null,
+    MODIFYDATE              DATE                default SYSDATE not null,
+    MODIFYBY                VARCHAR2(10)        not null,
+    REMARKS                 VARCHAR2(250),
+    constraint AUTO_RETRY_PK primary key (RETRY_ID)
+);
+CREATE UNIQUE INDEX IDX_AUTO_RETRY_1 ON AUTO_RETRY (STATUS);
+CREATE UNIQUE INDEX IDX_AUTO_RETRY_2 ON AUTO_RETRY (NEXT_TARGET_TIME);
+
+
+CREATE OR REPLACE TRIGGER TRIGGER_AUTO_RETRY_1
+    BEFORE INSERT ON AUTO_RETRY
+    FOR EACH ROW
+BEGIN
+    :NEW.CREATEDATE := SYSDATE;
+END;
+/
+CREATE OR REPLACE TRIGGER TRIGGER_AUTO_RETRY_2
+    BEFORE UPDATE ON AUTO_RETRY
+    FOR EACH ROW
+BEGIN
+    :NEW.CREATEDATE := :OLD.CREATEDATE;
+    :NEW.CREATEBY := :OLD.CREATEBY;
+    :NEW.MODIFYDATE := SYSDATE;
+END;
+/

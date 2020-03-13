@@ -105,6 +105,12 @@
     <alias name="btuReportService" alias="reportService"/>
     <bean id="btuReportService" class="com.hkt.btu.common.core.service.impl.BtuReportServiceImpl"/>
 
+    <alias name="btuParamService" alias="paramService"/>
+    <bean id="btuParamService" class="com.hkt.btu.common.core.service.impl.BtuParamServiceImpl"/>
+
+    <alias name="btuAutoRetryService" alias="autoRetryService"/>
+    <bean id="btuAutoRetryService" class="com.hkt.btu.common.core.service.impl.BtuAutoRetryServiceImpl"/>
+
     <!--  Bean Populator  -->
     <alias name="btuSiteConfigBeanPopulator" alias="siteConfigBeanPopulator"/>
     <bean id="btuSiteConfigBeanPopulator" class="com.hkt.btu.common.core.service.populator.BtuSiteConfigBeanPopulator"/>
