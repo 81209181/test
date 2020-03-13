@@ -102,7 +102,7 @@ public class OssApiFacadeImpl extends AbstractRestfulApiFacade implements OssApi
         }
 
         String apiPath = "/govpm-web/api/servicedesk/meterEvents";
-        pageSize = pageSize>100 ? 20 : pageSize;
+        pageSize = pageSize>100 ? 10 : pageSize;
 
         String fromTimeStr = fromTime.format(DateTimeFormatter.ISO_DATE_TIME);
         String toTimeStr = toTime==null ? StringUtils.EMPTY : toTime.format(DateTimeFormatter.ISO_DATE_TIME);
@@ -112,7 +112,7 @@ public class OssApiFacadeImpl extends AbstractRestfulApiFacade implements OssApi
                 "fromTime", fromTimeStr,
                 "toTime", toTimeStr,
                 "page", String.valueOf(page),
-                "pageSize", String.valueOf(pageSize));
+                "size", String.valueOf(pageSize));
 
         OssSmartMeterEventWrapData pagedEventData = getData(
                 apiPath, OssSmartMeterEventWrapData.class, queryParamMap);

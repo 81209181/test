@@ -285,8 +285,8 @@ public class TicketController {
     }
 
     @PostMapping("close")
-    public ResponseEntity<?> ticketClose(int ticketMasId, String reasonType, String reasonContent, String contactNumber, String contactName) {
-        String errorMsg = ticketFacade.closeTicket(ticketMasId, reasonType, reasonContent, contactName, contactNumber);
+    public ResponseEntity<?> ticketClose(String serviceType, String serviceNo, int ticketMasId, String reasonType, String reasonContent, String contactNumber, String contactName) {
+        String errorMsg = ticketFacade.closeTicket(serviceType, serviceNo, ticketMasId, reasonType, reasonContent, contactName, contactNumber);
         if (StringUtils.isEmpty(errorMsg)) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         } else {
@@ -432,7 +432,7 @@ public class TicketController {
     @GetMapping("/service/ajax-event-of-pole-list")
     public ResponseEntity<?> getEventOfPoleList(@RequestParam(defaultValue = "0") int draw,
                                                 @RequestParam(defaultValue = "0") int start,
-                                                @RequestParam(defaultValue = "20") int length,
+                                                @RequestParam(defaultValue = "10") int length,
                                                 @RequestParam Integer poleId,
                                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fromTime,
                                                 @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime toTime) {

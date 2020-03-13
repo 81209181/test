@@ -232,6 +232,8 @@ $().ready(function(){
         let form =$('.needs-validation').get(0);
         if(form.checkValidity()){
             $.post('/ticket/close',{
+                serviceType:searchKey,
+                serviceNo:bsn,
                 ticketMasId:ticketMasId,
                 reasonType:$(form).find('select[name=reasonType]').val(),
                 reasonContent:$(form).find('textarea[name=reasonContent]').val(),
@@ -757,8 +759,7 @@ function getAjaxEventOfPoleDataTable() {
             processing: true,
             serverSide: true,
             searching: false,
-            bLengthChange: false,
-            iDisplayLength : 20,
+            ordering : false,
             ajax: {
                 type: "GET",
                 contentType: "application/json",
