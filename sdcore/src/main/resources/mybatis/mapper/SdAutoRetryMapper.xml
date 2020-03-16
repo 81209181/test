@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdAutoRetryMapper" >
+    <resultMap id="AutoRetryEntity" type="com.hkt.btu.common.core.dao.entity.BtuAutoRetryEntity" >
+        <result column="RETRY_ID" property="retryId" />
+        <result column="CLAZZ" property="clazzName" />
+        <result column="METHOD_NAME" property="methodName" />
+        <result column="METHOD_PARAM" property="methodParam" />
+        <result column="STATUS" property="status" />
+        <result column="TRY_COUNT" property="tryCount" />
+        <result column="MIN_WAIT_SECOND" property="minWaitSecond" />
+        <result column="NEXT_TARGET_TIME" property="nextTargetTime" />
+
+        <result column="CREATEDATE" property="createdate" />
+        <result column="CREATEBY" property="createby" />
+        <result column="MODIFYDATE" property="modifydate" />
+        <result column="MODIFYBY" property="modifyby" />
+        <result column="REMARKS" property="remarks" />
+    </resultMap>
+
+    <insert id="createAutoRetry">
+        <selectKey keyProperty="retryId" order="BEFORE" resultType="Integer">
+            select SEQ_AUTO_RETRY_ID.NEXTVAL from dual
+        </selectKey>
+        insert into AUTO_RETRY(RETRY_ID,CLAZZ,METHOD_NAME,METHOD_PARAM,STATUS,TRY_COUNT,MIN_WAIT_SECOND,CREATEBY,MODIFYBY)
+        values(#{retryId},#{clazz},#{methodName},#{methodParam},'A','0',#{minWaitSecond},#{createby},#{createby})
+    </insert>
+
+    <update id="updateAutoRetry">
+        update AUTO_RETRY set CLAZZ = #{clazz},
+        METHOD_NAME = #{methodName},
+        METHOD_PARAM = #{methodParam},
+        STATUS = #{status},
+        TRY_COUNT = #{tryCount},
+        MIN_WAIT_SECOND = #{minWaitSecond},
+        NEXT_TARGET_TIME = #{nextTargetTime},
+        MODIFYBY = #{modifyby}
+        where RETRY_ID = #{retryId}
+    </update>
+
+    <sql id="searchRetrySql">
+        from AUTO_RETRY
+        <where>
+            <if test="retryId != null">
+                RETRY_ID = #{retryId}
+            </if>
+            <if test="clazz != null">
+                and CLAZZ = #{clazz}
+            </if>
+            <if test="methodName != null">
+                and METHOD_NAME = #{methodName}
+            </if>
+            <if test="methodParam != null">
+                and METHOD_PARAM = #{methodParam}
+            </if>
+            <if test="status != null">
+                and STATUS = #{status}
+            </if>
+            <if test="tryCountFrom != null">
+                and TRY_COUNT &gt;= #{tryCountFrom}
+            </if>
+            <if test="tryCountTo != null">
+                and #{tryCountTo} &gt;= TRY_COUNT
+            </if>
+            <if test="minWaitSecondFrom != null">
+                and MIN_WAIT_SECOND &gt;= #{minWaitSecondFrom}
+            </if>
+            <if test="minWaitSecondTo != null">
+                and #{minWaitSecondTo} &gt;= MIN_WAIT_SECOND
+            </if>
+            <if test="nextTargetTimeFrom != null">
+                and trunc(NEXT_TARGET_TIME) &gt;= trunc(#{nextTargetTimeFrom})
+            </if>
+            <if test="nextTargetTimeTo != null">
+                and trunc(#{nextTargetTimeTo}) &gt;= trunc(NEXT_TARGET_TIME)
+            </if>
+        </where>
+    </sql>
+
+    <select id="searchRetryQueue" resultMap="AutoRetryEntity" >
+        select * <include refid="searchRetrySql"/>
+        order by NEXT_TARGET_TIME desc
+        OFFSET #{offset} ROWS FETCH NEXT #{pageSize} ROWS ONLY
+    </select>
+
+    <select id="searchRetryCount" resultType="Integer">
+        select count(1)
+        <include refid="searchRetrySql"/>
+    </select>
+
+</mapper>
