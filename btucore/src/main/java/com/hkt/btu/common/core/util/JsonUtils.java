@@ -1,24 +1,33 @@
 package com.hkt.btu.common.core.util;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
-import org.apache.commons.lang3.StringUtils;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
+import javax.ws.rs.ProcessingException;
+import javax.ws.rs.WebApplicationException;
+import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 public class JsonUtils {
 
+    private static final Logger LOG = LogManager.getLogger(JsonUtils.class);
+
     private static ObjectMapper objectMapper = new ObjectMapper();
+    private static Gson gson;
 
     public static ObjectMapper getMapperFormatLocalDateTime2String() {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -37,33 +46,15 @@ public class JsonUtils {
      * @return
      */
     public static <T> String obj2String(T obj){
-        if (obj == null){
-            return null;
-        }
         try {
-            return obj instanceof String ? (String) obj : objectMapper.writeValueAsString(obj);
-        } catch (Exception e) {
-            System.out.println("Parse object to String error");
-            e.printStackTrace();
-            return null;
-        }
-    }
+            // using gson here with purpose for easier debugging (better exception for stack trace)
+            if (gson == null) {
+                gson = getGson();
+            }
 
-    /**
-     * Object convert to json string and formatting
-     * @param obj
-     * @param <T>
-     * @return
-     */
-    public static <T> String obj2StringPretty(T obj){
-        if (obj == null){
-            return null;
-        }
-        try {
-            return obj instanceof String ? (String) obj : objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
-        } catch (Exception e) {
-            System.out.println("Parse object to String error");
-            e.printStackTrace();
+            return obj instanceof String ? (String) obj : gson.toJson(obj);
+        } catch (ProcessingException | WebApplicationException e) {
+            LOG.error(e.getMessage(), e);
             return null;
         }
     }
@@ -71,59 +62,32 @@ public class JsonUtils {
     /**
      * String convert to object
      * @param str json string
-     * @param clazz Conversion object class
+     * @param type Conversion object reference type
      * @param <T>
      * @return
      */
-    public static <T> T string2Obj(String str,Class<T> clazz){
-        if (StringUtils.isEmpty(str) || clazz == null){
-            return null;
-        }
+    public static <T> T string2Obj(String str, Type type){
         try {
-            return clazz.equals(String.class)? (T) str :objectMapper.readValue(str,clazz);
-        } catch (IOException e) {
-            System.out.println("Parse String to Object error");
-            e.printStackTrace();
+            // using gson here with purpose for easier debugging (better exception for stack trace)
+            if (gson == null) {
+                gson = getGson();
+            }
+
+            return gson.fromJson(str, type);
+        } catch (ProcessingException | WebApplicationException e) {
+            LOG.error(e.getMessage(), e);
             return null;
         }
     }
 
-    /**
-     * String convert to object
-     * @param str json string
-     * @param typeReference Conversion object reference type
-     * @param <T>
-     * @return
-     */
-    public static <T> T string2Obj(String str, TypeReference<T> typeReference){
-        if (StringUtils.isEmpty(str) || typeReference == null){
-            return null;
-        }
-        try {
-            return (T)(typeReference.getType().equals(String.class)? str :objectMapper.readValue(str,typeReference));
-        } catch (IOException e) {
-            System.out.println("Parse String to Object error");
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
-     * String convert to object (Used to convert to a collection object)
-     * @param str json string
-     * @param collectionClass Conversion collection class
-     * @param elementClasses object class in conversion collection
-     * @param <T>
-     * @return
-     */
-    public static <T> T string2Obj(String str,Class<?> collectionClass,Class<?>... elementClasses){
-        JavaType javaType = objectMapper.getTypeFactory().constructParametricType(collectionClass,elementClasses);
-        try {
-            return objectMapper.readValue(str,javaType);
-        } catch (IOException e) {
-            System.out.println("Parse String to Object error");
-            e.printStackTrace();
-            return null;
-        }
+    private static Gson getGson() {
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (json, typeOfT, jsonDeserializationContext) ->
+                json == null ? null : new Date(json.getAsLong()));
+        builder.registerTypeAdapter(LocalDateTime.class, (JsonDeserializer<LocalDateTime>) (json, type, jsonDeserializationContext) ->
+                ZonedDateTime.parse(json.getAsJsonPrimitive().getAsString()).toLocalDateTime());
+        builder.registerTypeAdapter(LocalDate.class, (JsonDeserializer<LocalDate>) (json, type, jsonDeserializationContext) ->
+                ZonedDateTime.parse(json.getAsJsonPrimitive().getAsString()).toLocalDate());
+        return builder.create();
     }
 }

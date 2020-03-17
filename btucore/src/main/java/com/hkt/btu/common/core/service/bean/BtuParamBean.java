@@ -4,7 +4,7 @@ import com.hkt.btu.common.core.service.constant.BtuConfigParamTypeEnum;
 
 public class BtuParamBean extends BaseBean {
     private BtuConfigParamTypeEnum paramType;
-    private String value;
+    private Object value;
 
 
     public BtuConfigParamTypeEnum getParamType() {
@@ -15,11 +15,11 @@ public class BtuParamBean extends BaseBean {
         this.paramType = paramType;
     }
 
-    public String getValue() {
+    public Object getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(Object value) {
         this.value = value;
     }
 }
