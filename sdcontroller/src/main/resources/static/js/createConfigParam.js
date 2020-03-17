@@ -41,20 +41,21 @@ $().ready(function(){
 
     $('#btnCreateConfigParam').on('click',function(){
         clearAllMsg();
-        var form = $('form').serializeArray();
-        var group_key;
+        let form = $('form').serializeArray();
+        let group;
+        let key;
         let ctx = $("meta[name='_ctx']").attr("content");
         $.each(form,function(i,val){
             if(val.name =='configGroup'){
-                group_key = val.value + '/';
+                group = val.value;
             }
             if(val.name =='configKey'){
-                group_key += val.value;
+                key = val.value;
             }
         })
         $.post('/system/config-param/createConfigParam',$('form').serialize(),function(res){
 //            showInfoMsg(res);
-            $(location).attr('href',ctx+'/system/config-param/'+group_key);
+            $(location).attr('href',ctx+'/system/config-param/edit?configGroup=' + group + "&configKey=" + key);
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";
             console.log("ERROR : ", responseError);
