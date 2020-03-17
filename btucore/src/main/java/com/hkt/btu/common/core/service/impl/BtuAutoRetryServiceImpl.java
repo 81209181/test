@@ -1,5 +1,6 @@
 package com.hkt.btu.common.core.service.impl;
 
+import com.hkt.btu.common.core.annotation.AutoRetry;
 import com.hkt.btu.common.core.dao.entity.BtuUserEntity;
 import com.hkt.btu.common.core.exception.BtuMissingImplException;
 import com.hkt.btu.common.core.service.BtuAutoRetryService;
@@ -55,12 +56,16 @@ public class BtuAutoRetryServiceImpl implements BtuAutoRetryService {
     }
 
     @Override
-    public Integer queueMethodCallForRetry(Class clazz, Method method, Object[] paramArray, int minWaitSecond) {
+    public Integer queueMethodCallForRetry(Method method, Object[] paramArray) {
         BtuUserBean currentUser = userService.getCurrentUserBean();
         String currentUserId = currentUser==null ? BtuUserEntity.SYSTEM.USER_ID : currentUser.getUserId();
 
+        // serialize invoking class, method, param
+        Class clazz = method.getDeclaringClass();
         String clazzName = clazz.getName();
         String methodName = method.getName();
+        AutoRetry autoRetry = method.getAnnotation(AutoRetry.class);
+        int minWaitSecond = autoRetry==null ? 0 : autoRetry.minWaitSecond();
         String methodParam = btuParamService.serialize(paramArray);
 
         // check outstanding retry in queue

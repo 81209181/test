@@ -43,14 +43,11 @@ public class BtuApiRetryAspect {
             // gather caller info
             LOG.info("Gathering origin method call info...");
             MethodSignature signature = (MethodSignature) proceedingJoinPoint.getSignature();
-            Class clazz = signature.getClass();
             Method method = signature.getMethod();
-            AutoRetry autoRetry = method.getAnnotation(AutoRetry.class);
-            int minWaitSecond = autoRetry==null ? 0 : autoRetry.minWaitSecond();
             Object[] paramArray = proceedingJoinPoint.getArgs();
 
             // add to api retry queue
-            Integer retryId = btuAutoRetryService.queueMethodCallForRetry(clazz, method, paramArray, minWaitSecond);
+            Integer retryId = btuAutoRetryService.queueMethodCallForRetry(method, paramArray);
             LOG.info("Queue API call for retry. (retryId={})", retryId);
         }
     }

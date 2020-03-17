@@ -26,7 +26,7 @@ public interface BtuAutoRetryService {
             Integer minWaitSecondFrom, Integer minWaitSecondTo,
             LocalDateTime nextTargetTimeFrom, LocalDateTime nextTargetTimeTo );
 
-    Integer queueMethodCallForRetry(Class clazz, Method method, Object[] paramArray, int minWaitSecond);
+    Integer queueMethodCallForRetry(Method method, Object[] paramArray);
 
     boolean updateRetryComplete(Integer retryId);
 
