@@ -11,6 +11,7 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -65,7 +66,8 @@ public class BtuParamServiceImpl implements BtuParamService {
         // com/hkt/btu/sd/facade/impl/WfmApiFacadeImpl.java.getJobRemarkByTicketId
         // Type type = new TypeToken<List<BtuParamBean>>() {}.getType();
 
-        List<BtuParamBean> paramList = JsonUtils.string2Obj(paramListJson,List.class,BtuParamBean.class);
+        BtuParamBean[] array = new Gson().fromJson(paramListJson,BtuParamBean[].class);
+        List<BtuParamBean> paramList = Arrays.asList(array);
         Object[] objArray = null;
 
         if(CollectionUtils.isNotEmpty(paramList)){
