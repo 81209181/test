@@ -1,5 +1,6 @@
 package com.hkt.btu.common.core.service.impl;
 
+import com.google.gson.Gson;
 import com.hkt.btu.common.core.service.BtuParamService;
 import com.hkt.btu.common.core.service.bean.BtuParamBean;
 import com.hkt.btu.common.core.service.constant.BtuConfigParamTypeEnum;
@@ -7,6 +8,7 @@ import com.hkt.btu.common.core.util.JsonUtils;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -54,7 +56,8 @@ public class BtuParamServiceImpl implements BtuParamService {
 
     @Override
     public Object[] deserialize(String paramListJson) {
-        List<BtuParamBean> paramList = JsonUtils.string2Obj(paramListJson,List.class,BtuParamBean.class);
+        BtuParamBean[] array = new Gson().fromJson(paramListJson,BtuParamBean[].class);
+        List<BtuParamBean> paramList = Arrays.asList(array);
         Object[] objArray = null;
 
         if(CollectionUtils.isNotEmpty(paramList)){
