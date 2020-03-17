@@ -506,7 +506,9 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
             if (pattern.matcher(serviceNo).matches()) {
                 Integer poleId = Integer.parseInt(serviceNo);
-                ossApiFacade.notifyTicketStatus(poleId, ticketMasId, LocalDateTime.now(), "Close");
+                SdTicketMasData ticketMasData = getTicketMas(ticketMasId);
+                LocalDateTime time = ticketMasData == null ? null : ticketMasData.getCompleteDate();
+                ossApiFacade.notifyTicketStatus(poleId, ticketMasId, time, "Close");
             }
         } else {
             // notify wfm to close ticket

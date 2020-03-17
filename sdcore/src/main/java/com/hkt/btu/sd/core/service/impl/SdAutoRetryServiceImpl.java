@@ -26,14 +26,14 @@ public class SdAutoRetryServiceImpl extends BtuAutoRetryServiceImpl {
     @Resource(name = "autoRetryBeanPopulator")
     SdAutoRetryBeanPopulator autoRetryBeanPopulator;
 
-    public Integer createAutoRetry(String clazz, String methodName, String methodParam, int minWaitSecond, String createby){
-        return sdAutoRetryMapper.createAutoRetry(clazz, methodName, methodParam, minWaitSecond, createby);
+    public Integer createAutoRetry(String clazz, String methodName, String methodParam, int minWaitSecond, LocalDateTime nextTargetTime, String createby){
+        return sdAutoRetryMapper.createAutoRetry(clazz, methodName, methodParam, minWaitSecond, nextTargetTime, createby);
     }
 
     public Integer updateAutoRetry(Integer retryId, String clazz, String methodName, String methodParam,
                                    BtuAutoRetryStatusEnum statusEnum, Integer tryCount, Integer minWaitSecond,
                                    LocalDateTime nextTargetTime, String modifyby){
-        return sdAutoRetryMapper.updateAutoRetry(retryId, clazz, methodName, methodParam, statusEnum.getStatusCode(),
+        return sdAutoRetryMapper.updateAutoRetry(retryId, clazz, methodName, methodParam, statusEnum == null ? null : statusEnum.getStatusCode(),
                 tryCount, minWaitSecond, nextTargetTime, modifyby);
     }
 

@@ -24,19 +24,36 @@
         <selectKey keyProperty="retryId" order="BEFORE" resultType="Integer">
             select SEQ_AUTO_RETRY_ID.NEXTVAL from dual
         </selectKey>
-        insert into AUTO_RETRY(RETRY_ID,CLAZZ,METHOD_NAME,METHOD_PARAM,STATUS,TRY_COUNT,MIN_WAIT_SECOND,CREATEBY,MODIFYBY)
-        values(#{retryId},#{clazz},#{methodName},#{methodParam},'A','0',#{minWaitSecond},#{createby},#{createby})
+        insert into AUTO_RETRY(RETRY_ID,CLAZZ,METHOD_NAME,METHOD_PARAM,STATUS,TRY_COUNT,MIN_WAIT_SECOND,NEXT_TARGET_TIME,CREATEBY,MODIFYBY)
+        values(#{retryId},#{clazz},#{methodName},#{methodParam},'A','0',#{minWaitSecond},#{nextTargetTime},#{createby},#{createby})
     </insert>
 
     <update id="updateAutoRetry">
-        update AUTO_RETRY set CLAZZ = #{clazz},
-        METHOD_NAME = #{methodName},
-        METHOD_PARAM = #{methodParam},
-        STATUS = #{status},
-        TRY_COUNT = #{tryCount},
-        MIN_WAIT_SECOND = #{minWaitSecond},
-        NEXT_TARGET_TIME = #{nextTargetTime},
-        MODIFYBY = #{modifyby}
+        update AUTO_RETRY
+        <set>
+            <if test="clazz != null">
+                CLAZZ = #{clazz},
+            </if>
+            <if test="methodName != null">
+                METHOD_NAME = #{methodName},
+            </if>
+            <if test="methodParam != null">
+                METHOD_PARAM = #{methodParam},
+            </if>
+            <if test="status != null">
+                STATUS = #{status},
+            </if>
+            <if test="tryCount != null">
+                TRY_COUNT = #{tryCount},
+            </if>
+            <if test="minWaitSecond != null">
+                MIN_WAIT_SECOND = #{minWaitSecond},
+            </if>
+            <if test="nextTargetTime != null">
+                NEXT_TARGET_TIME = #{nextTargetTime},
+            </if>
+            MODIFYBY = #{modifyby}
+        </set>
         where RETRY_ID = #{retryId}
     </update>
 

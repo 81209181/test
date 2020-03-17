@@ -14,6 +14,7 @@ public interface SdAutoRetryMapper {
                             @Param("methodName") String methodName,
                             @Param("methodParam") String methodParam,
                             @Param("minWaitSecond") Integer minWaitSecond,
+                            @Param("nextTargetTime") LocalDateTime nextTargetTime,
                             @Param("createby") String createby);
 
     Integer updateAutoRetry(@Param("retryId") Integer retryId,

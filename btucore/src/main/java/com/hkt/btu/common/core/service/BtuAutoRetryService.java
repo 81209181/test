@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 public interface BtuAutoRetryService {
 
-    Integer createAutoRetry(String clazz, String methodName, String methodParam, int minWaitSecond, String createby);
+    Integer createAutoRetry(String clazz, String methodName, String methodParam, int minWaitSecond, LocalDateTime nextTargetTime, String createby);
 
     Integer updateAutoRetry(Integer retryId,
                             String clazz, String methodName, String methodParam,

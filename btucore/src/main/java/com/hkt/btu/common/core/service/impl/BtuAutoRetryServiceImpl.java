@@ -29,7 +29,7 @@ public class BtuAutoRetryServiceImpl implements BtuAutoRetryService {
 
 
 
-    public Integer createAutoRetry(String clazz, String methodName, String methodParam, int minWaitSecond, String createby){
+    public Integer createAutoRetry(String clazz, String methodName, String methodParam, int minWaitSecond, LocalDateTime nextTargetTime, String createby){
         LOG.error("DEMO ONLY IMPLEMENTATION! Please override and implement by DI.");
         throw new BtuMissingImplException();
     }
@@ -57,8 +57,8 @@ public class BtuAutoRetryServiceImpl implements BtuAutoRetryService {
 
     @Override
     public Integer queueMethodCallForRetry(Method method, Object[] paramArray) {
-        BtuUserBean currentUser = userService.getCurrentUserBean();
-        String currentUserId = currentUser==null ? BtuUserEntity.SYSTEM.USER_ID : currentUser.getUserId();
+//        BtuUserBean currentUser = userService.getCurrentUserBean();
+        String currentUserId = /*currentUser==null ? */BtuUserEntity.SYSTEM.USER_ID/* : currentUser.getUserId()*/;
 
         // serialize invoking class, method, param
         Class clazz = method.getDeclaringClass();
@@ -66,6 +66,7 @@ public class BtuAutoRetryServiceImpl implements BtuAutoRetryService {
         String methodName = method.getName();
         AutoRetry autoRetry = method.getAnnotation(AutoRetry.class);
         int minWaitSecond = autoRetry==null ? 0 : autoRetry.minWaitSecond();
+        LocalDateTime newNextTargetTime = LocalDateTime.now().plusSeconds(minWaitSecond);
         String methodParam = btuParamService.serialize(paramArray);
 
         // check outstanding retry in queue
@@ -80,10 +81,9 @@ public class BtuAutoRetryServiceImpl implements BtuAutoRetryService {
 
         BtuAutoRetryBean existingAutoRetryBean = pageBean.getTotalElements() < 1 ? null : pageBean.getContent().get(0);
         if(existingAutoRetryBean==null){
-            return createAutoRetry(clazzName, methodName, methodParam, minWaitSecond, currentUserId);
+            return createAutoRetry(clazzName, methodName, methodParam, minWaitSecond, newNextTargetTime, currentUserId);
         }else{
             Integer newTryCount = existingAutoRetryBean.getTryCount() + 1;
-            LocalDateTime newNextTargetTime = LocalDateTime.now().plusSeconds(minWaitSecond);
 
             updateAutoRetry( existingAutoRetryBean.getRetryId(),
                     null, null, null,
