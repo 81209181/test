@@ -12,6 +12,7 @@ import com.hkt.btu.sd.core.service.bean.*;
 import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
 import com.hkt.btu.sd.core.service.constant.TicketTypeEnum;
 import com.hkt.btu.sd.facade.*;
+import com.hkt.btu.sd.facade.constant.OssTicketActionEnum;
 import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.bes.BesFaultInfoData;
@@ -507,8 +508,10 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             if (pattern.matcher(serviceNo).matches()) {
                 Integer poleId = Integer.parseInt(serviceNo);
                 SdTicketMasData ticketMasData = getTicketMas(ticketMasId);
-                LocalDateTime time = ticketMasData == null ? null : ticketMasData.getCompleteDate();
-                ossApiFacade.notifyTicketStatus(poleId, ticketMasId, time, "Close");
+                LocalDateTime completeDate = ticketMasData.getCompleteDate();
+                if(completeDate!=null){
+                    ossApiFacade.notifyTicketStatus(poleId, ticketMasId, completeDate, OssTicketActionEnum.CLOSE.getCode());
+                }
             }
         } else {
             // notify wfm to close ticket
