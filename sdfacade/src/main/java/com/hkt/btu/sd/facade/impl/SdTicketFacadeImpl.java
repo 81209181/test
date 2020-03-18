@@ -492,7 +492,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public String closeTicket(String serviceType, String serviceNo, int ticketMasId, String reasonType, String reasonContent, String contactName, String contactNumber) {
+    public String closeTicket(int ticketMasId, String reasonType, String reasonContent, String contactName, String contactNumber) {
         LOG.info(String.format("Closing ticket. (ticketMasId: %d)", ticketMasId));
 
         // close ticket in servicedesk
