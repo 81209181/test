@@ -30,7 +30,7 @@ public class OssApiController {
             @RequestParam Integer poleId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime triggerTime,
             @RequestParam List<String> workingPartyList ) {
-        BtuSimpleResponseData simpleResponseData = smartMeterFacade.createTicket(poleId, triggerTime);
+        BtuSimpleResponseData simpleResponseData = smartMeterFacade.createTicket(poleId, triggerTime, workingPartyList);
         return ResponseEntity.ok(simpleResponseData);
     }
 

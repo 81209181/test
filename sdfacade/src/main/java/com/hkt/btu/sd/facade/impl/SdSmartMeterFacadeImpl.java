@@ -8,6 +8,7 @@ import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.data.SdTicketData;
 import com.hkt.btu.sd.facade.data.SdTicketMasData;
 import com.hkt.btu.sd.facade.data.SdTicketServiceData;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,16 +28,19 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
     SdTicketFacade ticketFacade;
 
     @Override
-    public BtuSimpleResponseData createTicket(Integer poleId, LocalDateTime reportTime) {
+    public BtuSimpleResponseData createTicket(Integer poleId, LocalDateTime reportTime, List<String> workingPartyList) {
         if(poleId==null){
             LOG.warn("Null pole ID.");
             return BtuSimpleResponseData.of(false, null, "Null pole ID.");
         }else if(reportTime==null){
             LOG.warn("Null report time.");
             return BtuSimpleResponseData.of(false, null, "Null report time.");
+        }else if(CollectionUtils.isEmpty(workingPartyList)){
+            LOG.warn("Empty working party list.");
+            return BtuSimpleResponseData.of(false, null, "Empty working party list.");
         }
 
-        //todo: SERVDESK-337
+        //todo: SERVDESK-348
         // check active ticket
 
         // create query ticket
