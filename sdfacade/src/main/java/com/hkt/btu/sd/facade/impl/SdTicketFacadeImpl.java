@@ -491,7 +491,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public String closeTicket(String serviceType, String serviceNo, int ticketMasId, String reasonType, String reasonContent, String contactName, String contactNumber) {
+    public String closeTicket(int ticketMasId, String reasonType, String reasonContent, String contactName, String contactNumber) {
         LOG.info(String.format("Closing ticket. (ticketMasId: %d)", ticketMasId));
 
         // close ticket in servicedesk
@@ -502,22 +502,24 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             return e.getMessage();
         }
 
-        if (serviceType.equalsIgnoreCase(ServiceSearchEnum.POLE_ID.getKeyDesc())) {
-            Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
-            if (pattern.matcher(serviceNo).matches()) {
-                Integer poleId = Integer.parseInt(serviceNo);
-                SdTicketMasData ticketMasData = getTicketMas(ticketMasId);
+        // notify oss to close ticket
+        SdTicketMasData ticketMasData = getTicketMas(ticketMasId);
+        List<SdTicketServiceData> serviceInfo = getServiceInfo(ticketMasId);
+        if (CollectionUtils.isNotEmpty(serviceInfo)) {
+            String serviceCode = serviceInfo.get(0).getServiceCode();
+            if (StringUtils.isNotEmpty(serviceCode) && !serviceCode.startsWith("D")) {
+                Integer poleId = Integer.parseInt(serviceCode);
                 LocalDateTime time = ticketMasData == null ? null : ticketMasData.getCompleteDate();
                 ossApiFacade.notifyTicketStatus(poleId, ticketMasId, time, "Close");
             }
-        } else {
-            // notify wfm to close ticket
-            boolean isClosedInWfm = wfmApiFacade.closeTicket(ticketMasId);
-            if (!isClosedInWfm) {
-                String wfmFail = "Cannot notify WFM to close ticket! (ticketMasId: " + ticketMasId + ")";
-                LOG.warn(wfmFail);
-                return wfmFail;
-            }
+        }
+
+        // notify wfm to close ticket
+        boolean isClosedInWfm = wfmApiFacade.closeTicket(ticketMasId);
+        if (!isClosedInWfm) {
+            String wfmFail = "Cannot notify WFM to close ticket! (ticketMasId: " + ticketMasId + ")";
+            LOG.warn(wfmFail);
+            return wfmFail;
         }
 
         return null;
