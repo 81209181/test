@@ -12,6 +12,7 @@ import com.hkt.btu.sd.core.service.bean.*;
 import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
 import com.hkt.btu.sd.core.service.constant.TicketTypeEnum;
 import com.hkt.btu.sd.facade.*;
+import com.hkt.btu.sd.facade.constant.OssTicketActionEnum;
 import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.bes.BesFaultInfoData;
@@ -491,7 +492,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public String closeTicket(int ticketMasId, String reasonType, String reasonContent, String contactName, String contactNumber) {
+    public String closeTicket(String serviceType, String serviceNo, int ticketMasId, String reasonType, String reasonContent, String contactName, String contactNumber) {
         LOG.info(String.format("Closing ticket. (ticketMasId: %d)", ticketMasId));
 
         // close ticket in servicedesk
@@ -509,8 +510,10 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             String serviceCode = serviceInfo.get(0).getServiceCode();
             if (StringUtils.isNotEmpty(serviceCode) && !serviceCode.startsWith("D")) {
                 Integer poleId = Integer.parseInt(serviceCode);
-                LocalDateTime time = ticketMasData == null ? null : ticketMasData.getCompleteDate();
-                ossApiFacade.notifyTicketStatus(poleId, ticketMasId, time, "Close");
+                LocalDateTime completeDate = ticketMasData.getCompleteDate();
+                if(completeDate!=null){
+                    ossApiFacade.notifyTicketStatus(poleId, ticketMasId, completeDate, OssTicketActionEnum.CLOSE.getCode());
+                }
             }
         }
 
