@@ -57,8 +57,8 @@ public class BtuAutoRetryServiceImpl implements BtuAutoRetryService {
 
     @Override
     public Integer queueMethodCallForRetry(Method method, Object[] paramArray) {
-//        BtuUserBean currentUser = userService.getCurrentUserBean();
-        String currentUserId = /*currentUser==null ? */BtuUserEntity.SYSTEM.USER_ID/* : currentUser.getUserId()*/;
+        BtuUserBean currentUser = userService.getCurrentUserBean();
+        String currentUserId = currentUser==null ? BtuUserEntity.SYSTEM.USER_ID : currentUser.getUserId();
 
         // serialize invoking class, method, param
         Class clazz = method.getDeclaringClass();
