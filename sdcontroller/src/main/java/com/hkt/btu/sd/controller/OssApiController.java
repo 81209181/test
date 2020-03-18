@@ -51,9 +51,14 @@ public class OssApiController {
             @RequestParam(required = false) String createDateTo,
             @RequestParam Integer page,
             @RequestParam Integer pageSize) {
+        // limit page size
         pageSize = (pageSize==null || pageSize<1 || pageSize>100) ? 10 : pageSize;
+
+        // search result
         Pageable pageable = PageRequest.of(page, pageSize);
-        PageData<SdTicketMasData> ticketMasDataPageData = smartMeterFacade.searchTicketList(pageable, poleId, createDateFrom, createDateTo);
+        PageData<SdTicketMasData> ticketMasDataPageData = smartMeterFacade.searchTicketList(
+                pageable, poleId, createDateFrom, createDateTo, null, null);
+
         if(ticketMasDataPageData==null){
             return ResponseEntity.badRequest().body(String.format("Cannot search Smart Meter tickets. (poleId=%d, page=%d, pageSize=%d)", poleId, page, pageSize));
         }else {

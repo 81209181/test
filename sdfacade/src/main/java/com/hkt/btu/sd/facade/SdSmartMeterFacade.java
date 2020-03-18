@@ -12,6 +12,10 @@ import java.util.List;
 public interface SdSmartMeterFacade {
     BtuSimpleResponseData createTicket(Integer poleId, LocalDateTime reportTime, List<String> workingPartyList);
     SdTicketData getTicketInfo(Integer ticketMasId);
-    PageData<SdTicketMasData> searchTicketList(Pageable pageable,
-                                               Integer poleId, String createDateFrom, String createDateTo);
+    PageData<SdTicketMasData> searchTicketList(
+            Pageable pageable,
+            Integer poleId, String createDateFrom, String createDateTo,
+            String ticketType, String status);
+
+    String translateToSymptom(List<String> workingPartyList);
 }
