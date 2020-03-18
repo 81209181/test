@@ -9,9 +9,9 @@ public enum OssTicketActionEnum {
     ;
 
 
-    OssTicketActionEnum(String key, String keyDesc){
-        this.code = key;
-        this.codeDesc = keyDesc;
+    OssTicketActionEnum(String code, String codeDesc){
+        this.code = code;
+        this.codeDesc = codeDesc;
     }
 
     public static OssTicketActionEnum getEnum(String key) {
