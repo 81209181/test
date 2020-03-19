@@ -29,8 +29,18 @@ public class SdAutoRetryServiceImpl extends BtuAutoRetryServiceImpl implements S
 
     public Integer createAutoRetry(String beanName, String methodName, String methodParam,
                                    int minWaitSecond, LocalDateTime nextTargetTime, String createby){
-        Integer retryId = sdAutoRetryMapper.createAutoRetry(beanName, methodName, methodParam,
-                minWaitSecond, BtuAutoRetryEntity.STATUS.ACTIVE,0, nextTargetTime, createby);
+        BtuAutoRetryEntity autoRetryEntity = new BtuAutoRetryEntity();
+        autoRetryEntity.setBeanName(beanName);
+        autoRetryEntity.setMethodName(methodName);
+        autoRetryEntity.setMethodParam(methodParam);
+        autoRetryEntity.setMinWaitSecond(minWaitSecond);
+        autoRetryEntity.setStatus(BtuAutoRetryEntity.STATUS.ACTIVE);
+        autoRetryEntity.setTryCount(0);
+        autoRetryEntity.setNextTargetTime(nextTargetTime);
+        autoRetryEntity.setCreateby(createby);
+        sdAutoRetryMapper.createAutoRetry(autoRetryEntity);
+
+        Integer retryId = autoRetryEntity.getRetryId();
         LOG.info("Created new auto retry. (retryId={}, beanName={}, methodName={})", retryId, beanName, methodName);
         return retryId;
     }

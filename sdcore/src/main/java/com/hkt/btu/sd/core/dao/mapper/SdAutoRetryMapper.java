@@ -10,14 +10,7 @@ import java.util.List;
 @Repository
 public interface SdAutoRetryMapper {
 
-    Integer createAutoRetry(@Param("beanName") String beanName,
-                            @Param("methodName") String methodName,
-                            @Param("methodParam") String methodParam,
-                            @Param("minWaitSecond") Integer minWaitSecond,
-                            @Param("status") String status,
-                            @Param("tryCount") Integer tryCount,
-                            @Param("nextTargetTime") LocalDateTime nextTargetTime,
-                            @Param("createby") String createby);
+    Integer createAutoRetry(BtuAutoRetryEntity btuAutoRetryEntity);
 
     Integer updateAutoRetry(@Param("retryId") Integer retryId,
                             @Param("beanName") String beanName,

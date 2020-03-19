@@ -20,8 +20,11 @@
         <result column="REMARKS" property="remarks" />
     </resultMap>
 
-    <insert id="createAutoRetry" >
-<!--    <insert id="createAutoRetry" keyProperty="id" useGeneratedKeys="true" parameterType="Integer">-->
+<!--    <insert id="createAutoRetry" >-->
+    <insert id="createAutoRetry" parameterType="com.hkt.btu.common.core.dao.entity.BtuAutoRetryEntity">
+        <selectKey keyProperty="retryId" order="BEFORE" resultType="Integer">
+            select SEQ_AUTO_RETRY_ID.NEXTVAL from dual
+        </selectKey>
         insert into AUTO_RETRY(
                                RETRY_ID,
                                BEAN_NAME, METHOD_NAME, METHOD_PARAM,
@@ -29,7 +32,7 @@
                                TRY_COUNT, MIN_WAIT_SECOND, NEXT_TARGET_TIME,
                                CREATEBY, MODIFYBY)
         values(
-               SEQ_AUTO_RETRY_ID.NEXTVAL,
+               #{retryId},
                #{beanName}, #{methodName}, #{methodParam},
                #{status},
                #{tryCount}, #{minWaitSecond}, #{nextTargetTime},
