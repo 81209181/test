@@ -9,7 +9,7 @@ public class SdAutoRetryBeanPopulator extends AbstractBeanPopulator<BtuAutoRetry
 
     public void populate(BtuAutoRetryEntity source, BtuAutoRetryBean target) {
         target.setRetryId(source.getRetryId());
-        target.setClazzName(source.getClazzName());
+        target.setBeanName(source.getBeanName());
         target.setMethodName(source.getMethodName());
         target.setMethodParam(source.getMethodParam());
         target.setTryCount(source.getTryCount());
@@ -21,7 +21,8 @@ public class SdAutoRetryBeanPopulator extends AbstractBeanPopulator<BtuAutoRetry
         target.setModifyby(source.getModifyby());
         target.setModifydate(source.getModifydate());
 
-        String statusCode = source.getStatus();
-        target.setStatus(BtuAutoRetryStatusEnum.getEnum(statusCode).getDesc());
+        BtuAutoRetryStatusEnum statusEnum = BtuAutoRetryStatusEnum.getEnum(source.getStatus());
+        String statusCode = statusEnum==null ? null : statusEnum.getStatusCode();
+        target.setStatus(statusCode);
     }
 }

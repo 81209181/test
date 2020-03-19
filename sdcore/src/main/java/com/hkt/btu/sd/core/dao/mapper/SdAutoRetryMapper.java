@@ -10,15 +10,17 @@ import java.util.List;
 @Repository
 public interface SdAutoRetryMapper {
 
-    Integer createAutoRetry(@Param("clazz") String clazz,
+    Integer createAutoRetry(@Param("beanName") String beanName,
                             @Param("methodName") String methodName,
                             @Param("methodParam") String methodParam,
                             @Param("minWaitSecond") Integer minWaitSecond,
+                            @Param("status") String status,
+                            @Param("tryCount") Integer tryCount,
                             @Param("nextTargetTime") LocalDateTime nextTargetTime,
                             @Param("createby") String createby);
 
     Integer updateAutoRetry(@Param("retryId") Integer retryId,
-                            @Param("clazz") String clazz,
+                            @Param("beanName") String beanName,
                             @Param("methodName") String methodName,
                             @Param("methodParam") String methodParam,
                             @Param("status") String status,
@@ -29,7 +31,7 @@ public interface SdAutoRetryMapper {
 
     List<BtuAutoRetryEntity> searchRetryQueue(@Param("offset") long offset, @Param("pageSize") int pageSize,
                                               @Param("retryId") Integer retryId,
-                                              @Param("clazz") String clazz,
+                                              @Param("beanName") String beanName,
                                               @Param("methodName") String methodName,
                                               @Param("methodParam") String methodParam,
                                               @Param("status") String status,
@@ -41,7 +43,7 @@ public interface SdAutoRetryMapper {
                                               @Param("nextTargetTimeTo") LocalDateTime nextTargetTimeTo);
 
     Integer searchRetryCount(@Param("retryId") Integer retryId,
-                             @Param("clazz") String clazz,
+                             @Param("beanName") String beanName,
                              @Param("methodName") String methodName,
                              @Param("methodParam") String methodParam,
                              @Param("status") String status,

@@ -11,6 +11,8 @@ import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.core.service.constant.BtuAutoRetryStatusEnum;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +23,9 @@ import java.time.LocalDateTime;
 
 public class BtuAutoRetryServiceImpl implements BtuAutoRetryService {
     private static final Logger LOG = LogManager.getLogger(BtuAutoRetryServiceImpl.class);
+
+    @Autowired
+    ApplicationContext applicationContext;
 
     @Resource(name = "paramService")
     BtuParamService btuParamService;
@@ -35,7 +40,7 @@ public class BtuAutoRetryServiceImpl implements BtuAutoRetryService {
     }
 
     public Integer updateAutoRetry(Integer retryId,
-                                   String clazz, String methodName, String methodParam,
+                                   String beanName, String methodName, String methodParam,
                                    BtuAutoRetryStatusEnum statusEnum,
                                    Integer tryCount, Integer minWaitSecond, LocalDateTime nextTargetTime,
                                    String modifyby){
@@ -46,7 +51,7 @@ public class BtuAutoRetryServiceImpl implements BtuAutoRetryService {
     @Override
     public Page<BtuAutoRetryBean> searchRetryQueue(
             Pageable pageable, Integer retryId,
-            String clazzName, String methodName, String methodParam,
+            String beanName, String methodName, String methodParam,
             BtuAutoRetryStatusEnum status,
             Integer tryCountFrom, Integer tryCountTo,
             Integer minWaitSecondFrom, Integer minWaitSecondTo,
@@ -62,7 +67,7 @@ public class BtuAutoRetryServiceImpl implements BtuAutoRetryService {
 
         // serialize invoking class, method, param
         Class clazz = method.getDeclaringClass();
-        String clazzName = clazz.getName();
+        String beanName = applicationContext.getBeanNamesForType(clazz)[0];
         String methodName = method.getName();
         AutoRetry autoRetry = method.getAnnotation(AutoRetry.class);
         int minWaitSecond = autoRetry==null ? 0 : autoRetry.minWaitSecond();
@@ -72,7 +77,7 @@ public class BtuAutoRetryServiceImpl implements BtuAutoRetryService {
         // check outstanding retry in queue
         Page<BtuAutoRetryBean> pageBean = searchRetryQueue(
                 PageRequest.of(0, 1), null,
-                clazzName, methodName, methodParam,
+                beanName, methodName, methodParam,
                 BtuAutoRetryStatusEnum.ACTIVE,
                 null, null,
                 null, null,
@@ -81,7 +86,7 @@ public class BtuAutoRetryServiceImpl implements BtuAutoRetryService {
 
         BtuAutoRetryBean existingAutoRetryBean = pageBean.getTotalElements() < 1 ? null : pageBean.getContent().get(0);
         if(existingAutoRetryBean==null){
-            return createAutoRetry(clazzName, methodName, methodParam, minWaitSecond, newNextTargetTime, currentUserId);
+            return createAutoRetry(beanName, methodName, methodParam, minWaitSecond, newNextTargetTime, currentUserId);
         }else{
             Integer newTryCount = existingAutoRetryBean.getTryCount() + 1;
 

@@ -13,14 +13,14 @@ public interface BtuAutoRetryService {
     Integer createAutoRetry(String clazz, String methodName, String methodParam, int minWaitSecond, LocalDateTime nextTargetTime, String createby);
 
     Integer updateAutoRetry(Integer retryId,
-                            String clazz, String methodName, String methodParam,
+                            String beanName, String methodName, String methodParam,
                             BtuAutoRetryStatusEnum statusEnum,
                             Integer tryCount, Integer minWaitSecond, LocalDateTime nextTargetTime,
                             String modifyby);
 
     Page<BtuAutoRetryBean> searchRetryQueue(
             Pageable pageable, Integer retryId,
-            String clazzName, String methodName, String methodParam,
+            String beanName, String methodName, String methodParam,
             BtuAutoRetryStatusEnum status,
             Integer tryCountFrom, Integer tryCountTo,
             Integer minWaitSecondFrom, Integer minWaitSecondTo,

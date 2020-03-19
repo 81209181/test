@@ -14,7 +14,7 @@ public class BtuAutoRetryBean extends BaseBean {
 
     private Integer retryId;
 
-    private String clazzName;
+    private String beanName;
     private String methodName;
     private String methodParam;
 
@@ -36,12 +36,12 @@ public class BtuAutoRetryBean extends BaseBean {
         this.retryId = retryId;
     }
 
-    public String getClazzName() {
-        return clazzName;
+    public String getBeanName() {
+        return beanName;
     }
 
-    public void setClazzName(String clazzName) {
-        this.clazzName = clazzName;
+    public void setBeanName(String beanName) {
+        this.beanName = beanName;
     }
 
     public String getMethodName() {

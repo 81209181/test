@@ -5,7 +5,7 @@
 <mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdAutoRetryMapper" >
     <resultMap id="AutoRetryEntity" type="com.hkt.btu.common.core.dao.entity.BtuAutoRetryEntity" >
         <result column="RETRY_ID" property="retryId" />
-        <result column="CLAZZ" property="clazzName" />
+        <result column="BEAN_NAME" property="beanName" />
         <result column="METHOD_NAME" property="methodName" />
         <result column="METHOD_PARAM" property="methodParam" />
         <result column="STATUS" property="status" />
@@ -20,19 +20,27 @@
         <result column="REMARKS" property="remarks" />
     </resultMap>
 
-    <insert id="createAutoRetry">
-        <selectKey keyProperty="retryId" order="BEFORE" resultType="Integer">
-            select SEQ_AUTO_RETRY_ID.NEXTVAL from dual
-        </selectKey>
-        insert into AUTO_RETRY(RETRY_ID,CLAZZ,METHOD_NAME,METHOD_PARAM,STATUS,TRY_COUNT,MIN_WAIT_SECOND,NEXT_TARGET_TIME,CREATEBY,MODIFYBY)
-        values(#{retryId},#{clazz},#{methodName},#{methodParam},'A','0',#{minWaitSecond},#{nextTargetTime},#{createby},#{createby})
+    <insert id="createAutoRetry" >
+<!--    <insert id="createAutoRetry" keyProperty="id" useGeneratedKeys="true" parameterType="Integer">-->
+        insert into AUTO_RETRY(
+                               RETRY_ID,
+                               BEAN_NAME, METHOD_NAME, METHOD_PARAM,
+                               STATUS,
+                               TRY_COUNT, MIN_WAIT_SECOND, NEXT_TARGET_TIME,
+                               CREATEBY, MODIFYBY)
+        values(
+               SEQ_AUTO_RETRY_ID.NEXTVAL,
+               #{beanName}, #{methodName}, #{methodParam},
+               #{status},
+               #{tryCount}, #{minWaitSecond}, #{nextTargetTime},
+               #{createby}, #{createby})
     </insert>
 
     <update id="updateAutoRetry">
         update AUTO_RETRY
         <set>
-            <if test="clazz != null">
-                CLAZZ = #{clazz},
+            <if test="beanName != null">
+                BEAN_NAME = #{beanName},
             </if>
             <if test="methodName != null">
                 METHOD_NAME = #{methodName},
@@ -63,8 +71,8 @@
             <if test="retryId != null">
                 RETRY_ID = #{retryId}
             </if>
-            <if test="clazz != null">
-                and CLAZZ = #{clazz}
+            <if test="beanName != null">
+                and BEAN_NAME = #{beanName}
             </if>
             <if test="methodName != null">
                 and METHOD_NAME = #{methodName}
@@ -98,7 +106,7 @@
 
     <select id="searchRetryQueue" resultMap="AutoRetryEntity" >
         select * <include refid="searchRetrySql"/>
-        order by NEXT_TARGET_TIME desc
+        order by NEXT_TARGET_TIME
         OFFSET #{offset} ROWS FETCH NEXT #{pageSize} ROWS ONLY
     </select>
 
