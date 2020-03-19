@@ -7,6 +7,7 @@ import com.hkt.btu.common.core.service.bean.BtuParamBean;
 import com.hkt.btu.common.core.service.constant.BtuConfigParamTypeEnum;
 import com.hkt.btu.common.core.util.JsonUtils;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
@@ -26,23 +27,23 @@ public class BtuParamServiceImpl implements BtuParamService {
                 BtuParamBean bean = new BtuParamBean();
                 if (o instanceof String) {
                     bean.setParamType(BtuConfigParamTypeEnum.STRING);
-                    bean.setValue(o);
+                    bean.setValue(o.toString());
                     paramList.add(bean);
                 } else if (o instanceof Integer) {
                     bean.setParamType(BtuConfigParamTypeEnum.INTEGER);
-                    bean.setValue(o);
+                    bean.setValue(o.toString());
                     paramList.add(bean);
                 } else if (o instanceof Double) {
                     bean.setParamType(BtuConfigParamTypeEnum.DOUBLE);
-                    bean.setValue(o);
+                    bean.setValue(o.toString());
                     paramList.add(bean);
                 } else if (o instanceof Boolean) {
                     bean.setParamType(BtuConfigParamTypeEnum.BOOLEAN);
-                    bean.setValue(o);
+                    bean.setValue(o.toString());
                     paramList.add(bean);
                 } else if (o instanceof LocalDateTime) {
                     bean.setParamType(BtuConfigParamTypeEnum.LOCAL_DATE_TIME);
-                    bean.setValue(o);
+                    bean.setValue(o.toString());
                     paramList.add(bean);
                 } else {
                     throw new InvalidInputException("Unsupported type for re-try.");
@@ -61,12 +62,26 @@ public class BtuParamServiceImpl implements BtuParamService {
     public Object[] deserialize(String paramListJson) {
         Type type = new TypeToken<List<BtuParamBean>>() {}.getType();
         List<BtuParamBean> paramList = JsonUtils.string2Obj(paramListJson, type);
-        Object[] objArray = null;
 
         if(CollectionUtils.isNotEmpty(paramList)){
-            objArray = paramList.toArray();
+            Object[] objArray = new Object[paramList.size()];
+            paramList.forEach(param -> {
+                int i = paramList.indexOf(param);
+                if (param.getParamType().equals(BtuConfigParamTypeEnum.STRING)) {
+                    objArray[i] = param.getValue();
+                } else if (param.getParamType().equals(BtuConfigParamTypeEnum.INTEGER)) {
+                    objArray[i] = Integer.parseInt(param.getValue());
+                } else if (param.getParamType().equals(BtuConfigParamTypeEnum.DOUBLE)) {
+                    objArray[i] = Double.parseDouble(param.getValue());
+                } else if (param.getParamType().equals(BtuConfigParamTypeEnum.BOOLEAN)) {
+                    objArray[i] = BooleanUtils.toBoolean(param.getValue());
+                } else if (param.getParamType().equals(BtuConfigParamTypeEnum.LOCAL_DATE_TIME)) {
+                    objArray[i] = LocalDateTime.parse(param.getValue());
+                }
+            });
+            return objArray;
         }
 
-        return objArray;
+        return new Object[]{};
     }
 }
