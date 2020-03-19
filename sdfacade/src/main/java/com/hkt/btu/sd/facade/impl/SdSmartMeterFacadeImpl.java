@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.facade.impl;
 
+import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.facade.data.BtuSimpleResponseData;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
@@ -58,33 +59,62 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
             LOG.info("Found existing smart meter job ticket. (ticketMasId={}, poleId={})", activeTicketMasId, poleId);
             return BtuSimpleResponseData.of(true, activeTicketMasId, null);
         }
+        LOG.info("Found no existing smart meter job ticket. (poleId={})", poleId);
 
         // check existence of pole id
         OssSmartMeterData ossSmartMeterData = ossApiFacade.queryMeterInfo(poleId);
-        if( StringUtils.isEmpty(ossSmartMeterData.getPoleId())){
-            String errorMsg = "Meter profile not found in OSS. (poleId=" + poleId + ")";
-            LOG.error(errorMsg);
-            return BtuSimpleResponseData.of(false, null, errorMsg);
+        if( ossSmartMeterData==null || StringUtils.isEmpty(ossSmartMeterData.getPoleId())){
+            String warnMsg = "Meter profile not found in OSS. (poleId=" + poleId + ")";
+            LOG.warn(warnMsg);
+            return BtuSimpleResponseData.of(false, null, warnMsg);
+        }
+        LOG.info("Checked smart meter profile with OSS. (poleId={})", poleId);
+
+        // get mapped symptom
+        String symptomCode = translateToSymptom(workingPartyList);
+        if(StringUtils.isEmpty(symptomCode)){
+            String warnMsg = String.format("Cannot map symptom for input. (workingPartyList=%s)",
+                    StringUtils.join(workingPartyList, ','));
+            LOG.warn(warnMsg);
+            return BtuSimpleResponseData.of(false, null, warnMsg);
         }
 
-        // create query ticket
+        // SD: create query ticket
         SdQueryTicketRequestData queryTicketRequestData = buildTicketServiceData(poleId);
-        Integer ticketMasId = ticketFacade.createQueryTicket(queryTicketRequestData);
-        LOG.info("Created new smart meter query ticket. (ticketMasId={}, poleId={})", ticketMasId, poleId);
+        Integer ticketMasId;
+        try{
+            ticketMasId = ticketFacade.createQueryTicket(queryTicketRequestData);
+            LOG.info("Created new smart meter query ticket. (ticketMasId={}, poleId={})", ticketMasId, poleId);
+        } catch (RuntimeException e){
+            LOG.error(e.getMessage(), e);
+            String warnMsg = "Cannot create new ticket. (poleId=" + poleId + ")";
+            LOG.warn(warnMsg);
+            return BtuSimpleResponseData.of(false, null, warnMsg);
+        }
 
-        // add symptom to ticket
-        String symptomCode = translateToSymptom(workingPartyList);
+        // SD: add symptom to ticket
         SdRequestTicketServiceData sdRequestTicketServiceData = buildTicketServiceData(
                 ticketMasId, String.valueOf(poleId), reportTime, symptomCode);
         List<SdRequestTicketServiceData> ticketServiceList = List.of(sdRequestTicketServiceData);
-        ticketFacade.updateServiceInfo(ticketServiceList);
-
-        // auto-pass to wfm
         try {
-            ticketFacade.createJob4Wfm(ticketMasId);
+            ticketFacade.updateServiceInfo(ticketServiceList);
+            LOG.info("Updated symptom to ticket. (ticketMasId={}, poleId={}, symptomCode={})", ticketMasId, poleId, symptomCode);
         } catch (RuntimeException e){
             LOG.error(e.getMessage(), e);
-            return BtuSimpleResponseData.of(false, null, e.getMessage());
+            String warnMsg = "Meter profile not found in OSS. (poleId=" + poleId + ")";
+            LOG.warn(warnMsg);
+            return BtuSimpleResponseData.of(false, null, warnMsg);
+        }
+
+        // SD-->WFM: auto-pass to wfm
+        try {
+            ticketFacade.createJob4Wfm(ticketMasId);
+            LOG.info("Created job in WFM. (ticketMasId={}, poleId={})", ticketMasId, poleId);
+        } catch (RuntimeException e){
+            LOG.error(e.getMessage(), e);
+            String warnMsg = "Cannot create job in WFM. (ticketMasId=" + ticketMasId + ", poleId=" + poleId + ")";
+            LOG.warn(warnMsg);
+            return BtuSimpleResponseData.of(false, null, warnMsg);
         }
 
         return BtuSimpleResponseData.of(true, String.valueOf(ticketMasId), null);
@@ -133,8 +163,18 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
 
     @Override
     public String translateToSymptom(List<String> workingPartyList) {
-        boolean hasPnd = workingPartyList.contains(OssWorkingPartyEnum.PND.getCode());
-        boolean hasField = workingPartyList.contains(OssWorkingPartyEnum.FIELD.getCode());
+        boolean hasPnd = false;
+        boolean hasField = false;
+        for(String workingParty : workingPartyList){
+            if(OssWorkingPartyEnum.PND.getCode().equals(workingParty)){
+                hasPnd = true;
+            } else if (OssWorkingPartyEnum.FIELD.getCode().equals(workingParty)){
+                hasField = true;
+            } else {
+                return null;
+            }
+        }
+
 
         if(hasPnd && hasField) {
             return "CL007";

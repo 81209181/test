@@ -507,9 +507,9 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         SdTicketMasData ticketMasData = getTicketMas(ticketMasId);
         List<SdTicketServiceData> serviceInfo = getServiceInfo(ticketMasId);
         if (CollectionUtils.isNotEmpty(serviceInfo)) {
-            String serviceCode = serviceInfo.get(0).getServiceCode();
-            if (StringUtils.isNotEmpty(serviceCode) && !serviceCode.startsWith("D")) {
-                Integer poleId = Integer.parseInt(serviceCode);
+            String poleIdStr = serviceInfo.get(0).getServiceCode();
+            if (StringUtils.isNotEmpty(poleIdStr) && !StringUtils.startsWith(poleIdStr, "D")) {
+                Integer poleId = Integer.parseInt(poleIdStr);
                 LocalDateTime completeDate = ticketMasData.getCompleteDate();
                 if(completeDate!=null){
                     ossApiFacade.notifyTicketStatus(poleId, ticketMasId, completeDate, OssTicketActionEnum.CLOSE.getCode());
@@ -570,24 +570,34 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
     @Override
     public void createJob4Wfm(int ticketMasId) throws InvalidInputException, ApiException {
-        try {
-            SdTicketData ticketInfo = getTicketInfo(ticketMasId);
-            if (ticketInfo != null) {
-                for (SdTicketServiceData serviceData : ticketInfo.getServiceInfo()) {
-                    if (CollectionUtils.isEmpty(serviceData.getFaultsList())) {
-                        throw new InvalidInputException("Please select a symptom.");
-                    }
-                    if (SdServiceTypeBean.SERVICE_TYPE.UNKNOWN.equals(serviceData.getServiceType())) {
-                        throw new InvalidInputException("Unknown service type.");
-                    }
-                }
-                if (CollectionUtils.isEmpty(ticketInfo.getContactInfo())) {
-                    throw new InvalidInputException("Please input contact.");
-                }
-            } else {
-                throw new InvalidInputException("Ticket not found.");
+        SdTicketData ticketInfo = getTicketInfo(ticketMasId);
+        if(ticketInfo==null){
+            throw new InvalidInputException("Ticket not found.");
+        }
+
+        // check service
+        boolean isMeter = false;
+        for (SdTicketServiceData serviceData : ticketInfo.getServiceInfo()) {
+            if (CollectionUtils.isEmpty(serviceData.getFaultsList())) {
+                throw new InvalidInputException("Please select a symptom.");
             }
-            updateJobIdInService(wfmApiFacade.createJob(ticketInfo), ticketMasId);
+            if (SdServiceTypeBean.SERVICE_TYPE.UNKNOWN.equals(serviceData.getServiceType())) {
+                throw new InvalidInputException("Unknown service type.");
+            } else if (SdServiceTypeBean.SERVICE_TYPE.SMART_METER.equals(serviceData.getServiceType())){
+                isMeter = true;
+            }
+        }
+
+        // check contact
+        if(!isMeter) {
+            if (CollectionUtils.isEmpty(ticketInfo.getContactInfo())) {
+                throw new InvalidInputException("Please input contact.");
+            }
+        }
+
+        try {
+            Integer jobId = wfmApiFacade.createJob(ticketInfo);
+            updateJobIdInService(jobId, ticketMasId);
         } catch (JsonProcessingException e) {
             throw new ApiException(String.format("WFM Error: Cannot create job for ticket mas id %s.", ticketMasId));
         }
