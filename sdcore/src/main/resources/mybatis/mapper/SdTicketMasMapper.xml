@@ -76,6 +76,9 @@
             <if test="serviceNumber != null">
                 and lower(td.service_id) like '%' || lower(#{serviceNumber}) || '%'
             </if>
+            <if test="serviceNumberExact != null">
+                and td.service_id = #{serviceNumberExact}
+            </if>
             <if test="ticketType != null">
                 and tm.ticket_type = #{ticketType}
             </if>

@@ -27,6 +27,7 @@ public interface SdTicketMasMapper {
                                              @Param("ticketMasId") String ticketMasId,
                                              @Param("custCode") String custCode,
                                              @Param("serviceNumber") String serviceNumber,
+                                             @Param("serviceNumberExact") String serviceNumberExact,
                                              @Param("ticketType") String ticketType,
                                              @Param("serviceType") String serviceType,
                                              @Param("owningRole") String owningRole);
@@ -40,6 +41,7 @@ public interface SdTicketMasMapper {
                               @Param("ticketMasId") String ticketMasId,
                               @Param("custCode") String custCode,
                               @Param("serviceNumber") String serviceNumber,
+                              @Param("serviceNumberExact") String serviceNumberExact,
                               @Param("ticketType") String ticketType,
                               @Param("serviceType") String serviceType,
                               @Param("owningRole") String owningRole);

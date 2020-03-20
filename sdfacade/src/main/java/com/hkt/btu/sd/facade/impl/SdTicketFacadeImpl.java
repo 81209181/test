@@ -167,6 +167,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         String custCode = StringUtils.isEmpty(searchFormData.get("custCode")) ? null : searchFormData.get("custCode");
 
         String serviceNumber = StringUtils.isEmpty(searchFormData.get("serviceNumber")) ? null : searchFormData.get("serviceNumber");
+        String serviceNumberExact = StringUtils.isEmpty(searchFormData.get("serviceNumberExact")) ? null : searchFormData.get("serviceNumberExact");
         String ticketType = StringUtils.isEmpty(searchFormData.get("ticketType")) ? null : searchFormData.get("ticketType");
         String serviceType = StringUtils.isEmpty(searchFormData.get("serviceType")) ? null : searchFormData.get("serviceType");
         boolean isReport = BooleanUtils.toBoolean(searchFormData.get("isReport"));
@@ -178,7 +179,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                     pageable, createDateFrom, createDateTo,
                     status, completeDateFrom, completeDateTo,
                     createBy, ticketMasId, custCode,
-                    serviceNumber, ticketType, serviceType, isReport, owningRole);
+                    serviceNumber, serviceNumberExact, ticketType, serviceType, isReport, owningRole);
         } catch (AuthorityNotFoundException e) {
             return new PageData<>(e.getMessage());
         }

@@ -288,6 +288,7 @@ $().ready(function(){
             $this.parents('.panel').find('.panel-body').slideDown();
             $this.removeClass('panel-collapsed');
             $this.find('i').removeClass('glyphicon-chevron-left').addClass('glyphicon-chevron-down');
+            let serviceType = $('input[name=serviceType]').val();
             let serviceNo = $('input[name=serviceCode]').val();
             if (serviceNo === '') {
                 $('#relatedTicketTable').hide();
@@ -304,7 +305,8 @@ $().ready(function(){
                         url: "/ticket/searchTicket",
                         dataSrc: 'data',
                         data: function(d){
-                            d.serviceNumber = serviceNo
+                            d.serviceType = serviceType;
+                            d.serviceNumberExact = serviceNo;
                         },
                         error: function (e) {
                             if(e.responseText){

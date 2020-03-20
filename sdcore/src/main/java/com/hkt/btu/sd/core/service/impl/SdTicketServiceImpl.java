@@ -141,7 +141,8 @@ public class SdTicketServiceImpl implements SdTicketService {
     public Page<SdTicketMasBean> searchTicketList(Pageable pageable, LocalDate createDateFrom, LocalDate createDateTo,
                                                   String status, LocalDate completeDateFrom, LocalDate completeDateTo,
                                                   String createBy, String ticketMasId, String custCode,
-                                                  String serviceNumber, String ticketType, String serviceType, boolean isReport, String owningRole) {
+                                                  String serviceNumber, String serviceNumberExact, String ticketType,
+                                                  String serviceType, boolean isReport, String owningRole) {
         List<SdTicketMasEntity> entityList;
         Integer totalCount;
 
@@ -157,24 +158,38 @@ public class SdTicketServiceImpl implements SdTicketService {
             entityList = ticketMasMapper.searchTicketList(offset, pageSize,
                     null, null, null,
                     null, null, null,
-                    ticketMasId, null, null, null,
+                    ticketMasId, null, null, null, null,
                     null,null);
             totalCount = ticketMasMapper.searchTicketCount(
                     null, null, null,
                     null, null, null,
-                    ticketMasId, null, null, null,
+                    ticketMasId, null, null, null, null,
                     null, null);
         } else {
-            entityList = ticketMasMapper.searchTicketList(offset, pageSize,
-                    createDateFrom, createDateTo, status,
-                    completeDateFrom, completeDateTo, createBy,
-                    ticketMasId, custCode, serviceNumber, ticketType,
-                    serviceType, owningRole);
-            totalCount = ticketMasMapper.searchTicketCount(
-                    createDateFrom, createDateTo, status,
-                    completeDateFrom, completeDateTo, createBy,
-                    ticketMasId, custCode, serviceNumber, ticketType,
-                    serviceType, owningRole);
+            if (StringUtils.isNotEmpty(serviceNumber)) {
+                entityList = ticketMasMapper.searchTicketList(offset, pageSize,
+                        createDateFrom, createDateTo, status,
+                        completeDateFrom, completeDateTo, createBy,
+                        ticketMasId, custCode, serviceNumber, null, ticketType,
+                        serviceType, owningRole);
+                totalCount = ticketMasMapper.searchTicketCount(
+                        createDateFrom, createDateTo, status,
+                        completeDateFrom, completeDateTo, createBy,
+                        ticketMasId, custCode, serviceNumber, null, ticketType,
+                        serviceType, owningRole);
+            } else {
+                entityList = ticketMasMapper.searchTicketList(offset, pageSize,
+                        null, null, null,
+                        null, null, null,
+                        null, null, null, serviceNumberExact, null,
+                        serviceType, null);
+                totalCount = ticketMasMapper.searchTicketCount(
+                        null, null, null,
+                        null, null, null,
+                        null, null, null, serviceNumberExact, null,
+                        serviceType, null);
+            }
+
         }
 
         return new PageImpl<>(buildTicketBeanList(entityList), pageable, totalCount);
@@ -187,8 +202,8 @@ public class SdTicketServiceImpl implements SdTicketService {
         int pageSize = pageable.getPageSize();
 
         List<SdTicketMasEntity> entityList = ticketMasMapper.searchTicketList(
-                offset, pageSize, null, null, null, null, null, createBy, null, null, null, null, null, null);
-        Integer totalCount = ticketMasMapper.searchTicketCount(null, null, null, null, null, createBy, null, null, null, null, null, null);
+                offset, pageSize, null, null, null, null, null, createBy, null, null, null, null, null, null, null);
+        Integer totalCount = ticketMasMapper.searchTicketCount(null, null, null, null, null, createBy, null, null, null, null, null, null, null);
 
         return new PageImpl<>(buildTicketBeanList(entityList), pageable, totalCount);
     }
@@ -337,7 +352,7 @@ public class SdTicketServiceImpl implements SdTicketService {
         Page<SdTicketMasBean> pageResult = searchTicketList(
                 PageRequest.of(0, 10), null, null,
                 null, null, null,
-                null, String.valueOf(ticketMasId), null,
+                null, String.valueOf(ticketMasId), null, null,
                 null, ticketTypeEnum.getTypeCode(), null, false, null);
         return pageResult.getTotalElements() > 0;
     }
@@ -352,7 +367,7 @@ public class SdTicketServiceImpl implements SdTicketService {
         Page<SdTicketMasBean> pageResult = searchTicketList(
                 PageRequest.of(0, 10), null, null,
                 null, null, null,
-                null, String.valueOf(ticketMasId), null,
+                null, String.valueOf(ticketMasId), null, null,
                 null, null, ticketServiceType, false, null);
         return pageResult.getTotalElements() > 0;
     }
