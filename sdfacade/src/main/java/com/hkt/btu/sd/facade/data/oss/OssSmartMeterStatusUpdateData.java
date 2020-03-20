@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 public class OssSmartMeterStatusUpdateData implements DataInterface {
 
-    private Integer poleId;
+    private Integer poleID;
     private Integer ticketId;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -16,12 +16,12 @@ public class OssSmartMeterStatusUpdateData implements DataInterface {
     private String action;
 
 
-    public Integer getPoleId() {
-        return poleId;
+    public Integer getPoleID() {
+        return poleID;
     }
 
-    public void setPoleId(Integer poleId) {
-        this.poleId = poleId;
+    public void setPoleID(Integer poleID) {
+        this.poleID = poleID;
     }
 
     public Integer getTicketId() {

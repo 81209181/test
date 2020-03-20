@@ -19,8 +19,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 public class OssApiFacadeImpl extends AbstractRestfulApiFacade implements OssApiFacade {
@@ -64,7 +62,7 @@ public class OssApiFacadeImpl extends AbstractRestfulApiFacade implements OssApi
 
         // prepare post body
         OssSmartMeterStatusUpdateData statusUpdateData = new OssSmartMeterStatusUpdateData();
-        statusUpdateData.setPoleId(poleId);
+        statusUpdateData.setPoleID(poleId);
         statusUpdateData.setTicketId(ticketId);
         statusUpdateData.setTime(time);
         statusUpdateData.setAction(action);
@@ -72,10 +70,10 @@ public class OssApiFacadeImpl extends AbstractRestfulApiFacade implements OssApi
 
         // check response
         Response response = postEntity(apiPath, postBodyEntity);
-        String result = response==null ? null : response.toString();
+        String result = response == null ? null : response.readEntity(String.class);
         if(!StringUtils.equalsIgnoreCase("Success", result)){
             // add to auto retry
-            LOG.warn("Response: {}", response);
+            LOG.warn("Response: {}", result);
             throw new BtuApiCallException("API call not success.");
         }
     }
