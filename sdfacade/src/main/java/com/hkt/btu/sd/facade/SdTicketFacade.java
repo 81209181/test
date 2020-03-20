@@ -27,6 +27,7 @@ public interface SdTicketFacade {
     PageData<SdTicketMasData> searchTicketList(Pageable pageable, Map<String, String> searchFormData);
     PageData<SdTicketMasData> getMyTicket(Pageable pageable);
     List<SdTicketMasData> getPendingTicketList(String serviceNo);
+    SdTicketMasData getTicketMas(Integer ticketMasId);
 
     SdTicketData getTicketInfo(Integer ticketMasId);
     List<HktCloudViewData> getHktCloudTicket(String tenantId, String username);
@@ -35,7 +36,7 @@ public interface SdTicketFacade {
     void isAllow(int ticketMasId, String action);
 
     int createQueryTicket(SdQueryTicketRequestData queryTicketRequestData);
-    void createJob4Wfm(int ticketMasId) throws InvalidInputException, ApiException;
+    void createJob4Wfm(int ticketMasId, boolean notifyOss) throws InvalidInputException, ApiException;
     String createTicket4hktCloud(HktCloudCaseData cloudCaseData);
 
     boolean increaseCallInCount(Integer ticketMasId);

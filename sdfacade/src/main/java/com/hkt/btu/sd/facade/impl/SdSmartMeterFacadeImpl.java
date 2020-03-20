@@ -1,6 +1,5 @@
 package com.hkt.btu.sd.facade.impl;
 
-import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.facade.data.BtuSimpleResponseData;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
@@ -108,7 +107,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
 
         // SD-->WFM: auto-pass to wfm
         try {
-            ticketFacade.createJob4Wfm(ticketMasId);
+            ticketFacade.createJob4Wfm(ticketMasId, false);
             LOG.info("Created job in WFM. (ticketMasId={}, poleId={})", ticketMasId, poleId);
         } catch (RuntimeException e){
             LOG.error(e.getMessage(), e);

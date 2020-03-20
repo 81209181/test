@@ -9,6 +9,7 @@ import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
 import com.hkt.btu.sd.core.service.SdTicketService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.*;
+import com.hkt.btu.sd.core.service.constant.SdCacheEnum;
 import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
 import com.hkt.btu.sd.core.service.constant.TicketTypeEnum;
 import com.hkt.btu.sd.facade.*;
@@ -43,7 +44,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class SdTicketFacadeImpl implements SdTicketFacade {
@@ -458,7 +458,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         return ticketData;
     }
 
-    private SdTicketMasData getTicketMas(Integer ticketMasId) {
+    public SdTicketMasData getTicketMas(Integer ticketMasId) {
         SdTicketMasData sdticketMasData = new SdTicketMasData();
         Optional<SdTicketMasBean> sdTicketMasBean = ticketService.getTicket(ticketMasId);
         sdTicketMasBean.ifPresent(ticketMasBean -> ticketMasDataPopulator.populate(ticketMasBean, sdticketMasData));
@@ -569,14 +569,14 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public void createJob4Wfm(int ticketMasId) throws InvalidInputException, ApiException {
+    public void createJob4Wfm(int ticketMasId, boolean notifyOss) throws InvalidInputException, ApiException {
         SdTicketData ticketInfo = getTicketInfo(ticketMasId);
         if(ticketInfo==null){
             throw new InvalidInputException("Ticket not found.");
         }
 
         // check service
-        boolean isMeter = false;
+        Integer poleId = null;
         for (SdTicketServiceData serviceData : ticketInfo.getServiceInfo()) {
             if (CollectionUtils.isEmpty(serviceData.getFaultsList())) {
                 throw new InvalidInputException("Please select a symptom.");
@@ -584,12 +584,12 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             if (SdServiceTypeBean.SERVICE_TYPE.UNKNOWN.equals(serviceData.getServiceType())) {
                 throw new InvalidInputException("Unknown service type.");
             } else if (SdServiceTypeBean.SERVICE_TYPE.SMART_METER.equals(serviceData.getServiceType())){
-                isMeter = true;
+                poleId = Integer.parseInt(serviceData.getServiceCode());
             }
         }
 
         // check contact
-        if(!isMeter) {
+        if(poleId==null) {
             if (CollectionUtils.isEmpty(ticketInfo.getContactInfo())) {
                 throw new InvalidInputException("Please input contact.");
             }
@@ -600,6 +600,11 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             updateJobIdInService(jobId, ticketMasId);
         } catch (JsonProcessingException e) {
             throw new ApiException(String.format("WFM Error: Cannot create job for ticket mas id %s.", ticketMasId));
+        }
+
+        // smart meter handling
+        if(poleId!=null && notifyOss){
+            ossApiFacade.notifyTicketStatus(poleId, ticketMasId, LocalDateTime.now(), OssTicketActionEnum.CREATE.getCode());
         }
     }
 

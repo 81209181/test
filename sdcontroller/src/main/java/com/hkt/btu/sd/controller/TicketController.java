@@ -254,7 +254,7 @@ public class TicketController {
     public ResponseEntity<?> submit(int ticketMasId) {
         try {
             ticketFacade.isAllow(ticketMasId, StringUtils.EMPTY);
-            ticketFacade.createJob4Wfm(ticketMasId);
+            ticketFacade.createJob4Wfm(ticketMasId, true);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
