@@ -4,7 +4,6 @@ import com.hkt.btu.common.facade.data.BtuSimpleResponseData;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
 import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
-import com.hkt.btu.sd.core.service.constant.TicketTypeEnum;
 import com.hkt.btu.sd.facade.OssApiFacade;
 import com.hkt.btu.sd.facade.SdSmartMeterFacade;
 import com.hkt.btu.sd.facade.SdTicketFacade;
@@ -45,20 +44,20 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
             return BtuSimpleResponseData.of(false, null, "Empty working party list.");
         }
 
-        // check active job ticket of the pole ID
+        // check active work ticket of the pole ID
         Pageable pageable = PageRequest.of(0, 1);
-        PageData<SdTicketMasData> pagedJobTicketData = searchTicketList(
+        PageData<SdTicketMasData> pagedWorkTicketData = searchTicketList(
                 pageable,
                 poleId, null, null,
-                TicketTypeEnum.JOB.getTypeCode(), TicketStatusEnum.WORKING.getStatusCode());
-        if(pagedJobTicketData.getTotalElements() > 0){
-            SdTicketMasData activeTicketMasData = pagedJobTicketData.getContent().get(0);
+                null, TicketStatusEnum.WORKING.getStatusCode());
+        if(pagedWorkTicketData.getTotalElements() > 0){
+            SdTicketMasData activeTicketMasData = pagedWorkTicketData.getContent().get(0);
             String activeTicketMasId = String.valueOf(activeTicketMasData.getTicketMasId());
 
-            LOG.info("Found existing smart meter job ticket. (ticketMasId={}, poleId={})", activeTicketMasId, poleId);
+            LOG.info("Found existing smart meter work ticket. (ticketMasId={}, poleId={})", activeTicketMasId, poleId);
             return BtuSimpleResponseData.of(true, activeTicketMasId, null);
         }
-        LOG.info("Found no existing smart meter job ticket. (poleId={})", poleId);
+        LOG.info("Found no existing smart meter work ticket. (poleId={})", poleId);
 
         // check existence of pole id
         OssSmartMeterData ossSmartMeterData = ossApiFacade.queryMeterInfo(poleId);
@@ -78,17 +77,29 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
             return BtuSimpleResponseData.of(false, null, warnMsg);
         }
 
-        // SD: create query ticket
-        SdQueryTicketRequestData queryTicketRequestData = buildTicketServiceData(poleId);
+        // check active ticket of the pole ID
         Integer ticketMasId;
-        try{
-            ticketMasId = ticketFacade.createQueryTicket(queryTicketRequestData);
-            LOG.info("Created new smart meter query ticket. (ticketMasId={}, poleId={})", ticketMasId, poleId);
-        } catch (RuntimeException e){
-            LOG.error(e.getMessage(), e);
-            String warnMsg = "Cannot create new ticket. (poleId=" + poleId + ")";
-            LOG.warn(warnMsg);
-            return BtuSimpleResponseData.of(false, null, warnMsg);
+        PageData<SdTicketMasData> pagedActiveTicketData = searchTicketList(
+                pageable,
+                poleId, null, null,
+                null, null);
+        if(pagedActiveTicketData.getTotalElements() > 0){
+            SdTicketMasData activeTicketMasData = pagedActiveTicketData.getContent().get(0);
+            ticketMasId = activeTicketMasData.getTicketMasId();
+            LOG.info("Found existing smart meter active ticket. (ticketMasId={}, poleId={})",
+                    String.valueOf(ticketMasId), poleId);
+        }else{
+            // SD: create query ticket
+            SdQueryTicketRequestData queryTicketRequestData = buildTicketServiceData(poleId);
+            try{
+                ticketMasId = ticketFacade.createQueryTicket(queryTicketRequestData);
+                LOG.info("Created new smart meter query ticket. (ticketMasId={}, poleId={})", ticketMasId, poleId);
+            } catch (RuntimeException e){
+                LOG.error(e.getMessage(), e);
+                String warnMsg = "Cannot create new ticket. (poleId=" + poleId + ")";
+                LOG.warn(warnMsg);
+                return BtuSimpleResponseData.of(false, null, warnMsg);
+            }
         }
 
         // SD: add symptom to ticket
