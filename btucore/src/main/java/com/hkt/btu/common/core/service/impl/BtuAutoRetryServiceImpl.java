@@ -71,7 +71,7 @@ public class BtuAutoRetryServiceImpl implements BtuAutoRetryService {
         String methodName = method.getName();
         AutoRetry autoRetry = method.getAnnotation(AutoRetry.class);
         int minWaitSecond = autoRetry==null ? 0 : autoRetry.minWaitSecond();
-        LocalDateTime newNextTargetTime = LocalDateTime.now().plusSeconds(minWaitSecond);
+        LocalDateTime nextTargetTime = LocalDateTime.now().plusSeconds(minWaitSecond);
         String methodParam = btuParamService.serialize(paramArray);
 
         // check outstanding retry in queue
@@ -86,9 +86,10 @@ public class BtuAutoRetryServiceImpl implements BtuAutoRetryService {
 
         BtuAutoRetryBean existingAutoRetryBean = pageBean.getTotalElements() < 1 ? null : pageBean.getContent().get(0);
         if(existingAutoRetryBean==null){
-            return createAutoRetry(beanName, methodName, methodParam, minWaitSecond, newNextTargetTime, currentUserId);
+            return createAutoRetry(beanName, methodName, methodParam, minWaitSecond, nextTargetTime, currentUserId);
         }else{
             Integer newTryCount = existingAutoRetryBean.getTryCount() + 1;
+            LocalDateTime newNextTargetTime = existingAutoRetryBean.getNextTargetTime().plusSeconds(minWaitSecond);
 
             updateAutoRetry( existingAutoRetryBean.getRetryId(),
                     null, null, null,
@@ -106,7 +107,7 @@ public class BtuAutoRetryServiceImpl implements BtuAutoRetryService {
 
         int updateCount = updateAutoRetry( retryId,
                 null, null, null,
-                BtuAutoRetryStatusEnum.CANCELLED,
+                BtuAutoRetryStatusEnum.COMPLETED,
                 null, null, null,
                 currentUserId );
 

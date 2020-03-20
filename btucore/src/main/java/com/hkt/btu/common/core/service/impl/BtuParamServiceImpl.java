@@ -84,4 +84,27 @@ public class BtuParamServiceImpl implements BtuParamService {
 
         return new Object[]{};
     }
+
+    @Override
+    public Class[] getParameterTypes(Object[] objArray) {
+        Class[] parameterTypes = new Class[]{};
+        if (objArray != null && objArray.length > 0) {
+            parameterTypes = new Class[objArray.length];
+            for (int i = 0; i < objArray.length; i++) {
+                Object o = objArray[i];
+                if (o instanceof String) {
+                    parameterTypes[i] = String.class;
+                } else if (o instanceof Integer) {
+                    parameterTypes[i] = Integer.class;
+                } else if (o instanceof Double) {
+                    parameterTypes[i] = Double.class;
+                } else if (o instanceof Boolean) {
+                    parameterTypes[i] = Boolean.class;
+                } else if (o instanceof LocalDateTime) {
+                    parameterTypes[i] = LocalDateTime.class;
+                }
+            }
+        }
+        return parameterTypes;
+    }
 }

@@ -60,9 +60,7 @@
             <if test="minWaitSecond != null">
                 MIN_WAIT_SECOND = #{minWaitSecond},
             </if>
-            <if test="nextTargetTime != null">
-                NEXT_TARGET_TIME = #{nextTargetTime},
-            </if>
+            NEXT_TARGET_TIME = #{nextTargetTime},
             MODIFYBY = #{modifyby}
         </set>
         where RETRY_ID = #{retryId}
