@@ -75,6 +75,7 @@ public class OssApiFacadeImpl extends AbstractRestfulApiFacade implements OssApi
         String result = response==null ? null : response.toString();
         if(!StringUtils.equalsIgnoreCase("Success", result)){
             // add to auto retry
+            LOG.warn("Response: {}", response);
             throw new BtuApiCallException("API call not success.");
         }
     }

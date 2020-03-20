@@ -578,13 +578,20 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         // check service
         Integer poleId = null;
         for (SdTicketServiceData serviceData : ticketInfo.getServiceInfo()) {
+            // check symptom
             if (CollectionUtils.isEmpty(serviceData.getFaultsList())) {
                 throw new InvalidInputException("Please select a symptom.");
             }
+
+            // check by service type
             if (SdServiceTypeBean.SERVICE_TYPE.UNKNOWN.equals(serviceData.getServiceType())) {
                 throw new InvalidInputException("Unknown service type.");
             } else if (SdServiceTypeBean.SERVICE_TYPE.SMART_METER.equals(serviceData.getServiceType())){
                 poleId = Integer.parseInt(serviceData.getServiceCode());
+
+                if(serviceData.getReportTime()==null){
+                    throw new InvalidInputException("Unknown report time.");
+                }
             }
         }
 
@@ -602,7 +609,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             throw new ApiException(String.format("WFM Error: Cannot create job for ticket mas id %s.", ticketMasId));
         }
 
-        // smart meter handling
+        // notify oss for hotline smart meter job ticket
         if(poleId!=null && notifyOss){
             ossApiFacade.notifyTicketStatus(poleId, ticketMasId, LocalDateTime.now(), OssTicketActionEnum.CREATE.getCode());
         }
