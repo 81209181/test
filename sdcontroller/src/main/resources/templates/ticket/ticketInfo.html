@@ -164,7 +164,7 @@
                         </div>
                         <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Report Time: </label>
-                            <input type="datetime-local" class="form-control col-md-6" name="reportTime"/>
+                            <input type="datetime-local" class="form-control col-md-6" name="reportTime" th:disabled="*{ticketStatusDesc} ne 'OPEN'"/>
                         </div>
                     </div>
                 </div>
