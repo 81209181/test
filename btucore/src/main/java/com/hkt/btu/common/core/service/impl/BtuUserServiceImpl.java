@@ -8,7 +8,6 @@ import com.hkt.btu.common.core.service.bean.BtuLdapBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.core.service.bean.BtuUserRolePathCtrlBean;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
-import com.hkt.btu.common.spring.security.web.authentication.BtuLoginSuccessHandler;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;

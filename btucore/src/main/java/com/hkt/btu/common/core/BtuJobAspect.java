@@ -3,6 +3,9 @@ package com.hkt.btu.common.core;
 import com.hkt.btu.common.core.service.*;
 import com.hkt.btu.common.core.service.bean.BtuSiteConfigBean;
 import com.hkt.btu.common.core.service.bean.BtuReportProfileBean;
+import com.hkt.btu.common.core.service.bean.BtuUserBean;
+import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
+import com.hkt.btu.common.spring.security.core.userdetails.BtuUserDetailsService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,12 +14,19 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.quartz.*;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Aspect
 @Configuration
@@ -34,6 +44,10 @@ public class BtuJobAspect {
     BtuReportService sqlReportService;
     @Resource(name = "siteConfigService")
     BtuSiteConfigService siteConfigService;
+    @Resource(name = "userService")
+    BtuUserService userService;
+    @Resource(name = "customBtuUserDetailsService")
+    BtuUserDetailsService userDetailsService;
 
 
     @Around("execution(* com.hkt.btu.*.core.job.*.executeInternal(..))")
@@ -52,6 +66,13 @@ public class BtuJobAspect {
             LOG.error(e.getMessage(), e);
             throw new SchedulerException("Invalid job context!");
         }
+
+        // setup virtual user in session
+        List<GrantedAuthority> authorities = List.of();
+        UserDetails userDetails = userDetailsService.loadVirtualUserByJobName(jobKey.getName(), authorities);
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails, "null", authorities);
+        token.setDetails(userDetails);
+        SecurityContextHolder.getContext().setAuthentication(token);
 
         /*
          *  CronTrigger:    SdSchedulerService.scheduleJob(*).createCronTrigger(*)
@@ -83,10 +104,11 @@ public class BtuJobAspect {
         // job start
         try {
             LOG.info("========== Starting Job ==========");
-            LOG.info("Job name: "       + jobKey.getName());
-            LOG.info("Group name: "     + jobKey.getGroup());
-            LOG.info("Trigger key: "   + jobExecutionContext.getTrigger().getKey());
-            LOG.info("Firing time: "    + jobExecutionContext.getFireTime());
+            LOG.info("Job name: "           + jobKey.getName());
+            LOG.info("Group name: "         + jobKey.getGroup());
+            LOG.info("Trigger key: "        + jobExecutionContext.getTrigger().getKey());
+            LOG.info("Firing time: "        + jobExecutionContext.getFireTime());
+            LOG.info("Virtual user ID: "    + userService.getCurrentUserId());
 
             Object returnObject = proceedingJoinPoint.proceed(); // executeInternal(..)
             cronJobLogService.logComplete(jobDetail);
@@ -98,6 +120,7 @@ public class BtuJobAspect {
             emailJobError(e, jobKey.getName(), jobExecutionContext.getFireTime());
             throw new SchedulerException("Cannot complete job: " + jobKey);
         } finally {
+            SecurityContextHolder.getContext().setAuthentication(null);
             LOG.info("=========== Ending Job ===========");
         }
     }

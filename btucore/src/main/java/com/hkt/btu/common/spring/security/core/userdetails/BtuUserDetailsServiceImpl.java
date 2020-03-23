@@ -1,30 +1,37 @@
 package com.hkt.btu.common.spring.security.core.userdetails;
 
 
+import com.hkt.btu.common.core.dao.entity.BtuConfigParamEntity;
+import com.hkt.btu.common.core.service.BtuConfigParamService;
+import com.hkt.btu.common.core.service.BtuSchedulerService;
 import com.hkt.btu.common.core.service.BtuSiteConfigService;
 import com.hkt.btu.common.core.service.BtuUserService;
 import com.hkt.btu.common.core.service.bean.BtuSiteConfigBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.*;
 
 
-public class BtuUserDetailsServiceImpl implements UserDetailsService {
+public class BtuUserDetailsServiceImpl implements BtuUserDetailsService {
     private static final Logger LOG = LogManager.getLogger(BtuUserDetailsServiceImpl.class);
 
     @Resource(name = "userService")
     BtuUserService userService;
-
     @Resource(name = "siteConfigService")
     BtuSiteConfigService siteConfigService;
+    @Resource(name = "configParamService")
+    BtuConfigParamService configParamService;
 
 
     @Override
@@ -62,6 +69,38 @@ public class BtuUserDetailsServiceImpl implements UserDetailsService {
                 true,
                 credentialsNonExpired,
                 accountNonLocked,
+                userBean.getAuthorities(),
+                userBean);
+    }
+
+
+    @Override
+    public UserDetails loadVirtualUserByJobName(String jobName, Collection<? extends GrantedAuthority> authorities) {
+        final int MAX_USER_ID_LENGTH = 10;
+        final BtuSiteConfigBean siteConfigBean = siteConfigService.getSiteConfigBean();
+        final String VIRTUAL_USER_ID = StringUtils.length(jobName) > MAX_USER_ID_LENGTH ?
+                StringUtils.substring(jobName, 0 , MAX_USER_ID_LENGTH) : jobName;
+        final String VIRTUAL_USER_PWD = UUID.randomUUID().toString();
+
+        // transform
+        Set<GrantedAuthority> grantedAuthSet = CollectionUtils.isEmpty(authorities) ? Set.of() : new HashSet<>(authorities);
+
+        // build virtual user
+        BtuUserBean userBean = new BtuUserBean();
+        userBean.setUserId(VIRTUAL_USER_ID);
+        userBean.setPassword(VIRTUAL_USER_PWD);
+        userBean.setUsername(jobName);
+        userBean.setEmail(siteConfigBean.getSystemSupportEmail());
+        userBean.setAuthorities(grantedAuthSet);
+
+        // create spring security user
+        return BtuUser.of(
+                userBean.getUserId(),
+                userBean.getPassword(),
+                true,
+                true,
+                true,
+                true,
                 userBean.getAuthorities(),
                 userBean);
     }

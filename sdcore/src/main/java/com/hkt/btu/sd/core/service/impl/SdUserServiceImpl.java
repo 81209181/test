@@ -63,10 +63,14 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         BtuUser btuUser = this.getCurrentUser();
         if (btuUser == null) {
             throw new UserNotFoundException("No UserBean found in security context!");
+        } else if (btuUser.getUserBean()==null) {
+            throw new UserNotFoundException("No BtuUserBean found in security context!");
         } else if (btuUser.getUserBean() instanceof SdUserBean) {
             return btuUser.getUserBean();
+        } else {
+            LOG.debug("Found BtuUserBean in security context.");
+            return btuUser.getUserBean();
         }
-        throw new UserNotFoundException("No SdUserBean found in security context!");
     }
 
 
