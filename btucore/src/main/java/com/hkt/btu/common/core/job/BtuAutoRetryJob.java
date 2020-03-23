@@ -33,9 +33,16 @@ public class BtuAutoRetryJob extends QuartzJobBean {
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) {
+        // todo SERVDESK-352: this only re-try 1 row per run...we need to re-try all status=A
+        //  loop all records with log stating the progress "Retrying n/224 API call..."
+        //  page size set to 100
         Page<BtuAutoRetryBean> RetryQueue = autoRetryService.searchRetryQueue(PageRequest.of(0, 1), null, null, null, null,
                 BtuAutoRetryStatusEnum.ACTIVE, null, null, null, null, null, null);
 
+        // todo SERVDESK-352: make a method in BtuAutoRetryServiceImpl to contain below code
+        //   void retryMethodCall(List<BtuAutoRetryBean> retryQueueList)
+        //   retry ok LOG.info
+        //   retry fail LOG.warn
         List<BtuAutoRetryBean> RetryQueueList = RetryQueue.getContent();
         if (CollectionUtils.isEmpty(RetryQueueList)) {
             return;
