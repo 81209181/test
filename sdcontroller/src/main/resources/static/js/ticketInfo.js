@@ -494,8 +494,13 @@ function getAppointmentInfo(ticketMasId) {
 }
 
 function controlSymptomUpdateUi(disable){
-    $("#symptomList").siblings().attr("disabled", disable);
-    $("#btnUpdateService").attr("disabled", disable);
+    if(ticketStatusDesc === "OPEN"){
+        $("#symptomList").siblings().attr("disabled", disable);
+        $("#btnUpdateService").attr("disabled", disable);
+    } else {
+        $("#symptomList").siblings().attr("disabled", true);
+        $("#btnUpdateService").attr("disabled", true);
+    }
 }
 
 
@@ -628,7 +633,6 @@ function meterUiCtrl(val){
         utDiv.hide();
         $('#btnMakeAppointment').attr('disabled', true);
 
-        $('input[name=reportTime]').attr('disabled', false);
         $('input[name=reportTime]').attr('pattern','[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}');
         $('input[name=reportTime]').attr('placeholder','1900-01-01T01:00');
         meterEventDiv.show();
