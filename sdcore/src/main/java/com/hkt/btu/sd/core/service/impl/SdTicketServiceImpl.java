@@ -179,15 +179,15 @@ public class SdTicketServiceImpl implements SdTicketService {
                         serviceType, owningRole);
             } else {
                 entityList = ticketMasMapper.searchTicketList(offset, pageSize,
-                        null, null, null,
-                        null, null, null,
-                        null, null, null, serviceNumberExact, null,
-                        serviceType, null);
+                        createDateFrom, createDateTo, status,
+                        completeDateFrom, completeDateTo, createBy,
+                        ticketMasId, custCode, null, serviceNumberExact, ticketType,
+                        serviceType, owningRole);
                 totalCount = ticketMasMapper.searchTicketCount(
-                        null, null, null,
-                        null, null, null,
-                        null, null, null, serviceNumberExact, null,
-                        serviceType, null);
+                        createDateFrom, createDateTo, status,
+                        completeDateFrom, completeDateTo, createBy,
+                        ticketMasId, custCode, null, serviceNumberExact, ticketType,
+                        serviceType, owningRole);
             }
 
         }
