@@ -9,6 +9,7 @@ import com.hkt.btu.common.core.service.BtuUserService;
 import com.hkt.btu.common.core.service.bean.BtuAutoRetryBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.core.service.constant.BtuAutoRetryStatusEnum;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import javax.annotation.Resource;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class BtuAutoRetryServiceImpl implements BtuAutoRetryService {
     private static final Logger LOG = LogManager.getLogger(BtuAutoRetryServiceImpl.class);
@@ -118,5 +121,32 @@ public class BtuAutoRetryServiceImpl implements BtuAutoRetryService {
             LOG.error("Cannot update retry complete. (retryId={})", retryId);
             return false;
         }
+    }
+
+    @Override
+    public void retryMethodCall(List<BtuAutoRetryBean> retryQueueList) {
+        if (CollectionUtils.isEmpty(retryQueueList)) {
+            LOG.warn("No record in retry queue.");
+            return;
+        }
+
+        retryQueueList.forEach(autoRetryBean -> {
+            LOG.info(String.format("Retrying %d/%d API call...", retryQueueList.indexOf(autoRetryBean)+1, retryQueueList.size()));
+            try {
+                // retry queue from db
+                Object bean = applicationContext.getBean(autoRetryBean.getBeanName());
+                Object[] objArray = btuParamService.deserialize(autoRetryBean.getMethodParam());
+                Class[] parameterTypes = btuParamService.getParameterTypes(objArray);
+                Method method = bean.getClass().getMethod(autoRetryBean.getMethodName(), parameterTypes);
+                method.invoke(bean, objArray);
+
+                // update retry status
+                updateRetryComplete(autoRetryBean.getRetryId());
+                LOG.info("Retry API call success.");
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                LOG.warn("Retry API call fail.");
+                LOG.error(e.getMessage(), e);
+            }
+        });
     }
 }

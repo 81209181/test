@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface BtuAutoRetryService {
 
@@ -29,5 +30,7 @@ public interface BtuAutoRetryService {
     Integer queueMethodCallForRetry(Method method, Object[] paramArray);
 
     boolean updateRetryComplete(Integer retryId);
+
+    void retryMethodCall(List<BtuAutoRetryBean> retryQueueList);
 
 }
