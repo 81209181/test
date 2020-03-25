@@ -82,7 +82,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
         PageData<SdTicketMasData> pagedActiveTicketData = searchTicketList(
                 pageable,
                 poleId, null, null,
-                null, null);
+                null, TicketStatusEnum.OPEN.getStatusCode());
         if(pagedActiveTicketData.getTotalElements() > 0){
             SdTicketMasData activeTicketMasData = pagedActiveTicketData.getContent().get(0);
             ticketMasId = activeTicketMasData.getTicketMasId();

@@ -165,31 +165,30 @@ public class SdTicketServiceImpl implements SdTicketService {
                     null, null, null,
                     ticketMasId, null, null, null, null,
                     null, null);
-        } else {
-            if (StringUtils.isNotEmpty(serviceNumber)) {
-                entityList = ticketMasMapper.searchTicketList(offset, pageSize,
-                        createDateFrom, createDateTo, status,
-                        completeDateFrom, completeDateTo, createBy,
-                        ticketMasId, custCode, serviceNumber, null, ticketType,
-                        serviceType, owningRole);
-                totalCount = ticketMasMapper.searchTicketCount(
-                        createDateFrom, createDateTo, status,
-                        completeDateFrom, completeDateTo, createBy,
-                        ticketMasId, custCode, serviceNumber, null, ticketType,
-                        serviceType, owningRole);
-            } else {
-                entityList = ticketMasMapper.searchTicketList(offset, pageSize,
-                        createDateFrom, createDateTo, status,
-                        completeDateFrom, completeDateTo, createBy,
-                        ticketMasId, custCode, null, serviceNumberExact, ticketType,
-                        serviceType, owningRole);
-                totalCount = ticketMasMapper.searchTicketCount(
-                        createDateFrom, createDateTo, status,
-                        completeDateFrom, completeDateTo, createBy,
-                        ticketMasId, custCode, null, serviceNumberExact, ticketType,
-                        serviceType, owningRole);
-            }
 
+        } else if (StringUtils.isNotEmpty(serviceNumberExact)) {
+            entityList = ticketMasMapper.searchTicketList(offset, pageSize,
+                    createDateFrom, createDateTo, status,
+                    completeDateFrom, completeDateTo, createBy,
+                    ticketMasId, custCode, null, serviceNumberExact, ticketType,
+                    serviceType, owningRole);
+            totalCount = ticketMasMapper.searchTicketCount(
+                    createDateFrom, createDateTo, status,
+                    completeDateFrom, completeDateTo, createBy,
+                    ticketMasId, custCode, null, serviceNumberExact, ticketType,
+                    serviceType, owningRole);
+
+        } else {
+            entityList = ticketMasMapper.searchTicketList(offset, pageSize,
+                    createDateFrom, createDateTo, status,
+                    completeDateFrom, completeDateTo, createBy,
+                    ticketMasId, custCode, serviceNumber, null, ticketType,
+                    serviceType, owningRole);
+            totalCount = ticketMasMapper.searchTicketCount(
+                    createDateFrom, createDateTo, status,
+                    completeDateFrom, completeDateTo, createBy,
+                    ticketMasId, custCode, serviceNumber, null, ticketType,
+                    serviceType, owningRole);
         }
 
         return new PageImpl<>(buildTicketBeanList(entityList), pageable, totalCount);
