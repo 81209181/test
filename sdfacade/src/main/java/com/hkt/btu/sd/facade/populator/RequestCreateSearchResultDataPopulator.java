@@ -199,6 +199,7 @@ public class RequestCreateSearchResultDataPopulator extends AbstractDataPopulato
                 target.setCloudCtrl(true);
                 break;
             case SdServiceTypeBean.SERVICE_TYPE.VOIP:
+            case SdServiceTypeBean.SERVICE_TYPE.FIX_NUMBER:
                 target.setVoIpCtrl(true);
                 break;
             case SdServiceTypeBean.SERVICE_TYPE.BROADBAND:

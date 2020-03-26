@@ -1,10 +1,11 @@
 package com.hkt.btu.sd.core.service.constant;
 
+import com.hkt.btu.sd.core.dao.entity.SdTicketMasEntity;
 import org.apache.commons.lang3.StringUtils;
 
 public enum TicketTypeEnum {
-    JOB("JOB", "JOB"),
-    QUERY("QUERY", "QUERY");
+    QUERY(SdTicketMasEntity.TICKET_TYPE.QUERY, "Query Ticket"),
+    JOB(SdTicketMasEntity.TICKET_TYPE.JOB, "Job Ticket");
 
     TicketTypeEnum (String typeCode, String typeDesc){
         this.typeCode = typeCode;

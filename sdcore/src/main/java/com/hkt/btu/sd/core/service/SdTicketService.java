@@ -27,8 +27,7 @@ public interface SdTicketService {
     Page<SdTicketMasBean> getMyTicket(Pageable pageable);
     SdTeamSummaryBean getTeamSummary();
     List<SdTicketMasBean> getHktCloudTicket(String tenantId, String username);
-    List<SdTicketMasBean> getTicketByServiceNo(String serviceNo, String ticketType, String excludeStatus);
-    List<SdTicketMasBean> getPendingTicketList(String serviceNo);
+    List<SdTicketMasBean> getPendingTicketList(String serviceType, String serviceNo);
     boolean isMatchTicketJobType(Integer ticketMasId, TicketTypeEnum ticketTypeEnum);
     boolean isMatchTicketServiceType(Integer ticketMasId, String ticketServiceType);
 

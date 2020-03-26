@@ -59,6 +59,7 @@ public class SdServiceTypeFacadeImpl implements SdServiceTypeFacade {
         switch (serviceType) {
             case SdServiceTypeBean.SERVICE_TYPE.BROADBAND:
             case SdServiceTypeBean.SERVICE_TYPE.VOIP:
+            case SdServiceTypeBean.SERVICE_TYPE.FIX_NUMBER:
                 return true;
             default:
                 return false;

@@ -129,8 +129,9 @@
         SELECT tm.TICKET_MAS_ID,tm.STATUS
         FROM TICKET_MAS tm
         INNER JOIN TICKET_DET td
-        ON tm.TICKET_MAS_ID = td.TICKET_MAS_ID
-        WHERE td.SERVICE_ID = #{serviceNo}
+            ON tm.TICKET_MAS_ID = td.TICKET_MAS_ID
+        WHERE td.SERVICE_TYPE_CODE = #{serviceType}
+        AND td.SERVICE_ID = #{serviceNo}
         <if test="ticketType != null">
             AND tm.TICKET_TYPE = #{ticketType}
         </if>

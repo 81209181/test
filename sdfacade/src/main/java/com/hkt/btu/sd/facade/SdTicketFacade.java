@@ -26,7 +26,7 @@ public interface SdTicketFacade {
     Optional<SdTicketMasData> getTicket(Integer ticketId);
     PageData<SdTicketMasData> searchTicketList(Pageable pageable, Map<String, String> searchFormData);
     PageData<SdTicketMasData> getMyTicket(Pageable pageable);
-    List<SdTicketMasData> getPendingTicketList(String serviceNo);
+    List<SdTicketMasData> getPendingTicketList(String serviceType, String serviceNo);
     SdTicketMasData getTicketMas(Integer ticketMasId);
 
     SdTicketData getTicketInfo(Integer ticketMasId);

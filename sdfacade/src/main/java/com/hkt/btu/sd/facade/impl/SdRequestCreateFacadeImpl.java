@@ -123,17 +123,24 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         String bsn = null;
         String bnBsn = null;
         String eCloudServiceNo = null;
-        if ( StringUtils.equals(serviceTypeCode, SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD) ||
-                StringUtils.equals(serviceTypeCode, SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD_365) ) {
-            eCloudServiceNo = serviceNumber;
-            bsn = serviceNumber; // some new enterprise cloud is in BSE
-        } else if ( StringUtils.equals(serviceTypeCode, SdServiceTypeBean.SERVICE_TYPE.BROADBAND )){
-            bsn = serviceNumber;
-            bnBsn = serviceNumber;
-        } else if ( StringUtils.equals(serviceTypeCode, SdServiceTypeBean.SERVICE_TYPE.VOIP) ){
-            bsn = serviceNumber;
-            bnBsn = norarsApiFacade.getBsnByDn(serviceNumber);
-            resultData.setRelatedBsn(bnBsn);
+        switch (serviceTypeCode) {
+            case SdServiceTypeBean.SERVICE_TYPE.BROADBAND:
+                bsn = serviceNumber;
+                bnBsn = serviceNumber;
+                break;
+            case SdServiceTypeBean.SERVICE_TYPE.VOIP:
+            case SdServiceTypeBean.SERVICE_TYPE.FIX_NUMBER:
+                bsn = serviceNumber;
+                bnBsn = norarsApiFacade.getBsnByDn(serviceNumber);
+                resultData.setRelatedBsn(bnBsn);
+                break;
+            case SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD:
+            case SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD_365:
+                eCloudServiceNo = serviceNumber;
+                bsn = serviceNumber; // some new enterprise cloud is in BSE
+                break;
+            default:
+                break;
         }
 
         // get data with e-cloud service number

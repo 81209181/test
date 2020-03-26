@@ -331,14 +331,28 @@ public class SdTicketServiceImpl implements SdTicketService {
     }
 
     @Override
-    public List<SdTicketMasBean> getTicketByServiceNo(String serviceNo, String ticketType, String excludeStatus) {
-        List<SdTicketMasEntity> entityList = ticketMasMapper.getTicketByServiceNo(serviceNo, ticketType, excludeStatus);
-        return CollectionUtils.isEmpty(entityList) ? null : buildTicketBeanList(entityList);
-    }
+    public List<SdTicketMasBean> getPendingTicketList(String serviceType, String serviceNo) {
+        if(StringUtils.isEmpty(serviceType)){
+            LOG.warn("Cannot get pending ticket without service type.");
+            return null;
+        }
 
-    @Override
-    public List<SdTicketMasBean> getPendingTicketList(String serviceNo) {
-        return getTicketByServiceNo(serviceNo, SdTicketMasEntity.TICKET_TYPE.JOB, SdTicketMasEntity.STATUS.COMPLETE);
+        List<SdTicketMasEntity> entityList;
+        switch (serviceType){
+            case SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD:
+            case SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD_365:
+            case SdServiceTypeBean.SERVICE_TYPE.VOIP:
+            case SdServiceTypeBean.SERVICE_TYPE.FIX_NUMBER:
+            case SdServiceTypeBean.SERVICE_TYPE.BROADBAND:
+                entityList = ticketMasMapper.getTicketByServiceNo(serviceType, serviceNo, TicketTypeEnum.JOB.getTypeCode(), TicketStatusEnum.COMPLETE.getStatusCode());
+                break;
+            case SdServiceTypeBean.SERVICE_TYPE.SMART_METER:
+            default:
+                entityList = ticketMasMapper.getTicketByServiceNo(serviceType, serviceNo, null, TicketStatusEnum.COMPLETE.getStatusCode());
+                break;
+        }
+
+        return CollectionUtils.isEmpty(entityList) ? null : buildTicketBeanList(entityList);
     }
 
     @Override

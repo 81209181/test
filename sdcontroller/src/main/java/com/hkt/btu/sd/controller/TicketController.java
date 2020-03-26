@@ -54,8 +54,6 @@ public class TicketController {
 
     @Resource(name = "norarsApiFacade")
     NorarsApiFacade norarsApiFacade;
-    @Resource(name = "cloudApiFacade")
-    CloudApiFacade cloudApiFacade;
     @Resource(name = "ossApiFacade")
     OssApiFacade ossApiFacade;
 
@@ -69,21 +67,27 @@ public class TicketController {
 
     @PostMapping("search-service")
     public ResponseEntity<?> searchService(String searchKey, String searchValue, HttpServletRequest request) {
-        // check pending ticket
-        List<SdTicketMasData> pendingTicketDataList = ticketFacade.getPendingTicketList(searchValue);
-
         // search service
         SdRequestCreateSearchResultsData resultsData = requestCreateFacade.searchProductList(searchKey, searchValue);
-        if (StringUtils.isNotEmpty(resultsData.getErrorMsg())) {
+        if (resultsData==null){
+            return ResponseEntity.badRequest().body("Cannot get search service response.");
+        } else if (StringUtils.isNotEmpty(resultsData.getErrorMsg())) {
             return ResponseEntity.badRequest().body(resultsData.getErrorMsg());
-        } else {
+        }
+
+        // auto check pending ticket for single result
+        List<SdRequestCreateSearchResultData> searchResultDataList = resultsData.getList();
+        if( CollectionUtils.size(searchResultDataList)==1 ){
+            SdRequestCreateSearchResultData searchResultData = searchResultDataList.get(0);
+            List<SdTicketMasData> pendingTicketDataList = ticketFacade.getPendingTicketList(searchResultData.getServiceType(), searchResultData.getServiceNo());
             if (CollectionUtils.isNotEmpty(pendingTicketDataList)) {
                 String warningMsg = String.format("The service number already exists in Ticket - <a href='%s/ticket?ticketMasId=%d'>%d</a>",
                         request.getContextPath(), pendingTicketDataList.get(0).getTicketMasId(), pendingTicketDataList.get(0).getTicketMasId());
                 resultsData.setWarningMsg(warningMsg);
             }
-            return ResponseEntity.ok(resultsData);
         }
+
+        return ResponseEntity.ok(resultsData);
     }
 
     @PostMapping("service-identity/checkPendingOrder")
@@ -111,7 +115,7 @@ public class TicketController {
     @PostMapping("service-identity/createQueryTicket")
     public ResponseEntity<?> createQueryTicket(SdQueryTicketRequestData queryTicketRequestData) {
         // check pending ticket of same service number
-        List<SdTicketMasData> dataList = ticketFacade.getPendingTicketList(queryTicketRequestData.getServiceNo());
+        List<SdTicketMasData> dataList = ticketFacade.getPendingTicketList(queryTicketRequestData.getServiceType(), queryTicketRequestData.getServiceNo());
         if (CollectionUtils.isNotEmpty(dataList)) {
             return ResponseEntity.ok(SdResponseTicketData.of(false, dataList));
         }

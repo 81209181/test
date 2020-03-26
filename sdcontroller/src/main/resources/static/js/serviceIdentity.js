@@ -278,7 +278,7 @@ function createTicket(){
         } else {
             var responseError = "The service number already exists in Ticket -";
             let ticketMasIds = res.data;
-            $.each(ticketMasIds,function(index,j){
+            $.each(ticketMasIds, function(index, j){
                 if (index > 0) {
                     responseError += "/ ";
                 }

@@ -271,6 +271,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                         serviceData.setCloudCtrl(true);
                         break;
                     case SdServiceTypeBean.SERVICE_TYPE.VOIP:
+                    case SdServiceTypeBean.SERVICE_TYPE.FIX_NUMBER:
                         serviceData.setVoIpCtrl(true);
                         break;
                     case SdServiceTypeBean.SERVICE_TYPE.BROADBAND:
@@ -466,8 +467,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public List<SdTicketMasData> getPendingTicketList(String serviceNo) {
-        List<SdTicketMasBean> beanList = ticketService.getPendingTicketList(serviceNo);
+    public List<SdTicketMasData> getPendingTicketList(String serviceType, String serviceNo) {
+        List<SdTicketMasBean> beanList = ticketService.getPendingTicketList(serviceType, serviceNo);
         return buildTicketDataList(beanList);
     }
 
@@ -590,7 +591,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                 poleId = Integer.parseInt(serviceData.getServiceCode());
 
                 if(serviceData.getReportTime()==null){
-                    throw new InvalidInputException("Unknown report time.");
+                    throw new InvalidInputException("Please input the report time.");
                 }
             }
         }
