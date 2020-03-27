@@ -1,11 +1,10 @@
-package com.hkt.btu.sd.core.service.populator;
+package com.hkt.btu.common.core.service.populator;
 
 import com.hkt.btu.common.core.dao.entity.BtuAutoRetryEntity;
 import com.hkt.btu.common.core.service.bean.BtuAutoRetryBean;
 import com.hkt.btu.common.core.service.constant.BtuAutoRetryStatusEnum;
-import com.hkt.btu.common.core.service.populator.AbstractBeanPopulator;
 
-public class SdAutoRetryBeanPopulator extends AbstractBeanPopulator<BtuAutoRetryBean> {
+public class BtuAutoRetryBeanPopulator extends AbstractBeanPopulator<BtuAutoRetryBean> {
 
     public void populate(BtuAutoRetryEntity source, BtuAutoRetryBean target) {
         target.setRetryId(source.getRetryId());

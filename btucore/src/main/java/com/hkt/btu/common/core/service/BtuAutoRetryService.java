@@ -1,5 +1,6 @@
 package com.hkt.btu.common.core.service;
 
+import com.hkt.btu.common.core.dao.entity.BtuAutoRetryEntity;
 import com.hkt.btu.common.core.service.bean.BtuAutoRetryBean;
 import com.hkt.btu.common.core.service.constant.BtuAutoRetryStatusEnum;
 import org.springframework.data.domain.Page;
@@ -12,13 +13,11 @@ import java.util.List;
 public interface BtuAutoRetryService {
 
     Integer createAutoRetry(String clazz, String methodName, String methodParam, int minWaitSecond, LocalDateTime nextTargetTime, String createby);
-
     Integer updateAutoRetry(Integer retryId,
                             String beanName, String methodName, String methodParam,
                             BtuAutoRetryStatusEnum statusEnum,
                             Integer tryCount, Integer minWaitSecond, LocalDateTime nextTargetTime,
                             String modifyby);
-
     Page<BtuAutoRetryBean> searchRetryQueue(
             Pageable pageable, Integer retryId,
             String beanName, String methodName, String methodParam,
@@ -27,10 +26,10 @@ public interface BtuAutoRetryService {
             Integer minWaitSecondFrom, Integer minWaitSecondTo,
             LocalDateTime nextTargetTimeFrom, LocalDateTime nextTargetTimeTo );
 
+
     Integer queueMethodCallForRetry(Method method, Object[] paramArray);
-
-    boolean updateRetryComplete(Integer retryId);
-
+    void updateRetryComplete(Integer retryId);
     void retryMethodCall(List<BtuAutoRetryBean> retryQueueList);
 
+    BtuAutoRetryBean materialize(BtuAutoRetryBean bean) throws NoSuchMethodException;
 }

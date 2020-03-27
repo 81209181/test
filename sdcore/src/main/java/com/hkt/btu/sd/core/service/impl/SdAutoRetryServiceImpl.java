@@ -4,9 +4,9 @@ import com.hkt.btu.common.core.dao.entity.BtuAutoRetryEntity;
 import com.hkt.btu.common.core.service.bean.BtuAutoRetryBean;
 import com.hkt.btu.common.core.service.constant.BtuAutoRetryStatusEnum;
 import com.hkt.btu.common.core.service.impl.BtuAutoRetryServiceImpl;
+import com.hkt.btu.common.core.service.populator.BtuAutoRetryBeanPopulator;
 import com.hkt.btu.sd.core.dao.mapper.SdAutoRetryMapper;
 import com.hkt.btu.sd.core.service.SdAutoRetryService;
-import com.hkt.btu.sd.core.service.populator.SdAutoRetryBeanPopulator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
@@ -25,7 +25,8 @@ public class SdAutoRetryServiceImpl extends BtuAutoRetryServiceImpl implements S
     SdAutoRetryMapper sdAutoRetryMapper;
 
     @Resource(name = "autoRetryBeanPopulator")
-    SdAutoRetryBeanPopulator autoRetryBeanPopulator;
+    BtuAutoRetryBeanPopulator autoRetryBeanPopulator;
+
 
     public Integer createAutoRetry(String beanName, String methodName, String methodParam,
                                    int minWaitSecond, LocalDateTime nextTargetTime, String createby){

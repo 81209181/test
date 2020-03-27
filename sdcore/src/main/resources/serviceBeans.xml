@@ -185,6 +185,4 @@
     <alias name="utCallPageBeanPopulator" alias="callPageBeanPopulator"/>
     <bean id="utCallPageBeanPopulator" class="com.hkt.btu.sd.core.service.populator.UTCallPageBeanPopulator"/>
 
-    <alias name="sdAutoRetryBeanPopulator" alias="autoRetryBeanPopulator"/>
-    <bean id="sdAutoRetryBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdAutoRetryBeanPopulator"/>
 </beans>

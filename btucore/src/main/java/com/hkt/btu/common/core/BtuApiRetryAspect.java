@@ -34,10 +34,10 @@ public class BtuApiRetryAspect {
     @Around("execution(public void com.hkt.btu.*.facade.impl.*ApiFacadeImpl.*(..)) && @annotation(com.hkt.btu.common.core.annotation.AutoRetry)")
     public void aroundApiCall(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
 
-        try{
+        try {
             proceedingJoinPoint.proceed();
 
-        } catch (Exception e){
+        } catch (Exception e) {
             LOG.error(e.getMessage(), e);
 
             // gather caller info

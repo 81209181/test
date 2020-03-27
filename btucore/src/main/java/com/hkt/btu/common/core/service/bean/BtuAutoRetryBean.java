@@ -18,9 +18,10 @@ public class BtuAutoRetryBean extends BaseBean {
     private String methodName;
     private String methodParam;
 
-    private Class clazz;
+    private Object bean;
     private Method method;
     private Object [] paramArray;
+    private Class<?>[] paramTypeArray;
 
     private String status;
     private Integer tryCount;
@@ -60,12 +61,12 @@ public class BtuAutoRetryBean extends BaseBean {
         this.methodParam = methodParam;
     }
 
-    public Class getClazz() {
-        return clazz;
+    public Object getBean() {
+        return bean;
     }
 
-    public void setClazz(Class clazz) {
-        this.clazz = clazz;
+    public void setBean(Object bean) {
+        this.bean = bean;
     }
 
     public Method getMethod() {
@@ -82,6 +83,14 @@ public class BtuAutoRetryBean extends BaseBean {
 
     public void setParamArray(Object[] paramArray) {
         this.paramArray = paramArray;
+    }
+
+    public Class<?>[] getParamTypeArray() {
+        return paramTypeArray;
+    }
+
+    public void setParamTypeArray(Class<?>[] paramTypeArray) {
+        this.paramTypeArray = paramTypeArray;
     }
 
     public String getStatus() {

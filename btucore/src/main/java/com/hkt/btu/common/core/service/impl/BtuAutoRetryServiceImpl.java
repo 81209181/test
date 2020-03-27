@@ -1,6 +1,7 @@
 package com.hkt.btu.common.core.service.impl;
 
 import com.hkt.btu.common.core.annotation.AutoRetry;
+import com.hkt.btu.common.core.dao.entity.BtuAutoRetryEntity;
 import com.hkt.btu.common.core.dao.entity.BtuUserEntity;
 import com.hkt.btu.common.core.exception.BtuMissingImplException;
 import com.hkt.btu.common.core.service.BtuAutoRetryService;
@@ -9,6 +10,7 @@ import com.hkt.btu.common.core.service.BtuUserService;
 import com.hkt.btu.common.core.service.bean.BtuAutoRetryBean;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.core.service.constant.BtuAutoRetryStatusEnum;
+import com.hkt.btu.common.core.service.populator.BtuAutoRetryBeanPopulator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -69,7 +71,7 @@ public class BtuAutoRetryServiceImpl implements BtuAutoRetryService {
         String currentUserId = currentUser==null ? BtuUserEntity.SYSTEM.USER_ID : currentUser.getUserId();
 
         // serialize invoking class, method, param
-        Class clazz = method.getDeclaringClass();
+        Class<?> clazz = method.getDeclaringClass();
         String beanName = applicationContext.getBeanNamesForType(clazz)[0];
         String methodName = method.getName();
         AutoRetry autoRetry = method.getAnnotation(AutoRetry.class);
@@ -92,19 +94,19 @@ public class BtuAutoRetryServiceImpl implements BtuAutoRetryService {
             return createAutoRetry(beanName, methodName, methodParam, minWaitSecond, nextTargetTime, currentUserId);
         }else{
             Integer newTryCount = existingAutoRetryBean.getTryCount() + 1;
-            LocalDateTime newNextTargetTime = existingAutoRetryBean.getNextTargetTime().plusSeconds(minWaitSecond);
+//            LocalDateTime newNextTargetTime = existingAutoRetryBean.getNextTargetTime().plusSeconds(minWaitSecond);
 
             updateAutoRetry( existingAutoRetryBean.getRetryId(),
                     null, null, null,
                     null,
-                    newTryCount, minWaitSecond, newNextTargetTime,
+                    newTryCount, minWaitSecond, null,
                     currentUserId );
             return existingAutoRetryBean.getRetryId();
         }
     }
 
     @Override
-    public boolean updateRetryComplete(Integer retryId) {
+    public void updateRetryComplete(Integer retryId) {
         BtuUserBean currentUser = userService.getCurrentUserBean();
         String currentUserId = currentUser==null ? BtuUserEntity.SYSTEM.USER_ID : currentUser.getUserId();
 
@@ -116,10 +118,8 @@ public class BtuAutoRetryServiceImpl implements BtuAutoRetryService {
 
         if(updateCount>0){
             LOG.info("Retry completed. (retryId={})", retryId);
-            return true;
         }else{
             LOG.error("Cannot update retry complete. (retryId={})", retryId);
-            return false;
         }
     }
 
@@ -130,23 +130,58 @@ public class BtuAutoRetryServiceImpl implements BtuAutoRetryService {
             return;
         }
 
-        retryQueueList.forEach(autoRetryBean -> {
-            LOG.info(String.format("Retrying %d/%d API call...", retryQueueList.indexOf(autoRetryBean)+1, retryQueueList.size()));
+        LOG.info("Retrying {} method(s)...", retryQueueList.size());
+        int succeedCount = 0;
+        int failCount = 0;
+        for(int i=0; i<retryQueueList.size(); i++){
+            BtuAutoRetryBean autoRetryBean = retryQueueList.get(i);
+            String beanName = autoRetryBean.getBeanName();
+            String methodName = autoRetryBean.getMethodName();
+
+
             try {
-                // retry queue from db
-                Object bean = applicationContext.getBean(autoRetryBean.getBeanName());
-                Object[] objArray = btuParamService.deserialize(autoRetryBean.getMethodParam());
-                Class[] parameterTypes = btuParamService.getParameterTypes(objArray);
-                Method method = bean.getClass().getMethod(autoRetryBean.getMethodName(), parameterTypes);
-                method.invoke(bean, objArray);
+                // materialize method invoke class/method/param
+                materialize(autoRetryBean);
+
+                // retry
+                Method method = autoRetryBean.getMethod();
+                method.invoke(autoRetryBean.getBean(), autoRetryBean.getParamArray());
+                LOG.info("{}: Retried method: {}, {}", i+1, beanName, methodName);
+                succeedCount++;
 
                 // update retry status
                 updateRetryComplete(autoRetryBean.getRetryId());
-                LOG.info("Retry API call success.");
+
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                LOG.warn("Retry API call fail.");
+                LOG.warn("{}: Failed to invoke method: {}, {}", i+1, beanName, methodName);
+                LOG.warn("Fail to retry method call.");
+                LOG.warn(e.getMessage(), e);
+                failCount++;
+            } catch (RuntimeException e){
+                LOG.error("{}: Failed to retry method: {}, {}", i+1, beanName, methodName);
                 LOG.error(e.getMessage(), e);
+                failCount++;
             }
-        });
+        }
+
+        LOG.info("Succeeded: {}/{}", succeedCount, retryQueueList.size());
+        LOG.info("Failed: {}/{}", failCount, retryQueueList.size());
+    }
+
+    @Override
+    public BtuAutoRetryBean materialize(BtuAutoRetryBean autoRetryBean) throws NoSuchMethodException {
+        // deserialize param from json string
+        Object [] paramArray = btuParamService.deserialize(autoRetryBean.getMethodParam());
+        Class<?>[] parameterTypes = btuParamService.getParameterTypes(paramArray);
+
+        // find method
+        Object bean = applicationContext.getBean(autoRetryBean.getBeanName());
+        Method method = bean.getClass().getMethod(autoRetryBean.getMethodName(), parameterTypes);
+
+        autoRetryBean.setParamArray(paramArray);
+        autoRetryBean.setParamTypeArray(parameterTypes);
+        autoRetryBean.setBean(bean);
+        autoRetryBean.setMethod(method);
+        return autoRetryBean;
     }
 }

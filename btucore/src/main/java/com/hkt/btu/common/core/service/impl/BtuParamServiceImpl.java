@@ -61,33 +61,32 @@ public class BtuParamServiceImpl implements BtuParamService {
     @Override
     public Object[] deserialize(String paramListJson) {
         Type type = new TypeToken<List<BtuParamBean>>() {}.getType();
-        List<BtuParamBean> paramList = JsonUtils.string2Obj(paramListJson, type);
-
-        if(CollectionUtils.isNotEmpty(paramList)){
-            Object[] objArray = new Object[paramList.size()];
-            paramList.forEach(param -> {
-                int i = paramList.indexOf(param);
-                if (param.getParamType().equals(BtuConfigParamTypeEnum.STRING)) {
-                    objArray[i] = param.getValue();
-                } else if (param.getParamType().equals(BtuConfigParamTypeEnum.INTEGER)) {
-                    objArray[i] = Integer.parseInt(param.getValue());
-                } else if (param.getParamType().equals(BtuConfigParamTypeEnum.DOUBLE)) {
-                    objArray[i] = Double.parseDouble(param.getValue());
-                } else if (param.getParamType().equals(BtuConfigParamTypeEnum.BOOLEAN)) {
-                    objArray[i] = BooleanUtils.toBoolean(param.getValue());
-                } else if (param.getParamType().equals(BtuConfigParamTypeEnum.LOCAL_DATE_TIME)) {
-                    objArray[i] = LocalDateTime.parse(param.getValue());
-                }
-            });
-            return objArray;
+        List<BtuParamBean> paramBeanList = JsonUtils.string2Obj(paramListJson, type);
+        if(CollectionUtils.isEmpty(paramBeanList)){
+            return new Object[]{};
         }
 
-        return new Object[]{};
+        Object[] objArray = new Object[paramBeanList.size()];
+        paramBeanList.forEach(param -> {
+            int i = paramBeanList.indexOf(param);
+            if (param.getParamType().equals(BtuConfigParamTypeEnum.STRING)) {
+                objArray[i] = param.getValue();
+            } else if (param.getParamType().equals(BtuConfigParamTypeEnum.INTEGER)) {
+                objArray[i] = Integer.parseInt(param.getValue());
+            } else if (param.getParamType().equals(BtuConfigParamTypeEnum.DOUBLE)) {
+                objArray[i] = Double.parseDouble(param.getValue());
+            } else if (param.getParamType().equals(BtuConfigParamTypeEnum.BOOLEAN)) {
+                objArray[i] = BooleanUtils.toBoolean(param.getValue());
+            } else if (param.getParamType().equals(BtuConfigParamTypeEnum.LOCAL_DATE_TIME)) {
+                objArray[i] = LocalDateTime.parse(param.getValue());
+            }
+        });
+        return objArray;
     }
 
     @Override
-    public Class[] getParameterTypes(Object[] objArray) {
-        Class[] parameterTypes = new Class[]{};
+    public Class<?>[] getParameterTypes(Object[] objArray) {
+        Class<?>[] parameterTypes = new Class[]{};
         if (objArray != null && objArray.length > 0) {
             parameterTypes = new Class[objArray.length];
             for (int i = 0; i < objArray.length; i++) {
