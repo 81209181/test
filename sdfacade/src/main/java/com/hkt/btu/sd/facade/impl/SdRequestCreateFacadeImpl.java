@@ -123,6 +123,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         String bsn = null;
         String bnBsn = null;
         String eCloudServiceNo = null;
+        String poleId = null;
         switch (serviceTypeCode) {
             case SdServiceTypeBean.SERVICE_TYPE.BROADBAND:
                 bsn = serviceNumber;
@@ -139,12 +140,15 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
                 eCloudServiceNo = serviceNumber;
                 bsn = serviceNumber; // some new enterprise cloud is in BSE
                 break;
+            case SdServiceTypeBean.SERVICE_TYPE.SMART_METER:
+                poleId = serviceNumber;
+                break;
             default:
                 break;
         }
 
         // get data with e-cloud service number
-        if (eCloudServiceNo!=null){
+        if (eCloudServiceNo != null) {
             ItsmSearchProfileResponseData itsmSearchProfileResponseData = itsmApiFacade.searchProfileByServiceNo(eCloudServiceNo);
             List<ItsmProfileData> itsmProfileDataList = itsmSearchProfileResponseData == null ? null : itsmSearchProfileResponseData.getList();
             if (CollectionUtils.isNotEmpty(itsmProfileDataList)) {
@@ -154,7 +158,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         }
 
         // get data with bsn
-        if ( bsn!=null ) {
+        if (bsn != null) {
             BesSubscriberData besSubscriberData = besApiFacade.querySubscriberByServiceNumber(bsn);
             if (!Objects.isNull(besSubscriberData)) {
                 BesSubscriberInfoResourceData besSubscriberInfoResourceData = besSubscriberData.getSubscriberInfos().get(0);
@@ -170,8 +174,14 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         }
 
         // get data with bn bsn
-        if ( bnBsn!=null ) {
+        if (bnBsn != null) {
             fillBnData(bnBsn, resultData);
+        }
+
+        // get data with poleId
+        if (poleId != null) {
+            SdRequestCreateSearchResultsData resultsData = findData4SmartMeter(poleId);
+            resultData = CollectionUtils.isEmpty(resultsData.getList()) ? resultData : resultsData.getList().get(0);
         }
 
         SdTicketServiceInfoData serviceInfoData = new SdTicketServiceInfoData();
@@ -251,11 +261,11 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
 
     private SdRequestCreateSearchResultsData findData4Tenant(String tenantId) {
         ItsmSearchProfileResponseData searchProfileResponseData = itsmApiFacade.searchProfileByTenantId(tenantId);
-        List<ItsmProfileData> profileDataList = searchProfileResponseData==null ? null : searchProfileResponseData.getList();
+        List<ItsmProfileData> profileDataList = searchProfileResponseData == null ? null : searchProfileResponseData.getList();
 
         List<SdRequestCreateSearchResultData> resultDataList = new ArrayList<>();
         SdRequestCreateSearchResultData resultData;
-        if(CollectionUtils.isNotEmpty(profileDataList)){
+        if (CollectionUtils.isNotEmpty(profileDataList)) {
             for (ItsmProfileData itsmProfileData : profileDataList) {
                 if (StringUtils.isNotEmpty(itsmProfileData.getCustCode())) {
                     if (!itsmProfileData.getServiceNo().equals(tenantId)) {
