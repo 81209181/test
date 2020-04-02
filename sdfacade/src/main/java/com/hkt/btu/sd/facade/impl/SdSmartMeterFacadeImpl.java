@@ -3,10 +3,12 @@ package com.hkt.btu.sd.facade.impl;
 import com.hkt.btu.common.facade.data.BtuSimpleResponseData;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
+import com.hkt.btu.sd.core.service.bean.SdTicketServiceBean;
 import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
 import com.hkt.btu.sd.facade.OssApiFacade;
 import com.hkt.btu.sd.facade.SdSmartMeterFacade;
 import com.hkt.btu.sd.facade.SdTicketFacade;
+import com.hkt.btu.sd.facade.constant.OssTicketActionEnum;
 import com.hkt.btu.sd.facade.constant.OssWorkingPartyEnum;
 import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
 import com.hkt.btu.sd.facade.data.*;
@@ -128,6 +130,33 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
         }
 
         return BtuSimpleResponseData.of(true, String.valueOf(ticketMasId), null);
+    }
+
+    @Override
+    public void notifyCloseMeterTicket(Integer ticketMasId) {
+        // get close date
+        SdTicketMasData ticketMasData = ticketFacade.getTicketMas(ticketMasId);
+        LocalDateTime completeDate = ticketMasData==null ? LocalDateTime.now() : ticketMasData.getCompleteDate();
+
+        // get pole id
+        List<SdTicketServiceData> serviceInfo = ticketFacade.getServiceInfo(ticketMasId);
+        if (CollectionUtils.isEmpty(serviceInfo)) {
+            LOG.warn("Cannot notify OSS without service details. (ticketMasId={})", ticketMasId);
+            return;
+        }
+
+        // notify OSS per pole
+        for(SdTicketServiceData serviceData : serviceInfo) {
+            String poleIdStr = serviceData.getServiceCode();
+            Integer poleId = StringUtils.isEmpty(poleIdStr) || StringUtils.startsWith(poleIdStr, SdTicketServiceBean.DUMMY_POLE_ID_PREFIX) ?
+                    null : Integer.parseInt(poleIdStr);
+            if (poleId == null) {
+                LOG.warn("Cannot notify OSS with pole ID={}.", poleIdStr);
+                continue;
+            }
+
+            ossApiFacade.notifyTicketStatus(poleId, ticketMasId, completeDate, OssTicketActionEnum.CLOSE.getCode());
+        }
     }
 
     @Override
