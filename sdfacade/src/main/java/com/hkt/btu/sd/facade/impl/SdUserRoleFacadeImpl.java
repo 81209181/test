@@ -125,8 +125,10 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
             return "Empty role desc.";
         } else if (StringUtils.isEmpty(status)) {
             return "Empty status.";
-        } else if (StringUtils.isEmpty(abstractFlag)){
+        } else if (StringUtils.isEmpty(abstractFlag)) {
             return "Empty abstract flag.";
+        } else if (CollectionUtils.isEmpty(serviceTypeList)) {
+            return "Empty service type.";
         }
 
         boolean isAbstract = BooleanUtils.toBoolean(abstractFlag);

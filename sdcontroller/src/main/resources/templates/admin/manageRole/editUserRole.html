@@ -45,8 +45,11 @@
                 <label>Service Type</label>
                 <div class="d-block">
                     <div class="form-check form-check-inline" th:each="item : ${allServiceType}">
-                        <input type="checkbox" class="form-check-input" th:value="${item.serviceTypeCode}" name="serviceTypeList"
-                               th:id="${item.serviceTypeCode}" th:checked="${existServiceTypeList.contains(item.serviceTypeCode)}">
+                        <input type="checkbox" class="form-check-input" th:if="${!#lists.isEmpty(existServiceTypeList)}"
+                               th:value="${item.serviceTypeCode}" name="serviceTypeList" th:id="${item.serviceTypeCode}"
+                               th:checked="${existServiceTypeList.contains(item.serviceTypeCode)}">
+                        <input type="checkbox" class="form-check-input" th:if="${#lists.isEmpty(existServiceTypeList)}"
+                               th:value="${item.serviceTypeCode}" name="serviceTypeList" th:id="${item.serviceTypeCode}">
                         <label th:for="${item.serviceTypeCode}" class="form-check-label" th:text="${item.serviceTypeName}"></label>
                     </div>
                 </div>
