@@ -60,6 +60,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     SdServiceTypeFacade serviceTypeFacade;
     @Resource(name = "ossApiFacade")
     OssApiFacade ossApiFacade;
+    @Resource(name = "smartMeterFacade")
+    SdSmartMeterFacade smartMeterFacade;
 
     @Resource(name = "ticketMasDataPopulator")
     SdTicketMasDataPopulator ticketMasDataPopulator;
@@ -91,7 +93,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         if (ServiceSearchEnum.POLE_ID.getKey().equalsIgnoreCase(queryTicketRequestData.getSearchKey())) {
             if (StringUtils.isEmpty(queryTicketRequestData.getSearchValue())) {
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-                String searchValue = "D"+LocalDateTime.now().format(dtf);
+                String searchValue = SdTicketServiceBean.DUMMY_POLE_ID_PREFIX + LocalDateTime.now().format(dtf);
                 queryTicketRequestData.setSearchValue(searchValue);
                 queryTicketRequestData.setServiceNo(searchValue);
                 queryTicketRequestData.setServiceType(SdServiceTypeBean.SERVICE_TYPE.SMART_METER);
@@ -485,11 +487,14 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         try {
             ticketService.closeTicket(ticketMasId, reasonType, reasonContent, systemId, userId, false);
             LOG.info("Closed (by API) ticket in servicedesk. (ticketMasId: " + ticketMasId + ")");
-            return null;
         } catch (InvalidInputException e) {
             LOG.warn(e.getMessage());
             return e.getMessage();
         }
+
+        // notify oss to close ticket
+        smartMeterFacade.notifyCloseMeterTicket(ticketMasId);
+        return null;
     }
 
     @Override
@@ -505,18 +510,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         }
 
         // notify oss to close ticket
-        SdTicketMasData ticketMasData = getTicketMas(ticketMasId);
-        List<SdTicketServiceData> serviceInfo = getServiceInfo(ticketMasId);
-        if (CollectionUtils.isNotEmpty(serviceInfo)) {
-            String poleIdStr = serviceInfo.get(0).getServiceCode();
-            if (StringUtils.isNotEmpty(poleIdStr) && !StringUtils.startsWith(poleIdStr, "D")) {
-                Integer poleId = Integer.parseInt(poleIdStr);
-                LocalDateTime completeDate = ticketMasData.getCompleteDate();
-                if(completeDate!=null){
-                    ossApiFacade.notifyTicketStatus(poleId, ticketMasId, completeDate, OssTicketActionEnum.CLOSE.getCode());
-                }
-            }
-        }
+        smartMeterFacade.notifyCloseMeterTicket(ticketMasId);
 
         // notify wfm to close ticket
         boolean isClosedInWfm = wfmApiFacade.closeTicket(ticketMasId);

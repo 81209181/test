@@ -309,7 +309,6 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
 
         if (ossSmartMeterData != null) {
             requestCreateSearchResultDataPopulator.populateFromOssSmartMeterData(ossSmartMeterData, resultData);
-//            fillPendingOrderDataByBsn(searchValue, resultData);
             resultDataList.add(resultData);
         }
 

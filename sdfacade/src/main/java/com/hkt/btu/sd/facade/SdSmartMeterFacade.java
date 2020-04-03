@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface SdSmartMeterFacade {
     BtuSimpleResponseData createTicket(Integer poleId, LocalDateTime reportTime, List<String> workingPartyList);
+    void notifyCloseMeterTicket(Integer ticketMasId);
 
     SdTicketData getTicketInfo(Integer ticketMasId);
     PageData<SdTicketMasData> searchTicketList(

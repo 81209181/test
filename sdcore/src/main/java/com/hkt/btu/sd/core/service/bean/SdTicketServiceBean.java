@@ -7,6 +7,8 @@ import java.util.List;
 
 public class SdTicketServiceBean extends BaseBean {
 
+    public static final String DUMMY_POLE_ID_PREFIX = "D";
+
     private int ticketDetId;
     private int ticketMasId;
     private String serviceTypeCode;
