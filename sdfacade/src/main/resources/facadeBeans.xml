@@ -82,6 +82,9 @@
     <alias name="sdStatisticFacade" alias="statisticFacade"/>
     <bean id="sdStatisticFacade" class="com.hkt.btu.sd.facade.impl.SdStatisticFacadeImpl"/>
 
+    <alias name="sdUserRoleServiceTypeFacade" alias="userRoleServiceTypeFacade"/>
+    <bean id="sdUserRoleServiceTypeFacade" class="com.hkt.btu.sd.facade.impl.SdUserRoleServiceTypeFacadeImpl"/>
+
     <!-- Populator -->
     <alias name="sdConfigParamDataPopulator" alias="configParamDataPopulator"/>
     <alias name="sdConfigParamDataPopulator" alias="btuConfigParamDataPopulator"/>
@@ -169,4 +172,7 @@
 
     <alias name="sdStatisticDataPopulator" alias="statisticDataPopulator"/>
     <bean id="sdStatisticDataPopulator" class="com.hkt.btu.sd.facade.populator.SdStatisticDataPopulator"/>
+
+    <alias name="sdUserRoleServiceTypeDataPopulator" alias="userRoleServiceTypeDataPopulator"/>
+    <bean id="sdUserRoleServiceTypeDataPopulator" class="com.hkt.btu.sd.facade.populator.SdUserRoleServiceTypeDataPopulator"/>
 </beans>

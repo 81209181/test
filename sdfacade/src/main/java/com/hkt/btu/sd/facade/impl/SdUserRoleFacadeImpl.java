@@ -3,6 +3,7 @@ package com.hkt.btu.sd.facade.impl;
 import com.hkt.btu.sd.core.exception.InsufficientAuthorityException;
 import com.hkt.btu.sd.core.service.SdPathCtrlService;
 import com.hkt.btu.sd.core.service.SdUserRoleService;
+import com.hkt.btu.sd.core.service.SdUserRoleServiceTypeService;
 import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
 import com.hkt.btu.sd.core.service.bean.SdUserRolePathCtrlBean;
 import com.hkt.btu.sd.facade.SdUserRoleFacade;
@@ -29,6 +30,9 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
 
     @Resource(name = "pathCtrlService")
     SdPathCtrlService sdPathCtrlService;
+
+    @Resource(name = "userRoleServiceTypeService")
+    SdUserRoleServiceTypeService sdUserRoleServiceTypeService;
 
     @Resource(name = "userRoleDataPopulator")
     SdUserRoleDataPopulator sdUserRoleDataPopulator;
@@ -114,7 +118,7 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
 
 
     @Override
-    public String updateUserRole(String roleId, String roleDesc, String status, String abstractFlag) {
+    public String updateUserRole(String roleId, String roleDesc, String status, String abstractFlag, List<String> serviceTypeList) {
         if (StringUtils.isEmpty(roleId)) {
             return "Empty role id.";
         } else if (StringUtils.isEmpty(roleDesc)) {
@@ -128,6 +132,7 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
         boolean isAbstract = BooleanUtils.toBoolean(abstractFlag);
 
         sdUserRoleService.updateUserRole(roleId, roleDesc, status, isAbstract);
+        sdUserRoleServiceTypeService.editUserRoleServiceType(roleId, serviceTypeList);
         return null;
     }
 

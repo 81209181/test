@@ -100,6 +100,9 @@
     <alias name="sdAutoRetryService" alias="btuAutoRetryService"/>
     <bean class="com.hkt.btu.sd.core.service.impl.SdAutoRetryServiceImpl" id="sdAutoRetryService"/>
 
+    <alias name="sdUserRoleServiceTypeService" alias="userRoleServiceTypeService"/>
+    <bean id="sdUserRoleServiceTypeService" class="com.hkt.btu.sd.core.service.impl.SdUserRoleServiceTypeServiceImpl"/>
+
     <!-- Populator -->
     <alias name="sdConfigParamBeanPopulator" alias="configParamBeanPopulator"/>
     <alias name="sdConfigParamBeanPopulator" alias="btuConfigParamBeanPopulator"/>
@@ -184,5 +187,8 @@
 
     <alias name="utCallPageBeanPopulator" alias="callPageBeanPopulator"/>
     <bean id="utCallPageBeanPopulator" class="com.hkt.btu.sd.core.service.populator.UTCallPageBeanPopulator"/>
+
+    <alias name="sdUserRoleServiceTypeBeanPopulator" alias="userRoleServiceTypeBeanPopulator"/>
+    <bean id="sdUserRoleServiceTypeBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdUserRoleServiceTypeBeanPopulator"/>
 
 </beans>
