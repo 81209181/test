@@ -14,7 +14,7 @@ public class SdTicketRemarkBean extends BaseBean {
         public static final String CUSTOMER_CALL_IN = "Customer call-in.";
         public static final String STATUS_TO_OPEN = "Status --> OPEN (by %s)";
         public static final String STATUS_TO_WORKING = "Status --> WORKING (by %s)";
-        public static final String STATUS_TO_CLOSE = "Status --> CLOSE (reason: %s, %s, by %s, %s)";
+        public static final String STATUS_TO_CLOSE = "Status --> CLOSE (arrival: %s; reason: %s, %s, by %s, %s)";
 //        public static final String VIEW_TICKET = "%s viewed ticket.";
     }
 

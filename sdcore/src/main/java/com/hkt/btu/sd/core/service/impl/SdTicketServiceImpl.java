@@ -430,7 +430,7 @@ public class SdTicketServiceImpl implements SdTicketService {
         ticketMasMapper.updateTicketStatus(ticketMasId, TicketStatusEnum.COMPLETE.getStatusCode(), arrivalTime, LocalDateTime.now(), userUserId);
 
         // add ticket remarks
-        String content = String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_CLOSE, reasonType, reasonContent, contactName, contactNumber);
+        String content = String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_CLOSE, arrivalTime, reasonType, reasonContent, contactName, contactNumber);
         createTicketSysRemarks(ticketMasId, content);
 
         LOG.info(String.format("Closed ticket. (ticketMasId: %d)", ticketMasId));
