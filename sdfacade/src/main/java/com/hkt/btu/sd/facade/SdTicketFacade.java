@@ -11,6 +11,7 @@ import com.hkt.btu.sd.facade.data.cloud.HktCloudViewData;
 import com.hkt.btu.sd.facade.data.wfm.WfmMakeApptData;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -41,7 +42,7 @@ public interface SdTicketFacade {
 
     boolean increaseCallInCount(Integer ticketMasId);
     String closeTicket(int ticketMasId, String reasonType, String reasonContent, String contactName, String contactNumber);
-    String closeTicketByApi(int ticketMasId, String reasonType, String reasonContent, String closeby);
+    String closeTicketByApi(int ticketMasId, String reasonType, String reasonContent, String closeby, String arrivalTimeStr);
 
     // ticket contact
     List<SdTicketContactData> getContactInfo(Integer ticketMasId);

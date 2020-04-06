@@ -5,6 +5,7 @@ CREATE TABLE TICKET_MAS
     CUST_CODE          varchar2(40),
     TICKET_TYPE        varchar2(5), -- {'QUERY', 'FAULT'}
     STATUS             varchar2(2), -- {OPEN: 'O', CANCEL: 'CX', COMPLETE: 'CP'}
+    ARRIVAL_DATE       date,
     COMPLETE_DATE      date,
     CALL_IN_COUNT      number                  default 0,
     SEARCH_KEY         varchar2(20),

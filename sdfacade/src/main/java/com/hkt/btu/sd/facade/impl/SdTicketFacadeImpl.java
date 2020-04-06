@@ -48,6 +48,8 @@ import java.util.stream.Collectors;
 public class SdTicketFacadeImpl implements SdTicketFacade {
     private static final Logger LOG = LogManager.getLogger(SdTicketFacadeImpl.class);
 
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+
     @Resource(name = "ticketService")
     SdTicketService ticketService;
     @Resource(name = "auditTrailFacade")
@@ -475,17 +477,26 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public String closeTicketByApi(int ticketMasId, String reasonType, String reasonContent, String userId) {
+    public String closeTicketByApi(int ticketMasId, String reasonType, String reasonContent, String userId,
+                                   String arrivalTimeStr) {
         String systemId = userService.getCurrentUserUserId();
         LOG.info(String.format("Closing ticket by API. (ticketMasId: %d , systemId: %s)", ticketMasId, systemId));
 
+        LocalDateTime arrivalTime = null;
+
         if (StringUtils.isEmpty(reasonContent)) {
             reasonContent = "Empty sub-clear code.";
+        } else if (StringUtils.isNotEmpty(arrivalTimeStr)){
+            try {
+                arrivalTime = LocalDateTime.parse(arrivalTimeStr, DATE_TIME_FORMATTER);
+            } catch (DateTimeParseException e) {
+                return "Invalid arrivalTime format. " + DATE_TIME_FORMATTER;
+            }
         }
 
         // close ticket in servicedesk
         try {
-            ticketService.closeTicket(ticketMasId, reasonType, reasonContent, systemId, userId, false);
+            ticketService.closeTicket(ticketMasId, reasonType, reasonContent, arrivalTime, systemId, userId, false);
             LOG.info("Closed (by API) ticket in servicedesk. (ticketMasId: " + ticketMasId + ")");
         } catch (InvalidInputException e) {
             LOG.warn(e.getMessage());
@@ -503,7 +514,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
         // close ticket in servicedesk
         try {
-            ticketService.closeTicket(ticketMasId, reasonType, reasonContent, contactName, contactNumber, true);
+            ticketService.closeTicket(ticketMasId, reasonType, reasonContent, null, contactName, contactNumber, true);
         } catch (InvalidInputException e) {
             LOG.warn(e.getMessage());
             return e.getMessage();

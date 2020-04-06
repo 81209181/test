@@ -59,7 +59,7 @@ public interface SdTicketService {
     void updateServiceSymptom(Integer ticketMasId, String symptomCode, LocalDateTime reportTime);
     void updateJobIdInService(Integer jobId, int ticketMasId, String userId);
     void increaseCallInCount(Integer ticketMasId);
-    void closeTicket(int ticketMasId, String reasonType, String reasonContent,
+    void closeTicket(int ticketMasId, String reasonType, String reasonContent, LocalDateTime arrivalTime,
                      String contactName, String contactNumber, boolean nonApiClose) throws InvalidInputException;
     void updateTicketType(int ticketMasId, String job, String userId);
 

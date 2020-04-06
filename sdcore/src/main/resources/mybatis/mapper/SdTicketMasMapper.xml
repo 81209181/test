@@ -115,14 +115,17 @@
     <update id="updateTicketStatus">
         update TICKET_MAS
         <set >
-            status = #{status},
-            MODIFYBY= #{userId},
-            MODIFYDATE=sysdate,
-            <if test="status == 'CP'">
-                COMPLETE_DATE = sysdate
+            STATUS = #{status},
+            MODIFYBY = #{userId},
+            MODIFYDATE =sysdate,
+            <if test="arrivalTime != null">
+                ARRIVAL_DATE = #{arrivalTime},
+            </if>
+            <if test="completeTime != null">
+                COMPLETE_DATE = #{completeTime}
             </if>
         </set>
-        where TICKET_MAS_ID =#{ticketMasId}
+        where TICKET_MAS_ID = #{ticketMasId}
     </update>
 
     <select id="getTicketByServiceNo" resultMap="TicketMasEntity">

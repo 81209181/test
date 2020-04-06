@@ -250,7 +250,7 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Transactional(rollbackFor = Exception.class)
     public void updateJobIdInService(Integer jobId, int ticketMasId, String userId) {
         ticketServiceMapper.updateTicketServiceByJobId(jobId, ticketMasId, userId);
-        ticketMasMapper.updateTicketStatus(ticketMasId, TicketStatusEnum.WORKING.getStatusCode(), userId);
+        ticketMasMapper.updateTicketStatus(ticketMasId, TicketStatusEnum.WORKING.getStatusCode(), null, null, userId);
         createTicketSysRemarks(ticketMasId, String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_WORKING, userId));
     }
 
@@ -387,7 +387,7 @@ public class SdTicketServiceImpl implements SdTicketService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void closeTicket(int ticketMasId, String reasonType, String reasonContent,
+    public void closeTicket(int ticketMasId, String reasonType, String reasonContent, LocalDateTime arrivalTime,
                             String contactName, String contactNumber, boolean nonApiClose) throws InvalidInputException {
         if (StringUtils.isEmpty(reasonType)) {
             throw new InvalidInputException("Empty reasonType.");
@@ -427,7 +427,7 @@ public class SdTicketServiceImpl implements SdTicketService {
 
         // close ticket
         String userUserId = userService.getCurrentUserUserId();
-        ticketMasMapper.updateTicketStatus(ticketMasId, TicketStatusEnum.COMPLETE.getStatusCode(), userUserId);
+        ticketMasMapper.updateTicketStatus(ticketMasId, TicketStatusEnum.COMPLETE.getStatusCode(), arrivalTime, LocalDateTime.now(), userUserId);
 
         // add ticket remarks
         String content = String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_CLOSE, reasonType, reasonContent, contactName, contactNumber);
