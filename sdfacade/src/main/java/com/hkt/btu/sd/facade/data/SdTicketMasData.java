@@ -38,6 +38,7 @@ public class SdTicketMasData implements DataInterface {
     private String searchValue;
 
     private LocalDateTime completeDate;
+    private LocalDateTime arrivalDate;
 
     private String serviceType;
 
@@ -165,6 +166,14 @@ public class SdTicketMasData implements DataInterface {
 
     public void setCompleteDate(LocalDateTime completeDate) {
         this.completeDate = completeDate;
+    }
+
+    public LocalDateTime getArrivalDate() {
+        return arrivalDate;
+    }
+
+    public void setArrivalDate(LocalDateTime arrivalDate) {
+        this.arrivalDate = arrivalDate;
     }
 
     public String getServiceType() {

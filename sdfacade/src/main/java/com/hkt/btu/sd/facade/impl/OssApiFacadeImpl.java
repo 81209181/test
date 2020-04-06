@@ -56,7 +56,7 @@ public class OssApiFacadeImpl extends AbstractRestfulApiFacade implements OssApi
 
     @AutoRetry(minWaitSecond = 600)
     @Override
-    public void notifyTicketStatus(Integer poleId, Integer ticketId, LocalDateTime time, String action) {
+    public void notifyTicketStatus(Integer poleId, Integer ticketId, LocalDateTime arrivalTime, LocalDateTime completeTime, String action) {
         LOG.info("Notifying ticket status... (poleId={}, ticket={}, status={})", poleId, ticketId, action);
         String apiPath = "/govpm-web/api/servicedesk/notifyTicketStatus";
 
@@ -64,7 +64,8 @@ public class OssApiFacadeImpl extends AbstractRestfulApiFacade implements OssApi
         OssSmartMeterStatusUpdateData statusUpdateData = new OssSmartMeterStatusUpdateData();
         statusUpdateData.setPoleID(poleId);
         statusUpdateData.setTicketId(ticketId);
-        statusUpdateData.setTime(time);
+        statusUpdateData.setArrivalTime(arrivalTime);
+        statusUpdateData.setCompleteTime(completeTime);
         statusUpdateData.setAction(action);
         Entity<OssSmartMeterStatusUpdateData> postBodyEntity = Entity.entity(statusUpdateData, MediaType.APPLICATION_JSON_TYPE);
 

@@ -31,6 +31,7 @@ public class SdTicketMasBean extends BaseBean {
 
     private String searchValue;
 
+    private LocalDateTime arrivalDate;
     private LocalDateTime completeDate;
 
     private String serviceType;
@@ -119,6 +120,14 @@ public class SdTicketMasBean extends BaseBean {
 
     public void setSearchValue(String searchValue) {
         this.searchValue = searchValue;
+    }
+
+    public LocalDateTime getArrivalDate() {
+        return arrivalDate;
+    }
+
+    public void setArrivalDate(LocalDateTime arrivalDate) {
+        this.arrivalDate = arrivalDate;
     }
 
     public LocalDateTime getCompleteDate() {

@@ -35,6 +35,7 @@ public class SdTicketMasEntity extends BaseEntity {
 
     private String searchValue;
 
+    private LocalDateTime arrivalDate;
     private LocalDateTime completeDate;
 
     private String serviceType;
@@ -115,6 +116,14 @@ public class SdTicketMasEntity extends BaseEntity {
 
     public void setSearchValue(String searchValue) {
         this.searchValue = searchValue;
+    }
+
+    public LocalDateTime getArrivalDate() {
+        return arrivalDate;
+    }
+
+    public void setArrivalDate(LocalDateTime arrivalDate) {
+        this.arrivalDate = arrivalDate;
     }
 
     public LocalDateTime getCompleteDate() {

@@ -136,6 +136,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
     public void notifyCloseMeterTicket(Integer ticketMasId) {
         // get close date
         SdTicketMasData ticketMasData = ticketFacade.getTicketMas(ticketMasId);
+        LocalDateTime arrivalDate = ticketMasData==null ? null : ticketMasData.getArrivalDate();
         LocalDateTime completeDate = ticketMasData==null ? LocalDateTime.now() : ticketMasData.getCompleteDate();
 
         // get pole id
@@ -155,7 +156,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
                 continue;
             }
 
-            ossApiFacade.notifyTicketStatus(poleId, ticketMasId, completeDate, OssTicketActionEnum.CLOSE.getCode());
+            ossApiFacade.notifyTicketStatus(poleId, ticketMasId, arrivalDate, completeDate, OssTicketActionEnum.CLOSE.getCode());
         }
     }
 

@@ -617,7 +617,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
         // notify oss for hotline smart meter job ticket
         if(poleId!=null && notifyOss){
-            ossApiFacade.notifyTicketStatus(poleId, ticketMasId, LocalDateTime.now(), OssTicketActionEnum.CREATE.getCode());
+            ossApiFacade.notifyTicketStatus(poleId, ticketMasId, null, LocalDateTime.now(), OssTicketActionEnum.CREATE.getCode());
         }
     }
 

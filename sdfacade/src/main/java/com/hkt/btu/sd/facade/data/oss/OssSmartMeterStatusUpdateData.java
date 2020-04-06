@@ -11,7 +11,9 @@ public class OssSmartMeterStatusUpdateData implements DataInterface {
     private Integer ticketId;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime time;
+    private LocalDateTime arrivalTime;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime completeTime;
 
     private String action;
 
@@ -32,12 +34,20 @@ public class OssSmartMeterStatusUpdateData implements DataInterface {
         this.ticketId = ticketId;
     }
 
-    public LocalDateTime getTime() {
-        return time;
+    public LocalDateTime getArrivalTime() {
+        return arrivalTime;
     }
 
-    public void setTime(LocalDateTime time) {
-        this.time = time;
+    public void setArrivalTime(LocalDateTime arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
+
+    public LocalDateTime getCompleteTime() {
+        return completeTime;
+    }
+
+    public void setCompleteTime(LocalDateTime completeTime) {
+        this.completeTime = completeTime;
     }
 
     public String getAction() {

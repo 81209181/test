@@ -13,6 +13,7 @@
         <result column="CALL_IN_COUNT" property="callInCount"/>
         <result column="SEARCH_KEY" property="searchKey"/>
         <result column="SEARCH_VALUE" property="searchValue"/>
+        <result column="ARRIVAL_DATE" property="arrivalDate"/>
         <result column="COMPLETE_DATE" property="completeDate"/>
         <result column="SERVICE_TYPE_NAME" property="serviceType"/>
         <result column="OWNING_ROLE" property="owningRole"/>
