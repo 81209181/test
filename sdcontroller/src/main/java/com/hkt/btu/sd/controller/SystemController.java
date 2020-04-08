@@ -343,9 +343,4 @@ public class SystemController {
             return ResponseEntity.badRequest().body("Reload failed.");
         }
     }
-
-    @GetMapping("/service-search-key-mapping")
-    public String serviceSearchKeyMapping(){
-        return "system/manageApi/listApiUser";
-    }
 }
