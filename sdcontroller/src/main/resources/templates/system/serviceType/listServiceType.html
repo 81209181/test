@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Service Type</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+    <h1>Service Type List</h1>
+
+    <div class="mt-5 from-row">
+    <table id="serviceTypeTable" class="display">
+        <thead>
+        <tr>
+            <th>Service Type Code</th>
+            <th>Service Type Name</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+        <tr>
+            <th>Service Type Code</th>
+            <th>Service Type Name</th>
+            <th></th>
+        </tr>
+        </tfoot>
+    </table>
+    </div>
+
+    <script type="text/javascript" th:src="@{/js/listServiceType.js(v=${projectBuildtime})}"></script>
+</div>
+</body>
+</html>

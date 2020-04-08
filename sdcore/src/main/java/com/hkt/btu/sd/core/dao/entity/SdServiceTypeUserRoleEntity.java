@@ -1,8 +1,9 @@
-package com.hkt.btu.sd.facade.data;
+package com.hkt.btu.sd.core.dao.entity;
 
-import com.hkt.btu.common.facade.data.DataInterface;
+import com.hkt.btu.common.core.dao.entity.BaseEntity;
 
-public class SdUserRoleServiceTypeData implements DataInterface {
+public class SdServiceTypeUserRoleEntity extends BaseEntity {
+
     private String serviceTypeCode;
     private String roleId;
 

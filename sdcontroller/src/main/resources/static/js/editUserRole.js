@@ -52,12 +52,6 @@ function ajaxGetRolePath(){
 }
 
 function ajaxUpdateUserRole(){
-    let serviceTypeList = $('input[name=serviceTypeList]:checked');
-    if (serviceTypeList.length < 1) {
-        showErrorMsg("Empty service type.");
-        return;
-    }
-
     $.post('/admin/manage-role/edit-user-role',$('form').serialize(),function(data){
         if(data.success){
             showInfoMsg("Updated user role.");

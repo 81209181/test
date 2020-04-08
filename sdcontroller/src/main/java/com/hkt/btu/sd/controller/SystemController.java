@@ -4,7 +4,8 @@ import com.hkt.btu.common.facade.data.*;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
 import com.hkt.btu.sd.facade.*;
-import com.hkt.btu.sd.facade.data.*;
+import com.hkt.btu.sd.facade.data.SdPublicHolidayData;
+import com.hkt.btu.sd.facade.data.SdSiteConfigData;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -341,5 +342,10 @@ public class SystemController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Reload failed.");
         }
+    }
+
+    @GetMapping("/service-search-key-mapping")
+    public String serviceSearchKeyMapping(){
+        return "system/manageApi/listApiUser";
     }
 }

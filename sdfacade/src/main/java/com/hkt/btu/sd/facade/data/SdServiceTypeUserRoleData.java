@@ -1,8 +1,8 @@
-package com.hkt.btu.sd.core.service.bean;
+package com.hkt.btu.sd.facade.data;
 
-import com.hkt.btu.common.core.service.bean.BaseBean;
+import com.hkt.btu.common.facade.data.DataInterface;
 
-public class SdUserRoleServiceTypeBean extends BaseBean {
+public class SdServiceTypeUserRoleData implements DataInterface {
     private String serviceTypeCode;
     private String roleId;
 

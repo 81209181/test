@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdServiceTypeUserRoleMapper" >
+    <resultMap id="SdServiceTypeUserRoleEntity" type="com.hkt.btu.sd.core.dao.entity.SdServiceTypeUserRoleEntity" >
+        <result column="SERVICE_TYPE_CODE" property="serviceTypeCode" />
+        <result column="ROLE_ID" property="roleId" />
+
+        <result column="CREATEDATE" property="createdate" />
+        <result column="CREATEBY" property="createby" />
+    </resultMap>
+
+    <insert id="createServiceTypeUserRole">
+        INSERT ALL
+        <foreach item="roleId" index="index" collection="userRoleId">
+            INTO SERVICE_TYPE_USER_ROLE (SERVICE_TYPE_CODE, ROLE_ID, CREATEBY)
+            VALUES (#{serviceType}, #{roleId}, #{createby})
+        </foreach>
+        SELECT 1 FROM DUAL
+    </insert>
+
+    <delete id="deleteServiceTypeUserRole">
+        DELETE FROM SERVICE_TYPE_USER_ROLE WHERE SERVICE_TYPE_CODE = #{serviceType}
+        AND ROLE_ID IN
+        <foreach item="roleId" index="index" collection="userRoleId" open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
+    </delete>
+
+    <select id="getServiceTypeUserRole" resultMap="SdServiceTypeUserRoleEntity">
+        SELECT * FROM SERVICE_TYPE_USER_ROLE
+        <where>
+            <if test="serviceType != null">
+                SERVICE_TYPE_CODE = #{serviceType}
+            </if>
+        </where>
+    </select>
+</mapper>

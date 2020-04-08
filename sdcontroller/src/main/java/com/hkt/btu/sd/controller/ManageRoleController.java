@@ -4,11 +4,8 @@ package com.hkt.btu.sd.controller;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.facade.SdServiceTypeFacade;
 import com.hkt.btu.sd.facade.SdUserRoleFacade;
-import com.hkt.btu.sd.facade.SdUserRoleServiceTypeFacade;
-import com.hkt.btu.sd.facade.data.SdServiceTypeData;
 import com.hkt.btu.sd.facade.data.SdUserPathCtrlData;
 import com.hkt.btu.sd.facade.data.SdUserRoleData;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -32,9 +29,6 @@ public class ManageRoleController {
     @Resource(name = "serviceTypeFacade")
     SdServiceTypeFacade serviceTypeFacade;
 
-    @Resource(name = "userRoleServiceTypeFacade")
-    SdUserRoleServiceTypeFacade userRoleServiceTypeFacade;
-
     @GetMapping("/list-user-role")
     public String listUserGrp() {
         return "admin/manageRole/listUserRole";
@@ -51,17 +45,6 @@ public class ManageRoleController {
         if (StringUtils.isNotEmpty(roleId)) {
             model.addAttribute("roleId", roleId);
         }
-
-        List<SdServiceTypeData> allServiceType = serviceTypeFacade.getServiceTypeList();
-        if (CollectionUtils.isNotEmpty(allServiceType)) {
-            model.addAttribute("allServiceType", allServiceType);
-        }
-
-        List<String> existServiceTypeList = userRoleServiceTypeFacade.getUserRoleServiceType(roleId);
-        if (CollectionUtils.isNotEmpty(existServiceTypeList)) {
-            model.addAttribute("existServiceTypeList", existServiceTypeList);
-        }
-
         return "admin/manageRole/editUserRole";
     }
 
@@ -92,9 +75,8 @@ public class ManageRoleController {
 
     @PostMapping("/edit-user-role")
     public ResponseEntity<?> editUserForm(@RequestParam String roleId, @RequestParam String roleDesc,
-                                          @RequestParam String status, @RequestParam String abstractFlag,
-                                          @RequestParam List<String> serviceTypeList) {
-        String errorMsg = userRoleFacade.updateUserRole(roleId, roleDesc, status, abstractFlag, serviceTypeList);
+                                          @RequestParam String status, @RequestParam String abstractFlag) {
+        String errorMsg = userRoleFacade.updateUserRole(roleId, roleDesc, status, abstractFlag);
         if(errorMsg==null){
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         }else {

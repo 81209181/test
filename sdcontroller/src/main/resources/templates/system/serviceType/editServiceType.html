@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Service Type</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <h1 style="padding-top:3%">Edit Service Type Mapping</h1>
+    <form style="width:80%">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label >Service Type</label>
+                <input type="text" class="form-control" id="serviceType" name="serviceType" th:value="${serviceTypeCode}" readonly >
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>User Role</label>
+                <div class="d-block">
+                    <div class="form-check form-check-inline" th:each="item : ${allUserRole}">
+                        <input type="checkbox" class="form-check-input" th:if="${!#lists.isEmpty(serviceTypeUserRoleList)}"
+                               th:value="${item.roleId}" name="userRoleId" th:id="${item.roleId}"
+                               th:checked="${serviceTypeUserRoleList.contains(item.roleId)}">
+                        <input type="checkbox" class="form-check-input" th:if="${#lists.isEmpty(serviceTypeUserRoleList)}"
+                               th:value="${item.roleId}" name="userRoleId" th:id="${item.roleId}">
+                        <label th:for="${item.roleId}" class="form-check-label" th:text="${item.roleDesc}"></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-lg btn-primary float-right mr-sm-2" id="btnEditServiceType"><i class="far fa-save"></i> Save</button>
+    </form>
+    <script type="text/javascript" th:src="@{/js/editServiceType.js(v=${projectBuildtime})}"></script>
+</div>
+</body>
+</html>

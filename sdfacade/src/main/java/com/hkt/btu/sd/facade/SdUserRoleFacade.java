@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface SdUserRoleFacade {
 
-    String updateUserRole(String roleId, String roleDesc, String status, String isAbstract, List<String> serviceTypeList);
+    String updateUserRole(String roleId, String roleDesc, String status, String isAbstract);
 
     List<SdUserRoleData> listAllUserRole();
 
