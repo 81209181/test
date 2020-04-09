@@ -31,6 +31,21 @@
                 </div>
             </div>
         </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Search Key</label>
+                <div class="d-block">
+                    <div class="form-check form-check-inline" th:each="item : ${allSearchKey}">
+                        <input type="checkbox" class="form-check-input" th:if="${!#lists.isEmpty(searchKeyMappingList)}"
+                               th:value="${item.key}" name="searchKey" th:id="${item.key}"
+                               th:checked="${searchKeyMappingList.contains(item.key)}">
+                        <input type="checkbox" class="form-check-input" th:if="${#lists.isEmpty(searchKeyMappingList)}"
+                               th:value="${item.key}" name="searchKey" th:id="${item.key}">
+                        <label th:for="${item.key}" class="form-check-label" th:text="${item.keyDesc}"></label>
+                    </div>
+                </div>
+            </div>
+        </div>
         <button type="button" class="btn btn-lg btn-primary float-right mr-sm-2" id="btnEditServiceType"><i class="far fa-save"></i> Save</button>
     </form>
     <script type="text/javascript" th:src="@{/js/editServiceType.js(v=${projectBuildtime})}"></script>

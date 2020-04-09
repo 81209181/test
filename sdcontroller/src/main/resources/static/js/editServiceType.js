@@ -9,8 +9,12 @@ $(document).ready(function() {
 
 function ajaxEditServiceType(){
     let userRoleId = $('input[name=userRoleId]:checked');
+    let searchKey = $('input[name=searchKey]:checked');
     if (userRoleId.length < 1) {
         showErrorMsg("Empty user role.");
+        return;
+    } else if (searchKey.length < 1) {
+        showErrorMsg("Empty search key.");
         return;
     }
 

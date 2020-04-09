@@ -4,6 +4,7 @@ import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.facade.SdServiceTypeFacade;
 import com.hkt.btu.sd.facade.SdServiceTypeUserRoleFacade;
 import com.hkt.btu.sd.facade.SdUserRoleFacade;
+import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
 import com.hkt.btu.sd.facade.data.SdServiceTypeData;
 import com.hkt.btu.sd.facade.data.SdUserRoleData;
 import org.apache.commons.collections4.CollectionUtils;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
+import java.security.GeneralSecurityException;
 import java.util.List;
 
 @Controller
@@ -61,13 +63,24 @@ public class ServiceTypeController {
             model.addAttribute("serviceTypeUserRoleList", serviceTypeUserRoleList);
         }
 
+        List<ServiceSearchEnum> allSearchKey = serviceTypeUserRoleFacade.getAllSearchKey();
+        if (CollectionUtils.isNotEmpty(allSearchKey)) {
+            model.addAttribute("allSearchKey", allSearchKey);
+        }
+
+        List<String> searchKeyMappingList = serviceTypeUserRoleFacade.getSearchKeyMapping(serviceTypeCode);
+        if (CollectionUtils.isNotEmpty(searchKeyMappingList)) {
+            model.addAttribute("searchKeyMappingList", searchKeyMappingList);
+        }
+
         return "system/serviceType/editServiceType";
     }
 
     @PostMapping("/edit-service-type-mapping")
     public ResponseEntity<?> editServiceTypeUserRole(@RequestParam String serviceType,
-                                                      @RequestParam List<String> userRoleId) {
-        String errorMsg = serviceTypeUserRoleFacade.editServiceTypeUserRole(serviceType, userRoleId);
+                                                     @RequestParam List<String> userRoleId,
+                                                     @RequestParam List<String> searchKey) throws GeneralSecurityException {
+        String errorMsg = serviceTypeUserRoleFacade.editServiceTypeUserRole(serviceType, userRoleId, searchKey);
         if(errorMsg==null){
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         }else {

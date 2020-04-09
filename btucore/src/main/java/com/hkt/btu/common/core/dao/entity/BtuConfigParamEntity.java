@@ -34,6 +34,10 @@ public class BtuConfigParamEntity extends BaseEntity {
         }
     }
 
+    public static class SEARCH_KEY_TYPE_MAPPING {
+        public static final String CONFIG_GROUP = "SEARCH_KEY_TYPE_MAPPING";
+    }
+
     public static class API_CLIENT {
         public static final String CONFIG_GROUP = "API_CLIENT";
     }
