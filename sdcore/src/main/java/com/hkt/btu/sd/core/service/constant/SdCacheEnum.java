@@ -9,6 +9,10 @@ public enum SdCacheEnum {
             "serviceTypeService","loadServiceTypeList"),
     SERVICE_TYPE_OFFER_MAPPING ("Service Type Offer Mapping", 102, false,false,
             "serviceTypeService","loadServiceTypeOfferMapping"),
+    SERVICE_TYPE_USER_ROLE ("Service Type User Role", 103, false,false,
+            "serviceTypeUserRoleService","loadServiceTypeUserRole"),
+    SEARCH_KEY_TYPE_MAPPING ("Search Key Type Mapping", 104, false,false,
+            "serviceTypeUserRoleService","loadSearchKeyTypeMapping"),
 
     // user role
     USER_ROLE_TREE ("User Role Tree", 120, false,false,

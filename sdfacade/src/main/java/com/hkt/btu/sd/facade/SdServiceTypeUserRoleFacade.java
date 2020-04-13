@@ -14,4 +14,6 @@ public interface SdServiceTypeUserRoleFacade {
     List<ServiceSearchEnum> getAllSearchKey();
 
     List<String> getSearchKeyMapping(String serviceType);
+
+    List<ServiceSearchEnum> getServiceSearchKeyList(List<String> userRole);
 }

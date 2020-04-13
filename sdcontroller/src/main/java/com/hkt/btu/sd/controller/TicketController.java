@@ -51,6 +51,10 @@ public class TicketController {
     WfmApiFacade wfmApiFacade;
     @Resource(name = "serviceTypeFacade")
     SdServiceTypeFacade serviceTypeFacade;
+    @Resource(name = "userFacade")
+    SdUserFacade userFacade;
+    @Resource(name = "serviceTypeUserRoleFacade")
+    SdServiceTypeUserRoleFacade serviceTypeUserRoleFacade;
 
     @Resource(name = "norarsApiFacade")
     NorarsApiFacade norarsApiFacade;
@@ -61,7 +65,12 @@ public class TicketController {
 
     @GetMapping("service-identity")
     public String serviceIdentity(Model model) {
-        model.addAttribute("serviceSearchKeyList", requestCreateFacade.getSearchKeyEnumList());
+        SdUserData userdata = userFacade.getCurrentUser();
+        String userId = userdata.getUserId();
+        EditResultData result = userRoleFacade.getUserRoleByUserId(userId);
+        List<String> userRole = result == null ? null : (List<String>) result.getList();
+
+        model.addAttribute("serviceSearchKeyList", serviceTypeUserRoleFacade.getServiceSearchKeyList(userRole));
         return "ticket/serviceIdentity";
     }
 

@@ -4,8 +4,10 @@ import com.hkt.btu.common.core.dao.entity.BtuConfigParamEntity;
 import com.hkt.btu.common.core.service.BtuConfigParamService;
 import com.hkt.btu.common.core.service.bean.BtuConfigParamBean;
 import com.hkt.btu.common.core.service.constant.BtuConfigParamTypeEnum;
+import com.hkt.btu.sd.core.service.SdCacheService;
 import com.hkt.btu.sd.core.service.SdServiceTypeUserRoleService;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeUserRoleBean;
+import com.hkt.btu.sd.core.service.constant.SdCacheEnum;
 import com.hkt.btu.sd.facade.SdServiceTypeUserRoleFacade;
 import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
 import com.hkt.btu.sd.facade.data.SdServiceTypeUserRoleData;
@@ -30,6 +32,9 @@ public class SdServiceTypeUserRoleFacadeImpl implements SdServiceTypeUserRoleFac
 
     @Resource(name = "configParamService")
     BtuConfigParamService btuConfigParamService;
+
+    @Resource(name = "cacheService")
+    SdCacheService cacheService;
 
     @Resource(name = "serviceTypeUserRoleDataPopulator")
     SdServiceTypeUserRoleDataPopulator serviceTypeUserRoleDataPopulator;
@@ -96,5 +101,51 @@ public class SdServiceTypeUserRoleFacadeImpl implements SdServiceTypeUserRoleFac
         }
 
         return dataList;
+    }
+
+    @Override
+    public List<ServiceSearchEnum> getServiceSearchKeyList(List<String> userRole) {
+        List<SdServiceTypeUserRoleBean> serviceTypeUserRole = (List<SdServiceTypeUserRoleBean>) cacheService.getCachedObjectByCacheName(SdCacheEnum.SERVICE_TYPE_USER_ROLE.getCacheName());
+        List<BtuConfigParamBean> searchKeyTypeMapping = (List<BtuConfigParamBean>) cacheService.getCachedObjectByCacheName(SdCacheEnum.SEARCH_KEY_TYPE_MAPPING.getCacheName());
+        List<String> filterServiceType = new LinkedList<>();
+        List<String> filterSearchKey = new LinkedList<>();
+        List<ServiceSearchEnum> serviceSearchKeyList = new LinkedList<>();
+
+        if (CollectionUtils.isEmpty(userRole)) {
+            return null;
+        }
+
+        serviceTypeUserRole.forEach(sdServiceTypeUserRoleBean -> {
+            if (userRole.contains(sdServiceTypeUserRoleBean.getRoleId())) {
+                if (!filterServiceType.contains(sdServiceTypeUserRoleBean.getServiceTypeCode())) {
+                    filterServiceType.add(sdServiceTypeUserRoleBean.getServiceTypeCode());
+                }
+            }
+        });
+
+        if (CollectionUtils.isEmpty(filterServiceType)) {
+            return null;
+        }
+
+        searchKeyTypeMapping.forEach(btuConfigParamBean -> {
+            if (filterServiceType.contains(btuConfigParamBean.getConfigKey())) {
+                String[] configValues = btuConfigParamBean.getConfigValue().split(",");
+                for (int i = 0; i < configValues.length; i++) {
+                    if(!filterSearchKey.contains(configValues[i])){
+                        filterSearchKey.add(configValues[i]);
+                    }
+                }
+            }
+        });
+
+        if (CollectionUtils.isEmpty(filterSearchKey)) {
+            return null;
+        }
+
+        filterSearchKey.forEach(searchKey -> {
+            serviceSearchKeyList.add(ServiceSearchEnum.getEnum(searchKey));
+        });
+
+        return serviceSearchKeyList;
     }
 }
