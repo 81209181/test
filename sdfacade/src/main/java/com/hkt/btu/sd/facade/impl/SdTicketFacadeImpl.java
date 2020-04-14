@@ -49,6 +49,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     private static final Logger LOG = LogManager.getLogger(SdTicketFacadeImpl.class);
 
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+    private final static DateTimeFormatter DEFAULT_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Resource(name = "ticketService")
     SdTicketService ticketService;
@@ -617,7 +618,9 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
         // notify oss for hotline smart meter job ticket
         if(poleId!=null && notifyOss){
-            ossApiFacade.notifyTicketStatus(poleId, ticketMasId, null, LocalDateTime.now(), OssTicketActionEnum.CREATE.getCode());
+            SdTicketMasData ticketMasData = ticketInfo.getTicketMasInfo();
+            String createDate = ticketMasData.getCreateDate() == null ? null : ticketMasData.getCreateDate().format(DEFAULT_DATE_TIME_FORMAT);
+            ossApiFacade.notifyTicketStatus(poleId, ticketMasId, createDate, OssTicketActionEnum.CREATE.getCode());
         }
     }
 

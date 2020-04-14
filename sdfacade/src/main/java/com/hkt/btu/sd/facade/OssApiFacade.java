@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 public interface OssApiFacade {
     OssSmartMeterData  queryMeterInfo(Integer poleId);
-    void notifyTicketStatus(Integer poleId, Integer ticketId, LocalDateTime arrivalTime, LocalDateTime completeTime, String action);
+    void notifyTicketStatus(Integer poleId, Integer ticketId, String time, String action);
     BtuPageData<OssSmartMeterEventData> queryMeterEvents(Integer page, Integer pageSize,
                                                       Integer poleId, LocalDateTime fromTime, LocalDateTime toTime);
 }

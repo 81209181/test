@@ -22,11 +22,13 @@ import org.springframework.data.domain.Pageable;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
 public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
     private static final Logger LOG = LogManager.getLogger(SdTicketFacadeImpl.class);
+    private final static DateTimeFormatter DEFAULT_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Resource(name = "ticketFacade")
     SdTicketFacade ticketFacade;
@@ -136,8 +138,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
     public void notifyCloseMeterTicket(Integer ticketMasId) {
         // get close date
         SdTicketMasData ticketMasData = ticketFacade.getTicketMas(ticketMasId);
-        LocalDateTime arrivalDate = ticketMasData==null ? null : ticketMasData.getArrivalDate();
-        LocalDateTime completeDate = ticketMasData==null ? LocalDateTime.now() : ticketMasData.getCompleteDate();
+        String completeDate = ticketMasData==null ? LocalDateTime.now().format(DEFAULT_DATE_TIME_FORMAT) : ticketMasData.getCompleteDate().format(DEFAULT_DATE_TIME_FORMAT);
 
         // get pole id
         List<SdTicketServiceData> serviceInfo = ticketFacade.getServiceInfo(ticketMasId);
@@ -156,7 +157,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
                 continue;
             }
 
-            ossApiFacade.notifyTicketStatus(poleId, ticketMasId, arrivalDate, completeDate, OssTicketActionEnum.CLOSE.getCode());
+            ossApiFacade.notifyTicketStatus(poleId, ticketMasId, completeDate, OssTicketActionEnum.CLOSE.getCode());
         }
     }
 
