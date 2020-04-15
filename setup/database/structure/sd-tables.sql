@@ -119,6 +119,15 @@ CREATE TABLE SERVICE_TYPE_OFFER_MAPPING
 );
 CREATE UNIQUE INDEX IDX_SERVICE_TYPE_OFFER_MAPPING_1 ON SERVICE_TYPE_OFFER_MAPPING (SERVICE_TYPE_CODE, OFFER_NAME);
 --------------------------------------------------------------------------------------------------
+create table SERVICE_TYPE_USER_ROLE
+(
+    ROLE_ID                       VARCHAR2(20)             not null,
+    SERVICE_TYPE_CODE             VARCHAR2(10)             not null,
+    CREATEDATE                    DATE                     default SYSDATE not null,
+    CREATEBY                      VARCHAR2(12)             not null
+);
+CREATE UNIQUE INDEX IDX_SERVICE_TYPE_USER_ROLE ON SERVICE_TYPE_USER_ROLE (ROLE_ID, SERVICE_TYPE_CODE);
+--------------------------------------------------------------------------------------------------
 CREATE TABLE SYMPTOM_GROUP
 (
     SYMPTOM_GROUP_CODE            varchar2(10)             not null,
