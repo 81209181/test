@@ -10,6 +10,7 @@ import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeUserRoleBean;
 import com.hkt.btu.sd.core.service.populator.SdServiceTypeUserRoleBeanPopulator;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -95,8 +96,12 @@ public class SdServiceTypeUserRoleServiceImpl implements SdServiceTypeUserRoleSe
     @Override
     public List<BtuConfigParamBean> loadSearchKeyTypeMapping() {
         Map<String, Object> configParamBeanMap = configParamService.getConfigParamByConfigGroup(SdConfigParamEntity.SEARCH_KEY_TYPE_MAPPING.CONFIG_GROUP, false);
+        if(MapUtils.isEmpty(configParamBeanMap)){
+            LOG.warn("Empty configParamBeanMap.");
+            return List.of();
+        }
 
-        List<BtuConfigParamBean> searchKeyTypeMappingList = new LinkedList();
+        List<BtuConfigParamBean> searchKeyTypeMappingList = new LinkedList<>();
         configParamBeanMap.forEach((k, v)->{
             BtuConfigParamBean bean = new BtuConfigParamBean();
             bean.setConfigKey(k);
