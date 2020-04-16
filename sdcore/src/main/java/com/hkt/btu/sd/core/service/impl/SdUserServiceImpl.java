@@ -77,15 +77,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     @Override
     public BtuUserBean getUserBeanByUsername(String username) {
         // get user data
-        SdUserEntity sdUserEntity;
-        if (username.contains(SdUserBean.CREATE_USER_PREFIX.PCCW_HKT_USER) ||
-                username.contains(SdUserBean.CREATE_USER_PREFIX.NON_PCCW_HKT_USER)) {
-            sdUserEntity = sdUserMapper.getLdapUserByUserId(username);
-        } else if (username.contains("@")) {
-            sdUserEntity = sdUserMapper.getUserByEmail(username);
-        } else {
-            sdUserEntity = sdUserMapper.getLdapUserByUserId(username);
-        }
+        SdUserEntity sdUserEntity = sdUserMapper.getLdapUserByUserId(username);
         if (sdUserEntity == null) {
             return null;
         }
