@@ -57,7 +57,7 @@ public class OssApiFacadeImpl extends AbstractRestfulApiFacade implements OssApi
     @AutoRetry(minWaitSecond = 600)
     @Override
     public void notifyTicketStatus(Integer poleId, Integer ticketId, String time, String action) {
-        LOG.info("Notifying ticket status... (poleId={}, ticket={}, status={})", poleId, ticketId, action);
+        LOG.info("Notifying ticket status... (poleId={}, ticket={}, status={}, time={})", poleId, ticketId, action, time);
         String apiPath = "/govpm-web/api/servicedesk/notifyTicketStatus";
 
         // prepare post body
