@@ -484,7 +484,6 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         LOG.info(String.format("Closing ticket by API. (ticketMasId: %d , systemId: %s)", ticketMasId, systemId));
 
         LocalDateTime arrivalTime = null;
-
         if (StringUtils.isEmpty(reasonContent)) {
             reasonContent = "Empty sub-clear code.";
         } else if (StringUtils.isNotEmpty(arrivalTimeStr)){

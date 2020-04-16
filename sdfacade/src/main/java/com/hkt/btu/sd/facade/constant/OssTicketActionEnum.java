@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public enum OssTicketActionEnum {
     CREATE ("Create", "Created ticket."),
+    ARRIVAL ("Arrival", "Field Arrived."),
     CLOSE("Close", "Closed ticket.")
     ;
 
