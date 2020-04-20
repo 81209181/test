@@ -19,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Resource;
 import java.security.GeneralSecurityException;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -71,37 +72,28 @@ public class SdServiceTypeUserRoleFacadeImpl implements SdServiceTypeUserRoleFac
     }
 
     private void updateSearchKeyTypeMapping(String serviceType, List<String> searchKeys) throws GeneralSecurityException {
-        String searchKey = searchKeys.stream().collect(Collectors.joining(","));
+        String searchKey = String.join(",", searchKeys);
         btuConfigParamService.updateConfigParam(BtuConfigParamEntity.SEARCH_KEY_TYPE_MAPPING.CONFIG_GROUP,
                 serviceType, searchKey, BtuConfigParamTypeEnum.STRING, null);
     }
 
     @Override
     public List<ServiceSearchEnum> getAllSearchKey() {
-        List<ServiceSearchEnum> dataList = new LinkedList<>();
         ServiceSearchEnum[] searchEnums = ServiceSearchEnum.values();
-        for (ServiceSearchEnum searchEnum : searchEnums) {
-            dataList.add(searchEnum);
-        }
-        return dataList;
+        return Arrays.asList(searchEnums);
     }
 
     @Override
     public List<String> getSearchKeyMapping(String serviceType) {
-        List<String> dataList = new LinkedList<>();
-
-        BtuConfigParamBean configParamBean = btuConfigParamService.getConfigParamByGroupAndKey(BtuConfigParamEntity.SEARCH_KEY_TYPE_MAPPING.CONFIG_GROUP, serviceType);
+        BtuConfigParamBean configParamBean = btuConfigParamService.getConfigParamByGroupAndKey(
+                BtuConfigParamEntity.SEARCH_KEY_TYPE_MAPPING.CONFIG_GROUP, serviceType);
         if (configParamBean == null) {
             return null;
         }
 
         String configValue = configParamBean.getConfigValue();
-        String[] searchKeys = configValue.split(",");
-        for (String searchKey : searchKeys) {
-            dataList.add(searchKey);
-        }
-
-        return dataList;
+        String[] searchKeys = StringUtils.split(configValue, ",");
+        return Arrays.asList(searchKeys);
     }
 
     @Override
@@ -112,14 +104,16 @@ public class SdServiceTypeUserRoleFacadeImpl implements SdServiceTypeUserRoleFac
         }
 
         // get service search key - service type mapping
-        List<BtuConfigParamBean> searchKeyTypeMapping = (List<BtuConfigParamBean>) cacheService.getCachedObjectByCacheName(SdCacheEnum.SEARCH_KEY_TYPE_MAPPING.getCacheName());
+        List<BtuConfigParamBean> searchKeyTypeMapping = (List<BtuConfigParamBean>)
+                cacheService.getCachedObjectByCacheName(SdCacheEnum.SEARCH_KEY_TYPE_MAPPING.getCacheName());
         if(CollectionUtils.isEmpty(searchKeyTypeMapping)){
             LOG.warn("Empty searchKeyTypeMapping.");
             return null;
         }
 
         // get service type - user role mapping
-        List<SdServiceTypeUserRoleBean> serviceTypeUserRole = (List<SdServiceTypeUserRoleBean>) cacheService.getCachedObjectByCacheName(SdCacheEnum.SERVICE_TYPE_USER_ROLE.getCacheName());
+        List<SdServiceTypeUserRoleBean> serviceTypeUserRole = (List<SdServiceTypeUserRoleBean>)
+                cacheService.getCachedObjectByCacheName(SdCacheEnum.SERVICE_TYPE_USER_ROLE.getCacheName());
         if(CollectionUtils.isEmpty(serviceTypeUserRole)){
             LOG.warn("Empty serviceTypeUserRole.");
             return null;
@@ -157,7 +151,8 @@ public class SdServiceTypeUserRoleFacadeImpl implements SdServiceTypeUserRoleFac
         // return sorted result
         List<ServiceSearchEnum> serviceSearchKeyList = new LinkedList<>();
         filterSearchKey.forEach(searchKey -> {
-            serviceSearchKeyList.add(ServiceSearchEnum.getEnum(searchKey));
+            ServiceSearchEnum searchEnum = ServiceSearchEnum.getEnum(searchKey);
+            serviceSearchKeyList.add(searchEnum);
         });
         serviceSearchKeyList.sort(Comparator.comparing(ServiceSearchEnum::getKeyDesc));
         return serviceSearchKeyList;
