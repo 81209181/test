@@ -438,3 +438,13 @@ BEGIN
     :NEW.MODIFYDATE := SYSDATE;
 END;
 /
+
+
+CREATE TABLE PUBLIC_HOLIDAY
+(
+    PUBLIC_HOLIDAY DATE not null
+        constraint PK_PUBLIC_HOLIDAY
+            primary key,
+    DESCRIPTION VARCHAR2(50)
+);
+/

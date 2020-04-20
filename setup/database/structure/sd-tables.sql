@@ -90,7 +90,13 @@ CREATE TABLE TICKET_REMARKS
 CREATE INDEX IDX_TICKET_REMARKS_1 ON TICKET_REMARKS (TICKET_MAS_ID);
 CREATE INDEX IDX_TICKET_REMARKS_2 ON TICKET_REMARKS (CREATEDATE);
 
-
+--------------------------------------------------------------------------------------------------
+create table TICKET_FILE_UPLOAD
+(
+    TICKET_MAS_ID NUMBER not null,
+    FILE_NAME     VARCHAR2(200),
+    FILE_UPLOAD   BLOB
+);
 
 
 
@@ -199,4 +205,4 @@ CREATE TABLE UT_CALL_RESULT_RECORD
     MODIFYBY                      varchar2(10)
 );
 CREATE INDEX IDX_UT_CALL_RESULT_RECORD_1 ON UT_CALL_RESULT_RECORD (UT_CALL_ID);
-
+--------------------------------------------------------------------------------------------------

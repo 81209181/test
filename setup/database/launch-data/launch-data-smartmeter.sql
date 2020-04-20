@@ -1,18 +1,57 @@
--- service type
-insert into service_type(service_type_code,service_type_name,createby,modifyby)
-values('E_CLOUD','Enterprise Cloud','system','system');
-insert into service_type(service_type_code,service_type_name,createby,modifyby)
-values('EC_365','Enterprise Cloud 365','system','system');
-insert into service_type(service_type_code,service_type_name,createby,modifyby)
-values('VOIP','voice VoIP','system','system');
-insert into service_type(service_type_code,service_type_name,createby,modifyby)
-values('BN','Broadaband','system','system');
-insert into service_type(service_type_code,service_type_name,createby,modifyby)
-values('FN','Fix Number','system','system');
-insert into service_type(service_type_code,service_type_name,createby,modifyby)
-values('METER','Smart Meter','system','system');
+-- pre-launch
+--------------------------------------------------------------------------------------------------
+-- Auto Retry (re-execute certain methods)
+CREATE SEQUENCE  SEQ_AUTO_RETRY_ID START WITH 1;
+CREATE TABLE AUTO_RETRY
+(
+    RETRY_ID                NUMBER              default SEQ_AUTO_RETRY_ID.nextval,
+
+    CLAZZ                   VARCHAR2(100)       not null,
+    METHOD_NAME             VARCHAR2(50)        not null,
+    METHOD_PARAM            VARCHAR2(500)       not null,
+
+    STATUS                  VARCHAR2(2)         not null,
+    TRY_COUNT               NUMBER              not null,
+    MIN_WAIT_SECOND         NUMBER,
+    NEXT_TARGET_TIME        DATE,
+
+    CREATEDATE              DATE                default SYSDATE not null,
+    CREATEBY                VARCHAR2(10)        not null,
+    MODIFYDATE              DATE                default SYSDATE not null,
+    MODIFYBY                VARCHAR2(10)        not null,
+    REMARKS                 VARCHAR2(250),
+    constraint AUTO_RETRY_PK primary key (RETRY_ID)
+);
+CREATE INDEX IDX_AUTO_RETRY_1 ON AUTO_RETRY (STATUS);
+CREATE INDEX IDX_AUTO_RETRY_2 ON AUTO_RETRY (NEXT_TARGET_TIME);
 
 
+CREATE OR REPLACE TRIGGER TRIGGER_AUTO_RETRY_1
+    BEFORE INSERT ON AUTO_RETRY
+    FOR EACH ROW
+BEGIN
+    :NEW.CREATEDATE := SYSDATE;
+END;
+/
+CREATE OR REPLACE TRIGGER TRIGGER_AUTO_RETRY_2
+    BEFORE UPDATE ON AUTO_RETRY
+    FOR EACH ROW
+BEGIN
+    :NEW.CREATEDATE := :OLD.CREATEDATE;
+    :NEW.CREATEBY := :OLD.CREATEBY;
+    :NEW.MODIFYDATE := SYSDATE;
+END;
+/
+--------------------------------------------------------------------------------------------------
+create table SERVICE_TYPE_USER_ROLE
+ (
+     ROLE_ID                       VARCHAR2(20)             not null,
+     SERVICE_TYPE_CODE             VARCHAR2(10)             not null,
+     CREATEDATE                    DATE                     default SYSDATE not null,
+     CREATEBY                      VARCHAR2(12)             not null
+ );
+CREATE UNIQUE INDEX IDX_SERVICE_TYPE_USER_ROLE ON SERVICE_TYPE_USER_ROLE (ROLE_ID, SERVICE_TYPE_CODE);
+/
 INSERT INTO SD.SERVICE_TYPE_USER_ROLE (SERVICE_TYPE_CODE, ROLE_ID, CREATEDATE, CREATEBY) VALUES ('BN', 'E_FIELD', TO_DATE('2020-04-16 16:11:03', 'YYYY-MM-DD HH24:MI:SS'), '01634476');
 INSERT INTO SD.SERVICE_TYPE_USER_ROLE (SERVICE_TYPE_CODE, ROLE_ID, CREATEDATE, CREATEBY) VALUES ('FN', 'E_FIELD', TO_DATE('2020-04-16 16:13:20', 'YYYY-MM-DD HH24:MI:SS'), '01634476');
 INSERT INTO SD.SERVICE_TYPE_USER_ROLE (SERVICE_TYPE_CODE, ROLE_ID, CREATEDATE, CREATEBY) VALUES ('EC_365', 'E_FIELD', TO_DATE('2020-04-16 16:12:26', 'YYYY-MM-DD HH24:MI:SS'), '01634476');
@@ -52,5 +91,7 @@ INSERT INTO SD.SERVICE_TYPE_USER_ROLE (SERVICE_TYPE_CODE, ROLE_ID, CREATEDATE, C
 INSERT INTO SD.SERVICE_TYPE_USER_ROLE (SERVICE_TYPE_CODE, ROLE_ID, CREATEDATE, CREATEBY) VALUES ('E_CLOUD', 'TH__O_NFM', TO_DATE('2020-04-16 16:11:40', 'YYYY-MM-DD HH24:MI:SS'), '01634476');
 INSERT INTO SD.SERVICE_TYPE_USER_ROLE (SERVICE_TYPE_CODE, ROLE_ID, CREATEDATE, CREATEBY) VALUES ('EC_365', 'TH__O_NFM', TO_DATE('2020-04-16 16:12:26', 'YYYY-MM-DD HH24:MI:SS'), '01634476');
 INSERT INTO SD.SERVICE_TYPE_USER_ROLE (SERVICE_TYPE_CODE, ROLE_ID, CREATEDATE, CREATEBY) VALUES ('BN', 'TH__O_USC', TO_DATE('2020-04-16 16:11:03', 'YYYY-MM-DD HH24:MI:SS'), '01634476');
+--------------------------------------------------------------------------------------------------
 
-commit;
+
+-- post-launch
