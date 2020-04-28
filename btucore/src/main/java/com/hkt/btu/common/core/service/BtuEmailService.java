@@ -7,7 +7,7 @@ import java.util.Map;
 public interface BtuEmailService {
     void reload();
 
-    void send(String recipient, String subjectText, String bodyText) throws MessagingException;
+    void send(String recipient, String recipientName, String subjectText, String bodyText) throws MessagingException;
 
     void send(String templateId, String recipient, File file,Map<String, Object> dataMap) throws MessagingException;
 

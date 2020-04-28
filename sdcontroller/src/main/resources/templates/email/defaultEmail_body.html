@@ -32,11 +32,10 @@
                     <tr>
                         <td>
                             <div style="margin:20px">
-                                <div class="email-opening" style="margin-bottom: 40px">
+                                <div th:if="!${#strings.isEmpty(email_basic_recipient_name)}" class="email-opening" style="margin-bottom: 40px">
                                     <p>
                                         Dear
-                                        <span th:if="${#strings.isEmpty(email_basic_recipient_name)}"> Valued Customer,</span>
-                                        <span th:if="!${#strings.isEmpty(email_basic_recipient_name)}" th:text="${email_basic_recipient_name}+','"></span>
+                                        <span th:text="${email_basic_recipient_name}+','"></span>
                                         <br><br>
                                     </p>
                                 </div>
@@ -44,7 +43,7 @@
 
 
                                 <div class="email-content">
-                                    <p th:text="${default_email_body}"></p>
+                                    <div th:remove="tag" th:utext="${default_email_body}"></div>
                                 </div>
 
 
