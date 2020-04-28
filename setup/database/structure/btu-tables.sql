@@ -106,9 +106,9 @@ CREATE TABLE CRON_JOB_LOG(
     ACTION              varchar2(10),
     SERVER_IP           varchar2(50),
 
-    CREATEDATE          date default SYSDATE not null,
-    CREATEBY            number                                 not null,
-    MODIFYDATE          date default SYSDATE not null
+    CREATEDATE          date default SYSDATE                 not null,
+    CREATEBY            varchar2(12)                         not null,
+    MODIFYDATE          date default SYSDATE                 not null
 );
 CREATE INDEX IDX_CRON_JOB_LOG_1 ON CRON_JOB_LOG (SERVER_IP);
 CREATE INDEX IDX_CRON_JOB_LOG_2 ON CRON_JOB_LOG (JOB_CLASS);
