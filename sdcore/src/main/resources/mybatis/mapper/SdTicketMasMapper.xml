@@ -192,11 +192,12 @@
             resultType="com.hkt.btu.sd.core.dao.entity.SdTicketStatisticEntity">
         select t.statisticDate as statisticDate,
         count(tm.TICKET_TYPE) as totalCount,
-        concat(tm.OWNING_ROLE,concat('(',concat(tm.TICKET_TYPE,')'))) as statistics
+        concat(ur.ROLE_DESC,concat('(',concat(tm.TICKET_TYPE,')'))) as statistics
         from TICKET_MAS tm
+        inner join USER_ROLE ur on tm.OWNING_ROLE = ur.ROLE_ID
         right join (select to_char(SYSDATE - LEVEL + 1, 'yyyy-mm-dd') statisticDate from dual connect by level &lt;= 90) t
         on to_char(tm.CREATEDATE, 'yyyy-mm-dd') = t.statisticDate
-        group by t.statisticDate, concat(tm.OWNING_ROLE,concat('(',concat(tm.TICKET_TYPE,')')))
+        group by t.statisticDate, concat(ur.ROLE_DESC,concat('(',concat(tm.TICKET_TYPE,')')))
         order by t.statisticDate
     </select>
 
@@ -204,11 +205,12 @@
             resultType="com.hkt.btu.sd.core.dao.entity.SdTicketStatisticEntity">
         select t.statisticDate as statisticDate,
                count(tm.STATUS) as totalCount,
-               concat(tm.OWNING_ROLE,concat('(',concat(tm.STATUS,')'))) as statistics
+               concat(ur.ROLE_DESC,concat('(',concat(tm.STATUS,')'))) as statistics
         from TICKET_MAS tm
+        inner join USER_ROLE ur on tm.OWNING_ROLE = ur.ROLE_ID
         right join (select to_char(SYSDATE - LEVEL + 1, 'yyyy-mm-dd') statisticDate from dual connect by level &lt;= 90) t
         on to_char(tm.CREATEDATE, 'yyyy-mm-dd') = t.statisticDate
-        group by t.statisticDate,concat(tm.OWNING_ROLE,concat('(',concat(tm.STATUS,')')))
+        group by t.statisticDate,concat(ur.ROLE_DESC,concat('(',concat(tm.STATUS,')')))
         order by t.statisticDate
     </select>
 </mapper>
