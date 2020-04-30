@@ -10,7 +10,7 @@ import javax.annotation.Resource;
 @DisallowConcurrentExecution
 public class SdCleanOutDatePwdHistJob extends QuartzJobBean {
 
-    @Resource(name = "userMapper")
+    @Resource
     SdUserMapper userMapper;
 
     @Override

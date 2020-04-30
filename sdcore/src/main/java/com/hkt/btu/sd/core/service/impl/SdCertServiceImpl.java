@@ -118,7 +118,7 @@ public class SdCertServiceImpl implements SdCertService {
             long remainingDays = checkCertBean.getRemainingDays();
 
             String plaintextFeedback = String.format(
-                    "Url:[%s], expires at %s. %d day(s) left.", url, expiryDate, remainingDays);
+                    "Url: [%s] expires at %s. %d day(s) left.", url, expiryDate, remainingDays);
             if(StringUtils.isNotEmpty(errorMsg)){
                 plaintextFeedback += " (error: " + errorMsg + ")";
             }

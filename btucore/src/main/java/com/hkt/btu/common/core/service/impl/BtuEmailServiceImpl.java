@@ -73,11 +73,12 @@ public class BtuEmailServiceImpl implements BtuEmailService {
     }
 
     @Override
-    public void send(String recipient, String subjectText, String bodyText) throws MessagingException {
+    public void send(String recipient, String recipientName, String subjectText, String bodyText) throws MessagingException {
         String templateId = BtuEmailBean.DEFAULT_EMAIL.TEMPLATE_ID;
 
         // prepare email data
         Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put(EMAIL_BASIC_RECIPIENT, recipientName);
         dataMap.put(BtuEmailBean.DEFAULT_EMAIL.EMAIL_SUBJECT, subjectText);
         dataMap.put(BtuEmailBean.DEFAULT_EMAIL.EMAIL_BODY, bodyText);
 
