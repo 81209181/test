@@ -53,4 +53,10 @@
     <insert id="createPublicHoliday">
         insert into PUBLIC_HOLIDAY (PUBLIC_HOLIDAY, DESCRIPTION) values (trunc(#{publicHoliday}), #{description})
     </insert>
+
+    <select id="getPublicHolidayByDate" resultMap="PublicHolidayEntity">
+        SELECT * FROM PUBLIC_HOLIDAY
+        WHERE PUBLIC_HOLIDAY > #{date}
+        ORDER BY PUBLIC_HOLIDAY
+    </select>
 </mapper>

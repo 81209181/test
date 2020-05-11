@@ -18,4 +18,6 @@ public interface SdPublicHolidayService {
     List<SdPublicHolidayBean> getAllPublicHolidayList();
 
     void insertPublicHoliday(List<SdPublicHolidayBean> beanList);
+
+    List<SdPublicHolidayBean> getPublicHolidayByDate(LocalDate date);
 }

@@ -16,6 +16,8 @@ public interface SdPublicHolidayMapper {
 
     List<SdPublicHolidayEntity> getAllPublicHolidayList();
 
+    List<SdPublicHolidayEntity> getPublicHolidayByDate(@Param("date") LocalDate date);
+
     void insertPublicHoliday(@Param("entityList") List<SdPublicHolidayEntity> entityList);
 
     void deletePublicHoliday(@Param("publicHoliday") LocalDate publicHoliday);
