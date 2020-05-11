@@ -154,4 +154,23 @@ public class SdPublicHolidayFacadeImpl implements SdPublicHolidayFacade {
             return false;
         }
     }
+
+    @Override
+    public List<SdPublicHolidayData> getPublicHolidayByDate(LocalDate date) {
+        if (date == null) {
+            throw new InvalidInputException("Input public holiday is empty.");
+        }
+
+        List<SdPublicHolidayBean> publicHolidayList = sdPublicHolidayService.getPublicHolidayByDate(date);
+
+        if (CollectionUtils.isEmpty(publicHolidayList)) {
+            return null;
+        }
+
+        return publicHolidayList.stream().map(bean -> {
+            SdPublicHolidayData data = new SdPublicHolidayData();
+            publicHolidayDataPopulator.populate(bean, data);
+            return data;
+        }).collect(Collectors.toList());
+    }
 }

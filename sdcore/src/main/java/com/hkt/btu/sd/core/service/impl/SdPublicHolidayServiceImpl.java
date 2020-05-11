@@ -115,4 +115,19 @@ public class SdPublicHolidayServiceImpl implements SdPublicHolidayService {
             sdPublicHolidayMapper.insertPublicHoliday(entityList);
         }
     }
+
+    @Override
+    public List<SdPublicHolidayBean> getPublicHolidayByDate(LocalDate date) {
+        List<SdPublicHolidayEntity> publicHolidayList = sdPublicHolidayMapper.getPublicHolidayByDate(date);
+
+        if (CollectionUtils.isEmpty(publicHolidayList)) {
+            return null;
+        }
+
+        return publicHolidayList.stream().map(entity ->{
+            SdPublicHolidayBean bean = new SdPublicHolidayBean();
+            publicHolidayBeanPopulator.populate(entity, bean);
+            return bean;
+        }).collect(Collectors.toList());
+    }
 }
