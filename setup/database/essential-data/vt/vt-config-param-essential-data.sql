@@ -74,7 +74,7 @@ values ('API_UT_CALL','type','v1','String', current_timestamp, 0, current_timest
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('API_OSS', 'systemName', 'OSS', 'String', sysdate, 0, sysdate, 0);
 Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
-values ('API_WFM', 'url', 'http://10.6.52.130:58080', 'String', sysdate, 0, sysdate, 0);
+values ('API_OSS', 'url', 'https://10.6.52.130:58080', 'String', sysdate, 0, sysdate, 0);
 
 -- check cert job
 INSERT INTO CONFIG_PARAM (CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEBY, MODIFYBY)
