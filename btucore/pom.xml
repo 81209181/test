@@ -11,6 +11,7 @@
 
     <artifactId>btucore</artifactId>
 
+    <version>0.0.2a-SNAPSHOT</version>
     <name>btucore</name>
 
     <properties>
