@@ -196,7 +196,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
 
         Map<String, String> searchFormData = Map.of(
                 "serviceType", SdServiceTypeBean.SERVICE_TYPE.SMART_METER,
-                "serviceNumber", String.valueOf(poleId),
+                "serviceNumberExact", String.valueOf(poleId),
                 "createDateFrom", createDateFromStr,
                 "createDateTo", createDateToStr,
                 "ticketType", ticketType,
