@@ -139,7 +139,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
         // get close date
         SdTicketMasData ticketMasData = ticketFacade.getTicketMas(ticketMasId);
         String completeDate = ticketMasData==null ? LocalDateTime.now().format(DEFAULT_DATE_TIME_FORMAT) : ticketMasData.getCompleteDate().format(DEFAULT_DATE_TIME_FORMAT);
-        String arrivalDate = ticketMasData==null ? null : ticketMasData.getArrivalDate().format(DEFAULT_DATE_TIME_FORMAT);
+        String arrivalDate = ( ticketMasData==null || ticketMasData.getArrivalDate()==null )? null : ticketMasData.getArrivalDate().format(DEFAULT_DATE_TIME_FORMAT);
 
         // get pole id
         List<SdTicketServiceData> serviceInfo = ticketFacade.getServiceInfo(ticketMasId);
