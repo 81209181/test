@@ -3,6 +3,8 @@ let time2reload, countdown, timeOut, currentURL, isLoginPage;
 $(document).ready(function () {
     prepareAjax();
 
+    overrideHtml5Input();
+
     getCurrentURL();
 
     addTimeOutCookie();
@@ -145,4 +147,56 @@ function getCookie(cname) {
 function addTimeOutCookie() {
     let ctx = $("meta[name='_ctx']").attr("content");
     document.cookie = "timeOut=" + new Date() + ";path="+ ctx;
+}
+
+function overrideHtml5Input () {
+    $('.datepicker-date').daterangepicker({
+        singleDatePicker: true,
+        autoUpdateInput: false,
+        locale:{
+            format: 'YYYY-MM-DD'
+        }
+    })
+
+    $('.datepicker-date').focus(function(){
+        this.blur();
+    });
+
+    $('.datepicker-date').on('apply.daterangepicker',function(ev,picker){
+        $(this).val(picker.startDate.format('YYYY-MM-DD'));
+    })
+
+    // time picker
+    $(".datepicker-time").daterangepicker({
+        singleDatePicker: true,
+        timePicker: true,
+        timePicker24Hour: true,
+        timePickerIncrement: 1,
+        autoApply: true,
+        locale: {
+            format: 'HH:mm'
+        }
+    }).on('show.daterangepicker', function (ev, picker) {
+        picker.container.find(".calendar-table").hide();
+    });
+
+    // date time picker
+    $(".datepicker-datetime-local").daterangepicker({
+        singleDatePicker: true,
+        opens: "left",
+        timePicker: true,
+        timePicker24Hour: true,
+        autoUpdateInput: false,
+        locale: {
+            format:'YYYY-MM-DD HH:mm'
+        }
+    });
+
+    $('.datepicker-datetime-local').on('apply.daterangepicker',function(ev,picker){
+        $(this).val(picker.startDate.format('YYYY-MM-DD HH:mm'));
+    })
+
+    $('.datepicker-datetime-local').on('cancel.daterangepicker',function(ev,picker){
+        $(this).val('');
+    })
 }
