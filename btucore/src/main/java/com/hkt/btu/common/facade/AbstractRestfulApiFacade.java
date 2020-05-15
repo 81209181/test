@@ -72,7 +72,8 @@ public abstract class AbstractRestfulApiFacade {
         }
 
         ClientBuilder clientBuilder = ClientBuilder.newBuilder();
-        if (!siteConfigService.isProductionServer()) {
+        boolean bypassSsl = !siteConfigService.isProductionServer() || siteInterfaceBean.isBypassSsl();
+        if (bypassSsl) {
             // ignore SSL validation in non-Production environment
             SSLContext sslcontext;
             try {

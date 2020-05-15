@@ -8,6 +8,7 @@ public class BtuApiProfileBean extends BaseBean {
     private String url;
     private String userName;
     private String password;
+    private boolean bypassSsl;
 
     private MultivaluedMap<String, Object> headerMap;
     private MultivaluedMap<String, Object> queryParamMap;
@@ -43,6 +44,14 @@ public class BtuApiProfileBean extends BaseBean {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isBypassSsl() {
+        return bypassSsl;
+    }
+
+    public void setBypassSsl(boolean bypassSsl) {
+        this.bypassSsl = bypassSsl;
     }
 
     public MultivaluedMap<String, Object> getHeaderMap() {
