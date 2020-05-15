@@ -63,7 +63,7 @@ public class OssApiFacadeImpl extends AbstractRestfulApiFacade implements OssApi
         // prepare post body
         OssSmartMeterStatusUpdateData statusUpdateData = new OssSmartMeterStatusUpdateData();
         statusUpdateData.setPoleID(poleId);
-        statusUpdateData.setTicketId(ticketId);
+        statusUpdateData.setTicketID(ticketId);
         statusUpdateData.setTime(time);
         statusUpdateData.setAction(action);
         Entity<OssSmartMeterStatusUpdateData> postBodyEntity = Entity.entity(statusUpdateData, MediaType.APPLICATION_JSON_TYPE);
