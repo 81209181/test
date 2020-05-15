@@ -35,6 +35,8 @@ values ('API_BES', 'systemName', 'BES', 'String', current_timestamp, 0, current_
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('API_BES', 'url', 'https://apicrmn.bpu.pccw.com', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
+values ('API_BES', 'bypassSsl', 'true', 'Boolean', current_timestamp, 0, current_timestamp, 0);
+insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('API_BES', 'header.OperatorId', '999007', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('API_BES', 'header.Authorization', 'input on page', 'String', current_timestamp, 0, current_timestamp, 0);
@@ -72,6 +74,12 @@ Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE
 values ('API_UT_CALL','seq','2','String', current_timestamp, 0, current_timestamp, 0);
 Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
 values ('API_UT_CALL','type','v1','String', current_timestamp, 0, current_timestamp, 0);
+
+-- OSS
+insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
+values ('API_OSS', 'systemName', 'OSS', 'String', sysdate, 0, sysdate, 0);
+Insert into CONFIG_PARAM (CONFIG_GROUP,CONFIG_KEY,CONFIG_VALUE,CONFIG_VALUE_TYPE,CREATEDATE,CREATEBY,MODIFYDATE,MODIFYBY)
+values ('API_OSS', 'url', 'https://10.174.1.28:58443', 'String', sysdate, 0, sysdate, 0);
 
 -- check cert job
 INSERT INTO CONFIG_PARAM (CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEBY, MODIFYBY)
