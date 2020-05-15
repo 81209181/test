@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public class OssSmartMeterStatusUpdateData implements DataInterface {
 
     private Integer poleID;
-    private Integer ticketId;
+    private Integer ticketID;
     private String time;
     private String action;
 
@@ -21,12 +21,12 @@ public class OssSmartMeterStatusUpdateData implements DataInterface {
         this.poleID = poleID;
     }
 
-    public Integer getTicketId() {
-        return ticketId;
+    public Integer getTicketID() {
+        return ticketID;
     }
 
-    public void setTicketId(Integer ticketId) {
-        this.ticketId = ticketId;
+    public void setTicketID(Integer ticketID) {
+        this.ticketID = ticketID;
     }
 
     public String getTime() {
