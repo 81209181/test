@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context displayName="servicedesk" path="/servicedesk" reloadable="true"
+		 swallowOutput="true" processTlds="false">
+	<Resource auth="Container"
+			  name="jdbc/servdesk"
+			  driverClassName="oracle.jdbc.OracleDriver"
+			  maxIdle="2" maxTotal="2" maxWaitMillis="30000" removeAbandonedOnBorrow="true"
+			  logAbandoned="true" removeAbandonedTimeout="3000"
+			  validationQueryTimeout="3000"
+			  initialSize="2" minIdle="2"  validationQuery="select 1 from dual"
+			  username="${servicedesk.db.username}"
+			  password="${servicedesk.db.password}"
+			  type="javax.sql.DataSource"
+			  url="${servicedesk.db.url}"  />
+
+</Context>
