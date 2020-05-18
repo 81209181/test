@@ -47,6 +47,9 @@ $().ready(function(){
                         $('#symptomList').find('option[value=' + item.symptomCode + ']').attr('selected', 'selected');
                     }
                     $.each(j,function(key,value){
+                        if (key == 'reportTime' && value != null) {
+                            value = value.replace("T", " ");
+                        }
                         service.find('input[name='+key+']').val(value);
                     });
 
@@ -79,6 +82,9 @@ $().ready(function(){
             });
             form_json['faults'] = faults;
             form_json['ticketMasId']=ticketMasId;
+            if (form_json['reportTime']) {
+                form_json['reportTime'] = form_json['reportTime'].replace(" ","T");
+            }
             arr.push(form_json);
         });
         $.ajax({
@@ -632,9 +638,6 @@ function meterUiCtrl(val){
         ngn3Btn.hide();
         utDiv.hide();
         $('#btnMakeAppointment').attr('disabled', true);
-
-        $('input[name=reportTime]').attr('pattern','[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}');
-        $('input[name=reportTime]').attr('placeholder','1900-01-01T01:00');
         meterEventDiv.show();
     } else {
         $('input[name=reportTime]').attr('disabled', true);
@@ -753,7 +756,7 @@ function getUTCallRequestResult(utCallId, serviceCode) {
 
 function getAjaxEventOfPoleDataTable() {
     let poleId = bsn;
-    let fromTime = $("#service").find('input[name=reportTime]').val();
+    let fromTime = $("#service").find('input[name=reportTime]').val().replace(" ", "T");
     let toTime = completeDate;
 
     if (poleId.indexOf("D") != -1 || fromTime === "") {
