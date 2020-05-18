@@ -4,6 +4,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Cached Object info</title>
+    <script type="text/javascript" th:src="@{/lib/JsonDiff/jdd.min.js(v=${projectBuildtime})}"></script>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag" th:object="${cacheProfile}">
@@ -56,14 +57,23 @@
             <input class="form-control" readonly th:value="*{modifydate}">
         </div>
     </div>
+    <style type="text/css">
+        .textarea1 {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #a9a9a9;
+            overflow: auto;
+            outline: none;
+        }
+    </style>
     <div class="form-row mt-3">
         <div class="col-md-6">
             <label>Current Cache</label>
-            <textarea rows="10" class="form-control" readonly id="current_object"></textarea>
+            <pre rows="10" class="form-control textarea1" readonly id="current_object"></pre>
         </div>
         <div class="col-md-6">
             <label>New Cache after Reload</label>
-            <textarea rows="10" class="form-control" readonly id="new_object"></textarea>
+            <pre rows="10" class="form-control textarea1" readonly id="new_object"></pre>
             <button class="btn btn-info float-right mt-3" onclick="refresh()">Refresh</button>
         </div>
     </div>

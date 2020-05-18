@@ -21,7 +21,9 @@ $(function(){
         }
         $('#current_object').text(currentObject);
         $('#new_object').text(newObject);
-        startCompare();
+        leftBlockId = $('#current_object').attr('id');
+        rightBlockId = $('#new_object').attr('id');
+        $(document).jdd(leftBlockId, rightBlockId);
     }).fail(function(e){
         var responseError = e.responseText ? e.responseText : "Get failed.";
         showErrorMsg(responseError);

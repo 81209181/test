@@ -57,3 +57,7 @@ insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TY
 values ('API_NORARS', 'userName', 'sd', 'String', current_timestamp, 0, current_timestamp, 0);
 insert into CONFIG_PARAM(CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
 values ('API_NORARS', 'password', 'input on page', 'String', current_timestamp, 0, current_timestamp, 0);
+
+--CHECK_CERT_JOB
+INSERT INTO CONFIG_PARAM (CONFIG_GROUP, CONFIG_KEY, CONFIG_VALUE, CONFIG_VALUE_TYPE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY, ENCRYPT)
+VALUES('CHECK_CERT_JOB', 'recipient', 'jason.yh.kong@pccw.com,jason@pccw.com,kong@pccw.com', 'String', SYSDATE, '01634476', SYSDATE, '01634476', 'N');
