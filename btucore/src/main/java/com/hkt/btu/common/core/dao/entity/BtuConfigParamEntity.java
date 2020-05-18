@@ -29,9 +29,11 @@ public class BtuConfigParamEntity extends BaseEntity {
 
     public static class CHECK_CERT_JOB {
         public static final String CONFIG_GROUP = "CHECK_CERT_JOB";
-        public static class CONFIG_KEY {
-            public static final String RECIPIENT = "recipient";
-        }
+    }
+
+    public static class CRON_JOB {
+        public static final String CONFIG_GROUP = "CRONJOB";
+        public static final String CONFIG_KEY_MULTIPLE_RECIPIENT = "multipleRecipient";
     }
 
     public static class SEARCH_KEY_TYPE_MAPPING {

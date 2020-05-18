@@ -50,7 +50,7 @@ public class SdCheckCertJob extends QuartzJobBean {
 
         // send feedback email
         try {
-            String recipient = configParamService.getString(JOB_ID, BtuConfigParamEntity.CHECK_CERT_JOB.CONFIG_KEY.RECIPIENT);
+            String recipient = configParamService.getString(BtuConfigParamEntity.CRON_JOB.CONFIG_GROUP, BtuConfigParamEntity.CRON_JOB.CONFIG_KEY_MULTIPLE_RECIPIENT);
             recipient = StringUtils.isEmpty(recipient) ? siteConfigService.getSiteConfigBean().getSystemSupportEmail() : recipient;
             String[] recipients = recipient.split(",");
             for (String reci : recipients) {
