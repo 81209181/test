@@ -52,7 +52,10 @@ public class SdCheckCertJob extends QuartzJobBean {
         try {
             String recipient = configParamService.getString(JOB_ID, BtuConfigParamEntity.CHECK_CERT_JOB.CONFIG_KEY.RECIPIENT);
             recipient = StringUtils.isEmpty(recipient) ? siteConfigService.getSiteConfigBean().getSystemSupportEmail() : recipient;
-            emailService.send(recipient, null, "SdCheckCertJob report", emailBody);
+            String[] recipients = recipient.split(",");
+            for (String reci : recipients) {
+                emailService.send(reci, null, "SdCheckCertJob report", emailBody);
+            }
         } catch (MessagingException e) {
             throw new JobExecutionException(e);
         }
