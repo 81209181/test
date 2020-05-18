@@ -7,7 +7,6 @@ $(function(){
         if (typeof res[0] == 'string' && typeof res[1] == 'string') {
             try {
                 currentObject = JSON.stringify(JSON.parse(res[0]), null, 2);
-                console.log(currentObject);
             } catch(e) {
                 currentObject = res[0];
             }
@@ -25,8 +24,6 @@ $(function(){
         leftBlockId = $('#current_object').attr('id');
         rightBlockId = $('#new_object').attr('id');
         $(document).jdd(leftBlockId, rightBlockId);
-
-        // startCompare(currentObject, newObject);
     }).fail(function(e){
         var responseError = e.responseText ? e.responseText : "Get failed.";
         showErrorMsg(responseError);
