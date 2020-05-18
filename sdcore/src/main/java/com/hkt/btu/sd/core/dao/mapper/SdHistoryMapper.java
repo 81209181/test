@@ -11,7 +11,6 @@ public interface SdHistoryMapper {
     int cleanConfigParamHistory(LocalDate cutoffDate);
     int cleanCronJobHistory(LocalDate cutoffDate);
     int cleanPathCtrlHistory(LocalDate cutoffDate);
-    int cleanUserPwdHistory(LocalDate cutoffDate);
     int cleanUserRoleHistory(LocalDate cutoffDate);
     int cleanUserRolePathCtrlHistory(LocalDate cutoffDate);
     int cleanUserUserRoleHistory(LocalDate cutoffDate);

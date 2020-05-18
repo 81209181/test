@@ -40,10 +40,6 @@ public class SdHistoryServiceImpl implements SdHistoryService {
         deleteCount = historyMapper.cleanPathCtrlHistory(cutoffDate);
         LOG.info("Deleted {} row(s) of path ctrl history.", deleteCount);
 
-        LOG.info("Cleaning user password history before {}...", cutoffDate);
-        deleteCount = historyMapper.cleanUserPwdHistory(cutoffDate);
-        LOG.info("Deleted {} row(s) of user password history.", deleteCount);
-
         LOG.info("Cleaning user role history before {}...", cutoffDate);
         deleteCount = historyMapper.cleanUserRoleHistory(cutoffDate);
         LOG.info("Deleted {} row(s) of user role history.", deleteCount);

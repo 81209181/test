@@ -19,11 +19,6 @@
         where trunc(CREATEDATE) &lt; trunc(#{cutoffDate})
     </delete>
 
-    <delete id="cleanUserPwdHistory">
-        delete USER_PWD_HIST
-        where trunc(CREATEDATE) &lt; trunc(#{cutoffDate})
-    </delete>
-
     <delete id="cleanUserRoleHistory">
         delete USER_ROLE_HIST
         where trunc(CREATEDATE) &lt; trunc(#{cutoffDate})
