@@ -17,6 +17,9 @@ public class BtuSiteConfigBean extends BaseBean {
 
     public static final String DEFAULT_SYSTEM_SUPPORT_EMAIL = "jason.yh.kong@pccw.com";
 
+    public static final String DEFAULT_PROXY_HOST = "proxy.pccw.com";
+    public static final Integer DEFAULT_PROXY_PORT = 8080;
+
 
     // server
     private String givenDomain;
@@ -33,6 +36,10 @@ public class BtuSiteConfigBean extends BaseBean {
     private String mailHost;
     private Integer mailPort;
     private String mailUsername;
+
+    // proxy
+    private String proxyHost;
+    private Integer proxyPort;
 
     private String configGroup;
     private String configKey;
@@ -221,6 +228,22 @@ public class BtuSiteConfigBean extends BaseBean {
 
     public void setSystemSupportEmail(String systemSupportEmail) {
         this.systemSupportEmail = systemSupportEmail;
+    }
+
+    public String getProxyHost() {
+        return proxyHost;
+    }
+
+    public void setProxyHost(String proxyHost) {
+        this.proxyHost = proxyHost;
+    }
+
+    public Integer getProxyPort() {
+        return proxyPort;
+    }
+
+    public void setProxyPort(Integer proxyPort) {
+        this.proxyPort = proxyPort;
     }
 
     @Override

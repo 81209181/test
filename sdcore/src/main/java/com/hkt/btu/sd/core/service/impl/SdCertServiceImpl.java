@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.core.service.impl;
 
+import com.hkt.btu.common.core.service.bean.BtuSiteConfigBean;
 import com.hkt.btu.common.javax.net.ssl.DummyTrustManager;
 import com.hkt.btu.sd.core.service.SdCertService;
 import com.hkt.btu.sd.core.service.bean.SdCheckCertBean;
@@ -13,6 +14,8 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -32,14 +35,14 @@ public class SdCertServiceImpl implements SdCertService {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    private SdCheckCertBean checkCert(String path) {
+    private SdCheckCertBean checkCert(String path, BtuSiteConfigBean siteConfigBean) {
         final LocalDate TODAY = LocalDate.now();
 
         LOG.info(String.format("Checking cert of [%s]...", path));
 
         try {
             // get connection, trust connection of path
-            HttpsURLConnection connection = getHttpsURLConnection(path);
+            HttpsURLConnection connection = getHttpsURLConnection(path, siteConfigBean.getProxyHost(), siteConfigBean.getProxyPort());
 
             // get certificates
             Certificate[] serverCertificates = connection.getServerCertificates();
@@ -74,8 +77,9 @@ public class SdCertServiceImpl implements SdCertService {
         }
     }
 
-    private HttpsURLConnection getHttpsURLConnection(String url) throws IOException, NoSuchAlgorithmException, KeyManagementException {
-        HttpsURLConnection connection = (HttpsURLConnection) new URL(url).openConnection();
+    private HttpsURLConnection getHttpsURLConnection(String url, String proxyHost, Integer porxyPort) throws IOException, NoSuchAlgorithmException, KeyManagementException {
+        Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, porxyPort));
+        HttpsURLConnection connection = (HttpsURLConnection) new URL(url).openConnection(proxy);
         connection.setRequestMethod("GET");
         connection.setInstanceFollowRedirects(true);
         connection.setConnectTimeout(3000);
@@ -89,7 +93,7 @@ public class SdCertServiceImpl implements SdCertService {
     }
 
     @Override
-    public List<SdCheckCertBean> checkCert(List<String> hostList) {
+    public List<SdCheckCertBean> checkCert(List<String> hostList, BtuSiteConfigBean siteConfigBean) {
         if(CollectionUtils.isEmpty(hostList)){
             LOG.warn("No url found for checking cert.");
             return null;
@@ -97,7 +101,7 @@ public class SdCertServiceImpl implements SdCertService {
 
         List<SdCheckCertBean> checkCertBeanList = new ArrayList<>();
         for (String url : hostList) {
-            SdCheckCertBean checkCertBean = checkCert(url);
+            SdCheckCertBean checkCertBean = checkCert(url, siteConfigBean);
             checkCertBeanList.add(checkCertBean);
         }
         return checkCertBeanList;

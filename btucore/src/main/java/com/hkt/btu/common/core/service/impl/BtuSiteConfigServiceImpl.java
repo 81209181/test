@@ -112,6 +112,9 @@ public class BtuSiteConfigServiceImpl implements BtuSiteConfigService {
 
         String systemSupportEmail = MapUtils.getString(map, BtuConfigParamEntity.SITE.CONFIG_KEY_SYSTEM_SUPPORT);
 
+        String proxyHost = MapUtils.getString(map, BtuConfigParamEntity.SITE.CONFIG_KEY_PROXY_HOST);
+        Integer proxyPort = MapUtils.getInteger(map, BtuConfigParamEntity.SITE.CONFIG_KEY_PROXY_PORT);
+
         // set config value from db (if not given may set hardcode value)
         siteConfigBean.setAppName(appName);
         siteConfigBean.setGivenDomain(givenDomain);
@@ -135,6 +138,9 @@ public class BtuSiteConfigServiceImpl implements BtuSiteConfigService {
 
         siteConfigBean.setSystemSupportEmail(
                 systemSupportEmail==null ? BtuSiteConfigBean.DEFAULT_SYSTEM_SUPPORT_EMAIL : systemSupportEmail );
+
+        siteConfigBean.setProxyHost( proxyHost==null ? BtuSiteConfigBean.DEFAULT_PROXY_HOST : proxyHost );
+        siteConfigBean.setProxyPort( proxyPort==null ? BtuSiteConfigBean.DEFAULT_PROXY_PORT : proxyPort );
 
         // determine server type
         String serverHostname = siteConfigBean.getServerHostname();

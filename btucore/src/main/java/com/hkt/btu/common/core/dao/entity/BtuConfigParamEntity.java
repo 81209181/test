@@ -25,6 +25,9 @@ public class BtuConfigParamEntity extends BaseEntity {
         public static final String CONFIG_KEY_MAIL_USERNAME = "mailUsername";
 
         public static final String CONFIG_KEY_SYSTEM_SUPPORT = "systemSupportEmail";
+
+        public static final String CONFIG_KEY_PROXY_HOST = "proxyHost";
+        public static final String CONFIG_KEY_PROXY_PORT = "proxyPort";
     }
 
     public static class CHECK_CERT_JOB {
