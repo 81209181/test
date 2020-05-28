@@ -7,7 +7,6 @@
     <artifactId>servicedesk</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <modules>
-        <module>btucore</module>
         <module>sdcore</module>
         <module>sdfacade</module>
         <module>sdcontroller</module>

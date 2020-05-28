@@ -26,9 +26,9 @@
             <version>1.3.2</version>
         </dependency>
         <dependency>
-            <groupId>com.hkt.btu</groupId>
-            <artifactId>btucore</artifactId>
-            <version>0.0.2a-SNAPSHOT</version>
+            <groupId>com.hkt.btu.sds.spring</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>0.0.5-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
