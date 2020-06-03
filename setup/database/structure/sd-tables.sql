@@ -41,6 +41,8 @@ CREATE TABLE TICKET_DET
     CREATEBY           varchar2(12)             not null,
     MODIFYDATE         date                     default SYSDATE not null,
     MODIFYBY           varchar2(12)             not null,
+    WFM_COMP_INFO      VARCHAR2(4000)           ,	
+	
     CONSTRAINT PK_TICKET_DET PRIMARY KEY (TICKET_DET_ID)
 );
 CREATE INDEX IDX_TICKET_DET_1 ON TICKET_DET (TICKET_MAS_ID);
