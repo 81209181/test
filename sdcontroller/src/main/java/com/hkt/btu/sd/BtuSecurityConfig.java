@@ -11,6 +11,7 @@ import com.hkt.btu.common.spring.security.web.authentication.BtuExceptionMapping
 import com.hkt.btu.common.spring.security.web.authentication.BtuLoginSuccessHandler;
 import com.hkt.btu.common.spring.security.web.authentication.BtuLoginUrlAuthenticationEntryPoint;
 import com.hkt.btu.common.spring.security.web.authentication.logout.BtuLogoutSuccessHandler;
+import com.hkt.btu.sds.spring.security.filter.SdsRequestLoggingFilter;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +30,8 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.filter.AbstractRequestLoggingFilter;
+import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
@@ -171,6 +174,11 @@ public class BtuSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public static ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisher(){
         return new ServletListenerRegistrationBean<>(new HttpSessionEventPublisher());
+    }
+
+    @Bean
+    public AbstractRequestLoggingFilter abstractRequestLoggingFilter() {
+        return new SdsRequestLoggingFilter();
     }
 
 }
