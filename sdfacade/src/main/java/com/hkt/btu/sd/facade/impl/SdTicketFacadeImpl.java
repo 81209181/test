@@ -1,6 +1,8 @@
 package com.hkt.btu.sd.facade.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.facade.data.BtuCodeDescData;
 import com.hkt.btu.common.facade.data.PageData;
@@ -37,6 +39,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -454,14 +457,34 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         List<SdTicketContactData> contactInfo = getContactInfo(ticketMasId);
         List<SdTicketServiceData> serviceInfo = getServiceInfo(ticketMasId);
         List<SdTicketRemarkData> remarkInfo = getTicketRemarksByTicketId(ticketMasId);
+        List<Map<String, Object>> closeInfo = getCloseInfo(ticketMasId);
 
         SdTicketData ticketData = new SdTicketData();
         ticketData.setTicketMasInfo(ticketMasInfo);
         ticketData.setContactInfo(contactInfo);
         ticketData.setServiceInfo(serviceInfo);
         ticketData.setRemarkInfo(remarkInfo);
+        ticketData.setCloseInfo(closeInfo);
 
         return ticketData;
+    }
+
+    private List<Map<String, Object>> getCloseInfo(Integer ticketMasId) {
+        List<SdTicketServiceBean> ticketServiceBeanList = ticketService.getCloseInfo(ticketMasId);
+
+        if (CollectionUtils.isEmpty(ticketServiceBeanList)) {
+            return null;
+        }
+
+        List<Map<String, Object>> dataList = new LinkedList<>();
+        ticketServiceBeanList.stream().findFirst().filter(sdTicketServiceBean -> sdTicketServiceBean.getWfmCompleteInfo() != null).ifPresent(sdTicketServiceBean -> {
+            String wfmCompleteInfo = sdTicketServiceBean.getWfmCompleteInfo();
+            Type type = new TypeToken<List<Map<String, Object>>>() {}.getType();
+            List<Map<String, Object>> list = new Gson().fromJson(wfmCompleteInfo, type);
+            dataList.addAll(list);
+        });
+
+        return dataList;
     }
 
     public SdTicketMasData getTicketMas(Integer ticketMasId) {
@@ -478,8 +501,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public String closeTicketByApi(int ticketMasId, String reasonType, String reasonContent, String userId,
-                                   String arrivalTimeStr) {
+    public String closeTicketByApi(int ticketMasId, String reasonType, String reasonContent, String userId, String arrivalTimeStr, List<Map<String, Object>> wfmCompleteInfo) {
         String systemId = userService.getCurrentUserUserId();
         LOG.info(String.format("Closing ticket by API. (ticketMasId: %d , systemId: %s)", ticketMasId, systemId));
 
@@ -496,7 +518,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
         // close ticket in servicedesk
         try {
-            ticketService.closeTicket(ticketMasId, reasonType, reasonContent, arrivalTime, systemId, userId, false);
+            ticketService.closeTicket(ticketMasId, reasonType, reasonContent, arrivalTime, systemId, userId, wfmCompleteInfo, false);
             LOG.info("Closed (by API) ticket in servicedesk. (ticketMasId: " + ticketMasId + ")");
         } catch (InvalidInputException e) {
             LOG.warn(e.getMessage());
@@ -514,7 +536,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
         // close ticket in servicedesk
         try {
-            ticketService.closeTicket(ticketMasId, reasonType, reasonContent, null, contactName, contactNumber, true);
+            ticketService.closeTicket(ticketMasId, reasonType, reasonContent, null, contactName, contactNumber, null, true);
         } catch (InvalidInputException e) {
             LOG.warn(e.getMessage());
             return e.getMessage();

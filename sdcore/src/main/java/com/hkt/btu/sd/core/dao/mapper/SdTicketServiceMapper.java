@@ -34,4 +34,6 @@ public interface SdTicketServiceMapper {
     SdMakeApptEntitiy getTicketServiceByTicketDetId(@Param("ticketDetId") Integer ticketDetId);
 
     void insertServiceInfoForCloudCase(@Param("ticketId") int ticketId, @Param("createdBy") String createdBy,@Param("tenantId") String tenantId);
+
+    void updateTicketServiceByWfmCompInfo(@Param("ticketMasId") Integer ticketMasId, @Param("wfmCompleteInfo") String wfmCompleteInfo, @Param("modifyby") String modifyby);
 }

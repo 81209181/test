@@ -18,6 +18,7 @@ public class SdTicketServiceBean extends BaseBean {
     private String jobId;
     private String subsId;
     private LocalDateTime reportTime;
+    private String wfmCompleteInfo;
 
     public String getSubsId() {
         return subsId;
@@ -89,5 +90,13 @@ public class SdTicketServiceBean extends BaseBean {
 
     public void setReportTime(LocalDateTime reportTime) {
         this.reportTime = reportTime;
+    }
+
+    public String getWfmCompleteInfo() {
+        return wfmCompleteInfo;
+    }
+
+    public void setWfmCompleteInfo(String wfmCompleteInfo) {
+        this.wfmCompleteInfo = wfmCompleteInfo;
     }
 }

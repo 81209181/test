@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface SdTicketService {
@@ -40,6 +41,7 @@ public interface SdTicketService {
     List<SdTicketContactBean> getContactInfo(Integer ticketMasId);
     List<SdTicketServiceBean> getServiceInfo(Integer ticketMasId);
     List<SdSymptomBean> getSymptomList(Integer ticketMasId);
+    List<SdTicketServiceBean> getCloseInfo(Integer ticketMasId);
 
     SdMakeApptBean getTicketServiceByDetId(Integer ticketDetId);
     List<SdTicketRemarkBean> getTicketRemarksByTicketId(Integer ticketMasId);
@@ -60,7 +62,7 @@ public interface SdTicketService {
     void updateJobIdInService(Integer jobId, int ticketMasId, String userId);
     void increaseCallInCount(Integer ticketMasId);
     void closeTicket(int ticketMasId, String reasonType, String reasonContent, LocalDateTime arrivalTime,
-                     String contactName, String contactNumber, boolean nonApiClose) throws InvalidInputException;
+                     String contactName, String contactNumber, List<Map<String, Object>> wfmCompleteInfo, boolean nonApiClose) throws InvalidInputException;
     void updateTicketType(int ticketMasId, String job, String userId);
 
 }

@@ -3,6 +3,7 @@ package com.hkt.btu.sd.facade.data;
 import com.hkt.btu.common.facade.data.DataInterface;
 
 import java.util.List;
+import java.util.Map;
 
 public class SdTicketData implements DataInterface {
 
@@ -10,6 +11,7 @@ public class SdTicketData implements DataInterface {
     private List<SdTicketContactData> contactInfo;
     private List<SdTicketServiceData> serviceInfo;
     private List<SdTicketRemarkData> remarkInfo;
+    private List<Map<String, Object>> closeInfo;
 
     public SdTicketMasData getTicketMasInfo() {
         return ticketMasInfo;
@@ -41,5 +43,13 @@ public class SdTicketData implements DataInterface {
 
     public void setRemarkInfo(List<SdTicketRemarkData> remarkInfo) {
         this.remarkInfo = remarkInfo;
+    }
+
+    public List<Map<String, Object>> getCloseInfo() {
+        return closeInfo;
+    }
+
+    public void setCloseInfo(List<Map<String, Object>> closeInfo) {
+        this.closeInfo = closeInfo;
     }
 }

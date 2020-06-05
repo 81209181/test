@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.core.service.impl;
 
+import com.google.gson.Gson;
 import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.core.service.BtuSensitiveDataService;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
@@ -388,7 +389,8 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void closeTicket(int ticketMasId, String reasonType, String reasonContent, LocalDateTime arrivalTime,
-                            String contactName, String contactNumber, boolean nonApiClose) throws InvalidInputException {
+                            String contactName, String contactNumber, List<Map<String, Object>> wfmCompleteInfoList,
+                            boolean nonApiClose) throws InvalidInputException {
         if (StringUtils.isEmpty(reasonType)) {
             throw new InvalidInputException("Empty reasonType.");
         } else if (StringUtils.isEmpty(reasonContent)) {
@@ -428,6 +430,12 @@ public class SdTicketServiceImpl implements SdTicketService {
         // close ticket
         String userUserId = userService.getCurrentUserUserId();
         ticketMasMapper.updateTicketStatus(ticketMasId, TicketStatusEnum.COMPLETE.getStatusCode(), arrivalTime, LocalDateTime.now(), userUserId);
+
+        // add WFM complete info
+        if (CollectionUtils.isNotEmpty(wfmCompleteInfoList)) {
+            String wfmCompleteInfo = new Gson().toJson(wfmCompleteInfoList);
+            ticketServiceMapper.updateTicketServiceByWfmCompInfo(ticketMasId, wfmCompleteInfo, userUserId);
+        }
 
         // add ticket remarks
         String content = String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_CLOSE, arrivalTime, reasonType, reasonContent, contactName, contactNumber);
@@ -522,6 +530,21 @@ public class SdTicketServiceImpl implements SdTicketService {
         return ticketFileUploadMapper.getUploadFiles(ticketMasId).stream().map(entity -> {
             SdTicketUploadFileBean bean = new SdTicketUploadFileBean();
             ticketUploadFileBeanPopulator.populate(entity,bean);
+            return bean;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SdTicketServiceBean> getCloseInfo(Integer ticketMasId) {
+        List<SdTicketServiceEntity> serviceList = ticketServiceMapper.getTicketServiceInfoByTicketMasId(ticketMasId);
+
+        if (CollectionUtils.isEmpty(serviceList)) {
+            return null;
+        }
+
+        return serviceList.stream().map(entity -> {
+            SdTicketServiceBean bean = new SdTicketServiceBean();
+            bean.setWfmCompleteInfo(entity.getWfmCompleteInfo());
             return bean;
         }).collect(Collectors.toList());
     }

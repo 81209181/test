@@ -11,6 +11,7 @@
         <result column="SUBS_ID" property="subsId"/>
         <result column="JOB_ID" property="jobId"/>
         <result column="REPORT_TIME" property="reportTime"/>
+        <result column="WFM_COMP_INFO" property="wfmCompleteInfo"/>
 
         <result column="CREATEDATE" property="createdate"/>
         <result column="CREATEBY" property="createby"/>
@@ -41,7 +42,8 @@
                td.SERVICE_TYPE_CODE,
                td.JOB_ID,
                td.REPORT_TIME,
-               s.SYMPTOM_DESCRIPTION
+               s.SYMPTOM_DESCRIPTION,
+               td.WFM_COMP_INFO
         from TICKET_DET td
         left join SYMPTOM s
         on td.SYMPTOM_CODE = s.SYMPTOM_CODE
@@ -74,6 +76,14 @@
         update TICKET_DET
         set SYMPTOM_CODE = #{symptomCode},
             REPORT_TIME = #{reportTime},
+            MODIFYBY = #{modifyby},
+            MODIFYDATE = sysdate
+        where TICKET_MAS_ID = #{ticketMasId}
+    </update>
+
+    <update id="updateTicketServiceByWfmCompInfo">
+        update TICKET_DET
+        set WFM_COMP_INFO = #{wfmCompleteInfo},
             MODIFYBY = #{modifyby},
             MODIFYDATE = sysdate
         where TICKET_MAS_ID = #{ticketMasId}
