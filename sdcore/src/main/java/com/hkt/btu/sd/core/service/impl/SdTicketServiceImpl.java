@@ -389,7 +389,7 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void closeTicket(int ticketMasId, String reasonType, String reasonContent, LocalDateTime arrivalTime,
-                            String contactName, String contactNumber, List<Map<String, Object>> wfmCompleteInfoList,
+                            String contactName, String contactNumber, List<WfmCompleteInfo> wfmCompleteInfoList,
                             boolean nonApiClose) throws InvalidInputException {
         if (StringUtils.isEmpty(reasonType)) {
             throw new InvalidInputException("Empty reasonType.");

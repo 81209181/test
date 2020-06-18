@@ -5,6 +5,7 @@ import com.hkt.btu.sd.facade.SdSymptomFacade;
 import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.data.SdSymptomData;
 import com.hkt.btu.sd.facade.data.SdTicketData;
+import com.hkt.btu.sd.facade.data.wfm.WfmTicketCloseData;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/wfm-api")
@@ -31,13 +31,8 @@ public class WfmApiController {
     }
 
     @PostMapping("/close-ticket")
-    public ResponseEntity<?> ticketClose(@RequestParam int ticketMasId,
-                                         @RequestParam String reasonType,
-                                         @RequestParam String reasonContent,
-                                         @RequestParam String username,
-                                         @RequestParam String arrivalTime,
-                                         @RequestBody List<Map<String, Object>> wfmCompleteInfo) {
-        String errorMsg = ticketFacade.closeTicketByApi(ticketMasId, reasonType, reasonContent, username, arrivalTime, wfmCompleteInfo);
+    public ResponseEntity<?> ticketClose(@RequestBody WfmTicketCloseData wfmTicketCloseData) {
+        String errorMsg = ticketFacade.closeTicketByApi(wfmTicketCloseData);
         if(StringUtils.isEmpty(errorMsg)){
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         }else {
