@@ -23,10 +23,7 @@ import com.hkt.btu.sd.facade.data.cloud.Attachment;
 import com.hkt.btu.sd.facade.data.cloud.Attribute;
 import com.hkt.btu.sd.facade.data.cloud.HktCloudCaseData;
 import com.hkt.btu.sd.facade.data.cloud.HktCloudViewData;
-import com.hkt.btu.sd.facade.data.wfm.WfmAppointmentResData;
-import com.hkt.btu.sd.facade.data.wfm.WfmJobProgressData;
-import com.hkt.btu.sd.facade.data.wfm.WfmJobRemarksData;
-import com.hkt.btu.sd.facade.data.wfm.WfmMakeApptData;
+import com.hkt.btu.sd.facade.data.wfm.*;
 import com.hkt.btu.sd.facade.populator.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -501,8 +498,14 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public String closeTicketByApi(int ticketMasId, String reasonType, String reasonContent, String userId, String arrivalTimeStr, List<Map<String, Object>> wfmCompleteInfo) {
+    public String closeTicketByApi(WfmTicketCloseData wfmTicketCloseData) {
         String systemId = userService.getCurrentUserUserId();
+        Integer ticketMasId = wfmTicketCloseData.getTicketMasId();
+        String reasonContent = wfmTicketCloseData.getReasonContent();
+        String reasonType = wfmTicketCloseData.getReasonType();
+        CharSequence arrivalTimeStr = wfmTicketCloseData.getArrivalTime();
+        String userId = wfmTicketCloseData.getUsername();
+        List<WfmCompleteInfo> wfmCompleteInfo = wfmTicketCloseData.getWfmCompleteInfo();
         LOG.info(String.format("Closing ticket by API. (ticketMasId: %d , systemId: %s)", ticketMasId, systemId));
 
         LocalDateTime arrivalTime = null;

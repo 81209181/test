@@ -62,7 +62,7 @@ public interface SdTicketService {
     void updateJobIdInService(Integer jobId, int ticketMasId, String userId);
     void increaseCallInCount(Integer ticketMasId);
     void closeTicket(int ticketMasId, String reasonType, String reasonContent, LocalDateTime arrivalTime,
-                     String contactName, String contactNumber, List<Map<String, Object>> wfmCompleteInfo, boolean nonApiClose) throws InvalidInputException;
+                     String contactName, String contactNumber, List<WfmCompleteInfo> wfmCompleteInfo, boolean nonApiClose) throws InvalidInputException;
     void updateTicketType(int ticketMasId, String job, String userId);
 
 }
