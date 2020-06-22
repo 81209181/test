@@ -154,6 +154,9 @@ public class BtuSecurityConfig extends WebSecurityConfigurerAdapter {
                     return false;
                 }
             }
+            if (httpServletRequest.getRequestURI().endsWith(LOGIN_URI)) {
+                return false;
+            }
             return !allowedMethods.contains(httpServletRequest.getMethod());
         };
     }
