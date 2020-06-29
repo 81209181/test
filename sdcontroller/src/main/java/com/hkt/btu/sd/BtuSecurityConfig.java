@@ -167,6 +167,8 @@ public class BtuSecurityConfig extends WebSecurityConfigurerAdapter {
     private TokenAuthenticationFilter getTokenAuthenticationFilter() {
         TokenAuthenticationFilter filter = new TokenAuthenticationFilter();
         filter.setAuthenticationManager(new ProviderManager(Collections.singletonList(tokenAuthenticationProvider)));
+        // set to invalid login for every action for api auth
+        filter.setClearAuthAfterSuccess(true);
         return filter;
     }
 
