@@ -133,7 +133,7 @@ public class BesApiFacadeImpl extends AbstractRestfulApiFacade implements BesApi
         // check received page info
         BesPageData besPageData = besSubscriberData.getPage();
         if(besPageData==null){
-            LOG.error("Corrupted page data from BES API.");
+            LOG.info("Not found page data from BES API.");
             return null;
         }
 
