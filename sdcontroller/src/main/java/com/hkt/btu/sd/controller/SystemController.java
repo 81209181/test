@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.Base64;
 import java.util.List;
@@ -319,7 +320,7 @@ public class SystemController {
             return ResponseEntity.ok(SimpleAjaxResponse.of(false, "Get Authorization failed."));
         }
 
-        String encodedAuth = Base64.getEncoder().encodeToString(authPlainText.getBytes());
+        String encodedAuth = Base64.getEncoder().encodeToString(authPlainText.getBytes(StandardCharsets.UTF_8));
         String apiKey = String.format("Bearer %s", encodedAuth);
         return ResponseEntity.ok(SimpleAjaxResponse.of(true, apiKey));
     }

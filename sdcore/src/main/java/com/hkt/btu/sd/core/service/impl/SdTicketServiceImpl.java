@@ -160,7 +160,7 @@ public class SdTicketServiceImpl implements SdTicketService {
                     null, null, null,
                     null, null, null,
                     ticketMasId, null, null, null, null,
-                    null,null);
+                    null, null);
             totalCount = ticketMasMapper.searchTicketCount(
                     null, null, null,
                     null, null, null,
@@ -279,7 +279,7 @@ public class SdTicketServiceImpl implements SdTicketService {
     public List<SdTicketServiceBean> findServiceBySubscriberId(String subscriberId, Pageable pageable) {
         Long offset = null;
         Integer pageSize = null;
-        if (pageable!=null) {
+        if (pageable != null) {
             offset = pageable.getOffset();
             pageSize = pageable.getPageSize();
         }
@@ -333,13 +333,13 @@ public class SdTicketServiceImpl implements SdTicketService {
 
     @Override
     public List<SdTicketMasBean> getPendingTicketList(String serviceType, String serviceNo) {
-        if(StringUtils.isEmpty(serviceType)){
+        if (StringUtils.isEmpty(serviceType)) {
             LOG.warn("Cannot get pending ticket without service type.");
             return null;
         }
 
         List<SdTicketMasEntity> entityList;
-        switch (serviceType){
+        switch (serviceType) {
             case SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD:
             case SdServiceTypeBean.SERVICE_TYPE.ENTERPRISE_CLOUD_365:
             case SdServiceTypeBean.SERVICE_TYPE.VOIP:
@@ -358,7 +358,7 @@ public class SdTicketServiceImpl implements SdTicketService {
 
     @Override
     public boolean isMatchTicketJobType(Integer ticketMasId, TicketTypeEnum ticketTypeEnum) {
-        if(ticketMasId==null){
+        if (ticketMasId == null) {
             LOG.warn("Null ticketMasId.");
             return false;
         }
@@ -373,7 +373,7 @@ public class SdTicketServiceImpl implements SdTicketService {
 
     @Override
     public boolean isMatchTicketServiceType(Integer ticketMasId, String ticketServiceType) {
-        if(ticketMasId==null){
+        if (ticketMasId == null) {
             LOG.warn("Null ticketMasId.");
             return false;
         }
@@ -414,11 +414,11 @@ public class SdTicketServiceImpl implements SdTicketService {
             }
 
             // check ticket ownership (for servicedesk close only)
-            if(nonApiClose) {
+            if (nonApiClose) {
                 String ticketOwningRole = sdTicketMasBean.getOwningRole();
                 try {
                     userRoleService.checkUserRole(currentUserBean.getAuthorities(), List.of(ticketOwningRole));
-                }catch (InsufficientAuthorityException e){
+                } catch (InsufficientAuthorityException e) {
                     LOG.warn(e.getMessage());
                     throw new InvalidInputException("This ticket belongs to another team (" + ticketOwningRole + ").");
                 }
@@ -471,16 +471,17 @@ public class SdTicketServiceImpl implements SdTicketService {
         StatusSummaryEntity sumStatus = ticketMasMapper.getSumStatusByTicketType(owningRole);
 
         // set each status summary
-        countStatus.forEach(entity -> teamSummaryBeanPopulator.populate(entity,teamSummaryBean));
+        countStatus.forEach(entity -> teamSummaryBeanPopulator.populate(entity, teamSummaryBean));
 
         // set team summary
-        teamSummaryBeanPopulator.populate(sumStatus, teamSummaryBean);
+        Optional.ofNullable(sumStatus).ifPresent(statusSummaryEntity -> teamSummaryBeanPopulator.populate(statusSummaryEntity, teamSummaryBean));
+
         return teamSummaryBean;
     }
 
     @Override
     public SdMakeApptBean getTicketServiceByDetId(Integer ticketDetId) {
-        if (ticketDetId <= 0 ) {
+        if (ticketDetId <= 0) {
             return null;
         }
 
@@ -507,18 +508,18 @@ public class SdTicketServiceImpl implements SdTicketService {
 
     @Override
     public void createHktCloudTicket(int ticketId, String tenantId, String createdBy) {
-        ticketServiceMapper.insertServiceInfoForCloudCase(ticketId,createdBy,tenantId);
-        ticketMasMapper.createHktCloudTicket(ticketId,createdBy,tenantId);
+        ticketServiceMapper.insertServiceInfoForCloudCase(ticketId, createdBy, tenantId);
+        ticketMasMapper.createHktCloudTicket(ticketId, createdBy, tenantId);
     }
 
     @Override
     public void insertUploadFile(int ticketId, String fileName, String content) {
-        ticketFileUploadMapper.insertUploadFile(ticketId,fileName,Base64.getDecoder().decode(content));
+        ticketFileUploadMapper.insertUploadFile(ticketId, fileName, Base64.getDecoder().decode(content));
     }
 
     @Override
     public List<SdTicketMasBean> getHktCloudTicket(String tenantId, String username) {
-        return ticketMasMapper.getTicket4HktCloud(tenantId,username).stream().map(sdTicketMasEntity -> {
+        return ticketMasMapper.getTicket4HktCloud(tenantId, username).stream().map(sdTicketMasEntity -> {
             SdTicketMasBean bean = new SdTicketMasBean();
             ticketMasBeanPopulator.populate(sdTicketMasEntity, bean);
             return bean;
@@ -529,7 +530,7 @@ public class SdTicketServiceImpl implements SdTicketService {
     public List<SdTicketUploadFileBean> getUploadFiles(int ticketMasId) {
         return ticketFileUploadMapper.getUploadFiles(ticketMasId).stream().map(entity -> {
             SdTicketUploadFileBean bean = new SdTicketUploadFileBean();
-            ticketUploadFileBeanPopulator.populate(entity,bean);
+            ticketUploadFileBeanPopulator.populate(entity, bean);
             return bean;
         }).collect(Collectors.toList());
     }
