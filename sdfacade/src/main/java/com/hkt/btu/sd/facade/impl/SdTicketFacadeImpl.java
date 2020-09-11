@@ -511,7 +511,9 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         LocalDateTime arrivalTime = null;
         if (StringUtils.isEmpty(reasonContent)) {
             reasonContent = "Empty sub-clear code.";
-        } else if (StringUtils.isNotEmpty(arrivalTimeStr)){
+        }
+
+        if (StringUtils.isNotEmpty(arrivalTimeStr)){
             try {
                 arrivalTime = LocalDateTime.parse(arrivalTimeStr, DATE_TIME_FORMATTER);
             } catch (DateTimeParseException e) {
