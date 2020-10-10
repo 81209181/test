@@ -46,6 +46,8 @@ public class SdTicketServiceImpl implements SdTicketService {
     SdTicketFileUploadMapper ticketFileUploadMapper;
     @Resource
     private SdSymptomMapper symptomMapper;
+    @Resource
+    SdUserOwnerAuthRoleMapper userOwnerAuthRoleMapper;
 
     @Resource(name = "userService")
     SdUserService userService;
@@ -389,8 +391,7 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void closeTicket(int ticketMasId, String reasonType, String reasonContent, LocalDateTime arrivalTime,
-                            String contactName, String contactNumber, List<WfmCompleteInfo> wfmCompleteInfoList,
-                            boolean nonApiClose) throws InvalidInputException {
+                            String contactName, String contactNumber, List<WfmCompleteInfo> wfmCompleteInfoList) throws InvalidInputException {
         if (StringUtils.isEmpty(reasonType)) {
             throw new InvalidInputException("Empty reasonType.");
         } else if (StringUtils.isEmpty(reasonContent)) {
@@ -399,33 +400,31 @@ public class SdTicketServiceImpl implements SdTicketService {
             throw new InvalidInputException("Empty contact name.");
         }
 
-        // check ticket
-        Optional<SdTicketMasBean> ticketMasBeanOptional = getTicket(ticketMasId);
         SdUserBean currentUserBean = (SdUserBean) userService.getCurrentUserBean();
-        if (ticketMasBeanOptional.isPresent()) {
-            SdTicketMasBean sdTicketMasBean = ticketMasBeanOptional.get();
 
+        // check ticket
+        getTicket(ticketMasId).ifPresentOrElse(sdTicketMasBean -> {
             // check ticket status
-            TicketStatusEnum ticketStatus = sdTicketMasBean.getStatus();
-            if (ticketStatus == null) {
+            Optional.ofNullable(sdTicketMasBean.getStatus()).ifPresentOrElse(ticketStatusEnum -> {
+                if (ticketStatusEnum.equals(TicketStatusEnum.COMPLETE)) {
+                    throw new InvalidInputException("Ticket already closed.");
+                }
+            },() -> {
                 throw new InvalidInputException("Ticket status not found.");
-            } else if (ticketStatus == TicketStatusEnum.COMPLETE) {
-                throw new InvalidInputException("Ticket already closed.");
+            });
+            List<String> ticketAuth = userOwnerAuthRoleMapper.getUserOwnerAuthRole(currentUserBean.getPrimaryRoleId()).stream()
+                    .map(SdUserOwnerAuthRoleEntity::getAuthRoleId).collect(Collectors.toList());
+            try {
+                // check ticket ownership (for servicedesk close only)
+                userRoleService.checkUserRole(currentUserBean.getAuthorities(), ticketAuth);
+            } catch (InsufficientAuthorityException e) {
+                LOG.warn(e.getMessage());
+                throw new InvalidInputException("This ticket belongs to another team (" + sdTicketMasBean.getOwningRole() + ").");
             }
 
-            // check ticket ownership (for servicedesk close only)
-            if (nonApiClose) {
-                String ticketOwningRole = sdTicketMasBean.getOwningRole();
-                try {
-                    userRoleService.checkUserRole(currentUserBean.getAuthorities(), List.of(ticketOwningRole));
-                } catch (InsufficientAuthorityException e) {
-                    LOG.warn(e.getMessage());
-                    throw new InvalidInputException("This ticket belongs to another team (" + ticketOwningRole + ").");
-                }
-            }
-        } else {
+        },() -> {
             throw new InvalidInputException(String.format("Ticket not found. (ticketMasId: %d)", ticketMasId));
-        }
+        });
 
         // close ticket
         String userUserId = userService.getCurrentUserUserId();

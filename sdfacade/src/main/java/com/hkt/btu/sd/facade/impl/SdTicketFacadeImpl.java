@@ -523,7 +523,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
         // close ticket in servicedesk
         try {
-            ticketService.closeTicket(ticketMasId, reasonType, reasonContent, arrivalTime, systemId, userId, wfmCompleteInfo, false);
+            ticketService.closeTicket(ticketMasId, reasonType, reasonContent, arrivalTime, systemId, userId, wfmCompleteInfo);
             LOG.info("Closed (by API) ticket in servicedesk. (ticketMasId: " + ticketMasId + ")");
         } catch (InvalidInputException e) {
             LOG.warn(e.getMessage());
@@ -541,7 +541,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
         // close ticket in servicedesk
         try {
-            ticketService.closeTicket(ticketMasId, reasonType, reasonContent, null, contactName, contactNumber, null, true);
+            ticketService.closeTicket(ticketMasId, reasonType, reasonContent, null, contactName, contactNumber, null);
         } catch (InvalidInputException e) {
             LOG.warn(e.getMessage());
             return e.getMessage();

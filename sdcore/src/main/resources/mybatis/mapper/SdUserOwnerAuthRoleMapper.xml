@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdUserOwnerAuthRoleMapper">
+    <resultMap id="userOwnerAuthRole" type="com.hkt.btu.sd.core.dao.entity.SdUserOwnerAuthRoleEntity">
+        <result column="OWNER_ID"  property="ownerId"/>
+        <result column="AUTH_ROLE_ID" property="authRoleId" />
+        <result column="CREATEDATE" property="createDate"/>
+    </resultMap>
+    
+    <select id="getUserOwnerAuthRole" resultMap="userOwnerAuthRole">
+        select * from user_owner_auth_role_mapping where owner_id = #{ownerId}
+    </select>
+
+</mapper>
