@@ -153,7 +153,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         // get roleId
         List<String> roleIdList = roleEntityList.stream().map(SdUserRoleEntity::getRoleId).collect(Collectors.toList());
 
-        userRoleService.checkUserRole(authorities, roleIdList);
+        userRoleService.checkUserRole(authorities, roleIdList, true);
 
         // construct bean
         SdUserBean userBean = new SdUserBean();

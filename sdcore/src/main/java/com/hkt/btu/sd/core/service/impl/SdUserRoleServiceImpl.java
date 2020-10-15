@@ -108,7 +108,20 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     }
 
     @Override
-    public void checkUserRole(Set<GrantedAuthority> sourceAuthorities, List<String> targetRoleList) throws InsufficientAuthorityException {
+    public void checkUserRole(Set<GrantedAuthority> sourceAuthorities, List<String> targetRoleList, boolean checkTeamHead) throws InsufficientAuthorityException {
+        if (sourceAuthorities.contains(new SimpleGrantedAuthority(SdUserRoleEntity.SYS_ADMIN))) {
+            return;
+        }
+
+        // whether check team head authority
+        if (checkTeamHead) {
+            checkUserRole(sourceAuthorities, targetRoleList);
+        } else {
+            checkBasicUserRole(sourceAuthorities, targetRoleList);
+        }
+    }
+
+    private void checkUserRole(Set<GrantedAuthority> sourceAuthorities, List<String> targetRoleList) throws InsufficientAuthorityException {
         if (sourceAuthorities.contains(new SimpleGrantedAuthority(SdUserRoleEntity.SYS_ADMIN))) {
             return;
         }
@@ -129,6 +142,26 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
 
         throw new InsufficientAuthorityException("Insufficient permission.");
     }
+
+    private void checkBasicUserRole(Set<GrantedAuthority> sourceAuthorities, List<String> targetRoleList) throws InsufficientAuthorityException {
+        if (sourceAuthorities.contains(new SimpleGrantedAuthority(SdUserRoleEntity.SYS_ADMIN))) {
+            return;
+        }
+
+        //remove team header head authority checking
+        for (GrantedAuthority authority : sourceAuthorities) {
+            if (authority instanceof SimpleGrantedAuthority) {
+                String roleId = authority.getAuthority();
+                boolean flag = targetRoleList.stream().anyMatch(role -> role.equals(roleId));
+                if (flag) {
+                    return;
+                }
+            }
+        }
+
+        throw new InsufficientAuthorityException("Insufficient permission.");
+    }
+
 
     @Override
     public boolean checkSameTeamRole(String loginId, String createBy) {

@@ -24,7 +24,7 @@ public interface SdUserRoleService {
     List<SdUserRoleBean> getEligibleUserRoleGrantList();
 
     boolean hasUserRole(String roleId);
-    void checkUserRole(Set<GrantedAuthority> authorities, List<String> roleList) throws InsufficientAuthorityException;
+    void checkUserRole(Set<GrantedAuthority> authorities, List<String> roleList, boolean checkTeamHead) throws InsufficientAuthorityException;
     boolean checkSameTeamRole(String name, String createBy);
     boolean isEligibleToGrantUserRole(List<String> roleIdList);
 

@@ -416,7 +416,7 @@ public class SdTicketServiceImpl implements SdTicketService {
                     .map(SdUserOwnerAuthRoleEntity::getAuthRoleId).collect(Collectors.toList());
             try {
                 // check ticket ownership (for servicedesk close only)
-                userRoleService.checkUserRole(currentUserBean.getAuthorities(), ticketAuth);
+                userRoleService.checkUserRole(currentUserBean.getAuthorities(), ticketAuth, false);
             } catch (InsufficientAuthorityException e) {
                 LOG.warn(e.getMessage());
                 throw new InvalidInputException("This ticket belongs to another team (" + sdTicketMasBean.getOwningRole() + ").");
