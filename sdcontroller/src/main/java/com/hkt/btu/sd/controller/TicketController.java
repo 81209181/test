@@ -67,7 +67,7 @@ public class TicketController {
     public String serviceIdentity(Model model) {
         SdUserData userdata = userFacade.getCurrentUser();
         String userId = userdata.getUserId();
-        EditResultData result = userRoleFacade.getUserRoleByUserId(userId);
+        EditResultData result = userRoleFacade.getUserRoleByUserId(userId, false);
         List<String> userRole = result == null ? null : (List<String>) result.getList();
 
         model.addAttribute("serviceSearchKeyList", serviceTypeUserRoleFacade.getServiceSearchKeyList(userRole));

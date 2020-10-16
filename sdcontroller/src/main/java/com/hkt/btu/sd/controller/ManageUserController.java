@@ -121,7 +121,7 @@ public class ManageUserController {
         List<SdUserRoleData> allUserRoles = userRoleFacade.listAllUserRole();
         if (userId != null) {
             model.addAttribute("editUserId", userId);
-            EditResultData result = userRoleFacade.getUserRoleByUserId(userId);
+            EditResultData result = userRoleFacade.getUserRoleByUserId(userId, true);
             String errorMsg = result == null ? "" : result.getErrorMsg();
             List<String> userRole = result == null ? null : (List<String>) result.getList();
             if (CollectionUtils.isNotEmpty(userRole)) {

@@ -57,10 +57,10 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
     }
 
     @Override
-    public EditResultData getUserRoleByUserId(String userId) {
+    public EditResultData getUserRoleByUserId(String userId, Boolean checkTeamHead) {
         List<String> results;
         try {
-            List<SdUserRoleBean> userRoleBeanList = sdUserRoleService.getUserRoleByUserId(userId);
+            List<SdUserRoleBean> userRoleBeanList = sdUserRoleService.getUserRoleByUserId(userId, checkTeamHead);
             if (CollectionUtils.isEmpty(userRoleBeanList)) {
                 return EditResultData.error("This user has no role.");
             }

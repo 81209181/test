@@ -20,7 +20,7 @@ public interface SdUserRoleService {
 
     List<SdUserRoleBean> getParentRoleByRoleId(String roleId);
 
-    List<SdUserRoleBean> getUserRoleByUserId(String userId);
+    List<SdUserRoleBean> getUserRoleByUserId(String userId, Boolean checkTeamHead);
     List<SdUserRoleBean> getEligibleUserRoleGrantList();
 
     boolean hasUserRole(String roleId);

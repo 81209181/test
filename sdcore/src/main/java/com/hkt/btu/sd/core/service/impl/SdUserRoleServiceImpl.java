@@ -78,7 +78,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
     }
 
     @Override
-    public List<SdUserRoleBean> getUserRoleByUserId(String userId) throws InsufficientAuthorityException {
+    public List<SdUserRoleBean> getUserRoleByUserId(String userId, Boolean checkTeamHead) throws InsufficientAuthorityException {
         List<SdUserRoleBean> results = new LinkedList<>();
 
         // Get Current User Role
@@ -89,7 +89,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
         List<String> roleIdList = userRole.stream().map(SdUserRoleEntity::getRoleId).collect(Collectors.toList());
 
         // Check Current User Role
-        checkUserRole(authorities, roleIdList);
+        checkUserRole(authorities, roleIdList, checkTeamHead);
 
         return getSdUserRoleBeans(results, userRole);
     }
@@ -109,10 +109,6 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
 
     @Override
     public void checkUserRole(Set<GrantedAuthority> sourceAuthorities, List<String> targetRoleList, boolean checkTeamHead) throws InsufficientAuthorityException {
-        if (sourceAuthorities.contains(new SimpleGrantedAuthority(SdUserRoleEntity.SYS_ADMIN))) {
-            return;
-        }
-
         // whether check team head authority
         if (checkTeamHead) {
             checkUserRole(sourceAuthorities, targetRoleList);
@@ -333,7 +329,7 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
         }
 
         BtuUserBean currentUserBean = userService.getCurrentUserBean();
-        checkUserRole(currentUserBean.getAuthorities(), roleIdList);
+        checkUserRole(currentUserBean.getAuthorities(), roleIdList, true);
 
         if (CollectionUtils.isNotEmpty(roleIdList)) {
             // get all existing user role list of userId
