@@ -183,6 +183,15 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             throw new InvalidInputException("Invalid user role.");
         }
 
+        // Get Current User Role
+        Set<GrantedAuthority> authorities = getCurrentUserBean().getAuthorities();
+        // Get User Role By UserID
+        List<SdUserRoleEntity> userRole = sdUserRoleMapper.getUserRoleByUserIdAndStatus(createBy, SdUserRoleBean.ACTIVE_ROLE_STATUS);
+        // Get RoleId
+        List<String> roleIds = userRole.stream().map(SdUserRoleEntity::getRoleId).collect(Collectors.toList());
+        // Check Current User Role
+        userRoleService.checkUserRole(authorities, roleIds, true);
+
         // Data input
         SdUserEntity userEntity = new SdUserEntity();
         userEntity.setName(name);
@@ -229,6 +238,15 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             LOG.warn("Ineligible to create user of selected user role (" + roleIdList + ") by user (" + createby + ").");
             throw new InvalidInputException("Invalid user role.");
         }
+
+        // Get Current User Role
+        Set<GrantedAuthority> authorities = getCurrentUserBean().getAuthorities();
+        // Get User Role By UserID
+        List<SdUserRoleEntity> userRole = sdUserRoleMapper.getUserRoleByUserIdAndStatus(createby, SdUserRoleBean.ACTIVE_ROLE_STATUS);
+        // Get RoleId
+        List<String> roleIds = userRole.stream().map(SdUserRoleEntity::getRoleId).collect(Collectors.toList());
+        // Check Current User Role
+        userRoleService.checkUserRole(authorities, roleIds, true);
 
         // generate dummy password
         UUID uuid = UUID.randomUUID();
