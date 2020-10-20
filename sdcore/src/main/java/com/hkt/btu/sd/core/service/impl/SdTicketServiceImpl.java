@@ -391,7 +391,8 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void closeTicket(int ticketMasId, String reasonType, String reasonContent, LocalDateTime arrivalTime,
-                            String contactName, String contactNumber, List<WfmCompleteInfo> wfmCompleteInfoList) throws InvalidInputException {
+                            String contactName, String contactNumber, List<WfmCompleteInfo> wfmCompleteInfoList,
+                            boolean nonApiClose) throws InvalidInputException {
         if (StringUtils.isEmpty(reasonType)) {
             throw new InvalidInputException("Empty reasonType.");
         } else if (StringUtils.isEmpty(reasonContent)) {
@@ -412,10 +413,19 @@ public class SdTicketServiceImpl implements SdTicketService {
             },() -> {
                 throw new InvalidInputException("Ticket status not found.");
             });
-            List<String> ticketAuth = userOwnerAuthRoleMapper.getUserOwnerAuthRole(currentUserBean.getPrimaryRoleId()).stream()
-                    .map(SdUserOwnerAuthRoleEntity::getAuthRoleId).collect(Collectors.toList());
+
             try {
                 // check ticket ownership (for servicedesk close only)
+                if (nonApiClose) {
+                    // check create ticket owning role
+                    userRoleService.checkUserRole(currentUserBean.getAuthorities(), List.of(sdTicketMasBean.getOwningRole()), false);
+                    // check create ticket owning role of team head
+                    userRoleService.checkUserRole(currentUserBean.getAuthorities(), getTeamHeadByOwningRole(sdTicketMasBean.getOwningRole()), false);
+                }
+
+                // check auth role mapping
+                List<String> ticketAuth = userOwnerAuthRoleMapper.getUserOwnerAuthRole(currentUserBean.getPrimaryRoleId()).stream()
+                        .map(SdUserOwnerAuthRoleEntity::getAuthRoleId).collect(Collectors.toList());
                 userRoleService.checkUserRole(currentUserBean.getAuthorities(), ticketAuth, false);
             } catch (InsufficientAuthorityException e) {
                 LOG.warn(e.getMessage());
@@ -441,6 +451,31 @@ public class SdTicketServiceImpl implements SdTicketService {
         createTicketSysRemarks(ticketMasId, content);
 
         LOG.info(String.format("Closed ticket. (ticketMasId: %d)", ticketMasId));
+    }
+
+    private List<String> getTeamHeadByOwningRole(String owningRole) {
+        switch (owningRole) {
+            case "E_TEAM_A":
+                return List.of("TH__E_TEAM_A");
+            case "E_FIELD":
+                return List.of("TH__E_FIELD");
+            case "E_ISRC_BB":
+                return List.of("TH__E_ISRC_BB");
+            case "E_ISRC_V":
+                return List.of("TH__E_ISRC_V");
+            case "O_CHL":
+                return List.of("TH__O_CHL");
+            case "O_NFM":
+                return List.of("TH__O_NFM");
+            case "O_USC":
+                return List.of("TH__O_USC");
+            case "O_TEAM_A":
+                return List.of("TH__O_TEAM_A");
+            case "O_TEAM_B":
+                return List.of("TH__O_TEAM_B");
+            default:
+                return List.of();
+        }
     }
 
     @Override
