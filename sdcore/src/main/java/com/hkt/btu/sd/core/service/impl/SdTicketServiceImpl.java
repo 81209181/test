@@ -420,7 +420,15 @@ public class SdTicketServiceImpl implements SdTicketService {
                     // check create ticket owning role
                     userRoleService.checkUserRole(currentUserBean.getAuthorities(), List.of(sdTicketMasBean.getOwningRole()), false);
                     // check create ticket owning role of team head
-                    userRoleService.checkUserRole(currentUserBean.getAuthorities(), getTeamHeadByOwningRole(sdTicketMasBean.getOwningRole()), false);
+                    List<String> owningRoles;
+                    if (!sdTicketMasBean.getOwningRole().contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR)
+                            && (sdTicketMasBean.getOwningRole().contains(SdUserRoleEntity.ENGINEER_INDICATOR)
+                            || sdTicketMasBean.getOwningRole().contains(SdUserRoleEntity.OPERATOR_INDICATOR))) {
+                        owningRoles = List.of(SdUserRoleEntity.TEAM_HEAD_INDICATOR + sdTicketMasBean.getOwningRole());
+                    } else {
+                        owningRoles = List.of(sdTicketMasBean.getOwningRole());
+                    }
+                    userRoleService.checkUserRole(currentUserBean.getAuthorities(), owningRoles, false);
                 }
 
                 // check auth role mapping
@@ -451,31 +459,6 @@ public class SdTicketServiceImpl implements SdTicketService {
         createTicketSysRemarks(ticketMasId, content);
 
         LOG.info(String.format("Closed ticket. (ticketMasId: %d)", ticketMasId));
-    }
-
-    private List<String> getTeamHeadByOwningRole(String owningRole) {
-        switch (owningRole) {
-            case "E_TEAM_A":
-                return List.of("TH__E_TEAM_A");
-            case "E_FIELD":
-                return List.of("TH__E_FIELD");
-            case "E_ISRC_BB":
-                return List.of("TH__E_ISRC_BB");
-            case "E_ISRC_V":
-                return List.of("TH__E_ISRC_V");
-            case "O_CHL":
-                return List.of("TH__O_CHL");
-            case "O_NFM":
-                return List.of("TH__O_NFM");
-            case "O_USC":
-                return List.of("TH__O_USC");
-            case "O_TEAM_A":
-                return List.of("TH__O_TEAM_A");
-            case "O_TEAM_B":
-                return List.of("TH__O_TEAM_B");
-            default:
-                return List.of();
-        }
     }
 
     @Override
