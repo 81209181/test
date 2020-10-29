@@ -9,6 +9,8 @@ public class SdUserRoleEntity extends BaseEntity {
 
     public final static String SYS_ADMIN = "SYS_ADMIN";
     public final static String TEAM_HEAD_INDICATOR = "TH__";
+    public final static String ENGINEER_INDICATOR = "E_";
+    public final static String OPERATOR_INDICATOR = "O_";
 
     public final static String IS_ABSTRACT = "Y";
 
