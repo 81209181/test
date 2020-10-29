@@ -21,7 +21,7 @@ public class SdUserBeanPopulator extends AbstractBeanPopulator<SdUserBean> {
     public void populate(SdUserEntity source, SdUserBean target) {
         super.populate(source, target);
 
-        String username = Optional.ofNullable(source.getEmail()).orElse(source.getUserId());
+        String username = source.getUserId();
         target.setUsername(username);
         // BtuUserBean
         target.setStatus(source.getStatus());

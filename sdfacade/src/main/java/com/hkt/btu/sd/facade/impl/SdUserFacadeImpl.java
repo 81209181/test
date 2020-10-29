@@ -329,7 +329,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
         try {
             // check access to user
             SdUserBean userBean = sdUserService.getUserByUserId(userId);
-            String username = userBean.getEmail();
+            String username = userBean.getUserId();
 
             // activate user
             sdUserService.activateUserByUsername(username);
@@ -345,7 +345,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
         try {
             // check access to user
             SdUserBean userBean = sdUserService.getUserByUserId(userId);
-            String username = userBean.getEmail();
+            String username = userBean.getUserId();
 
             // deactivate user
             sdUserService.disableUserByUsername(username);

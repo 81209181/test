@@ -54,20 +54,20 @@
     <update id="addLoginTriedByUsername">
         update USER_PROFILE
         set LOGIN_TRIED = LOGIN_TRIED + 1
-        where EMAIL = #{username}
+        where USER_ID = #{username}
     </update>
 
     <update id="resetLoginTriedByUsername">
         update USER_PROFILE
         set LOGIN_TRIED = 0
-        where EMAIL = #{username}
+        where USER_ID = #{username}
     </update>
 
     <update id="updateUserStatusByUsername">
         update USER_PROFILE
         set STATUS   = #{status},
             MODIFYBY = #{modifyby}
-        where EMAIL = #{username}
+        where USER_ID = #{username}
     </update>
 
     <select id="getNewUserId" resultType="Integer">
