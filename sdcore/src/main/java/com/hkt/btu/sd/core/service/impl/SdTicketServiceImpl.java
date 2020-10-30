@@ -415,25 +415,23 @@ public class SdTicketServiceImpl implements SdTicketService {
             });
 
             try {
+                // get auth role mapping
+                List<String> ticketAuth = userOwnerAuthRoleMapper.getUserOwnerAuthRole(currentUserBean.getPrimaryRoleId()).stream()
+                        .map(SdUserOwnerAuthRoleEntity::getAuthRoleId).collect(Collectors.toList());
+
                 // check ticket ownership (for servicedesk close only)
                 if (nonApiClose) {
-                    // check create ticket owning role
-                    userRoleService.checkUserRole(currentUserBean.getAuthorities(), List.of(sdTicketMasBean.getOwningRole()), false);
-                    // check create ticket owning role of team head
-                    List<String> owningRoles;
+                    // get create ticket owning role and owning role of team head
+                    ticketAuth.add(sdTicketMasBean.getOwningRole());
                     if (!sdTicketMasBean.getOwningRole().contains(SdUserRoleEntity.TEAM_HEAD_INDICATOR)
                             && (sdTicketMasBean.getOwningRole().contains(SdUserRoleEntity.ENGINEER_INDICATOR)
                             || sdTicketMasBean.getOwningRole().contains(SdUserRoleEntity.OPERATOR_INDICATOR))) {
-                        owningRoles = List.of(SdUserRoleEntity.TEAM_HEAD_INDICATOR + sdTicketMasBean.getOwningRole());
-                    } else {
-                        owningRoles = List.of(sdTicketMasBean.getOwningRole());
+                        ticketAuth.add(SdUserRoleEntity.TEAM_HEAD_INDICATOR + sdTicketMasBean.getOwningRole());
                     }
-                    userRoleService.checkUserRole(currentUserBean.getAuthorities(), owningRoles, false);
                 }
 
-                // check auth role mapping
-                List<String> ticketAuth = userOwnerAuthRoleMapper.getUserOwnerAuthRole(currentUserBean.getPrimaryRoleId()).stream()
-                        .map(SdUserOwnerAuthRoleEntity::getAuthRoleId).collect(Collectors.toList());
+                ticketAuth = ticketAuth.stream().distinct().collect(Collectors.toList());
+                // if nonApiClose will check ticket owning role / owning role of team head / auth role mapping, else only check auth role mapping
                 userRoleService.checkUserRole(currentUserBean.getAuthorities(), ticketAuth, false);
             } catch (InsufficientAuthorityException e) {
                 LOG.warn(e.getMessage());
