@@ -416,7 +416,7 @@ public class SdTicketServiceImpl implements SdTicketService {
 
             try {
                 // get auth role mapping
-                List<String> ticketAuth = userOwnerAuthRoleMapper.getUserOwnerAuthRole(currentUserBean.getPrimaryRoleId()).stream()
+                List<String> ticketAuth = userOwnerAuthRoleMapper.getUserOwnerAuthRole(sdTicketMasBean.getOwningRole()).stream()
                         .map(SdUserOwnerAuthRoleEntity::getAuthRoleId).collect(Collectors.toList());
 
                 // check ticket ownership (for servicedesk close only)
