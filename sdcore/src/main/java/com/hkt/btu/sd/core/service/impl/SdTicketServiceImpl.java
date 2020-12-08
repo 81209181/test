@@ -421,12 +421,11 @@ public class SdTicketServiceImpl implements SdTicketService {
                     userRoleService.checkUserRole(currentUserBean.getAuthorities(), List.of(sdTicketMasBean.getOwningRole()), false);
                     // check create ticket owning role of team head
                     userRoleService.checkUserRole(currentUserBean.getAuthorities(), getTeamHeadByOwningRole(sdTicketMasBean.getOwningRole()), false);
+                    // check auth role mapping
+                    List<String> ticketAuth = userOwnerAuthRoleMapper.getUserOwnerAuthRole(currentUserBean.getPrimaryRoleId()).stream()
+                            .map(SdUserOwnerAuthRoleEntity::getAuthRoleId).collect(Collectors.toList());
+                    userRoleService.checkUserRole(currentUserBean.getAuthorities(), ticketAuth, false);
                 }
-
-                // check auth role mapping
-                List<String> ticketAuth = userOwnerAuthRoleMapper.getUserOwnerAuthRole(currentUserBean.getPrimaryRoleId()).stream()
-                        .map(SdUserOwnerAuthRoleEntity::getAuthRoleId).collect(Collectors.toList());
-                userRoleService.checkUserRole(currentUserBean.getAuthorities(), ticketAuth, false);
             } catch (InsufficientAuthorityException e) {
                 LOG.warn(e.getMessage());
                 throw new InvalidInputException("This ticket belongs to another team (" + sdTicketMasBean.getOwningRole() + ").");
