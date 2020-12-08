@@ -414,17 +414,26 @@ public class SdTicketServiceImpl implements SdTicketService {
                 throw new InvalidInputException("Ticket status not found.");
             });
 
+            boolean checkFlag = false;
             try {
                 // check ticket ownership (for servicedesk close only)
                 if (nonApiClose) {
                     // check create ticket owning role
                     userRoleService.checkUserRole(currentUserBean.getAuthorities(), List.of(sdTicketMasBean.getOwningRole()), false);
-                    // check create ticket owning role of team head
-                    userRoleService.checkUserRole(currentUserBean.getAuthorities(), getTeamHeadByOwningRole(sdTicketMasBean.getOwningRole()), false);
-                    // check auth role mapping
-                    List<String> ticketAuth = userOwnerAuthRoleMapper.getUserOwnerAuthRole(currentUserBean.getPrimaryRoleId()).stream()
-                            .map(SdUserOwnerAuthRoleEntity::getAuthRoleId).collect(Collectors.toList());
-                    userRoleService.checkUserRole(currentUserBean.getAuthorities(), ticketAuth, false);
+                    checkFlag = true;
+
+                    if (!checkFlag) {
+                        // check create ticket owning role of team head
+                        userRoleService.checkUserRole(currentUserBean.getAuthorities(), getTeamHeadByOwningRole(sdTicketMasBean.getOwningRole()), false);
+                        checkFlag = true;
+
+                        if (!checkFlag) {
+                            // check auth role mapping
+                            List<String> ticketAuth = userOwnerAuthRoleMapper.getUserOwnerAuthRole(currentUserBean.getPrimaryRoleId()).stream()
+                                    .map(SdUserOwnerAuthRoleEntity::getAuthRoleId).collect(Collectors.toList());
+                            userRoleService.checkUserRole(currentUserBean.getAuthorities(), ticketAuth, false);
+                        }
+                    }
                 }
             } catch (InsufficientAuthorityException e) {
                 LOG.warn(e.getMessage());
