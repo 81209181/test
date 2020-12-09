@@ -414,30 +414,27 @@ public class SdTicketServiceImpl implements SdTicketService {
                 throw new InvalidInputException("Ticket status not found.");
             });
 
-            boolean checkFlag = false;
-            try {
-                // check ticket ownership (for servicedesk close only)
-                if (nonApiClose) {
+            // check ticket ownership (for servicedesk close only)
+            if (nonApiClose) {
+                try {
                     // check create ticket owning role
                     userRoleService.checkUserRole(currentUserBean.getAuthorities(), List.of(sdTicketMasBean.getOwningRole()), false);
-                    checkFlag = true;
-
-                    if (!checkFlag) {
+                } catch (InsufficientAuthorityException e) {
+                    try {
                         // check create ticket owning role of team head
                         userRoleService.checkUserRole(currentUserBean.getAuthorities(), getTeamHeadByOwningRole(sdTicketMasBean.getOwningRole()), false);
-                        checkFlag = true;
-
-                        if (!checkFlag) {
+                    } catch (InsufficientAuthorityException e1) {
+                        try {
                             // check auth role mapping
-                            List<String> ticketAuth = userOwnerAuthRoleMapper.getUserOwnerAuthRole(currentUserBean.getPrimaryRoleId()).stream()
+                            List<String> ticketAuth = userOwnerAuthRoleMapper.getUserOwnerAuthRole(SdConfigParamEntity.API.CONFIG_GROUP.API_OSS).stream()
                                     .map(SdUserOwnerAuthRoleEntity::getAuthRoleId).collect(Collectors.toList());
                             userRoleService.checkUserRole(currentUserBean.getAuthorities(), ticketAuth, false);
+                        } catch (InsufficientAuthorityException e2) {
+                            LOG.warn(e2.getMessage());
+                            throw new InvalidInputException("This ticket belongs to another team (" + sdTicketMasBean.getOwningRole() + ").");
                         }
                     }
                 }
-            } catch (InsufficientAuthorityException e) {
-                LOG.warn(e.getMessage());
-                throw new InvalidInputException("This ticket belongs to another team (" + sdTicketMasBean.getOwningRole() + ").");
             }
 
         },() -> {
