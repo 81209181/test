@@ -424,6 +424,10 @@ public class SdTicketServiceImpl implements SdTicketService {
                         // check create ticket owning role of team head
                         userRoleService.checkUserRole(currentUserBean.getAuthorities(), getTeamHeadByOwningRole(sdTicketMasBean.getOwningRole()), false);
                     } catch (InsufficientAuthorityException e1) {
+                        if ( !sdTicketMasBean.getOwningRole().equals(SdConfigParamEntity.API.CONFIG_GROUP.API_OSS) ) {
+                            LOG.warn(e1.getMessage());
+                            throw new InvalidInputException("This ticket belongs to another team (" + sdTicketMasBean.getOwningRole() + ").");
+                        }
                         try {
                             // check auth role mapping
                             List<String> ticketAuth = userOwnerAuthRoleMapper.getUserOwnerAuthRole(SdConfigParamEntity.API.CONFIG_GROUP.API_OSS).stream()
