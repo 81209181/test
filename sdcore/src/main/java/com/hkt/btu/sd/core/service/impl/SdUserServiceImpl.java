@@ -493,12 +493,14 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
         final String REGEX_NUM = ".*[0-9].*";
         final String REGEX_ALPHA = ".*[a-zA-Z].*";
+        final String REGEX_SPECIAL = ".*[`~!@#$^&*()=|{}':;',\\\\[\\\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？].*";
 
         // check pattern
         boolean hasNum = plaintext.matches(REGEX_NUM);
         boolean hasAlpha = plaintext.matches(REGEX_ALPHA);
-        if (!hasNum || !hasAlpha) {
-            throw new InvalidPasswordException("Password must contain both numeric and alphabetic characters.");
+        boolean hasSpecial = plaintext.matches(REGEX_SPECIAL);
+        if (!hasNum || !hasAlpha || !hasSpecial) {
+            throw new InvalidPasswordException("Password must contain both numeric, alphabetic characters and special characters.");
         }
     }
 
