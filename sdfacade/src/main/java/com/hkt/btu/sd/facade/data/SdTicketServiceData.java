@@ -13,7 +13,7 @@ public class SdTicketServiceData implements DataInterface {
     private String serviceTypeDesc;
     private List<SdSymptomData> faultsList;
     private String jobId;
-
+    private String exchange;
     private LocalDateTime reportTime;
 
     // button control
@@ -68,6 +68,14 @@ public class SdTicketServiceData implements DataInterface {
 
     public void setServiceTypeDesc(String serviceTypeDesc) {
         this.serviceTypeDesc = serviceTypeDesc;
+    }
+
+    public String getExchange() {
+        return exchange;
+    }
+
+    public void setExchange(String exchange) {
+        this.exchange = exchange;
     }
 
     public LocalDateTime getReportTime() {

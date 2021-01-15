@@ -23,6 +23,7 @@ import com.hkt.btu.sd.facade.data.cloud.Attachment;
 import com.hkt.btu.sd.facade.data.cloud.Attribute;
 import com.hkt.btu.sd.facade.data.cloud.HktCloudCaseData;
 import com.hkt.btu.sd.facade.data.cloud.HktCloudViewData;
+import com.hkt.btu.sd.facade.data.oss.OssSmartMeterData;
 import com.hkt.btu.sd.facade.data.wfm.*;
 import com.hkt.btu.sd.facade.populator.*;
 import org.apache.commons.collections.CollectionUtils;
@@ -608,6 +609,17 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             throw new InvalidInputException("Ticket not found.");
         }
 
+        // get exchange
+        SdTicketMasData ticketMasData = ticketInfo.getTicketMasInfo();
+        String serviceNumber = ticketMasData.getSearchValue();
+        String exchange = getExchange(serviceNumber);
+        if (StringUtils.isEmpty(exchange)) {
+            throw new InvalidInputException("Exchange not found.");
+        }
+        ticketInfo.getServiceInfo().stream().forEach(sdTicketServiceData -> {
+            sdTicketServiceData.setExchange(exchange);
+        });
+
         // check service
         Integer poleId = null;
         for (SdTicketServiceData serviceData : ticketInfo.getServiceInfo()) {
@@ -644,10 +656,25 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
         // notify oss for hotline smart meter job ticket
         if(poleId!=null && notifyOss){
-            SdTicketMasData ticketMasData = ticketInfo.getTicketMasInfo();
             String createDate = ticketMasData.getCreateDate() == null ? null : ticketMasData.getCreateDate().format(DEFAULT_DATE_TIME_FORMAT);
             ossApiFacade.notifyTicketStatus(poleId, ticketMasId, createDate, OssTicketActionEnum.CREATE.getCode());
         }
+    }
+
+    private String getExchange(String serviceNumber) {
+        if (serviceNumber == null) {
+            return null;
+        }
+
+        Integer poleId = Integer.parseInt(serviceNumber);
+        OssSmartMeterData ossSmartMeterData = ossApiFacade.queryMeterInfo(poleId);
+        if( ossSmartMeterData==null || StringUtils.isEmpty(ossSmartMeterData.getPoleId())){
+            String warnMsg = "Meter profile not found in OSS. (poleId=" + poleId + ")";
+            LOG.warn(warnMsg);
+            return null;
+        }
+
+        return ossSmartMeterData.getExchange();
     }
 
     @Override
