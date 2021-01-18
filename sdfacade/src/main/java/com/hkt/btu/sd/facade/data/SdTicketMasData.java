@@ -48,6 +48,8 @@ public class SdTicketMasData implements DataInterface {
 
     private String custName;
 
+    private String exchangeId;
+
     public String getCustName() {
         return custName;
     }
@@ -198,5 +200,13 @@ public class SdTicketMasData implements DataInterface {
 
     public void setServiceNumber(String serviceNumber) {
         this.serviceNumber = serviceNumber;
+    }
+
+    public String getExchangeId() {
+        return exchangeId;
+    }
+
+    public void setExchangeId(String exchangeId) {
+        this.exchangeId = exchangeId;
     }
 }

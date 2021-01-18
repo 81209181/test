@@ -611,14 +611,12 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
         // get exchange
         SdTicketMasData ticketMasData = ticketInfo.getTicketMasInfo();
-        String serviceNumber = ticketMasData.getSearchValue();
-        String exchange = getExchange(serviceNumber);
-        if (StringUtils.isEmpty(exchange)) {
+        String serviceNumber = ticketMasData == null ? null : ticketMasData.getSearchValue();
+        String exchangeId = getExchangeIdByPoleId(serviceNumber);
+        if (StringUtils.isEmpty(exchangeId)) {
             throw new InvalidInputException("Exchange not found.");
         }
-        ticketInfo.getServiceInfo().stream().forEach(sdTicketServiceData -> {
-            sdTicketServiceData.setExchange(exchange);
-        });
+        ticketMasData.setExchangeId(exchangeId);
 
         // check service
         Integer poleId = null;
@@ -661,8 +659,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         }
     }
 
-    private String getExchange(String serviceNumber) {
-        if (serviceNumber == null) {
+    private String getExchangeIdByPoleId(String serviceNumber) {
+        if (StringUtils.isEmpty(serviceNumber)) {
             return null;
         }
 
