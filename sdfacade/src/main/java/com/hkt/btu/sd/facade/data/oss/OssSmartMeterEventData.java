@@ -6,7 +6,9 @@ public class OssSmartMeterEventData implements DataInterface {
     private Integer eventID;
     private String hwUnitName;
     private String eventDesc;
-    private String eventTime;
+    private String eventStartTime;
+    private String eventEndTime;
+    private String status;
 
     public Integer getEventID() {
         return eventID;
@@ -32,11 +34,27 @@ public class OssSmartMeterEventData implements DataInterface {
         this.eventDesc = eventDesc;
     }
 
-    public String getEventTime() {
-        return eventTime;
+    public String getEventStartTime() {
+        return eventStartTime;
     }
 
-    public void setEventTime(String eventTime) {
-        this.eventTime = eventTime;
+    public void setEventStartTime(String eventStartTime) {
+        this.eventStartTime = eventStartTime;
+    }
+
+    public String getEventEndTime() {
+        return eventEndTime;
+    }
+
+    public void setEventEndTime(String eventEndTime) {
+        this.eventEndTime = eventEndTime;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

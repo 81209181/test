@@ -789,7 +789,9 @@ function getAjaxEventOfPoleDataTable() {
                 {data: 'eventID'},
                 {data: 'hwUnitName'},
                 {data: 'eventDesc'},
-                {data: 'eventTime'}
+                {data: 'eventStartTime'},
+                {data: 'eventEndTime'},
+                {data: 'status'}
             ]
         });
     }
