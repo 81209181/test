@@ -637,7 +637,7 @@ function meterUiCtrl(val){
         voIpBtn.attr('disabled', true);
         ngn3Btn.hide();
         utDiv.hide();
-        $('#btnMakeAppointment').attr('disabled', true);
+        // $('#btnMakeAppointment').attr('disabled', true);
         meterEventDiv.show();
     } else {
         $('input[name=reportTime]').attr('disabled', true);
