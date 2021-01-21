@@ -170,6 +170,7 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
         String symptomCode = makeApptData.getSymptomCode();
         String serviceType = makeApptData.getServiceType();
         String bsn = String.valueOf(makeApptData.getBsn());
+        String exchangeId = makeApptData.getExchangeId();
 
         // check input
         if (StringUtils.isEmpty(ticketMasId)) {
@@ -191,6 +192,7 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
         queryParam.put("symptomCode", symptomCode);
         queryParam.put("serviceType", serviceType);
         queryParam.put("bsn", bsn);
+        queryParam.put("exchangeId", exchangeId);
 
         // call WFM API
         try {

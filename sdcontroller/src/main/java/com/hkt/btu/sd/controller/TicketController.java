@@ -402,12 +402,13 @@ public class TicketController {
     }
 
     @GetMapping("token")
-    public ResponseEntity<?> getToken(Integer ticketDetId) {
+    public ResponseEntity<?> getToken(Integer ticketDetId, String exchangeId) {
         WfmMakeApptData makeApptData = ticketFacade.getMakeApptDataByTicketDetId(ticketDetId);
 
         if (makeApptData == null) {
             return ResponseEntity.badRequest().body("Cannot get ticket detail by ticketDetId");
         }
+        makeApptData.setExchangeId(exchangeId);
 
         try {
             WfmResponseTokenData data = wfmApiFacade.getToken(makeApptData);

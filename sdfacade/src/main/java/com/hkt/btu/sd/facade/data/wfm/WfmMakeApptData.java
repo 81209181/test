@@ -16,6 +16,8 @@ public class WfmMakeApptData implements DataInterface {
     private String symptomCode;
     @NotEmpty
     private String serviceType;
+    @NotEmpty
+    private String exchangeId;
 
     public Integer getTicketMasId() {
         return ticketMasId;
@@ -55,5 +57,13 @@ public class WfmMakeApptData implements DataInterface {
 
     public void setServiceType(String serviceType) {
         this.serviceType = serviceType;
+    }
+
+    public String getExchangeId() {
+        return exchangeId;
+    }
+
+    public void setExchangeId(String exchangeId) {
+        this.exchangeId = exchangeId;
     }
 }

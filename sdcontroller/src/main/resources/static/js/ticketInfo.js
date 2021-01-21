@@ -394,13 +394,16 @@ function removeContact(btn){
 
 function makeAppointment(ticketDetId) {
 
-    let bsn = $("#service").find('input[name=relatedBsn]').val();
+    /*let bsn = $("#service").find('input[name=relatedBsn]').val();
     if (bsn === '') {
         bsn = $("#service").find('input[name=serviceCode]').val();
-    }
+    }*/
+
+    let exchangeId = $("#service").find('input[name=exchangeBuildingId]').val();
 
     $.get('/ticket/token', {
-        ticketDetId: ticketDetId
+        ticketDetId: ticketDetId,
+        exchangeId: exchangeId
     }, function (res) {
         let window = AppointmentSDObj.make({
             data: {
