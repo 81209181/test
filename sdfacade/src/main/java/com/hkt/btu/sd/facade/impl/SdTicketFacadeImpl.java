@@ -609,14 +609,16 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             throw new InvalidInputException("Ticket not found.");
         }
 
-        // get exchange
+        // get exchange for smart meter
         SdTicketMasData ticketMasData = ticketInfo.getTicketMasInfo();
-        String serviceNumber = ticketMasData == null ? null : ticketMasData.getSearchValue();
-        String exchangeId = getExchangeIdByPoleId(serviceNumber);
-        if (StringUtils.isEmpty(exchangeId)) {
-            throw new InvalidInputException("Exchange not found.");
+        if (ServiceSearchEnum.POLE_ID.getKey().equals(ticketMasData.getSearchKey())) {
+            String serviceNumber = ticketMasData == null ? null : ticketMasData.getSearchValue();
+            String exchangeId = getExchangeIdByPoleId(serviceNumber);
+            if (StringUtils.isEmpty(exchangeId)) {
+                throw new InvalidInputException("Exchange not found.");
+            }
+            ticketMasData.setExchangeId(exchangeId);
         }
-        ticketMasData.setExchangeId(exchangeId);
 
         // check service
         Integer poleId = null;
