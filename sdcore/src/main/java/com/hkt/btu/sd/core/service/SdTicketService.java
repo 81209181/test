@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface SdTicketService {
@@ -61,8 +60,9 @@ public interface SdTicketService {
     void updateServiceSymptom(Integer ticketMasId, String symptomCode, LocalDateTime reportTime);
     void updateJobIdInService(Integer jobId, int ticketMasId, String userId);
     void increaseCallInCount(Integer ticketMasId);
-    void closeTicket(int ticketMasId, String reasonType, String reasonContent, LocalDateTime arrivalTime,
+    void closeTicket(int ticketMasId, String closeCode, String reasonType, String reasonContent, LocalDateTime arrivalTime,
                      String contactName, String contactNumber, List<WfmCompleteInfo> wfmCompleteInfo, boolean nonApiClose) throws InvalidInputException;
     void updateTicketType(int ticketMasId, String job, String userId);
 
+    List<SdCloseCodeBean> getCloseCodeList(String serviceType);
 }

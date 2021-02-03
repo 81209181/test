@@ -83,6 +83,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     HktCloudViewDataPopulator cloudViewDataPopulator;
     @Resource(name = "ticketUploadFileDataPopulator")
     SdTicketUploadFileDataPopulator ticketUploadFileDataPopulator;
+    @Resource(name = "closeCodeDataPopulator")
+    SdCloseCodeDataPopulator sdCloseCodeDataPopulator;
 
     @Override
     public int createQueryTicket(SdQueryTicketRequestData queryTicketRequestData) {
@@ -524,7 +526,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
         // close ticket in servicedesk
         try {
-            ticketService.closeTicket(ticketMasId, reasonType, reasonContent, arrivalTime, systemId, userId, wfmCompleteInfo, false);
+            ticketService.closeTicket(ticketMasId, null, reasonType, reasonContent, arrivalTime, systemId, userId, wfmCompleteInfo, false);
             LOG.info("Closed (by API) ticket in servicedesk. (ticketMasId: " + ticketMasId + ")");
         } catch (InvalidInputException e) {
             LOG.warn(e.getMessage());
@@ -537,12 +539,12 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public String closeTicket(int ticketMasId, String reasonType, String reasonContent, String contactName, String contactNumber) {
+    public String closeTicket(int ticketMasId, String closeCode, String reasonType, String reasonContent, String contactName, String contactNumber) {
         LOG.info(String.format("Closing ticket. (ticketMasId: %d)", ticketMasId));
 
         // close ticket in servicedesk
         try {
-            ticketService.closeTicket(ticketMasId, reasonType, reasonContent, null, contactName, contactNumber, null, true);
+            ticketService.closeTicket(ticketMasId, closeCode, reasonType, reasonContent, null, contactName, contactNumber, null, true);
         } catch (InvalidInputException e) {
             LOG.warn(e.getMessage());
             return e.getMessage();
@@ -717,6 +719,21 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         SdTeamSummaryBean summaryBean = ticketService.getTeamSummary();
         teamSummaryDataPopulator.populate(summaryBean, data);
         return data;
+    }
+
+    @Override
+    public List<SdCloseCodeData> getCloseCode(String serviceType) {
+        List<SdCloseCodeBean> beanList = ticketService.getCloseCodeList(serviceType);
+
+        if (CollectionUtils.isEmpty(beanList)) {
+            return null;
+        }
+
+        return beanList.stream().map(bean -> {
+            SdCloseCodeData data = new SdCloseCodeData();
+            sdCloseCodeDataPopulator.populate(bean, data);
+            return data;
+        }).collect(Collectors.toList());
     }
 
     @Override

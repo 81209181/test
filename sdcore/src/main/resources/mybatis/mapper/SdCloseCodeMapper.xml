@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdCloseCodeMapper">
+    <resultMap id="CloseCodeEntity" type="com.hkt.btu.sd.core.dao.entity.SdCloseCodeEntity">
+        <result column="CLOSE_CODE" property="closeCode"/>
+        <result column="CLOSE_CODE_DESCRIPTION" property="closeCodeDescription"/>
+
+        <result column="CREATEDATE" property="createdate"/>
+        <result column="CREATEBY" property="createby"/>
+        <result column="MODIFYDATE" property="modifydate"/>
+        <result column="MODIFYBY" property="modifyby"/>
+    </resultMap>
+
+    <select id="getCloseCodeListByServiceType" resultMap="CloseCodeEntity">
+        select c.* from CLOSECODE_MAPPING cm left join CLOSECODE c on cm.CLOSE_CODE = c.CLOSE_CODE
+        where cm.SERVICE_TYPE_CODE = #{serviceType} order by c.DISPLAY_SEQ
+    </select>
+
+</mapper>

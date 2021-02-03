@@ -175,4 +175,7 @@
 
     <alias name="sdServiceTypeUserRoleDataPopulator" alias="serviceTypeUserRoleDataPopulator"/>
     <bean id="sdServiceTypeUserRoleDataPopulator" class="com.hkt.btu.sd.facade.populator.SdServiceTypeUserRoleDataPopulator"/>
+
+    <alias name="sdCloseCodeDataPopulator" alias="closeCodeDataPopulator"/>
+    <bean id="sdCloseCodeDataPopulator" class="com.hkt.btu.sd.facade.populator.SdCloseCodeDataPopulator"/>
 </beans>

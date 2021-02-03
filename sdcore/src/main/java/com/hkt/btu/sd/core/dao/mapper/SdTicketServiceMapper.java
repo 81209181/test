@@ -35,5 +35,7 @@ public interface SdTicketServiceMapper {
 
     void insertServiceInfoForCloudCase(@Param("ticketId") int ticketId, @Param("createdBy") String createdBy,@Param("tenantId") String tenantId);
 
-    void updateTicketServiceByWfmCompInfo(@Param("ticketMasId") Integer ticketMasId, @Param("wfmCompleteInfo") String wfmCompleteInfo, @Param("modifyby") String modifyby);
+    void updateTicketServiceWfmCompInfo(@Param("ticketMasId") Integer ticketMasId, @Param("wfmCompleteInfo") String wfmCompleteInfo, @Param("modifyby") String modifyby);
+
+    void updateTicketServiceCloseCode(@Param("ticketMasId") Integer ticketMasId, @Param("closeCode") String closeCode, @Param("modifyby") String userUserId);
 }

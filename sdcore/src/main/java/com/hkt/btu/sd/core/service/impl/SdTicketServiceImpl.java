@@ -48,6 +48,8 @@ public class SdTicketServiceImpl implements SdTicketService {
     private SdSymptomMapper symptomMapper;
     @Resource
     SdUserOwnerAuthRoleMapper userOwnerAuthRoleMapper;
+    @Resource
+    SdCloseCodeMapper sdCloseCodeMapper;
 
     @Resource(name = "userService")
     SdUserService userService;
@@ -68,6 +70,8 @@ public class SdTicketServiceImpl implements SdTicketService {
     SdTeamSummaryBeanPopulator teamSummaryBeanPopulator;
     @Resource(name = "ticketUploadFileBeanPopulator")
     SdTicketUploadFileBeanPopulator ticketUploadFileBeanPopulator;
+    @Resource(name = "closeCodeBeanPopulator")
+    SdCloseCodeBeanPopulator sdCloseCodeBeanPopulator;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -390,7 +394,7 @@ public class SdTicketServiceImpl implements SdTicketService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void closeTicket(int ticketMasId, String reasonType, String reasonContent, LocalDateTime arrivalTime,
+    public void closeTicket(int ticketMasId, String closeCode, String reasonType, String reasonContent, LocalDateTime arrivalTime,
                             String contactName, String contactNumber, List<WfmCompleteInfo> wfmCompleteInfoList,
                             boolean nonApiClose) throws InvalidInputException {
         if (StringUtils.isEmpty(reasonType)) {
@@ -454,7 +458,12 @@ public class SdTicketServiceImpl implements SdTicketService {
         // add WFM complete info
         if (CollectionUtils.isNotEmpty(wfmCompleteInfoList)) {
             String wfmCompleteInfo = new Gson().toJson(wfmCompleteInfoList);
-            ticketServiceMapper.updateTicketServiceByWfmCompInfo(ticketMasId, wfmCompleteInfo, userUserId);
+            ticketServiceMapper.updateTicketServiceWfmCompInfo(ticketMasId, wfmCompleteInfo, userUserId);
+        }
+
+        // add close code
+        if (StringUtils.isNotEmpty(closeCode)) {
+            ticketServiceMapper.updateTicketServiceCloseCode(ticketMasId, closeCode, userUserId);
         }
 
         // add ticket remarks
@@ -467,6 +476,21 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Override
     public void updateTicketType(int ticketMasId, String type, String userId) {
         ticketMasMapper.updateTicketType(ticketMasId, type, userId);
+    }
+
+    @Override
+    public List<SdCloseCodeBean> getCloseCodeList(String serviceType) {
+        List<SdCloseCodeEntity> closeCodeEntities = sdCloseCodeMapper.getCloseCodeListByServiceType(serviceType);
+
+        if (CollectionUtils.isEmpty(closeCodeEntities)) {
+            return null;
+        }
+
+        return closeCodeEntities.stream().map(entity -> {
+            SdCloseCodeBean bean = new SdCloseCodeBean();
+            sdCloseCodeBeanPopulator.populate(entity, bean);
+            return bean;
+        }).collect(Collectors.toList());
     }
 
     @Override

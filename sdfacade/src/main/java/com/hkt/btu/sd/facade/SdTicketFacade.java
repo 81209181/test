@@ -41,7 +41,7 @@ public interface SdTicketFacade {
     String createTicket4hktCloud(HktCloudCaseData cloudCaseData);
 
     boolean increaseCallInCount(Integer ticketMasId);
-    String closeTicket(int ticketMasId, String reasonType, String reasonContent, String contactName, String contactNumber);
+    String closeTicket(int ticketMasId, String closeCode, String reasonType, String reasonContent, String contactName, String contactNumber);
     String closeTicketByApi(WfmTicketCloseData wfmTicketCloseData);
 
     // ticket contact
@@ -68,4 +68,6 @@ public interface SdTicketFacade {
 
     // statistics
     SdTeamSummaryData getTeamSummary();
+
+    List<SdCloseCodeData> getCloseCode(String serviceType);
 }

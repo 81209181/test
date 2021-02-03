@@ -298,8 +298,8 @@ public class TicketController {
     }
 
     @PostMapping("close")
-    public ResponseEntity<?> ticketClose(int ticketMasId, String reasonType, String reasonContent, String contactNumber, String contactName) {
-        String errorMsg = ticketFacade.closeTicket(ticketMasId, reasonType, reasonContent, contactName, contactNumber);
+    public ResponseEntity<?> ticketClose(int ticketMasId, String closeCode, String reasonType, String reasonContent, String contactNumber, String contactName) {
+        String errorMsg = ticketFacade.closeTicket(ticketMasId, closeCode, reasonType, reasonContent, contactName, contactNumber);
         if (StringUtils.isEmpty(errorMsg)) {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         } else {
@@ -464,6 +464,16 @@ public class TicketController {
                 btuPageData.getTotalPages(), null, btuPageData.isFirst(),
                 btuPageData.getNumberOfElements());
             return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
+        }
+    }
+
+    @GetMapping("/service/closeCode")
+    public ResponseEntity<?> getCloseCode(@RequestParam String serviceType) {
+        List<SdCloseCodeData> closeCodeData = ticketFacade.getCloseCode(serviceType);
+        if (CollectionUtils.isEmpty(closeCodeData)) {
+            return ResponseEntity.badRequest().body("close code not found.");
+        } else {
+            return ResponseEntity.ok(closeCodeData);
         }
     }
 }

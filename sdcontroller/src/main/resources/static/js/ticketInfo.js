@@ -231,6 +231,13 @@ $().ready(function(){
 
     // close button
     $('#btnTicketClose').on('click',function(){
+        $('.reasonType').empty();
+        let serviceType = $('input[name=serviceType]').val();
+        $.get('/ticket/service/closeCode?serviceType='+serviceType, function (res) {
+            for (item of res) {
+                $('.reasonType').append("<option value=" + item.closeCode + ">" + item.closeCodeDescription + "</option>");
+            }
+        });
         $('.reason').modal('show');
     });
 
@@ -239,7 +246,8 @@ $().ready(function(){
         if(form.checkValidity()){
             $.post('/ticket/close',{
                 ticketMasId:ticketMasId,
-                reasonType:$(form).find('select[name=reasonType]').val(),
+                closeCode:$(form).find('select[name=reasonType]').val(),
+                reasonType:$(form).find('select[name=reasonType]').find("option:selected").text(),
                 reasonContent:$(form).find('textarea[name=reasonContent]').val(),
                 contactName:$(form).find('input[name=contactName]').val(),
                 contactNumber:$(form).find('input[name=contactNumber]').val(),
