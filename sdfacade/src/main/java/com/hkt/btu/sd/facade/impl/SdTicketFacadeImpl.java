@@ -108,11 +108,11 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
         return ticketService.createQueryTicket(
                 queryTicketRequestData.getCustCode(),
-                queryTicketRequestData.getServiceNo(),
+                queryTicketRequestData.getServiceNo() == null ? null : queryTicketRequestData.getServiceNo().replaceAll(StringUtils.SPACE, StringUtils.EMPTY),
                 queryTicketRequestData.getServiceType(),
                 queryTicketRequestData.getSubsId(),
                 queryTicketRequestData.getSearchKey(),
-                queryTicketRequestData.getSearchValue(),
+                queryTicketRequestData.getSearchValue() == null ? null : queryTicketRequestData.getSearchValue().replaceAll(StringUtils.SPACE, StringUtils.EMPTY),
                 queryTicketRequestData.getCustName());
     }
 
@@ -668,7 +668,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             return null;
         }
 
-        Integer poleId = Integer.parseInt(serviceNumber);
+        Integer poleId = Integer.parseInt(serviceNumber.replaceAll(StringUtils.SPACE, StringUtils.EMPTY));
         OssSmartMeterData ossSmartMeterData = ossApiFacade.queryMeterInfo(poleId);
         if( ossSmartMeterData==null || StringUtils.isEmpty(ossSmartMeterData.getPoleId())){
             String warnMsg = "Meter profile not found in OSS. (poleId=" + poleId + ")";
