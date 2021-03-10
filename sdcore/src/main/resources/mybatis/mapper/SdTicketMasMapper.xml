@@ -60,7 +60,7 @@
                 and tm.status = #{status}
             </if>
             <if test="completeDateFrom != null">
-                and tm.trunc(complete_date) &gt;= trunc(#{completeDateFrom})
+                and trunc(tm.complete_date) &gt;= trunc(#{completeDateFrom})
             </if>
             <if test="completeDateTo != null">
                 and trunc(#{completeDateTo}) &gt;= trunc(tm.complete_date)
