@@ -1,8 +1,10 @@
 package com.hkt.btu.sd.core.dao.entity;
 
-public class SdTicketUploadFileEntity {
+import com.hkt.btu.common.core.dao.entity.BaseEntity;
+
+public class SdTicketUploadFileEntity extends BaseEntity {
     private String fileName;
-    private byte[] file;
+    private byte[] content;
 
     public String getFileName() {
         return fileName;
@@ -12,11 +14,11 @@ public class SdTicketUploadFileEntity {
         this.fileName = fileName;
     }
 
-    public byte[] getFile() {
-        return file;
+    public byte[] getContent() {
+        return content;
     }
 
-    public void setFile(byte[] file) {
-        this.file = file;
+    public void setContent(byte[] content) {
+        this.content = content;
     }
 }

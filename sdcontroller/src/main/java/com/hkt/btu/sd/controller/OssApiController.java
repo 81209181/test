@@ -5,18 +5,14 @@ import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.facade.SdSmartMeterFacade;
 import com.hkt.btu.sd.facade.data.SdTicketData;
 import com.hkt.btu.sd.facade.data.SdTicketMasData;
+import com.hkt.btu.sd.facade.data.oss.OssCaseData;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Controller
 @RequestMapping("/oss-api")
@@ -25,12 +21,9 @@ public class OssApiController {
     @Resource(name = "smartMeterFacade")
     SdSmartMeterFacade smartMeterFacade;
 
-    @GetMapping("/create-ticket")
-    public ResponseEntity<?> createTicket(
-            @RequestParam Integer poleId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime triggerTime,
-            @RequestParam List<String> workingPartyList ) {
-        BtuSimpleResponseData simpleResponseData = smartMeterFacade.createTicket(poleId, triggerTime, workingPartyList);
+    @PostMapping("/create-ticket")
+    public ResponseEntity<?> createTicket(@RequestBody OssCaseData ossCaseData) {
+        BtuSimpleResponseData simpleResponseData = smartMeterFacade.createTicket(ossCaseData);
         return ResponseEntity.ok(simpleResponseData);
     }
 
@@ -46,18 +39,23 @@ public class OssApiController {
 
     @GetMapping("/search-ticket")
     public ResponseEntity<?> searchTicketsOfMeter(
-            @RequestParam Integer poleId,
+            @RequestParam(required = false) Integer poleId,
+            @RequestParam(required = false) String plateId,
             @RequestParam(required = false) String createDateFrom,
             @RequestParam(required = false) String createDateTo,
             @RequestParam Integer page,
             @RequestParam Integer pageSize) {
+        if(poleId == null && plateId == null){
+            return ResponseEntity.badRequest().body("Null pole ID or plate ID.");
+        }
+
         // limit page size
         pageSize = (pageSize==null || pageSize<1 || pageSize>100) ? 10 : pageSize;
 
         // search result
         Pageable pageable = PageRequest.of(page, pageSize);
         PageData<SdTicketMasData> ticketMasDataPageData = smartMeterFacade.searchTicketList(
-                pageable, poleId, createDateFrom, createDateTo, null, null);
+                pageable, poleId, plateId, createDateFrom, createDateTo, null, null);
 
         if(ticketMasDataPageData==null){
             return ResponseEntity.badRequest().body(String.format("Cannot search Smart Meter tickets. (poleId=%d, page=%d, pageSize=%d)", poleId, page, pageSize));

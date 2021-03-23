@@ -6,7 +6,9 @@
 
     <resultMap id="entity" type="com.hkt.btu.sd.core.dao.entity.SdTicketUploadFileEntity">
         <result column="FILE_NAME" property="fileName" />
-        <result column="FILE_UPLOAD" property="file" />
+        <result column="FILE_UPLOAD" property="content" />
+        <result column="CREATEDATE" property="createDate"/>
+        <result column="CREATEBY" property="createBy"/>
     </resultMap>
 
     <insert id="insertUploadFile">
@@ -17,4 +19,8 @@
     <select id="getUploadFiles" resultMap="entity">
         select file_name,file_upload from TICKET_FILE_UPLOAD where ticket_mas_id =#{ticketMasId}
     </select>
+
+    <delete id="removeUploadFileByTicketMasId">
+        delete from TICKET_FILE_UPLOAD where TICKET_MAS_ID = #{ticketMasId}
+    </delete>
 </mapper>

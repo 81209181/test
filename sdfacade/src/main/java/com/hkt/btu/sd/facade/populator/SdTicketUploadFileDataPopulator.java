@@ -7,7 +7,9 @@ import com.hkt.btu.sd.facade.data.SdTicketUploadFileData;
 public class SdTicketUploadFileDataPopulator extends AbstractDataPopulator<SdTicketUploadFileData> {
 
     public void populate(SdTicketUploadFileBean source, SdTicketUploadFileData target) {
-        target.setFile(source.getFile());
+        target.setContent(source.getContent());
         target.setFileName(source.getFileName());
+        target.setCreatedate(source.getCreateDate());
+        target.setCreateby(source.getCreateBy());
     }
 }

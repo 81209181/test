@@ -322,8 +322,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         List<SdRequestCreateSearchResultData> resultDataList = new ArrayList<>();
         SdRequestCreateSearchResultData resultData = new SdRequestCreateSearchResultData();
 
-        Integer poleId = Integer.parseInt(searchValue);
-        OssSmartMeterData ossSmartMeterData = ossApiFacade.queryMeterInfo(poleId);
+        OssSmartMeterData ossSmartMeterData = ossApiFacade.queryMeterInfo(searchValue);
 
         if (ossSmartMeterData != null) {
             requestCreateSearchResultDataPopulator.populateFromOssSmartMeterData(ossSmartMeterData, resultData);
@@ -331,7 +330,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
         }
 
         if (CollectionUtils.isEmpty(resultDataList)) {
-            resultsData.setErrorMsg(String.format("Service(s) not found with %s .", poleId));
+            resultsData.setErrorMsg(String.format("Service(s) not found with %s .", searchValue));
         } else {
             resultsData.setList(resultDataList);
         }

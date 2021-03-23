@@ -34,7 +34,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Type;
@@ -140,7 +142,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
         try {
             ticketService.removeContactInfoByTicketMasId(contactList.get(0).getTicketMasId());
-            contactList.forEach(data -> ticketService.insertTicketContactInfo(data.getTicketMasId(), data.getContactTypeValue(), data.getContactName(), data.getContactNumber(), data.getContactEmail(), data.getContactMobile()));
+            contactList.forEach(data -> ticketService.insertTicketContactInfo(data.getTicketMasId(), data.getContactType(), data.getContactName(), data.getContactNumber(), data.getContactEmail(), data.getContactMobile()));
         } catch (Exception e) {
             LOG.error(e.getMessage());
             return "Update failed.";
@@ -286,6 +288,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                         serviceData.setBnCtrl(true);
                         break;
                     case SdServiceTypeBean.SERVICE_TYPE.SMART_METER:
+                    case SdServiceTypeBean.SERVICE_TYPE.GMB:
                         serviceData.setMeterCtrl(true);
                         break;
                 }
@@ -668,10 +671,9 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             return null;
         }
 
-        Integer poleId = Integer.parseInt(serviceNumber.replaceAll(StringUtils.SPACE, StringUtils.EMPTY));
-        OssSmartMeterData ossSmartMeterData = ossApiFacade.queryMeterInfo(poleId);
+        OssSmartMeterData ossSmartMeterData = ossApiFacade.queryMeterInfo(serviceNumber.replaceAll(StringUtils.SPACE, StringUtils.EMPTY));
         if( ossSmartMeterData==null || StringUtils.isEmpty(ossSmartMeterData.getPoleId())){
-            String warnMsg = "Meter profile not found in OSS. (poleId=" + poleId + ")";
+            String warnMsg = "Meter profile not found in OSS. (poleId=" + serviceNumber + ")";
             LOG.warn(warnMsg);
             return null;
         }
@@ -800,5 +802,21 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             ticketUploadFileDataPopulator.populate(bean,data);
             return data;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String insertUploadFile(Integer ticketMasId, List<Attachment> attachments) {
+        try {
+            ticketService.removeUploadFileByTicketMasId(ticketMasId);
+            for (Attachment attachment : attachments) {
+                ticketService.insertUploadFile(ticketMasId, attachment.getFileName(), attachment.getContent());
+            }
+        } catch (Exception e) {
+            String errorMsg = "file upload faild.";
+            LOG.error(errorMsg);
+            return errorMsg;
+        }
+        return null;
     }
 }

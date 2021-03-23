@@ -6,6 +6,7 @@ import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.core.exception.ApiException;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.bes.BesSubFaultData;
+import com.hkt.btu.sd.facade.data.cloud.Attachment;
 import com.hkt.btu.sd.facade.data.cloud.HktCloudCaseData;
 import com.hkt.btu.sd.facade.data.cloud.HktCloudViewData;
 import com.hkt.btu.sd.facade.data.wfm.WfmMakeApptData;
@@ -65,7 +66,7 @@ public interface SdTicketFacade {
 
     // ticket others
     List<SdTicketUploadFileData> getUploadFiles(int ticketMasId);
-
+    String insertUploadFile(Integer ticketMasId, List<Attachment> attachments);
     // statistics
     SdTeamSummaryData getTeamSummary();
 

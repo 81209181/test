@@ -494,6 +494,11 @@ public class SdTicketServiceImpl implements SdTicketService {
     }
 
     @Override
+    public void removeUploadFileByTicketMasId(Integer ticketMasId) {
+        ticketFileUploadMapper.removeUploadFileByTicketMasId(ticketMasId);
+    }
+
+    @Override
     public List<TicketStatusEnum> getTicketStatusList() {
         return Arrays.asList(TicketStatusEnum.values());
     }

@@ -12,4 +12,6 @@ public interface SdTicketFileUploadMapper {
     void insertUploadFile(@Param("ticketId")int ticketId, @Param("fileName")String fileName, @Param("file")byte[] file);
 
     List<SdTicketUploadFileEntity> getUploadFiles(int ticketMasId);
+
+    void removeUploadFileByTicketMasId(@Param("ticketMasId")Integer ticketMasId);
 }

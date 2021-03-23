@@ -57,7 +57,7 @@ function showUploadFile(){
         let div = $('#div_upload_file');
         $.each(res,function(index,val){
             let filename = val.fileName;
-            let base64Context = val.file;
+            let base64Context = val.content;
             let file_blob = _base64ToBlob(base64Context);
             let file_div = div.clone();
             file_div.find('input').val(filename);

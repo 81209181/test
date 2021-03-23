@@ -33,25 +33,11 @@ public class OssApiFacadeImpl extends AbstractRestfulApiFacade implements OssApi
     }
 
     @Override
-    public OssSmartMeterData queryMeterInfo(Integer poleId) {
+    public OssSmartMeterData queryMeterInfo(String identityId) {
         String apiPath = "/govpm-web/api/servicedesk/meterInfo";
-        Map<String, String> queryParamMap = Map.of(
-                "poleID", String.valueOf(poleId) );
+        Map<String, String> queryParamMap = Map.of("poleID", identityId);
         OssSmartMeterWrapData wrapData = getData(apiPath, OssSmartMeterWrapData.class, queryParamMap);
         return wrapData==null ? null : wrapData.getMeter();
-
-//        OssSmartMeterData testingData = new OssSmartMeterData();
-//        testingData.setPoleId("10001");
-//        testingData.setModel("GIT");
-//        testingData.setExchange("LHK");
-//        testingData.setSb("229119");
-//        testingData.setRegion("Kowloon");
-//        testingData.setDistrict("Sham Shui Po");
-//        testingData.setStreet("Yuet Lun Street");
-//        testingData.setStreetSection("Manhattan Hill");
-//        testingData.setLatitude(22.2388);
-//        testingData.setLongitude(114.194);
-//        return testingData;
     }
 
     @AutoRetry(minWaitSecond = 600)
@@ -116,31 +102,5 @@ public class OssApiFacadeImpl extends AbstractRestfulApiFacade implements OssApi
         OssSmartMeterEventWrapData pagedEventData = getData(
                 apiPath, OssSmartMeterEventWrapData.class, queryParamMap);
         return pagedEventData.getEvents();
-
-//        OssSmartMeterEventData eventData = new OssSmartMeterEventData();
-//        eventData.setEventId(1234);
-//        eventData.setEventCode("TEST");
-//        eventData.setEventDesc("Testing 1.");
-//        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//        eventData.setEventTime(df.format(LocalDateTime.of(2020, 1, 1, 1, 1, 2)));
-//
-//        OssSmartMeterEventData eventData2 = new OssSmartMeterEventData();
-//        eventData2.setEventId(2345);
-//        eventData2.setEventCode("TEST-2");
-//        eventData2.setEventDesc("Testing 2.");
-//        eventData2.setEventTime(df.format(LocalDateTime.of(2020, 2, 2, 2, 2, 2)));
-//
-//        List<OssSmartMeterEventData> dataList = new LinkedList<>();
-//        dataList.add(eventData);
-//        dataList.add(eventData2);
-//
-//        OssSmartMeterEventWrapData pagedEventData = new OssSmartMeterEventWrapData();
-//        BtuPageData<OssSmartMeterEventData> events = new BtuPageData<>();
-//        events.setContent(dataList);
-//        events.setNumber(page);
-//        events.setSize(pageSize);
-//        events.setTotalElements((long) dataList.size());
-//        pagedEventData.setEvents(events);
-//        return pagedEventData.getEvents();
     }
 }

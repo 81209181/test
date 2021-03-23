@@ -7,8 +7,8 @@ import com.hkt.btu.sd.facade.data.oss.OssSmartMeterEventData;
 import java.time.LocalDateTime;
 
 public interface OssApiFacade {
-    OssSmartMeterData  queryMeterInfo(Integer poleId);
+    OssSmartMeterData  queryMeterInfo(String identityId);
     void notifyTicketStatus(Integer poleId, Integer ticketId, String time, String action);
     BtuPageData<OssSmartMeterEventData> queryMeterEvents(Integer page, Integer pageSize,
-                                                      Integer poleId, LocalDateTime fromTime, LocalDateTime toTime);
+                                                         Integer poleId, LocalDateTime fromTime, LocalDateTime toTime);
 }

@@ -7,7 +7,7 @@ import com.hkt.btu.sd.core.service.bean.SdTicketUploadFileBean;
 public class SdTicketUploadFileBeanPopulator extends AbstractBeanPopulator<SdTicketUploadFileBean> {
 
     public void populate(SdTicketUploadFileEntity source, SdTicketUploadFileBean target) {
-        target.setFile(source.getFile());
+        target.setContent(source.getContent());
         target.setFileName(source.getFileName());
     }
 }

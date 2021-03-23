@@ -65,4 +65,5 @@ public interface SdTicketService {
     void updateTicketType(int ticketMasId, String job, String userId);
 
     List<SdCloseCodeBean> getCloseCodeList(String serviceType);
+    void removeUploadFileByTicketMasId(Integer ticketMasId);
 }

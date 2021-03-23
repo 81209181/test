@@ -170,6 +170,7 @@ $().ready(function(){
               form_json[n['name']] = n['value'];
             });
             form_json['ticketMasId']=ticketMasId;
+            form_json['contactType'] = $("#contactType").val();
             arr.push(form_json);
         })
         $.ajax({
