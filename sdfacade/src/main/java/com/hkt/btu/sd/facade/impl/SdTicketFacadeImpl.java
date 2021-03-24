@@ -110,11 +110,11 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
         return ticketService.createQueryTicket(
                 queryTicketRequestData.getCustCode(),
-                queryTicketRequestData.getServiceNo() == null ? null : queryTicketRequestData.getServiceNo().replaceAll(StringUtils.SPACE, StringUtils.EMPTY),
+                StringUtils.deleteWhitespace(queryTicketRequestData.getServiceNo()),
                 queryTicketRequestData.getServiceType(),
                 queryTicketRequestData.getSubsId(),
                 queryTicketRequestData.getSearchKey(),
-                queryTicketRequestData.getSearchValue() == null ? null : queryTicketRequestData.getSearchValue().replaceAll(StringUtils.SPACE, StringUtils.EMPTY),
+                StringUtils.deleteWhitespace(queryTicketRequestData.getSearchValue()),
                 queryTicketRequestData.getCustName());
     }
 

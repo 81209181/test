@@ -7,13 +7,15 @@ import com.hkt.btu.sd.facade.data.SdTicketMasData;
 import com.hkt.btu.sd.facade.data.oss.OssCaseData;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface SdSmartMeterFacade {
-    BtuSimpleResponseData createTicket(OssCaseData ossCaseData);
+    BtuSimpleResponseData createTicket(Integer poleId, LocalDateTime reportTime, List<String> workingPartyList);
+
+    BtuSimpleResponseData createTicket4GMB(OssCaseData ossCaseData);
 
     void notifyCloseMeterTicket(Integer ticketMasId);
-
     SdTicketData getTicketInfo(Integer ticketMasId);
     PageData<SdTicketMasData> searchTicketList(Pageable pageable, Integer poleId, String plateId,
                                                String createDateFrom, String createDateTo, String ticketType,
