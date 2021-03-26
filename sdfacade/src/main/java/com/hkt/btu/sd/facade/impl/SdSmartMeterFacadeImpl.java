@@ -140,7 +140,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public BtuSimpleResponseData createTicket4GMB(OssCaseData ossCaseData) {
+    public BtuSimpleResponseData createTicket(OssCaseData ossCaseData) {
         String serviceType = ossCaseData.getServiceType();
         String identityId = ossCaseData.getIdentityId();
         LocalDateTime reportTime = ossCaseData.getTriggerTime();
@@ -149,7 +149,10 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
         List<Attribute> attributes = ossCaseData.getAttributes();
         List<Attachment> attachments = ossCaseData.getAttachments();
 
-        if(identityId==null){
+        if (StringUtils.isEmpty(serviceType)) {
+            LOG.warn("Null service type.");
+            return BtuSimpleResponseData.of(false, null, "Null service type.");
+        } else if(StringUtils.isEmpty(identityId)){
             LOG.warn("Null identity ID.");
             return BtuSimpleResponseData.of(false, null, "Null identity ID.");
         }else if(reportTime==null){
@@ -160,18 +163,17 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
             return BtuSimpleResponseData.of(false, null, "Empty working party list.");
         }
 
+        return createFaultTicket(serviceType, identityId, reportTime, workingPartyList, contactInfo, attributes, attachments);
+    }
+
+    private BtuSimpleResponseData createFaultTicket(String serviceType, String identityId, LocalDateTime reportTime,
+                                                    List<String> workingPartyList, List<SdTicketContactData> contactInfo,
+                                                    List<Attribute> attributes, List<Attachment> attachments) {
         // check active work ticket of the pole ID
         Pageable pageable = PageRequest.of(0, 1);
-        PageData<SdTicketMasData> pagedWorkTicketData = new PageData<>();
-        if (serviceType.equals(SdServiceTypeBean.SERVICE_TYPE.GMB)) {
-            pagedWorkTicketData = searchTicketList(
-                    pageable, null, identityId, null, null,
-                    null, TicketStatusEnum.WORKING.getStatusCode());
-        } else if (serviceType.equals(SdServiceTypeBean.SERVICE_TYPE.SMART_METER)) {
-            pagedWorkTicketData = searchTicketList(
-                    pageable, Integer.parseInt(identityId), null, null, null,
-                    null, TicketStatusEnum.WORKING.getStatusCode());
-        }
+        PageData<SdTicketMasData> pagedWorkTicketData = searchTicketList(
+                pageable, serviceType, identityId, null, null,
+                null, TicketStatusEnum.WORKING.getStatusCode());
         if(pagedWorkTicketData.getTotalElements() > 0){
             SdTicketMasData activeTicketMasData = pagedWorkTicketData.getContent().get(0);
             String activeTicketMasId = String.valueOf(activeTicketMasData.getTicketMasId());
@@ -201,16 +203,9 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
 
         // check active ticket of the pole ID
         Integer ticketMasId;
-        PageData<SdTicketMasData> pagedActiveTicketData = new PageData<>();
-        if (serviceType.equals(SdServiceTypeBean.SERVICE_TYPE.GMB)) {
-            pagedActiveTicketData = searchTicketList(
-                    pageable, null, identityId, null, null,
-                    null, TicketStatusEnum.OPEN.getStatusCode());
-        } else if (serviceType.equals(SdServiceTypeBean.SERVICE_TYPE.SMART_METER)) {
-            pagedActiveTicketData = searchTicketList(
-                    pageable, Integer.parseInt(identityId), null, null, null,
-                    null, TicketStatusEnum.OPEN.getStatusCode());
-        }
+        PageData<SdTicketMasData> pagedActiveTicketData = searchTicketList(
+                pageable, serviceType, identityId, null, null,
+                null, TicketStatusEnum.OPEN.getStatusCode());
         if(pagedActiveTicketData.getTotalElements() > 0){
             SdTicketMasData activeTicketMasData = pagedActiveTicketData.getContent().get(0);
             ticketMasId = activeTicketMasData.getTicketMasId();
@@ -328,6 +323,28 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
         Map<String, String> searchFormData = Map.of(
                 "serviceType", serviceType,
                 "serviceNumber", serviceNumber,
+                "createDateFrom", createDateFromStr,
+                "createDateTo", createDateToStr,
+                "ticketType", ticketType,
+                "status", status
+        );
+
+        return ticketFacade.searchTicketList(pageable, searchFormData);
+    }
+
+    private PageData<SdTicketMasData> searchTicketList(
+            Pageable pageable, String serviceType, String identityId, String createDateFromStr, String createDateToStr,
+            String ticketType, String status) {
+        serviceType = serviceType == null ? StringUtils.EMPTY : serviceType;
+        identityId = identityId == null ? StringUtils.EMPTY : identityId;
+        createDateFromStr = createDateFromStr == null ? StringUtils.EMPTY : createDateFromStr;
+        createDateToStr = createDateToStr == null ? StringUtils.EMPTY : createDateToStr;
+        ticketType = ticketType == null ? StringUtils.EMPTY : ticketType;
+        status = status == null ? StringUtils.EMPTY : status;
+
+        Map<String, String> searchFormData = Map.of(
+                "serviceType", serviceType,
+                "serviceNumber", identityId,
                 "createDateFrom", createDateFromStr,
                 "createDateTo", createDateToStr,
                 "ticketType", ticketType,
