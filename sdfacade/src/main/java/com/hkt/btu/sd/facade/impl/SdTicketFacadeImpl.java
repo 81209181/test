@@ -46,6 +46,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class SdTicketFacadeImpl implements SdTicketFacade {
@@ -110,11 +112,11 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
         return ticketService.createQueryTicket(
                 queryTicketRequestData.getCustCode(),
-                StringUtils.deleteWhitespace(queryTicketRequestData.getServiceNo()),
+                removeAllBlank(queryTicketRequestData.getServiceNo()),
                 queryTicketRequestData.getServiceType(),
                 queryTicketRequestData.getSubsId(),
                 queryTicketRequestData.getSearchKey(),
-                StringUtils.deleteWhitespace(queryTicketRequestData.getSearchValue()),
+                removeAllBlank(queryTicketRequestData.getSearchValue()),
                 queryTicketRequestData.getCustName());
     }
 
@@ -818,5 +820,13 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             return errorMsg;
         }
         return null;
+    }
+
+    public String removeAllBlank(String str) {
+        str = StringUtils.deleteWhitespace(str);
+        Pattern p = Pattern.compile("\\s*|\t|\r|\n");
+        Matcher m = p.matcher(str);
+        str = m.replaceAll("");
+        return str;
     }
 }
