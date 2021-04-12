@@ -8,6 +8,7 @@ import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
 import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.data.*;
+import com.hkt.btu.sd.facade.data.gmb.GmbErrorData;
 import com.hkt.btu.sd.facade.data.norars.NoraAccountData;
 import com.hkt.btu.sd.facade.data.norars.NoraBroadbandInfoData;
 import com.hkt.btu.sd.facade.data.oss.OssSmartMeterEventData;
@@ -60,6 +61,8 @@ public class TicketController {
     NorarsApiFacade norarsApiFacade;
     @Resource(name = "ossApiFacade")
     OssApiFacade ossApiFacade;
+    @Resource(name = "gmbApiFacade")
+    GmbApiFacade gmbApiFacade;
 
     public static final String O_CLOUD_SH = "O_CLOUD_SH";
 
@@ -475,5 +478,22 @@ public class TicketController {
         } else {
             return ResponseEntity.ok(closeCodeData);
         }
+    }
+
+    @GetMapping("/service/ajax-gmb-error-list")
+    public ResponseEntity<?> getGmbErrorList(@RequestParam(defaultValue = "0") int draw,
+                                                @RequestParam(defaultValue = "0") int start,
+                                                @RequestParam(defaultValue = "10") int length,
+                                                @RequestParam String plateId) {
+        int page = start / length;
+        Pageable pageable = PageRequest.of(page, length);
+
+        PageData<GmbErrorData> pageData = gmbApiFacade.getErrorList(pageable, plateId);
+        return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
+    }
+
+    @GetMapping("getVehicleInfo")
+    public ResponseEntity<?> getVehicleInfo(@RequestParam String plateId) {
+        return ResponseEntity.ok(gmbApiFacade.getVehicleInfo(plateId));
     }
 }

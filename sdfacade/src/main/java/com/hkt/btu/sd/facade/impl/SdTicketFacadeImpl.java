@@ -93,7 +93,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     @Override
     public int createQueryTicket(SdQueryTicketRequestData queryTicketRequestData) {
         if (!ServiceSearchEnum.TENANT_ID.getKey().equalsIgnoreCase(queryTicketRequestData.getSearchKey())
-                && !ServiceSearchEnum.POLE_ID.getKey().equalsIgnoreCase(queryTicketRequestData.getSearchKey()) ) {
+                && !ServiceSearchEnum.POLE_ID.getKey().equalsIgnoreCase(queryTicketRequestData.getSearchKey())
+                && !ServiceSearchEnum.PLATE_ID.getKey().equalsIgnoreCase(queryTicketRequestData.getSearchKey()) ) {
             if (StringUtils.isBlank(queryTicketRequestData.getCustCode())) {
                 throw new InvalidInputException("Customer Code is Empty.");
             }
@@ -290,9 +291,10 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                         serviceData.setBnCtrl(true);
                         break;
                     case SdServiceTypeBean.SERVICE_TYPE.SMART_METER:
-                    case SdServiceTypeBean.SERVICE_TYPE.GMB:
                         serviceData.setMeterCtrl(true);
                         break;
+                    case SdServiceTypeBean.SERVICE_TYPE.GMB:
+                        serviceData.setGmbCtrl(true);
                 }
                 serviceData.setServiceTypeDesc(serviceTypeFacade.getServiceTypeDescByServiceTypeCode(serviceData.getServiceType()));
             }

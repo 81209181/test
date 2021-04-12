@@ -6,6 +6,7 @@ var ngn3Btn = $('.ngn3Btn'),
     utDiv = $('#service-ut'),
     searchKey = $("#ticket").find('font[name=searchKey]').text(),
     meterEventDiv = $('#meter-event');
+    gmbErrDiv = $('#gmb-div');
 
 $().ready(function(){
 
@@ -37,6 +38,7 @@ $().ready(function(){
                     voIpButtonCtrl(j.voIpCtrl);
                     eCloudButtonCtrl(j.cloudCtrl);
                     meterUiCtrl(j.meterCtrl);
+                    gmbUiCtrl(j.gmbCtrl);
 
                     ticketDetId = j.ticketDetId;
                     let faultsList = j.faultsList;
@@ -55,6 +57,9 @@ $().ready(function(){
 
                    if(j.meterCtrl){
                        getAjaxEventOfPoleDataTable();
+                   }else if(j.gmbCtrl){
+                       getAjaxGmbErrorDataTable();
+                       getVehicleInfo();
                    }
                 });
                 $('.selectpicker').selectpicker('refresh');
@@ -649,11 +654,23 @@ function meterUiCtrl(val){
         voIpBtn.attr('disabled', true);
         ngn3Btn.hide();
         utDiv.hide();
-        // $('#btnMakeAppointment').attr('disabled', true);
-        meterEventDiv.show();
     } else {
         $('input[name=reportTime]').attr('disabled', true);
         meterEventDiv.hide();
+    }
+}
+
+function gmbUiCtrl(val){
+    if(val){
+        eCloudBtn.attr('disabled', true);
+        inventoryBtn.attr('disabled', true);
+        bbBtn.attr('disabled', true);
+        voIpBtn.attr('disabled', true);
+        ngn3Btn.hide();
+        utDiv.hide();
+    } else {
+        $('input[name=reportTime]').attr('disabled', true);
+        gmbErrDiv.hide();
     }
 }
 
@@ -807,4 +824,60 @@ function getAjaxEventOfPoleDataTable() {
             ]
         });
     }
+}
+
+function getAjaxGmbErrorDataTable() {
+    if (bsn === "") {
+        $('#gmbErrorTable').DataTable();
+    } else {
+        $('#gmbErrorTable').DataTable({
+            /*"fnInitComplete": function(oSettings, json) {
+                alert( 'DataTables init' );
+            },*/
+            processing: true,
+            serverSide: true,
+            searching: false,
+            ordering : false,
+            ajax: {
+                type: "GET",
+                contentType: "application/json",
+                url: "/ticket/service/ajax-gmb-error-list",
+                dataSrc: 'data',
+                data: function(d){
+                    d.plateId = bsn;
+                },
+                error: function (e) {
+                    if(e.responseText){
+                        showErrorMsg(e.responseText);
+                    } else {
+                        showErrorMsg("Cannot load result.");
+                    }
+                }
+            },
+            columns: [
+                {data: 'type'},
+                {data: 'status'},
+                {data: 'eventTime'}
+            ]
+        });
+    }
+}
+
+function getVehicleInfo() {
+    $.ajax({
+        url: '/ticket/getVehicleInfo',
+        type: 'GET',
+        dataType: 'json',
+        data: {plateId:bsn},
+        success: function (res) {
+            $('#service').find('input[name=serviceAddress]').val(res.contact_location);
+            $('#pslId').text(res.pslId);
+            $('#regNumber').text(res.regNumber);
+            $('#routeCode').text(res.routeCode);
+        }
+    }).fail(function(e){
+        var responseError = e.responseText ? e.responseText : "Get failed.";
+        console.log("ERROR : ", responseError);
+        showErrorMsg(responseError);
+    });
 }

@@ -7,7 +7,8 @@ public enum ServiceSearchEnum {
     BSN ("bsn", "BSN"),
     TENANT_ID ("tenantId", "Tenant ID"),
     DN ("dn", "DN"),
-    POLE_ID("poleId", "Pole ID")
+    POLE_ID("poleId", "Pole ID"),
+    PLATE_ID("plateId", "Plate ID")
     ;
 
 

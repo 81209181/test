@@ -85,6 +85,9 @@
     <alias name="sdServiceTypeUserRoleFacade" alias="serviceTypeUserRoleFacade"/>
     <bean id="sdServiceTypeUserRoleFacade" class="com.hkt.btu.sd.facade.impl.SdServiceTypeUserRoleFacadeImpl"/>
 
+    <alias name="sdGmbApiFacade" alias="gmbApiFacade"/>
+    <bean id="sdGmbApiFacade" class="com.hkt.btu.sd.facade.impl.GmbApiFacadeImpl"/>
+
     <!-- Populator -->
     <alias name="sdConfigParamDataPopulator" alias="configParamDataPopulator"/>
     <alias name="sdConfigParamDataPopulator" alias="btuConfigParamDataPopulator"/>

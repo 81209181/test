@@ -5,6 +5,7 @@ import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketServiceBean;
 import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
+import com.hkt.btu.sd.facade.GmbApiFacade;
 import com.hkt.btu.sd.facade.OssApiFacade;
 import com.hkt.btu.sd.facade.SdSmartMeterFacade;
 import com.hkt.btu.sd.facade.SdTicketFacade;
@@ -14,6 +15,7 @@ import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.cloud.Attachment;
 import com.hkt.btu.sd.facade.data.cloud.Attribute;
+import com.hkt.btu.sd.facade.data.gmb.GmbIddInfoData;
 import com.hkt.btu.sd.facade.data.oss.OssCaseData;
 import com.hkt.btu.sd.facade.data.oss.OssSmartMeterData;
 import org.apache.commons.collections4.CollectionUtils;
@@ -38,6 +40,8 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
     SdTicketFacade ticketFacade;
     @Resource(name = "ossApiFacade")
     OssApiFacade ossApiFacade;
+    @Resource(name = "gmbApiFacade")
+    GmbApiFacade gmbApiFacade;
 
     @Override
     public BtuSimpleResponseData createTicket(Integer poleId, LocalDateTime reportTime, List<String> workingPartyList) {
@@ -183,10 +187,9 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
         }
         LOG.info("Found no existing smart meter work ticket. (identityId={})", identityId);
 
-        // check existence of pole id
-        OssSmartMeterData ossSmartMeterData = ossApiFacade.queryMeterInfo(identityId);
-        if( ossSmartMeterData==null || StringUtils.isEmpty(ossSmartMeterData.getPoleId())){
-            String warnMsg = "Meter profile not found in OSS. (identityId=" + identityId + ")";
+        // check existence of pole id or plate No
+        String warnMsg = checkQueryNo(serviceType, identityId);
+        if (warnMsg != null) {
             LOG.warn(warnMsg);
             return BtuSimpleResponseData.of(false, null, warnMsg);
         }
@@ -195,7 +198,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
         // get mapped symptom
         String symptomCode = translateToSymptom(workingPartyList);
         if(StringUtils.isEmpty(symptomCode)){
-            String warnMsg = String.format("Cannot map symptom for input. (workingPartyList=%s)",
+            warnMsg = String.format("Cannot map symptom for input. (workingPartyList=%s)",
                     StringUtils.join(workingPartyList, ','));
             LOG.warn(warnMsg);
             return BtuSimpleResponseData.of(false, null, warnMsg);
@@ -219,7 +222,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
                 LOG.info("Created new smart meter query ticket. (ticketMasId={}, identityId={})", ticketMasId, identityId);
             } catch (RuntimeException e){
                 LOG.error(e.getMessage(), e);
-                String warnMsg = "Cannot create new ticket. (identityId=" + identityId + ")";
+                warnMsg = "Cannot create new ticket. (identityId=" + identityId + ")";
                 LOG.warn(warnMsg);
                 return BtuSimpleResponseData.of(false, null, warnMsg);
             }
@@ -234,7 +237,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
             LOG.info("Updated symptom to ticket. (ticketMasId={}, identityId={}, symptomCode={})", ticketMasId, identityId, symptomCode);
         } catch (RuntimeException e){
             LOG.error(e.getMessage(), e);
-            String warnMsg = "Meter profile not found in OSS. (identityId=" + identityId + ")";
+            warnMsg = "Cannot update symptom to ticket. (ticketMasId=" + ticketMasId + ", identityId=" + identityId + ", symptomCode=" + symptomCode + ")";
             LOG.warn(warnMsg);
             return BtuSimpleResponseData.of(false, null, warnMsg);
         }
@@ -256,12 +259,28 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
             LOG.info("Created job in WFM. (ticketMasId={}, identityId={})", ticketMasId, identityId);
         } catch (RuntimeException e){
             LOG.error(e.getMessage(), e);
-            String warnMsg = "Cannot create job in WFM. (ticketMasId=" + ticketMasId + ", identityId=" + identityId + ")";
+            warnMsg = "Cannot create job in WFM. (ticketMasId=" + ticketMasId + ", identityId=" + identityId + ")";
             LOG.warn(warnMsg);
             return BtuSimpleResponseData.of(false, null, warnMsg);
         }
 
         return BtuSimpleResponseData.of(true, String.valueOf(ticketMasId), null);
+    }
+
+    private String checkQueryNo(String serviceType, String identityId) {
+        if (StringUtils.equals(serviceType, SdServiceTypeBean.SERVICE_TYPE.SMART_METER)) {
+            OssSmartMeterData ossSmartMeterData = ossApiFacade.queryMeterInfo(identityId);
+            if ( ossSmartMeterData==null || StringUtils.isEmpty(ossSmartMeterData.getPoleId())) {
+                return "Meter profile not found in OSS. (poleId=" + identityId + ")";
+            }
+        } else if (StringUtils.equals(serviceType, SdServiceTypeBean.SERVICE_TYPE.GMB)) {
+            GmbIddInfoData iddInfoData = gmbApiFacade.getIddInfo(identityId);
+            if (iddInfoData == null) {
+                //return "Idd info not found in GMB. (plateId=" + identityId + ")";
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -390,8 +409,15 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
     }
 
     private SdQueryTicketRequestData buildTicketServiceData(String identityId, String serviceType){
+        String searchKey = null;
+        switch (serviceType) {
+            case SdServiceTypeBean.SERVICE_TYPE.SMART_METER:
+                searchKey = ServiceSearchEnum.POLE_ID.getKey();
+            case SdServiceTypeBean.SERVICE_TYPE.GMB:
+                searchKey = "plateId";
+        }
         SdQueryTicketRequestData queryTicketRequestData = new SdQueryTicketRequestData();
-        queryTicketRequestData.setSearchKey(ServiceSearchEnum.POLE_ID.getKey());
+        queryTicketRequestData.setSearchKey(searchKey);
         queryTicketRequestData.setSearchValue(identityId);
         queryTicketRequestData.setServiceType(serviceType);
         queryTicketRequestData.setServiceNo(identityId);

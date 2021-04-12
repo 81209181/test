@@ -232,6 +232,46 @@
                         </tfoot>
                     </table>
                 </div>
+
+                <div th:id="gmb-div" class="col-md-12">
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3>Vehicle</h3>
+                        </div>
+                        <div class="col-md-3 form-inline pt-2">
+                            <label class="col-form-label justify-content-end">Psl ID:</label>
+                            <font class="form-control-plaintext col-md-7" th:id="pslId"></font>
+                        </div>
+                        <div class="col-md-3 form-inline pt-2">
+                            <label class="col-form-label justify-content-end">Reg Number:</label>
+                            <font class="form-control-plaintext col-md-3" th:id="regNumber"></font>
+                        </div>
+                        <div class="col-md-4 form-inline pt-2">
+                            <label class="col-form-label justify-content-end">Route Code:</label>
+                            <font class="form-control-plaintext col-md-3" th:id="routeCode"></font>
+                        </div>
+                    </div>
+                    <hr>
+                    <h3>Error</h3>
+                    <table id="gmbErrorTable" class="display">
+                        <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Event Time</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot>
+                        <tr>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Event Time</th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </form>
             <hr>
             <form id="appointment" class="row">

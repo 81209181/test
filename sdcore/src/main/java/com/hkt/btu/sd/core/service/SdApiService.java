@@ -32,4 +32,8 @@ public interface SdApiService extends BtuApiService {
     @SuppressWarnings("unused") // used in SdCacheEnum
     SdApiProfileBean loadOssApiProfileBean();
     SdApiProfileBean getOssApiProfileBean();
+
+    @SuppressWarnings("unused") // used in SdCacheEnum
+    SdApiProfileBean loadGmbApiProfileBean();
+    SdApiProfileBean getGmbApiProfileBean();
 }

@@ -20,6 +20,7 @@ public class SdTicketServiceData implements DataInterface {
     private boolean voIpCtrl;
     private boolean cloudCtrl;
     private boolean meterCtrl;
+    private boolean gmbCtrl;
 
     public String getJobId() {
         return jobId;
@@ -107,5 +108,13 @@ public class SdTicketServiceData implements DataInterface {
 
     public void setMeterCtrl(boolean meterCtrl) {
         this.meterCtrl = meterCtrl;
+    }
+
+    public boolean isGmbCtrl() {
+        return gmbCtrl;
+    }
+
+    public void setGmbCtrl(boolean gmbCtrl) {
+        this.gmbCtrl = gmbCtrl;
     }
 }

@@ -33,6 +33,8 @@ public enum SdCacheEnum {
             "apiService","loadUtApiProfileBean"),
     API_OSS (SdConfigParamEntity.API.CONFIG_GROUP.API_OSS, 208, false,true,
             "apiService","loadOssApiProfileBean"),
+    API_GMB (SdConfigParamEntity.API.CONFIG_GROUP.API_GMB, 209, false,true,
+            "apiService","loadGmbApiProfileBean"),
     ;
 
 
