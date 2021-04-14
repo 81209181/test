@@ -188,7 +188,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
         LOG.info("Found no existing smart meter work ticket. (identityId={})", identityId);
 
         // check existence of pole id or plate No
-        String warnMsg = checkQueryNo(serviceType, identityId);
+        String warnMsg = checkIdentityId(serviceType, identityId);
         if (warnMsg != null) {
             LOG.warn(warnMsg);
             return BtuSimpleResponseData.of(false, null, warnMsg);
@@ -267,7 +267,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
         return BtuSimpleResponseData.of(true, String.valueOf(ticketMasId), null);
     }
 
-    private String checkQueryNo(String serviceType, String identityId) {
+    private String checkIdentityId(String serviceType, String identityId) {
         if (StringUtils.equals(serviceType, SdServiceTypeBean.SERVICE_TYPE.SMART_METER)) {
             OssSmartMeterData ossSmartMeterData = ossApiFacade.queryMeterInfo(identityId);
             if ( ossSmartMeterData==null || StringUtils.isEmpty(ossSmartMeterData.getPoleId())) {
@@ -276,7 +276,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
         } else if (StringUtils.equals(serviceType, SdServiceTypeBean.SERVICE_TYPE.GMB)) {
             GmbIddInfoData iddInfoData = gmbApiFacade.getIddInfo(identityId);
             if (iddInfoData == null) {
-                //return "Idd info not found in GMB. (plateId=" + identityId + ")";
+                return "Idd info not found in GMB. (plateId=" + identityId + ")";
             }
         }
 

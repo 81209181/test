@@ -2,7 +2,6 @@ package com.hkt.btu.sd.facade.data.gmb;
 
 import com.hkt.btu.common.facade.data.DataInterface;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class GmbIddInfoData implements DataInterface {
@@ -13,9 +12,9 @@ public class GmbIddInfoData implements DataInterface {
 
     private String imsi;
 
-    private LocalDateTime gmb_lastUpdateDate;
+    private String gmb_lastUpdateDate;
 
-    private LocalDateTime data_lastUpdateDate;
+    private String data_lastUpdateDate;
 
     private List<GmbErrorData> error;
 
@@ -45,19 +44,19 @@ public class GmbIddInfoData implements DataInterface {
         this.imsi = imsi;
     }
 
-    public LocalDateTime getGmb_lastUpdateDate() {
+    public String getGmb_lastUpdateDate() {
         return gmb_lastUpdateDate;
     }
 
-    public void setGmb_lastUpdateDate(LocalDateTime gmb_lastUpdateDate) {
+    public void setGmb_lastUpdateDate(String gmb_lastUpdateDate) {
         this.gmb_lastUpdateDate = gmb_lastUpdateDate;
     }
 
-    public LocalDateTime getData_lastUpdateDate() {
+    public String getData_lastUpdateDate() {
         return data_lastUpdateDate;
     }
 
-    public void setData_lastUpdateDate(LocalDateTime data_lastUpdateDate) {
+    public void setData_lastUpdateDate(String data_lastUpdateDate) {
         this.data_lastUpdateDate = data_lastUpdateDate;
     }
 

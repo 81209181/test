@@ -13,4 +13,6 @@ public interface GmbApiFacade {
     PageData<GmbErrorData> getErrorList(Pageable pageable, String plateId);
 
     GmbVehicleData getVehicleInfo(String plateId);
+
+    void notifyTicketStatus(String plateNo, Integer ticketId, String time, String action);
 }

@@ -857,7 +857,7 @@ function getAjaxGmbErrorDataTable() {
             columns: [
                 {data: 'type'},
                 {data: 'status'},
-                {data: 'eventTime'}
+                {data: 'time'}
             ]
         });
     }

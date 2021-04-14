@@ -2,15 +2,13 @@ package com.hkt.btu.sd.facade.data.gmb;
 
 import com.hkt.btu.common.facade.data.DataInterface;
 
-import java.time.LocalDateTime;
-
 public class GmbErrorData implements DataInterface {
 
     private String type;
 
     private boolean status;
 
-    private LocalDateTime time;
+    private String time;
 
     public String getType() {
         return type;
@@ -28,11 +26,11 @@ public class GmbErrorData implements DataInterface {
         this.status = status;
     }
 
-    public LocalDateTime getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(LocalDateTime time) {
+    public void setTime(String time) {
         this.time = time;
     }
 }
