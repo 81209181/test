@@ -4,6 +4,7 @@ import com.hkt.btu.common.facade.populator.AbstractDataPopulator;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.bes.*;
+import com.hkt.btu.sd.facade.data.gmb.GmbIddInfoData;
 import com.hkt.btu.sd.facade.data.itsm.ItsmProfileData;
 import com.hkt.btu.sd.facade.data.oss.OssSmartMeterData;
 import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
@@ -224,5 +225,11 @@ public class RequestCreateSearchResultDataPopulator extends AbstractDataPopulato
                 " (SB: " + source.getSb() + ") "
                 ;
         target.setServiceAddress(formattedAddress);
+    }
+
+    public void populateFromGmbData(GmbIddInfoData source, SdRequestCreateSearchResultData target){
+        target.setServiceType(SdServiceTypeBean.SERVICE_TYPE.GMB);
+        target.setServiceTypeDesc(SdServiceTypeBean.SERVICE_TYPE.GMB);
+        target.setServiceAddress(source.getVehicle().getContact_location());
     }
 }

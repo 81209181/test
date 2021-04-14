@@ -10,6 +10,7 @@ import com.hkt.btu.sd.facade.data.bes.BesCustomerData;
 import com.hkt.btu.sd.facade.data.bes.BesFaultInfoData;
 import com.hkt.btu.sd.facade.data.bes.BesSubscriberData;
 import com.hkt.btu.sd.facade.data.bes.BesSubscriberInfoResourceData;
+import com.hkt.btu.sd.facade.data.gmb.GmbIddInfoData;
 import com.hkt.btu.sd.facade.data.itsm.ItsmProfileData;
 import com.hkt.btu.sd.facade.data.itsm.ItsmSearchProfileResponseData;
 import com.hkt.btu.sd.facade.data.oss.OssSmartMeterData;
@@ -43,6 +44,8 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     SdServiceTypeFacade serviceTypeFacade;
     @Resource(name = "ossApiFacade")
     OssApiFacade ossApiFacade;
+    @Resource(name = "gmbApiFacade")
+    GmbApiFacade gmbApiFacade;
 
     @Resource(name = "requestCreateSearchResultDataPopulator")
     RequestCreateSearchResultDataPopulator requestCreateSearchResultDataPopulator;
@@ -76,6 +79,8 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
                     return findData4Tenant(searchValue);
                 case POLE_ID:
                     return findData4SmartMeter(searchValue);
+                case PLATE_ID:
+                    return findData4GMB(searchValue);
                 default:
                     String errorMsg = "Unexpected search key: " + searchKey + ", search value: " + searchValue;
                     LOG.warn(errorMsg);
@@ -326,6 +331,28 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
 
         if (ossSmartMeterData != null) {
             requestCreateSearchResultDataPopulator.populateFromOssSmartMeterData(ossSmartMeterData, resultData);
+            resultDataList.add(resultData);
+        }
+
+        if (CollectionUtils.isEmpty(resultDataList)) {
+            resultsData.setErrorMsg(String.format("Service(s) not found with %s .", searchValue));
+        } else {
+            resultsData.setList(resultDataList);
+        }
+        return resultsData;
+    }
+
+
+    private SdRequestCreateSearchResultsData findData4GMB(String searchValue) {
+        SdRequestCreateSearchResultsData resultsData = new SdRequestCreateSearchResultsData();
+        List<SdRequestCreateSearchResultData> resultDataList = new ArrayList<>();
+        SdRequestCreateSearchResultData resultData = new SdRequestCreateSearchResultData();
+
+        GmbIddInfoData gmbIddInfoData = gmbApiFacade.getIddInfo(searchValue);
+
+        if (gmbIddInfoData != null) {
+            requestCreateSearchResultDataPopulator.populateFromGmbData(gmbIddInfoData, resultData);
+            resultData.setServiceNo(searchValue);
             resultDataList.add(resultData);
         }
 
