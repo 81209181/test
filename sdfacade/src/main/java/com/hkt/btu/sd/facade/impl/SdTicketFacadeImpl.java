@@ -132,7 +132,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class) // todo: Transactional best be in service layer
+    @Transactional(rollbackFor = Exception.class)
     public String updateContactInfo(List<SdTicketContactData> contactList) {
 
         for (SdTicketContactData data : contactList) {
@@ -541,7 +541,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         }
 
         // notify oss to close ticket
-        smartMeterFacade.notifyCloseMeterTicket(ticketMasId);
+        smartMeterFacade.notifyCloseTicket(ticketMasId);
         return null;
     }
 
@@ -558,7 +558,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         }
 
         // notify oss to close ticket
-        smartMeterFacade.notifyCloseMeterTicket(ticketMasId);
+        smartMeterFacade.notifyCloseTicket(ticketMasId);
 
         // notify wfm to close ticket
         boolean isClosedInWfm = wfmApiFacade.closeTicket(ticketMasId);

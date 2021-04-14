@@ -284,7 +284,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
     }
 
     @Override
-    public void notifyCloseMeterTicket(Integer ticketMasId) {
+    public void notifyCloseTicket(Integer ticketMasId) {
         // get close date
         SdTicketMasData ticketMasData = ticketFacade.getTicketMas(ticketMasId);
         String completeDate = ticketMasData==null ? LocalDateTime.now().format(DEFAULT_DATE_TIME_FORMAT) : ticketMasData.getCompleteDate().format(DEFAULT_DATE_TIME_FORMAT);
@@ -297,20 +297,35 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
             return;
         }
 
-        // notify OSS per pole
         for(SdTicketServiceData serviceData : serviceInfo) {
-            String poleIdStr = serviceData.getServiceCode();
-            Integer poleId = StringUtils.isEmpty(poleIdStr) || StringUtils.startsWith(poleIdStr, SdTicketServiceBean.DUMMY_POLE_ID_PREFIX) ?
-                    null : Integer.parseInt(poleIdStr);
-            if (poleId == null) {
-                LOG.warn("Cannot notify OSS with pole ID={}.", poleIdStr);
-                continue;
-            }
+            String serviceType = serviceData.getServiceType();
+            if (StringUtils.equals(serviceType, SdServiceTypeBean.SERVICE_TYPE.SMART_METER)) {
+                String poleIdStr = serviceData.getServiceCode();
+                Integer poleId = StringUtils.isEmpty(poleIdStr) || StringUtils.startsWith(poleIdStr, SdTicketServiceBean.DUMMY_POLE_ID_PREFIX) ?
+                        null : Integer.parseInt(poleIdStr);
+                if (poleId == null) {
+                    LOG.warn("Cannot notify OSS with pole ID={}.", poleIdStr);
+                    continue;
+                }
 
-            if(arrivalDate!=null) {
-                ossApiFacade.notifyTicketStatus(poleId, ticketMasId, arrivalDate, OssTicketActionEnum.ARRIVAL.getCode());
+                // notify OSS per pole
+                if(arrivalDate!=null) {
+                    ossApiFacade.notifyTicketStatus(poleId, ticketMasId, arrivalDate, OssTicketActionEnum.ARRIVAL.getCode());
+                }
+                ossApiFacade.notifyTicketStatus(poleId, ticketMasId, completeDate, OssTicketActionEnum.CLOSE.getCode());
+            } else if (StringUtils.equals(serviceType, SdServiceTypeBean.SERVICE_TYPE.GMB)) {
+                String plateNo = serviceData.getServiceCode();
+                if (plateNo == null) {
+                    LOG.warn("Cannot notify GMB with plate No={}.", plateNo);
+                    continue;
+                }
+
+                // notify GMB per pole
+                if(arrivalDate!=null) {
+                    gmbApiFacade.notifyTicketStatus(plateNo, ticketMasId, arrivalDate, OssTicketActionEnum.ARRIVAL.getCode());
+                }
+                gmbApiFacade.notifyTicketStatus(plateNo, ticketMasId, completeDate, OssTicketActionEnum.CLOSE.getCode());
             }
-            ossApiFacade.notifyTicketStatus(poleId, ticketMasId, completeDate, OssTicketActionEnum.CLOSE.getCode());
         }
     }
 

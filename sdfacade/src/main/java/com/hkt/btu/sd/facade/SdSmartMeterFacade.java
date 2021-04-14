@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface SdSmartMeterFacade {
     BtuSimpleResponseData createTicket(Integer poleId, LocalDateTime reportTime, List<String> workingPartyList);
-    void notifyCloseMeterTicket(Integer ticketMasId);
+    void notifyCloseTicket(Integer ticketMasId);
     SdTicketData getTicketInfo(Integer ticketMasId);
     PageData<SdTicketMasData> searchTicketList(Pageable pageable, Integer poleId, String plateId,
                                                String createDateFrom, String createDateTo, String ticketType,
