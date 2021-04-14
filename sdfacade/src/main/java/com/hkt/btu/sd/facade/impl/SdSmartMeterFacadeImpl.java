@@ -335,7 +335,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
         List<SdTicketServiceData> serviceDataList = ticketData==null ? null : ticketData.getServiceInfo();
         SdTicketServiceData serviceData = serviceDataList==null ? null : serviceDataList.get(0);
         String serviceType = serviceData==null ? null : serviceData.getServiceType();
-        if(StringUtils.equals(serviceType, SdServiceTypeBean.SERVICE_TYPE.SMART_METER)){
+        if(StringUtils.equals(serviceType, SdServiceTypeBean.SERVICE_TYPE.SMART_METER) || StringUtils.equals(serviceType, SdServiceTypeBean.SERVICE_TYPE.GMB)){
             return ticketData;
         }else {
             LOG.warn("Ticket service type is not Smart Meter. (ticketMasId={}, serviceType={})", ticketMasId, serviceType);

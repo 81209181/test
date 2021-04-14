@@ -152,7 +152,7 @@ public class SdServiceTypeUserRoleFacadeImpl implements SdServiceTypeUserRoleFac
         List<ServiceSearchEnum> serviceSearchKeyList = new LinkedList<>();
         filterSearchKey.forEach(searchKey -> {
             ServiceSearchEnum searchEnum = ServiceSearchEnum.getEnum(searchKey);
-            if (searchEnum != null && !searchEnum.equals(ServiceSearchEnum.PLATE_ID)) {
+            if (searchEnum != null) {
                 serviceSearchKeyList.add(searchEnum);
             }
         });
