@@ -38,7 +38,7 @@ public class OssApiController {
     public ResponseEntity<?> getTicketInfo(@RequestParam Integer ticketMasId) {
         SdTicketData ticketData = smartMeterFacade.getTicketInfo(ticketMasId);
         if(ticketData==null){
-            return ResponseEntity.badRequest().body("Smart Meter ticket not found. (ticketMasId=" + ticketMasId + ")");
+            return ResponseEntity.badRequest().body("Ticket info not found. (ticketMasId=" + ticketMasId + ")");
         }else {
             return ResponseEntity.ok(ticketData);
         }
@@ -65,7 +65,7 @@ public class OssApiController {
                 pageable, poleId, plateId, createDateFrom, createDateTo, null, null);
 
         if(ticketMasDataPageData==null){
-            return ResponseEntity.badRequest().body(String.format("Cannot search Smart Meter tickets. (poleId=%d, page=%d, pageSize=%d)", poleId, page, pageSize));
+            return ResponseEntity.badRequest().body(String.format("Cannot search tickets. (poleId=%d, page=%d, pageSize=%d)", poleId, page, pageSize));
         }else {
             return ResponseEntity.ok(ticketMasDataPageData);
         }
