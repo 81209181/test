@@ -2,7 +2,7 @@ package com.hkt.btu.sd.core.service.bean;
 
 public class SdMakeApptBean {
 
-    private int bsn;
+    private String bsn;
 
     private Integer ticketMasId;
 
@@ -36,11 +36,11 @@ public class SdMakeApptBean {
         this.symptomCode = symptomCode;
     }
 
-    public int getBsn() {
+    public String getBsn() {
         return bsn;
     }
 
-    public void setBsn(int bsn) {
+    public void setBsn(String bsn) {
         this.bsn = bsn;
     }
 

@@ -6,8 +6,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 
 public class WfmMakeApptData implements DataInterface {
-    @Min(1)
-    private int bsn;
+    @NotEmpty
+    private String bsn;
     @Min(1)
     private Integer ticketMasId;
     @Min(1)
@@ -43,11 +43,11 @@ public class WfmMakeApptData implements DataInterface {
         this.symptomCode = symptomCode;
     }
 
-    public int getBsn() {
+    public String getBsn() {
         return bsn;
     }
 
-    public void setBsn(int bsn) {
+    public void setBsn(String bsn) {
         this.bsn = bsn;
     }
 

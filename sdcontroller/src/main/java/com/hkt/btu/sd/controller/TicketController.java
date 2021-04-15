@@ -492,8 +492,8 @@ public class TicketController {
         return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
     }
 
-    @GetMapping("getVehicleInfo")
-    public ResponseEntity<?> getVehicleInfo(@RequestParam String plateId) {
-        return ResponseEntity.ok(gmbApiFacade.getVehicleInfo(plateId));
+    @GetMapping("getIddInfo")
+    public ResponseEntity<?> getIddInfo(@RequestParam String plateId) {
+        return ResponseEntity.ok(gmbApiFacade.getIddInfo(plateId));
     }
 }

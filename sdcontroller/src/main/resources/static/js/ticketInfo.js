@@ -59,7 +59,7 @@ $().ready(function(){
                        getAjaxEventOfPoleDataTable();
                    }else if(j.gmbCtrl){
                        getAjaxGmbErrorDataTable();
-                       getVehicleInfo();
+                       getIddInfo();
                    }
                 });
                 $('.selectpicker').selectpicker('refresh');
@@ -863,17 +863,21 @@ function getAjaxGmbErrorDataTable() {
     }
 }
 
-function getVehicleInfo() {
+function getIddInfo() {
     $.ajax({
-        url: '/ticket/getVehicleInfo',
+        url: '/ticket/getIddInfo',
         type: 'GET',
         dataType: 'json',
         data: {plateId:bsn},
         success: function (res) {
-            $('#service').find('input[name=serviceAddress]').val(res.contact_location);
-            $('#pslId').text(res.pslId);
-            $('#regNumber').text(res.regNumber);
-            $('#routeCode').text(res.routeCode);
+            $('#imei').text(res.imei);
+            $('#hwid').text(res.hwid);
+            $('#imsi').text(res.imsi);
+
+            $('#service').find('input[name=serviceAddress]').val(res.vehicle.contact_location);
+            $('#pslId').text(res.vehicle.pslId);
+            $('#regNumber').text(res.vehicle.regNumber);
+            $('#routeCode').text(res.vehicle.routeCode);
         }
     }).fail(function(e){
         var responseError = e.responseText ? e.responseText : "Get failed.";

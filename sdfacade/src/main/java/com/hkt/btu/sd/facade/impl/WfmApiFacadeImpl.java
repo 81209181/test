@@ -169,7 +169,7 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
         String ticketDetId = String.valueOf(makeApptData.getTicketDetId());
         String symptomCode = makeApptData.getSymptomCode();
         String serviceType = makeApptData.getServiceType();
-        String bsn = String.valueOf(makeApptData.getBsn());
+        String bsn = makeApptData.getBsn();
         String exchangeId = makeApptData.getExchangeId();
 
         // check input
