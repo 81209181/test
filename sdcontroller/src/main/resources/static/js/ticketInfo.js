@@ -7,6 +7,7 @@ var ngn3Btn = $('.ngn3Btn'),
     searchKey = $("#ticket").find('font[name=searchKey]').text(),
     meterEventDiv = $('#meter-event');
     gmbErrDiv = $('#gmb-div');
+    reportTime = $('input[name=reportTime]');
 
 $().ready(function(){
 
@@ -519,9 +520,11 @@ function getAppointmentInfo(ticketMasId) {
 function controlSymptomUpdateUi(disable){
     if(ticketStatusDesc === "OPEN"){
         $("#symptomList").siblings().attr("disabled", disable);
+        reportTime.attr("disabled", disable);
         $("#btnUpdateService").attr("disabled", disable);
     } else {
         $("#symptomList").siblings().attr("disabled", true);
+        reportTime.attr("disabled", true);
         $("#btnUpdateService").attr("disabled", true);
     }
 }
@@ -632,7 +635,7 @@ function eCloudButtonCtrl(flag) {
         voIpBtn.attr('disabled', true);
         ngn3Btn.hide();
         utDiv.hide();
-        $('input[name=reportTime]').attr('disabled', true);
+        reportTime.attr('disabled', true);
     }
 }
 
@@ -644,7 +647,7 @@ function bnButtonCtrl(val){
         voIpBtn.attr('disabled', true);
         ngn3Btn.hide();
         utDiv.hide();
-        $('input[name=reportTime]').attr('disabled', true);
+        reportTime.attr('disabled', true);
     }
 }
 
@@ -684,7 +687,7 @@ function voIpButtonCtrl(val){
         bbBtn.attr('disabled', true);
         voIpBtn.attr('disabled', true);
         utDiv.hide();
-        $('input[name=reportTime]').attr('disabled', true);
+        reportTime.attr('disabled', true);
     }
 }
 function getExternalServiceData(serviceTypeCode, serviceNumber){

@@ -324,8 +324,15 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
             for (SdTicketServiceBean serviceInfo : serviceInfoList) {
                 List<String> faults = serviceInfo.getFaults();
+                String serviceTypeCode = serviceInfo.getServiceTypeCode();
+                LocalDateTime reportTime = serviceInfo.getReportTime();
                 if (CollectionUtils.isEmpty(faults)) {
                     return "Please select symptom.";
+                } else if (serviceTypeCode.equals(SdServiceTypeBean.SERVICE_TYPE.SMART_METER)
+                        || serviceTypeCode.equals(SdServiceTypeBean.SERVICE_TYPE.GMB)){
+                    if (reportTime == null) {
+                        return "Please input report time.";
+                    }
                 }
                 faults.forEach(symptom ->
                         ticketService.updateServiceSymptom(serviceInfo.getTicketMasId(), symptom, serviceInfo.getReportTime()));
