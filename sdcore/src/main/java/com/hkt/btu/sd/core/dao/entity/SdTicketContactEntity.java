@@ -1,6 +1,7 @@
 package com.hkt.btu.sd.core.dao.entity;
 
 import com.hkt.btu.common.core.dao.entity.BaseEntity;
+import org.apache.commons.lang3.StringUtils;
 
 public class SdTicketContactEntity extends BaseEntity {
 
@@ -19,6 +20,10 @@ public class SdTicketContactEntity extends BaseEntity {
     private byte[] contactEmail;
 
     public String getContactTypeDesc(){
+        if (StringUtils.isEmpty(contactType)) {
+            return null;
+        }
+
         switch (contactType) {
             case "CUST":
                 return "Customer";

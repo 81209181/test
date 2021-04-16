@@ -632,6 +632,7 @@ function eCloudButtonCtrl(flag) {
         voIpBtn.attr('disabled', true);
         ngn3Btn.hide();
         utDiv.hide();
+        $('input[name=reportTime]').attr('disabled', true);
     }
 }
 
@@ -642,7 +643,8 @@ function bnButtonCtrl(val){
         bbBtn.attr('disabled', false);
         voIpBtn.attr('disabled', true);
         ngn3Btn.hide();
-        utDiv.hide(); // todo: SERVDESK-323 to-be-enabled for testing
+        utDiv.hide();
+        $('input[name=reportTime]').attr('disabled', true);
     }
 }
 
@@ -655,7 +657,6 @@ function meterUiCtrl(val){
         ngn3Btn.hide();
         utDiv.hide();
     } else {
-        $('input[name=reportTime]').attr('disabled', true);
         meterEventDiv.hide();
     }
 }
@@ -669,7 +670,6 @@ function gmbUiCtrl(val){
         ngn3Btn.hide();
         utDiv.hide();
     } else {
-        $('input[name=reportTime]').attr('disabled', true);
         gmbErrDiv.hide();
     }
 }
@@ -683,7 +683,8 @@ function voIpButtonCtrl(val){
         inventoryBtn.attr('disabled', true);
         bbBtn.attr('disabled', true);
         voIpBtn.attr('disabled', true);
-        utDiv.hide(); // todo: SERVDESK-323 to-be-enabled for testing
+        utDiv.hide();
+        $('input[name=reportTime]').attr('disabled', true);
     }
 }
 function getExternalServiceData(serviceTypeCode, serviceNumber){

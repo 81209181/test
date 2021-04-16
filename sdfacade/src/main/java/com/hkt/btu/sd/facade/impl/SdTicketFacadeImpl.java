@@ -70,6 +70,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     OssApiFacade ossApiFacade;
     @Resource(name = "smartMeterFacade")
     SdSmartMeterFacade smartMeterFacade;
+    @Resource(name = "gmbApiFacade")
+    GmbApiFacade gmbApiFacade;
 
     @Resource(name = "ticketMasDataPopulator")
     SdTicketMasDataPopulator ticketMasDataPopulator;
@@ -631,6 +633,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
         // check service
         Integer poleId = null;
+        String plateId = null;
         for (SdTicketServiceData serviceData : ticketInfo.getServiceInfo()) {
             // check symptom
             if (CollectionUtils.isEmpty(serviceData.getFaultsList())) {
@@ -642,7 +645,11 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                 throw new InvalidInputException("Unknown service type.");
             } else if (SdServiceTypeBean.SERVICE_TYPE.SMART_METER.equals(serviceData.getServiceType())){
                 poleId = Integer.parseInt(serviceData.getServiceCode());
-
+                if(serviceData.getReportTime()==null){
+                    throw new InvalidInputException("Please input the report time.");
+                }
+            } else if (SdServiceTypeBean.SERVICE_TYPE.GMB.equals(serviceData.getServiceType())) {
+                plateId = serviceData.getServiceCode();
                 if(serviceData.getReportTime()==null){
                     throw new InvalidInputException("Please input the report time.");
                 }
@@ -650,7 +657,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         }
 
         // check contact
-        if(poleId==null) {
+        if(poleId==null || plateId==null) {
             if (CollectionUtils.isEmpty(ticketInfo.getContactInfo())) {
                 throw new InvalidInputException("Please input contact.");
             }
@@ -664,9 +671,11 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         }
 
         // notify oss for hotline smart meter job ticket
-        if(poleId!=null && notifyOss){
-            String createDate = ticketMasData.getCreateDate() == null ? null : ticketMasData.getCreateDate().format(DEFAULT_DATE_TIME_FORMAT);
+        String createDate = ticketMasData.getCreateDate() == null ? null : ticketMasData.getCreateDate().format(DEFAULT_DATE_TIME_FORMAT);
+        if (poleId != null && notifyOss){
             ossApiFacade.notifyTicketStatus(poleId, ticketMasId, createDate, OssTicketActionEnum.CREATE.getCode());
+        } else if (plateId != null && notifyOss) {
+            gmbApiFacade.notifyTicketStatus(plateId, ticketMasId, createDate, OssTicketActionEnum.CREATE.getCode());
         }
     }
 
