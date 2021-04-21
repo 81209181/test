@@ -167,10 +167,16 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
             return BtuSimpleResponseData.of(false, null, "Empty working party list.");
         }
 
-        return createFaultTicket(serviceType, identityId, reportTime, workingPartyList, contactInfo, attributes, attachments);
+        if (SdServiceTypeBean.SERVICE_TYPE.SMART_METER.equals(serviceType)){
+            return createMeterTicket(serviceType, identityId, reportTime, workingPartyList, contactInfo, attributes, attachments);
+        } else if (SdServiceTypeBean.SERVICE_TYPE.GMB.equals(serviceType)) {
+            return createGmbTicket(serviceType, identityId, reportTime, workingPartyList, contactInfo, attributes, attachments);
+        }
+
+        return null;
     }
 
-    private BtuSimpleResponseData createFaultTicket(String serviceType, String identityId, LocalDateTime reportTime,
+    private BtuSimpleResponseData createMeterTicket(String serviceType, String identityId, LocalDateTime reportTime,
                                                     List<String> workingPartyList, List<SdTicketContactData> contactInfo,
                                                     List<Attribute> attributes, List<Attachment> attachments) {
         // check active work ticket of the pole ID
@@ -267,6 +273,103 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
         return BtuSimpleResponseData.of(true, String.valueOf(ticketMasId), null);
     }
 
+    private BtuSimpleResponseData createGmbTicket(String serviceType, String identityId, LocalDateTime reportTime,
+                                                    List<String> workingPartyList, List<SdTicketContactData> contactInfo,
+                                                    List<Attribute> attributes, List<Attachment> attachments) {
+        // check active work ticket of the plate ID
+        Pageable pageable = PageRequest.of(0, 1);
+        PageData<SdTicketMasData> pagedWorkTicketData = searchTicketList(
+                pageable, serviceType, identityId, null, null,
+                null, TicketStatusEnum.WORKING.getStatusCode());
+        if(pagedWorkTicketData.getTotalElements() > 0){
+            SdTicketMasData activeTicketMasData = pagedWorkTicketData.getContent().get(0);
+            String activeTicketMasId = String.valueOf(activeTicketMasData.getTicketMasId());
+
+            LOG.info("Found existing GMB work ticket. (ticketMasId={}, identityId={})", activeTicketMasId, identityId);
+            return BtuSimpleResponseData.of(true, activeTicketMasId, null);
+        }
+        LOG.info("Found no existing GMB work ticket. (identityId={})", identityId);
+
+        // check existence of pole id or plate No
+        String warnMsg = checkIdentityId(serviceType, identityId);
+        if (warnMsg != null) {
+            LOG.warn(warnMsg);
+            return BtuSimpleResponseData.of(false, null, warnMsg);
+        }
+        LOG.info("Checked idd profile with GMB. (identityId={})", identityId);
+
+        // get mapped symptom
+        String symptomCode = translateToSymptom(workingPartyList);
+        if(StringUtils.isEmpty(symptomCode)){
+            warnMsg = String.format("Cannot map symptom for input. (workingPartyList=%s)",
+                    StringUtils.join(workingPartyList, ','));
+            LOG.warn(warnMsg);
+            return BtuSimpleResponseData.of(false, null, warnMsg);
+        }
+
+        // check active ticket of the pole ID
+        Integer ticketMasId;
+        PageData<SdTicketMasData> pagedActiveTicketData = searchTicketList(
+                pageable, serviceType, identityId, null, null,
+                null, TicketStatusEnum.OPEN.getStatusCode());
+        if(pagedActiveTicketData.getTotalElements() > 0){
+            SdTicketMasData activeTicketMasData = pagedActiveTicketData.getContent().get(0);
+            ticketMasId = activeTicketMasData.getTicketMasId();
+            LOG.info("Found existing GMB active ticket. (ticketMasId={}, identityId={})",
+                    String.valueOf(ticketMasId), identityId);
+        }else{
+            // SD: create query ticket
+            SdQueryTicketRequestData queryTicketRequestData = buildTicketServiceData(identityId, serviceType);
+            try{
+                ticketMasId = ticketFacade.createQueryTicket(queryTicketRequestData);
+                LOG.info("Created new GMB query ticket. (ticketMasId={}, identityId={})", ticketMasId, identityId);
+            } catch (RuntimeException e){
+                LOG.error(e.getMessage(), e);
+                warnMsg = "Cannot create new ticket. (identityId=" + identityId + ")";
+                LOG.warn(warnMsg);
+                return BtuSimpleResponseData.of(false, null, warnMsg);
+            }
+        }
+
+        // SD: add symptom to ticket
+        SdRequestTicketServiceData sdRequestTicketServiceData = buildTicketServiceData(
+                ticketMasId, identityId, reportTime, symptomCode);
+        List<SdRequestTicketServiceData> ticketServiceList = List.of(sdRequestTicketServiceData);
+        try {
+            ticketFacade.updateServiceInfo(ticketServiceList);
+            LOG.info("Updated symptom to ticket. (ticketMasId={}, identityId={}, symptomCode={})", ticketMasId, identityId, symptomCode);
+        } catch (RuntimeException e){
+            LOG.error(e.getMessage(), e);
+            warnMsg = "Cannot update symptom to ticket. (ticketMasId=" + ticketMasId + ", identityId=" + identityId + ", symptomCode=" + symptomCode + ")";
+            LOG.warn(warnMsg);
+            return BtuSimpleResponseData.of(false, null, warnMsg);
+        }
+
+        // SD: add contact to ticket
+        if (CollectionUtils.isNotEmpty(contactInfo)) {
+            contactInfo.stream().forEach(sdTicketContactData -> sdTicketContactData.setTicketMasId(ticketMasId));
+            ticketFacade.updateContactInfo(contactInfo);
+        }
+
+        // SD: upload file to ticket
+        if (CollectionUtils.isNotEmpty(attachments)) {
+            ticketFacade.insertUploadFile(ticketMasId, attachments);
+        }
+
+        // SD-->WFM: auto-pass to wfm
+        try {
+            ticketFacade.createJob4Wfm(ticketMasId, false);
+            LOG.info("Created job in WFM. (ticketMasId={}, identityId={})", ticketMasId, identityId);
+        } catch (RuntimeException e){
+            LOG.error(e.getMessage(), e);
+            warnMsg = "Cannot create job in WFM. (ticketMasId=" + ticketMasId + ", identityId=" + identityId + ")";
+            LOG.warn(warnMsg);
+            return BtuSimpleResponseData.of(false, null, warnMsg);
+        }
+
+        return BtuSimpleResponseData.of(true, String.valueOf(ticketMasId), null);
+    }
+
     private String checkIdentityId(String serviceType, String identityId) {
         if (StringUtils.equals(serviceType, SdServiceTypeBean.SERVICE_TYPE.SMART_METER)) {
             OssSmartMeterData ossSmartMeterData = ossApiFacade.queryMeterInfo(identityId);
@@ -293,7 +396,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
         // get pole id
         List<SdTicketServiceData> serviceInfo = ticketFacade.getServiceInfo(ticketMasId);
         if (CollectionUtils.isEmpty(serviceInfo)) {
-            LOG.warn("Cannot notify OSS without service details. (ticketMasId={})", ticketMasId);
+            LOG.warn("Cannot notify ticket without service details. (ticketMasId={})", ticketMasId);
             return;
         }
 
