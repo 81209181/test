@@ -1,3 +1,4 @@
+/******************************************** Variable definitions ************************************************/
 var ngn3Btn = $('.ngn3Btn'),
     voIpBtn = $('.voIpBtn'),
     bbBtn = $('.bbBtn'),
@@ -8,13 +9,14 @@ var ngn3Btn = $('.ngn3Btn'),
     meterEventDiv = $('#meter-event');
     gmbErrDiv = $('#gmb-div');
     reportTime = $('input[name=reportTime]');
+    voIpMark = false;
+    ticketDetId = "";
 
 $().ready(function(){
 
-    let ticketDetId = "";
-
     $('.selectpicker').selectpicker({});
 
+    /******************************************** Load and render each part *******************************************/
     if(ticketStatusDesc === "OPEN"){
         $("#ticketStatusDesc").css("color","blue");
     } else if(ticketStatusDesc === "WORKING"){
@@ -24,6 +26,28 @@ $().ready(function(){
     } else if(ticketStatusDesc === "CANCEL"){
          $("#ticketStatusDesc").css("color","red");
     }
+
+    // contact
+    $.get('/ticket/contact?ticketMasId='+ticketMasId,function(res){
+        if (res.length === 0) {
+            if(ticketStatusDesc !== "COMPLETE"){
+                let contact =$('#tempContact').children().clone();
+                contact.find('input[name=contactType]').val("On-site Contact");
+                contact.appendTo($('#contact_list'));
+                $('#btnUpdateContact').attr('disabled',false);
+            }
+        } else {
+            $.each(res,function(index,j){
+                let contact =$('#tempContact').children().clone();
+                $.each(j,function(key,value){
+                    contact.find('input[name='+key+']').val(value);
+                })
+                contact.appendTo($('#contact_list'));
+            })
+        }
+    });
+
+    // service
     $.get('/ticket/service/symptom?ticketMasId='+ticketMasId, function (res) {
         for (item of res) {
             $('.selectpicker').append("<option value="+item.symptomCode+">"+item.symptomCode+"---"+item.symptomDescription+"</option>");
@@ -72,8 +96,19 @@ $().ready(function(){
         });
     });
 
+    // remark
     getRemarksTableData();
 
+    // appointment
+    getAppointmentInfo(ticketMasId);
+
+    // job
+    ajaxGetJobInfo(ticketMasId);
+
+    // ut call
+    getAjaxUTCallRecordDataTable();
+
+    /******************************************** Button trigger event *******************************************/
     $('#btnUpdateService').on('click',function () {
         let arr = new Array();
         $('#service').each(function(index,form){
@@ -130,28 +165,6 @@ $().ready(function(){
             return;
         }
         makeAppointment(ticketDetId);
-    });
-
-    getAppointmentInfo(ticketMasId);
-
-    //contact
-    $.get('/ticket/contact?ticketMasId='+ticketMasId,function(res){
-        if (res.length === 0) {
-            if(ticketStatusDesc !== "COMPLETE"){
-                let contact =$('#tempContact').children().clone();
-                contact.find('input[name=contactType]').val("On-site Contact");
-                contact.appendTo($('#contact_list'));
-                $('#btnUpdateContact').attr('disabled',false);
-            }
-        } else {
-            $.each(res,function(index,j){
-                let contact =$('#tempContact').children().clone();
-                $.each(j,function(key,value){
-                    contact.find('input[name='+key+']').val(value);
-                })
-                contact.appendTo($('#contact_list'));
-            })
-        }
     });
 
     $('#btnAddContact').on('click',function(){
@@ -215,8 +228,6 @@ $().ready(function(){
         })
     });
 
-    readyForTicketService();
-
     // service link button
     $('.eCloudBtn').on('click',function(){
         window.open($(this).data('url'),'Profile','scrollbars=yes,height=600,width=800');
@@ -271,7 +282,6 @@ $().ready(function(){
         $(form).addClass("was-validated");
     });
 
-
     $('#btnNgn3Reset').on('click',function(){
         let account =$('select[name=ngn3Account]').val();
         if(account){
@@ -285,8 +295,6 @@ $().ready(function(){
             alert("Please select one account.");
         }
     })
-
-    ajaxGetJobInfo(ticketMasId);
 
     var relatedTicketTable;
     $('#relatedTicketTable').hide();
@@ -385,19 +393,9 @@ $().ready(function(){
         }
         triggerUTCall(bsnNum);
     });
-
-    getAjaxUTCallRecordDataTable();
 })
 
-
-function readyForTicketService() {
-    $('#btnAddService').on('click',function(){
-        let service =$('#tempService').children().clone();
-        service.appendTo($('#service_list'));
-        $('#btnUpdateService').attr('disabled',false);
-    })
-}
-
+/*********************************************** functions **********************************************************/
 function removeContact(btn){
     $(btn).parents('form').remove();
     if($('#contact_list').find('form').length < 1){
@@ -651,6 +649,18 @@ function bnButtonCtrl(val){
     }
 }
 
+function voIpButtonCtrl(val){
+    if(val){
+        eCloudBtn.attr('disabled', true);
+        voIpMark = true;
+        inventoryBtn.attr('disabled', true);
+        bbBtn.attr('disabled', true);
+        voIpBtn.attr('disabled', true);
+        utDiv.hide();
+        reportTime.attr('disabled', true);
+    }
+}
+
 function meterUiCtrl(val){
     if(val){
         eCloudBtn.attr('disabled', true);
@@ -677,19 +687,6 @@ function gmbUiCtrl(val){
     }
 }
 
-var voIpMark =false;
-
-function voIpButtonCtrl(val){
-    if(val){
-        eCloudBtn.attr('disabled', true);
-        voIpMark =true;
-        inventoryBtn.attr('disabled', true);
-        bbBtn.attr('disabled', true);
-        voIpBtn.attr('disabled', true);
-        utDiv.hide();
-        reportTime.attr('disabled', true);
-    }
-}
 function getExternalServiceData(serviceTypeCode, serviceNumber){
     $.get('/ticket/get-external-service-data/' + serviceTypeCode + '/' + serviceNumber, function(res){
         eCloudBtn.data('url',res.couldUrl);
@@ -835,9 +832,6 @@ function getAjaxGmbErrorDataTable() {
         $('#gmbErrorTable').DataTable();
     } else {
         $('#gmbErrorTable').DataTable({
-            /*"fnInitComplete": function(oSettings, json) {
-                alert( 'DataTables init' );
-            },*/
             processing: true,
             serverSide: true,
             searching: false,
