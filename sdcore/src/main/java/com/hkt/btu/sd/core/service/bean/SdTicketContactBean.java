@@ -8,6 +8,8 @@ public class SdTicketContactBean extends BaseBean {
 
     private String contactType;
 
+    private String contactTypeDesc;
+
     private String contactName;
 
     private String contactNumber;
@@ -30,6 +32,14 @@ public class SdTicketContactBean extends BaseBean {
 
     public void setContactType(String contactType) {
         this.contactType = contactType;
+    }
+
+    public String getContactTypeDesc() {
+        return contactTypeDesc;
+    }
+
+    public void setContactTypeDesc(String contactTypeDesc) {
+        this.contactTypeDesc = contactTypeDesc;
     }
 
     public String getContactName() {

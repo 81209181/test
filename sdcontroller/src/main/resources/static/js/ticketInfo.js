@@ -32,7 +32,8 @@ $().ready(function(){
         if (res.length === 0) {
             if(ticketStatusDesc !== "COMPLETE"){
                 let contact =$('#tempContact').children().clone();
-                contact.find('input[name=contactType]').val("On-site Contact");
+                contact.find('input[name=contactType]').val("SITE");
+                contact.find('input[name=contactTypeDesc]').val("On-site Contact");
                 contact.appendTo($('#contact_list'));
                 $('#btnUpdateContact').attr('disabled',false);
             }
@@ -174,7 +175,8 @@ $().ready(function(){
             return;
         }
         let contact =$('#tempContact').children().clone();
-        contact.find('input[name=contactType]').val($(this).prev('select').find('option:selected').text());
+        contact.find('input[name=contactType]').val($(this).prev('select').find('option:selected').val());
+        contact.find('input[name=contactTypeDesc]').val($(this).prev('select').find('option:selected').text());
         contact.appendTo($('#contact_list'));
         $('#btnUpdateContact').attr('disabled',false);
     });
@@ -189,7 +191,6 @@ $().ready(function(){
               form_json[n['name']] = n['value'];
             });
             form_json['ticketMasId']=ticketMasId;
-            form_json['contactType'] = $("#contactType").val();
             arr.push(form_json);
         })
         $.ajax({
