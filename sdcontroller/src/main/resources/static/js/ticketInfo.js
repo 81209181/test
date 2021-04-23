@@ -413,6 +413,9 @@ function makeAppointment(ticketDetId) {
     }*/
 
     let exchangeId = $("#service").find('input[name=exchangeBuildingId]').val();
+    if (exchangeId === '' || exchangeId === null) {
+        exchangeId = 'DUMMY';
+    }
 
     $.get('/ticket/token', {
         ticketDetId: ticketDetId,
