@@ -79,4 +79,8 @@ public interface SdTicketMasMapper {
     List<SdTicketStatisticEntity> ticketTypeCountPerOwnerGroup();
 
     List<SdTicketStatisticEntity> ticketStatusCountPerOwnerGroup();
+
+    List<SdTicketMasEntity> searchBchspList(long offset, int pageSize, LocalDate createDateFrom, LocalDate createDateTo, String status, LocalDate completeDateFrom, LocalDate completeDateTo, String createBy, String ticketMasId, String custCode, String serviceNumber, String ticketType, String serviceType, String owningRole);
+
+    Integer searchBchspCount(LocalDate createDateFrom, LocalDate createDateTo, String status, LocalDate completeDateFrom, LocalDate completeDateTo, String createBy, String ticketMasId, String custCode, String serviceNumber, String ticketType, String serviceType, String owningRole);
 }

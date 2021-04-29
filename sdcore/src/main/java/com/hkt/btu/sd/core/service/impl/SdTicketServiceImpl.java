@@ -499,6 +499,41 @@ public class SdTicketServiceImpl implements SdTicketService {
     }
 
     @Override
+    public Page<SdTicketMasBean> searchBchspList(Pageable pageable, LocalDate createDateFrom, LocalDate createDateTo, String status, LocalDate completeDateFrom, LocalDate completeDateTo, String createBy, String ticketMasId, String custCode, String serviceNumber, String ticketType, String serviceType, String owningRole) {
+        List<SdTicketMasEntity> entityList;
+        Integer totalCount;
+
+        long offset = pageable.getOffset();
+        int pageSize = pageable.getPageSize();
+
+        if (StringUtils.isNotEmpty(ticketMasId)) {
+            entityList = ticketMasMapper.searchTicketList(offset, pageSize,
+                    null, null, null,
+                    null, null, null,
+                    ticketMasId, null, null, null, null,
+                    null, null);
+            totalCount = ticketMasMapper.searchTicketCount(
+                    null, null, null,
+                    null, null, null,
+                    ticketMasId, null, null, null, null,
+                    null, null);
+        } else {
+            entityList = ticketMasMapper.searchBchspList(offset, pageSize,
+                    createDateFrom, createDateTo, status,
+                    completeDateFrom, completeDateTo, createBy,
+                    ticketMasId, custCode, serviceNumber, ticketType,
+                    serviceType, owningRole);
+            totalCount = ticketMasMapper.searchBchspCount(
+                    createDateFrom, createDateTo, status,
+                    completeDateFrom, completeDateTo, createBy,
+                    ticketMasId, custCode, serviceNumber, ticketType,
+                    serviceType, owningRole);
+        }
+
+        return new PageImpl<>(buildTicketBeanList(entityList), pageable, totalCount);
+    }
+
+    @Override
     public List<TicketStatusEnum> getTicketStatusList() {
         return Arrays.asList(TicketStatusEnum.values());
     }

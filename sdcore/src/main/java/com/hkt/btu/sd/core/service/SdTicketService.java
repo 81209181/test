@@ -66,4 +66,6 @@ public interface SdTicketService {
 
     List<SdCloseCodeBean> getCloseCodeList(String serviceType);
     void removeUploadFileByTicketMasId(Integer ticketMasId);
+
+    Page<SdTicketMasBean> searchBchspList(Pageable pageable, LocalDate createDateFrom, LocalDate createDateTo, String status, LocalDate completeDateFrom, LocalDate completeDateTo, String createBy, String ticketMasId, String custCode, String serviceNumber, String ticketType, String serviceType, String owningRole);
 }

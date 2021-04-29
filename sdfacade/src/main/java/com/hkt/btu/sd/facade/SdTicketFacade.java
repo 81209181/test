@@ -71,4 +71,6 @@ public interface SdTicketFacade {
     SdTeamSummaryData getTeamSummary();
 
     List<SdCloseCodeData> getCloseCode(String serviceType);
+
+    PageData<SdTicketMasData> searchBchspList(Pageable pageable, Map<String, String> searchFormData);
 }
