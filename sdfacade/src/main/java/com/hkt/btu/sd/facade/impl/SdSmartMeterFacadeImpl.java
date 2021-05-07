@@ -459,7 +459,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
 
         Map<String, String> searchFormData = Map.of(
                 "serviceType", serviceType,
-                "serviceNumber", serviceNumber,
+                "serviceNumberExact", serviceNumber,
                 "createDateFrom", createDateFromStr,
                 "createDateTo", createDateToStr,
                 "ticketType", ticketType,
@@ -481,7 +481,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
 
         Map<String, String> searchFormData = Map.of(
                 "serviceType", serviceType,
-                "serviceNumber", identityId,
+                "serviceNumberExact", identityId,
                 "createDateFrom", createDateFromStr,
                 "createDateTo", createDateToStr,
                 "ticketType", ticketType,
