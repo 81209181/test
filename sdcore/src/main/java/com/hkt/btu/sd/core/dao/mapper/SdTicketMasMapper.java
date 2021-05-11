@@ -80,7 +80,36 @@ public interface SdTicketMasMapper {
 
     List<SdTicketStatisticEntity> ticketStatusCountPerOwnerGroup();
 
-    List<SdTicketMasEntity> searchBchspList(long offset, int pageSize, LocalDate createDateFrom, LocalDate createDateTo, String status, LocalDate completeDateFrom, LocalDate completeDateTo, String createBy, String ticketMasId, String custCode, String serviceNumber, String ticketType, String serviceType, String owningRole);
+    List<SdTicketMasEntity> searchBchspList(@Param("offset") long offset, @Param("pageSize") int pageSize,
+                                            @Param("createDateFrom") LocalDate createDateFrom,
+                                            @Param("createDateTo") LocalDate createDateTo,
+                                            @Param("status") String status,
+                                            @Param("completeDateFrom") LocalDate completeDateFrom,
+                                            @Param("completeDateTo") LocalDate completeDateTo,
+                                            @Param("createBy") String createBy,
+                                            @Param("ticketMasId") String ticketMasId,
+                                            @Param("custCode") String custCode,
+                                            @Param("serviceNumber") String serviceNumber,
+                                            @Param("ticketType") String ticketType,
+                                            @Param("serviceType") String serviceType,
+                                            @Param("owningRole") String owningRole,
+                                            @Param("workGroup") String workGroup);
 
-    Integer searchBchspCount(LocalDate createDateFrom, LocalDate createDateTo, String status, LocalDate completeDateFrom, LocalDate completeDateTo, String createBy, String ticketMasId, String custCode, String serviceNumber, String ticketType, String serviceType, String owningRole);
+    Integer searchBchspCount(@Param("createDateFrom") LocalDate createDateFrom,
+                             @Param("createDateTo") LocalDate createDateTo,
+                             @Param("status") String status,
+                             @Param("completeDateFrom") LocalDate completeDateFrom,
+                             @Param("completeDateTo") LocalDate completeDateTo,
+                             @Param("createBy") String createBy,
+                             @Param("ticketMasId") String ticketMasId,
+                             @Param("custCode") String custCode,
+                             @Param("serviceNumber") String serviceNumber,
+                             @Param("ticketType") String ticketType,
+                             @Param("serviceType") String serviceType,
+                             @Param("owningRole") String owningRole,
+                             @Param("workGroup") String workGroup);
+
+    String getJobId(@Param("ticketMasId") String ticketMasId);
+
+    List<String> getWorkGroupList();
 }

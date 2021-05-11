@@ -228,46 +228,62 @@
 
     <sql id="searchBchspSql">
         FROM (SELECT b.ORDER_ID AS ticket_id, a.WORKGROUP FROM job a, ORDER_BES_FULFILLMENT b WHERE a.ORDER_NUM = b.ORDER_NUM AND a.WORKGROUP = 'BCHSP') a
-        LEFT JOIN TICKET_MAS tm on tm.TICKET_MAS_ID = a.TICKET_ID
-        LEFT JOIN USER_ROLE_WORKGROUP urw on urw.ROLE_ID = tm.OWNING_ROLE
-        LEFT JOIN TICKET_DET td ON tm.TICKET_MAS_ID = td.TICKET_MAS_ID
-        LEFT JOIN SERVICE_TYPE st ON td.SERVICE_TYPE_CODE = st.SERVICE_TYPE_CODE
-        where urw.WORKGROUP ='BCHSP'
-        <if test="createDateFrom != null">
-            and trunc(tm.createdate) &gt;= trunc(#{createDateFrom})
-        </if>
-        <if test="createDateTo != null">
-            and trunc(#{createDateTo}) &gt;= trunc(tm.createdate)
-        </if>
-        <if test="status != null">
-            and tm.status = #{status}
-        </if>
-        <if test="completeDateFrom != null">
-            and trunc(tm.complete_date) &gt;= trunc(#{completeDateFrom})
-        </if>
-        <if test="completeDateTo != null">
-            and trunc(#{completeDateTo}) &gt;= trunc(tm.complete_date)
-        </if>
-        <if test="createBy != null">
-            and tm.createby = #{createBy}
-        </if>
-        <if test="ticketMasId != null">
-            and tm.ticket_mas_id = #{ticketMasId}
-        </if>
-        <if test="custCode != null">
-            and lower(tm.cust_code) like '%' || lower(#{custCode}) || '%'
-        </if>
-        <if test="serviceNumber != null">
-            and lower(td.service_id) like '%' || lower(#{serviceNumber}) || '%'
-        </if>
-        <if test="ticketType != null">
-            and tm.ticket_type = #{ticketType}
-        </if>
-        <if test="serviceType != null">
-            and td.service_type_code = #{serviceType}
-        </if>
-        <if test="owningRole != null">
-            and urw.role_id = #{owningRole}
-        </if>
+        INNER JOIN TICKET_MAS tm on tm.TICKET_MAS_ID = a.TICKET_ID
+        INNER JOIN USER_ROLE_WORKGROUP urw on urw.ROLE_ID = tm.OWNING_ROLE
+        INNER JOIN TICKET_DET td ON tm.TICKET_MAS_ID = td.TICKET_MAS_ID
+        INNER JOIN SERVICE_TYPE st ON td.SERVICE_TYPE_CODE = st.SERVICE_TYPE_CODE
+        <where>
+            <if test="workGroup != null">
+                and urw.WORKGROUP =#{workGroup}
+            </if>
+            <if test="createDateFrom != null">
+                and trunc(tm.createdate) &gt;= trunc(#{createDateFrom})
+            </if>
+            <if test="createDateTo != null">
+                and trunc(#{createDateTo}) &gt;= trunc(tm.createdate)
+            </if>
+            <if test="status != null">
+                and tm.status = #{status}
+            </if>
+            <if test="completeDateFrom != null">
+                and trunc(tm.complete_date) &gt;= trunc(#{completeDateFrom})
+            </if>
+            <if test="completeDateTo != null">
+                and trunc(#{completeDateTo}) &gt;= trunc(tm.complete_date)
+            </if>
+            <if test="createBy != null">
+                and tm.createby = #{createBy}
+            </if>
+            <if test="ticketMasId != null">
+                and tm.ticket_mas_id = #{ticketMasId}
+            </if>
+            <if test="custCode != null">
+                and lower(tm.cust_code) like '%' || lower(#{custCode}) || '%'
+            </if>
+            <if test="serviceNumber != null">
+                and lower(td.service_id) like '%' || lower(#{serviceNumber}) || '%'
+            </if>
+            <if test="ticketType != null">
+                and tm.ticket_type = #{ticketType}
+            </if>
+            <if test="serviceType != null">
+                and td.service_type_code = #{serviceType}
+            </if>
+            <if test="owningRole != null">
+                and urw.role_id = #{owningRole}
+            </if>
+        </where>
     </sql>
+
+    <select id="getJobId" resultType="String">
+        select j.job_id from job j
+        inner join job_sd_fault s on j.job_id=s.job_id
+        where s.request_id= #{ticketMasId}
+        and j.dept_id='BCHSP'
+        and ( j.status &lt;&gt; 'COMPLETE' or j.status &lt;&gt; 'CANCEL' )
+    </select>
+
+    <select id="getWorkGroupList" resultType="String">
+        SELECT WORKGROUP FROM USER_DEPT_TEAM_WORKGROUP WHERE SERVICE_DESK_ENABLED = 'Y'
+    </select>
 </mapper>

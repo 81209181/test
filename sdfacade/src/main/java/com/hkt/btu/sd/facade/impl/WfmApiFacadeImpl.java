@@ -210,6 +210,41 @@ public class WfmApiFacadeImpl extends AbstractRestfulApiFacade implements WfmApi
         return null;
     }
 
+    @Override
+    public WfmResponseTokenData getTransferToken(Integer ticketMasId, Integer wfmJobId) {
+        String orderId = ticketMasId == null ? null : String.valueOf(ticketMasId);
+        String jobId = wfmJobId == null ? null : String.valueOf(wfmJobId);
+
+        // check input
+        if (StringUtils.isEmpty(orderId)) {
+            throw new InvalidInputException("Ticket mas id is empty.");
+        }else if (StringUtils.isEmpty(jobId)) {
+            throw new InvalidInputException("Job id is empty.");
+        }
+
+        // prepare param
+        Map<String, String> queryParam = new HashMap<>();
+        queryParam.put("orderId", orderId);
+        queryParam.put("jobId", jobId);
+        queryParam.put("workGroup", "BCHSP");
+        queryParam.put("systemId", "SD");
+
+        // call WFM API
+        try {
+            String url = getTargetApiProfile().getUrl();
+            String jwt = getData("/api/v1/sd/transferToken", queryParam);
+            if (StringUtils.isEmpty(jwt)) {
+                return null;
+            }
+            return WfmResponseTokenData.of(jwt, url);
+        } catch (NotFoundException e) {
+            LOG.warn(e.getMessage());
+        }
+
+        // failure return
+        return null;
+    }
+
     private String dateStrFormat(String time, DateTimeFormatter displayTimeFormatter) {
         return Optional.ofNullable(displayTimeFormatter)
                 .map(formatter -> StringUtils.isEmpty(time) ? null :

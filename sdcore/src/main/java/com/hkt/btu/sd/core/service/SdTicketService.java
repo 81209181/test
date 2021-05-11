@@ -69,5 +69,9 @@ public interface SdTicketService {
 
     List<SdSymptomWorkingPartyMappingBean> getSymptomByServiceType(String serviceType, String workingParty);
 
-    Page<SdTicketMasBean> searchBchspList(Pageable pageable, LocalDate createDateFrom, LocalDate createDateTo, String status, LocalDate completeDateFrom, LocalDate completeDateTo, String createBy, String ticketMasId, String custCode, String serviceNumber, String ticketType, String serviceType, String owningRole);
+    Page<SdTicketMasBean> searchBchspList(Pageable pageable, LocalDate createDateFrom, LocalDate createDateTo, String status, LocalDate completeDateFrom, LocalDate completeDateTo, String createBy, String ticketMasId, String custCode, String serviceNumber, String ticketType, String serviceType, String owningRole, String workGroup);
+
+    String getJobId(String ticketMasId);
+
+    List<String> getWorkGroupList();
 }

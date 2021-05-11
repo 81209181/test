@@ -12,10 +12,7 @@ import com.hkt.btu.sd.facade.data.gmb.GmbErrorData;
 import com.hkt.btu.sd.facade.data.norars.NoraAccountData;
 import com.hkt.btu.sd.facade.data.norars.NoraBroadbandInfoData;
 import com.hkt.btu.sd.facade.data.oss.OssSmartMeterEventData;
-import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
-import com.hkt.btu.sd.facade.data.wfm.WfmMakeApptData;
-import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
-import com.hkt.btu.sd.facade.data.wfm.WfmResponseTokenData;
+import com.hkt.btu.sd.facade.data.wfm.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -426,6 +423,20 @@ public class TicketController {
         }
     }
 
+    @GetMapping("transferToken")
+    public ResponseEntity<?> getTransferToken(Integer orderId, Integer jobId) {
+        try {
+            WfmResponseTokenData data = wfmApiFacade.getTransferToken(orderId, jobId);
+            if (data != null) {
+                return ResponseEntity.ok(data);
+            } else {
+                return ResponseEntity.badRequest().body("Cannot connect WFM for getting token.");
+            }
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @GetMapping("team-summary")
     public String showTeamSummary(Model model) {
         model.addAttribute("teamSummary", ticketFacade.getTeamSummary());
@@ -521,6 +532,11 @@ public class TicketController {
                     .sorted(Comparator.comparing(SdUserRoleData::getRoleDesc)).collect(Collectors.toList()));
         }
 
+        List<String> workGroupList = ticketFacade.getWorkGroupList();
+        if (CollectionUtils.isNotEmpty(workGroupList)) {
+            model.addAttribute("workGroupList", workGroupList);
+        }
+
         return "ticket/searchBchsp";
     }
 
@@ -545,4 +561,8 @@ public class TicketController {
         LOG.info(String.format("UT GUI trigger: {ticketMasId: %s, userId: %s, date: %s}", ticketMasId, userId, localDateTime));
     }
 
+    @GetMapping("getJobId")
+    public ResponseEntity<?> getJobId(@RequestParam String ticketMasId) {
+        return ResponseEntity.ok(ticketFacade.getJobId(ticketMasId));
+    }
 }

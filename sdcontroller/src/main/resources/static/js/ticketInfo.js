@@ -12,6 +12,7 @@ var ngn3Btn = $('.ngn3Btn'),
     reportTime = $('input[name=reportTime]');
     voIpMark = false;
     ticketDetId = "";
+    jobId = "";
 
 $().ready(function(){
 
@@ -384,6 +385,16 @@ $().ready(function(){
                     ]
                 });
             }
+        }
+    });
+
+    $.get('/ticket/getJobId?ticketMasId='+ticketMasId,function(res){
+        if (res === '' || ticketStatusDesc === "COMPLETE") {
+            $('.transferBtn').attr("hidden", true);
+            return;
+        }
+        if (res != '') {
+            jobId = res;
         }
     });
 
@@ -902,4 +913,27 @@ function redirectToUT(){
         // window.open('http://10.252.16.151:8080/ut/page?p=spage_direct&op=dispwithact_2&mpid=7&ppid=1&spid=1&bsn='+bsn,'universalTester','scrollbars=yes,height=800,width=1250');
         $.post('/ticket/service/utTestLog',{ticketMasId:ticketMasId});
     }
+}
+
+function transferResolverTicket() {
+    if (jobId === '' || jobId === undefined) {
+        showErrorMsg("Please Make Appointment!");
+        return;
+    }
+
+    $.get('/ticket/transferToken', {
+        orderId: ticketMasId,
+        jobId: jobId
+    }, function (res) {
+        let window = TransferSDObj.make({
+            data: {
+                sdToken: res.jwt
+            }
+        }, res.url);
+        checkWindowClose(window);
+    }).fail(function (e) {
+        let responseError = e.responseText ? e.responseText : "Get failed.";
+        console.log("ERROR : ", responseError);
+        showErrorMsg(responseError);
+    })
 }

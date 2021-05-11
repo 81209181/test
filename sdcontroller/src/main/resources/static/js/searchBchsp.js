@@ -53,6 +53,7 @@ function createSearchTicketDataTable(){
                 d.ticketType = $('#ticketType').val();
                 d.serviceType = $("#serviceType").val();
                 d.owningRole = $("#owningRole").val();
+                d.workGroup = $("#workGroup").val();
             },
             error: function (e) {
                 if(e.responseText){

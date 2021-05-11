@@ -499,7 +499,7 @@ public class SdTicketServiceImpl implements SdTicketService {
     }
 
     @Override
-    public Page<SdTicketMasBean> searchBchspList(Pageable pageable, LocalDate createDateFrom, LocalDate createDateTo, String status, LocalDate completeDateFrom, LocalDate completeDateTo, String createBy, String ticketMasId, String custCode, String serviceNumber, String ticketType, String serviceType, String owningRole) {
+    public Page<SdTicketMasBean> searchBchspList(Pageable pageable, LocalDate createDateFrom, LocalDate createDateTo, String status, LocalDate completeDateFrom, LocalDate completeDateTo, String createBy, String ticketMasId, String custCode, String serviceNumber, String ticketType, String serviceType, String owningRole, String workGroup) {
         List<SdTicketMasEntity> entityList;
         Integer totalCount;
 
@@ -507,30 +507,44 @@ public class SdTicketServiceImpl implements SdTicketService {
         int pageSize = pageable.getPageSize();
 
         if (StringUtils.isNotEmpty(ticketMasId)) {
-            entityList = ticketMasMapper.searchTicketList(offset, pageSize,
+            entityList = ticketMasMapper.searchBchspList(offset, pageSize,
                     null, null, null,
                     null, null, null,
-                    ticketMasId, null, null, null, null,
-                    null, null);
-            totalCount = ticketMasMapper.searchTicketCount(
+                    ticketMasId, null, null, null,
+                    null, null, null);
+            totalCount = ticketMasMapper.searchBchspCount(
                     null, null, null,
                     null, null, null,
-                    ticketMasId, null, null, null, null,
-                    null, null);
+                    ticketMasId, null, null, null,
+                    null, null, null);
         } else {
             entityList = ticketMasMapper.searchBchspList(offset, pageSize,
                     createDateFrom, createDateTo, status,
                     completeDateFrom, completeDateTo, createBy,
                     ticketMasId, custCode, serviceNumber, ticketType,
-                    serviceType, owningRole);
+                    serviceType, owningRole, workGroup);
             totalCount = ticketMasMapper.searchBchspCount(
                     createDateFrom, createDateTo, status,
                     completeDateFrom, completeDateTo, createBy,
                     ticketMasId, custCode, serviceNumber, ticketType,
-                    serviceType, owningRole);
+                    serviceType, owningRole, workGroup);
         }
 
         return new PageImpl<>(buildTicketBeanList(entityList), pageable, totalCount);
+    }
+
+    @Override
+    public String getJobId(String ticketMasId) {
+        if (StringUtils.isEmpty(ticketMasId)) {
+            return null;
+        }
+
+        return ticketMasMapper.getJobId(ticketMasId);
+    }
+
+    @Override
+    public List<String> getWorkGroupList() {
+        return ticketMasMapper.getWorkGroupList();
     }
 
     @Override

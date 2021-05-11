@@ -25,4 +25,5 @@ public interface WfmApiFacade {
 
     WfmResponseTokenData getToken(WfmMakeApptData makeApptData);
 
+    WfmResponseTokenData getTransferToken(Integer ticketMasId, Integer jobId);
 }

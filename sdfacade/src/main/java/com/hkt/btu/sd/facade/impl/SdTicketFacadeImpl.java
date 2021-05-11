@@ -796,20 +796,31 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         String ticketType = StringUtils.isEmpty(searchFormData.get("ticketType")) ? null : searchFormData.get("ticketType");
         String serviceType = StringUtils.isEmpty(searchFormData.get("serviceType")) ? null : searchFormData.get("serviceType");
         String owningRole = StringUtils.isEmpty(searchFormData.get("owningRole")) ? null : searchFormData.get("owningRole");
+        String workGroup = StringUtils.isEmpty(searchFormData.get("workGroup")) ? null : searchFormData.get("workGroup");
 
         Page<SdTicketMasBean> pageBean;
         try {
             pageBean = ticketService.searchBchspList(
                     pageable, createDateFrom, createDateTo,
                     status, completeDateFrom, completeDateTo,
-                    createBy, ticketMasId, custCode,
-                    serviceNumber, ticketType, serviceType, owningRole);
+                    createBy, ticketMasId, custCode, serviceNumber,
+                    ticketType, serviceType, owningRole, workGroup);
         } catch (AuthorityNotFoundException e) {
             return new PageData<>(e.getMessage());
         }
 
         List<SdTicketMasBean> beanList = pageBean.getContent();
         return new PageData<>(buildTicketDataList(beanList), pageBean.getPageable(), pageBean.getTotalElements());
+    }
+
+    @Override
+    public String getJobId(String ticketMasId) {
+        return ticketService.getJobId(ticketMasId);
+    }
+
+    @Override
+    public List<String> getWorkGroupList() {
+        return ticketService.getWorkGroupList();
     }
 
     @Override

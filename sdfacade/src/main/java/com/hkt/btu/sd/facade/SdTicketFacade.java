@@ -75,4 +75,8 @@ public interface SdTicketFacade {
     String getSymptomForApi(String serviceType, List<String> workingPartyList);
 
     PageData<SdTicketMasData> searchBchspList(Pageable pageable, Map<String, String> searchFormData);
+
+    String getJobId(String ticketMasId);
+
+    List<String> getWorkGroupList();
 }
