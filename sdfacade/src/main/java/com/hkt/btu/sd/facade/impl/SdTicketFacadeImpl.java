@@ -34,9 +34,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Type;
@@ -756,6 +754,28 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             sdCloseCodeDataPopulator.populate(bean, data);
             return data;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public String getSymptomForApi(String serviceType, List<String> workingPartyList) {
+        if (workingPartyList.size() == 1) {
+            String workingParty = workingPartyList.stream().collect(Collectors.joining(","));
+            List<SdSymptomWorkingPartyMappingBean> beanList = ticketService.getSymptomByServiceType(serviceType, workingParty);
+            return CollectionUtils.isEmpty(beanList) ? null : beanList.get(0).getSymptomCode();
+        } else if (workingPartyList.size() > 1) {
+            List<SdSymptomWorkingPartyMappingBean> beanList = ticketService.getSymptomByServiceType(serviceType, null);
+            if (CollectionUtils.isEmpty(beanList)) {
+                return null;
+            }
+            for (SdSymptomWorkingPartyMappingBean bean : beanList) {
+                List<String> dbWorkingPartyList = Arrays.asList(bean.getWorkingParty().split(","));
+                if (dbWorkingPartyList.size() > 1 && dbWorkingPartyList.containsAll(workingPartyList)) {
+                    return bean.getSymptomCode();
+                }
+            }
+        }
+
+        return null;
     }
 
     @Override

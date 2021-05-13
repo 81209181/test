@@ -17,10 +17,16 @@
 
     <resultMap id="SymptomMappingEntity" type="com.hkt.btu.sd.core.dao.entity.SdSymptomMappingEntity" >
         <result column="SERVICE_TYPE_CODE" property="serviceTypeCode" />
-        <result column="SYMPTOM_GROUP_CODE" property="symptomGroupCode" />
+        <result column="SYMPTOM_CODE" property="symptomCode" />
 
         <result column="CREATEDATE" property="createdate" />
         <result column="CREATEBY" property="createby" />
+    </resultMap>
+
+    <resultMap id="SymptomWorkingPartyMappingEntity" type="com.hkt.btu.sd.core.dao.entity.SdSymptomWorkingPartyMappingEntity" >
+        <result column="SERVICE_TYPE_CODE" property="serviceTypeCode" />
+        <result column="SYMPTOM_CODE" property="symptomCode" />
+        <result column="WORKINGPARTY" property="workingParty" />
     </resultMap>
 
     <select id="getSymptomGroupList" resultMap="SymptomEntity">
@@ -144,5 +150,15 @@
         inner join SYMPTOM_GROUP sg
             on sy.SYMPTOM_GROUP_CODE = sg.SYMPTOM_GROUP_CODE
         order by sy.SYMPTOM_CODE
+    </select>
+
+    <select id="getSymptomByServiceType" resultMap="SymptomWorkingPartyMappingEntity">
+        SELECT swm.* FROM SYMPTOM_WORKINGPARTY_MAPPING swm
+        LEFT JOIN SYMPTOM_MAPPING sm ON swm.SYMPTOM_CODE = sm.SYMPTOM_CODE
+        LEFT JOIN SERVICE_TYPE st ON swm.SERVICE_TYPE_CODE = st.SERVICE_TYPE_CODE
+        WHERE sm.SERVICE_TYPE_CODE = #{serviceType}
+        <if test="workingParty != null">
+            AND swm.WORKINGPARTY = #{workingParty}
+        </if>
     </select>
 </mapper>

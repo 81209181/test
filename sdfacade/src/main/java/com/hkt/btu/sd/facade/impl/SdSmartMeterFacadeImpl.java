@@ -81,7 +81,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
         LOG.info("Checked smart meter profile with OSS. (poleId={})", poleId);
 
         // get mapped symptom
-        String symptomCode = translateToSymptom(workingPartyList);
+        String symptomCode = ticketFacade.getSymptomForApi(SdServiceTypeBean.SERVICE_TYPE.SMART_METER, workingPartyList);
         if(StringUtils.isEmpty(symptomCode)){
             String warnMsg = String.format("Cannot map symptom for input. (workingPartyList=%s)",
                     StringUtils.join(workingPartyList, ','));
@@ -202,7 +202,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
         LOG.info("Checked smart meter profile with OSS. (identityId={})", identityId);
 
         // get mapped symptom
-        String symptomCode = translateToSymptom(workingPartyList);
+        String symptomCode = ticketFacade.getSymptomForApi(SdServiceTypeBean.SERVICE_TYPE.SMART_METER, workingPartyList);
         if(StringUtils.isEmpty(symptomCode)){
             warnMsg = String.format("Cannot map symptom for input. (workingPartyList=%s)",
                     StringUtils.join(workingPartyList, ','));
@@ -299,7 +299,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
         LOG.info("Checked idd profile with GMB. (identityId={})", identityId);
 
         // get mapped symptom
-        String symptomCode = translateToSymptom(workingPartyList);
+        String symptomCode = ticketFacade.getSymptomForApi(SdServiceTypeBean.SERVICE_TYPE.GMB, workingPartyList);
         if(StringUtils.isEmpty(symptomCode)){
             warnMsg = String.format("Cannot map symptom for input. (workingPartyList=%s)",
                     StringUtils.join(workingPartyList, ','));
@@ -491,32 +491,6 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
         return ticketFacade.searchTicketList(pageable, searchFormData);
     }
 
-    @Override
-    public String translateToSymptom(List<String> workingPartyList) {
-        boolean hasPnd = false;
-        boolean hasField = false;
-        for(String workingParty : workingPartyList){
-            if(OssWorkingPartyEnum.PND.getCode().equals(workingParty)){
-                hasPnd = true;
-            } else if (OssWorkingPartyEnum.FIELD.getCode().equals(workingParty)){
-                hasField = true;
-            } else {
-                return null;
-            }
-        }
-
-
-        if(hasPnd && hasField) {
-            return "CL007";
-        } else if(hasPnd) {
-            return "CL006";
-        } else if (hasField) {
-            return "CL005";
-        } else {
-            return null;
-        }
-    }
-
     private SdRequestTicketServiceData buildTicketServiceData(Integer ticketMasId, String identityId, LocalDateTime reportTime, String symptomCode){
         SdRequestTicketServiceData sdRequestTicketServiceData = new SdRequestTicketServiceData();
         sdRequestTicketServiceData.setTicketMasId(ticketMasId);
@@ -532,7 +506,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
             case SdServiceTypeBean.SERVICE_TYPE.SMART_METER:
                 searchKey = ServiceSearchEnum.POLE_ID.getKey();
             case SdServiceTypeBean.SERVICE_TYPE.GMB:
-                searchKey = "plateId";
+                searchKey = ServiceSearchEnum.PLATE_ID.getKey();
         }
         SdQueryTicketRequestData queryTicketRequestData = new SdQueryTicketRequestData();
         queryTicketRequestData.setSearchKey(searchKey);

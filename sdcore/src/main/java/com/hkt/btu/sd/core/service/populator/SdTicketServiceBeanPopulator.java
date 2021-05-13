@@ -3,8 +3,10 @@ package com.hkt.btu.sd.core.service.populator;
 
 import com.hkt.btu.common.core.service.populator.AbstractBeanPopulator;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomEntity;
+import com.hkt.btu.sd.core.dao.entity.SdSymptomWorkingPartyMappingEntity;
 import com.hkt.btu.sd.core.dao.entity.SdTicketServiceEntity;
 import com.hkt.btu.sd.core.service.bean.SdSymptomBean;
+import com.hkt.btu.sd.core.service.bean.SdSymptomWorkingPartyMappingBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketServiceBean;
 
 import java.util.Optional;
@@ -35,5 +37,11 @@ public class SdTicketServiceBeanPopulator extends AbstractBeanPopulator<SdTicket
     public void populate(SdSymptomEntity source, SdSymptomBean target) {
         target.setSymptomCode(source.getSymptomCode());
         target.setSymptomDescription(source.getSymptomDescription());
+    }
+
+    public void populate(SdSymptomWorkingPartyMappingEntity source, SdSymptomWorkingPartyMappingBean target) {
+        target.setSymptomCode(source.getSymptomCode());
+        target.setServiceTypeCode(source.getServiceTypeCode());
+        target.setWorkingParty(source.getWorkingParty());
     }
 }

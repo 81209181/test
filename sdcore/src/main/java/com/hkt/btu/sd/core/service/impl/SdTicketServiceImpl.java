@@ -598,4 +598,19 @@ public class SdTicketServiceImpl implements SdTicketService {
             return bean;
         }).collect(Collectors.toList());
     }
+
+    @Override
+    public List<SdSymptomWorkingPartyMappingBean> getSymptomByServiceType(String serviceType, String workingParty) {
+        List<SdSymptomWorkingPartyMappingEntity> symptomEntities = symptomMapper.getSymptomByServiceType(serviceType, workingParty);
+
+        if (symptomEntities == null) {
+            return null;
+        }
+
+        return symptomEntities.stream().map(entity -> {
+            SdSymptomWorkingPartyMappingBean bean = new SdSymptomWorkingPartyMappingBean();
+            ticketServiceBeanPopulator.populate(entity, bean);
+            return bean;
+        }).collect(Collectors.toList());
+    }
 }

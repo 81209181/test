@@ -3,6 +3,7 @@ package com.hkt.btu.sd.core.dao.mapper;
 import com.hkt.btu.sd.core.dao.entity.SdSortEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomMappingEntity;
+import com.hkt.btu.sd.core.dao.entity.SdSymptomWorkingPartyMappingEntity;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -44,4 +45,7 @@ public interface SdSymptomMapper {
                           @Param("createby") String createby);
 
     List<SdSymptomEntity> getAllSymptomList();
+
+    List<SdSymptomWorkingPartyMappingEntity> getSymptomByServiceType(@Param("serviceType") String serviceType,
+                                                                     @Param("workingParty") String workingParty);
 }

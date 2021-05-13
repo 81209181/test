@@ -66,4 +66,6 @@ public interface SdTicketService {
 
     List<SdCloseCodeBean> getCloseCodeList(String serviceType);
     void removeUploadFileByTicketMasId(Integer ticketMasId);
+
+    List<SdSymptomWorkingPartyMappingBean> getSymptomByServiceType(String serviceType, String workingParty);
 }

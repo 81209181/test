@@ -71,4 +71,6 @@ public interface SdTicketFacade {
     SdTeamSummaryData getTeamSummary();
 
     List<SdCloseCodeData> getCloseCode(String serviceType);
+
+    String getSymptomForApi(String serviceType, List<String> workingPartyList);
 }

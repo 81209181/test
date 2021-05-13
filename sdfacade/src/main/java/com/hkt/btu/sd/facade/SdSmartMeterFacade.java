@@ -17,7 +17,5 @@ public interface SdSmartMeterFacade {
     PageData<SdTicketMasData> searchTicketList(Pageable pageable, Integer poleId, String plateId,
                                                String createDateFrom, String createDateTo, String ticketType,
                                                String status);
-    String translateToSymptom(List<String> workingPartyList);
-
     BtuSimpleResponseData createTicket(OssCaseData ossCaseData);
 }
