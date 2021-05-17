@@ -19,14 +19,14 @@ public class SdTicketRemarkDataPopulator extends AbstractDataPopulator<SdTicketR
     public void populateJobProgressData(WfmJobProgressData source, SdTicketRemarkData target) {
         target.setRemarksType(SdTicketRemarkData.REMARKS_TYPE.WFM_PROGRESS);
         target.setRemarks(source.getRemark());
-        target.setCreatedate(source.getCreateDate().toLocalDateTime());
+        target.setCreatedate(source.getCreateDate() == null ? null : source.getCreateDate().toLocalDateTime());
         target.setCreateby(source.getCreateId());
     }
 
     public void populateJobRemarkData(WfmJobRemarksData source, SdTicketRemarkData target) {
         target.setRemarksType(SdTicketRemarkData.REMARKS_TYPE.WFM_REMARKS);
         target.setRemarks(source.getRemark());
-        target.setCreatedate(source.getCreateDate().toLocalDateTime());
+        target.setCreatedate(source.getCreateDate() == null ? null : source.getCreateDate().toLocalDateTime());
         target.setCreateby(source.getCreateId());
     }
 }

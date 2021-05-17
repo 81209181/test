@@ -263,7 +263,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
         // sort
         return dataList.stream()
-                .sorted(Comparator.comparing(SdTicketRemarkData::getCreatedate).reversed())
+                .sorted(Comparator.comparing(SdTicketRemarkData::getCreatedate, Comparator.nullsLast(LocalDateTime::compareTo)).reversed())
                 .collect(Collectors.toList());
     }
 
