@@ -237,6 +237,7 @@ $().ready(function(){
     // submit button
     $('#btnTicketSubmit').on('click',function(){
         clearAllMsg();
+        $('#btnTicketSubmit').attr("disabled", true);
         $.post('/ticket/submit',{'ticketMasId':ticketMasId},function(res){
             if(res.success){
                 location.reload();
@@ -245,6 +246,7 @@ $().ready(function(){
             var responseError = e.responseText ? e.responseText : "Get failed.";
             console.log("ERROR : ", responseError);
             showErrorMsg(responseError);
+            $('#btnTicketSubmit').attr("disabled", false);
         })
     });
 
