@@ -30,6 +30,7 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.AbstractRequestLoggingFilter;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
@@ -153,6 +154,8 @@ public class BtuSecurityConfig extends WebSecurityConfigurerAdapter {
                 if (MediaType.APPLICATION_JSON_VALUE.equals(httpServletRequest.getContentType())) {
                     return false;
                 }
+                if (StringUtils.startsWithIgnoreCase(httpServletRequest.getContentType(), MediaType.APPLICATION_JSON_VALUE))
+                    return false;
             }
             if (httpServletRequest.getRequestURI().endsWith(LOGIN_URI)) {
                 return false;
