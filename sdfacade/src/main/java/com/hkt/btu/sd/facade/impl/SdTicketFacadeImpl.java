@@ -330,6 +330,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                         || serviceTypeCode.equals(SdServiceTypeBean.SERVICE_TYPE.GMB)){
                     if (reportTime == null) {
                         return "Please input report time.";
+                    } else if (reportTime.isAfter(LocalDateTime.now())) {
+                        return "Input report time can not after than now.";
                     }
                 }
                 faults.forEach(symptom ->
