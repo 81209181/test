@@ -780,6 +780,38 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         return null;
     }
 
+    public PageData<SdTicketMasData> searchBchspList(Pageable pageable, Map<String, String> searchFormData) {
+        LocalDate createDateFrom = StringUtils.isEmpty(searchFormData.get("createDateFrom")) ? null : LocalDate.parse(searchFormData.get("createDateFrom"));
+        LocalDate createDateTo = StringUtils.isEmpty(searchFormData.get("createDateTo")) ? null : LocalDate.parse(searchFormData.get("createDateTo"));
+
+        String status = StringUtils.isEmpty(searchFormData.get("status")) ? null : searchFormData.get("status");
+        LocalDate completeDateFrom = StringUtils.isEmpty(searchFormData.get("completeDateFrom")) ? null : LocalDate.parse(searchFormData.get("completeDateFrom"));
+        LocalDate completeDateTo = StringUtils.isEmpty(searchFormData.get("completeDateTo")) ? null : LocalDate.parse(searchFormData.get("completeDateTo"));
+
+        String createBy = StringUtils.isEmpty(searchFormData.get("createBy")) ? null : searchFormData.get("createBy");
+        String ticketMasId = StringUtils.isEmpty(searchFormData.get("ticketMasId")) ? null : searchFormData.get("ticketMasId");
+        String custCode = StringUtils.isEmpty(searchFormData.get("custCode")) ? null : searchFormData.get("custCode");
+
+        String serviceNumber = StringUtils.isEmpty(searchFormData.get("serviceNumber")) ? null : searchFormData.get("serviceNumber");
+        String ticketType = StringUtils.isEmpty(searchFormData.get("ticketType")) ? null : searchFormData.get("ticketType");
+        String serviceType = StringUtils.isEmpty(searchFormData.get("serviceType")) ? null : searchFormData.get("serviceType");
+        String owningRole = StringUtils.isEmpty(searchFormData.get("owningRole")) ? null : searchFormData.get("owningRole");
+
+        Page<SdTicketMasBean> pageBean;
+        try {
+            pageBean = ticketService.searchBchspList(
+                    pageable, createDateFrom, createDateTo,
+                    status, completeDateFrom, completeDateTo,
+                    createBy, ticketMasId, custCode,
+                    serviceNumber, ticketType, serviceType, owningRole);
+        } catch (AuthorityNotFoundException e) {
+            return new PageData<>(e.getMessage());
+        }
+
+        List<SdTicketMasBean> beanList = pageBean.getContent();
+        return new PageData<>(buildTicketDataList(beanList), pageBean.getPageable(), pageBean.getTotalElements());
+    }
+
     @Override
     public WfmMakeApptData getMakeApptDataByTicketDetId(Integer ticketDetId) {
         SdMakeApptBean bean = ticketService.getTicketServiceByDetId(ticketDetId);

@@ -496,4 +496,42 @@ public class TicketController {
     public ResponseEntity<?> getIddInfo(@RequestParam String plateId) {
         return ResponseEntity.ok(gmbApiFacade.getIddInfo(plateId));
     }
+
+    @GetMapping("/search-bchsp")
+    public String searchBchsp(Model model) {
+        List<BtuCodeDescData> ticketStatusList = ticketFacade.getTicketStatusList();
+        if (CollectionUtils.isNotEmpty(ticketStatusList)) {
+            model.addAttribute("ticketStatusList", ticketStatusList);
+        }
+
+        List<BtuCodeDescData> ticketTypeList = ticketFacade.getTicketTypeList();
+        if (CollectionUtils.isNotEmpty(ticketTypeList)) {
+            model.addAttribute("ticketTypeList", ticketTypeList);
+        }
+
+        List<SdServiceTypeData> serviceTypeList = serviceTypeFacade.getServiceTypeList();
+        if (CollectionUtils.isNotEmpty(serviceTypeList)) {
+            model.addAttribute("serviceTypeList", serviceTypeList);
+        }
+
+        List<SdUserRoleData> eligibleUserRoleList = userRoleFacade.getEligibleUserRoleList();
+        if (CollectionUtils.isNotEmpty(eligibleUserRoleList)) {
+            model.addAttribute("primaryRoleList", eligibleUserRoleList.stream().filter(SdUserRoleData::isPrimaryRole)
+                    .sorted(Comparator.comparing(SdUserRoleData::getRoleDesc)).collect(Collectors.toList()));
+        }
+
+        return "ticket/searchBchsp";
+    }
+
+    @GetMapping("/searchBchsp")
+    public ResponseEntity<?> searchBchsp(@RequestParam(defaultValue = "0") int draw,
+                                          @RequestParam(defaultValue = "0") int start,
+                                          @RequestParam(defaultValue = "10") int length,
+                                          @RequestParam Map<String, String> searchFormData) {
+        int page = start / length;
+        Pageable pageable = PageRequest.of(page, length);
+
+        PageData<SdTicketMasData> pageData = ticketFacade.searchBchspList(pageable, searchFormData);
+        return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
+    }
 }
