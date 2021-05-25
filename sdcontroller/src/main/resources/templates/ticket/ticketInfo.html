@@ -113,6 +113,7 @@
                         <button type="button" class="btn btn-info ml-3 voIpBtn" onclick='getRelatedOfferInfo(bsn);'>VoIP Detail</button>
                         <button type="button" class="btn btn-info ml-3 ngn3Btn" onclick="resetNgn3AccountPwd()">Reset NGN3 Account Password</button>
                         <button type="button" class="btn btn-info ml-3 ngn3Btn" onclick="getNGN3OneDayAdminAccount();">Get NGN3 1-Day Admin Account</button>
+                        <button type="button" class="btn btn-info ml-3" onclick="redirectToUT();">UT</button>
                     </h3>
                 </div>
                 <div class="col-md-12">
@@ -173,38 +174,38 @@
                         Update
                     </button>
                 </div>
-                <div th:id="service-ut" class="col-md-12">
-                    <button type="button" class="btn btn-info mb-3 utCallBtn">Trigger UT Call</button>
-                    <table id="utCallRecordTable" class="display">
-                        <thead>
-                        <tr>
-                            <th>UT Call ID</th>
-                            <th>Service Code</th>
-                            <th>Trigger Time</th>
-                            <th>Trigger Status</th>
-                            <th>Testing Status</th>
-                            <th>Last Check Time</th>
-                            <th>Ticket Detail Id</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                        <tfoot>
-                        <tr>
-                            <th>UT Call ID</th>
-                            <th>Service Code</th>
-                            <th>Trigger Time</th>
-                            <th>Trigger Status</th>
-                            <th>Testing Status</th>
-                            <th>Last Check Time</th>
-                            <th>Ticket Detail Id</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                        </tfoot>
-                    </table>
-                </div>
+<!--                <div th:id="service-ut" class="col-md-12">-->
+<!--                    <button type="button" class="btn btn-info mb-3 utCallBtn">Trigger UT Call</button>-->
+<!--                    <table id="utCallRecordTable" class="display">-->
+<!--                        <thead>-->
+<!--                        <tr>-->
+<!--                            <th>UT Call ID</th>-->
+<!--                            <th>Service Code</th>-->
+<!--                            <th>Trigger Time</th>-->
+<!--                            <th>Trigger Status</th>-->
+<!--                            <th>Testing Status</th>-->
+<!--                            <th>Last Check Time</th>-->
+<!--                            <th>Ticket Detail Id</th>-->
+<!--                            <th></th>-->
+<!--                            <th></th>-->
+<!--                        </tr>-->
+<!--                        </thead>-->
+<!--                        <tbody></tbody>-->
+<!--                        <tfoot>-->
+<!--                        <tr>-->
+<!--                            <th>UT Call ID</th>-->
+<!--                            <th>Service Code</th>-->
+<!--                            <th>Trigger Time</th>-->
+<!--                            <th>Trigger Status</th>-->
+<!--                            <th>Testing Status</th>-->
+<!--                            <th>Last Check Time</th>-->
+<!--                            <th>Ticket Detail Id</th>-->
+<!--                            <th></th>-->
+<!--                            <th></th>-->
+<!--                        </tr>-->
+<!--                        </tfoot>-->
+<!--                    </table>-->
+<!--                </div>-->
                 <div th:id="meter-event" class="col-md-12">
                     <hr>
                     <h3>Meter Events</h3>

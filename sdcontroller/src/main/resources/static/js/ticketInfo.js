@@ -4,7 +4,7 @@ var ngn3Btn = $('.ngn3Btn'),
     bbBtn = $('.bbBtn'),
     inventoryBtn = $('.inventoryBtn'),
     eCloudBtn =$('.eCloudBtn'),
-    utDiv = $('#service-ut'),
+    // utDiv = $('#service-ut'),
     searchKey = $("#ticket").find('font[name=searchKey]').text(),
     meterEventDiv = $('#meter-event');
     gmbErrDiv = $('#gmb-div');
@@ -107,7 +107,7 @@ $().ready(function(){
     ajaxGetJobInfo(ticketMasId);
 
     // ut call
-    getAjaxUTCallRecordDataTable();
+    // getAjaxUTCallRecordDataTable();
 
     /******************************************** Button trigger event *******************************************/
     $('#btnUpdateService').on('click',function () {
@@ -386,16 +386,16 @@ $().ready(function(){
         }
     });
 
-    $('.utCallBtn').on('click',function(){
-        let bsnNum = '';
-
-        if (searchKey === 'BSN') {
-            bsnNum = bsn;
-        } else if (searchKey === 'DN') {
-            bsnNum = $('#relatedBsn').val();
-        }
-        triggerUTCall(bsnNum);
-    });
+    // $('.utCallBtn').on('click',function(){
+    //     let bsnNum = '';
+    //
+    //     if (searchKey === 'BSN') {
+    //         bsnNum = bsn;
+    //     } else if (searchKey === 'DN') {
+    //         bsnNum = $('#relatedBsn').val();
+    //     }
+    //     triggerUTCall(bsnNum);
+    // });
 })
 
 /*********************************************** functions **********************************************************/
@@ -638,7 +638,7 @@ function eCloudButtonCtrl(flag) {
         bbBtn.attr('disabled', true);
         voIpBtn.attr('disabled', true);
         ngn3Btn.hide();
-        utDiv.hide();
+        // utDiv.hide();
         reportTime.attr('disabled', true);
     }
 }
@@ -650,7 +650,7 @@ function bnButtonCtrl(val){
         bbBtn.attr('disabled', false);
         voIpBtn.attr('disabled', true);
         ngn3Btn.hide();
-        utDiv.hide();
+        // utDiv.hide();
         reportTime.attr('disabled', true);
     }
 }
@@ -662,7 +662,7 @@ function voIpButtonCtrl(val){
         inventoryBtn.attr('disabled', true);
         bbBtn.attr('disabled', true);
         voIpBtn.attr('disabled', true);
-        utDiv.hide();
+        // utDiv.hide();
         reportTime.attr('disabled', true);
     }
 }
@@ -674,7 +674,7 @@ function meterUiCtrl(val){
         bbBtn.attr('disabled', true);
         voIpBtn.attr('disabled', true);
         ngn3Btn.hide();
-        utDiv.hide();
+        // utDiv.hide();
     } else {
         meterEventDiv.hide();
     }
@@ -687,7 +687,7 @@ function gmbUiCtrl(val){
         bbBtn.attr('disabled', true);
         voIpBtn.attr('disabled', true);
         ngn3Btn.hide();
-        utDiv.hide();
+        // utDiv.hide();
     } else {
         gmbErrDiv.hide();
     }
@@ -707,71 +707,71 @@ function getExternalServiceData(serviceTypeCode, serviceNumber){
     })
 }
 
-function getAjaxUTCallRecordDataTable() {
-    let bsnNum = '';
-
-    if (searchKey === 'BSN') {
-        bsnNum = bsn;
-    } else if (searchKey === 'DN') {
-        bsnNum = $('#relatedBsn').val();
-    }
-
-    $('#utCallRecordTable').DataTable({
-        "order": [[0,"asc"],[1,"asc"],[2,"asc"],[3,"asc"],[4,"asc"],[5,"asc"],[6,"asc"]],
-        ajax: {
-            type: "GET",
-            contentType: "application/json",
-            url: "/system/ut-call/ajax-ut-call-record-list?bsnNum="+bsnNum,
-            dataSrc: '',
-            error: function (e) {
-                if(e.responseText){
-                    showErrorMsg(e.responseText);
-                } else {
-                    showErrorMsg("Cannot load UT Call Request");
-                }
-            }
-        },
-        columns: [
-            {data: 'utCallId'},
-            {data: 'serviceCode'},
-            {data: 'createDate'},
-            {data: 'msg'},
-            {data: 'testStatus'},
-            {data: 'lastCheckDate'},
-            {data: 'ticketDetId'}
-        ],
-        columnDefs: [
-            {
-                targets: 7,
-                render: function (data, type, row, meta) {
-                    return "<button class='btn btn-info' type='button' onclick='triggerUTCall(\"" + row['bsnNum'] +"\")' ><i class='fas fa-stopwatch'></i> Re-Trigger</button>";
-                }
-            },
-            {
-                targets: 8,
-                render: function (data, type, row, meta) {
-                    return "<button class='btn btn-success' type='button' onclick='getUTCallRequestResult(\"" + row['utCallId'] + "\",\"" + row['serviceCode'] +"\")' ><i class='fas fa-play'></i> Get Result</button>";
-                }
-            }
-        ]
-    });
-}
-
-function triggerUTCall(bsnNum) {
-    clearAllMsg();
-    $.post('/system/ut-call/ajax-trigger-ut-call', {
-        bsnNum: bsnNum
-    }, function (res) {
-        if (res.success) {
-            showInfoMsg("trigger success.");
-            $('#utCallRecordTable').DataTable().ajax.reload();
-        }
-    }).fail(function (e) {
-        var responseError = e.responseText ? e.responseText : "trigger failed.";
-        console.log("ERROR : ", responseError);
-        showErrorMsg(responseError);
-    });
-}
+// function getAjaxUTCallRecordDataTable() {
+//     let bsnNum = '';
+//
+//     if (searchKey === 'BSN') {
+//         bsnNum = bsn;
+//     } else if (searchKey === 'DN') {
+//         bsnNum = $('#relatedBsn').val();
+//     }
+//
+//     $('#utCallRecordTable').DataTable({
+//         "order": [[0,"asc"],[1,"asc"],[2,"asc"],[3,"asc"],[4,"asc"],[5,"asc"],[6,"asc"]],
+//         ajax: {
+//             type: "GET",
+//             contentType: "application/json",
+//             url: "/system/ut-call/ajax-ut-call-record-list?bsnNum="+bsnNum,
+//             dataSrc: '',
+//             error: function (e) {
+//                 if(e.responseText){
+//                     showErrorMsg(e.responseText);
+//                 } else {
+//                     showErrorMsg("Cannot load UT Call Request");
+//                 }
+//             }
+//         },
+//         columns: [
+//             {data: 'utCallId'},
+//             {data: 'serviceCode'},
+//             {data: 'createDate'},
+//             {data: 'msg'},
+//             {data: 'testStatus'},
+//             {data: 'lastCheckDate'},
+//             {data: 'ticketDetId'}
+//         ],
+//         columnDefs: [
+//             {
+//                 targets: 7,
+//                 render: function (data, type, row, meta) {
+//                     return "<button class='btn btn-info' type='button' onclick='triggerUTCall(\"" + row['bsnNum'] +"\")' ><i class='fas fa-stopwatch'></i> Re-Trigger</button>";
+//                 }
+//             },
+//             {
+//                 targets: 8,
+//                 render: function (data, type, row, meta) {
+//                     return "<button class='btn btn-success' type='button' onclick='getUTCallRequestResult(\"" + row['utCallId'] + "\",\"" + row['serviceCode'] +"\")' ><i class='fas fa-play'></i> Get Result</button>";
+//                 }
+//             }
+//         ]
+//     });
+// }
+//
+// function triggerUTCall(bsnNum) {
+//     clearAllMsg();
+//     $.post('/system/ut-call/ajax-trigger-ut-call', {
+//         bsnNum: bsnNum
+//     }, function (res) {
+//         if (res.success) {
+//             showInfoMsg("trigger success.");
+//             $('#utCallRecordTable').DataTable().ajax.reload();
+//         }
+//     }).fail(function (e) {
+//         var responseError = e.responseText ? e.responseText : "trigger failed.";
+//         console.log("ERROR : ", responseError);
+//         showErrorMsg(responseError);
+//     });
+// }
 
 function getUTCallRequestResult(utCallId, serviceCode) {
     clearAllMsg();
@@ -888,4 +888,14 @@ function getIddInfo() {
         console.log("ERROR : ", responseError);
         showErrorMsg(responseError);
     });
+}
+
+function redirectToUT(){
+    if(bsn === ''){
+        showErrorMsg('No service number!');
+    } else {
+//        window.open('http://10.252.16.151:8080/ut/page?p=direct_access&username='+username+'&bsn='+bsn,'universalTester','scrollbars=yes,height=800,width=1250');
+        window.open('http://10.252.16.151:8080/ut/page?p=spage_direct&op=dispwithact_2&mpid=7&ppid=1&spid=1&bsn='+bsn,'universalTester','scrollbars=yes,height=800,width=1250');
+        $.post('/ticket/service/utTestLog',{ticketMasId:ticketMasId});
+    }
 }
