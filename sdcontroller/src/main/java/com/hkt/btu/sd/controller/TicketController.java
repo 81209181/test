@@ -32,6 +32,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -534,4 +535,14 @@ public class TicketController {
         PageData<SdTicketMasData> pageData = ticketFacade.searchBchspList(pageable, searchFormData);
         return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
     }
+
+    @PostMapping("/service/utTestLog")
+    @ResponseBody
+    public void utTestLog(@RequestParam String ticketMasId){
+        String userId = userFacade.getCurrentUser().getUserId();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String localDateTime = LocalDateTime.now().format(formatter);
+        LOG.info(String.format("UT GUI trigger: {ticketMasId: %s, userId: %s, date: %s}", ticketMasId, userId, localDateTime));
+    }
+
 }
