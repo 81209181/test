@@ -78,8 +78,12 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" th:href="@{/ticket/service-identity}">Search Service</a>
                         <a class="dropdown-item" th:href="@{/ticket/my-ticket}">My Ticket</a>
-                        <a th:href="@{/ticket/team-summary}" class="dropdown-item">Team Summary</a>
+                        <a class="dropdown-item" th:href="@{/ticket/team-summary}">Team Summary</a>
                         <a class="dropdown-item" th:href="@{/ticket/search-ticket}">Search Ticket</a>
+                        <div sec:authorize="hasAnyAuthority('O_CHL','TH_O_CHL')" th:remove="tag">
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" th:href="@{/ticket/search-bchsp}">Search BCHSP</a>
+                        </div>
                     </div>
                 </li>
 

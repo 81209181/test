@@ -73,4 +73,6 @@ public interface SdTicketFacade {
     List<SdCloseCodeData> getCloseCode(String serviceType);
 
     String getSymptomForApi(String serviceType, List<String> workingPartyList);
+
+    PageData<SdTicketMasData> searchBchspList(Pageable pageable, Map<String, String> searchFormData);
 }
