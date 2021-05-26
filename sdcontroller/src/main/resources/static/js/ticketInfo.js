@@ -4,6 +4,7 @@ var ngn3Btn = $('.ngn3Btn'),
     bbBtn = $('.bbBtn'),
     inventoryBtn = $('.inventoryBtn'),
     eCloudBtn =$('.eCloudBtn'),
+    utBtn = $('.utBtn');
     // utDiv = $('#service-ut'),
     searchKey = $("#ticket").find('font[name=searchKey]').text(),
     meterEventDiv = $('#meter-event');
@@ -674,6 +675,7 @@ function meterUiCtrl(val){
         bbBtn.attr('disabled', true);
         voIpBtn.attr('disabled', true);
         ngn3Btn.hide();
+        utBtn.hide();
         // utDiv.hide();
     } else {
         meterEventDiv.hide();
@@ -687,6 +689,7 @@ function gmbUiCtrl(val){
         bbBtn.attr('disabled', true);
         voIpBtn.attr('disabled', true);
         ngn3Btn.hide();
+        utBtn.hide();
         // utDiv.hide();
     } else {
         gmbErrDiv.hide();
@@ -773,22 +776,22 @@ function getExternalServiceData(serviceTypeCode, serviceNumber){
 //     });
 // }
 
-function getUTCallRequestResult(utCallId, serviceCode) {
-    clearAllMsg();
-    $.post('/system/ut-call/ajax-ut-call-get-request-result', {
-        utCallId: utCallId,
-        serviceCode: serviceCode
-    }, function (res) {
-        if (res.success) {
-            showInfoMsg("get result success.");
-            $('#utCallRecordTable').DataTable().ajax.reload();
-        }
-    }).fail(function (e) {
-        var responseError = e.responseText ? e.responseText : "get result failed.";
-        console.log("ERROR : ", responseError);
-        showErrorMsg(responseError);
-    });
-}
+// function getUTCallRequestResult(utCallId, serviceCode) {
+//     clearAllMsg();
+//     $.post('/system/ut-call/ajax-ut-call-get-request-result', {
+//         utCallId: utCallId,
+//         serviceCode: serviceCode
+//     }, function (res) {
+//         if (res.success) {
+//             showInfoMsg("get result success.");
+//             $('#utCallRecordTable').DataTable().ajax.reload();
+//         }
+//     }).fail(function (e) {
+//         var responseError = e.responseText ? e.responseText : "get result failed.";
+//         console.log("ERROR : ", responseError);
+//         showErrorMsg(responseError);
+//     });
+// }
 
 function getAjaxEventOfPoleDataTable() {
     let poleId = bsn;
