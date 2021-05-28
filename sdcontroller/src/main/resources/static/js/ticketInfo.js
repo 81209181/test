@@ -894,12 +894,18 @@ function getIddInfo() {
 }
 
 function redirectToUT(){
+    let utTriggerTimer = parseInt(window.sessionStorage.getItem('utTriggerTimer'));
     if(bsn === ''){
         showErrorMsg('No service number!');
     } else {
-        let username = $('#navbarSupportedContent ul:eq(1) li:eq(0) span').text();
-        window.open('http://10.252.16.151:8080/ut/page?p=direct_access&username='+username+'&bsn='+bsn,'universalTester','scrollbars=yes,height=800,width=1250');
-        // window.open('http://10.252.16.151:8080/ut/page?p=spage_direct&op=dispwithact_2&mpid=7&ppid=1&spid=1&bsn='+bsn,'universalTester','scrollbars=yes,height=800,width=1250');
+        if (utTriggerTimer <= 0) {
+            let username = $('#navbarSupportedContent ul:eq(1) li:eq(0) span').text();
+            window.open('http://10.252.16.151:8080/ut/page?p=direct_access&username='+username+'&bsn='+bsn,'universalTester','scrollbars=yes,height=800,width=1250');
+        } else {
+            window.open('http://10.252.16.151:8080/ut/page?p=spage_direct&op=dispwithact_2&mpid=7&ppid=1&spid=1&bsn='+bsn,'universalTester','scrollbars=yes,height=800,width=1250');
+        }
         $.post('/ticket/service/utTestLog',{ticketMasId:ticketMasId});
     }
+    utTriggerTimer++;
+    window.sessionStorage.setItem('utTriggerTimer', utTriggerTimer.toString());
 }
