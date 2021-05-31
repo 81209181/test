@@ -106,7 +106,14 @@
             </ul>
         </div>
     </nav>
-
+    <script sec:authorize="isAuthenticated()">
+        if (null === window.sessionStorage.getItem('utTriggerTimer')) {
+            window.sessionStorage.setItem('utTriggerTimer', '0');
+        }
+    </script>
+    <script sec:authorize="!isAuthenticated()">
+        window.sessionStorage.removeItem('utTriggerTimer')
+    </script>
 
 </th:block>
 </body>
