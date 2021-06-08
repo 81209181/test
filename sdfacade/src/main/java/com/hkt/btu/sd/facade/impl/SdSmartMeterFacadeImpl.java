@@ -10,7 +10,6 @@ import com.hkt.btu.sd.facade.OssApiFacade;
 import com.hkt.btu.sd.facade.SdSmartMeterFacade;
 import com.hkt.btu.sd.facade.SdTicketFacade;
 import com.hkt.btu.sd.facade.constant.OssTicketActionEnum;
-import com.hkt.btu.sd.facade.constant.OssWorkingPartyEnum;
 import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.cloud.Attachment;
@@ -116,7 +115,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
 
         // SD: add symptom to ticket
         SdRequestTicketServiceData sdRequestTicketServiceData = buildTicketServiceData(
-                ticketMasId, String.valueOf(poleId), reportTime, symptomCode);
+                ticketMasId, String.valueOf(poleId), reportTime, symptomCode, SdServiceTypeBean.SERVICE_TYPE.SMART_METER);
         List<SdRequestTicketServiceData> ticketServiceList = List.of(sdRequestTicketServiceData);
         try {
             ticketFacade.updateServiceInfo(ticketServiceList);
@@ -236,7 +235,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
 
         // SD: add symptom to ticket
         SdRequestTicketServiceData sdRequestTicketServiceData = buildTicketServiceData(
-                ticketMasId, identityId, reportTime, symptomCode);
+                ticketMasId, identityId, reportTime, symptomCode, serviceType);
         List<SdRequestTicketServiceData> ticketServiceList = List.of(sdRequestTicketServiceData);
         try {
             ticketFacade.updateServiceInfo(ticketServiceList);
@@ -274,8 +273,8 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
     }
 
     private BtuSimpleResponseData createGmbTicket(String serviceType, String identityId, LocalDateTime reportTime,
-                                                    List<String> workingPartyList, List<SdTicketContactData> contactInfo,
-                                                    List<Attribute> attributes, List<Attachment> attachments) {
+                                                  List<String> workingPartyList, List<SdTicketContactData> contactInfo,
+                                                  List<Attribute> attributes, List<Attachment> attachments) {
         // check active work ticket of the plate ID
         Pageable pageable = PageRequest.of(0, 1);
         PageData<SdTicketMasData> pagedWorkTicketData = searchTicketList(
@@ -333,7 +332,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
 
         // SD: add symptom to ticket
         SdRequestTicketServiceData sdRequestTicketServiceData = buildTicketServiceData(
-                ticketMasId, identityId, reportTime, symptomCode);
+                ticketMasId, identityId, reportTime, symptomCode, serviceType);
         List<SdRequestTicketServiceData> ticketServiceList = List.of(sdRequestTicketServiceData);
         try {
             ticketFacade.updateServiceInfo(ticketServiceList);
@@ -354,6 +353,11 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
         // SD: upload file to ticket
         if (CollectionUtils.isNotEmpty(attachments)) {
             ticketFacade.insertUploadFile(ticketMasId, attachments);
+        }
+
+        // SD: add extra info to ticket
+        if (CollectionUtils.isNotEmpty(attributes)) {
+            ticketFacade.insertExtraInfo(ticketMasId, attributes);
         }
 
         // SD-->WFM: auto-pass to wfm
@@ -491,9 +495,10 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
         return ticketFacade.searchTicketList(pageable, searchFormData);
     }
 
-    private SdRequestTicketServiceData buildTicketServiceData(Integer ticketMasId, String identityId, LocalDateTime reportTime, String symptomCode){
+    private SdRequestTicketServiceData buildTicketServiceData(Integer ticketMasId, String identityId, LocalDateTime reportTime, String symptomCode, String serviceType){
         SdRequestTicketServiceData sdRequestTicketServiceData = new SdRequestTicketServiceData();
         sdRequestTicketServiceData.setTicketMasId(ticketMasId);
+        sdRequestTicketServiceData.setServiceType(serviceType);
         sdRequestTicketServiceData.setServiceCode(identityId);
         sdRequestTicketServiceData.setReportTime(reportTime);
         sdRequestTicketServiceData.setFaults(List.of(symptomCode));

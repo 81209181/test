@@ -50,6 +50,8 @@ public class SdTicketServiceImpl implements SdTicketService {
     SdUserOwnerAuthRoleMapper userOwnerAuthRoleMapper;
     @Resource
     SdCloseCodeMapper sdCloseCodeMapper;
+    @Resource
+    SdTicketOtherMapper ticketOtherMapper;
 
     @Resource(name = "userService")
     SdUserService userService;
@@ -661,5 +663,43 @@ public class SdTicketServiceImpl implements SdTicketService {
             ticketServiceBeanPopulator.populate(entity, bean);
             return bean;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteEntityVarchar(Integer ticketMasId) {
+        ticketOtherMapper.deleteEntityVarchar(ticketMasId);
+    }
+
+    @Override
+    public void insertExtraInfo(Integer ticketMasId, String parameterName, String parameterValue) {
+        if (StringUtils.isEmpty(parameterName)) {
+            LOG.info(String.format("Attribute name (%s) is null.", parameterName));
+            return;
+        } else if (StringUtils.isEmpty(parameterValue)) {
+            LOG.info(String.format("Attribute value (%s) is null.", parameterValue));
+            return;
+        }
+
+        SdEvaAttributeEntity entity = ticketOtherMapper.getAttributeIdByName(parameterName);
+        if (entity == null) {
+            LOG.info(String.format("Attribute ID not found by attribute name: %s.", parameterName));
+            return;
+        }
+
+        String createby = userService.getCurrentUserUserId();
+        ticketOtherMapper.insertEntityVarchar(ticketMasId, entity.getAttributeId(), parameterValue, createby);
+    }
+
+    @Override
+    public SdGmbTicketEavBean getGmbTicketOtherInfo(Integer ticketMasId) {
+        SdGmbTicketEavEntity entity = ticketOtherMapper.getGmbTicketOtherInfo(ticketMasId);
+
+        if (entity == null) {
+            return null;
+        }
+
+        SdGmbTicketEavBean bean = new SdGmbTicketEavBean();
+        ticketServiceBeanPopulator.populate(entity, bean);
+        return bean;
     }
 }

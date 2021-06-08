@@ -7,6 +7,7 @@ import com.hkt.btu.sd.core.exception.ApiException;
 import com.hkt.btu.sd.facade.data.*;
 import com.hkt.btu.sd.facade.data.bes.BesSubFaultData;
 import com.hkt.btu.sd.facade.data.cloud.Attachment;
+import com.hkt.btu.sd.facade.data.cloud.Attribute;
 import com.hkt.btu.sd.facade.data.cloud.HktCloudCaseData;
 import com.hkt.btu.sd.facade.data.cloud.HktCloudViewData;
 import com.hkt.btu.sd.facade.data.wfm.WfmMakeApptData;
@@ -79,4 +80,6 @@ public interface SdTicketFacade {
     String getJobId(String ticketMasId);
 
     List<String> getWorkGroupList();
+
+    void insertExtraInfo(Integer ticketMasId, List<Attribute> attributes);
 }

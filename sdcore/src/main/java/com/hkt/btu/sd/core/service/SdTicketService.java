@@ -74,4 +74,10 @@ public interface SdTicketService {
     String getJobId(String ticketMasId);
 
     List<String> getWorkGroupList();
+
+    void deleteEntityVarchar(Integer ticketMasId);
+
+    void insertExtraInfo(Integer ticketMasId, String parameterName, String parameterValue);
+
+    SdGmbTicketEavBean getGmbTicketOtherInfo(Integer ticketMasId);
 }

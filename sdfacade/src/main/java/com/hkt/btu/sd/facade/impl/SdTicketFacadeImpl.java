@@ -23,6 +23,7 @@ import com.hkt.btu.sd.facade.data.cloud.Attachment;
 import com.hkt.btu.sd.facade.data.cloud.Attribute;
 import com.hkt.btu.sd.facade.data.cloud.HktCloudCaseData;
 import com.hkt.btu.sd.facade.data.cloud.HktCloudViewData;
+import com.hkt.btu.sd.facade.data.gmb.Parameter;
 import com.hkt.btu.sd.facade.data.oss.OssSmartMeterData;
 import com.hkt.btu.sd.facade.data.wfm.*;
 import com.hkt.btu.sd.facade.populator.*;
@@ -338,7 +339,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                         ticketService.updateServiceSymptom(serviceInfo.getTicketMasId(), symptom, serviceInfo.getReportTime()));
             }
         } catch (Exception e) {
-            LOG.error(e);
+            LOG.error(e.getMessage());
             return "update service info failed.";
         }
         return null;
@@ -474,6 +475,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         List<SdTicketServiceData> serviceInfo = getServiceInfo(ticketMasId);
         List<SdTicketRemarkData> remarkInfo = getTicketRemarksByTicketId(ticketMasId);
         List<Map<String, Object>> closeInfo = getCloseInfo(ticketMasId);
+        List<Parameter> parameterList = getParameterList(ticketMasId);
 
         SdTicketData ticketData = new SdTicketData();
         ticketData.setTicketMasInfo(ticketMasInfo);
@@ -481,8 +483,22 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         ticketData.setServiceInfo(serviceInfo);
         ticketData.setRemarkInfo(remarkInfo);
         ticketData.setCloseInfo(closeInfo);
+        ticketData.setParameterList(parameterList);
 
         return ticketData;
+    }
+
+    private List<Parameter> getParameterList(Integer ticketMasId) {
+        SdGmbTicketEavBean bean = ticketService.getGmbTicketOtherInfo(ticketMasId);
+
+        if (bean == null) {
+            return null;
+        }
+
+        List<Parameter> dataList = new LinkedList<>();
+        dataList.add(Parameter.of("psl", bean.getPsl()));
+        dataList.add(Parameter.of("routeNo", bean.getRouteNo()));
+        return dataList;
     }
 
     private List<Map<String, Object>> getCloseInfo(Integer ticketMasId) {
@@ -911,5 +927,19 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         Matcher m = p.matcher(str);
         str = m.replaceAll("");
         return str;
+    }
+
+    @Override
+    public void insertExtraInfo(Integer ticketMasId, List<Attribute> attributes) {
+        try {
+            ticketService.deleteEntityVarchar(ticketMasId);
+            attributes.forEach(entity -> {
+                if (StringUtils.isNotEmpty(entity.getAttrName()) && StringUtils.isNotEmpty(entity.getAttrValue())) {
+                    ticketService.insertExtraInfo(ticketMasId, entity.getAttrName(), entity.getAttrValue());
+                }
+            });
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+        }
     }
 }

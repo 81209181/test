@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hkt.btu.sd.core.dao.mapper.SdTicketOtherMapper" >
+    <resultMap id="GmbTicketEavEntity" type="com.hkt.btu.sd.core.dao.entity.SdGmbTicketEavEntity" >
+        <result column="ENTITY_ID" property="ticketMasId" />
+        <result column="PSL" property="psl" />
+        <result column="ROUTE_NO" property="routeNo" />
+    </resultMap>
+
+    <resultMap id="EvaAttributeEntity" type="com.hkt.btu.sd.core.dao.entity.SdEvaAttributeEntity">
+        <result column="ATTRIBUTE_ID" property="attributeId" />
+        <result column="ENTITY_TYPE_ID" property="entityTypeId" />
+        <result column="ATTRIBUTE_NAME" property="attributeName" />
+    </resultMap>
+
+    <delete id="deleteEntityInt">
+        delete from entity_int where entity_id = #{ticketMasId}
+    </delete>
+
+    <delete id="deleteEntityVarchar">
+        delete from entity_varchar where entity_id = #{ticketMasId}
+    </delete>
+
+    <insert id="insertEntityInt">
+        insert into entity_int (ATTRIBUTE_ID, ENTITY_ID, VALUE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
+        values (#{attributeId}, #{ticketMasId}, #{value}, sysdate, #{createby}, sysdate, #{createby})
+    </insert>
+
+    <insert id="insertEntityVarchar">
+        insert into entity_varchar (ATTRIBUTE_ID, ENTITY_ID, VALUE, CREATEDATE, CREATEBY, MODIFYDATE, MODIFYBY)
+        values (#{attributeId}, #{ticketMasId}, #{value}, sysdate, #{createby}, sysdate, #{createby})
+    </insert>
+
+    <select id="getAttributeIdByName" resultMap="EvaAttributeEntity">
+        SELECT * FROM EAV_ATTRIBUTE WHERE ATTRIBUTE_NAME = #{attributeName}
+    </select>
+
+    <select id="getGmbTicketOtherInfo" resultMap="GmbTicketEavEntity">
+        select ev.entity_id, max(case ea.attribute_id when 5 then ev.value else '' end) as psl,
+        max(case ea.attribute_id when 6 then ev.value else null end) as route_no
+        from entity_varchar ev
+        left join eav_attribute ea on ev.attribute_id = ea.attribute_id
+        left join eav_entity_type eet on eet.entity_type_id = ea.entity_type_id
+        left join ticket_mas tm on tm.ticket_mas_id = ev.entity_id
+        where eet.entity_type_id = 2
+        and tm.ticket_mas_id = #{ticketMasId}
+        GROUP BY ev.entity_id
+    </select>
+</mapper>

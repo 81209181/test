@@ -2,9 +2,11 @@ package com.hkt.btu.sd.core.service.populator;
 
 
 import com.hkt.btu.common.core.service.populator.AbstractBeanPopulator;
+import com.hkt.btu.sd.core.dao.entity.SdGmbTicketEavEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomWorkingPartyMappingEntity;
 import com.hkt.btu.sd.core.dao.entity.SdTicketServiceEntity;
+import com.hkt.btu.sd.core.service.bean.SdGmbTicketEavBean;
 import com.hkt.btu.sd.core.service.bean.SdSymptomBean;
 import com.hkt.btu.sd.core.service.bean.SdSymptomWorkingPartyMappingBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketServiceBean;
@@ -43,5 +45,11 @@ public class SdTicketServiceBeanPopulator extends AbstractBeanPopulator<SdTicket
         target.setSymptomCode(source.getSymptomCode());
         target.setServiceTypeCode(source.getServiceTypeCode());
         target.setWorkingParty(source.getWorkingParty());
+    }
+
+    public void populate(SdGmbTicketEavEntity source, SdGmbTicketEavBean target) {
+        target.setTicketMasId(source.getTicketMasId());
+        target.setPsl(source.getPsl());
+        target.setRouteNo(source.getRouteNo());
     }
 }
