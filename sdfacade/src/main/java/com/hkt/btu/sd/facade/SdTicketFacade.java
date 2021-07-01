@@ -12,6 +12,7 @@ import com.hkt.btu.sd.facade.data.cloud.HktCloudCaseData;
 import com.hkt.btu.sd.facade.data.cloud.HktCloudViewData;
 import com.hkt.btu.sd.facade.data.wfm.WfmMakeApptData;
 import com.hkt.btu.sd.facade.data.wfm.WfmTicketCloseData;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -82,4 +83,10 @@ public interface SdTicketFacade {
     List<String> getWorkGroupList();
 
     void insertExtraInfo(Integer ticketMasId, List<Attribute> attributes);
+
+    List<SdTicketExportData> searchTicketListForExport(Map<String, String> searchFormData);
+
+    void fillSheet(HSSFSheet access_request, List<SdTicketExportData> accessRequestDataList);
+
+    String getFileName();
 }

@@ -23,6 +23,58 @@ $(document).ready(function() {
         $('#searchTicketTable').DataTable().ajax.reload();
     });
 
+    // export button
+    $('#btn-export-form').on('click',function() {
+        var xhr = new XMLHttpRequest();
+        let ctx = $("meta[name='_ctx']").attr("content");
+        let input = "";
+        input += "createDateFrom=" + $("#createDateFrom").val();
+        input += "&createDateTo=" + $("#createDateTo").val();
+        input += "&status=" + $("#search-status").val();
+        input += "&completeDateFrom=" + $("#completeDateFrom").val();
+        input += "&completeDateTo=" + $("#completeDateTo").val();
+        input += "&createBy=" + $("#createBy").val();
+        input += "&ticketMasId=" + $("#ticket_mas_id").val();
+        input += "&custCode=" + $("#customer_code").val();
+        input += "&serviceNumber=" + $("#serviceNumber").val();
+        input += "&ticketType=" + $("#ticketType").val();
+        input += "&serviceType=" + $("#serviceType").val();
+        input += "&owningRole=" + $("#owningRole").val();
+
+        xhr.open("GET", ctx + "/ticket/exportExcel?" + input, true);
+        xhr.responseType = 'arraybuffer';
+        xhr.onload = function () {
+            if (this.status === 200) {
+                // Get response header mainly to get attachment name
+                var contentDisposition = xhr.getResponseHeader('content-disposition');
+                // Get type type and encoding
+                var contentType = xhr.getResponseHeader('content-type');
+                // Construct a blob object, depending on the link address provided in the header
+                var blob = new Blob([xhr.response], {
+                    type: contentType
+                });
+                var url = window.URL.createObjectURL(blob);
+                // Get folder name
+                var regex = /filename=[^;]*/;
+                var matchs = contentDisposition.match(regex);
+                if (matchs) {
+                    filename = decodeURIComponent(matchs[0].split("=\"")[1]);
+                } else {
+                    filename += Date.now() + ".xls";
+                }
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.click();
+                window.URL.revokeObjectURL(url);
+                $(a).remove();
+            } else {
+                showErrorMsg(String.fromCharCode.apply(null, new Uint8Array(xhr.response)));
+            }
+        };
+        xhr.send();
+    });
+
     $('#btnSearchReset').on('click',function(){
         $("#search-ticket-form")[0].reset();
     });

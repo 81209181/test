@@ -1,8 +1,10 @@
 package com.hkt.btu.sd.facade.populator;
 
 import com.hkt.btu.common.facade.populator.AbstractDataPopulator;
+import com.hkt.btu.sd.core.service.bean.SdTicketExportBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketMasBean;
 import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
+import com.hkt.btu.sd.facade.data.SdTicketExportData;
 import com.hkt.btu.sd.facade.data.SdTicketMasData;
 
 public class SdTicketMasDataPopulator extends AbstractDataPopulator<SdTicketMasData> {
@@ -31,5 +33,24 @@ public class SdTicketMasDataPopulator extends AbstractDataPopulator<SdTicketMasD
         if (serviceSearchEnum != null) {
             target.setSearchKeyDesc(serviceSearchEnum.getKeyDesc());
         }
+    }
+
+    public void populate(SdTicketExportBean source, SdTicketExportData target) {
+        target.setTicketMasId(source.getTicketMasId());
+        target.setTicketType(source.getTicketType());
+        target.setCreateBy(source.getCreateBy());
+        target.setCreateDate(source.getCreateDate());
+        target.setModifyBy(source.getModifyBy());
+        target.setModifyDate(source.getModifyDate());
+        target.setCallInCount(source.getCallInCount());
+        target.setCompleteDate(source.getCompleteDate());
+        target.setOwningRole(source.getOwningRole());
+        target.setServiceNumber(source.getServiceNumber());
+        target.setStatus(source.getStatus());
+        target.setReportTime(source.getReportTime());
+        target.setSymptomDescription(source.getSymptomDescription());
+        target.setSdCloseCodeDescription(source.getSdCloseCodeDescription());
+        target.setWfmClearCode(source.getWfmClearCode());
+        target.setWfmSubClearCode(source.getWfmSubClearCode());
     }
 }

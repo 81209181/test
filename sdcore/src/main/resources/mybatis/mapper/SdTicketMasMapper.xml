@@ -25,10 +25,33 @@
         <result column="MODIFYDATE" property="modifydate" />
         <result column="MODIFYBY" property="modifyby" />
     </resultMap>
+
     <resultMap id="teamSummaryEntity" type="com.hkt.btu.sd.core.dao.entity.StatusSummaryEntity">
         <result column="STATUS" property="status"/>
         <result column="QUERY_CNT" property="queryCnt"/>
         <result column="JOB_CNT" property="jobCnt"/>
+    </resultMap>
+
+    <resultMap id="TicketExportEntity" type="com.hkt.btu.sd.core.dao.entity.SdTicketExportEntity" >
+        <result column="TICKET_MAS_ID" property="ticketMasId" />
+        <result column="TICKET_TYPE" property="ticketType" />
+        <result column="STATUS" property="status" />
+        <result column="COMPLETE_DATE" property="completeDate"/>
+        <result column="CALL_IN_COUNT" property="callInCount"/>
+        <result column="SERVICE_ID" property="serviceNumber"/>
+        <result column="OWNING_ROLE" property="owningRole"/>
+        <result column="SYMPTOM_DESCRIPTION" property="symptomDescription"/>
+        <result column="SUBS_ID" property="subsId"/>
+        <result column="JOB_ID" property="jobId"/>
+        <result column="REPORT_TIME" property="reportTime"/>
+        <result column="SD_CLOSE_CODE_DESCRIPTION" property="sdCloseCodeDescription"/>
+        <result column="WFM_CLEARCODE" property="wfmClearCode"/>
+        <result column="WFM_SUBCLEARCODE" property="wfmSubClearCode"/>
+
+        <result column="CREATEDATE" property="createDate" />
+        <result column="CREATEBY" property="createBy" />
+        <result column="MODIFYDATE" property="modifyDate" />
+        <result column="MODIFYBY" property="modifyBy" />
     </resultMap>
 
     <insert id="insertQueryTicket" parameterType="com.hkt.btu.sd.core.dao.entity.SdTicketMasEntity">
@@ -285,5 +308,71 @@
 
     <select id="getWorkGroupList" resultType="String">
         SELECT WORKGROUP FROM USER_DEPT_TEAM_WORKGROUP WHERE SERVICE_DESK_ENABLED = 'Y'
+    </select>
+
+    <select id="searchTicketListForExport" resultMap="TicketExportEntity">
+        select
+        a.TICKET_MAS_ID,
+        a.TICKET_TYPE,
+        decode(a.STATUS, 'CP', 'COMPLETE', 'W', 'WORKING' ,'O', 'OPEN') AS STATUS,
+        a.COMPLETE_DATE,
+        a.CALL_IN_COUNT,
+        b.SERVICE_ID,
+        a.OWNING_ROLE,
+        a.CREATEDATE,
+        a.CREATEBY,
+        a.MODIFYDATE,
+        a.MODIFYBY,
+        d.SYMPTOM_description,
+        b.SUBS_ID,
+        b.JOB_ID,
+        b.REPORT_TIME,
+        e.CLOSE_CODE_DESCRIPTION as SD_CLOSE_CODE_DESCRIPTION,
+        json_value('{"wfm":'||b.wfm_comp_info || '}', '$.wfm[1].value[0]' ) as wfm_clearcode,
+        json_value('{"wfm":'||b.wfm_comp_info || '}', '$.wfm[3].value[0]' ) as wfm_subclearcode
+        from ticket_mas a
+        inner join ticket_det b on a.TICKET_MAS_ID=b.ticket_mas_id
+        left join ticket_contact  c on a.ticket_mas_id=c.ticket_mas_id
+        left join symptom d on b.symptom_code=d.symptom_code
+        left join closecode e on b.close_code=e.close_code
+        <where>
+            <if test="createDateFrom != null">
+                and trunc(a.createdate) &gt;= trunc(#{createDateFrom})
+            </if>
+            <if test="createDateTo != null">
+                and trunc(#{createDateTo}) &gt;= trunc(a.createdate)
+            </if>
+            <if test="status != null">
+                and a.status = #{status}
+            </if>
+            <if test="completeDateFrom != null">
+                and trunc(a.complete_date) &gt;= trunc(#{completeDateFrom})
+            </if>
+            <if test="completeDateTo != null">
+                and trunc(#{completeDateTo}) &gt;= trunc(a.complete_date)
+            </if>
+            <if test="createBy != null">
+                and a.createby = #{createBy}
+            </if>
+            <if test="ticketMasId != null">
+                and a.ticket_mas_id = #{ticketMasId}
+            </if>
+            <if test="custCode != null">
+                and lower(a.cust_code) like '%' || lower(#{custCode}) || '%'
+            </if>
+            <if test="serviceNumber != null">
+                and lower(b.service_id) like '%' || lower(#{serviceNumber}) || '%'
+            </if>
+            <if test="ticketType != null">
+                and a.ticket_type = #{ticketType}
+            </if>
+            <if test="serviceType != null">
+                and b.service_type_code = #{serviceType}
+            </if>
+            <if test="owningRole != null">
+                and a.owning_role = #{owningRole}
+            </if>
+        </where>
+        order by a.ticket_mas_id
     </select>
 </mapper>

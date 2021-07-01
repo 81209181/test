@@ -13,6 +13,7 @@ import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.*;
 import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
 import com.hkt.btu.sd.core.service.constant.TicketTypeEnum;
+import com.hkt.btu.sd.core.util.POIExcelWriter;
 import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.constant.OssTicketActionEnum;
 import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
@@ -32,6 +33,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -54,6 +56,9 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
     private final static DateTimeFormatter DEFAULT_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter FILE_TIMESTAMP_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+
+    private static final String XLS_SUFFIX = ".xls";
 
     @Resource(name = "ticketService")
     SdTicketService ticketService;
@@ -941,5 +946,117 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         } catch (Exception e) {
             LOG.error(e.getMessage());
         }
+    }
+
+    @Override
+    public List<SdTicketExportData> searchTicketListForExport(Map<String, String> searchFormData) {
+        LocalDate createDateFrom = StringUtils.isEmpty(searchFormData.get("createDateFrom")) ? null : LocalDate.parse(searchFormData.get("createDateFrom"));
+        LocalDate createDateTo = StringUtils.isEmpty(searchFormData.get("createDateTo")) ? null : LocalDate.parse(searchFormData.get("createDateTo"));
+
+        String status = StringUtils.isEmpty(searchFormData.get("status")) ? null : searchFormData.get("status");
+        LocalDate completeDateFrom = StringUtils.isEmpty(searchFormData.get("completeDateFrom")) ? null : LocalDate.parse(searchFormData.get("completeDateFrom"));
+        LocalDate completeDateTo = StringUtils.isEmpty(searchFormData.get("completeDateTo")) ? null : LocalDate.parse(searchFormData.get("completeDateTo"));
+
+        String createBy = StringUtils.isEmpty(searchFormData.get("createBy")) ? null : searchFormData.get("createBy");
+        String ticketMasId = StringUtils.isEmpty(searchFormData.get("ticketMasId")) ? null : searchFormData.get("ticketMasId");
+        String custCode = StringUtils.isEmpty(searchFormData.get("custCode")) ? null : searchFormData.get("custCode");
+
+        String serviceNumber = StringUtils.isEmpty(searchFormData.get("serviceNumber")) ? null : searchFormData.get("serviceNumber");
+        String ticketType = StringUtils.isEmpty(searchFormData.get("ticketType")) ? null : searchFormData.get("ticketType");
+        String serviceType = StringUtils.isEmpty(searchFormData.get("serviceType")) ? null : searchFormData.get("serviceType");
+        String owningRole = StringUtils.isEmpty(searchFormData.get("owningRole")) ? null : searchFormData.get("owningRole");
+
+        List<SdTicketExportBean> beanList = ticketService.searchTicketListForExport(createDateFrom, createDateTo,
+                status, completeDateFrom, completeDateTo, createBy, ticketMasId, custCode, serviceNumber, ticketType, serviceType, owningRole);
+
+        List<SdTicketExportData> dataList = new LinkedList<>();
+        if (!CollectionUtils.isEmpty(beanList)) {
+            for (SdTicketExportBean bean : beanList) {
+                SdTicketExportData data = new SdTicketExportData();
+                ticketMasDataPopulator.populate(bean, data);
+                dataList.add(data);
+            }
+        }
+
+        return dataList;
+    }
+
+    @Override
+    public void fillSheet(HSSFSheet sheet, List<SdTicketExportData> accessRequestDataList) {
+        List<List<String>> result = new ArrayList<>();
+        if (sheet == null) {
+            LOG.error("Null sheet. Cannot create cvs.");
+            return;
+        }
+
+        if (CollectionUtils.isEmpty(accessRequestDataList)) {
+            LOG.error("The list from fillITSAOSDailyReport is empty.");
+        } else {
+            for (SdTicketExportData data : accessRequestDataList) {
+                List<String> row = buildRow(data);
+                result.add(row);
+            }
+        }
+
+        POIExcelWriter.appendRetrievedData(sheet, new String[]
+                {"Ticket Id", "Ticket Type", "Status", "Complete Date", "Call In Count", "Service Number", "Owning Role",
+                        "Create Date", "Create By", "Modify Date", "Modify By", "Symptom Description", "Subs ID", "Job ID",
+                        "Report Time", "SD CloseCode Description", "WFM ClearCode", "WFM Sub ClearCode"}, result);
+    }
+
+    @Override
+    public String getFileName() {
+        final LocalDateTime NOW = LocalDateTime.now();
+        String formatLocalDateTime = NOW.format(FILE_TIMESTAMP_FORMATTER);
+        String fileName = "Ticket_" + formatLocalDateTime + XLS_SUFFIX;
+        return fileName;
+    }
+
+    private List<String> buildRow(SdTicketExportData data) {
+        if (data == null) {
+            return new ArrayList<>();
+        }
+
+        // extract from bean
+        String ticketMasId = String.valueOf(data.getTicketMasId());
+        String ticketType = data.getTicketType() == null ? StringUtils.EMPTY : data.getTicketType();
+        String status = data.getStatus() == null ? StringUtils.EMPTY : data.getStatus();
+        String completeDate = data.getCompleteDate() == null ? StringUtils.EMPTY : data.getCompleteDate().format(DEFAULT_DATE_TIME_FORMAT);
+        String callInCount = String.valueOf(data.getCallInCount());
+        String serviceNumber = data.getServiceNumber() == null ? StringUtils.EMPTY : data.getServiceNumber();
+        String owningRole = data.getOwningRole() == null ? StringUtils.EMPTY : data.getOwningRole();
+        String createDate = data.getCreateDate() == null ? StringUtils.EMPTY : data.getCreateDate().format(DEFAULT_DATE_TIME_FORMAT);
+        String createBy = data.getCreateBy() == null ? StringUtils.EMPTY : data.getCreateBy();
+        String modifyDate = data.getModifyDate() == null ? StringUtils.EMPTY : data.getModifyDate().format(DEFAULT_DATE_TIME_FORMAT);
+        String modifyBy = data.getModifyBy() == null ? StringUtils.EMPTY : data.getModifyBy();
+        String symptomDescription = data.getSymptomDescription() == null ? StringUtils.EMPTY : data.getSymptomDescription();
+        String subsId = data.getSubsId() == null ? StringUtils.EMPTY : data.getSubsId();
+        String jobId = data.getJobId() == null ? StringUtils.EMPTY : data.getJobId();
+        String reportTime = data.getReportTime() == null ? StringUtils.EMPTY : data.getReportTime().format(DEFAULT_DATE_TIME_FORMAT);
+        String sdCloseCodeDescription = data.getSdCloseCodeDescription() == null ? StringUtils.EMPTY : data.getSdCloseCodeDescription();
+        String wfmClearCode = data.getWfmClearCode() == null ? StringUtils.EMPTY : data.getWfmClearCode();
+        String wfmSubClearCode = data.getWfmSubClearCode() == null ? StringUtils.EMPTY : data.getWfmSubClearCode();
+
+        // add to row
+        List<String> row = new ArrayList<>();
+        row.add(ticketMasId);
+        row.add(ticketType);
+        row.add(status);
+        row.add(completeDate);
+        row.add(callInCount);
+        row.add(serviceNumber);
+        row.add(owningRole);
+        row.add(createDate);
+        row.add(createBy);
+        row.add(modifyDate);
+        row.add(modifyBy);
+        row.add(symptomDescription);
+        row.add(subsId);
+        row.add(jobId);
+        row.add(reportTime);
+        row.add(sdCloseCodeDescription);
+        row.add(wfmClearCode);
+        row.add(wfmSubClearCode);
+        return row;
     }
 }

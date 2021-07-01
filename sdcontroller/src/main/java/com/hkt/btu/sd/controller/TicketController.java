@@ -12,22 +12,31 @@ import com.hkt.btu.sd.facade.data.gmb.GmbErrorData;
 import com.hkt.btu.sd.facade.data.norars.NoraAccountData;
 import com.hkt.btu.sd.facade.data.norars.NoraBroadbandInfoData;
 import com.hkt.btu.sd.facade.data.oss.OssSmartMeterEventData;
-import com.hkt.btu.sd.facade.data.wfm.*;
+import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
+import com.hkt.btu.sd.facade.data.wfm.WfmMakeApptData;
+import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
+import com.hkt.btu.sd.facade.data.wfm.WfmResponseTokenData;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
@@ -564,5 +573,31 @@ public class TicketController {
     @GetMapping("getJobId")
     public ResponseEntity<?> getJobId(@RequestParam String ticketMasId) {
         return ResponseEntity.ok(ticketFacade.getJobId(ticketMasId));
+    }
+
+    @ResponseBody
+    @GetMapping("/exportExcel")
+    public ResponseEntity<?> downloadRequest(@RequestParam Map<String, String> searchFormData) throws IOException {
+        List<SdTicketExportData> accessRequestDataList = ticketFacade.searchTicketListForExport(searchFormData);
+        if (CollectionUtils.isEmpty(accessRequestDataList)) {
+            return ResponseEntity.badRequest().body("Ticket data not found.");
+        } else if (accessRequestDataList.size() > 65536) {
+            return ResponseEntity.badRequest().body("Ticket data exceeds 65536 row(s).");
+        }
+
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        ticketFacade.fillSheet(workbook.createSheet("Tickets"), accessRequestDataList);
+        String fileName = ticketFacade.getFileName();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        workbook.write(baos);
+        baos.close();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment;filename=\"%s", fileName));
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.parseMediaType(MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE))
+                .<Object>body(baos.toByteArray());
     }
 }

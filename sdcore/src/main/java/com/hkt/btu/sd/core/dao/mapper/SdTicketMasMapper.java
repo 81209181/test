@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.core.dao.mapper;
 
+import com.hkt.btu.sd.core.dao.entity.SdTicketExportEntity;
 import com.hkt.btu.sd.core.dao.entity.SdTicketMasEntity;
 import com.hkt.btu.sd.core.dao.entity.SdTicketStatisticEntity;
 import com.hkt.btu.sd.core.dao.entity.StatusSummaryEntity;
@@ -112,4 +113,17 @@ public interface SdTicketMasMapper {
     String getJobId(@Param("ticketMasId") String ticketMasId);
 
     List<String> getWorkGroupList();
+
+    List<SdTicketExportEntity> searchTicketListForExport(@Param("createDateFrom") LocalDate createDateFrom,
+                                                         @Param("createDateTo") LocalDate createDateTo,
+                                                         @Param("status") String status,
+                                                         @Param("completeDateFrom") LocalDate completeDateFrom,
+                                                         @Param("completeDateTo") LocalDate completeDateTo,
+                                                         @Param("createBy") String createBy,
+                                                         @Param("ticketMasId") String ticketMasId,
+                                                         @Param("custCode") String custCode,
+                                                         @Param("serviceNumber") String serviceNumber,
+                                                         @Param("ticketType") String ticketType,
+                                                         @Param("serviceType") String serviceType,
+                                                         @Param("owningRole") String owningRole);
 }

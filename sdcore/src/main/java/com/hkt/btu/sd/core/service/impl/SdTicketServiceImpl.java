@@ -702,4 +702,19 @@ public class SdTicketServiceImpl implements SdTicketService {
         ticketServiceBeanPopulator.populate(entity, bean);
         return bean;
     }
+
+    @Override
+    public List<SdTicketExportBean> searchTicketListForExport(LocalDate createDateFrom, LocalDate createDateTo, String status, LocalDate completeDateFrom, LocalDate completeDateTo, String createBy, String ticketMasId, String custCode, String serviceNumber, String ticketType, String serviceType, String owningRole) {
+        List<SdTicketExportEntity> entityList = ticketMasMapper.searchTicketListForExport(createDateFrom, createDateTo, status,
+                completeDateFrom, completeDateTo, createBy, ticketMasId, custCode, serviceNumber, ticketType, serviceType, owningRole);
+
+        List<SdTicketExportBean> beanList = new LinkedList<>();
+        for (SdTicketExportEntity entity : entityList) {
+            SdTicketExportBean bean = new SdTicketExportBean();
+            ticketMasBeanPopulator.populate(entity, bean);
+            beanList.add(bean);
+        }
+
+        return beanList;
+    }
 }

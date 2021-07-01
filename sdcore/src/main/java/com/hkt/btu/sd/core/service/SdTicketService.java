@@ -80,4 +80,6 @@ public interface SdTicketService {
     void insertExtraInfo(Integer ticketMasId, String parameterName, String parameterValue);
 
     SdGmbTicketEavBean getGmbTicketOtherInfo(Integer ticketMasId);
+
+    List<SdTicketExportBean> searchTicketListForExport(LocalDate createDateFrom, LocalDate createDateTo, String status, LocalDate completeDateFrom, LocalDate completeDateTo, String createBy, String ticketMasId, String custCode, String serviceNumber, String ticketType, String serviceType, String owningRole);
 }

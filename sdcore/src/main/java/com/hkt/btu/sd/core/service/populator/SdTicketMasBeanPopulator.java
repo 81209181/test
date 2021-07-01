@@ -1,12 +1,11 @@
 package com.hkt.btu.sd.core.service.populator;
 
 import com.hkt.btu.common.core.service.populator.AbstractBeanPopulator;
+import com.hkt.btu.sd.core.dao.entity.SdTicketExportEntity;
 import com.hkt.btu.sd.core.dao.entity.SdTicketMasEntity;
+import com.hkt.btu.sd.core.service.bean.SdTicketExportBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketMasBean;
 import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
-import org.apache.commons.lang3.StringUtils;
-
-import static com.hkt.btu.sd.core.service.bean.SdTicketMasBean.*;
 
 public class SdTicketMasBeanPopulator extends AbstractBeanPopulator<SdTicketMasBean> {
 
@@ -32,5 +31,24 @@ public class SdTicketMasBeanPopulator extends AbstractBeanPopulator<SdTicketMasB
 
         String statusCode = source.getStatus();
         target.setStatus(TicketStatusEnum.getEnum(statusCode));
+    }
+
+    public void populate(SdTicketExportEntity source, SdTicketExportBean target) {
+        target.setTicketMasId(source.getTicketMasId());
+        target.setTicketType(source.getTicketType());
+        target.setCreateBy(source.getCreateBy());
+        target.setCreateDate(source.getCreateDate());
+        target.setModifyBy(source.getModifyBy());
+        target.setModifyDate(source.getModifyDate());
+        target.setCallInCount(source.getCallInCount());
+        target.setCompleteDate(source.getCompleteDate());
+        target.setOwningRole(source.getOwningRole());
+        target.setServiceNumber(source.getServiceNumber());
+        target.setStatus(source.getStatus());
+        target.setReportTime(source.getReportTime());
+        target.setSymptomDescription(source.getSymptomDescription());
+        target.setSdCloseCodeDescription(source.getSdCloseCodeDescription());
+        target.setWfmClearCode(source.getWfmClearCode());
+        target.setWfmSubClearCode(source.getWfmSubClearCode());
     }
 }
