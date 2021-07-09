@@ -52,5 +52,7 @@ public class SdTicketMasDataPopulator extends AbstractDataPopulator<SdTicketMasD
         target.setSdCloseCodeDescription(source.getSdCloseCodeDescription());
         target.setWfmClearCode(source.getWfmClearCode());
         target.setWfmSubClearCode(source.getWfmSubClearCode());
+        target.setJobId(source.getJobId());
+        target.setSubsId(source.getSubsId());
     }
 }
