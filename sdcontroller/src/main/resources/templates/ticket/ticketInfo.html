@@ -114,7 +114,6 @@
                         <button type="button" class="btn btn-info ml-3 ngn3Btn" onclick="resetNgn3AccountPwd()">Reset NGN3 Account Password</button>
                         <button type="button" class="btn btn-info ml-3 ngn3Btn" onclick="getNGN3OneDayAdminAccount();">Get NGN3 1-Day Admin Account</button>
                         <button type="button" class="btn btn-info ml-3 utBtn" onclick="redirectToUT();">UT</button>
-                        <button type="button" class="btn btn-info ml-3 transferBtn" onclick="transferResolverTicket()">Transfer Resolver</button>
                     </h3>
                 </div>
                 <div class="col-md-12">
@@ -370,9 +369,12 @@
                             <label class="col-form-label col-md-3 justify-content-end">Work Group:</label>
                             <input type="text" class="form-control col-md-6" name="workgroup" readonly>
                         </div>
-                        <div class="col-md-6 form-inline pt-2 end">
+                        <div class="col-md-6 form-inline pt-2">
                             <label class="col-form-label col-md-3 justify-content-end">Resolver Flag:</label>
                             <input type="text" class="form-control col-md-6" name="resolver" readonly>
+                        </div>
+                        <div class="col-md-6 form-inline pt-2 end">
+                            <button type="button" class="btn btn-info ml-3 transferBtn" onclick="transferResolverTicket()">Transfer Resolver</button>
                         </div>
                     </div>
                 </div>

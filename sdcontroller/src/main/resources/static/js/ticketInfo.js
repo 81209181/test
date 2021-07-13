@@ -389,10 +389,6 @@ $().ready(function(){
     });
 
     $.get('/ticket/getJobId?ticketMasId='+ticketMasId,function(res){
-        if (res === '' || ticketStatusDesc === "COMPLETE") {
-            $('.transferBtn').attr("hidden", true);
-            return;
-        }
         if (res != '') {
             jobId = res;
         }
@@ -573,6 +569,12 @@ function ajaxGetJobInfo(ticketMasId){
                 jobItem.find('input[name=workgroup]').val(jobInfo.workgroup);
                 jobItem.find('input[name=resolver]').val(jobInfo.resolver);
                 jobItem.appendTo($('#jobList'));
+
+                if (jobId == jobInfo.jobId && ticketStatusDesc == "WORKING") {
+                    $('.transferBtn').attr("hidden", false);
+                } else {
+                    $('.transferBtn').attr("hidden", true);
+                }
             }
         }
     }).fail(function(e){

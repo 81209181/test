@@ -306,7 +306,9 @@
         inner join job_sd_fault s on j.job_id=s.job_id
         where s.request_id= #{ticketMasId}
         and j.dept_id='BCHSP'
-        and ( j.status &lt;&gt; 'COMPLETE' or j.status &lt;&gt; 'CANCEL' )
+        and ( j.status &lt;&gt; 'COMPLETE' and j.status &lt;&gt; 'CANCEL' )
+        and field_ind = 'N'
+        and resolver = 'Y'
     </select>
 
     <select id="getWorkGroupList" resultType="String">
