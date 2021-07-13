@@ -467,7 +467,8 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
                 "createDateFrom", createDateFromStr,
                 "createDateTo", createDateToStr,
                 "ticketType", ticketType,
-                "status", status
+                "status", status,
+                "isApiFlag", "true"
         );
 
         return ticketFacade.searchTicketList(pageable, searchFormData);
@@ -489,7 +490,8 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
                 "createDateFrom", createDateFromStr,
                 "createDateTo", createDateToStr,
                 "ticketType", ticketType,
-                "status", status
+                "status", status,
+                "isApiFlag", "true"
         );
 
         return ticketFacade.searchTicketList(pageable, searchFormData);

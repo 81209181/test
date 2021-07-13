@@ -192,12 +192,15 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         String ticketType = StringUtils.isEmpty(searchFormData.get("ticketType")) ? null : searchFormData.get("ticketType");
         String serviceType = StringUtils.isEmpty(searchFormData.get("serviceType")) ? null : searchFormData.get("serviceType");
         boolean isReport = BooleanUtils.toBoolean(searchFormData.get("isReport"));
+        boolean isApiFlag = BooleanUtils.toBoolean(searchFormData.get("isApiFlag"));
 
         List<String> owningRole = null;
         if (StringUtils.isEmpty(searchFormData.get("owningRole"))) {
-            owningRole = userRoleFacade.getCurrentUserUserRole().stream()
-                    .filter(sdUserRoleData -> !StringUtils.equals(sdUserRoleData.getRoleId(), "SYS_ADMIN"))
-                    .map(SdUserRoleData::getRoleId).collect(Collectors.toList());
+            if (!isApiFlag) {
+                owningRole = userRoleFacade.getCurrentUserUserRole().stream()
+                        .filter(sdUserRoleData -> !StringUtils.equals(sdUserRoleData.getRoleId(), "SYS_ADMIN"))
+                        .map(SdUserRoleData::getRoleId).collect(Collectors.toList());
+            }
         } else {
             owningRole = List.of(searchFormData.get("owningRole"));
         }
