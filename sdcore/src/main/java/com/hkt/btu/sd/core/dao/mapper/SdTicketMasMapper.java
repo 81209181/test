@@ -31,7 +31,7 @@ public interface SdTicketMasMapper {
                                              @Param("serviceNumberExact") String serviceNumberExact,
                                              @Param("ticketType") String ticketType,
                                              @Param("serviceType") String serviceType,
-                                             @Param("owningRole") String owningRole);
+                                             @Param("owningRole") List<String> owningRole);
 
     Integer searchTicketCount(@Param("createDateFrom") LocalDate createDateFrom,
                               @Param("createDateTo") LocalDate createDateTo,
@@ -45,7 +45,7 @@ public interface SdTicketMasMapper {
                               @Param("serviceNumberExact") String serviceNumberExact,
                               @Param("ticketType") String ticketType,
                               @Param("serviceType") String serviceType,
-                              @Param("owningRole") String owningRole);
+                              @Param("owningRole") List<String> owningRole);
 
     void updateAppointmentInMas(@Param("appointmentDate") LocalDateTime appointmentDate,
                                 @Param("asap") String asap,
@@ -125,5 +125,5 @@ public interface SdTicketMasMapper {
                                                          @Param("serviceNumber") String serviceNumber,
                                                          @Param("ticketType") String ticketType,
                                                          @Param("serviceType") String serviceType,
-                                                         @Param("owningRole") String owningRole);
+                                                         @Param("owningRole") List<String> owningRole);
 }

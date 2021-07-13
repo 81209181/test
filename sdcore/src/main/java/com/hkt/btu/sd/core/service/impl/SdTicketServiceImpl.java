@@ -151,7 +151,7 @@ public class SdTicketServiceImpl implements SdTicketService {
                                                   String status, LocalDate completeDateFrom, LocalDate completeDateTo,
                                                   String createBy, String ticketMasId, String custCode,
                                                   String serviceNumber, String serviceNumberExact, String ticketType,
-                                                  String serviceType, boolean isReport, String owningRole) {
+                                                  String serviceType, boolean isReport, List<String> owningRole) {
         List<SdTicketMasEntity> entityList;
         Integer totalCount;
 
@@ -160,7 +160,7 @@ public class SdTicketServiceImpl implements SdTicketService {
 
         if (isReport) {
             SdUserBean currentUserBean = userService.getCurrentSdUserBean();
-            owningRole = currentUserBean.getPrimaryRoleId();
+            owningRole = List.of(currentUserBean.getPrimaryRoleId());
         }
 
         if (StringUtils.isNotEmpty(ticketMasId)) {
@@ -704,7 +704,10 @@ public class SdTicketServiceImpl implements SdTicketService {
     }
 
     @Override
-    public List<SdTicketExportBean> searchTicketListForExport(LocalDate createDateFrom, LocalDate createDateTo, String status, LocalDate completeDateFrom, LocalDate completeDateTo, String createBy, String ticketMasId, String custCode, String serviceNumber, String ticketType, String serviceType, String owningRole) {
+    public List<SdTicketExportBean> searchTicketListForExport(LocalDate createDateFrom, LocalDate createDateTo, String status,
+                                                              LocalDate completeDateFrom, LocalDate completeDateTo, String createBy,
+                                                              String ticketMasId, String custCode, String serviceNumber,
+                                                              String ticketType, String serviceType, List<String> owningRole) {
         List<SdTicketExportEntity> entityList = ticketMasMapper.searchTicketListForExport(createDateFrom, createDateTo, status,
                 completeDateFrom, completeDateTo, createBy, ticketMasId, custCode, serviceNumber, ticketType, serviceType, owningRole);
 

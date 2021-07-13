@@ -3,6 +3,7 @@ package com.hkt.btu.sd.facade.impl;
 import com.hkt.btu.sd.core.exception.InsufficientAuthorityException;
 import com.hkt.btu.sd.core.service.SdPathCtrlService;
 import com.hkt.btu.sd.core.service.SdUserRoleService;
+import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
 import com.hkt.btu.sd.core.service.bean.SdUserRolePathCtrlBean;
 import com.hkt.btu.sd.facade.SdUserRoleFacade;
@@ -29,6 +30,9 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
 
     @Resource(name = "pathCtrlService")
     SdPathCtrlService sdPathCtrlService;
+
+    @Resource(name = "userService")
+    SdUserService userService;
 
     @Resource(name = "userRoleDataPopulator")
     SdUserRoleDataPopulator sdUserRoleDataPopulator;
@@ -170,4 +174,19 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
         return sdUserRoleService.getRole4Chart();
     }
 
+    @Override
+    public List<SdUserRoleData> getCurrentUserUserRole() {
+        String userId = userService.getCurrentUserUserId();
+        List<SdUserRoleBean> userRoleBeanList = sdUserRoleService.getUserRoleByUserId(userId, false);
+
+        if (CollectionUtils.isEmpty(userRoleBeanList)) {
+            return null;
+        }
+
+        return userRoleBeanList.stream().map(bean -> {
+            SdUserRoleData data = new SdUserRoleData();
+            sdUserRoleDataPopulator.populate(bean, data);
+            return data;
+        }).collect(Collectors.toList());
+    }
 }

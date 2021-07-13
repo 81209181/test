@@ -28,4 +28,6 @@ public interface SdUserRoleFacade {
     List<SdUserRoleData> getTeamHeadRoleList();
 
     List<List<Object>> getRole4Chart();
+
+    List<SdUserRoleData> getCurrentUserUserRole();
 }

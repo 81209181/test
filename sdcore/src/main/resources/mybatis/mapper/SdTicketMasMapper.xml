@@ -110,7 +110,10 @@
                 and td.service_type_code = #{serviceType}
             </if>
             <if test="owningRole != null">
-                and tm.owning_role = #{owningRole}
+                and tm.owning_role in
+                <foreach item="roleId" index="index" collection="owningRole" open="(" separator="," close=")">
+                    #{roleId}
+                </foreach>
             </if>
         </where>
     </sql>
@@ -332,7 +335,6 @@
         json_value('{"wfm":'||b.wfm_comp_info || '}', '$.wfm[3].value[0]' ) as wfm_subclearcode
         from ticket_mas a
         inner join ticket_det b on a.TICKET_MAS_ID=b.ticket_mas_id
-        left join ticket_contact  c on a.ticket_mas_id=c.ticket_mas_id
         left join symptom d on b.symptom_code=d.symptom_code
         left join closecode e on b.close_code=e.close_code
         <where>
@@ -370,7 +372,10 @@
                 and b.service_type_code = #{serviceType}
             </if>
             <if test="owningRole != null">
-                and a.owning_role = #{owningRole}
+                and a.owning_role in
+                <foreach item="roleId" index="index" collection="owningRole" open="(" separator="," close=")">
+                    #{roleId}
+                </foreach>
             </if>
         </where>
         order by a.ticket_mas_id

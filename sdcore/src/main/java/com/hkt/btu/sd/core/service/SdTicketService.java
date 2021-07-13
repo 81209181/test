@@ -23,7 +23,7 @@ public interface SdTicketService {
                                            String status, LocalDate completeDateFrom, LocalDate completeDateTo,
                                            String createBy, String ticketMasId, String custCode,
                                            String serviceNumber, String serviceNumberExact, String ticketType,
-                                           String serviceType,  boolean isReport, String owningRole);
+                                           String serviceType,  boolean isReport, List<String> owningRole);
     Page<SdTicketMasBean> getMyTicket(Pageable pageable);
     SdTeamSummaryBean getTeamSummary();
     List<SdTicketMasBean> getHktCloudTicket(String tenantId, String username);
@@ -81,5 +81,5 @@ public interface SdTicketService {
 
     SdGmbTicketEavBean getGmbTicketOtherInfo(Integer ticketMasId);
 
-    List<SdTicketExportBean> searchTicketListForExport(LocalDate createDateFrom, LocalDate createDateTo, String status, LocalDate completeDateFrom, LocalDate completeDateTo, String createBy, String ticketMasId, String custCode, String serviceNumber, String ticketType, String serviceType, String owningRole);
+    List<SdTicketExportBean> searchTicketListForExport(LocalDate createDateFrom, LocalDate createDateTo, String status, LocalDate completeDateFrom, LocalDate completeDateTo, String createBy, String ticketMasId, String custCode, String serviceNumber, String ticketType, String serviceType, List<String> owningRole);
 }

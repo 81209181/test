@@ -197,9 +197,9 @@ public class TicketController {
             model.addAttribute("serviceTypeList", serviceTypeList);
         }
 
-        List<SdUserRoleData> eligibleUserRoleList = userRoleFacade.getEligibleUserRoleList();
-        if (CollectionUtils.isNotEmpty(eligibleUserRoleList)) {
-            model.addAttribute("primaryRoleList", eligibleUserRoleList.stream().filter(SdUserRoleData::isPrimaryRole)
+        List<SdUserRoleData> userRoleList = userRoleFacade.getCurrentUserUserRole();
+        if (CollectionUtils.isNotEmpty(userRoleList)) {
+            model.addAttribute("primaryRoleList", userRoleList.stream().filter(sdUserRoleData -> !StringUtils.equals(sdUserRoleData.getRoleId(), "SYS_ADMIN"))
                     .sorted(Comparator.comparing(SdUserRoleData::getRoleDesc)).collect(Collectors.toList()));
         }
 
