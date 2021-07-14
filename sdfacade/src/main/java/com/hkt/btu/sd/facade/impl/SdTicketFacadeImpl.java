@@ -24,6 +24,7 @@ import com.hkt.btu.sd.facade.data.cloud.Attachment;
 import com.hkt.btu.sd.facade.data.cloud.Attribute;
 import com.hkt.btu.sd.facade.data.cloud.HktCloudCaseData;
 import com.hkt.btu.sd.facade.data.cloud.HktCloudViewData;
+import com.hkt.btu.sd.facade.data.gmb.GmbVehicleData;
 import com.hkt.btu.sd.facade.data.gmb.Parameter;
 import com.hkt.btu.sd.facade.data.oss.OssSmartMeterData;
 import com.hkt.btu.sd.facade.data.wfm.*;
@@ -108,18 +109,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             }
         }
 
-        // if poleId is null, generate new a dummy poleId for create dummy meter ticket
-        if (ServiceSearchEnum.POLE_ID.getKey().equalsIgnoreCase(queryTicketRequestData.getSearchKey())) {
-            if (StringUtils.isEmpty(queryTicketRequestData.getSearchValue())) {
-                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-                String searchValue = SdTicketServiceBean.DUMMY_POLE_ID_PREFIX + LocalDateTime.now().format(dtf);
-                queryTicketRequestData.setSearchValue(searchValue);
-                queryTicketRequestData.setServiceNo(searchValue);
-                queryTicketRequestData.setServiceType(SdServiceTypeBean.SERVICE_TYPE.SMART_METER);
-            }
-        }
-
-        return ticketService.createQueryTicket(
+        int ticketMasId = ticketService.createQueryTicket(
                 queryTicketRequestData.getCustCode(),
                 removeAllBlank(queryTicketRequestData.getServiceNo()),
                 queryTicketRequestData.getServiceType(),
@@ -127,6 +117,16 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                 queryTicketRequestData.getSearchKey(),
                 removeAllBlank(queryTicketRequestData.getSearchValue()),
                 queryTicketRequestData.getCustName());
+
+        if (ServiceSearchEnum.PLATE_ID.getKey().equalsIgnoreCase(queryTicketRequestData.getSearchKey())) {
+            GmbVehicleData vehicleData = gmbApiFacade.getVehicleInfo(queryTicketRequestData.getSearchValue());
+            if (vehicleData != null) {
+                ticketService.insertExtraInfo(ticketMasId, "PSL ID", vehicleData.getPslId());
+                ticketService.insertExtraInfo(ticketMasId, "Route Code", vehicleData.getRouteCode());
+            }
+        }
+
+        return ticketMasId;
     }
 
     @Override

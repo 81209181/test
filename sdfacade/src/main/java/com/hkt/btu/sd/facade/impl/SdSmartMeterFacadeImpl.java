@@ -2,6 +2,7 @@ package com.hkt.btu.sd.facade.impl;
 
 import com.hkt.btu.common.facade.data.BtuSimpleResponseData;
 import com.hkt.btu.common.facade.data.PageData;
+import com.hkt.btu.sd.core.service.SdTicketService;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
 import com.hkt.btu.sd.core.service.bean.SdTicketServiceBean;
 import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
@@ -30,6 +31,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
     private static final Logger LOG = LogManager.getLogger(SdTicketFacadeImpl.class);
@@ -41,6 +44,8 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
     OssApiFacade ossApiFacade;
     @Resource(name = "gmbApiFacade")
     GmbApiFacade gmbApiFacade;
+    @Resource(name = "ticketService")
+    SdTicketService ticketService;
 
     @Override
     public BtuSimpleResponseData createTicket(Integer poleId, LocalDateTime reportTime, List<String> workingPartyList) {
@@ -103,7 +108,14 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
             // SD: create query ticket
             SdQueryTicketRequestData queryTicketRequestData = buildTicketServiceData(String.valueOf(poleId), SdServiceTypeBean.SERVICE_TYPE.SMART_METER);
             try{
-                ticketMasId = ticketFacade.createQueryTicket(queryTicketRequestData);
+                ticketMasId = ticketService.createQueryTicket(
+                        queryTicketRequestData.getCustCode(),
+                        removeAllBlank(queryTicketRequestData.getServiceNo()),
+                        queryTicketRequestData.getServiceType(),
+                        queryTicketRequestData.getSubsId(),
+                        queryTicketRequestData.getSearchKey(),
+                        removeAllBlank(queryTicketRequestData.getSearchValue()),
+                        queryTicketRequestData.getCustName());
                 LOG.info("Created new smart meter query ticket. (ticketMasId={}, poleId={})", ticketMasId, poleId);
             } catch (RuntimeException e){
                 LOG.error(e.getMessage(), e);
@@ -223,7 +235,14 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
             // SD: create query ticket
             SdQueryTicketRequestData queryTicketRequestData = buildTicketServiceData(identityId, serviceType);
             try{
-                ticketMasId = ticketFacade.createQueryTicket(queryTicketRequestData);
+                ticketMasId = ticketService.createQueryTicket(
+                        queryTicketRequestData.getCustCode(),
+                        removeAllBlank(queryTicketRequestData.getServiceNo()),
+                        queryTicketRequestData.getServiceType(),
+                        queryTicketRequestData.getSubsId(),
+                        queryTicketRequestData.getSearchKey(),
+                        removeAllBlank(queryTicketRequestData.getSearchValue()),
+                        queryTicketRequestData.getCustName());
                 LOG.info("Created new smart meter query ticket. (ticketMasId={}, identityId={})", ticketMasId, identityId);
             } catch (RuntimeException e){
                 LOG.error(e.getMessage(), e);
@@ -320,7 +339,14 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
             // SD: create query ticket
             SdQueryTicketRequestData queryTicketRequestData = buildTicketServiceData(identityId, serviceType);
             try{
-                ticketMasId = ticketFacade.createQueryTicket(queryTicketRequestData);
+                ticketMasId = ticketService.createQueryTicket(
+                        queryTicketRequestData.getCustCode(),
+                        removeAllBlank(queryTicketRequestData.getServiceNo()),
+                        queryTicketRequestData.getServiceType(),
+                        queryTicketRequestData.getSubsId(),
+                        queryTicketRequestData.getSearchKey(),
+                        removeAllBlank(queryTicketRequestData.getSearchValue()),
+                        queryTicketRequestData.getCustName());
                 LOG.info("Created new GMB query ticket. (ticketMasId={}, identityId={})", ticketMasId, identityId);
             } catch (RuntimeException e){
                 LOG.error(e.getMessage(), e);
@@ -523,5 +549,12 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
         return queryTicketRequestData;
     }
 
+    private String removeAllBlank(String str) {
+        str = StringUtils.deleteWhitespace(str);
+        Pattern p = Pattern.compile("\\s*|\t|\r|\n");
+        Matcher m = p.matcher(str);
+        str = m.replaceAll("");
+        return str;
+    }
 
 }
