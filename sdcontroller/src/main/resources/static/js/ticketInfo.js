@@ -571,9 +571,9 @@ function ajaxGetJobInfo(ticketMasId){
                 jobItem.appendTo($('#jobList'));
 
                 if (jobId == jobInfo.jobId && ticketStatusDesc == "WORKING") {
-                    $('.transferBtn').attr("hidden", false);
+                    jobItem.find('.transferBtn').attr("hidden", false);
                 } else {
-                    $('.transferBtn').attr("hidden", true);
+                    jobItem.find('.transferBtn').attr("hidden", true);
                 }
             }
         }
