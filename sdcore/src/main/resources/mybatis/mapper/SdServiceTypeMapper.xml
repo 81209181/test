@@ -66,4 +66,17 @@
         where SERVICE_TYPE_CODE = #{serviceTypeCode}
         and OFFER_NAME = #{offerName}
     </delete>
+
+    <select id="getServiceTypeByRoleId" resultMap="ServiceTypeEntity">
+        SELECT a.SERVICE_TYPE_CODE, a.SERVICE_TYPE_NAME
+        FROM SERVICE_TYPE a
+        WHERE EXISTS(SELECT 1 FROM SERVICE_TYPE_USER_ROLE b WHERE a.SERVICE_TYPE_CODE=b.SERVICE_TYPE_CODE
+        <if test="userRoleId != null">
+            AND ROLE_ID IN
+            <foreach item="roleId" index="index" collection="userRoleId" open="(" separator="," close=")">
+                #{roleId}
+            </foreach>
+        </if>
+        )
+    </select>
 </mapper>

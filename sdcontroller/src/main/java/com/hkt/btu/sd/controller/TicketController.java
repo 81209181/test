@@ -192,13 +192,13 @@ public class TicketController {
             model.addAttribute("ticketTypeList", ticketTypeList);
         }
 
-        List<SdServiceTypeData> serviceTypeList = serviceTypeFacade.getServiceTypeList();
-        if (CollectionUtils.isNotEmpty(serviceTypeList)) {
-            model.addAttribute("serviceTypeList", serviceTypeList);
-        }
-
         List<SdUserRoleData> userRoleList = userRoleFacade.getCurrentUserUserRole();
         if (CollectionUtils.isNotEmpty(userRoleList)) {
+            List<String> userRoleId = userRoleList.stream().map(SdUserRoleData::getRoleId).collect(Collectors.toList());
+            List<SdServiceTypeData> serviceTypeList = serviceTypeFacade.getServiceTypeByRoleId(userRoleId);
+            if (CollectionUtils.isNotEmpty(serviceTypeList)) {
+                model.addAttribute("serviceTypeList", serviceTypeList);
+            }
             model.addAttribute("primaryRoleList", userRoleList.stream().filter(sdUserRoleData -> !StringUtils.equals(sdUserRoleData.getRoleId(), "SYS_ADMIN"))
                     .sorted(Comparator.comparing(SdUserRoleData::getRoleDesc)).collect(Collectors.toList()));
         }

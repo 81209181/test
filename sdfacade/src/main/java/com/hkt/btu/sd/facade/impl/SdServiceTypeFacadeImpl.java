@@ -138,4 +138,13 @@ public class SdServiceTypeFacadeImpl implements SdServiceTypeFacade {
         }
         return false;
     }
+
+    @Override
+    public List<SdServiceTypeData> getServiceTypeByRoleId(List<String> userRoleId) {
+        return serviceTypeService.getServiceTypeByRoleId(userRoleId).stream().map(bean -> {
+            SdServiceTypeData data = new SdServiceTypeData();
+            serviceTypeDataPopulator.populate(bean, data);
+            return data;
+        }).collect(Collectors.toList());
+    }
 }

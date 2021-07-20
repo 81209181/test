@@ -31,4 +31,6 @@ public interface SdServiceTypeService {
     SdServiceTypeOfferMappingBean getServiceTypeOfferMappingBeanByCodeAndOfferName(String oldServiceTypeCode, String oldOfferName);
 
     void deleteServiceTypeOfferMapping(String serviceTypeCode, String offerName);
+
+    List<SdServiceTypeBean> getServiceTypeByRoleId(List<String> userRoleId);
 }

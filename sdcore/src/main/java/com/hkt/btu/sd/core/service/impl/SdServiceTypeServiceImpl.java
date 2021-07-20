@@ -132,4 +132,13 @@ public class SdServiceTypeServiceImpl implements SdServiceTypeService {
     public void deleteServiceTypeOfferMapping(String serviceTypeCode, String offerName) {
         serviceTypeMapper.deleteServiceTypeOfferMapping(serviceTypeCode, offerName);
     }
+
+    @Override
+    public List<SdServiceTypeBean> getServiceTypeByRoleId(List<String> userRoleId) {
+        return serviceTypeMapper.getServiceTypeByRoleId(userRoleId).stream().map(entity -> {
+            SdServiceTypeBean bean = new SdServiceTypeBean();
+            serviceTypeBeanPopulator.populate(entity, bean);
+            return bean;
+        }).collect(Collectors.toList());
+    }
 }

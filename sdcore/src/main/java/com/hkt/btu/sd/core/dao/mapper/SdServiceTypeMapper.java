@@ -26,4 +26,6 @@ public interface SdServiceTypeMapper {
                                                                                  @Param("offerName") String oldOfferName);
 
     void deleteServiceTypeOfferMapping(@Param("serviceTypeCode") String serviceTypeCode, @Param("offerName") String offerName);
+
+    List<SdServiceTypeEntity> getServiceTypeByRoleId(@Param("userRoleId") List<String> userRoleId);
 }

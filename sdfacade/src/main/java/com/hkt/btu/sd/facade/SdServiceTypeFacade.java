@@ -18,4 +18,6 @@ public interface SdServiceTypeFacade {
     boolean createServiceTypeOfferMapping(String serviceTypeCode, String offerName);
     boolean updateServiceTypeOfferMapping(SdUpdateServiceTypeOfferMappingData data);
     boolean deleteServiceTypeOfferMapping(String serviceTypeCode, String offerName);
+
+    List<SdServiceTypeData> getServiceTypeByRoleId(List<String> userRoleId);
 }
