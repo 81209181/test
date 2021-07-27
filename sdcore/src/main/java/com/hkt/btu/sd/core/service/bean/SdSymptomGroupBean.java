@@ -1,14 +1,14 @@
-package com.hkt.btu.sd.core.dao.entity;
+package com.hkt.btu.sd.core.service.bean;
 
-import com.hkt.btu.common.core.dao.entity.BaseEntity;
+import com.hkt.btu.common.core.service.bean.BaseBean;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-public class SdSymptomGroupEntity extends BaseEntity {
-
+public class SdSymptomGroupBean extends BaseBean {
     private String symptomGroupCode;
     private String symptomGroupName;
-    private List<SdSymptomGroupRoleMappingEntity> roleList;
+    private List<String> roleList;
 
     public String getSymptomGroupCode() {
         return symptomGroupCode;
@@ -26,11 +26,11 @@ public class SdSymptomGroupEntity extends BaseEntity {
         this.symptomGroupName = symptomGroupName;
     }
 
-    public List<SdSymptomGroupRoleMappingEntity> getRoleList() {
+    public List<String> getRoleList() {
         return roleList;
     }
 
-    public void setRoleList(List<SdSymptomGroupRoleMappingEntity> roleList) {
+    public void setRoleList(List<String> roleList) {
         this.roleList = roleList;
     }
 }

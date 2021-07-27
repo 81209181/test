@@ -3,15 +3,21 @@ package com.hkt.btu.sd.core.service.impl;
 import com.hkt.btu.sd.core.dao.entity.SdServiceTypeEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSortEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomEntity;
+import com.hkt.btu.sd.core.dao.entity.SdSymptomGroupRoleMappingEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomMappingEntity;
+import com.hkt.btu.sd.core.dao.entity.SdSymptomWorkingPartyMappingEntity;
 import com.hkt.btu.sd.core.dao.mapper.SdSymptomMapper;
 import com.hkt.btu.sd.core.service.SdSymptomService;
 import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdSortBean;
 import com.hkt.btu.sd.core.service.bean.SdSymptomBean;
+import com.hkt.btu.sd.core.service.bean.SdSymptomGroupBean;
 import com.hkt.btu.sd.core.service.bean.SdSymptomMappingBean;
+import com.hkt.btu.sd.core.service.bean.SdSymptomWorkingPartyMappingBean;
 import com.hkt.btu.sd.core.service.populator.SdSymptomBeanPopulator;
+import com.hkt.btu.sd.core.service.populator.SdSymptomGroupBeanPopulator;
 import com.hkt.btu.sd.core.service.populator.SdSymptomMappingBeanPopulator;
+import com.hkt.btu.sd.core.service.populator.SdSymptomWorkingPartyMappingBeanPopulator;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -19,11 +25,13 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class SdSymptomServiceImpl implements SdSymptomService {
@@ -39,6 +47,12 @@ public class SdSymptomServiceImpl implements SdSymptomService {
     SdSymptomBeanPopulator symptomBeanPopulator;
     @Resource(name = "symptmMappingBeanPopulator")
     SdSymptomMappingBeanPopulator symptomMappingBeanPopulator;
+
+    @Resource(name = "symptomGroupBeanPopulator")
+    SdSymptomGroupBeanPopulator symptomGroupBeanPopulator;
+
+    @Resource(name = "symptomWorkingPartyMappingBeanPopulator")
+    SdSymptomWorkingPartyMappingBeanPopulator symptomWorkingPartyMappingBeanPopulator;
 
     @Override
     public List<SdSymptomBean> getSymptomGroupList() {
@@ -173,5 +187,112 @@ public class SdSymptomServiceImpl implements SdSymptomService {
             beanList.add(bean);
         }
         return beanList;
+    }
+
+    @Override
+    public boolean ifSymptomDescExist(String symptomDescription, String symptomGroupCode) {
+        List<SdSymptomEntity> symptomEntityList = sdSymptomMapper.getSymptomByGroupCode(symptomGroupCode);
+        long count = symptomEntityList.stream()
+                .filter(symptomEntity -> StringUtils.equals(symptomEntity.getSymptomDescription().trim(), symptomDescription.trim()))
+                .count();
+        return count > 0;
+    }
+
+    @Override
+    @Transactional
+    public void createSymptomGroup(String symptomGroupCode, String symptomGroupName, List<String> roleList) {
+        String userId = userService.getCurrentUserUserId();
+        sdSymptomMapper.createSymptomGroup(symptomGroupCode, symptomGroupName, userId, userId);
+        if (CollectionUtils.isNotEmpty(roleList)) {
+            sdSymptomMapper.createSymptomGroupRoleMapping(symptomGroupCode, roleList, userId, userId);
+        }
+        LOG.info(String.format("Created a SYMPTOM_GROUP record: %S -- %S", symptomGroupCode, symptomGroupName));
+    }
+
+    @Override
+    public Optional<SdSymptomGroupBean> getSymptomGroup(String symptomGroupCode){
+        SdSymptomGroupBean bean = new SdSymptomGroupBean();
+        return Optional.ofNullable(sdSymptomMapper.getSymptomGroup(symptomGroupCode)).map(entity -> {
+            symptomGroupBeanPopulator.pupulate(entity,bean);
+            return bean;
+        });
+    }
+
+    @Override
+    @Transactional
+    public void updateSymptomGroup(String symptomGroupCode, String symptomGroupName, List<String> roleList) {
+        String userId = userService.getCurrentUserId();
+        sdSymptomMapper.updateSymptomGroup(symptomGroupCode, symptomGroupName, userId);
+
+        List<String> dbRoleList = sdSymptomMapper.getSymptomGroupRoleMappingByCode(symptomGroupCode)
+                .stream().map(SdSymptomGroupRoleMappingEntity::getRoleId).collect(Collectors.toList());
+
+        if (CollectionUtils.isNotEmpty(roleList)) {
+            List<String> insertRoleList = roleList.stream().filter(role -> !dbRoleList.contains(role)).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(insertRoleList)) {
+                sdSymptomMapper.createSymptomGroupRoleMapping(symptomGroupCode, insertRoleList, userId, userId);
+            }
+            LOG.info(String.format("Created %s SYMPTOM_GROUP_MAPPING records %S -- %S", insertRoleList.size(), symptomGroupCode, insertRoleList));
+        }
+
+        if (CollectionUtils.isNotEmpty(dbRoleList)) {
+            List<String> delRoleList = dbRoleList.stream().filter(role -> !roleList.contains(role)).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(delRoleList)) {
+                sdSymptomMapper.delSymptomGroupRoleMappingBatch(symptomGroupCode, delRoleList);
+            }
+            LOG.info(String.format("Deleted %s records from SYMPTOM_GROUP_MAPPING where SYMPTOM_GROUP_CODE = %s and ROLE_ID in (%S)",
+                    delRoleList.size(), symptomGroupCode, delRoleList));
+        }
+    }
+
+    @Override
+    @Transactional
+    public void delSymptomGroup(String symptomGroupCode) {
+        sdSymptomMapper.delSymptomGroup(symptomGroupCode);
+        sdSymptomMapper.delSymptomGroupRoleMappingBatch(symptomGroupCode,null);
+        LOG.info("Deleted a record from SYMPTOM_GROUP where SYMPTOM_GROUP_CODE = "+symptomGroupCode);
+    }
+
+    @Override
+    public List<SdSymptomWorkingPartyMappingBean> getSymptomWorkingPartyMappingList(){
+        List<SdSymptomWorkingPartyMappingEntity> entityList = sdSymptomMapper.getSymptomWorkingPartyMappingList();
+
+        List<SdSymptomWorkingPartyMappingBean> beanList = new ArrayList<>();
+        entityList.forEach(entity -> {
+            SdSymptomWorkingPartyMappingBean bean = new SdSymptomWorkingPartyMappingBean();
+            symptomWorkingPartyMappingBeanPopulator.populate(entity, bean);
+            beanList.add(bean);
+        });
+
+        return beanList;
+    }
+
+    @Override
+    public void createSymptomWorkingPartyMapping(String symptomCode, String workingParty, String serviceTypeCode) {
+        String userId = userService.getCurrentUserUserId();
+        sdSymptomMapper.createSymptomWorkingPartyMapping(symptomCode, workingParty, serviceTypeCode, userId, userId);
+        LOG.info(String.format("Created a SYMPTOM_WORKINGPARTY_MAPPING record: %S -- %S -- %S", symptomCode, workingParty, serviceTypeCode));
+    }
+
+    @Override
+    public void updateSymptomWorkingPartyMapping(String symptomCode, String workingParty, String serviceTypeCode){
+        String userId = userService.getCurrentUserUserId();
+        sdSymptomMapper.updateSymptomWorkingPartyMapping(symptomCode, workingParty, serviceTypeCode, userId);
+        LOG.info(String.format("Updated SYMPTOM_WORKINGPARTY_MAPPING %S -- %S -- %S", symptomCode, workingParty, serviceTypeCode));
+    }
+
+    @Override
+    public Optional<SdSymptomWorkingPartyMappingBean> getSymptomWorkingPartyMapping(String symptomCode) {
+        SdSymptomWorkingPartyMappingBean bean = new SdSymptomWorkingPartyMappingBean();
+        return Optional.ofNullable(sdSymptomMapper.getSymptomWorkingPartyMapping(symptomCode)).map(entity -> {
+            symptomWorkingPartyMappingBeanPopulator.populate(entity, bean);
+            return bean;
+        });
+    }
+
+    @Override
+    public void delSymptomWorkingPartyMapping(String symptomCode) {
+        sdSymptomMapper.delSymptomWorkingPartyMapping(symptomCode);
+        LOG.info("Deleted a record from SYMPTOM_WORKINGPARTY_MAPPING where SYMPTOM_CODE = "+symptomCode);
     }
 }

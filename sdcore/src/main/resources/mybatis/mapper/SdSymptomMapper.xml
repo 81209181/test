@@ -29,6 +29,27 @@
         <result column="WORKINGPARTY" property="workingParty" />
     </resultMap>
 
+    <resultMap id="SdSymptomCodePerfixEntity" type="com.hkt.btu.sd.core.dao.entity.SdSymptomCodePerfixEntity">
+        <result column="SYMPTOM_GROUP_CODE" property="symptomGroupCode"/>
+        <result column="SYMPTOM_CODE_PREFIX" property="symtomCodePrefix"/>
+    </resultMap>
+
+    <resultMap id="SymptomGroupRoleMappingEntity" type="com.hkt.btu.sd.core.dao.entity.SdSymptomGroupRoleMappingEntity">
+        <result column="SYMPTOM_GROUP_CODE" property="symptomGroupCode"/>
+        <result column="ROLE_ID" property="roleId"/>
+    </resultMap>
+
+    <resultMap id="SymptomGroupEntity" type="com.hkt.btu.sd.core.dao.entity.SdSymptomGroupEntity">
+        <result column="SYMPTOM_GROUP_CODE" property="symptomGroupCode"/>
+        <result column="SYMPTOM_GROUP_NAME" property="symptomGroupName"/>
+        <collection property="roleList" column="SYMPTOM_GROUP_CODE" javaType="ArrayList"
+                    ofType="com.hkt.btu.sd.core.dao.entity.SdSymptomGroupRoleMappingEntity"
+                    select="com.hkt.btu.sd.core.dao.mapper.SdSymptomMapper.getSymptomGroupRoleMappingByCode">
+            <result column="SYMPTOM_GROUP_CODE" property="symptomGroupCode"/>
+            <result column="ROLE_ID" property="roleId"/>
+        </collection>
+    </resultMap>
+
     <select id="getSymptomGroupList" resultMap="SymptomEntity">
         SELECT SYMPTOM_GROUP_CODE,SYMPTOM_GROUP_NAME
         FROM SYMPTOM_GROUP
@@ -161,4 +182,76 @@
             AND swm.WORKINGPARTY = #{workingParty}
         </if>
     </select>
+
+    <select id="getSymptomByGroupCode" resultMap="SymptomEntity">
+        select * from SYMPTOM where SYMPTOM_GROUP_CODE = #{symptomGroupCode} order by SYMPTOM_CODE desc
+    </select>
+
+
+    <select id="getSymptomCodePrefixByGroup" resultMap="SdSymptomCodePerfixEntity">
+        select SYMPTOM_GROUP_CODE,SYMPTOM_CODE_PREFIX from SYMPTOM_CODE_PREFIX where SYMPTOM_GROUP_CODE = #{symptomGroupCode}
+    </select>
+
+    <insert id="createSymptomGroup">
+        insert into SYMPTOM_GROUP(SYMPTOM_GROUP_CODE, SYMPTOM_GROUP_NAME, CREATEBY, MODIFYBY)
+        values (#{symptomGroupCode}, #{symptomGroupName}, #{createby}, #{modifyby})
+    </insert>
+
+    <insert id="createSymptomGroupRoleMapping">
+        insert all
+        <foreach item="roleId" collection="roleList" >
+            into SYMPTOM_GROUP_ROLE_MAPPING (SYMPTOM_GROUP_CODE, ROLE_ID, CREATEBY, MODIFYBY) values (#{symptomGroupCode}, #{roleId}, #{createby}, #{modifyby})
+        </foreach>
+        select 1 from DUAL
+    </insert>
+
+    <select id="getSymptomGroupRoleMappingByCode" resultMap="SymptomGroupRoleMappingEntity">
+        select * from SYMPTOM_GROUP_ROLE_MAPPING where SYMPTOM_GROUP_CODE = #{symptomGroupCode}
+    </select>
+
+    <select id="getSymptomGroup" resultMap="SymptomGroupEntity">
+        select * from SYMPTOM_GROUP where SYMPTOM_GROUP_CODE = #{symptomGroupCode}
+    </select>
+
+    <update id="updateSymptomGroup">
+        update SYMPTOM_GROUP set SYMPTOM_GROUP_NAME  = #{symptomGroupName}, MODIFYDATE = sysdate, MODIFYBY = #{modifyby}
+        where SYMPTOM_GROUP_CODE = #{symptomGroupCode}
+    </update>
+
+    <delete id="delSymptomGroupRoleMappingBatch">
+        delete from SYMPTOM_GROUP_ROLE_MAPPING where SYMPTOM_GROUP_CODE = #{symptomGroupCode}
+        <if test="roleList != null and roleList.size > 0">
+            and ROLE_ID in
+            <foreach collection="roleList" item="roleId" open="(" close=")" separator=",">
+                #{roleId}
+            </foreach>
+        </if>
+    </delete>
+
+    <delete id="delSymptomGroup">
+        delete from SYMPTOM_GROUP where SYMPTOM_GROUP_CODE = #{symptomGroupCode}
+    </delete>
+
+    <select id="getSymptomWorkingPartyMappingList" resultMap="SymptomWorkingPartyMappingEntity">
+        select * from SYMPTOM_WORKINGPARTY_MAPPING
+    </select>
+
+    <insert id="createSymptomWorkingPartyMapping">
+        insert into SYMPTOM_WORKINGPARTY_MAPPING(SYMPTOM_CODE, WORKINGPARTY, SERVICE_TYPE_CODE, CREATEBY, MODIFYBY)
+        values (#{symptomCode}, #{workingParty}, #{serviceTypeCode}, #{createby}, #{modifyby} )
+    </insert>
+
+    <update id="updateSymptomWorkingPartyMapping">
+        update SYMPTOM_WORKINGPARTY_MAPPING
+        set WORKINGPARTY = #{workingParty}, SERVICE_TYPE_CODE = #{serviceTypeCode}, MODIFYDATE = sysdate, MODIFYBY = #{modifyby}
+        where SYMPTOM_CODE = #{symptomCode}
+    </update>
+
+    <select id="getSymptomWorkingPartyMapping" resultMap="SymptomWorkingPartyMappingEntity">
+        select * from SYMPTOM_WORKINGPARTY_MAPPING where SYMPTOM_CODE = #{symptomCode}
+    </select>
+
+    <delete id="delSymptomWorkingPartyMapping">
+        delete SYMPTOM_WORKINGPARTY_MAPPING where SYMPTOM_CODE = #{symptomCode}
+    </delete>
 </mapper>
