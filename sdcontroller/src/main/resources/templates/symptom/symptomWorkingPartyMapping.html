@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Symptom Working Party Mapping</title>
+    <style>
+        .attribute-name {
+            width: 115px;
+            display: inline-block;
+        }
+        .attribute-value{
+            width: calc(100% - 115px) !important;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+
+    <h1>Symptom Working Party Mapping</h1>
+
+    <div class="mt-5 from-row">
+        <button type="button" class="btn btn-lg btn-primary float-left mr-sm-2" id="createMapping">
+            <i class="far fa-save"></i> Create Mapping
+        </button>
+    </div>
+    <br>
+    <br>
+
+    <div class="mt-5 from-row">
+        <table class="display" id="symptomWorkingpartymapTable">
+            <thead>
+            <tr>
+                <th>Symptom Code</th>
+                <th>Working Party</th>
+                <th>Service Type Code</th>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+            <tr>
+                <th>Symptom Code</th>
+                <th>Working Party</th>
+                <th>Service Type Code</th>
+                <th></th>
+                <th></th>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div id="dialogbox" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-white bg-info h-80">
+                    <h6 class="modal-title"></h6>
+                    <button type="button" class="close text-white" data-dismiss="modal">x</button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation" novalidate>
+                        <div class="form-row">
+                            <div class="col-md-12 form-inline pt-2">
+                                <div class="attribute-name">Symptom Code:</div>
+                                <select class="form-control custom-select attribute-value" id="symptomCode" name="symptomCode" data-style="select-bottom" required>
+                                    <option value="">Choose symptom code</option>
+                                    <option th:each="symptom : ${allSymptomList}" th:text="${symptom.symptomCode}+'---'+${symptom.symptomDescription}" th:value="${symptom.symptomCode}"></option>
+                                </select>
+                                <div class="invalid-feedback">Please select on a symptom code.</div>
+                            </div>
+                            <div class="col-md-12 form-inline pt-2">
+                                <div class="attribute-name">Working party:</div>
+                                <input type="text" class="form-control attribute-value" name="workingParty" required>
+                                <div class="invalid-feedback">
+                                    Please enter a working party in the textarea.
+                                </div>
+                            </div>
+                            <div class="col-md-12 form-inline pt-2">
+                                <label class="col-form-label justify-content-start">Service Type Code:</label>
+                                <div class="d-block">
+                                    <div class="form-check form-check-inline" th:each="type : ${serviceTypeList}" style="display: inline-flex">
+                                        <input class="form-check-input" type="radio" name="serviceTypeCode" th:value="${type.serviceTypeCode}" required>
+                                        <label class="form-check-label" th:text="${type.serviceTypeName}"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info float-right" id="submit" onclick="submit($(this).attr('data-type'))">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" th:src="@{/js/symptomWorkingPartyMapping.js(v=${projectBuildtime})}"></script>
+</div>
+</body>
+</html>

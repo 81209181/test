@@ -181,4 +181,7 @@
 
     <alias name="sdCloseCodeDataPopulator" alias="closeCodeDataPopulator"/>
     <bean id="sdCloseCodeDataPopulator" class="com.hkt.btu.sd.facade.populator.SdCloseCodeDataPopulator"/>
+
+    <alias name="sdSymptomWorkingPartyMappingDataPopulator" alias="symptomWorkingPartyMappingDataPopulator"/>
+    <bean id="sdSymptomWorkingPartyMappingDataPopulator" class="com.hkt.btu.sd.facade.populator.SdSymptomWorkingPartyMappingDataPopulator"/>
 </beans>

@@ -193,4 +193,11 @@
 
     <alias name="sdCloseCodeBeanPopulator" alias="closeCodeBeanPopulator"/>
     <bean id="sdCloseCodeBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdCloseCodeBeanPopulator"/>
+
+    <alias name="sdSymptomGroupBeanPopulator" alias="symptomGroupBeanPopulator"/>
+    <bean id="sdSymptomGroupBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdSymptomGroupBeanPopulator" />
+
+    <alias name="sdSymptomWorkingPartyMappingBeanPopulator" alias="symptomWorkingPartyMappingBeanPopulator"/>
+    <bean id="sdSymptomWorkingPartyMappingBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdSymptomWorkingPartyMappingBeanPopulator" />
+
 </beans>

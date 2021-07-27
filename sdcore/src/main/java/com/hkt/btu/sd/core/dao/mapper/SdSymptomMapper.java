@@ -1,7 +1,10 @@
 package com.hkt.btu.sd.core.dao.mapper;
 
 import com.hkt.btu.sd.core.dao.entity.SdSortEntity;
+import com.hkt.btu.sd.core.dao.entity.SdSymptomCodePerfixEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomEntity;
+import com.hkt.btu.sd.core.dao.entity.SdSymptomGroupEntity;
+import com.hkt.btu.sd.core.dao.entity.SdSymptomGroupRoleMappingEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomMappingEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomWorkingPartyMappingEntity;
 import org.apache.ibatis.annotations.Param;
@@ -48,4 +51,47 @@ public interface SdSymptomMapper {
 
     List<SdSymptomWorkingPartyMappingEntity> getSymptomByServiceType(@Param("serviceType") String serviceType,
                                                                      @Param("workingParty") String workingParty);
+
+    List<SdSymptomEntity> getSymptomByGroupCode(@Param("symptomGroupCode") String symptomGroupCode);
+
+    SdSymptomCodePerfixEntity getSymptomCodePrefixByGroup(@Param("symptomGroupCode") String symptomGroupCode);
+
+    void createSymptomGroup(@Param("symptomGroupCode") String symptomGroupCode,
+                            @Param("symptomGroupName") String symptomGroupName,
+                            @Param("createby") String createby,
+                            @Param("modifyby") String modifyby);
+
+    void createSymptomGroupRoleMapping(@Param("symptomGroupCode") String symptomGroupCode,
+                                       @Param("roleList") List<String> roleList,
+                                       @Param("createby") String createby,
+                                       @Param("modifyby") String modifyby);
+
+    List<SdSymptomGroupRoleMappingEntity> getSymptomGroupRoleMappingByCode(@Param("symptomGroupCode") String symptomGroupCode);
+
+    SdSymptomGroupEntity getSymptomGroup(@Param("symptomGroupCode") String symptomGroupCode);
+
+    void updateSymptomGroup(@Param("symptomGroupCode") String symptomGroupCode,
+                            @Param("symptomGroupName") String symptomGroupName,
+                            @Param("modifyby") String modifyby);
+
+    void delSymptomGroupRoleMappingBatch(@Param("symptomGroupCode") String symptomGroupCode, @Param("roleList") List<String> roleList);
+
+    void delSymptomGroup(@Param("symptomGroupCode") String symptomGroupCode);
+
+    List<SdSymptomWorkingPartyMappingEntity> getSymptomWorkingPartyMappingList();
+
+    void createSymptomWorkingPartyMapping(@Param("symptomCode") String symptomCode,
+                                      @Param("workingParty") String workingParty,
+                                      @Param("serviceTypeCode") String serviceTypeCode,
+                                      @Param("createby") String createby,
+                                      @Param("modifyby") String modifyby);
+
+    void updateSymptomWorkingPartyMapping(@Param("symptomCode") String symptomCode,
+                                      @Param("workingParty") String workingParty,
+                                      @Param("serviceTypeCode") String serviceTypeCode,
+                                      @Param("modifyby") String modifyby);
+
+    SdSymptomWorkingPartyMappingEntity getSymptomWorkingPartyMapping(@Param("symptomCode") String symptomCode);
+
+    void delSymptomWorkingPartyMapping(@Param("symptomCode") String symptomCode);
 }
