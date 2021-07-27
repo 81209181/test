@@ -2,6 +2,7 @@ package com.hkt.btu.sd.facade.impl;
 
 import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.sd.core.exception.ApiException;
+import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdServiceTypeBean;
 import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
@@ -46,6 +47,10 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
     OssApiFacade ossApiFacade;
     @Resource(name = "gmbApiFacade")
     GmbApiFacade gmbApiFacade;
+    @Resource(name = "auditTrailFacade")
+    SdAuditTrailFacade auditTrailFacade;
+    @Resource(name = "userService")
+    SdUserService userService;
 
     @Resource(name = "requestCreateSearchResultDataPopulator")
     RequestCreateSearchResultDataPopulator requestCreateSearchResultDataPopulator;
@@ -61,6 +66,7 @@ public class SdRequestCreateFacadeImpl implements SdRequestCreateFacade {
 
     @Override
     public SdRequestCreateSearchResultsData searchProductList(String searchKey, String searchValue) {
+        auditTrailFacade.insertSearchInfoAuditTrail(userService.getCurrentUserUserId(), searchKey, searchValue);
         SdRequestCreateSearchResultsData resultsData = new SdRequestCreateSearchResultsData();
         ServiceSearchEnum serviceSearchEnum = ServiceSearchEnum.getEnum(searchKey);
         if (serviceSearchEnum == null) {

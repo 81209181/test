@@ -39,6 +39,12 @@ public class SdAuditTrailServiceImpl extends BtuAuditTrailServiceImpl implements
     }
 
     @Override
+    public void insertSearchInfoAuditTrail(String user, String searchKey, String searchValue) {
+        String details = String.format("searchKey: %s, searchValue: %s", searchKey, searchValue);
+        insertAuditTrailInternal(user, SdAuditTrailEntity.ACTION.SEARCH_INFO, details);
+    }
+
+    @Override
     public void insertGetNgn3OneDayAdmin(String bsn, String companyId) {
         String details = String.format("bsn: %s, companyId: %s", bsn, companyId);
         insertAuditTrail(SdAuditTrailEntity.ACTION.GET_NGN3_ADMIN_ACCOUNT, details);

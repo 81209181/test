@@ -6,6 +6,7 @@ public interface SdAuditTrailService extends BtuAuditTrailService {
 
     // ticket
     void insertViewTicketAuditTrail(String user, String ticketMasId);
+    void insertSearchInfoAuditTrail(String user, String searchKey, String searchValue);
 
     // NGN3
     void insertGetNgn3OneDayAdmin(String bsn, String companyId);
