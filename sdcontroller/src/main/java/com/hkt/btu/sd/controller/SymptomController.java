@@ -16,6 +16,7 @@ import com.hkt.btu.sd.facade.data.SdUpdateSymptomFormData;
 import com.hkt.btu.sd.facade.data.SdUserRoleData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -42,20 +43,45 @@ public class SymptomController {
     @GetMapping("/create-symptom")
     public String showCreateSymptom(Model model) {
         List<SdSymptomData> symptomGroupList = sdSymptomFacade.getSymptomGroupList();
+        List<SdServiceTypeData> serviceTypeList = serviceTypeFacade.getServiceTypeList();
         if (CollectionUtils.isNotEmpty(symptomGroupList)) {
             model.addAttribute("symptomGroupList", symptomGroupList);
+        }
+        if (CollectionUtils.isNotEmpty(serviceTypeList)) {
+            model.addAttribute("serviceTypeList", serviceTypeList);
         }
         return "symptom/createSymptom";
     }
 
     @PostMapping("/post-create-symptom")
-    public ResponseEntity<?> createSymptom(@RequestParam String symptomCode, @RequestParam String symptomGroupCode, @RequestParam String symptomDescription) {
-        String errorMsg = sdSymptomFacade.createSymptom(symptomCode, symptomGroupCode, symptomDescription);
-        if (errorMsg == null) {
-            return ResponseEntity.ok(SimpleAjaxResponse.of());
-        } else {
-            return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
+    public ResponseEntity<?> createSymptom(@RequestBody SdUpdateSymptomFormData symptomFormData) {
+        if (StringUtils.isEmpty(symptomFormData.getSymptomGroupCode())) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of(false,"Empty Symptom Group Code."));
+        } else if (StringUtils.isEmpty(symptomFormData.getSymptomDescription())) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of(false,"Empty Symptom Description."));
         }
+
+        try {
+            String res = sdSymptomFacade.createSymptom(symptomFormData.getSymptomGroupCode(), symptomFormData.getSymptomDescription(), symptomFormData.getServiceTypeList());
+            return ResponseEntity.ok(SimpleAjaxResponse.of(true, res));
+        } catch (DuplicateKeyException e){
+            return ResponseEntity.ok(SimpleAjaxResponse.of(false,"Symptom Code already exists."));
+        }
+    }
+
+    @PostMapping("/ifSymptomDescExist")
+    public ResponseEntity<?> ifSymptomDescExist(@RequestBody SdSymptomData symptomData){
+        if (StringUtils.isEmpty(symptomData.getSymptomGroupCode())){
+            return ResponseEntity.ok(SimpleAjaxResponse.of(false,"Empty Symptom Group Code."));
+        } else if (StringUtils.isEmpty(symptomData.getSymptomDescription())) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of(false,"Empty Symptom Description."));
+        }
+
+        if (sdSymptomFacade.ifSymptomDescExist(symptomData)) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of(true, "warningMsg"));
+        }
+
+        return ResponseEntity.ok(SimpleAjaxResponse.of());
     }
 
     @GetMapping("search-symptom")

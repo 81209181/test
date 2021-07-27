@@ -16,7 +16,7 @@ public interface SdSymptomService {
 
     List<SdSymptomBean> getSymptomGroupList();
 
-    void createSymptom(String symptomCode,String symptomGroupCode,String symptomDescription);
+    String createSymptom(String symptomGroupCode,String symptomDescription,List<String> serviceTypeList);
 
     Page<SdSymptomBean> searchSymptomList(Pageable pageable, String symptomGroupCode, String symptomDescription,
                                           List<SdSortBean> sortList);

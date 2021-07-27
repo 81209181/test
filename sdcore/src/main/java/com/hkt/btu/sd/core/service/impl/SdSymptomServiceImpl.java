@@ -22,9 +22,11 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.xmlbeans.impl.piccolo.util.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -60,11 +62,37 @@ public class SdSymptomServiceImpl implements SdSymptomService {
         return buildSymptomBeanList(entityList);
     }
 
+    private String getLastestSymptomCode(String symptomGroupCode){
+        String symtomCodePrefix = sdSymptomMapper.getSymptomCodePrefixByGroup(symptomGroupCode).getSymtomCodePrefix();
+        List<SdSymptomEntity> symptomEntityList = sdSymptomMapper.getSymptomByGroupCode(symptomGroupCode);
+        long size = symptomEntityList.stream().filter(symptomEntity -> symptomEntity.getSymptomCode().startsWith(symtomCodePrefix)).count();
+        String symptomCodeNum = String.format("%03d",size+1);
+        return symtomCodePrefix + symptomCodeNum;
+    }
+
     @Override
-    public void createSymptom(String symptomCode, String symptomGroupCode, String symptomDescription) {
+    @Transactional(rollbackFor = DuplicateKeyException.class, propagation = Propagation.REQUIRED)
+    public String createSymptom(String symptomGroupCode, String symptomDescription, List<String> serviceTypeList){
         String createby = userService.getCurrentUserUserId();
+        String symptomCode = getLastestSymptomCode(symptomGroupCode);
         sdSymptomMapper.createSymptom(symptomCode, symptomGroupCode, symptomDescription, createby);
         LOG.info(String.format("Created symptom %s - %s", symptomCode, symptomDescription));
+
+        List<String> filteredServiceTypeList = new ArrayList<>();
+        if(CollectionUtils.isNotEmpty(serviceTypeList)){
+            for (String serviceType : serviceTypeList) {
+                if (!StringUtils.equals(SdServiceTypeEntity.SERVICE_TYPE.UNKNOWN, serviceType)) {
+                    filteredServiceTypeList.add(serviceType);
+                }
+            }
+        }
+
+        if (!filteredServiceTypeList.isEmpty()){
+            sdSymptomMapper.createSymptomMapping(filteredServiceTypeList, symptomCode, createby);
+            LOG.info("Created symptomCode:" + symptomCode + ", serviceTypeList:" + filteredServiceTypeList);
+        }
+
+        return String.format("Created symptom %s - %s", symptomCode, symptomDescription);
     }
 
     @Override

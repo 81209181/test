@@ -16,7 +16,7 @@ public interface SdSymptomFacade {
 
     List<SdSymptomData> getSymptomGroupList();
 
-    String createSymptom(String symptomCode,String symptomGroupCode,String symptomDescription);
+    String createSymptom(String symptomGroupCode, String symptomDescription, List<String> serviceTypeList);
 
     PageData<SdSymptomData> searchSymptomList(Pageable pageable, String symptomGroupCode, String symptomDescription,
                                               String strDirList, String strSortList);

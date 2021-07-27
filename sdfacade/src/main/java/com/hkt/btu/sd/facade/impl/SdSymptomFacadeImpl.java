@@ -57,23 +57,10 @@ public class SdSymptomFacadeImpl implements SdSymptomFacade {
     }
 
     @Override
-    public String createSymptom(String symptomCode, String symptomGroupCode, String symptomDescription) {
-        if (StringUtils.isEmpty(symptomCode)) {
-            return "Empty Symptom Code.";
-        } else if (StringUtils.isEmpty(symptomGroupCode)) {
-            return "Empty Symptom Group Code.";
-        } else if (StringUtils.isEmpty(symptomDescription)) {
-            return "Empty Symptom Description.";
-        }
-
-        try {
-            sdSymptomService.createSymptom(symptomCode, symptomGroupCode, symptomDescription);
-        } catch (DuplicateKeyException e){
-            return "Symptom Code already exists.";
-        }
-
-        return null;
+    public String createSymptom(String symptomGroupCode, String symptomDescription, List<String> serviceTypeList) {
+        return sdSymptomService.createSymptom(symptomGroupCode, symptomDescription, serviceTypeList);
     }
+
 
     @Override
     public PageData<SdSymptomData> searchSymptomList(Pageable pageable, String symptomGroupCode, String symptomDescription,
