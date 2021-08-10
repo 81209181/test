@@ -219,6 +219,7 @@ $().ready(function(){
         clearAllMsg();
         let form_arr = $('#remark').find('form').serialize();
         form_arr += "&ticketMasId="+ticketMasId;
+        $('#btnCreateTicketRemarks').attr("disabled", true);
         $.post('/ticket/post-create-ticket-remarks',form_arr,function(res){
             if (res.success) {
                 $('#remark').find('form')[0].reset();
@@ -229,6 +230,7 @@ $().ready(function(){
             console.log("ERROR : ", responseError);
             showErrorMsg(responseError);
         })
+        $('#btnCreateTicketRemarks').attr("disabled", false);
     });
 
     // service link button

@@ -18,9 +18,11 @@ public interface SdSymptomMapper {
     List<SdSymptomEntity> getSymptomGroupList();
 
     void createSymptom(@Param("symptomCode") String symptomCode,
-                          @Param("symptomGroupCode") String symptomGroupCode,
-                          @Param("symptomDescription") String symptomDescription,
-                          @Param("createby") String createby);
+                       @Param("symptomGroupCode") String symptomGroupCode,
+                       @Param("symptomDescription") String symptomDescription,
+                       @Param("createby") String createby,
+                       @Param("voiceLineTest") String voiceLineTest,
+                       @Param("allowAppt") String allowAppt);
 
     SdSymptomEntity getSymptomBySymptomCode(@Param("symptomCode") String symptomCode);
 
@@ -45,7 +47,9 @@ public interface SdSymptomMapper {
                           @Param("symptomCode") String symptomCode,
                           @Param("symptomGroupCode") String symptomGroupCode,
                           @Param("symptomDescription") String symptomDescription,
-                          @Param("createby") String createby);
+                          @Param("createby") String createby,
+                          @Param("voiceLineTest") String voiceLineTest,
+                          @Param("allowAppt") String allowAppt);
 
     List<SdSymptomEntity> getAllSymptomList();
 

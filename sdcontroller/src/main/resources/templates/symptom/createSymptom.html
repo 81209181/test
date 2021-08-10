@@ -33,6 +33,22 @@
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
+                <label>Voice Line Test</label>
+                <select class="form-control custom-select" id="voiceLineTest" name="voiceLineTest" data-style="select-bottom">
+                    <option value="N">No</option>
+                    <option value="Y">Yes</option>
+                </select>
+            </div>
+            <div class="form-group col-md-6">
+                <label>Allow Appointment</label>
+                <select class="form-control custom-select" id="allowAppt" name="allowAppt" data-style="select-bottom">
+                    <option value="N">No</option>
+                    <option value="Y">Yes</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
                 <label>Service Type</label>
                 <div class="d-block">
                     <div class="form-check form-check-inline" th:each="type : ${serviceTypeList}">

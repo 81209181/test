@@ -8,6 +8,8 @@
         <result column="SYMPTOM_DESCRIPTION" property="symptomDescription" />
         <result column="SYMPTOM_GROUP_CODE" property="symptomGroupCode" />
         <result column="SYMPTOM_GROUP_NAME" property="symptomGroupName" />
+        <result column="VOICE_LINE_TEST" property="voiceLineTest" />
+        <result column="ALLOW_APPT" property="allowAppt" />
 
         <result column="CREATEDATE" property="createdate" />
         <result column="CREATEBY" property="createby" />
@@ -58,8 +60,8 @@
     </select>
 
     <insert id="createSymptom">
-        insert into symptom (SYMPTOM_CODE,SYMPTOM_DESCRIPTION,SYMPTOM_GROUP_CODE,CREATEBY,MODIFYBY)
-        values (#{symptomCode},#{symptomDescription},#{symptomGroupCode},#{createby},#{createby})
+        insert into symptom (SYMPTOM_CODE,SYMPTOM_DESCRIPTION,SYMPTOM_GROUP_CODE,CREATEBY,MODIFYBY,VOICE_LINE_TEST,ALLOW_APPT)
+        values (#{symptomCode},#{symptomDescription},#{symptomGroupCode},#{createby},#{createby},#{voiceLineTest},#{allowAppt})
     </insert>
 
     <insert id="createSymptomMapping">
@@ -91,7 +93,9 @@
         sy.CREATEDATE,
         sy.CREATEBY,
         sy.MODIFYDATE,
-        sy.MODIFYBY
+        sy.MODIFYBY,
+        sy.VOICE_LINE_TEST,
+        sy.ALLOW_APPT
         from SYMPTOM sy
         inner join SYMPTOM_GROUP sg on sy.SYMPTOM_GROUP_CODE = sg.SYMPTOM_GROUP_CODE
         where sy.SYMPTOM_CODE = #{symptomCode}
@@ -161,7 +165,9 @@
         SYMPTOM_GROUP_CODE = #{symptomGroupCode},
         SYMPTOM_DESCRIPTION = #{symptomDescription},
         MODIFYBY = #{createby},
-        MODIFYDATE = sysdate
+        MODIFYDATE = sysdate,
+        VOICE_LINE_TEST = #{voiceLineTest},
+        ALLOW_APPT = #{allowAppt}
         where SYMPTOM_CODE = #{oldSymptomCode}
     </update>
 

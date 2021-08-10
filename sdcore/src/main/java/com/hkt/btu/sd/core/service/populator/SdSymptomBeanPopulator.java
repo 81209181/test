@@ -11,6 +11,8 @@ public class SdSymptomBeanPopulator extends AbstractBeanPopulator<SdSymptomBean>
         target.setSymptomDescription(source.getSymptomDescription());
         target.setSymptomGroupCode(source.getSymptomGroupCode());
         target.setSymptomGroupName(source.getSymptomGroupName());
+        target.setVoiceLineTest(source.getVoiceLineTest());
+        target.setAllowAppt(source.getAllowAppt());
         target.setCreatedate(source.getCreatedate());
         target.setCreateby(source.getCreateby());
         target.setModifydate(source.getModifydate());

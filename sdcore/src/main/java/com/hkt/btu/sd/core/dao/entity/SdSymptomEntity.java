@@ -8,6 +8,8 @@ public class SdSymptomEntity extends BaseEntity {
     private String symptomDescription;
     private String symptomGroupCode;
     private String symptomGroupName;
+    private String voiceLineTest;
+    private String allowAppt;
 
     public String getSymptomCode() {
         return symptomCode;
@@ -39,5 +41,21 @@ public class SdSymptomEntity extends BaseEntity {
 
     public void setSymptomGroupName(String symptomGroupName) {
         this.symptomGroupName = symptomGroupName;
+    }
+
+    public String getVoiceLineTest() {
+        return voiceLineTest;
+    }
+
+    public void setVoiceLineTest(String voiceLineTest) {
+        this.voiceLineTest = voiceLineTest;
+    }
+
+    public String getAllowAppt() {
+        return allowAppt;
+    }
+
+    public void setAllowAppt(String allowAppt) {
+        this.allowAppt = allowAppt;
     }
 }

@@ -11,6 +11,8 @@ public class SdUpdateSymptomFormData implements DataInterface {
     private String symptomDescription;
     private String oldSymptomCode;
     private List<String> serviceTypeList;
+    private String voiceLineTest;
+    private String allowAppt;
 
     public String getSymptomCode() {
         return symptomCode;
@@ -50,5 +52,21 @@ public class SdUpdateSymptomFormData implements DataInterface {
 
     public void setServiceTypeList(List<String> serviceTypeList) {
         this.serviceTypeList = serviceTypeList;
+    }
+
+    public String getVoiceLineTest() {
+        return voiceLineTest;
+    }
+
+    public void setVoiceLineTest(String voiceLineTest) {
+        this.voiceLineTest = voiceLineTest;
+    }
+
+    public String getAllowAppt() {
+        return allowAppt;
+    }
+
+    public void setAllowAppt(String allowAppt) {
+        this.allowAppt = allowAppt;
     }
 }

@@ -59,10 +59,16 @@ public class SymptomController {
             return ResponseEntity.ok(SimpleAjaxResponse.of(false,"Empty Symptom Group Code."));
         } else if (StringUtils.isEmpty(symptomFormData.getSymptomDescription())) {
             return ResponseEntity.ok(SimpleAjaxResponse.of(false,"Empty Symptom Description."));
+        } else if (StringUtils.isEmpty(symptomFormData.getVoiceLineTest())) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of(false,"Empty Voice Line Test."));
+        } else if (StringUtils.isEmpty(symptomFormData.getAllowAppt())) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of(false,"Empty Allow Appointment."));
         }
 
         try {
-            String res = sdSymptomFacade.createSymptom(symptomFormData.getSymptomGroupCode(), symptomFormData.getSymptomDescription(), symptomFormData.getServiceTypeList());
+            String res = sdSymptomFacade.createSymptom(symptomFormData.getSymptomGroupCode(),
+                    symptomFormData.getSymptomDescription(), symptomFormData.getServiceTypeList(),
+                    symptomFormData.getVoiceLineTest(), symptomFormData.getAllowAppt());
             return ResponseEntity.ok(SimpleAjaxResponse.of(true, res));
         } catch (DuplicateKeyException e){
             return ResponseEntity.ok(SimpleAjaxResponse.of(false,"Symptom Code already exists."));

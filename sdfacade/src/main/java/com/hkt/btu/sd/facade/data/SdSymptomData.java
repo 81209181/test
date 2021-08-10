@@ -10,6 +10,8 @@ public class SdSymptomData implements DataInterface {
     private String symptomDescription;
     private String symptomGroupCode;
     private String symptomGroupName;
+    private String voiceLineTest;
+    private String allowAppt;
     private LocalDateTime createdate;
     private String createby;
     private LocalDateTime modifydate;
@@ -45,6 +47,22 @@ public class SdSymptomData implements DataInterface {
 
     public void setSymptomGroupName(String symptomGroupName) {
         this.symptomGroupName = symptomGroupName;
+    }
+
+    public String getVoiceLineTest() {
+        return voiceLineTest;
+    }
+
+    public void setVoiceLineTest(String voiceLineTest) {
+        this.voiceLineTest = voiceLineTest;
+    }
+
+    public String getAllowAppt() {
+        return allowAppt;
+    }
+
+    public void setAllowAppt(String allowAppt) {
+        this.allowAppt = allowAppt;
     }
 
     public LocalDateTime getCreatedate() {

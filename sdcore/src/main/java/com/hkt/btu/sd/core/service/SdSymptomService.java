@@ -16,7 +16,8 @@ public interface SdSymptomService {
 
     List<SdSymptomBean> getSymptomGroupList();
 
-    String createSymptom(String symptomGroupCode,String symptomDescription,List<String> serviceTypeList);
+    String createSymptom(String symptomGroupCode,String symptomDescription,List<String> serviceTypeList,
+                         String voiceLineTest, String allowAppt);
 
     Page<SdSymptomBean> searchSymptomList(Pageable pageable, String symptomGroupCode, String symptomDescription,
                                           List<SdSortBean> sortList);
@@ -25,7 +26,8 @@ public interface SdSymptomService {
 
     List<SdSymptomMappingBean> getSymptomMapping(String symptomCode);
 
-    void updateSymptom(String oldSymptomCode, String symptomCode, String symptomGroupCode, String symptomDescription);
+    void updateSymptom(String oldSymptomCode, String symptomCode, String symptomGroupCode, String symptomDescription,
+                       String voiceLineTest, String allowAppt);
 
     void editSymptomMapping(String oldSymptomCode, String symptomCode, List<String> serviceTypeList);
 
