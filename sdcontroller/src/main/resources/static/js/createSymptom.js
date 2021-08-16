@@ -8,7 +8,7 @@ $().ready(function(){
         input['symptomGroupCode'] = $("#symptomGroupCode").val();
         input['symptomDescription'] = $('input[name="symptomDescription"]').val();
         input['voiceLineTest'] = $("#voiceLineTest").val();
-        input['allowAppt'] = $("#allowAppt").val();
+        input['apptMode'] = $("#apptMode").val();
         let serviceTypes = new Array();
         $('input[name="serviceTypeCode"]:checked').each(function (j) {
             if (j >= 0) {

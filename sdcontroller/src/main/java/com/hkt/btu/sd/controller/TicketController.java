@@ -42,6 +42,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequestMapping("/ticket")
@@ -63,6 +64,8 @@ public class TicketController {
     SdUserFacade userFacade;
     @Resource(name = "serviceTypeUserRoleFacade")
     SdServiceTypeUserRoleFacade serviceTypeUserRoleFacade;
+    @Resource(name = "sdSymptomFacade")
+    SdSymptomFacade symptomFacade;
 
     @Resource(name = "norarsApiFacade")
     NorarsApiFacade norarsApiFacade;
@@ -599,5 +602,14 @@ public class TicketController {
                 .headers(headers)
                 .contentType(MediaType.parseMediaType(MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE))
                 .<Object>body(baos.toByteArray());
+    }
+
+    @GetMapping("/getApptMode")
+    public ResponseEntity<?> getApptMode(@RequestParam String symptomCode) {
+        SdSymptomData symptomData = symptomFacade.getSymptomBySymptomCode(symptomCode);
+        if (symptomData != null) {
+            return ResponseEntity.ok(symptomData);
+        }
+        return ResponseEntity.badRequest().body("Get fail.");
     }
 }

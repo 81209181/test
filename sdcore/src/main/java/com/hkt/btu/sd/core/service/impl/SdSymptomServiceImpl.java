@@ -73,10 +73,10 @@ public class SdSymptomServiceImpl implements SdSymptomService {
     @Override
     @Transactional(rollbackFor = DuplicateKeyException.class, propagation = Propagation.REQUIRED)
     public String createSymptom(String symptomGroupCode, String symptomDescription, List<String> serviceTypeList,
-                                String voiceLineTest, String allowAppt){
+                                String voiceLineTest, String apptMode){
         String createby = userService.getCurrentUserUserId();
         String symptomCode = getLastestSymptomCode(symptomGroupCode);
-        sdSymptomMapper.createSymptom(symptomCode, symptomGroupCode, symptomDescription, createby, voiceLineTest, allowAppt);
+        sdSymptomMapper.createSymptom(symptomCode, symptomGroupCode, symptomDescription, createby, voiceLineTest, apptMode);
         LOG.info(String.format("Created symptom %s - %s", symptomCode, symptomDescription));
 
         List<String> filteredServiceTypeList = new ArrayList<>();
@@ -144,9 +144,9 @@ public class SdSymptomServiceImpl implements SdSymptomService {
 
     @Override
     public void updateSymptom(String oldSymptomCode, String symptomCode, String symptomGroupCode,
-                              String symptomDescription, String voiceLineTest, String allowAppt) {
+                              String symptomDescription, String voiceLineTest, String apptMode) {
         String createby = userService.getCurrentUserUserId();
-        sdSymptomMapper.updateSymptom(oldSymptomCode, symptomCode, symptomGroupCode, symptomDescription, createby, voiceLineTest, allowAppt);
+        sdSymptomMapper.updateSymptom(oldSymptomCode, symptomCode, symptomGroupCode, symptomDescription, createby, voiceLineTest, apptMode);
         LOG.info(String.format("Updated symptom %s - %s", symptomCode, symptomDescription));
     }
 

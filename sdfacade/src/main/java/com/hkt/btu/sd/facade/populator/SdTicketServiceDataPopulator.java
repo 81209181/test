@@ -22,6 +22,8 @@ public class SdTicketServiceDataPopulator extends AbstractDataPopulator<SdTicket
             SdSymptomData data = new SdSymptomData();
             data.setSymptomCode(bean.getSymptomCode());
             data.setSymptomDescription(bean.getSymptomDescription());
+            data.setVoiceLineTest(bean.getVoiceLineTest());
+            data.setApptMode(bean.getApptMode());
             return data;
         }).collect(Collectors.toList())));
     }
@@ -29,5 +31,7 @@ public class SdTicketServiceDataPopulator extends AbstractDataPopulator<SdTicket
     public void populate(SdSymptomBean source, SdSymptomData target) {
         target.setSymptomCode(source.getSymptomCode());
         target.setSymptomDescription(source.getSymptomDescription());
+        target.setVoiceLineTest(source.getVoiceLineTest());
+        target.setApptMode(source.getApptMode());
     }
 }

@@ -13,6 +13,7 @@ var ngn3Btn = $('.ngn3Btn'),
     voIpMark = false;
     ticketDetId = "";
     jobId = "";
+    apptMode = "";
 
 $().ready(function(){
 
@@ -28,6 +29,13 @@ $().ready(function(){
     } else if(ticketStatusDesc === "CANCEL"){
          $("#ticketStatusDesc").css("color","red");
     }
+
+    $('.selectpicker').change(function(){
+        let symptomCode = $(this).children('option:selected').val();
+        $.get('/ticket/getApptMode?symptomCode='+symptomCode,function(res){
+            apptMode = res.apptMode;
+        });
+    });
 
     // contact
     $.get('/ticket/contact?ticketMasId='+ticketMasId,function(res){
@@ -75,6 +83,7 @@ $().ready(function(){
                     }
                     for (item of faultsList) {
                         $('#symptomList').find('option[value=' + item.symptomCode + ']').attr('selected', 'selected');
+                        apptMode = item.apptMode;
                     }
                     $.each(j,function(key,value){
                         if (key == 'reportTime' && value != null) {
@@ -241,6 +250,13 @@ $().ready(function(){
     // submit button
     $('#btnTicketSubmit').on('click',function(){
         clearAllMsg();
+        let serviceType = $('input[name=serviceType]').val();
+        if (serviceType === 'VOIP' && apptMode === 'M') {
+            if($('#jobList').children().length === 0) {
+                showErrorMsg("Please Make Appointment!");
+                return;
+            }
+        }
         $('#btnTicketSubmit').attr("disabled", true);
         $.post('/ticket/submit',{'ticketMasId':ticketMasId},function(res){
             if(res.success){

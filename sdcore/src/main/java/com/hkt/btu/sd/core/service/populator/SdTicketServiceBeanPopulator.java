@@ -31,6 +31,8 @@ public class SdTicketServiceBeanPopulator extends AbstractBeanPopulator<SdTicket
             bean.setSymptomDescription(entity.getSymptomDescription());
             bean.setSymptomGroupCode(entity.getSymptomGroupCode());
             bean.setSymptomGroupName(entity.getSymptomGroupName());
+            bean.setVoiceLineTest(entity.getVoiceLineTest());
+            bean.setApptMode(entity.getApptMode());
             return bean;
         }).collect(Collectors.toList())));
     }
@@ -39,6 +41,8 @@ public class SdTicketServiceBeanPopulator extends AbstractBeanPopulator<SdTicket
     public void populate(SdSymptomEntity source, SdSymptomBean target) {
         target.setSymptomCode(source.getSymptomCode());
         target.setSymptomDescription(source.getSymptomDescription());
+        target.setVoiceLineTest(source.getVoiceLineTest());
+        target.setApptMode(source.getApptMode());
     }
 
     public void populate(SdSymptomWorkingPartyMappingEntity source, SdSymptomWorkingPartyMappingBean target) {

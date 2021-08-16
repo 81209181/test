@@ -12,7 +12,7 @@ public class SdUpdateSymptomFormData implements DataInterface {
     private String oldSymptomCode;
     private List<String> serviceTypeList;
     private String voiceLineTest;
-    private String allowAppt;
+    private String apptMode;
 
     public String getSymptomCode() {
         return symptomCode;
@@ -62,11 +62,11 @@ public class SdUpdateSymptomFormData implements DataInterface {
         this.voiceLineTest = voiceLineTest;
     }
 
-    public String getAllowAppt() {
-        return allowAppt;
+    public String getApptMode() {
+        return apptMode;
     }
 
-    public void setAllowAppt(String allowAppt) {
-        this.allowAppt = allowAppt;
+    public void setApptMode(String apptMode) {
+        this.apptMode = apptMode;
     }
 }

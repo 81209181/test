@@ -23,6 +23,8 @@
             <result column="SYMPTOM_DESCRIPTION" property="symptomDescription"/>
             <result column="SYMPTOM_GROUP_CODE" property="symptomGroupCode"/>
             <result column="SYMPTOM_GROUP_NAME" property="symptomGroupName"/>
+            <result column="VOICE_LINE_TEST" property="voiceLineTest" />
+            <result column="APPT_MODE" property="apptMode" />
         </collection>
     </resultMap>
 
@@ -43,6 +45,8 @@
                td.JOB_ID,
                td.REPORT_TIME,
                s.SYMPTOM_DESCRIPTION,
+               s.VOICE_LINE_TEST,
+               s.APPT_MODE,
                td.WFM_COMP_INFO
         from TICKET_DET td
         left join SYMPTOM s
@@ -99,7 +103,9 @@
 
     <select id="getSymptomListByTicketMasId" resultType="com.hkt.btu.sd.core.dao.entity.SdSymptomEntity">
         select s.SYMPTOM_DESCRIPTION as symptomDescription,
-               s.SYMPTOM_CODE as symptomCode
+               s.SYMPTOM_CODE as symptomCode,
+               s.VOICE_LINE_TEST as voiceLineTest,
+               s.APPT_MODE as apptMode
         from TICKET_DET td
                  inner join SERVICE_TYPE st on st.SERVICE_TYPE_CODE = td.SERVICE_TYPE_CODE
                  inner join SYMPTOM_MAPPING sm on sm.SERVICE_TYPE_CODE = st.SERVICE_TYPE_CODE

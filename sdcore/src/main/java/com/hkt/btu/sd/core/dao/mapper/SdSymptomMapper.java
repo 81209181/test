@@ -22,7 +22,7 @@ public interface SdSymptomMapper {
                        @Param("symptomDescription") String symptomDescription,
                        @Param("createby") String createby,
                        @Param("voiceLineTest") String voiceLineTest,
-                       @Param("allowAppt") String allowAppt);
+                       @Param("apptMode") String apptMode);
 
     SdSymptomEntity getSymptomBySymptomCode(@Param("symptomCode") String symptomCode);
 
@@ -49,7 +49,7 @@ public interface SdSymptomMapper {
                           @Param("symptomDescription") String symptomDescription,
                           @Param("createby") String createby,
                           @Param("voiceLineTest") String voiceLineTest,
-                          @Param("allowAppt") String allowAppt);
+                          @Param("apptMode") String apptMode);
 
     List<SdSymptomEntity> getAllSymptomList();
 

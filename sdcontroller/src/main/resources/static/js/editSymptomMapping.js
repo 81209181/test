@@ -18,7 +18,7 @@ function ajaxGetSymptom() {
             $("#symptomDescription").val(data.symptomDescription);
             $("#symptomGroupCode").val(data.symptomGroupCode);
             $("#voiceLineTest").val(data.voiceLineTest);
-            $("#allowAppt").val(data.allowAppt);
+            $("#apptMode").val(data.apptMode);
         },
         error: function (e) {
             var responseError = e.responseText ? e.responseText : "Get failed.";
@@ -36,7 +36,7 @@ function ajaxUpdateSymptom() {
     input["symptomGroupCode"] = $("#symptomGroupCode").val();
     input["symptomDescription"] = $("#symptomDescription").val();
     input['voiceLineTest'] = $("#voiceLineTest").val();
-    input['allowAppt'] = $("#allowAppt").val();
+    input['apptMode'] = $("#apptMode").val();
 
     let serviceTypes = new Array();
     $("input[name='serviceTypeCode']:checked").each(function (j) {

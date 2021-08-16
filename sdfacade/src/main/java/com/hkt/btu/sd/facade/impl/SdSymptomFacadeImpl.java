@@ -58,8 +58,8 @@ public class SdSymptomFacadeImpl implements SdSymptomFacade {
 
     @Override
     public String createSymptom(String symptomGroupCode, String symptomDescription, List<String> serviceTypeList,
-                                String voiceLineTest, String allowAppt) {
-        return sdSymptomService.createSymptom(symptomGroupCode, symptomDescription, serviceTypeList, voiceLineTest, allowAppt);
+                                String voiceLineTest, String apptMode) {
+        return sdSymptomService.createSymptom(symptomGroupCode, symptomDescription, serviceTypeList, voiceLineTest, apptMode);
     }
 
 
@@ -102,7 +102,7 @@ public class SdSymptomFacadeImpl implements SdSymptomFacade {
         String oldSymptomCode = symptomFormData.getOldSymptomCode();
         List<String> serviceTypeList = symptomFormData.getServiceTypeList();
         String voiceLineTest = symptomFormData.getVoiceLineTest();
-        String allowAppt = symptomFormData.getAllowAppt();
+        String apptMode = symptomFormData.getApptMode();
 
         if (StringUtils.isEmpty(symptomCode)) {
             return "Empty Symptom Code.";
@@ -112,12 +112,12 @@ public class SdSymptomFacadeImpl implements SdSymptomFacade {
             return "Empty Symptom Description.";
         } else if (StringUtils.isEmpty(voiceLineTest)) {
             return "Empty Voice Line Test.";
-        } else if (StringUtils.isEmpty(allowAppt)) {
-            return "Empty Allow Appointment.";
+        } else if (StringUtils.isEmpty(apptMode)) {
+            return "Empty Appointment Mode.";
         }
 
         try {
-            sdSymptomService.updateSymptom(oldSymptomCode, symptomCode, symptomGroupCode, symptomDescription, voiceLineTest, allowAppt);
+            sdSymptomService.updateSymptom(oldSymptomCode, symptomCode, symptomGroupCode, symptomDescription, voiceLineTest, apptMode);
         } catch (DuplicateKeyException e){
             return "Symptom Code already exists.";
         }
