@@ -111,11 +111,11 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
         int ticketMasId = ticketService.createQueryTicket(
                 queryTicketRequestData.getCustCode(),
-                removeAllBlank(queryTicketRequestData.getServiceNo()),
+                queryTicketRequestData.getServiceNo(),
                 queryTicketRequestData.getServiceType(),
                 queryTicketRequestData.getSubsId(),
                 queryTicketRequestData.getSearchKey(),
-                removeAllBlank(queryTicketRequestData.getSearchValue()),
+                queryTicketRequestData.getSearchValue(),
                 queryTicketRequestData.getCustName());
 
         if (ServiceSearchEnum.PLATE_ID.getKey().equalsIgnoreCase(queryTicketRequestData.getSearchKey())) {
@@ -937,14 +937,6 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             return errorMsg;
         }
         return null;
-    }
-
-    public String removeAllBlank(String str) {
-        str = StringUtils.deleteWhitespace(str);
-        Pattern p = Pattern.compile("\\s*|\t|\r|\n");
-        Matcher m = p.matcher(str);
-        str = m.replaceAll("");
-        return str;
     }
 
     @Override

@@ -29,6 +29,8 @@ import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class SdTicketServiceImpl implements SdTicketService {
@@ -79,6 +81,15 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Transactional(rollbackFor = Exception.class)
     public int createQueryTicket(String custCode, String serviceNo, String serviceType, String subsId,
                                  String searchKey, String searchValue, String custName) {
+        // conversion
+        serviceNo = removeAllBlank(serviceNo);
+        searchValue = removeAllBlank(searchValue);
+        if (SdServiceTypeBean.SERVICE_TYPE.SMART_METER.equals(serviceType)) {
+            serviceNo = String.valueOf(Integer.parseInt(serviceNo));
+            searchValue = String.valueOf(Integer.parseInt(searchValue));
+        }
+
+        // ticket
         SdTicketMasEntity ticketMasEntity = new SdTicketMasEntity();
         SdUserBean currentUserBean = (SdUserBean) userService.getCurrentUserBean();
         String userId = currentUserBean.getUserId();
@@ -106,6 +117,14 @@ public class SdTicketServiceImpl implements SdTicketService {
         createTicketSysRemarks(ticketMasEntity.getTicketMasId(),
                 String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_OPEN, userId));
         return ticketMasEntity.getTicketMasId();
+    }
+
+    public String removeAllBlank(String str) {
+        str = StringUtils.deleteWhitespace(str);
+        Pattern p = Pattern.compile("\\s*|\t|\r|\n");
+        Matcher m = p.matcher(str);
+        str = m.replaceAll("");
+        return str;
     }
 
     @Override
