@@ -48,8 +48,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class SdTicketFacadeImpl implements SdTicketFacade {
@@ -98,6 +96,9 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     SdTicketUploadFileDataPopulator ticketUploadFileDataPopulator;
     @Resource(name = "closeCodeDataPopulator")
     SdCloseCodeDataPopulator sdCloseCodeDataPopulator;
+    @Resource(name = "outstandingFaultDataPopulator")
+    SdOutstandingFaultDataPopulator outstandingFaultDataPopulator;
+
 
     @Override
     public int createQueryTicket(SdQueryTicketRequestData queryTicketRequestData) {
@@ -1071,5 +1072,14 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         row.add(wfmClearCode);
         row.add(wfmSubClearCode);
         return row;
+    }
+
+    @Override
+    public List<SdOutstandingFaultData> getOutstandingFault() {
+        return ticketService.getOutstandingFault().stream().map(bean -> {
+            SdOutstandingFaultData data = new SdOutstandingFaultData();
+            outstandingFaultDataPopulator.populate(bean, data);
+            return data;
+        }).collect(Collectors.toList());
     }
 }

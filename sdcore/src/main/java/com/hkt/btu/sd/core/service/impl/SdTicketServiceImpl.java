@@ -76,6 +76,10 @@ public class SdTicketServiceImpl implements SdTicketService {
     SdTicketUploadFileBeanPopulator ticketUploadFileBeanPopulator;
     @Resource(name = "closeCodeBeanPopulator")
     SdCloseCodeBeanPopulator sdCloseCodeBeanPopulator;
+    @Resource(name = "outstandingFaultBeanPopulator")
+    SdOutstandingFaultBeanPopulator outstandingFaultBeanPopulator;
+
+    private static String LOGINID = "LOGINID";
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -738,5 +742,17 @@ public class SdTicketServiceImpl implements SdTicketService {
         }
 
         return beanList;
+    }
+
+    @Override
+    public List<SdOutstandingFaultBean> getOutstandingFault() {
+        List<SdOutstandingFaultEntity> entityList = ticketMasMapper.getOutstandingFault();
+        return entityList.stream()
+                .filter(entity -> !entity.getServiceTypeCode().equals(LOGINID))
+                .map(entity -> {
+                    SdOutstandingFaultBean bean = new SdOutstandingFaultBean();
+                    outstandingFaultBeanPopulator.populate(entity, bean);
+                    return bean;
+                }).collect(Collectors.toList());
     }
 }

@@ -89,4 +89,6 @@ public interface SdTicketFacade {
     void fillSheet(HSSFSheet access_request, List<SdTicketExportData> accessRequestDataList);
 
     String getFileName();
+
+    List<SdOutstandingFaultData> getOutstandingFault();
 }

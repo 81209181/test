@@ -184,4 +184,7 @@
 
     <alias name="sdSymptomWorkingPartyMappingDataPopulator" alias="symptomWorkingPartyMappingDataPopulator"/>
     <bean id="sdSymptomWorkingPartyMappingDataPopulator" class="com.hkt.btu.sd.facade.populator.SdSymptomWorkingPartyMappingDataPopulator"/>
+
+    <alias name="sdOutstandingFaultDataPopulator" alias="outstandingFaultDataPopulator"/>
+    <bean id="sdOutstandingFaultDataPopulator" class="com.hkt.btu.sd.facade.populator.SdOutstandingFaultDataPopulator"/>
 </beans>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en"layout:decorate="~{fragments/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+    <script th:inline="javascript">
+        var outstandingFault = '[[${outstandingFaultList}]]';
+    </script>
+    <div id="outstanding_fault" style="width: 600px;height:400px;"></div>
+
+    <script type="text/javascript" th:src="@{/lib/echarts/echarts.min.js(v=${projectBuildtime})}"></script>
+    <script type="text/javascript" th:src="@{/js/dashboard.js(v=${projectBuildtime})}"></script>
+</div>
+</body>
+</html>

@@ -42,7 +42,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequestMapping("/ticket")
@@ -611,5 +610,14 @@ public class TicketController {
             return ResponseEntity.ok(symptomData);
         }
         return ResponseEntity.badRequest().body("Get fail.");
+    }
+
+    @GetMapping("dashboard")
+    public String dashboard(Model model) {
+        List<SdOutstandingFaultData> outstandingFaultList = ticketFacade.getOutstandingFault();
+        if (CollectionUtils.isNotEmpty(outstandingFaultList)) {
+            model.addAttribute("outstandingFaultList", outstandingFaultList);
+        }
+        return "ticket/dashboard";
     }
 }

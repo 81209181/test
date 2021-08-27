@@ -1,5 +1,6 @@
 package com.hkt.btu.sd.core.dao.mapper;
 
+import com.hkt.btu.sd.core.dao.entity.SdOutstandingFaultEntity;
 import com.hkt.btu.sd.core.dao.entity.SdTicketExportEntity;
 import com.hkt.btu.sd.core.dao.entity.SdTicketMasEntity;
 import com.hkt.btu.sd.core.dao.entity.SdTicketStatisticEntity;
@@ -126,4 +127,6 @@ public interface SdTicketMasMapper {
                                                          @Param("ticketType") String ticketType,
                                                          @Param("serviceType") String serviceType,
                                                          @Param("owningRole") List<String> owningRole);
+
+    List<SdOutstandingFaultEntity> getOutstandingFault();
 }

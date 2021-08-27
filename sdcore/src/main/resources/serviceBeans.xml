@@ -200,4 +200,7 @@
     <alias name="sdSymptomWorkingPartyMappingBeanPopulator" alias="symptomWorkingPartyMappingBeanPopulator"/>
     <bean id="sdSymptomWorkingPartyMappingBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdSymptomWorkingPartyMappingBeanPopulator" />
 
+    <alias name="sdOutstandingFaultBeanPopulator" alias="outstandingFaultBeanPopulator"/>
+    <bean id="sdOutstandingFaultBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdOutstandingFaultBeanPopulator"/>
+
 </beans>

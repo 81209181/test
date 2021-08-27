@@ -54,6 +54,11 @@
         <result column="MODIFYBY" property="modifyBy" />
     </resultMap>
 
+    <resultMap id="outstandingFault" type="com.hkt.btu.sd.core.dao.entity.SdOutstandingFaultEntity">
+        <result column="COUNT" property="count"/>
+        <result column="SERVICE_TYPE_CODE" property="serviceTypeCode"/>
+    </resultMap>
+
     <insert id="insertQueryTicket" parameterType="com.hkt.btu.sd.core.dao.entity.SdTicketMasEntity">
         <selectKey keyProperty="ticketMasId" order="BEFORE" resultType="Integer">
             select SEQ_TICKET_MAS_ID.NEXTVAL from dual
@@ -381,5 +386,11 @@
             </if>
         </where>
         order by a.ticket_mas_id
+    </select>
+
+    <select id="getOutstandingFault" resultMap="outstandingFault">
+        select ot.COUNT, st.service_type_code from service_type st left join
+        (select count(1) COUNT, service_type_code from ticket_det d, ticket_mas t where d.ticket_mas_id=t.ticket_mas_id and t.status &lt;&gt; 'CP'
+        group by service_type_code order by service_type_code) ot on st.service_type_code = ot.service_type_code
     </select>
 </mapper>
