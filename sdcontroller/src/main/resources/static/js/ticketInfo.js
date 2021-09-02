@@ -22,12 +22,18 @@ $().ready(function(){
     /******************************************** Load and render each part *******************************************/
     if(ticketStatusDesc === "OPEN"){
         $("#ticketStatusDesc").css("color","blue");
+        $("#btnUpdateContact").hide();
+        $("#btnUpdateService").hide();
+        $("#btnCreateTicketRemarks").hide();
     } else if(ticketStatusDesc === "WORKING"){
-         $("#ticketStatusDesc").css("color","orange");
+        $("#ticketStatusDesc").css("color","orange");
+        $("#btnUpdateService").hide();
     } else if(ticketStatusDesc === "COMPLETE"){
-         $("#ticketStatusDesc").css("color","green");
-    } else if(ticketStatusDesc === "CANCEL"){
-         $("#ticketStatusDesc").css("color","red");
+        $("#ticketStatusDesc").css("color","green");
+        $("#btnUpdateContact").hide();
+        $("#btnUpdateService").hide();
+        $("#btnCreateTicketRemarks").hide();
+        $("#btnTicketSubmit").hide();
     }
 
     $('.selectpicker').change(function(){
