@@ -58,6 +58,10 @@
         <result column="COUNT" property="count"/>
         <result column="SERVICE_TYPE_CODE" property="serviceTypeCode"/>
     </resultMap>
+    <resultMap id="ticketTimePeriodSummary" type="com.hkt.btu.sd.core.dao.entity.SdTicketTimePeriodSummaryEntity">
+        <result column="TIME_PERIOD" property="timePeriod" />
+        <result column="COUNT" property="count" />
+    </resultMap>
 
     <insert id="insertQueryTicket" parameterType="com.hkt.btu.sd.core.dao.entity.SdTicketMasEntity">
         <selectKey keyProperty="ticketMasId" order="BEFORE" resultType="Integer">
@@ -392,5 +396,23 @@
         select ot.COUNT, st.service_type_code from service_type st left join
         (select count(1) COUNT, service_type_code from ticket_det d, ticket_mas t where d.ticket_mas_id=t.ticket_mas_id and t.status &lt;&gt; 'CP'
         group by service_type_code order by service_type_code) ot on st.service_type_code = ot.service_type_code
+    </select>
+    
+    <select id="getTicketTimePeriodSummary" resultMap="ticketTimePeriodSummary">
+        select * from (
+            select SUM(case when wait_time&lt;15 then 1 else 0 end) as within_15,
+                   SUM(case when wait_time>=15 and wait_time&lt;30 then 1 else 0 end) between_15_30,
+                   SUM(case when wait_time>=30 and wait_time&lt;60 then 1 else 0 end) between_30_60,
+                   SUM(case when wait_time>=60 and wait_time&lt;120 then 1 else 0 end) between_1_2,
+                   SUM(case when wait_time>=120 and wait_time&lt;240 then 1 else 0 end) between_2_4,
+                   SUM(case when wait_time>=240  and wait_time&lt;480 then 1 else 0 end) between_4_8,
+                   SUM(case when wait_time>480 then 1 else 0 end) over_8
+            from (select service_type_code, ceil((sysdate-d.createdate)*24*60) as wait_time from ticket_det d, ticket_mas t where d.ticket_mas_id=t.ticket_mas_id and t.status&lt;&gt;'CP')
+        ) unpivot (count for time_period in(within_15, between_15_30, between_30_60, between_1_2, between_2_4, between_4_8, over_8))
+    </select>
+
+    <select id="getAvgFaultCleaningTime" resultType="Double">
+        select avg(complete_time)
+        from (select ceil((t.modifydate-d.createdate)*24*60) as complete_time from ticket_det d, ticket_mas t where d.ticket_mas_id=t.ticket_mas_id and t.status='CP')
     </select>
 </mapper>

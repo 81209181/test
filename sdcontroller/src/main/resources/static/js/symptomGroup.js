@@ -78,6 +78,7 @@ $('#createSymptomGroup').on('click', function() {
     $('#dialogbox').modal('show');
     $('#dialogbox h6').text('Create Symptom Group');
     $('#dialogbox form').find('input[name=symptomGroupCode]').prop('readonly', false);
+    $('#dialogbox form').find('input[name=symptomCodePrefix]').prop('readonly', false);
     $('#submit').attr('data-type', 'create');
 })
 
@@ -92,6 +93,7 @@ function showUpdateModal(symptomGroupCode) {
             $('#dialogbox h6').text('Update Symptom Group');
             $('#dialogbox form').find('input[name=symptomGroupCode]').val(res.symptomGroupCode);
             $('#dialogbox form').find('input[name=symptomGroupName]').val(res.symptomGroupName);
+            $('#dialogbox form').find('input[name=symptomCodePrefix]').val(res.symptomCodePrefix);
             res.roleList.forEach(role => {
                 $('#'+role+'').prop('checked', true);
             })
@@ -103,6 +105,7 @@ function showUpdateModal(symptomGroupCode) {
     })
 
     $('#dialogbox form').find('input[name=symptomGroupCode]').prop('readonly', true);
+    $('#dialogbox form').find('input[name=symptomCodePrefix]').prop('readonly', true);
     $('#submit').attr('data-type', 'update');
 }
 
@@ -111,15 +114,17 @@ $('#dialogbox').on('hidden.bs.modal', function() {
 })
 
 function delSymptomGroup(symptomGroupCode) {
-    $.post('/symptom/symptom-group/delete', {'symptomGroupCode': symptomGroupCode}, function(res){
-        if (res.success){
-            location.reload();
-        } else {
-            showErrorMsg(res.feedback);
-        }
-    }).fail(function (e){
-        let responseError = e.responseText ? e.responseText : "Get failed.";
-        console.log("ERROR : ", responseError);
-        showErrorMsg(responseError);
-    });
+    if (confirm("Are you sure you want to delete this record?")) {
+        $.post('/symptom/symptom-group/delete', {'symptomGroupCode': symptomGroupCode}, function(res){
+            if (res.success){
+                location.reload();
+            } else {
+                showErrorMsg(res.feedback);
+            }
+        }).fail(function (e){
+            let responseError = e.responseText ? e.responseText : "Get failed.";
+            console.log("ERROR : ", responseError);
+            showErrorMsg(responseError);
+        });
+    }
 }

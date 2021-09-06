@@ -179,8 +179,11 @@ public class SymptomController {
     }
 
     @PostMapping("/symptom-group/create")
-    public ResponseEntity<?> createSymptpmGroup(@RequestParam String symptomGroupCode, @RequestParam String symptomGroupName, @RequestParam(required = false) List<String> roleList){
-        String errmsg = sdSymptomFacade.createSymptomGroup(symptomGroupCode, symptomGroupName, roleList);
+    public ResponseEntity<?> createSymptpmGroup(@RequestParam String symptomGroupCode,
+                                                @RequestParam String symptomGroupName,
+                                                @RequestParam String symptomCodePrefix,
+                                                @RequestParam(required = false) List<String> roleList) {
+        String errmsg = sdSymptomFacade.createSymptomGroup(symptomGroupCode, symptomGroupName, symptomCodePrefix, roleList);
         if (null == errmsg){
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         } else {

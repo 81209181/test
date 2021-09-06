@@ -78,6 +78,8 @@ public class SdTicketServiceImpl implements SdTicketService {
     SdCloseCodeBeanPopulator sdCloseCodeBeanPopulator;
     @Resource(name = "outstandingFaultBeanPopulator")
     SdOutstandingFaultBeanPopulator outstandingFaultBeanPopulator;
+    @Resource(name = "ticketTimePeriodSummaryBeanPopulator")
+    SdTicketTimePeriodSummaryBeanPopulator ticketTimePeriodSummaryBeanPopulator;
 
     private static String LOGINID = "LOGINID";
 
@@ -754,5 +756,26 @@ public class SdTicketServiceImpl implements SdTicketService {
                     outstandingFaultBeanPopulator.populate(entity, bean);
                     return bean;
                 }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SdTicketTimePeriodSummaryBean> getTicketTimePeriodSummary() {
+        return ticketMasMapper.getTicketTimePeriodSummary().stream().map(entity -> {
+            SdTicketTimePeriodSummaryBean bean = new SdTicketTimePeriodSummaryBean();
+            ticketTimePeriodSummaryBeanPopulator.populate(entity, bean);
+            return bean;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public String getAvgFaultCleaningTime(){
+        String avgFaultCleaningTime;
+        try {
+            Double time = ticketMasMapper.getAvgFaultCleaningTime();
+            avgFaultCleaningTime = String.format("%.2f", time);
+        } catch (Exception e) {
+            return null;
+        }
+        return avgFaultCleaningTime;
     }
 }

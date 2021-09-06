@@ -7,6 +7,7 @@ public class SdSymptomWorkingPartyMappingEntity extends BaseEntity {
     private String serviceTypeCode;
     private String symptomCode;
     private String workingParty;
+    private String symptomDesc;
 
     public String getServiceTypeCode() {
         return serviceTypeCode;
@@ -30,5 +31,13 @@ public class SdSymptomWorkingPartyMappingEntity extends BaseEntity {
 
     public void setWorkingParty(String workingParty) {
         this.workingParty = workingParty;
+    }
+
+    public String getSymptomDesc() {
+        return symptomDesc;
+    }
+
+    public void setSymptomDesc(String symptomDesc) {
+        this.symptomDesc = symptomDesc;
     }
 }

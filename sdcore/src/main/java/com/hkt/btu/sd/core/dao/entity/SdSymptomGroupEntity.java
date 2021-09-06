@@ -9,6 +9,7 @@ public class SdSymptomGroupEntity extends BaseEntity {
     private String symptomGroupCode;
     private String symptomGroupName;
     private List<SdSymptomGroupRoleMappingEntity> roleList;
+    private SdSymptomCodePrefixEntity symptomCodePrefixEntity;
 
     public String getSymptomGroupCode() {
         return symptomGroupCode;
@@ -32,5 +33,13 @@ public class SdSymptomGroupEntity extends BaseEntity {
 
     public void setRoleList(List<SdSymptomGroupRoleMappingEntity> roleList) {
         this.roleList = roleList;
+    }
+
+    public SdSymptomCodePrefixEntity getSymptomCodePrefixEntity() {
+        return symptomCodePrefixEntity;
+    }
+
+    public void setSymptomCodePrefixEntity(SdSymptomCodePrefixEntity symptomCodePrefixEntity) {
+        this.symptomCodePrefixEntity = symptomCodePrefixEntity;
     }
 }

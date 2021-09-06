@@ -91,4 +91,8 @@ public interface SdTicketFacade {
     String getFileName();
 
     List<SdOutstandingFaultData> getOutstandingFault();
+
+    List<SdTicketTimePeriodSummaryData> getTicketTimePeriodSummary();
+
+    String getAvgFaultCleaningTime();
 }

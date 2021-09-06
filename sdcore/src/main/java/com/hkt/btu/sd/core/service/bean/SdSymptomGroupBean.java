@@ -9,6 +9,7 @@ public class SdSymptomGroupBean extends BaseBean {
     private String symptomGroupCode;
     private String symptomGroupName;
     private List<String> roleList;
+    private String symptomCodePrefix;
 
     public String getSymptomGroupCode() {
         return symptomGroupCode;
@@ -32,5 +33,13 @@ public class SdSymptomGroupBean extends BaseBean {
 
     public void setRoleList(List<String> roleList) {
         this.roleList = roleList;
+    }
+
+    public String getSymptomCodePrefix() {
+        return symptomCodePrefix;
+    }
+
+    public void setSymptomCodePrefix(String symptomCodePrefix) {
+        this.symptomCodePrefix = symptomCodePrefix;
     }
 }

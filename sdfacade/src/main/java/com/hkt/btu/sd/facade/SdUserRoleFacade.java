@@ -30,4 +30,12 @@ public interface SdUserRoleFacade {
     List<List<Object>> getRole4Chart();
 
     List<SdUserRoleData> getCurrentUserUserRole();
+
+    List<SdUserRoleData> getAbstracParenttRole(String roleId);
+
+    List<SdUserPathCtrlData> getActivePathCtrl();
+
+    String createUserRolePathCtrl(String roleId, List<Integer> pathCtrlIdList);
+
+    String delUserRolePathCtrl(String roleId, int pathCtrlId);
 }

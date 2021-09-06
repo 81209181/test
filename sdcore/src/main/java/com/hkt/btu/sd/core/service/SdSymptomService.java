@@ -35,7 +35,7 @@ public interface SdSymptomService {
 
     boolean ifSymptomDescExist(String symptomDescription, String symptomGroupCode);
 
-    void createSymptomGroup(String symptomGroupCode, String symptomGroupName, List<String> roleList);
+    void createSymptomGroup(String symptomGroupCode, String symptomGroupName, String symptomCodePrefix, List<String> roleList);
 
     Optional<SdSymptomGroupBean> getSymptomGroup(String symptomGroupCode);
 

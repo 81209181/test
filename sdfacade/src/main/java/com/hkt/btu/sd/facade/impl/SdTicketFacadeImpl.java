@@ -98,6 +98,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     SdCloseCodeDataPopulator sdCloseCodeDataPopulator;
     @Resource(name = "outstandingFaultDataPopulator")
     SdOutstandingFaultDataPopulator outstandingFaultDataPopulator;
+    @Resource(name = "ticketTimePeriodSummaryDataPopulator")
+    SdTicketTimePeriodSummaryDataPopulator ticketTimePeriodSummaryDataPopulator;
 
 
     @Override
@@ -1081,5 +1083,19 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             outstandingFaultDataPopulator.populate(bean, data);
             return data;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SdTicketTimePeriodSummaryData> getTicketTimePeriodSummary() {
+        return ticketService.getTicketTimePeriodSummary().stream().map(bean -> {
+            SdTicketTimePeriodSummaryData data = new SdTicketTimePeriodSummaryData();
+            ticketTimePeriodSummaryDataPopulator.populate(bean, data);
+            return data;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public String getAvgFaultCleaningTime() {
+        return ticketService.getAvgFaultCleaningTime();
     }
 }

@@ -203,4 +203,6 @@
     <alias name="sdOutstandingFaultBeanPopulator" alias="outstandingFaultBeanPopulator"/>
     <bean id="sdOutstandingFaultBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdOutstandingFaultBeanPopulator"/>
 
+    <alias name="sdTicketTimePeriodSummaryBeanPopulator" alias="ticketTimePeriodSummaryBeanPopulator"/>
+    <bean id="sdTicketTimePeriodSummaryBeanPopulator" class="com.hkt.btu.sd.core.service.populator.SdTicketTimePeriodSummaryBeanPopulator"/>
 </beans>

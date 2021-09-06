@@ -2,6 +2,7 @@ package com.hkt.btu.sd.core.service.impl;
 
 import com.hkt.btu.sd.core.dao.entity.SdServiceTypeEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSortEntity;
+import com.hkt.btu.sd.core.dao.entity.SdSymptomCodePrefixEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomGroupRoleMappingEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomMappingEntity;
@@ -230,9 +231,10 @@ public class SdSymptomServiceImpl implements SdSymptomService {
 
     @Override
     @Transactional
-    public void createSymptomGroup(String symptomGroupCode, String symptomGroupName, List<String> roleList) {
+    public void createSymptomGroup(String symptomGroupCode, String symptomGroupName, String symptomCodePrefix, List<String> roleList) {
         String userId = userService.getCurrentUserUserId();
         sdSymptomMapper.createSymptomGroup(symptomGroupCode, symptomGroupName, userId, userId);
+        sdSymptomMapper.createSymptomCodePrefix(symptomGroupCode, symptomCodePrefix, userId, userId);
         if (CollectionUtils.isNotEmpty(roleList)) {
             sdSymptomMapper.createSymptomGroupRoleMapping(symptomGroupCode, roleList, userId, userId);
         }
@@ -280,6 +282,7 @@ public class SdSymptomServiceImpl implements SdSymptomService {
     public void delSymptomGroup(String symptomGroupCode) {
         sdSymptomMapper.delSymptomGroup(symptomGroupCode);
         sdSymptomMapper.delSymptomGroupRoleMappingBatch(symptomGroupCode,null);
+        sdSymptomMapper.delSymptomCodePrefixByGroupCode(symptomGroupCode);
         LOG.info("Deleted a record from SYMPTOM_GROUP where SYMPTOM_GROUP_CODE = "+symptomGroupCode);
     }
 

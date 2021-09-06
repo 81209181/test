@@ -189,4 +189,46 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
             return data;
         }).collect(Collectors.toList());
     }
+
+
+    @Override
+    public List<SdUserRoleData> getAbstracParenttRole(String roleId) {
+        if (StringUtils.isEmpty(roleId)) {
+            return null;
+        }
+
+        return sdPathCtrlService.getAbstractParentRole(roleId).stream().map(bean -> {
+            SdUserRoleData data = new SdUserRoleData();
+            sdUserRoleDataPopulator.populate(bean, data);
+            return data;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SdUserPathCtrlData> getActivePathCtrl() {
+        return sdPathCtrlService.getActivePathCtrl().stream().map(bean -> {
+            SdUserPathCtrlData data = new SdUserPathCtrlData();
+            sdUserRolePathCtrlPopulator.populate(bean, data);
+            return data;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public String createUserRolePathCtrl(String roleId, List<Integer> pathCtrlIdList) {
+        if (StringUtils.isEmpty(roleId)) {
+            return "Please select on a Role ID.";
+        }
+        if (CollectionUtils.isEmpty(pathCtrlIdList)) {
+            return "Please select at lease a path";
+        }
+        return sdPathCtrlService.createUserRolePathCtrl(roleId, pathCtrlIdList);
+    }
+
+    @Override
+    public String delUserRolePathCtrl(String roleId, int pathCtrlId) {
+        if (StringUtils.isEmpty(roleId)) {
+            return "Please input a Role Id";
+        }
+        return sdPathCtrlService.delUserRolePathCtrl(roleId, pathCtrlId);
+    }
 }

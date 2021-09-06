@@ -18,7 +18,13 @@ function initTable() {
             }
         },
         columns: [
-            {data: 'symptomCode', name: 'symptomCode'},
+            {
+                data: 'symptomCode',
+                name: 'symptomCode',
+                render: function(data,type,row,meta) {
+                    return "<div title='"+row['symptomDesc']+"'>"+data+"</div>";
+                }
+            },
             {data: 'workingParty', name: 'workingParty'},
             {data: 'serviceTypeCode', name: 'serviceTypeCode'},
         ],
@@ -116,15 +122,17 @@ function showUpdateModal(symptomCode) {
 }
 
 function delSymptomGroup(symptomCode) {
-    $.post('/symptom/symptom-workingparty-mapping/delete', {'symptomCode': symptomCode}, function(res){
-        if (res.success){
-            location.reload();
-        } else {
-            showErrorMsg(res.feedback);
-        }
-    }).fail(function (e){
-        let responseError = e.responseText ? e.responseText : "Get failed.";
-        console.log("ERROR : ", responseError);
-        showErrorMsg(responseError);
-    });
+    if (confirm("Are you sure you want to delete this record?")) {
+        $.post('/symptom/symptom-workingparty-mapping/delete', {'symptomCode': symptomCode}, function(res){
+            if (res.success){
+                location.reload();
+            } else {
+                showErrorMsg(res.feedback);
+            }
+        }).fail(function (e){
+            let responseError = e.responseText ? e.responseText : "Get failed.";
+            console.log("ERROR : ", responseError);
+            showErrorMsg(responseError);
+        });
+    }
 }

@@ -67,6 +67,13 @@
                                 </div>
                             </div>
                             <div class="col-md-12 form-inline pt-2">
+                                <label class="col-form-label justify-content-start" style="width: 170px">Symptom Code Prefix:</label>
+                                <input type="text" class="form-control col-md-7" name="symptomCodePrefix" required>
+                                <div class="invalid-feedback">
+                                    Please enter a symptom code prefix in the textarea.
+                                </div>
+                            </div>
+                            <div class="col-md-12 form-inline pt-2">
                                 <label class="col-form-label justify-content-start">User Role:</label>
                                 <div class="d-block">
                                     <div class="form-check form-check-inline" th:each="item : ${allUserRole}" style="display: inline-flex">

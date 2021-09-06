@@ -32,7 +32,7 @@ public interface SdSymptomFacade {
 
     boolean ifSymptomDescExist(SdSymptomData symptomData);
 
-    String createSymptomGroup(String symptomGroupCode, String symptomGroupName, List<String> roleList);
+    String createSymptomGroup(String symptomGroupCode, String symptomGroupName, String symptomCodePrefix, List<String> roleList);
 
     Optional<SdSymptomGroupBean> getSymptomGroup(String symptomGroupCode);
 

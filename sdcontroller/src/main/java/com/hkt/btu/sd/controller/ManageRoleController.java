@@ -6,7 +6,9 @@ import com.hkt.btu.sd.facade.SdServiceTypeFacade;
 import com.hkt.btu.sd.facade.SdUserRoleFacade;
 import com.hkt.btu.sd.facade.data.SdUserPathCtrlData;
 import com.hkt.btu.sd.facade.data.SdUserRoleData;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,8 +44,19 @@ public class ManageRoleController {
 
     @GetMapping("/edit-user-role")
     public String editUserRole(@RequestParam String roleId, Model model) {
+        List<SdUserRoleData> abstractRoleList = null;
+        List<SdUserPathCtrlData> activePathCtrlList = null;
+
         if (StringUtils.isNotEmpty(roleId)) {
             model.addAttribute("roleId", roleId);
+            abstractRoleList = userRoleFacade.getAbstracParenttRole(roleId);
+            activePathCtrlList = userRoleFacade.getActivePathCtrl();
+        }
+        if (CollectionUtils.isNotEmpty(abstractRoleList)) {
+            model.addAttribute("abstractRoleList", abstractRoleList);
+        }
+        if (CollectionUtils.isNotEmpty(activePathCtrlList)) {
+            model.addAttribute("activePathCtrlList", activePathCtrlList);
         }
         return "admin/manageRole/editUserRole";
     }
@@ -97,5 +110,23 @@ public class ManageRoleController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @PostMapping("/edit-user-role/createUserRoleCtrl")
+    public ResponseEntity<?> createUserRolePathCtrl(@RequestParam String roleId, @RequestParam List<Integer> pathCtrlIdList) {
+        String errMsg = userRoleFacade.createUserRolePathCtrl(roleId, pathCtrlIdList);
+        if (errMsg != null) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of(false, errMsg));
+        }
+        return ResponseEntity.ok(SimpleAjaxResponse.of());
+    }
+
+    @PostMapping("/edit-user-role/delUserRoleCtrl")
+    public ResponseEntity<?> delUserRolePathCtrl(@RequestParam String roleId, @RequestParam int pathCtrlId) {
+        String errMsg = userRoleFacade.delUserRolePathCtrl(roleId, pathCtrlId);
+        if (null != errMsg) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of(false, errMsg));
+        }
+        return ResponseEntity.ok(SimpleAjaxResponse.of());
     }
 }

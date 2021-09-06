@@ -19,5 +19,6 @@ public class SdSymptomGroupBeanPopulator extends AbstractBeanPopulator<SdSymptom
         target.setCreatedate(source.getCreateDate());
         target.setModifyby(source.getModifyBy());
         target.setModifydate(source.getCreateDate());
+        target.setSymptomCodePrefix(source.getSymptomCodePrefixEntity().getSymtomCodePrefix());
     }
 }
