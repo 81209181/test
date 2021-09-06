@@ -199,16 +199,19 @@ public class SdSymptomFacadeImpl implements SdSymptomFacade {
     }
 
     @Override
-    public String createSymptomGroup(String symptomGroupCode, String symptomGroupName, List<String> roleList) {
+    public String createSymptomGroup(String symptomGroupCode, String symptomGroupName, String symptomCodePrefix, List<String> roleList) {
         if (StringUtils.isEmpty(symptomGroupCode)) {
             return "Please input symptom group code.";
         }
         if (StringUtils.isEmpty(symptomGroupName)) {
             return "Please input symptom group name.";
         }
+        if (StringUtils.isEmpty(symptomCodePrefix)) {
+            return "Please input symptom code prefix.";
+        }
 
         try {
-            sdSymptomService.createSymptomGroup(symptomGroupCode, symptomGroupName, roleList);
+            sdSymptomService.createSymptomGroup(symptomGroupCode, symptomGroupName, symptomCodePrefix, roleList);
         } catch (DuplicateKeyException e){
             return "Symptom group already exists.";
         }
@@ -269,7 +272,7 @@ public class SdSymptomFacadeImpl implements SdSymptomFacade {
             return "Please input working party.";
         }
         if (StringUtils.isEmpty(serviceTypeCode)) {
-            return "Please select on service type code.";
+            return "Please select on a service type code.";
         }
         try {
             sdSymptomService.createSymptomWorkingPartyMapping(symptomCode, workingParty, serviceTypeCode);
@@ -290,7 +293,7 @@ public class SdSymptomFacadeImpl implements SdSymptomFacade {
             return "Please input working party.";
         }
         if (StringUtils.isEmpty(serviceTypeCode)) {
-            return "Please select on service type code.";
+            return "Please select on a service type code.";
         }
 
         Optional<SdSymptomWorkingPartyMappingBean> optional = sdSymptomService.getSymptomWorkingPartyMapping(symptomCode);

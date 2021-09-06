@@ -4,6 +4,7 @@ import com.hkt.btu.sd.core.dao.entity.SdOutstandingFaultEntity;
 import com.hkt.btu.sd.core.dao.entity.SdTicketExportEntity;
 import com.hkt.btu.sd.core.dao.entity.SdTicketMasEntity;
 import com.hkt.btu.sd.core.dao.entity.SdTicketStatisticEntity;
+import com.hkt.btu.sd.core.dao.entity.SdTicketTimePeriodSummaryEntity;
 import com.hkt.btu.sd.core.dao.entity.StatusSummaryEntity;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -129,4 +130,8 @@ public interface SdTicketMasMapper {
                                                          @Param("owningRole") List<String> owningRole);
 
     List<SdOutstandingFaultEntity> getOutstandingFault();
+
+    List<SdTicketTimePeriodSummaryEntity> getTicketTimePeriodSummary();
+
+    Double getAvgFaultCleaningTime();
 }

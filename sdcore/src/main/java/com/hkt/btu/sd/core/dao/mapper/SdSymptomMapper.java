@@ -1,7 +1,7 @@
 package com.hkt.btu.sd.core.dao.mapper;
 
 import com.hkt.btu.sd.core.dao.entity.SdSortEntity;
-import com.hkt.btu.sd.core.dao.entity.SdSymptomCodePerfixEntity;
+import com.hkt.btu.sd.core.dao.entity.SdSymptomCodePrefixEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomGroupEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomGroupRoleMappingEntity;
@@ -58,7 +58,7 @@ public interface SdSymptomMapper {
 
     List<SdSymptomEntity> getSymptomByGroupCode(@Param("symptomGroupCode") String symptomGroupCode);
 
-    SdSymptomCodePerfixEntity getSymptomCodePrefixByGroup(@Param("symptomGroupCode") String symptomGroupCode);
+    SdSymptomCodePrefixEntity getSymptomCodePrefixByGroup(@Param("symptomGroupCode") String symptomGroupCode);
 
     void createSymptomGroup(@Param("symptomGroupCode") String symptomGroupCode,
                             @Param("symptomGroupName") String symptomGroupName,
@@ -98,4 +98,11 @@ public interface SdSymptomMapper {
     SdSymptomWorkingPartyMappingEntity getSymptomWorkingPartyMapping(@Param("symptomCode") String symptomCode);
 
     void delSymptomWorkingPartyMapping(@Param("symptomCode") String symptomCode);
+
+    void createSymptomCodePrefix(@Param("symptomGroupCode") String symptomGroupCode,
+                                 @Param("symptomCodePrefix") String symptomCodePrefix,
+                                 @Param("createby") String createby,
+                                 @Param("modifyby") String modifyby);
+
+    void delSymptomCodePrefixByGroupCode(@Param("symptomGroupCode") String symptomGroupCode);
 }

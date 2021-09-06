@@ -4,12 +4,17 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>User Role</title>
+    <style>
+        .display-feedBack {
+            display: block;
+        }
+    </style>
 </head>
 <body>
 <div layout:fragment="content" th:remove="tag">
 
     <h1 style="padding-top:3%">Edit User Role</h1>
-    <form style="width:80%">
+    <form style="width:100%">
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label >Role ID</label>
@@ -42,20 +47,61 @@
                 </select>
             </div>
         </div>
-        <button type="button" class="btn btn-lg btn-primary float-right mr-sm-2" id="btnUpdateUserRole"><i class="far fa-save"></i> Save</button>
+        <div class="d-flex form-row flex-row-reverse">
+            <button type="button" class="btn btn-lg btn-primary mr-sm-2" id="btnUpdateUserRole"><i class="far fa-save"></i> Save</button>
+        </div>
     </form>
-    <h1 style="padding-top:5%">Path Control</h1>
+    <div style="margin: 5% 0 20px 0" class="d-flex align-items-center">
+        <h1>Path Control</h1>
+        <button id="addPathCtrlBtn" type="button" class="btn btn-success btn-sm mr-sm-2" style="margin-left: 20px; height: 31px"><i class="fa fa-plus"></i> Add</button>
+    </div>
     <table id="pathCtrlTable" class="display">
         <thead>
         <tr>
             <th>Role ID</th>
             <th>Path</th>
             <th>Description</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
         </tbody>
     </table>
+
+    <div id="dialogbox" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-white bg-info h-80">
+                    <h6 class="modal-title">Create Path Control</h6>
+                    <button type="button" class="close text-white" data-dismiss="modal">x</button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation" novalidate>
+                        <div class="form-row">
+                            <div class="col-md-12 form-inline pt-2">
+                                <label class="col-form-label justify-content-start" style="width: 65px">Role ID:</label>
+                                <select class="form-control custom-select" style="width: calc(100% - 65px) !important;" name="roleId" data-style="select-bottom" required>
+                                    <option value="">Choose role</option>
+                                    <option th:each="role : ${abstractRoleList}" th:text="${role.roleId}+' ---- '+${role.roleDesc}" th:value="${role.roleId}"></option>
+                                </select>
+                                <div class="invalid-feedback">Please select on a role.</div>
+                            </div>
+                            <div class="col-md-12 form-inline pt-2">
+                                <label class="col-form-label justify-content-start" style="width: 65px">Path:</label>
+                                <select class="selectpicker" multiple data-selected-text-format="count>3" data-width="calc(100% - 65px)" name="pathCtrlIdList" data-style="select-bottom" required>
+                                    <option th:each="pathCtrl : ${activePathCtrlList}" th:text="${pathCtrl.path}" th:value="${pathCtrl.pathCtrlId}"></option>
+                                </select>
+                                <div class="invalid-feedback">Please select on a path.</div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info float-right" id="submit" onclick="submit()">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script type="text/javascript" th:src="@{/js/editUserRole.js(v=${projectBuildtime})}"></script>
 </div>
 </body>

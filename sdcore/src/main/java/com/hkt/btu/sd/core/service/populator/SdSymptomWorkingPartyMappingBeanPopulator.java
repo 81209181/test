@@ -9,5 +9,6 @@ public class SdSymptomWorkingPartyMappingBeanPopulator extends AbstractBeanPopul
         target.setSymptomCode(source.getSymptomCode());
         target.setWorkingParty(source.getWorkingParty());
         target.setServiceTypeCode(source.getServiceTypeCode());
+        target.setSymptomDesc(source.getSymptomDesc());
     }
 }

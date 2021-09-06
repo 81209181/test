@@ -38,9 +38,7 @@
     </select>
 
     <select id="getParentRoleByRoleId" resultMap="SdUserRoleEntity">
-        SELECT *
-        FROM USER_ROLE
-        WHERE ROLE_ID = #{roleId}
+        select * from USER_ROLE start with ROLE_ID = #{roleId} connect by prior PARENT_ROLE_ID = ROLE_ID order by ROLE_ID
     </select>
 
     <select id="getAllUserRole" resultMap="SdUserRoleEntity">

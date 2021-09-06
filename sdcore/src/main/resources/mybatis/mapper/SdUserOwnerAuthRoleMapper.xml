@@ -12,5 +12,20 @@
     <select id="getUserOwnerAuthRole" resultMap="userOwnerAuthRole">
         select * from user_owner_auth_role_mapping where owner_id = #{ownerId}
     </select>
+    
+    <select id="getUserOwnerAuthRoleBykey" resultMap="userOwnerAuthRole">
+        select * from USER_OWNER_AUTH_ROLE_MAPPING
+        where OWNER_ID = #{ownerId} and AUTH_ROLE_ID = #{authRoleId} and SERVICE_TYPE_CODE = #{serviceTypeCode}
+    </select>
+
+    <insert id="createUserOwnerAuthRole">
+        insert into USER_OWNER_AUTH_ROLE_MAPPING(OWNER_ID, AUTH_ROLE_ID, SERVICE_TYPE_CODE)
+        values (#{ownerId}, #{authRoleId}, #{serviceTypeCode})
+    </insert>
+
+    <delete id="delUserOwnerAuthRole">
+        delete from USER_OWNER_AUTH_ROLE_MAPPING
+        where OWNER_ID = #{ownerId} and AUTH_ROLE_ID = #{authRoleId} and SERVICE_TYPE_CODE = #{serviceTypeCode}
+    </delete>
 
 </mapper>

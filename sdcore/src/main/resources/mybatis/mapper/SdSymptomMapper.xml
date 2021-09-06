@@ -29,9 +29,10 @@
         <result column="SERVICE_TYPE_CODE" property="serviceTypeCode" />
         <result column="SYMPTOM_CODE" property="symptomCode" />
         <result column="WORKINGPARTY" property="workingParty" />
+        <result column="SYMPTOM_DESCRIPTION" property="symptomDesc"/>
     </resultMap>
 
-    <resultMap id="SdSymptomCodePerfixEntity" type="com.hkt.btu.sd.core.dao.entity.SdSymptomCodePerfixEntity">
+    <resultMap id="SdSymptomCodePrefixEntity" type="com.hkt.btu.sd.core.dao.entity.SdSymptomCodePrefixEntity">
         <result column="SYMPTOM_GROUP_CODE" property="symptomGroupCode"/>
         <result column="SYMPTOM_CODE_PREFIX" property="symtomCodePrefix"/>
     </resultMap>
@@ -44,6 +45,9 @@
     <resultMap id="SymptomGroupEntity" type="com.hkt.btu.sd.core.dao.entity.SdSymptomGroupEntity">
         <result column="SYMPTOM_GROUP_CODE" property="symptomGroupCode"/>
         <result column="SYMPTOM_GROUP_NAME" property="symptomGroupName"/>
+        <association property="symptomCodePrefixEntity" column="SYMPTOM_GROUP_CODE"
+                     javaType="com.hkt.btu.sd.core.dao.entity.SdSymptomCodePrefixEntity"
+                     select="com.hkt.btu.sd.core.dao.mapper.SdSymptomMapper.getSymptomCodePrefixByGroup"/>
         <collection property="roleList" column="SYMPTOM_GROUP_CODE" javaType="ArrayList"
                     ofType="com.hkt.btu.sd.core.dao.entity.SdSymptomGroupRoleMappingEntity"
                     select="com.hkt.btu.sd.core.dao.mapper.SdSymptomMapper.getSymptomGroupRoleMappingByCode">
@@ -194,7 +198,7 @@
     </select>
 
 
-    <select id="getSymptomCodePrefixByGroup" resultMap="SdSymptomCodePerfixEntity">
+    <select id="getSymptomCodePrefixByGroup" resultMap="SdSymptomCodePrefixEntity">
         select SYMPTOM_GROUP_CODE,SYMPTOM_CODE_PREFIX from SYMPTOM_CODE_PREFIX where SYMPTOM_GROUP_CODE = #{symptomGroupCode}
     </select>
 
@@ -239,7 +243,8 @@
     </delete>
 
     <select id="getSymptomWorkingPartyMappingList" resultMap="SymptomWorkingPartyMappingEntity">
-        select * from SYMPTOM_WORKINGPARTY_MAPPING
+        select swm.SERVICE_TYPE_CODE, swm.SYMPTOM_CODE, swm.WORKINGPARTY, s.SYMPTOM_DESCRIPTION
+        from SYMPTOM_WORKINGPARTY_MAPPING swm inner join SYMPTOM s on swm.SYMPTOM_CODE = s.SYMPTOM_CODE
     </select>
 
     <insert id="createSymptomWorkingPartyMapping">
@@ -259,5 +264,14 @@
 
     <delete id="delSymptomWorkingPartyMapping">
         delete SYMPTOM_WORKINGPARTY_MAPPING where SYMPTOM_CODE = #{symptomCode}
+    </delete>
+
+    <insert id="createSymptomCodePrefix">
+        insert into SYMPTOM_CODE_PREFIX(SYMPTOM_GROUP_CODE, SYMPTOM_CODE_PREFIX, CREATEBY, MODIFYBY)
+        values(#{symptomGroupCode}, #{symptomCodePrefix}, #{createby}, #{modifyby})
+    </insert>
+
+    <delete id="delSymptomCodePrefixByGroupCode">
+        delete SYMPTOM_CODE_PREFIX where SYMPTOM_GROUP_CODE = #{symptomGroupCode}
     </delete>
 </mapper>

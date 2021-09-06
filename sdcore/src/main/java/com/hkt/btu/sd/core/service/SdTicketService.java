@@ -84,4 +84,8 @@ public interface SdTicketService {
     List<SdTicketExportBean> searchTicketListForExport(LocalDate createDateFrom, LocalDate createDateTo, String status, LocalDate completeDateFrom, LocalDate completeDateTo, String createBy, String ticketMasId, String custCode, String serviceNumber, String ticketType, String serviceType, List<String> owningRole);
 
     List<SdOutstandingFaultBean> getOutstandingFault();
+
+    List<SdTicketTimePeriodSummaryBean> getTicketTimePeriodSummary();
+
+    String getAvgFaultCleaningTime();
 }

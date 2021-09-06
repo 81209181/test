@@ -6,6 +6,7 @@ public class SdSymptomWorkingPartyMappingData implements DataInterface {
     private String symptomCode;
     private String workingParty;
     private String serviceTypeCode;
+    private String symptomDesc;
 
     public String getSymptomCode() {
         return symptomCode;
@@ -29,5 +30,13 @@ public class SdSymptomWorkingPartyMappingData implements DataInterface {
 
     public void setServiceTypeCode(String serviceTypeCode) {
         this.serviceTypeCode = serviceTypeCode;
+    }
+
+    public String getSymptomDesc() {
+        return symptomDesc;
+    }
+
+    public void setSymptomDesc(String symptomDesc) {
+        this.symptomDesc = symptomDesc;
     }
 }

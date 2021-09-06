@@ -615,8 +615,16 @@ public class TicketController {
     @GetMapping("dashboard")
     public String dashboard(Model model) {
         List<SdOutstandingFaultData> outstandingFaultList = ticketFacade.getOutstandingFault();
+        List<SdTicketTimePeriodSummaryData> ticketTimePeriodSummaryList = ticketFacade.getTicketTimePeriodSummary();
+        String avgFaultCleaningTime = ticketFacade.getAvgFaultCleaningTime();
         if (CollectionUtils.isNotEmpty(outstandingFaultList)) {
             model.addAttribute("outstandingFaultList", outstandingFaultList);
+        }
+        if (CollectionUtils.isNotEmpty(ticketTimePeriodSummaryList)) {
+            model.addAttribute("ticketTimePeriodSummaryList", ticketTimePeriodSummaryList);
+        }
+        if (StringUtils.isNotBlank(avgFaultCleaningTime)) {
+            model.addAttribute("avgFaultCleaningTime", avgFaultCleaningTime);
         }
         return "ticket/dashboard";
     }

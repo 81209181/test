@@ -187,4 +187,8 @@
 
     <alias name="sdOutstandingFaultDataPopulator" alias="outstandingFaultDataPopulator"/>
     <bean id="sdOutstandingFaultDataPopulator" class="com.hkt.btu.sd.facade.populator.SdOutstandingFaultDataPopulator"/>
+
+    <alias name="sdTicketTimePeriodSummaryDataPopulator" alias="ticketTimePeriodSummaryDataPopulator"/>
+    <bean id="sdTicketTimePeriodSummaryDataPopulator" class="com.hkt.btu.sd.facade.populator.SdTicketTimePeriodSummaryDataPopulator"/>
+
 </beans>

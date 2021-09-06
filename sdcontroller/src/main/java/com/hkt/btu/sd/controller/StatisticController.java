@@ -1,9 +1,7 @@
 package com.hkt.btu.sd.controller;
 
 import com.hkt.btu.sd.facade.SdStatisticFacade;
-import com.hkt.btu.sd.facade.data.SdAuditTrailStatisticData;
 import com.hkt.btu.sd.facade.data.SdStatisticData;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ObjectUtils;
@@ -11,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 @Controller
 @RequestMapping("/system/statistic")

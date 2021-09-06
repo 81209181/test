@@ -19,6 +19,13 @@
         <result column="ROLE_DESC" property="roleDesc"/>
     </resultMap>
 
+    <resultMap id="SdPathCtrlEntity" type="com.hkt.btu.sd.core.dao.entity.SdUserRolePathCtrlEntity">
+        <result column="PATH_CTRL_ID" property="pathCtrlId"/>
+        <result column="PATH" property="path"/>
+        <result column="STATUS" property="status"/>
+        <result column="DESCRIPTION" property="description"/>
+    </resultMap>
+
     <select id="getByStatus" resultMap="SdUserRolePathCtrlEntity">
         SELECT
         pc.PATH_CTRL_ID,
@@ -40,6 +47,7 @@
 
     <select id="getParentRolePathByRoleId" resultMap="SdUserRolePathCtrlEntity">
         SELECT
+        pc.PATH_CTRL_ID,
         pc.PATH,
         pc.STATUS,
         pc.DESCRIPTION,
@@ -57,4 +65,24 @@
         ON ur.ROLE_ID = urpc.ROLE_ID
         ORDER BY urpc.ROLE_ID, pc.PATH
     </select>
+    
+    <select id="getActivePathCtrl" resultMap="SdPathCtrlEntity">
+        select PATH_CTRL_ID,PATH,STATUS,DESCRIPTION from PATH_CTRL where STATUS = 'A'
+    </select>
+
+    <select id="getPathCtrlById" resultMap="SdPathCtrlEntity">
+        select * from PATH_CTRL where PATH_CTRL_ID = #{pathCtrlId}
+    </select>
+
+    <insert id="createUserRolePathCtrl">
+        insert all
+        <foreach item="pathCtrlId" index="index" collection="pathCtrlIdList">
+            into USER_ROLE_PATH_CTRL(ROLE_ID, PATH_CTRL_ID, CREATEBY) values (#{roleId}, #{pathCtrlId}, #{createby})
+        </foreach>
+        select 1 from DUAL
+    </insert>
+
+    <delete id="delUserRolePathCtrl">
+        delete USER_ROLE_PATH_CTRL where ROLE_ID = #{roleId} and PATH_CTRL_ID = #{pathCtrlId}
+    </delete>
 </mapper>
