@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>List Ticket Role</title>
+    <style>
+        .form-label {
+            width: 135px
+        }
+        .form-input {
+            width: calc(100% - 135px) !important;
+        }
+        @media (min-width: 576px) {
+            .modal-dialog {
+                max-width: 550px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+    <div style="margin: 3% 0 20px 0" class="d-flex align-items-center">
+        <h1>User Owner Auth Role Mapping</h1>
+        <button type="button" class="btn btn-success btn-sm mr-sm-2 addBtn" data-ref="createUserOwnerAuthRole" style="margin-left: 20px; height: 31px"><i class="fas fa-plus"></i> Add</button>
+    </div>
+    <table id="userOwnerAuthRoleTable" class="display">
+        <thead>
+        <tr>
+            <th>Owner ID</th>
+            <th>Auth Role ID</th>
+            <th>Service Type Code</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <div style="margin: 5% 0 20px 0" class="d-flex align-items-center">
+        <h1>User Role Workgroup</h1>
+        <button type="button" class="btn btn-success btn-sm mr-sm-2 addBtn" data-ref="createUserRoleWorkgroup" style="margin-left: 20px; height: 31px"><i class="fas fa-plus"></i> Add</button>
+    </div>
+    <table id="userRoleWorkgroupTable" class="display">
+        <thead>
+        <tr>
+            <th>Role ID</th>
+            <th>Workgroup</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <div id="createUserOwnerAuthRole" class="modal fade" data-ref="userOwnerAuthRoleTable">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-white bg-info h-80">
+                    <h6 class="modal-title">Create User Owner Auth Role Mapping</h6>
+                    <button type="button" class="close text-white" data-dismiss="modal">x</button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation" novalidate>
+                        <div class="form-row">
+                            <div class="col-md-12 form-inline pt-2">
+                                <label class="col-form-label justify-content-start form-label">Owner ID:</label>
+                                <select class="form-control custom-select form-input" name="ownerId" data-style="select-bottom" required>
+                                    <option value="">Choose role</option>
+                                    <option th:each="role : ${userOwnerAuthRoleList}" th:text="${role.roleId}+' --- '+${role.roleDesc}" th:value="${role.roleId}"></option>
+                                </select>
+                                <div class="invalid-feedback">Please select on a role.</div>
+                            </div>
+                            <div class="col-md-12 form-inline pt-2">
+                                <label class="col-form-label justify-content-start form-label">Auth Role ID:</label>
+                                <select class="form-control custom-select form-input" name="authRoleId" data-style="select-bottom" required>
+                                    <option value="">Choose auth role</option>
+                                    <option th:each="role : ${userOwnerAuthRoleList}" th:text="${role.roleId}+' --- '+${role.roleDesc}" th:value="${role.roleId}"></option>
+                                </select>
+                                <div class="invalid-feedback">Please select on a role.</div>
+                            </div>
+                            <div class="col-md-12 form-inline pt-2">
+                                <label class="col-form-label justify-content-start form-label">Service Type Code:</label>
+                                <select class="form-control custom-select form-input" name="serviceTypeCode" data-style="select-bottom" required>
+                                    <option value="">Choose workgroup</option>
+                                    <option th:each="serviceType : ${serviceTypeList}" th:text="${serviceType.serviceTypeName}" th:value="${serviceType.serviceTypeCode}"></option>
+                                </select>
+                                <div class="invalid-feedback">Please select on a service type.</div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info float-right" onclick="submit(this)">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="createUserRoleWorkgroup" class="modal fade" data-ref="userRoleWorkgroupTable">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-white bg-info h-80">
+                    <h6 class="modal-title">Create User Role Workgroup</h6>
+                    <button type="button" class="close text-white" data-dismiss="modal">x</button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation" novalidate>
+                        <div class="form-row">
+                            <div class="col-md-12 form-inline pt-2">
+                                <label class="col-form-label justify-content-start form-label">Role ID:</label>
+                                <select class="form-control custom-select form-input" name="roleId" data-style="select-bottom" required>
+                                    <option value="">Choose role</option>
+                                    <option th:each="role : ${userOwnerAuthRoleList}" th:text="${role.roleId}+' --- '+${role.roleDesc}" th:value="${role.roleId}"></option>
+                                </select>
+                                <div class="invalid-feedback">Please select on a role.</div>
+                            </div>
+                            <div class="col-md-12 form-inline pt-2">
+                                <label class="col-form-label justify-content-start form-label">workgroup:</label>
+                                <select class="form-control custom-select form-input" name="workgroup" data-style="select-bottom" required>
+                                    <option value="">Choose auth role</option>
+                                    <option th:each="group : ${workgroupList}" th:text="${group}" th:value="${group}"></option>
+                                </select>
+                                <div class="invalid-feedback">Please select on a workgroup.</div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info float-right" onclick="submit(this)">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" th:src="@{/js/listTicketRole.js(v=${projectBuildtime})}"></script>
+</div>
+</body>
+</html>

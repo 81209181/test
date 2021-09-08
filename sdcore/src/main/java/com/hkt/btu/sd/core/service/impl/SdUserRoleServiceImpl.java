@@ -3,19 +3,28 @@ package com.hkt.btu.sd.core.service.impl;
 import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
+import com.hkt.btu.sd.core.dao.entity.SdUserOwnerAuthRoleEntity;
 import com.hkt.btu.sd.core.dao.entity.SdUserRoleEntity;
+import com.hkt.btu.sd.core.dao.entity.SdUserRoleWorkgroupEntity;
+import com.hkt.btu.sd.core.dao.mapper.SdUserOwnerAuthRoleMapper;
 import com.hkt.btu.sd.core.dao.mapper.SdUserRoleMapper;
+import com.hkt.btu.sd.core.dao.mapper.SdUserRoleWorkgroupMapper;
 import com.hkt.btu.sd.core.exception.InsufficientAuthorityException;
 import com.hkt.btu.sd.core.service.SdCacheService;
 import com.hkt.btu.sd.core.service.SdUserRoleService;
 import com.hkt.btu.sd.core.service.SdUserService;
+import com.hkt.btu.sd.core.service.bean.SdUserOwnerAuthRoleBean;
 import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
+import com.hkt.btu.sd.core.service.bean.SdUserRoleWorkgroupBean;
 import com.hkt.btu.sd.core.service.constant.SdCacheEnum;
+import com.hkt.btu.sd.core.service.populator.SdUserOwnerAuthRoleBeanPopulator;
 import com.hkt.btu.sd.core.service.populator.SdUserRoleBeanPopulator;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +42,10 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
 
     @Resource
     SdUserRoleMapper sdUserRoleMapper;
+    @Resource
+    SdUserOwnerAuthRoleMapper userOwnerAuthRoleMapper;
+    @Resource
+    SdUserRoleWorkgroupMapper userRoleWorkgroupMapper;
 
     @Resource(name = "userService")
     SdUserService userService;
@@ -41,6 +54,8 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
 
     @Resource(name = "userRoleBeanPopulator")
     SdUserRoleBeanPopulator sdUserRoleBeanPopulator;
+    @Resource(name = "userOwnerAuthRoleBeanPopulator")
+    SdUserOwnerAuthRoleBeanPopulator userOwnerAuthRoleBeanPopulator;
 
     @Override
     public void reloadCachedRoleTree() {
@@ -478,4 +493,78 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
         }).collect(Collectors.toList());
     }
 
+    @Override
+    public List<SdUserRoleBean> getRole4UserOwnerAuth() {
+        return sdUserRoleMapper.getRole4UserOwnerAuth().stream().map(entity -> {
+            SdUserRoleBean bean = new SdUserRoleBean();
+            sdUserRoleBeanPopulator.populate(entity, bean);
+            return bean;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SdUserOwnerAuthRoleBean> getUserOwnerAuthRoleList() {
+        return userOwnerAuthRoleMapper.getUserOwnerAuthRoleList().stream().map(entity -> {
+            SdUserOwnerAuthRoleBean bean = new SdUserOwnerAuthRoleBean();
+            userOwnerAuthRoleBeanPopulator.populate(entity, bean);
+            return bean;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public String createUserOwnerAuthRole(String ownerId, String authRoleId, String serviceTypeCode) {
+        try {
+            userOwnerAuthRoleMapper.createUserOwnerAuthRole(ownerId, authRoleId, serviceTypeCode);
+        } catch (DuplicateKeyException e) {
+            return "Data ("+ownerId+", "+authRoleId+", "+serviceTypeCode+") already exists.";
+        }
+        return null;
+    }
+
+    @Override
+    public String delUserOwnerAuthRole(String ownerId, String authRoleId, String serviceTypeCode) {
+        Optional<SdUserOwnerAuthRoleEntity> optEntity = Optional.ofNullable(userOwnerAuthRoleMapper.getUserOwnerAuthRoleBykey(ownerId, authRoleId, serviceTypeCode));
+        if (optEntity.isPresent()) {
+            userOwnerAuthRoleMapper.delUserOwnerAuthRole(ownerId, authRoleId, serviceTypeCode);
+            return null;
+        } else {
+            return "Data ("+ownerId+", "+authRoleId+", "+serviceTypeCode+") not found.";
+        }
+    }
+
+    @Override
+    public List<SdUserRoleWorkgroupBean> getUserRoleWorkgroupList() {
+        return userRoleWorkgroupMapper.getUserRoleWorkgroupList().stream().map(entity -> {
+            SdUserRoleWorkgroupBean bean = new SdUserRoleWorkgroupBean();
+            BeanUtils.copyProperties(entity, bean);
+            return bean;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public String delUserRoleWorkgroup(String roleId, String workgroup) {
+        Optional<SdUserRoleWorkgroupEntity> optEntity = Optional.ofNullable(userRoleWorkgroupMapper.getUserRoleWorkgroupBykey(roleId, workgroup));
+        if (optEntity.isPresent()) {
+            userRoleWorkgroupMapper.delUserRoleWorkgroup(roleId, workgroup);
+            return null;
+        } else {
+            return "Data ("+roleId+", "+workgroup+") not found.";
+        }
+    }
+
+    @Override
+    public String createUserRoleWorkgroup(String roleId, String workgroup) {
+        try {
+            String userId = userService.getCurrentUserUserId();
+            userRoleWorkgroupMapper.createUserRoleWorkgroup(roleId, workgroup, userId);
+        } catch (DuplicateKeyException e) {
+            return "Data ("+roleId+", "+workgroup+") already exists.";
+        }
+        return null;
+    }
+
+    @Override
+    public List<String> getWorkgroupList() {
+        return userRoleWorkgroupMapper.getWorkgroupList();
+    }
 }

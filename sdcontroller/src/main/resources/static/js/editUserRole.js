@@ -100,6 +100,7 @@ function submit(){
 }
 
 function delPathCtrl(roleId, pathCtrlId) {
+    clearAllMsg();
     if (confirm("Are you sure you want to delete this record?")) {
         $.post('/admin/manage-role/edit-user-role/delUserRoleCtrl', {'roleId': roleId, 'pathCtrlId': pathCtrlId}, function(res) {
             if (res.success) {

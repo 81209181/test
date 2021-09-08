@@ -4,11 +4,13 @@ package com.hkt.btu.sd.controller;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.facade.SdServiceTypeFacade;
 import com.hkt.btu.sd.facade.SdUserRoleFacade;
+import com.hkt.btu.sd.facade.data.SdServiceTypeData;
+import com.hkt.btu.sd.facade.data.SdUserOwnerAuthRoleData;
 import com.hkt.btu.sd.facade.data.SdUserPathCtrlData;
 import com.hkt.btu.sd.facade.data.SdUserRoleData;
+import com.hkt.btu.sd.facade.data.SdUserRoleWorkgroupData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -128,5 +130,71 @@ public class ManageRoleController {
             return ResponseEntity.ok(SimpleAjaxResponse.of(false, errMsg));
         }
         return ResponseEntity.ok(SimpleAjaxResponse.of());
+    }
+
+    @GetMapping("/ticket-role-mapping")
+    public String ticketRoleMapping(Model model) {
+        List<SdUserRoleData> userOwnerAuthRoleList = userRoleFacade.getRole4UserOwnerAuth();
+        List<SdServiceTypeData> serviceTypeList = serviceTypeFacade.getServiceTypeList();
+        List<String> workgroupList = userRoleFacade.getWorkgroupList();
+        if (CollectionUtils.isNotEmpty(userOwnerAuthRoleList)) {
+            model.addAttribute("userOwnerAuthRoleList", userOwnerAuthRoleList);
+        }
+        if (CollectionUtils.isNotEmpty(serviceTypeList)) {
+            model.addAttribute("serviceTypeList", serviceTypeList);
+        }
+        if (CollectionUtils.isNotEmpty(workgroupList)) {
+            model.addAttribute("workgroupList", workgroupList);
+        }
+
+        return "admin/manageTicketRole/listTicketRole";
+    }
+
+    @GetMapping("/ticket-role-mapping/getUserOwnerAuthRoleList")
+    public ResponseEntity<?> getUserOwnerAuthRoleList() {
+        List<SdUserOwnerAuthRoleData> userOwnerAuthRoleList = userRoleFacade.getUserOwnerAuthRoleList();
+        return ResponseEntity.ok(userOwnerAuthRoleList);
+    }
+
+    @PostMapping("/ticket-role-mapping/createUserOwnerAuthRole")
+    public ResponseEntity<?> createUserOwnerAuthRole(@RequestParam String ownerId, @RequestParam String authRoleId, @RequestParam String serviceTypeCode) {
+        String errMsg = userRoleFacade.createUserOwnerAuthRole(ownerId, authRoleId, serviceTypeCode);
+        if (StringUtils.isEmpty(errMsg)) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of());
+        }
+        return ResponseEntity.ok(SimpleAjaxResponse.of(false, errMsg));
+    }
+
+    @PostMapping(("/ticket-role-mapping/delUserOwnerAuthRole"))
+    public ResponseEntity<?> delUserOwnerAuthRole(@RequestParam String ownerId, @RequestParam String authRoleId, @RequestParam String serviceTypeCode) {
+        String errMsg = userRoleFacade.delUserOwnerAuthRole(ownerId, authRoleId, serviceTypeCode);
+        if (StringUtils.isEmpty(errMsg)) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of());
+        }
+        return ResponseEntity.ok(SimpleAjaxResponse.of(false, errMsg));
+    }
+
+    @GetMapping("/ticket-role-mapping/getUserRoleWorkgroupList")
+    public ResponseEntity<?> getUserRoleWorkgroupList() {
+        List<SdUserRoleWorkgroupData> userRoleWorkgroupList = userRoleFacade.getUserRoleWorkgroupList();
+        return ResponseEntity.ok(userRoleWorkgroupList);
+    }
+
+    @PostMapping("/ticket-role-mapping/createUserRoleWorkgroup")
+    public ResponseEntity<?> createUserRoleWorkgroup(@RequestParam String roleId, @RequestParam String workgroup) {
+        String errMsg = userRoleFacade.createUserRoleWorkgroup(roleId, workgroup);
+        if (StringUtils.isEmpty(errMsg)) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of());
+        }
+        return ResponseEntity.ok(SimpleAjaxResponse.of(false, errMsg));
+    }
+
+    @PostMapping("/ticket-role-mapping/delUserRoleWorkgroup")
+    public ResponseEntity<?> delUserRoleWorkgroup(@RequestParam String roleId, @RequestParam String workgroup) {
+        String errMsg = userRoleFacade.delUserRoleWorkgroup(roleId, workgroup);
+        if (StringUtils.isEmpty(errMsg)) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of());
+        }
+        return ResponseEntity.ok(SimpleAjaxResponse.of(false, errMsg));
     }
 }

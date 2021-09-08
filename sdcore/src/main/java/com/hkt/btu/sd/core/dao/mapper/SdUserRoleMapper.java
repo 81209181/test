@@ -44,4 +44,6 @@ public interface SdUserRoleMapper {
     List<SdUserRoleEntity> getTeamHeadRoleList(@Param("roleId") String roleId);
 
     List<Map<String,Object>> getRole4Chart();
+
+    List<SdUserRoleEntity> getRole4UserOwnerAuth();
 }
