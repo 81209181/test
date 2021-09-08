@@ -1,15 +1,10 @@
-package com.hkt.btu.sd.core.dao.entity;
+package com.hkt.btu.sd.core.service.bean;
 
-import java.time.LocalDateTime;
+import com.hkt.btu.common.core.service.bean.BaseBean;
 
-public class SdUserOwnerAuthRoleEntity {
-
+public class SdUserOwnerAuthRoleBean extends BaseBean {
     private String ownerId;
-
     private String authRoleId;
-
-    private LocalDateTime createDate;
-
     private String serviceTypeCode;
 
     public String getOwnerId() {
@@ -26,14 +21,6 @@ public class SdUserOwnerAuthRoleEntity {
 
     public void setAuthRoleId(String authRoleId) {
         this.authRoleId = authRoleId;
-    }
-
-    public LocalDateTime getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(LocalDateTime createDate) {
-        this.createDate = createDate;
     }
 
     public String getServiceTypeCode() {

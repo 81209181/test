@@ -7,10 +7,15 @@
         <result column="OWNER_ID"  property="ownerId"/>
         <result column="AUTH_ROLE_ID" property="authRoleId" />
         <result column="CREATEDATE" property="createDate"/>
+        <result column="SERVICE_TYPE_CODE" property="serviceTypeCode"/>
     </resultMap>
     
     <select id="getUserOwnerAuthRole" resultMap="userOwnerAuthRole">
         select * from user_owner_auth_role_mapping where owner_id = #{ownerId}
+    </select>
+
+    <select id="getUserOwnerAuthRoleList" resultMap="userOwnerAuthRole">
+        select * from USER_OWNER_AUTH_ROLE_MAPPING
     </select>
     
     <select id="getUserOwnerAuthRoleBykey" resultMap="userOwnerAuthRole">

@@ -38,7 +38,7 @@ function initTable() {
             {
                 targets: 4,
                 render: function (data, type, row, meta) {
-                    return "<button class='btn btn-danger' onclick='delSymptomGroup(\"" + row['symptomCode'] + "\")' ><i class='fa fa-trash' aria-hidden='true'></i>Delete</button>";
+                    return "<button class='btn btn-danger' onclick='delSymptomWorkingpartyMapping(\"" + row['symptomCode'] + "\")' ><i class='fa fa-trash' aria-hidden='true'></i>Delete</button>";
                 }
             }
         ]
@@ -121,7 +121,8 @@ function showUpdateModal(symptomCode) {
     $('#dialogbox form').removeClass('was-validated');
 }
 
-function delSymptomGroup(symptomCode) {
+function delSymptomWorkingpartyMapping(symptomCode) {
+    clearAllMsg();
     if (confirm("Are you sure you want to delete this record?")) {
         $.post('/symptom/symptom-workingparty-mapping/delete', {'symptomCode': symptomCode}, function(res){
             if (res.success){

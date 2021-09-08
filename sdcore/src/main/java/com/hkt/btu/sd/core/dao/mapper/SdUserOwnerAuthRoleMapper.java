@@ -11,6 +11,8 @@ public interface SdUserOwnerAuthRoleMapper {
 
     List<SdUserOwnerAuthRoleEntity> getUserOwnerAuthRole(String ownerId);
 
+    List<SdUserOwnerAuthRoleEntity> getUserOwnerAuthRoleList();
+
     SdUserOwnerAuthRoleEntity getUserOwnerAuthRoleBykey(@Param("ownerId") String ownerId,
                                                         @Param("authRoleId") String authRoleId,
                                                         @Param("serviceTypeCode") String serviceTypeCode);

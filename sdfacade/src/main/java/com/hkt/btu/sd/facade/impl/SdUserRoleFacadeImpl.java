@@ -8,13 +8,17 @@ import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
 import com.hkt.btu.sd.core.service.bean.SdUserRolePathCtrlBean;
 import com.hkt.btu.sd.facade.SdUserRoleFacade;
 import com.hkt.btu.sd.facade.data.EditResultData;
+import com.hkt.btu.sd.facade.data.SdUserOwnerAuthRoleData;
 import com.hkt.btu.sd.facade.data.SdUserPathCtrlData;
 import com.hkt.btu.sd.facade.data.SdUserRoleData;
+import com.hkt.btu.sd.facade.data.SdUserRoleWorkgroupData;
+import com.hkt.btu.sd.facade.populator.SdUserOwnerAuthRoleDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdUserRoleDataPopulator;
 import com.hkt.btu.sd.facade.populator.SdUserRolePathCtrlPopulator;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -39,6 +43,9 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
 
     @Resource(name = "userRolePathCtrlDataPopulator")
     SdUserRolePathCtrlPopulator sdUserRolePathCtrlPopulator;
+
+    @Resource(name = "userOwnerAuthRoleDataPopulator")
+    SdUserOwnerAuthRoleDataPopulator userOwnerAuthRoleDataPopulator;
 
     @Override
     public List<SdUserRoleData> listAllUserRole() {
@@ -215,20 +222,102 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
 
     @Override
     public String createUserRolePathCtrl(String roleId, List<Integer> pathCtrlIdList) {
-        if (StringUtils.isEmpty(roleId)) {
+        if (StringUtils.isBlank(roleId)) {
             return "Please select on a Role ID.";
         }
         if (CollectionUtils.isEmpty(pathCtrlIdList)) {
-            return "Please select at lease a path";
+            return "Please select at lease a path.";
         }
         return sdPathCtrlService.createUserRolePathCtrl(roleId, pathCtrlIdList);
     }
 
     @Override
     public String delUserRolePathCtrl(String roleId, int pathCtrlId) {
-        if (StringUtils.isEmpty(roleId)) {
-            return "Please input a Role Id";
+        if (StringUtils.isBlank(roleId)) {
+            return "Empty Role Id.";
         }
         return sdPathCtrlService.delUserRolePathCtrl(roleId, pathCtrlId);
+    }
+
+    @Override
+    public List<SdUserRoleData> getRole4UserOwnerAuth() {
+        return sdUserRoleService.getRole4UserOwnerAuth().stream().map(bean -> {
+            SdUserRoleData data = new SdUserRoleData();
+            sdUserRoleDataPopulator.populate(bean, data);
+            return data;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SdUserOwnerAuthRoleData> getUserOwnerAuthRoleList() {
+        return sdUserRoleService.getUserOwnerAuthRoleList().stream().map(bean -> {
+            SdUserOwnerAuthRoleData data = new SdUserOwnerAuthRoleData();
+            userOwnerAuthRoleDataPopulator.pupulate(bean, data);
+            return data;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public String createUserOwnerAuthRole(String ownerId, String authRoleId, String serviceTypeCode) {
+        if (StringUtils.isBlank(ownerId)) {
+            return "Please select on a OWNER_ID.";
+        }
+        if (StringUtils.isBlank(authRoleId)) {
+            return "Please select on a AUTH_ROLE_ID.";
+        }
+        if (StringUtils.isBlank(serviceTypeCode)) {
+            return "Please select on a SERVICE_TYPE_CODE.";
+        }
+        return sdUserRoleService.createUserOwnerAuthRole(ownerId, authRoleId, serviceTypeCode);
+    }
+
+    @Override
+    public String delUserOwnerAuthRole(String ownerId, String authRoleId, String serviceTypeCode) {
+        if (StringUtils.isBlank(ownerId)) {
+            return "Empty OWNER_ID.";
+        }
+        if (StringUtils.isBlank(authRoleId)) {
+            return "EMPTY AUTH_ROLE_ID.";
+        }
+        if (StringUtils.isBlank(serviceTypeCode)) {
+            return "EMPTY SERVICE_TYPE_CODE.";
+        }
+        return sdUserRoleService.delUserOwnerAuthRole(ownerId, authRoleId, serviceTypeCode);
+    }
+
+    @Override
+    public List<SdUserRoleWorkgroupData> getUserRoleWorkgroupList() {
+        return sdUserRoleService.getUserRoleWorkgroupList().stream().map(bean -> {
+            SdUserRoleWorkgroupData data = new SdUserRoleWorkgroupData();
+            BeanUtils.copyProperties(bean, data);
+            return data;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public String delUserRoleWorkgroup(String roleId, String workgroup) {
+        if (StringUtils.isBlank(roleId)) {
+            return "Empty ROLE_ID";
+        }
+        if (StringUtils.isBlank(workgroup)) {
+            return "Empty WORKGROUP";
+        }
+        return sdUserRoleService.delUserRoleWorkgroup(roleId, workgroup);
+    }
+
+    @Override
+    public String createUserRoleWorkgroup(String roleId, String workgroup) {
+        if (StringUtils.isBlank(roleId)) {
+            return "Please select on a role id.";
+        }
+        if (StringUtils.isBlank(workgroup)) {
+            return "Please select on a workgroup";
+        }
+        return sdUserRoleService.createUserRoleWorkgroup(roleId, workgroup);
+    }
+
+    @Override
+    public List<String> getWorkgroupList() {
+        return sdUserRoleService.getWorkgroupList();
     }
 }
