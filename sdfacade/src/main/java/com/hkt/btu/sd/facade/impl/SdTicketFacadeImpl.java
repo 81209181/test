@@ -159,7 +159,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             contactList.forEach(data -> ticketService.insertTicketContactInfo(data.getTicketMasId(), data.getContactType(), data.getContactName(), data.getContactNumber(), data.getContactEmail(), data.getContactMobile()));
         } catch (Exception e) {
             LOG.error(e.getMessage());
-            return "Update failed.";
+            return "Update contact info failed.";
         }
 
         return null;
@@ -346,7 +346,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                 List<String> faults = serviceInfo.getFaults();
                 String serviceTypeCode = serviceInfo.getServiceTypeCode();
                 LocalDateTime reportTime = serviceInfo.getReportTime();
-                if (CollectionUtils.isEmpty(faults)) {
+                if (CollectionUtils.isEmpty(faults) || StringUtils.isEmpty(faults.stream().findFirst().get())) {
                     return "Please select symptom.";
                 } else if (serviceTypeCode.equals(SdServiceTypeBean.SERVICE_TYPE.SMART_METER)
                         || serviceTypeCode.equals(SdServiceTypeBean.SERVICE_TYPE.GMB)){
@@ -1097,5 +1097,114 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     @Override
     public String getAvgFaultCleaningTime() {
         return ticketService.getAvgFaultCleaningTime();
+    }
+
+    @Override
+    @Transactional
+    public void createJob4Wfm(Integer ticketMasId, List<SdTicketContactData> contactList, List<SdRequestTicketServiceData> serviceList, String remarks) throws InvalidInputException, ApiException, RuntimeException {
+        // check contact
+        for (SdTicketContactData data : contactList) {
+            if (StringUtils.isEmpty(data.getContactName())) {
+                throw new InvalidInputException("In contact type : " + data.getContactType() + ", please input contact name.");
+            } else if (StringUtils.isEmpty(data.getContactNumber()) && StringUtils.isEmpty(data.getContactMobile()) && StringUtils.isEmpty(data.getContactEmail())) {
+                throw new InvalidInputException("In Contact Name : " + data.getContactName() + ", please input Contact No. or Contact Mobile or Contact Email, at least one is not empty.");
+            }
+        }
+
+        // check service
+        SdRequestTicketServiceData serviceInfo = serviceList.stream().findFirst().get();
+        List<String> faults = serviceInfo.getFaults();
+        String serviceTypeCode = serviceInfo.getServiceType();
+        LocalDateTime reportTime = serviceInfo.getReportTime();
+        if (CollectionUtils.isEmpty(faults) || StringUtils.isEmpty(faults.stream().findFirst().get())) {
+            throw new InvalidInputException("Please select symptom.");
+        } else if (serviceTypeCode.equals(SdServiceTypeBean.SERVICE_TYPE.SMART_METER)
+                || serviceTypeCode.equals(SdServiceTypeBean.SERVICE_TYPE.GMB)){
+            if (reportTime == null) {
+                throw new InvalidInputException("Please input report time.");
+            } else if (reportTime.isAfter(LocalDateTime.now())) {
+                throw new InvalidInputException("Input report time can not after than now.");
+            }
+        }
+
+        // check remarks
+        if (StringUtils.isNotEmpty(remarks)) {
+            if (remarks.getBytes(StandardCharsets.UTF_8).length > 500) {
+                throw new InvalidInputException("Input remark is too long. (max: 500 characters / 166 chinese words)");
+            }
+        }
+
+        // check ticket
+        SdTicketData ticketInfo = getTicketInfo(ticketMasId);
+        if(ticketInfo==null){
+            throw new InvalidInputException("Ticket not found.");
+        }
+
+        // get exchange for smart meter
+        SdTicketMasData ticketMasData = ticketInfo.getTicketMasInfo();
+        if (ServiceSearchEnum.POLE_ID.getKey().equals(ticketMasData.getSearchKey())) {
+            String serviceNumber = ticketMasData == null ? null : ticketMasData.getSearchValue();
+            String exchangeId = getExchangeIdByPoleId(serviceNumber);
+            if (StringUtils.isEmpty(exchangeId)) {
+                throw new InvalidInputException("Exchange not found.");
+            }
+            ticketMasData.setExchangeId(exchangeId);
+        }
+
+        Integer poleId = null;
+        String plateId = null;
+        for (SdTicketServiceData serviceData : ticketInfo.getServiceInfo()) {
+            // check by service type
+            if (SdServiceTypeBean.SERVICE_TYPE.UNKNOWN.equals(serviceData.getServiceType())) {
+                throw new InvalidInputException("Unknown service type.");
+            } else if (SdServiceTypeBean.SERVICE_TYPE.SMART_METER.equals(serviceData.getServiceType())){
+                poleId = Integer.parseInt(serviceData.getServiceCode());
+            } else if (SdServiceTypeBean.SERVICE_TYPE.GMB.equals(serviceData.getServiceType())) {
+                plateId = serviceData.getServiceCode();
+            }
+        }
+
+        // update contact
+        try {
+            ticketService.removeContactInfoByTicketMasId(contactList.get(0).getTicketMasId());
+            contactList.forEach(data ->
+                    ticketService.insertTicketContactInfo(data.getTicketMasId(), data.getContactType(),
+                            data.getContactName(), data.getContactNumber(), data.getContactEmail(), data.getContactMobile()));
+        } catch (Exception e) {
+            throw new RuntimeException("Update contact info failed.");
+        }
+
+        // update service
+        try {
+            faults.forEach(symptom ->
+                    ticketService.updateServiceSymptom(serviceInfo.getTicketMasId(), symptom, serviceInfo.getReportTime()));
+        } catch (Exception e) {
+            throw new RuntimeException("Update service info failed.");
+        }
+
+        // create remarks
+        try {
+            if (StringUtils.isNotEmpty(remarks)) {
+                ticketService.createTicketCustRemarks(ticketMasId, remarks);
+            }
+        } catch (DuplicateKeyException e) {
+            throw new RuntimeException("Duplicate remarks already exists.");
+        }
+
+        // create wfm job
+        try {
+            Integer jobId = wfmApiFacade.createJob(ticketInfo);
+            updateJobIdInService(jobId, ticketMasId);
+        } catch (JsonProcessingException e) {
+            throw new ApiException(String.format("WFM Error: Cannot create job for ticket mas id %s.", ticketMasId));
+        }
+
+        // notify oss for hotline smart meter job ticket
+        String createDate = ticketMasData.getCreateDate() == null ? null : ticketMasData.getCreateDate().format(DEFAULT_DATE_TIME_FORMAT);
+        if (poleId != null){
+            ossApiFacade.notifyTicketStatus(poleId, ticketMasId, createDate, OssTicketActionEnum.CREATE.getCode());
+        } else if (plateId != null) {
+            gmbApiFacade.notifyTicketStatus(plateId, ticketMasId, createDate, OssTicketActionEnum.CREATE.getCode());
+        }
     }
 }

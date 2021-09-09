@@ -276,10 +276,15 @@ public class TicketController {
     }
 
     @PostMapping("submit")
-    public ResponseEntity<?> submit(int ticketMasId) {
+    public ResponseEntity<?> submit(@RequestBody List<SdCreateWfmTicketFormData> formDataList) {
         try {
+            SdCreateWfmTicketFormData formData = formDataList.stream().findFirst().get();
+            Integer ticketMasId = formData.getTicketMasId();
+            List<SdTicketContactData> contactList = formData.getContactList();
+            List<SdRequestTicketServiceData> serviceList = formData.getServiceList();
+            String remarks = formData.getRemarks();
             ticketFacade.isAllow(ticketMasId, StringUtils.EMPTY);
-            ticketFacade.createJob4Wfm(ticketMasId, true);
+            ticketFacade.createJob4Wfm(ticketMasId, contactList, serviceList, remarks);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

@@ -263,17 +263,62 @@ $().ready(function(){
                 return;
             }
         }
-        $('#btnTicketSubmit').attr("disabled", true);
-        $.post('/ticket/submit',{'ticketMasId':ticketMasId},function(res){
-            if(res.success){
-                location.reload();
+
+        let contactList = new Array() ;
+        $('#contact_list').find('form').each(function(index,form){
+            let form_arr =$(form).serializeArray();
+            let form_json = {};
+            $.map(form_arr, function (n, i) {
+              form_json[n['name']] = n['value'];
+            });
+            form_json['ticketMasId']=ticketMasId;
+            contactList.push(form_json);
+        });
+
+        let serviceList = new Array();
+        $('#service').each(function(index,form){
+            let form_arr =$(form).serializeArray();
+            let faults = new Array();
+            let form_json = {};
+            $.map(form_arr, function (n, i) {
+                if (n['name'] === 'symptom') {
+                    faults.push(n['value']);
+                }
+                form_json[n['name']] = n['value'];
+            });
+            form_json['faults'] = faults;
+            form_json['ticketMasId']=ticketMasId;
+            if (form_json['reportTime']) {
+                form_json['reportTime'] = form_json['reportTime'].replace(" ","T");
+            }
+            serviceList.push(form_json);
+        });
+
+        let remarks = $("#remark").find('textarea[name=remarks]').val();
+
+        let arr = new Array();
+        let param_json = {};
+        param_json['ticketMasId'] = ticketMasId;
+        param_json['contactList'] = contactList;
+        param_json['serviceList'] = serviceList;
+        param_json['remarks'] = remarks;
+        arr.push(param_json);
+
+        $.ajax({
+            url:'/ticket/submit',
+            type : 'POST',
+            dataType: 'text',
+            contentType: "application/json",
+            data: JSON.stringify(arr),
+            success:function(res){
+                showInfoMsg(res, false);
+                window.location.reload();
             }
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";
             console.log("ERROR : ", responseError);
             showErrorMsg(responseError);
-            $('#btnTicketSubmit').attr("disabled", false);
-        })
+        });
     });
 
     // close button
