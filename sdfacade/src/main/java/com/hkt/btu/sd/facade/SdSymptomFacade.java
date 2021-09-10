@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public interface SdSymptomFacade {
 
-    List<SdSymptomData> getSymptomGroupList();
+    List<SdSymptomGroupBean> getSymptomGroupList();
 
     String createSymptom(String symptomGroupCode, String symptomDescription, List<String> serviceTypeList,
                          String voiceLineTest, String apptMode);

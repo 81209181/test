@@ -51,9 +51,8 @@ public class SdSymptomFacadeImpl implements SdSymptomFacade {
     SdSymptomWorkingPartyMappingDataPopulator symptomWorkingPartyMappingDataPopulator;
 
     @Override
-    public List<SdSymptomData> getSymptomGroupList() {
-        List<SdSymptomBean> beanList = sdSymptomService.getSymptomGroupList();
-        return buildSymptomDataList(beanList);
+    public List<SdSymptomGroupBean> getSymptomGroupList() {
+        return sdSymptomService.getSymptomGroupList();
     }
 
     @Override

@@ -56,7 +56,15 @@
         </collection>
     </resultMap>
 
-    <select id="getSymptomGroupList" resultMap="SymptomEntity">
+    <resultMap id="SymptomGroupWithoutRoleListEntity" type="com.hkt.btu.sd.core.dao.entity.SdSymptomGroupEntity">
+        <result column="SYMPTOM_GROUP_CODE" property="symptomGroupCode"/>
+        <result column="SYMPTOM_GROUP_NAME" property="symptomGroupName"/>
+        <association property="symptomCodePrefixEntity" column="SYMPTOM_GROUP_CODE"
+                     javaType="com.hkt.btu.sd.core.dao.entity.SdSymptomCodePrefixEntity"
+                     select="com.hkt.btu.sd.core.dao.mapper.SdSymptomMapper.getSymptomCodePrefixByGroup"/>
+    </resultMap>
+
+    <select id="getSymptomGroupList" resultMap="SymptomGroupWithoutRoleListEntity">
         SELECT SYMPTOM_GROUP_CODE,SYMPTOM_GROUP_NAME
         FROM SYMPTOM_GROUP
         GROUP BY SYMPTOM_GROUP_CODE,SYMPTOM_GROUP_NAME

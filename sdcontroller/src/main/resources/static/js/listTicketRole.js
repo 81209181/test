@@ -82,6 +82,7 @@ $('.modal.fade').on('hidden.bs.modal', function() {
         $(this).find('form').get(0).reset();
         $(this).find('form').removeClass("was-validated");
     }
+    $(this).find('select.custom-select option[disabled=disabled]').attr('disabled', false);
 })
 
 function ajaxGetUserRoleWorkgroup(){
@@ -130,3 +131,21 @@ function delUserRoleWorkgroup(roleId, workgroup) {
         })
     }
 }
+
+$('#ownerIdSelecter').on('change', function () {
+    if ($('#authRoleIdSelecter').find('option[disabled=disabled]').length > 0) {
+        $('#authRoleIdSelecter').find('option[disabled=disabled]').attr('disabled', false);
+    }
+    if ($(this).val() !== '') {
+        $('#authRoleIdSelecter option[value='+$(this).val()+']').attr('disabled', true);
+    }
+})
+
+$('#authRoleIdSelecter').on('change', function (){
+    if ($('#ownerIdSelecter').find('option[disabled=disabled]').length > 0) {
+        $('#ownerIdSelecter').find('option[disabled=disabled]').attr('disabled', false);
+    }
+    if ($(this).val() !== '') {
+        $('#ownerIdSelecter option[value='+$(this).val()+']').attr('disabled', true);
+    }
+})

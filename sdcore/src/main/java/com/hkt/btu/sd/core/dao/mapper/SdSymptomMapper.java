@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 public interface SdSymptomMapper {
 
-    List<SdSymptomEntity> getSymptomGroupList();
+    List<SdSymptomGroupEntity> getSymptomGroupList();
 
     void createSymptom(@Param("symptomCode") String symptomCode,
                        @Param("symptomGroupCode") String symptomGroupCode,

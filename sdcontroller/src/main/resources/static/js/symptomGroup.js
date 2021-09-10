@@ -20,16 +20,17 @@ function initTable() {
         columns: [
             {data: 'symptomGroupCode', name: 'symptomGroupCode'},
             {data: 'symptomGroupName', name: 'symptomGroupName'},
+            {data: 'symptomCodePrefix', name: 'symptomCodePrefix'},
         ],
         columnDefs: [
             {
-                targets: 2,
+                targets: 3,
                 render: function (data, type, row, meta) {
                     return "<button class='btn btn-info' onclick='showUpdateModal(\"" + row['symptomGroupCode'] + "\")' ><i class='fas fa-edit'></i>Edit</button>";
                 }
             },
             {
-                targets: 3,
+                targets: 4,
                 render: function (data, type, row, meta) {
                     return "<button class='btn btn-danger' onclick='delSymptomGroup(\"" + row['symptomGroupCode'] + "\")' ><i class='fa fa-trash' aria-hidden='true'></i>Delete</button>";
                 }

@@ -42,7 +42,7 @@ public class SymptomController {
 
     @GetMapping("/create-symptom")
     public String showCreateSymptom(Model model) {
-        List<SdSymptomData> symptomGroupList = sdSymptomFacade.getSymptomGroupList();
+        List<SdSymptomGroupBean> symptomGroupList = sdSymptomFacade.getSymptomGroupList();
         List<SdServiceTypeData> serviceTypeList = serviceTypeFacade.getServiceTypeList();
         if (CollectionUtils.isNotEmpty(symptomGroupList)) {
             model.addAttribute("symptomGroupList", symptomGroupList);
@@ -127,7 +127,7 @@ public class SymptomController {
             }
         }
 
-        List<SdSymptomData> symptomGroupList = sdSymptomFacade.getSymptomGroupList();
+        List<SdSymptomGroupBean> symptomGroupList = sdSymptomFacade.getSymptomGroupList();
         if (CollectionUtils.isNotEmpty(symptomGroupList)) {
             model.addAttribute("symptomGroupList", symptomGroupList);
         }
@@ -174,7 +174,7 @@ public class SymptomController {
 
     @GetMapping("/symptom-group/list")
     public ResponseEntity<?> getSymptomGroupList() {
-        List<SdSymptomData> symptomGroupList = sdSymptomFacade.getSymptomGroupList();
+        List<SdSymptomGroupBean> symptomGroupList = sdSymptomFacade.getSymptomGroupList();
         return ResponseEntity.ok(symptomGroupList);
     }
 

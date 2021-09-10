@@ -4,6 +4,7 @@ import com.hkt.btu.sd.core.dao.entity.SdServiceTypeEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSortEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomCodePrefixEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomEntity;
+import com.hkt.btu.sd.core.dao.entity.SdSymptomGroupEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomGroupRoleMappingEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomMappingEntity;
 import com.hkt.btu.sd.core.dao.entity.SdSymptomWorkingPartyMappingEntity;
@@ -58,9 +59,12 @@ public class SdSymptomServiceImpl implements SdSymptomService {
     SdSymptomWorkingPartyMappingBeanPopulator symptomWorkingPartyMappingBeanPopulator;
 
     @Override
-    public List<SdSymptomBean> getSymptomGroupList() {
-        List<SdSymptomEntity> entityList = sdSymptomMapper.getSymptomGroupList();
-        return buildSymptomBeanList(entityList);
+    public List<SdSymptomGroupBean> getSymptomGroupList() {
+        return sdSymptomMapper.getSymptomGroupList().stream().map(entity -> {
+            SdSymptomGroupBean bean = new SdSymptomGroupBean();
+            symptomGroupBeanPopulator.pupulate(entity, bean);
+            return bean;
+        }).collect(Collectors.toList());
     }
 
     private String getLastestSymptomCode(String symptomGroupCode){

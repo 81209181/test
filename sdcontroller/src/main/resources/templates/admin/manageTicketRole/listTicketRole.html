@@ -16,6 +16,9 @@
                 max-width: 550px !important;
             }
         }
+        option:disabled {
+            color: #a4b4c3 !important;
+        }
     </style>
 </head>
 <body>
@@ -65,7 +68,7 @@
                         <div class="form-row">
                             <div class="col-md-12 form-inline pt-2">
                                 <label class="col-form-label justify-content-start form-label">Owner ID:</label>
-                                <select class="form-control custom-select form-input" name="ownerId" data-style="select-bottom" required>
+                                <select class="form-control custom-select form-input" id="ownerIdSelecter" name="ownerId" data-style="select-bottom" required>
                                     <option value="">Choose role</option>
                                     <option th:each="role : ${userOwnerAuthRoleList}" th:text="${role.roleId}+' --- '+${role.roleDesc}" th:value="${role.roleId}"></option>
                                 </select>
@@ -73,7 +76,7 @@
                             </div>
                             <div class="col-md-12 form-inline pt-2">
                                 <label class="col-form-label justify-content-start form-label">Auth Role ID:</label>
-                                <select class="form-control custom-select form-input" name="authRoleId" data-style="select-bottom" required>
+                                <select class="form-control custom-select form-input" id="authRoleIdSelecter" name="authRoleId" data-style="select-bottom" required>
                                     <option value="">Choose auth role</option>
                                     <option th:each="role : ${userOwnerAuthRoleList}" th:text="${role.roleId}+' --- '+${role.roleDesc}" th:value="${role.roleId}"></option>
                                 </select>
