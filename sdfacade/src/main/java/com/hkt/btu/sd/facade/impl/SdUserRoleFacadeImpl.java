@@ -265,6 +265,9 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
         if (StringUtils.isBlank(authRoleId)) {
             return "Please select on a AUTH_ROLE_ID.";
         }
+        if (StringUtils.equals(ownerId, authRoleId)) {
+            return "OWNER_ID and AUTH_ROLE_ID must not be the same.";
+        }
         if (StringUtils.isBlank(serviceTypeCode)) {
             return "Please select on a SERVICE_TYPE_CODE.";
         }
