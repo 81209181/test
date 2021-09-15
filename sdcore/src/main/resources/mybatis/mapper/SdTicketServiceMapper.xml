@@ -107,10 +107,11 @@
                s.VOICE_LINE_TEST as voiceLineTest,
                s.APPT_MODE as apptMode
         from TICKET_DET td
-                 inner join SERVICE_TYPE st on st.SERVICE_TYPE_CODE = td.SERVICE_TYPE_CODE
-                 inner join SYMPTOM_MAPPING sm on sm.SERVICE_TYPE_CODE = st.SERVICE_TYPE_CODE
-                 inner join SYMPTOM s on s.SYMPTOM_CODE = sm.SYMPTOM_CODE
+        inner join SERVICE_TYPE st on st.SERVICE_TYPE_CODE = td.SERVICE_TYPE_CODE
+        inner join SYMPTOM_MAPPING sm on sm.SERVICE_TYPE_CODE = st.SERVICE_TYPE_CODE
+        inner join SYMPTOM s on s.SYMPTOM_CODE = sm.SYMPTOM_CODE
         where td.TICKET_MAS_ID = #{ticketMasId}
+        and exists(select 1 from TBL_SYMPTOM_WORKGROUP_MAP tswm where s.SYMPTOM_CODE = tswm.SYMPTOM_CD)
     </select>
 
     <select id="getTicketServiceBySubscriberId" resultMap="TicketServiceEntity">
