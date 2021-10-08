@@ -1115,6 +1115,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         SdRequestTicketServiceData serviceInfo = serviceList.stream().findFirst().get();
         List<String> faults = serviceInfo.getFaults();
         String serviceTypeCode = serviceInfo.getServiceType();
+        String serviceCode = serviceInfo.getServiceCode();
         LocalDateTime reportTime = serviceInfo.getReportTime();
         if (CollectionUtils.isEmpty(faults) || StringUtils.isEmpty(faults.stream().findFirst().get())) {
             throw new InvalidInputException("Please select symptom.");
@@ -1135,33 +1136,30 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         }
 
         // check ticket
-        SdTicketData ticketInfo = getTicketInfo(ticketMasId);
-        if(ticketInfo==null){
+        SdTicketMasData ticketMasData = getTicketMas(ticketMasId);
+        if(ticketMasData==null){
             throw new InvalidInputException("Ticket not found.");
         }
 
         // get exchange for smart meter
-        SdTicketMasData ticketMasData = ticketInfo.getTicketMasInfo();
+        String exchangeId = null;
         if (ServiceSearchEnum.POLE_ID.getKey().equals(ticketMasData.getSearchKey())) {
             String serviceNumber = ticketMasData == null ? null : ticketMasData.getSearchValue();
-            String exchangeId = getExchangeIdByPoleId(serviceNumber);
+            exchangeId = getExchangeIdByPoleId(serviceNumber);
             if (StringUtils.isEmpty(exchangeId)) {
                 throw new InvalidInputException("Exchange not found.");
             }
-            ticketMasData.setExchangeId(exchangeId);
         }
 
         Integer poleId = null;
         String plateId = null;
-        for (SdTicketServiceData serviceData : ticketInfo.getServiceInfo()) {
-            // check by service type
-            if (SdServiceTypeBean.SERVICE_TYPE.UNKNOWN.equals(serviceData.getServiceType())) {
-                throw new InvalidInputException("Unknown service type.");
-            } else if (SdServiceTypeBean.SERVICE_TYPE.SMART_METER.equals(serviceData.getServiceType())){
-                poleId = Integer.parseInt(serviceData.getServiceCode());
-            } else if (SdServiceTypeBean.SERVICE_TYPE.GMB.equals(serviceData.getServiceType())) {
-                plateId = serviceData.getServiceCode();
-            }
+        // check by service type
+        if (SdServiceTypeBean.SERVICE_TYPE.UNKNOWN.equals(serviceTypeCode)) {
+            throw new InvalidInputException("Unknown service type.");
+        } else if (SdServiceTypeBean.SERVICE_TYPE.SMART_METER.equals(serviceTypeCode)){
+            poleId = Integer.parseInt(serviceCode);
+        } else if (SdServiceTypeBean.SERVICE_TYPE.GMB.equals(serviceTypeCode)) {
+            plateId = serviceCode;
         }
 
         // update contact
@@ -1193,6 +1191,10 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
         // create wfm job
         try {
+            SdTicketData ticketInfo = getTicketInfo(ticketMasId);
+            SdTicketMasData ticketMasInfo = ticketInfo.getTicketMasInfo();
+            ticketMasInfo.setExchangeId(exchangeId);
+
             Integer jobId = wfmApiFacade.createJob(ticketInfo);
             updateJobIdInService(jobId, ticketMasId);
         } catch (JsonProcessingException e) {
