@@ -21,6 +21,11 @@
     </insert>
 
     <select id="getTicketRemarksByTicketId" resultMap="TicketRemarkEntity">
-        select * from TICKET_REMARKS where TICKET_MAS_ID =#{ticketMasId} order by CREATEDATE desc
+        select * from TICKET_REMARKS
+        where TICKET_MAS_ID =#{ticketMasId}
+        <if test="remarksType != null and remarksType != ''">
+            and REMARKS_TYPE = #{remarksType}
+        </if>
+        order by CREATEDATE desc
     </select>
 </mapper>

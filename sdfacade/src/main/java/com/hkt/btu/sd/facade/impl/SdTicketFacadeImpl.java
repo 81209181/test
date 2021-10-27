@@ -1209,4 +1209,24 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             gmbApiFacade.notifyTicketStatus(plateId, ticketMasId, createDate, OssTicketActionEnum.CREATE.getCode());
         }
     }
+
+    @Override
+    public List<SdTicketRemarkData> getTicketCustRemarks(Integer ticketMasId) {
+        if (ticketMasId == null) {
+            return null;
+        }
+
+        List<SdTicketRemarkData> dataList = new LinkedList<>();
+        List<SdTicketRemarkBean> beanList = ticketService.getTicketCustRemarks(ticketMasId);
+
+        if (CollectionUtils.isNotEmpty(beanList)) {
+            for (SdTicketRemarkBean bean : beanList) {
+                SdTicketRemarkData data = new SdTicketRemarkData();
+                ticketRemarkDataPopulator.populate(bean, data);
+                dataList.add(data);
+            }
+        }
+
+        return dataList;
+    }
 }

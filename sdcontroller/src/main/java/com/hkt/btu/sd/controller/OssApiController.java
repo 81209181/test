@@ -5,6 +5,7 @@ import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.facade.SdSmartMeterFacade;
 import com.hkt.btu.sd.facade.data.SdTicketData;
 import com.hkt.btu.sd.facade.data.SdTicketMasData;
+import com.hkt.btu.sd.facade.data.SdTicketRemarkData;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -68,6 +69,17 @@ public class OssApiController {
             return ResponseEntity.badRequest().body(String.format("Cannot search tickets. (poleId=%d, page=%d, pageSize=%d)", poleId, page, pageSize));
         }else {
             return ResponseEntity.ok(ticketMasDataPageData);
+        }
+    }
+
+
+    @GetMapping("/get-customer-remark")
+    public ResponseEntity<?> getTicketCustRemarks(@RequestParam Integer ticketMasId) {
+        List<SdTicketRemarkData> remarkData = smartMeterFacade.getTicketCustRemarks(ticketMasId);
+        if(remarkData==null){
+            return ResponseEntity.badRequest().body("Remark info not found. (ticketMasId=" + ticketMasId + ")");
+        }else {
+            return ResponseEntity.ok(remarkData);
         }
     }
 

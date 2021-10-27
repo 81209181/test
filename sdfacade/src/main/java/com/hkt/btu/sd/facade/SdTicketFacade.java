@@ -97,4 +97,6 @@ public interface SdTicketFacade {
     String getAvgFaultCleaningTime();
 
     void createJob4Wfm(Integer ticketMasId, List<SdTicketContactData> contactList, List<SdRequestTicketServiceData> serviceList, String remarks) throws InvalidInputException, ApiException, RuntimeException;
+
+    List<SdTicketRemarkData> getTicketCustRemarks(Integer ticketMasId);
 }

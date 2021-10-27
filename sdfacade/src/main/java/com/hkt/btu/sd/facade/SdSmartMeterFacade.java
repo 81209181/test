@@ -4,6 +4,7 @@ import com.hkt.btu.common.facade.data.BtuSimpleResponseData;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.facade.data.SdTicketData;
 import com.hkt.btu.sd.facade.data.SdTicketMasData;
+import com.hkt.btu.sd.facade.data.SdTicketRemarkData;
 import com.hkt.btu.sd.facade.data.oss.OssCaseData;
 import org.springframework.data.domain.Pageable;
 
@@ -18,4 +19,6 @@ public interface SdSmartMeterFacade {
                                                String createDateFrom, String createDateTo, String ticketType,
                                                String status);
     BtuSimpleResponseData createTicket(OssCaseData ossCaseData);
+
+    List<SdTicketRemarkData> getTicketCustRemarks(Integer ticketMasId);
 }

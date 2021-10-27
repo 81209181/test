@@ -12,5 +12,6 @@ public interface SdTicketRemarkMapper {
     void insertTicketRemarks(@Param("ticketMasId") Integer ticketMasId, @Param("remarksType") String remarksType,
                              @Param("remarks") String remarks, @Param("createby") String createby);
 
-    List<SdTicketRemarkEntity> getTicketRemarksByTicketId(@Param("ticketMasId") Integer ticketMasId);
+    List<SdTicketRemarkEntity> getTicketRemarksByTicketId(@Param("ticketMasId") Integer ticketMasId,
+                                                          @Param("remarksType") String remarksType);
 }

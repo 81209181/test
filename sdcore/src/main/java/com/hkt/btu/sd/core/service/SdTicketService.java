@@ -88,4 +88,6 @@ public interface SdTicketService {
     List<SdTicketTimePeriodSummaryBean> getTicketTimePeriodSummary();
 
     String getAvgFaultCleaningTime();
+
+    List<SdTicketRemarkBean> getTicketCustRemarks(Integer ticketMasId);
 }

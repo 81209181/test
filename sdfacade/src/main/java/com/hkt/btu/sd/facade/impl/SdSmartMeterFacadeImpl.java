@@ -187,6 +187,7 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
         return null;
     }
 
+
     private BtuSimpleResponseData createMeterTicket(String serviceType, String identityId, LocalDateTime reportTime,
                                                     List<String> workingPartyList, List<SdTicketContactData> contactInfo,
                                                     List<Attribute> attributes, List<Attachment> attachments) {
@@ -547,5 +548,10 @@ public class SdSmartMeterFacadeImpl implements SdSmartMeterFacade {
         queryTicketRequestData.setServiceType(serviceType);
         queryTicketRequestData.setServiceNo(identityId);
         return queryTicketRequestData;
+    }
+
+    @Override
+    public List<SdTicketRemarkData> getTicketCustRemarks(Integer ticketMasId) {
+        return ticketFacade.getTicketCustRemarks(ticketMasId);
     }
 }

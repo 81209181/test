@@ -253,7 +253,7 @@ public class SdTicketServiceImpl implements SdTicketService {
 
     @Override
     public List<SdTicketRemarkBean> getTicketRemarksByTicketId(Integer ticketMasId) {
-        List<SdTicketRemarkEntity> entityList = ticketRemarkMapper.getTicketRemarksByTicketId(ticketMasId);
+        List<SdTicketRemarkEntity> entityList = ticketRemarkMapper.getTicketRemarksByTicketId(ticketMasId, null);
         if (CollectionUtils.isEmpty(entityList)) {
             return null;
         }
@@ -777,5 +777,21 @@ public class SdTicketServiceImpl implements SdTicketService {
             return null;
         }
         return avgFaultCleaningTime;
+    }
+
+    @Override
+    public List<SdTicketRemarkBean> getTicketCustRemarks(Integer ticketMasId) {
+        List<SdTicketRemarkEntity> entityList = ticketRemarkMapper.getTicketRemarksByTicketId(ticketMasId, SdTicketRemarkEntity.REMARKS_TYPE.CUSTOMER);
+        if (CollectionUtils.isEmpty(entityList)) {
+            return null;
+        }
+        List<SdTicketRemarkBean> beanList = new LinkedList<>();
+        for (SdTicketRemarkEntity entity : entityList) {
+            SdTicketRemarkBean bean = new SdTicketRemarkBean();
+            ticketRemarkBeanPopulator.populate(entity, bean);
+            beanList.add(bean);
+        }
+
+        return beanList;
     }
 }
