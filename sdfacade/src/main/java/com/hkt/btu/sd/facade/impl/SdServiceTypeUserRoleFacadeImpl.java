@@ -102,61 +102,6 @@ public class SdServiceTypeUserRoleFacadeImpl implements SdServiceTypeUserRoleFac
             LOG.warn("Empty userRole.");
             return null;
         }
-
-        // get service search key - service type mapping
-        List<BtuConfigParamBean> searchKeyTypeMapping = (List<BtuConfigParamBean>)
-                cacheService.getCachedObjectByCacheName(SdCacheEnum.SEARCH_KEY_TYPE_MAPPING.getCacheName());
-        if(CollectionUtils.isEmpty(searchKeyTypeMapping)){
-            LOG.warn("Empty searchKeyTypeMapping.");
-            return null;
-        }
-
-        // get service type - user role mapping
-        List<SdServiceTypeUserRoleBean> serviceTypeUserRole = (List<SdServiceTypeUserRoleBean>)
-                cacheService.getCachedObjectByCacheName(SdCacheEnum.SERVICE_TYPE_USER_ROLE.getCacheName());
-        if(CollectionUtils.isEmpty(serviceTypeUserRole)){
-            LOG.warn("Empty serviceTypeUserRole.");
-            return null;
-        }
-
-        // find eligible service type for user
-        List<String> filterServiceType = new LinkedList<>();
-        serviceTypeUserRole.forEach(sdServiceTypeUserRoleBean -> {
-            if (userRole.contains(sdServiceTypeUserRoleBean.getRoleId())) {
-                if (!filterServiceType.contains(sdServiceTypeUserRoleBean.getServiceTypeCode())) {
-                    filterServiceType.add(sdServiceTypeUserRoleBean.getServiceTypeCode());
-                }
-            }
-        });
-        if (CollectionUtils.isEmpty(filterServiceType)) {
-            return null;
-        }
-
-        // find eligible service search key for user
-        List<String> filterSearchKey = new LinkedList<>();
-        searchKeyTypeMapping.forEach(btuConfigParamBean -> {
-            if (filterServiceType.contains(btuConfigParamBean.getConfigKey())) {
-                String[] configValues = btuConfigParamBean.getConfigValue().split(",");
-                for (String configValue : configValues) {
-                    if (!filterSearchKey.contains(configValue)) {
-                        filterSearchKey.add(configValue);
-                    }
-                }
-            }
-        });
-        if (CollectionUtils.isEmpty(filterSearchKey)) {
-            return null;
-        }
-
-        // return sorted result
-        List<ServiceSearchEnum> serviceSearchKeyList = new LinkedList<>();
-        filterSearchKey.forEach(searchKey -> {
-            ServiceSearchEnum searchEnum = ServiceSearchEnum.getEnum(searchKey);
-            if (searchEnum != null) {
-                serviceSearchKeyList.add(searchEnum);
-            }
-        });
-        serviceSearchKeyList.sort(Comparator.comparing(ServiceSearchEnum::getKeyDesc));
-        return serviceSearchKeyList;
+        return null;
     }
 }

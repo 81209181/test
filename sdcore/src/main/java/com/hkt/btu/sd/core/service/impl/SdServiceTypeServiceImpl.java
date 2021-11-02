@@ -41,12 +41,12 @@ public class SdServiceTypeServiceImpl implements SdServiceTypeService {
 
     @Override
     public List<SdServiceTypeBean> getServiceTypeList() {
-        return (List<SdServiceTypeBean>) cacheService.getCachedObjectByCacheName(SdCacheEnum.SERVICE_TYPE_LIST.getCacheName());
+        return null;
     }
 
     @Override
     public List<SdServiceTypeOfferMappingBean> getServiceTypeOfferMappingBean() {
-        return (List<SdServiceTypeOfferMappingBean>) cacheService.getCachedObjectByCacheName(SdCacheEnum.SERVICE_TYPE_OFFER_MAPPING.getCacheName());
+        return null;
     }
 
     @Override
@@ -59,10 +59,6 @@ public class SdServiceTypeServiceImpl implements SdServiceTypeService {
 
     @Override
     public void reload() {
-        LOG.info("reload service type list.");
-        cacheService.reloadCachedObject(SdCacheEnum.SERVICE_TYPE_LIST.getCacheName());
-        LOG.info("reload service type offer mapping.");
-        cacheService.reloadCachedObject(SdCacheEnum.SERVICE_TYPE_OFFER_MAPPING.getCacheName());
     }
 
     @Override

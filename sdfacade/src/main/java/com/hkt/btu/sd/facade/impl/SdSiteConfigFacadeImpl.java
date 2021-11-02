@@ -3,7 +3,6 @@ package com.hkt.btu.sd.facade.impl;
 
 import com.hkt.btu.common.core.service.BtuSiteConfigService;
 import com.hkt.btu.common.core.service.bean.BtuSiteConfigBean;
-import com.hkt.btu.sd.core.service.SdApiService;
 import com.hkt.btu.sd.core.service.SdUserRoleService;
 import com.hkt.btu.sd.facade.SdSiteConfigFacade;
 import com.hkt.btu.sd.facade.data.SdSiteConfigData;
@@ -16,9 +15,6 @@ public class SdSiteConfigFacadeImpl implements SdSiteConfigFacade {
 
     @Resource(name = "siteConfigService")
     BtuSiteConfigService siteConfigService;
-
-    @Resource(name = "apiService")
-    SdApiService apiService;
 
     @Resource(name = "userRoleService")
     SdUserRoleService userRoleService;

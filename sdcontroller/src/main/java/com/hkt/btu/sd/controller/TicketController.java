@@ -1,21 +1,11 @@
 package com.hkt.btu.sd.controller;
 
-import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.facade.data.BtuCodeDescData;
-import com.hkt.btu.common.facade.data.BtuPageData;
 import com.hkt.btu.common.facade.data.PageData;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
 import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
 import com.hkt.btu.sd.facade.*;
 import com.hkt.btu.sd.facade.data.*;
-import com.hkt.btu.sd.facade.data.gmb.GmbErrorData;
-import com.hkt.btu.sd.facade.data.norars.NoraAccountData;
-import com.hkt.btu.sd.facade.data.norars.NoraBroadbandInfoData;
-import com.hkt.btu.sd.facade.data.oss.OssSmartMeterEventData;
-import com.hkt.btu.sd.facade.data.wfm.WfmJobData;
-import com.hkt.btu.sd.facade.data.wfm.WfmMakeApptData;
-import com.hkt.btu.sd.facade.data.wfm.WfmPendingOrderData;
-import com.hkt.btu.sd.facade.data.wfm.WfmResponseTokenData;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -23,7 +13,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -49,14 +38,10 @@ import java.util.stream.Collectors;
 public class TicketController {
     private static final Logger LOG = LogManager.getLogger(TicketController.class);
 
-    @Resource(name = "requestCreateFacade")
-    SdRequestCreateFacade requestCreateFacade;
     @Resource(name = "ticketFacade")
     SdTicketFacade ticketFacade;
     @Resource(name = "userRoleFacade")
     SdUserRoleFacade userRoleFacade;
-    @Resource(name = "wfmApiFacade")
-    WfmApiFacade wfmApiFacade;
     @Resource(name = "serviceTypeFacade")
     SdServiceTypeFacade serviceTypeFacade;
     @Resource(name = "userFacade")
@@ -65,13 +50,6 @@ public class TicketController {
     SdServiceTypeUserRoleFacade serviceTypeUserRoleFacade;
     @Resource(name = "sdSymptomFacade")
     SdSymptomFacade symptomFacade;
-
-    @Resource(name = "norarsApiFacade")
-    NorarsApiFacade norarsApiFacade;
-    @Resource(name = "ossApiFacade")
-    OssApiFacade ossApiFacade;
-    @Resource(name = "gmbApiFacade")
-    GmbApiFacade gmbApiFacade;
 
     public static final String O_CLOUD_SH = "O_CLOUD_SH";
 
@@ -89,7 +67,7 @@ public class TicketController {
     @PostMapping("search-service")
     public ResponseEntity<?> searchService(String searchKey, String searchValue, HttpServletRequest request) {
         // search service
-        SdRequestCreateSearchResultsData resultsData = requestCreateFacade.searchProductList(searchKey, searchValue);
+        SdRequestCreateSearchResultsData resultsData = null;
         if (resultsData==null){
             return ResponseEntity.badRequest().body("Cannot get search service response.");
         } else if (StringUtils.isNotEmpty(resultsData.getErrorMsg())) {
@@ -115,19 +93,6 @@ public class TicketController {
     public ResponseEntity<?> checkPendingOrder(SdQueryTicketRequestData queryTicketRequestData) {
         if (StringUtils.isEmpty(queryTicketRequestData.getServiceNo()) || StringUtils.isEmpty(queryTicketRequestData.getServiceType())) {
             return ResponseEntity.badRequest().body("Service No. / Service Type is empty.");
-        }
-
-        // check wfm pending order
-        boolean checkPendingOrder = serviceTypeFacade.needCheckPendingOrder(queryTicketRequestData.getServiceType());
-        if (checkPendingOrder) {
-            WfmPendingOrderData pendingOrderData = wfmApiFacade.getPendingOrderByBsn(queryTicketRequestData.getServiceNo());
-            if (pendingOrderData == null) {
-                return ResponseEntity.badRequest().body("No pending order response from WFM.");
-            } else if (StringUtils.isNotEmpty(pendingOrderData.getErrorMsg())) {
-                return ResponseEntity.badRequest().body(pendingOrderData.getErrorMsg());
-            } else if (pendingOrderData.getOrderId() != null) {
-                return ResponseEntity.ok(SdResponseTicketData.of(false, pendingOrderData.getOrderId()));
-            }
         }
 
         return ResponseEntity.ok(SimpleAjaxResponse.of());
@@ -158,7 +123,7 @@ public class TicketController {
                 return modelAndView;
             }
             ModelAndView modelAndView = new ModelAndView("ticket/ticketInfo");
-            modelAndView.addObject("ticketInfo", requestCreateFacade.getTicketInfo(data));
+            modelAndView.addObject("ticketInfo", null);
             return modelAndView;
         }).orElse(new ModelAndView("redirect:/ticket/search-ticket"));
     }
@@ -272,7 +237,7 @@ public class TicketController {
     @Deprecated // moved to BesController
     @GetMapping("/ajax-get-fault")
     public ResponseEntity<?> getFaultInfo(@RequestParam String subscriberId) {
-        return ResponseEntity.ok(ticketFacade.getFaultInfo(subscriberId,null));
+        return ResponseEntity.ok(null);
     }
 
     @PostMapping("submit")
@@ -336,60 +301,14 @@ public class TicketController {
 
     @PostMapping("getJobInfo")
     public ResponseEntity<?> getJobInfo(@RequestParam Integer ticketMasId) {
-        List<WfmJobData> jobInfo = wfmApiFacade.getJobInfo(ticketMasId);
-        if (jobInfo == null) {
-            return ResponseEntity.badRequest().body("WFM Error: Cannot get job data for ticket mas id :" + ticketMasId);
-        } else {
-            return ResponseEntity.ok(jobInfo);
-        }
+        return ResponseEntity.ok(null);
     }
 
     @PostMapping("getInventory")
     public ResponseEntity<?> getInventory(@RequestParam String bsn) {
-        String inventory = norarsApiFacade.getInventory(bsn);
-        if (StringUtils.isNotEmpty(inventory)) {
-            return ResponseEntity.ok(inventory);
-        }
         return ResponseEntity.badRequest().body("Nora Error: Cannot get Inventory for bsn :" + bsn);
     }
 
-    @GetMapping("/offer-info")
-    public String getOfferInfo(final Model model,
-                               @RequestParam String bsn,
-                               @ModelAttribute("dnGroupData") SdDnGroupData dnGroupData) {
-        dnGroupData = norarsApiFacade.getDnGroupData(bsn);
-        if (dnGroupData != null) {
-            model.addAttribute("dnGroupData", dnGroupData);
-        }
-        return "ticket/offerInfo";
-    }
-
-    @GetMapping("/offer-detail")
-    public String getOfferInfo(final Model model,
-                               @RequestParam String bsn,
-                               @ModelAttribute("noraBroadbandInfoData") NoraBroadbandInfoData noraBroadbandInfoData) {
-        noraBroadbandInfoData = norarsApiFacade.getOfferDetailListByBsn(bsn);
-        if (noraBroadbandInfoData != null) {
-            model.addAttribute("noraBroadbandInfoData", noraBroadbandInfoData);
-        }
-        return "ticket/offerDetail";
-    }
-
-    @GetMapping("/getNGN3OneDayAdminAccount/{bsn}")
-    public ResponseEntity<?> getNGN3OneDayAdminAccount(@PathVariable String bsn) {
-        NoraAccountData oneDayAdminAccount;
-        try{
-            oneDayAdminAccount = norarsApiFacade.getNgn3OneDayAdminAccount(bsn);
-            if (oneDayAdminAccount == null) {
-                return ResponseEntity.badRequest().body("Cannot get NGN3 one day admin account.");
-            }
-        }catch (InvalidInputException e){
-            LOG.warn(e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-
-        return ResponseEntity.ok(oneDayAdminAccount);
-    }
 
     @GetMapping("/getAppointmentInfo")
     public ResponseEntity<?> getAppointmentInfo(@RequestParam Integer ticketMasId) {
@@ -401,57 +320,7 @@ public class TicketController {
         return ResponseEntity.badRequest().body("WFM Error: Cannot get appointment info for ticketMasId:" + ticketMasId);
     }
 
-    @GetMapping("resetNgn3Pwd/{dn}")
-    @ResponseBody
-    public ResponseEntity<?> resetNgn3Pwd(@PathVariable String dn) {
-        String ngn3ComplexPwd;
-        try{
-            ngn3ComplexPwd = norarsApiFacade.resetNgn3Account(dn);
-            if ( StringUtils.isEmpty(ngn3ComplexPwd) ) {
-                return ResponseEntity.badRequest().body("Cannot reset NGN3 account password.");
-            } else {
-                return ResponseEntity.ok(ngn3ComplexPwd);
-            }
-        }catch (InvalidInputException e){
-            LOG.warn(e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
 
-    @GetMapping("token")
-    public ResponseEntity<?> getToken(Integer ticketDetId, String exchangeId) {
-        WfmMakeApptData makeApptData = ticketFacade.getMakeApptDataByTicketDetId(ticketDetId);
-
-        if (makeApptData == null) {
-            return ResponseEntity.badRequest().body("Cannot get ticket detail by ticketDetId");
-        }
-        makeApptData.setExchangeId(exchangeId);
-
-        try {
-            WfmResponseTokenData data = wfmApiFacade.getToken(makeApptData);
-            if (data != null) {
-                return ResponseEntity.ok(data);
-            } else {
-                return ResponseEntity.badRequest().body("Cannot connect WFM for getting token.");
-            }
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @GetMapping("transferToken")
-    public ResponseEntity<?> getTransferToken(Integer orderId, Integer jobId) {
-        try {
-            WfmResponseTokenData data = wfmApiFacade.getTransferToken(orderId, jobId);
-            if (data != null) {
-                return ResponseEntity.ok(data);
-            } else {
-                return ResponseEntity.badRequest().body("Cannot connect WFM for getting token.");
-            }
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
 
     @GetMapping("team-summary")
     public String showTeamSummary(Model model) {
@@ -459,44 +328,11 @@ public class TicketController {
         return "ticket/teamSummary";
     }
 
-    @GetMapping("get-external-service-data/{serviceTypeCode}/{serviceNumber}")
-    public ResponseEntity<?> getExternalServiceData(@PathVariable String serviceTypeCode, @PathVariable String serviceNumber) {
-        try {
-            SdTicketServiceInfoData serviceInfoData = requestCreateFacade.getServiceInfoInApi(serviceTypeCode, serviceNumber);
-            return ResponseEntity.ok(serviceInfoData);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
     @PostMapping("get-upload-files")
     public ResponseEntity<?> getUploadFiles(int ticketMasId) {
         return ResponseEntity.ok(ticketFacade.getUploadFiles(ticketMasId));
     }
 
-    @GetMapping("/service/ajax-event-of-pole-list")
-    public ResponseEntity<?> getEventOfPoleList(@RequestParam(defaultValue = "0") int draw,
-                                                @RequestParam(defaultValue = "0") int start,
-                                                @RequestParam(defaultValue = "10") int length,
-                                                @RequestParam Integer poleId,
-                                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fromTime,
-                                                @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime toTime) {
-        int page = start / length;
-        toTime = toTime == null ? LocalDateTime.now() : toTime;
-
-        BtuPageData<OssSmartMeterEventData> btuPageData = ossApiFacade.queryMeterEvents(page, length, poleId, fromTime, toTime);
-
-        if (btuPageData == null) {
-            return ResponseEntityHelper.buildDataTablesResponse(draw, new PageData());
-        } else {
-            PageData pageData = new PageData(
-                btuPageData.getContent(), page,  length,
-                btuPageData.getTotalElements(),  null,  btuPageData.isLast(),
-                btuPageData.getTotalPages(), null, btuPageData.isFirst(),
-                btuPageData.getNumberOfElements());
-            return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
-        }
-    }
 
     @GetMapping("/service/closeCode")
     public ResponseEntity<?> getCloseCode(@RequestParam String serviceType) {
@@ -508,22 +344,6 @@ public class TicketController {
         }
     }
 
-    @GetMapping("/service/ajax-gmb-error-list")
-    public ResponseEntity<?> getGmbErrorList(@RequestParam(defaultValue = "0") int draw,
-                                                @RequestParam(defaultValue = "0") int start,
-                                                @RequestParam(defaultValue = "10") int length,
-                                                @RequestParam String plateId) {
-        int page = start / length;
-        Pageable pageable = PageRequest.of(page, length);
-
-        PageData<GmbErrorData> pageData = gmbApiFacade.getErrorList(pageable, plateId);
-        return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
-    }
-
-    @GetMapping("getIddInfo")
-    public ResponseEntity<?> getIddInfo(@RequestParam String plateId) {
-        return ResponseEntity.ok(gmbApiFacade.getIddInfo(plateId));
-    }
 
     @GetMapping("/search-bchsp")
     public String searchBchsp(Model model) {

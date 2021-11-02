@@ -1,7 +1,6 @@
 package com.hkt.btu.sd.facade.data;
 
 import com.hkt.btu.common.facade.data.DataInterface;
-import com.hkt.btu.sd.facade.data.gmb.Parameter;
 
 import java.util.List;
 import java.util.Map;
@@ -13,7 +12,6 @@ public class SdTicketData implements DataInterface {
     private List<SdTicketServiceData> serviceInfo;
     private List<SdTicketRemarkData> remarkInfo;
     private List<Map<String, Object>> closeInfo;
-    private List<Parameter> parameterList;
 
     public SdTicketMasData getTicketMasInfo() {
         return ticketMasInfo;
@@ -53,13 +51,5 @@ public class SdTicketData implements DataInterface {
 
     public void setCloseInfo(List<Map<String, Object>> closeInfo) {
         this.closeInfo = closeInfo;
-    }
-
-    public List<Parameter> getParameterList() {
-        return parameterList;
-    }
-
-    public void setParameterList(List<Parameter> parameterList) {
-        this.parameterList = parameterList;
     }
 }

@@ -1,12 +1,10 @@
 package com.hkt.btu.sd.facade.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.facade.data.BtuCodeDescData;
 import com.hkt.btu.common.facade.data.PageData;
-import com.hkt.btu.sd.core.exception.ApiException;
 import com.hkt.btu.sd.core.exception.AuthorityNotFoundException;
 import com.hkt.btu.sd.core.service.SdTicketService;
 import com.hkt.btu.sd.core.service.SdUserService;
@@ -14,20 +12,11 @@ import com.hkt.btu.sd.core.service.bean.*;
 import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
 import com.hkt.btu.sd.core.service.constant.TicketTypeEnum;
 import com.hkt.btu.sd.core.util.POIExcelWriter;
-import com.hkt.btu.sd.facade.*;
-import com.hkt.btu.sd.facade.constant.OssTicketActionEnum;
-import com.hkt.btu.sd.facade.constant.ServiceSearchEnum;
+import com.hkt.btu.sd.facade.SdAuditTrailFacade;
+import com.hkt.btu.sd.facade.SdServiceTypeFacade;
+import com.hkt.btu.sd.facade.SdTicketFacade;
+import com.hkt.btu.sd.facade.SdUserRoleFacade;
 import com.hkt.btu.sd.facade.data.*;
-import com.hkt.btu.sd.facade.data.bes.BesFaultInfoData;
-import com.hkt.btu.sd.facade.data.bes.BesSubFaultData;
-import com.hkt.btu.sd.facade.data.cloud.Attachment;
-import com.hkt.btu.sd.facade.data.cloud.Attribute;
-import com.hkt.btu.sd.facade.data.cloud.HktCloudCaseData;
-import com.hkt.btu.sd.facade.data.cloud.HktCloudViewData;
-import com.hkt.btu.sd.facade.data.gmb.GmbVehicleData;
-import com.hkt.btu.sd.facade.data.gmb.Parameter;
-import com.hkt.btu.sd.facade.data.oss.OssSmartMeterData;
-import com.hkt.btu.sd.facade.data.wfm.*;
 import com.hkt.btu.sd.facade.populator.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -46,7 +35,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -67,16 +55,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     SdUserService userService;
     @Resource(name = "userRoleFacade")
     SdUserRoleFacade userRoleFacade;
-    @Resource(name = "wfmApiFacade")
-    WfmApiFacade wfmApiFacade;
     @Resource(name = "serviceTypeFacade")
     SdServiceTypeFacade serviceTypeFacade;
-    @Resource(name = "ossApiFacade")
-    OssApiFacade ossApiFacade;
-    @Resource(name = "smartMeterFacade")
-    SdSmartMeterFacade smartMeterFacade;
-    @Resource(name = "gmbApiFacade")
-    GmbApiFacade gmbApiFacade;
 
     @Resource(name = "ticketMasDataPopulator")
     SdTicketMasDataPopulator ticketMasDataPopulator;
@@ -86,14 +66,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     SdTicketServiceDataPopulator ticketServiceDataPopulator;
     @Resource(name = "ticketRemarkDataPopulator")
     SdTicketRemarkDataPopulator ticketRemarkDataPopulator;
-    @Resource(name = "faultInfoDataPopulator")
-    BesFaultInfoDataPopulator faultInfoDataPopulator;
     @Resource(name = "teamSummaryDataPopulator")
     SdTeamSummaryDataPopulator teamSummaryDataPopulator;
-    @Resource(name = "cloudViewDataPopulator")
-    HktCloudViewDataPopulator cloudViewDataPopulator;
-    @Resource(name = "ticketUploadFileDataPopulator")
-    SdTicketUploadFileDataPopulator ticketUploadFileDataPopulator;
     @Resource(name = "closeCodeDataPopulator")
     SdCloseCodeDataPopulator sdCloseCodeDataPopulator;
     @Resource(name = "outstandingFaultDataPopulator")
@@ -104,14 +78,6 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
     @Override
     public int createQueryTicket(SdQueryTicketRequestData queryTicketRequestData) {
-        if (!ServiceSearchEnum.TENANT_ID.getKey().equalsIgnoreCase(queryTicketRequestData.getSearchKey())
-                && !ServiceSearchEnum.POLE_ID.getKey().equalsIgnoreCase(queryTicketRequestData.getSearchKey())
-                && !ServiceSearchEnum.PLATE_ID.getKey().equalsIgnoreCase(queryTicketRequestData.getSearchKey()) ) {
-            if (StringUtils.isBlank(queryTicketRequestData.getCustCode())) {
-                throw new InvalidInputException("Customer Code is Empty.");
-            }
-        }
-
         int ticketMasId = ticketService.createQueryTicket(
                 queryTicketRequestData.getCustCode(),
                 queryTicketRequestData.getServiceNo(),
@@ -120,14 +86,6 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
                 queryTicketRequestData.getSearchKey(),
                 queryTicketRequestData.getSearchValue(),
                 queryTicketRequestData.getCustName());
-
-        if (ServiceSearchEnum.PLATE_ID.getKey().equalsIgnoreCase(queryTicketRequestData.getSearchKey())) {
-            GmbVehicleData vehicleData = gmbApiFacade.getVehicleInfo(queryTicketRequestData.getSearchValue());
-            if (vehicleData != null) {
-                ticketService.insertExtraInfo(ticketMasId, "PSL ID", vehicleData.getPslId());
-                ticketService.insertExtraInfo(ticketMasId, "Route Code", vehicleData.getRouteCode());
-            }
-        }
 
         return ticketMasId;
     }
@@ -253,32 +211,12 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     public List<SdTicketRemarkData> getTicketRemarksByTicketId(Integer ticketMasId) {
         List<SdTicketRemarkData> dataList = new LinkedList<>();
         List<SdTicketRemarkBean> beanList = ticketService.getTicketRemarksByTicketId(ticketMasId);
-        List<WfmJobProgressData> jobProgressDataList = wfmApiFacade.getJobProgessByTicketId(ticketMasId);
-        List<WfmJobRemarksData> jobRemarkDataList = wfmApiFacade.getJobRemarkByTicketId(ticketMasId);
 
 
         if (CollectionUtils.isNotEmpty(beanList)) {
             for (SdTicketRemarkBean bean : beanList) {
                 SdTicketRemarkData data = new SdTicketRemarkData();
                 ticketRemarkDataPopulator.populate(bean, data);
-                dataList.add(data);
-            }
-        }
-
-        if (CollectionUtils.isNotEmpty(jobProgressDataList)) {
-            for (WfmJobProgressData bean : jobProgressDataList) {
-                SdTicketRemarkData data = new SdTicketRemarkData();
-                data.setTicketMasId(ticketMasId);
-                ticketRemarkDataPopulator.populateJobProgressData(bean, data);
-                dataList.add(data);
-            }
-        }
-
-        if (CollectionUtils.isNotEmpty(jobRemarkDataList)) {
-            for (WfmJobRemarksData bean : jobRemarkDataList) {
-                SdTicketRemarkData data = new SdTicketRemarkData();
-                data.setTicketMasId(ticketMasId);
-                ticketRemarkDataPopulator.populateJobRemarkData(bean, data);
                 dataList.add(data);
             }
         }
@@ -397,41 +335,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             LOG.warn("Empty ticketMasId.");
             return null;
         }
-
-        // call WFM API
-        WfmAppointmentResData wfmAppointmentResData;
-        try {
-            wfmAppointmentResData = wfmApiFacade.getAppointmentInfo(ticketMasId);
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            wfmAppointmentResData = null;
-        }
-
-        // API error
-        if (wfmAppointmentResData == null) {
-            LOG.error("WFM Error: No response for ticketMasId " + ticketMasId);
-            return null;
-        }
-
-        // transform
-        try {
-            LocalDateTime appointmentStartDateTime = StringUtils.isEmpty(wfmAppointmentResData.getAppointmentStartDateTime()) ?
-                    null : LocalDateTime.parse(wfmAppointmentResData.getAppointmentStartDateTime(), WfmAppointmentResData.DATE_TIME_FORMATTER);
-            LocalDateTime appointmentEndDateTime = StringUtils.isEmpty(wfmAppointmentResData.getAppointmentEndDateTime()) ?
-                    null : LocalDateTime.parse(wfmAppointmentResData.getAppointmentEndDateTime(), WfmAppointmentResData.DATE_TIME_FORMATTER);
-
-            String appointmentStartStr = appointmentStartDateTime == null ? StringUtils.EMPTY :
-                    appointmentStartDateTime.toLocalDate().toString() + StringUtils.SPACE + appointmentStartDateTime.toLocalTime().toString();
-            String appointmentEndStr = appointmentEndDateTime == null ? StringUtils.EMPTY : "-" + appointmentEndDateTime.toLocalTime().toString();
-            String appointmentDateStr = String.format("%s%s", appointmentStartStr, appointmentEndStr);
-
-            SdAppointmentData appointmentData = new SdAppointmentData();
-            appointmentData.setAppointmentDateStr(appointmentDateStr);
-            return appointmentData;
-        } catch (DateTimeParseException e) {
-            LOG.error(e.getMessage());
-            return null;
-        }
+        return null;
     }
 
     @Override
@@ -449,45 +353,6 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         }).collect(Collectors.toList());
     }
 
-    @Override
-    public BesSubFaultData getFaultInfo(String subscriberId, Pageable pageable) {
-        if (StringUtils.isEmpty(subscriberId)) {
-            return BesSubFaultData.MISSING_PARAM;
-        }
-        BesSubFaultData besSubFaultData = new BesSubFaultData();
-        try {
-            // get ticket paged det list
-            List<SdTicketServiceBean> sdTicketServiceBeanList = ticketService.findServiceBySubscriberId(subscriberId, pageable);
-            if (CollectionUtils.isEmpty(sdTicketServiceBeanList)) {
-                return BesSubFaultData.NOT_FOUND;
-            }
-
-            // get all ticket info list
-            List<SdTicketData> sdTicketDataList = new ArrayList<>();
-            for (SdTicketServiceBean sdTicketServiceBean : sdTicketServiceBeanList) {
-                SdTicketData sdTicketData = getTicketInfo(sdTicketServiceBean.getTicketMasId());
-                sdTicketDataList.add(sdTicketData);
-            }
-
-            // transform SdTicketData to BesFaultInfoData
-            List<BesFaultInfoData> besFaultInfoDataList = new ArrayList<>();
-            for (SdTicketData sdTicketData : sdTicketDataList) {
-                BesFaultInfoData besFaultInfoData = new BesFaultInfoData();
-                faultInfoDataPopulator.populate(sdTicketData, besFaultInfoData);
-                besFaultInfoDataList.add(besFaultInfoData);
-            }
-            if (pageable == null) {
-                besSubFaultData.setList(besFaultInfoDataList);
-            } else {
-                long count = ticketService.countServiceBySubscriberId(subscriberId);
-                besSubFaultData.setPagedList(new PageData<>(besFaultInfoDataList, pageable, count));
-            }
-            return besSubFaultData;
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            return BesSubFaultData.FAIL;
-        }
-    }
 
     @Override
     public SdTicketData getTicketInfo(Integer ticketMasId) {
@@ -496,7 +361,6 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         List<SdTicketServiceData> serviceInfo = getServiceInfo(ticketMasId);
         List<SdTicketRemarkData> remarkInfo = getTicketRemarksByTicketId(ticketMasId);
         List<Map<String, Object>> closeInfo = getCloseInfo(ticketMasId);
-        List<Parameter> parameterList = getParameterList(ticketMasId);
 
         SdTicketData ticketData = new SdTicketData();
         ticketData.setTicketMasInfo(ticketMasInfo);
@@ -504,22 +368,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         ticketData.setServiceInfo(serviceInfo);
         ticketData.setRemarkInfo(remarkInfo);
         ticketData.setCloseInfo(closeInfo);
-        ticketData.setParameterList(parameterList);
 
         return ticketData;
-    }
-
-    private List<Parameter> getParameterList(Integer ticketMasId) {
-        SdGmbTicketEavBean bean = ticketService.getGmbTicketOtherInfo(ticketMasId);
-
-        if (bean == null) {
-            return null;
-        }
-
-        List<Parameter> dataList = new LinkedList<>();
-        dataList.add(Parameter.of("psl", bean.getPsl()));
-        dataList.add(Parameter.of("routeNo", bean.getRouteNo()));
-        return dataList;
     }
 
     private List<Map<String, Object>> getCloseInfo(Integer ticketMasId) {
@@ -553,43 +403,6 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         return buildTicketDataList(beanList);
     }
 
-    @Override
-    public String closeTicketByApi(WfmTicketCloseData wfmTicketCloseData) {
-        String systemId = userService.getCurrentUserUserId();
-        Integer ticketMasId = wfmTicketCloseData.getTicketMasId();
-        String reasonContent = wfmTicketCloseData.getReasonContent();
-        String reasonType = wfmTicketCloseData.getReasonType();
-        CharSequence arrivalTimeStr = wfmTicketCloseData.getArrivalTime();
-        String userId = wfmTicketCloseData.getUsername();
-        List<WfmCompleteInfo> wfmCompleteInfo = wfmTicketCloseData.getWfmCompleteInfo();
-        LOG.info(String.format("Closing ticket by API. (ticketMasId: %d , systemId: %s)", ticketMasId, systemId));
-
-        LocalDateTime arrivalTime = null;
-        if (StringUtils.isEmpty(reasonContent)) {
-            reasonContent = "Empty sub-clear code.";
-        }
-
-        if (StringUtils.isNotEmpty(arrivalTimeStr)){
-            try {
-                arrivalTime = LocalDateTime.parse(arrivalTimeStr, DATE_TIME_FORMATTER);
-            } catch (DateTimeParseException e) {
-                return "Invalid arrivalTime format. " + DATE_TIME_FORMATTER;
-            }
-        }
-
-        // close ticket in servicedesk
-        try {
-            ticketService.closeTicket(ticketMasId, null, reasonType, reasonContent, arrivalTime, systemId, userId, wfmCompleteInfo, false);
-            LOG.info("Closed (by API) ticket in servicedesk. (ticketMasId: " + ticketMasId + ")");
-        } catch (InvalidInputException e) {
-            LOG.warn(e.getMessage());
-            return e.getMessage();
-        }
-
-        // notify oss to close ticket
-        smartMeterFacade.notifyCloseTicket(ticketMasId);
-        return null;
-    }
 
     @Override
     public String closeTicket(int ticketMasId, String closeCode, String reasonType, String reasonContent, String contactName, String contactNumber) {
@@ -601,17 +414,6 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         } catch (InvalidInputException e) {
             LOG.warn(e.getMessage());
             return e.getMessage();
-        }
-
-        // notify oss to close ticket
-        smartMeterFacade.notifyCloseTicket(ticketMasId);
-
-        // notify wfm to close ticket
-        boolean isClosedInWfm = wfmApiFacade.closeTicket(ticketMasId);
-        if (!isClosedInWfm) {
-            String wfmFail = "Cannot notify WFM to close ticket! (ticketMasId: " + ticketMasId + ")";
-            LOG.warn(wfmFail);
-            return wfmFail;
         }
 
         return null;
@@ -658,21 +460,10 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public void createJob4Wfm(int ticketMasId, boolean notifyOss) throws InvalidInputException, ApiException {
+    public void createJob4Wfm(int ticketMasId, boolean notifyOss) throws InvalidInputException {
         SdTicketData ticketInfo = getTicketInfo(ticketMasId);
         if(ticketInfo==null){
             throw new InvalidInputException("Ticket not found.");
-        }
-
-        // get exchange for smart meter
-        SdTicketMasData ticketMasData = ticketInfo.getTicketMasInfo();
-        if (ServiceSearchEnum.POLE_ID.getKey().equals(ticketMasData.getSearchKey())) {
-            String serviceNumber = ticketMasData == null ? null : ticketMasData.getSearchValue();
-            String exchangeId = getExchangeIdByPoleId(serviceNumber);
-            if (StringUtils.isEmpty(exchangeId)) {
-                throw new InvalidInputException("Exchange not found.");
-            }
-            ticketMasData.setExchangeId(exchangeId);
         }
 
         // check service
@@ -707,35 +498,13 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             }
         }
 
-        try {
-            Integer jobId = wfmApiFacade.createJob(ticketInfo);
-            updateJobIdInService(jobId, ticketMasId);
-        } catch (JsonProcessingException e) {
-            throw new ApiException(String.format("WFM Error: Cannot create job for ticket mas id %s.", ticketMasId));
-        }
-
-        // notify oss for hotline smart meter job ticket
-        String createDate = ticketMasData.getCreateDate() == null ? null : ticketMasData.getCreateDate().format(DEFAULT_DATE_TIME_FORMAT);
-        if (poleId != null && notifyOss){
-            ossApiFacade.notifyTicketStatus(poleId, ticketMasId, createDate, OssTicketActionEnum.CREATE.getCode());
-        } else if (plateId != null && notifyOss) {
-            gmbApiFacade.notifyTicketStatus(plateId, ticketMasId, createDate, OssTicketActionEnum.CREATE.getCode());
-        }
     }
 
     private String getExchangeIdByPoleId(String serviceNumber) {
         if (StringUtils.isEmpty(serviceNumber)) {
             return null;
         }
-
-        OssSmartMeterData ossSmartMeterData = ossApiFacade.queryMeterInfo(serviceNumber.replaceAll(StringUtils.SPACE, StringUtils.EMPTY));
-        if( ossSmartMeterData==null || StringUtils.isEmpty(ossSmartMeterData.getPoleId())){
-            String warnMsg = "Meter profile not found in OSS. (poleId=" + serviceNumber + ")";
-            LOG.warn(warnMsg);
-            return null;
-        }
-
-        return ossSmartMeterData.getExchange();
+        return null;
     }
 
     @Override
@@ -860,48 +629,6 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         return ticketService.getWorkGroupList();
     }
 
-    @Override
-    public WfmMakeApptData getMakeApptDataByTicketDetId(Integer ticketDetId) {
-        SdMakeApptBean bean = ticketService.getTicketServiceByDetId(ticketDetId);
-
-        if (bean == null) {
-            return null;
-        }
-
-        WfmMakeApptData data = new WfmMakeApptData();
-        data.setBsn(bean.getBsn());
-        data.setServiceType(bean.getServiceType());
-        data.setTicketMasId(bean.getTicketMasId());
-        data.setTicketDetId(bean.getTicketDetId());
-        data.setSymptomCode(bean.getSymptomCode());
-
-        return data;
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public String createTicket4hktCloud(HktCloudCaseData cloudCaseData) {
-        int ticketId = Integer.parseInt(cloudCaseData.getRequestId());
-        String contactEmail = "";
-        String contactNumber = "";
-        StringBuilder remark = new StringBuilder();
-        for (Attribute attr : cloudCaseData.getAttributes()) {
-            if (StringUtils.equals("Contact Email", attr.getAttrName())) {
-                contactEmail = attr.getAttrValue();
-            } else if (StringUtils.equals("Contact Phone", attr.getAttrName())) {
-                contactNumber = attr.getAttrValue();
-            } else {
-                remark.append(attr.getAttrName()).append(":").append(StringUtils.isEmpty(attr.getAttrValue())? "NULL":attr.getAttrValue()).append(",");
-            }
-        }
-        ticketService.createHktCloudTicket(ticketId,cloudCaseData.getTenantId(),cloudCaseData.getCreatedBy());
-        ticketService.insertTicketContactInfo(ticketId,"CUST",cloudCaseData.getCreatedBy(),contactNumber,contactEmail,"");
-        ticketService.createTicketCustRemarks(ticketId,remark.toString());
-        for (Attachment attachment : cloudCaseData.getAttachments()) {
-            ticketService.insertUploadFile(ticketId, attachment.getFileName(), attachment.getContent());
-        }
-        return "Creation success.";
-    }
 
     @Override
     public String getNewTicketId() {
@@ -909,51 +636,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
     }
 
     @Override
-    public List<HktCloudViewData> getHktCloudTicket(String tenantId, String username) {
-        return ticketService.getHktCloudTicket(tenantId,username).stream().map(bean -> {
-            HktCloudViewData data = new HktCloudViewData();
-            cloudViewDataPopulator.populate(bean,data);
-            return data;
-        }).collect(Collectors.toList());
-    }
-
-    @Override
     public List<SdTicketUploadFileData> getUploadFiles(int ticketMasId) {
-        return ticketService.getUploadFiles(ticketMasId).stream().map(bean -> {
-            SdTicketUploadFileData data = new SdTicketUploadFileData();
-            ticketUploadFileDataPopulator.populate(bean,data);
-            return data;
-        }).collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public String insertUploadFile(Integer ticketMasId, List<Attachment> attachments) {
-        try {
-            ticketService.removeUploadFileByTicketMasId(ticketMasId);
-            for (Attachment attachment : attachments) {
-                ticketService.insertUploadFile(ticketMasId, attachment.getFileName(), attachment.getContent());
-            }
-        } catch (Exception e) {
-            String errorMsg = "file upload faild.";
-            LOG.error(errorMsg);
-            return errorMsg;
-        }
         return null;
-    }
-
-    @Override
-    public void insertExtraInfo(Integer ticketMasId, List<Attribute> attributes) {
-        try {
-            ticketService.deleteEntityVarchar(ticketMasId);
-            attributes.forEach(entity -> {
-                if (StringUtils.isNotEmpty(entity.getAttrName()) && StringUtils.isNotEmpty(entity.getAttrValue())) {
-                    ticketService.insertExtraInfo(ticketMasId, entity.getAttrName(), entity.getAttrValue());
-                }
-            });
-        } catch (Exception e) {
-            LOG.error(e.getMessage());
-        }
     }
 
     @Override
@@ -1101,7 +785,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
     @Override
     @Transactional
-    public void createJob4Wfm(Integer ticketMasId, List<SdTicketContactData> contactList, List<SdRequestTicketServiceData> serviceList, String remarks) throws InvalidInputException, ApiException, RuntimeException {
+    public void createJob4Wfm(Integer ticketMasId, List<SdTicketContactData> contactList, List<SdRequestTicketServiceData> serviceList, String remarks) throws InvalidInputException, RuntimeException {
         // check contact
         for (SdTicketContactData data : contactList) {
             if (StringUtils.isEmpty(data.getContactName())) {
@@ -1139,16 +823,6 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         SdTicketMasData ticketMasData = getTicketMas(ticketMasId);
         if(ticketMasData==null){
             throw new InvalidInputException("Ticket not found.");
-        }
-
-        // get exchange for smart meter
-        String exchangeId = null;
-        if (ServiceSearchEnum.POLE_ID.getKey().equals(ticketMasData.getSearchKey())) {
-            String serviceNumber = ticketMasData == null ? null : ticketMasData.getSearchValue();
-            exchangeId = getExchangeIdByPoleId(serviceNumber);
-            if (StringUtils.isEmpty(exchangeId)) {
-                throw new InvalidInputException("Exchange not found.");
-            }
         }
 
         Integer poleId = null;
@@ -1189,25 +863,6 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             throw new RuntimeException("Duplicate remarks already exists.");
         }
 
-        // create wfm job
-        try {
-            SdTicketData ticketInfo = getTicketInfo(ticketMasId);
-            SdTicketMasData ticketMasInfo = ticketInfo.getTicketMasInfo();
-            ticketMasInfo.setExchangeId(exchangeId);
-
-            Integer jobId = wfmApiFacade.createJob(ticketInfo);
-            updateJobIdInService(jobId, ticketMasId);
-        } catch (JsonProcessingException e) {
-            throw new ApiException(String.format("WFM Error: Cannot create job for ticket mas id %s.", ticketMasId));
-        }
-
-        // notify oss for hotline smart meter job ticket
-        String createDate = ticketMasData.getCreateDate() == null ? null : ticketMasData.getCreateDate().format(DEFAULT_DATE_TIME_FORMAT);
-        if (poleId != null){
-            ossApiFacade.notifyTicketStatus(poleId, ticketMasId, createDate, OssTicketActionEnum.CREATE.getCode());
-        } else if (plateId != null) {
-            gmbApiFacade.notifyTicketStatus(plateId, ticketMasId, createDate, OssTicketActionEnum.CREATE.getCode());
-        }
     }
 
     @Override

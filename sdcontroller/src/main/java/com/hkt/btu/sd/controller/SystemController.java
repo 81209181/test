@@ -1,18 +1,22 @@
 package com.hkt.btu.sd.controller;
 
-import com.hkt.btu.common.facade.data.*;
+import com.hkt.btu.common.facade.data.BtuConfigParamData;
+import com.hkt.btu.common.facade.data.BtuCronJobInstData;
+import com.hkt.btu.common.facade.data.BtuCronJobProfileData;
 import com.hkt.btu.sd.controller.response.SimpleAjaxResponse;
-import com.hkt.btu.sd.controller.response.helper.ResponseEntityHelper;
-import com.hkt.btu.sd.facade.*;
-import com.hkt.btu.sd.facade.data.SdPublicHolidayData;
+import com.hkt.btu.sd.facade.SdConfigParamFacade;
+import com.hkt.btu.sd.facade.SdJobFacade;
+import com.hkt.btu.sd.facade.SdSiteConfigFacade;
+import com.hkt.btu.sd.facade.SdUserFacade;
 import com.hkt.btu.sd.facade.data.SdSiteConfigData;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
@@ -33,12 +37,8 @@ public class SystemController {
     SdSiteConfigFacade sdSiteConfigFacade;
     @Resource(name = "jobFacade")
     SdJobFacade sdJobFacade;
-    @Resource(name = "publicHolidayFacade")
-    SdPublicHolidayFacade sdPublicHolidayFacade;
     @Resource(name = "userFacade")
     SdUserFacade userFacade;
-    @Resource(name = "apiClientFacade")
-    SdApiClientFacade sdApiClientFacade;
 
     @GetMapping({"", "/", "/index"})
     public String index() {
@@ -238,110 +238,6 @@ public class SystemController {
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         } else {
             return ResponseEntity.ok(SimpleAjaxResponse.of(false, errorMsg));
-        }
-    }
-
-    @GetMapping("/public-holiday")
-    public String ListPublicHoliday() {
-        return "system/publicHoliday/searchPublicHoliday";
-    }
-
-    @GetMapping("/public-holiday/ajax-page-public-holiday")
-    public ResponseEntity<?> ajaxListPublicHoliday(@RequestParam(defaultValue = "0") int draw,
-                                                   @RequestParam(defaultValue = "0") int start,
-                                                   @RequestParam(defaultValue = "10") int length,
-                                                   @RequestParam(required = false) String year) {
-        int page = start / length;
-        Pageable pageable = PageRequest.of(page, length);
-
-        PageData<SdPublicHolidayData> pageData = sdPublicHolidayFacade.getPublicHolidayList(pageable, year);
-        return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
-    }
-
-    @ResponseBody
-    @GetMapping("/public-holiday/ajax-list-public-holiday")
-    public List<SdPublicHolidayData> ajaxListPublicHoliday() {
-        List<SdPublicHolidayData> allPublicHolidayList = sdPublicHolidayFacade.getAllPublicHolidayList();
-        return allPublicHolidayList;
-    }
-
-    @PostMapping("/public-holiday/ajax-add-public-holiday")
-    public ResponseEntity<?> ajaxAddPublicHoliday(@RequestBody List<SdPublicHolidayData> data) {
-        boolean result = sdPublicHolidayFacade.addPublicHoliday(data);
-        if (result) {
-            return ResponseEntity.ok(SimpleAjaxResponse.of(true, "insert successful."));
-        } else {
-            return ResponseEntity.badRequest().body("Cannot import duplicate/invalid date.");
-        }
-    }
-
-    @PostMapping("/public-holiday/delete-public-holiday")
-    public ResponseEntity<?> deletePublicHoliday(@RequestParam String publicHoliday) {
-        boolean result = sdPublicHolidayFacade.deletePublicHoliday(publicHoliday);
-        if (result) {
-            return ResponseEntity.ok(SimpleAjaxResponse.of());
-        } else {
-            return ResponseEntity.badRequest().body("delete failed.");
-        }
-    }
-
-    @PostMapping("/public-holiday/create-public-holiday")
-    public ResponseEntity<?> createPublicHoliday(@RequestParam String publicHoliday,
-                                                 @RequestParam String description) {
-        try {
-            sdPublicHolidayFacade.createPublicHoliday(publicHoliday, description);
-            return ResponseEntity.ok(SimpleAjaxResponse.of());
-        } catch (Exception e) {
-            return ResponseEntity.ok(SimpleAjaxResponse.of(false, e.getMessage()));
-        }
-    }
-
-    @GetMapping("/manage-api")
-    public String ListApiUser(){
-        return "system/manageApi/listApiUser";
-    }
-
-    @GetMapping("/manage-api/ajax-list-api-user")
-    public ResponseEntity<?> ajaxListApiUser(){
-        List<BtuApiUserData> dataList = sdApiClientFacade.getApiUser();
-
-        if (dataList == null) {
-            return ResponseEntity.badRequest().body("user list not found.");
-        } else {
-            return ResponseEntity.ok(dataList);
-        }
-    }
-
-    @PostMapping("/manage-api/getAuthorization")
-    public ResponseEntity<?> getAuthorization(String apiName) {
-        String authPlainText = String.format("%s:%s", apiName, sdApiClientFacade.getApiAuthKey(apiName));
-
-        if (StringUtils.isEmpty(authPlainText)) {
-            return ResponseEntity.ok(SimpleAjaxResponse.of(false, "Get Authorization failed."));
-        }
-
-        String encodedAuth = Base64.getEncoder().encodeToString(authPlainText.getBytes(StandardCharsets.UTF_8));
-        String apiKey = String.format("Bearer %s", encodedAuth);
-        return ResponseEntity.ok(SimpleAjaxResponse.of(true, apiKey));
-    }
-
-    @PostMapping("/manage-api/regenerateKey")
-    public ResponseEntity<?> regenerateKey(String apiName) {
-        try {
-            sdApiClientFacade.regenerateApiClientKey(apiName);
-            return ResponseEntity.ok(SimpleAjaxResponse.of());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Re-generate failed.");
-        }
-    }
-
-    @PostMapping("/manage-api/reloadCache")
-    public ResponseEntity<?> reloadCache(String apiName) {
-        try {
-            sdApiClientFacade.reloadCache(apiName);
-            return ResponseEntity.ok(SimpleAjaxResponse.of());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Reload failed.");
         }
     }
 }

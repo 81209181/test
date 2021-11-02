@@ -8,10 +8,6 @@
     <alias name="sdCacheFacade" alias="btuCacheFacade"/>
     <bean id="sdCacheFacade" class="com.hkt.btu.sd.facade.impl.SdCacheFacadeImpl"/>
 
-    <alias name="sdApiClientFacade" alias="apiClientFacade"/>
-    <alias name="sdApiClientFacade" alias="btuApiClientFacade"/>
-    <bean id="sdApiClientFacade" class="com.hkt.btu.sd.facade.impl.SdApiClientFacadeImpl"/>
-
     <alias name="sdConfigParamFacade" alias="configParamFacade"/>
     <alias name="sdConfigParamFacade" alias="btuConfigParamFacade"/>
     <bean id="sdConfigParamFacade" class="com.hkt.btu.sd.facade.impl.SdConfigParamFacadeImpl"/>
@@ -19,10 +15,6 @@
     <alias name="sdJobFacade" alias="jobFacade"/>
     <alias name="sdJobFacade" alias="btuJobFacade"/>
     <bean id="sdJobFacade" class="com.hkt.btu.sd.facade.impl.SdJobFacadeImpl"/>
-
-    <alias name="sdReportFacade" alias="reportFacade"/>
-    <alias name="sdReportFacade" alias="btuReportFacade"/>
-    <bean id="sdReportFacade" class="com.hkt.btu.sd.facade.impl.SdReportFacadeImpl"/>
 
     <alias name="sdUserFacadeImpl" alias="userFacade"/>
     <bean id="sdUserFacadeImpl" class="com.hkt.btu.sd.facade.impl.SdUserFacadeImpl"/>
@@ -39,9 +31,6 @@
     <alias name="sdAuditTrailFacade" alias="auditTrailFacade"/>
     <bean id="sdAuditTrailFacade" class="com.hkt.btu.sd.facade.impl.SdAuditTrailFacadeImpl"/>
 
-    <alias name="sdRequestCreateFacade" alias="requestCreateFacade"/>
-    <bean id="sdRequestCreateFacade" class="com.hkt.btu.sd.facade.impl.SdRequestCreateFacadeImpl"/>
-
     <alias name="sdTicketFacade" alias="ticketFacade"/>
     <bean id="sdTicketFacade" class="com.hkt.btu.sd.facade.impl.SdTicketFacadeImpl"/>
 
@@ -51,42 +40,12 @@
     <alias name="sdServiceTypeFacade" alias="serviceTypeFacade" />
     <bean id="sdServiceTypeFacade" class="com.hkt.btu.sd.facade.impl.SdServiceTypeFacadeImpl"/>
 
-    <alias name="sdPublicHolidayFacade" alias="publicHolidayFacade"/>
-    <bean id="sdPublicHolidayFacade" class="com.hkt.btu.sd.facade.impl.SdPublicHolidayFacadeImpl"/>
-
-    <alias name="sdSmartMeterFacade" alias="smartMeterFacade"/>
-    <bean id="sdSmartMeterFacade" class="com.hkt.btu.sd.facade.impl.SdSmartMeterFacadeImpl"/>
-
     <!--  API Facade  -->
-    <alias name="sdBesApiFacade" alias="besApiFacade"/>
-    <bean name="sdBesApiFacade" class="com.hkt.btu.sd.facade.impl.BesApiFacadeImpl"/>
-
-    <alias name="sdItsmApiFacade" alias="itsmApiFacade"/>
-    <bean name="sdItsmApiFacade" class="com.hkt.btu.sd.facade.impl.ItsmApiFacadeImpl"/>
-
-    <alias name="sdNorarsApiFacade" alias="norarsApiFacade"/>
-    <bean name="sdNorarsApiFacade" class="com.hkt.btu.sd.facade.impl.NorarsApiFacadeImpl"/>
-
-    <alias name="sdWfmApiFacade" alias="wfmApiFacade"/>
-    <bean name="sdWfmApiFacade" class="com.hkt.btu.sd.facade.impl.WfmApiFacadeImpl"/>
-
-    <alias name="sdCloudApiFacade" alias="cloudApiFacade"/>
-    <bean name="sdCloudApiFacade" class="com.hkt.btu.sd.facade.impl.CloudApiFacadeImpl"/>
-
-    <alias name="sdUtApiFacade" alias="utApiFacade"/>
-    <bean id="sdUtApiFacade" class="com.hkt.btu.sd.facade.impl.UtApiFacadeImpl"/>
-
-    <alias name="sdOssApiFacade" alias="ossApiFacade"/>
-    <bean id="sdOssApiFacade" class="com.hkt.btu.sd.facade.impl.OssApiFacadeImpl"/>
-
     <alias name="sdStatisticFacade" alias="statisticFacade"/>
     <bean id="sdStatisticFacade" class="com.hkt.btu.sd.facade.impl.SdStatisticFacadeImpl"/>
 
     <alias name="sdServiceTypeUserRoleFacade" alias="serviceTypeUserRoleFacade"/>
     <bean id="sdServiceTypeUserRoleFacade" class="com.hkt.btu.sd.facade.impl.SdServiceTypeUserRoleFacadeImpl"/>
-
-    <alias name="sdGmbApiFacade" alias="gmbApiFacade"/>
-    <bean id="sdGmbApiFacade" class="com.hkt.btu.sd.facade.impl.GmbApiFacadeImpl"/>
 
     <!-- Populator -->
     <alias name="sdConfigParamDataPopulator" alias="configParamDataPopulator"/>
@@ -101,10 +60,6 @@
     <alias name="sdCronJobInstDataPopulator" alias="btuCronJobInstDataPopulator"/>
     <bean id="sdCronJobInstDataPopulator" class="com.hkt.btu.sd.facade.populator.SdCronJobInstDataPopulator"/>
 
-    <alias name="sdReportProfileDataPopulator" alias="reportProfileDataPopulator"/>
-    <alias name="sdReportProfileDataPopulator" alias="btuReportProfileDataPopulator"/>
-    <bean id="sdReportProfileDataPopulator" class="com.hkt.btu.sd.facade.populator.SdReportProfileDataPopulator"/>
-
     <alias name="sdUserDataPopulator" alias="userDataPopulator"/>
     <bean id="sdUserDataPopulator" class="com.hkt.btu.sd.facade.populator.SdUserDataPopulator"/>
 
@@ -113,8 +68,6 @@
 
     <alias name="sdSiteInstanceDataPopulator" alias="siteInstanceDataPopulator"/>
     <bean id="sdSiteInstanceDataPopulator" class="com.hkt.btu.sd.facade.populator.SdSiteConfigDataPopulator"/>
-
-    <bean id="requestCreateSearchResultDataPopulator" class="com.hkt.btu.sd.facade.populator.RequestCreateSearchResultDataPopulator"/>
 
     <alias name="sdUserRoleDataPopulator" alias="userRoleDataPopulator"/>
     <bean id="sdUserRoleDataPopulator" class="com.hkt.btu.sd.facade.populator.SdUserRoleDataPopulator"/>
@@ -143,9 +96,6 @@
     <alias alias="symptomMappingDataPopulator" name="sdSymptomMappingDataPopulator"/>
     <bean class="com.hkt.btu.sd.facade.populator.SdSymptomMappingDataPopulator" id="sdSymptomMappingDataPopulator"/>
 
-    <alias alias="faultInfoDataPopulator" name="besFaultInfoDataPopulator"/>
-    <bean class="com.hkt.btu.sd.facade.populator.BesFaultInfoDataPopulator" id="besFaultInfoDataPopulator"/>
-
     <alias name="sdTicketInfoDataPopulator" alias="ticketInfoDataPopulator"/>
     <bean class="com.hkt.btu.sd.facade.populator.SdTicketInfoDataPopulator" id="sdTicketInfoDataPopulator"/>
 
@@ -154,24 +104,6 @@
 
     <alias name="sdTicketServiceInfoDataPopulator" alias="ticketServiceInfoDataPopulator"/>
     <bean class="com.hkt.btu.sd.facade.populator.SdTicketServiceInfoDataPopulator" id="sdTicketServiceInfoDataPopulator"/>
-
-    <alias name="sdDnGroupDataPopulator" alias="dnGroupDataPopulator"/>
-    <bean class="com.hkt.btu.sd.facade.populator.SdDnGroupDataPopulator" id="sdDnGroupDataPopulator"/>
-
-    <alias name="sdDnPlanDataPopulator" alias="dnPlanDataPopulator"/>
-    <bean class="com.hkt.btu.sd.facade.populator.SdDnPlanDataPopulator" id="sdDnPlanDataPopulator"/>
-
-    <alias name="hktCloudViewDataPopulator" alias="cloudViewDataPopulator"/>
-    <bean class="com.hkt.btu.sd.facade.populator.HktCloudViewDataPopulator" id="hktCloudViewDataPopulator"/>
-
-    <alias name="sdPublicHolidayDataPopulator" alias="publicHolidayDataPopulator"/>
-    <bean id="sdPublicHolidayDataPopulator" class="com.hkt.btu.sd.facade.populator.SdPublicHolidayDataPopulator"/>
-
-    <alias name="utCallPageDataPopulator" alias="callPageDataPopulator"/>
-    <bean id="utCallPageDataPopulator" class="com.hkt.btu.sd.facade.populator.UTCallPageDataPopulator"/>
-
-    <alias name="sdTicketUploadFileDataPopulator" alias="ticketUploadFileDataPopulator"/>
-    <bean class="com.hkt.btu.sd.facade.populator.SdTicketUploadFileDataPopulator" id="sdTicketUploadFileDataPopulator"/>
 
     <alias name="sdStatisticDataPopulator" alias="statisticDataPopulator"/>
     <bean id="sdStatisticDataPopulator" class="com.hkt.btu.sd.facade.populator.SdStatisticDataPopulator"/>

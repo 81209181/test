@@ -3,8 +3,6 @@ package com.hkt.btu.sd.facade.populator;
 import com.hkt.btu.common.facade.populator.AbstractDataPopulator;
 import com.hkt.btu.sd.core.service.bean.SdTicketRemarkBean;
 import com.hkt.btu.sd.facade.data.SdTicketRemarkData;
-import com.hkt.btu.sd.facade.data.wfm.WfmJobProgressData;
-import com.hkt.btu.sd.facade.data.wfm.WfmJobRemarksData;
 
 public class SdTicketRemarkDataPopulator extends AbstractDataPopulator<SdTicketRemarkData> {
 
@@ -14,19 +12,5 @@ public class SdTicketRemarkDataPopulator extends AbstractDataPopulator<SdTicketR
         target.setRemarks(source.getRemarks());
         target.setCreatedate(source.getCreatedate());
         target.setCreateby(source.getCreateby());
-    }
-
-    public void populateJobProgressData(WfmJobProgressData source, SdTicketRemarkData target) {
-        target.setRemarksType(SdTicketRemarkData.REMARKS_TYPE.WFM_PROGRESS);
-        target.setRemarks(source.getRemark());
-        target.setCreatedate(source.getCreateDate() == null ? null : source.getCreateDate().toLocalDateTime());
-        target.setCreateby(source.getCreateId());
-    }
-
-    public void populateJobRemarkData(WfmJobRemarksData source, SdTicketRemarkData target) {
-        target.setRemarksType(SdTicketRemarkData.REMARKS_TYPE.WFM_REMARKS);
-        target.setRemarks(source.getRemark());
-        target.setCreatedate(source.getCreateDate() == null ? null : source.getCreateDate().toLocalDateTime());
-        target.setCreateby(source.getCreateId());
     }
 }
