@@ -139,7 +139,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             throw new UserNotFoundException("Empty user id input.");
         }
 
-        Set<GrantedAuthority> authorities = getCurrentUserBean().getAuthorities();
+//        Set<GrantedAuthority> authorities = getCurrentUserBean().getAuthorities();
 
         // get user data
         SdUserEntity sdUserEntity = sdUserMapper.getUserByUserId(userId);
@@ -153,7 +153,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         // get roleId
         List<String> roleIdList = roleEntityList.stream().map(SdUserRoleEntity::getRoleId).collect(Collectors.toList());
 
-        userRoleService.checkUserRole(authorities, roleIdList, true);
+//        userRoleService.checkUserRole(authorities, roleIdList, true);
 
         // construct bean
         SdUserBean userBean = new SdUserBean();
@@ -618,28 +618,23 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
 
     public void requestResetPassword(String username) throws UserNotFoundException, MessagingException {
         // check requestor rights
-        BtuUserBean currentUser = getCurrentUserBean();
+//        BtuUserBean currentUser = getCurrentUserBean();
         // get user data
         SdUserBean resetPwdUser = getUserByUserId(username);
         if (ObjectUtils.isEmpty(resetPwdUser)) {
             throw new UserNotFoundException();
         }
-        if (currentUser.getRoles().stream().noneMatch(s -> StringUtils.equals(s, SdUserRoleEntity.SYS_ADMIN))) {
-            if (resetPwdUser.getRoles().stream().noneMatch(s -> currentUser.getRoles().contains("TH__" + s))) {
+        if (resetPwdUser.getRoles().stream().noneMatch(s -> StringUtils.equals(s, SdUserRoleEntity.SYS_ADMIN))) {
+            if (resetPwdUser.getRoles().stream().noneMatch(s -> resetPwdUser.getRoles().contains("TH__" + s))) {
                 throw new RuntimeException("Reset password error: You are not the team head of this user.");
             }
         }
         String userId = resetPwdUser.getUserId();
-        // reject LDAP user to reset password
-        String ldapDomain = resetPwdUser.getLdapDomain();
-        if (StringUtils.isNotEmpty(ldapDomain)) {
-            throw new InvalidUserTypeException("LDAP users are not allowed to reset passwords.");
-        }
 
         boolean isNewlyCreated = resetPwdUser.getPasswordModifydate() == null;
-        String recipient = Optional.ofNullable(currentUser.getEmail()).orElseThrow(() -> new UserNotFoundException("Current User not email."));
+        String recipient = Optional.ofNullable(resetPwdUser.getEmail()).orElseThrow(() -> new UserNotFoundException("Current User not email."));
         Map<String, Object> dataMap = new HashMap<>();
-        dataMap.put(SdEmailBean.EMAIL_BASIC_RECIPIENT_NAME, currentUser.getName());
+        dataMap.put(SdEmailBean.EMAIL_BASIC_RECIPIENT_NAME, resetPwdUser.getName());
         if (isNewlyCreated) {
             // valid init password otp
             SdOtpBean sdOtpBean = sdOtpService.getValidOtp(userId, SdOtpEntity.ACTION.INIT_PWD);
