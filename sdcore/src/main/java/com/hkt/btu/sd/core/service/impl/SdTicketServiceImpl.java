@@ -49,8 +49,6 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Resource
     private SdSymptomMapper symptomMapper;
     @Resource
-    SdUserOwnerAuthRoleMapper userOwnerAuthRoleMapper;
-    @Resource
     SdCloseCodeMapper sdCloseCodeMapper;
     @Resource
     SdTicketOtherMapper ticketOtherMapper;
@@ -461,7 +459,7 @@ public class SdTicketServiceImpl implements SdTicketService {
                         }
                         userRoleService.checkUserRole(currentUserBean.getAuthorities(), List.of(th_role), false);
                     } catch (InsufficientAuthorityException e1) {
-                        try {
+                        /*try {
                             // check auth role mapping
                             List<String> ticketAuth = userOwnerAuthRoleMapper.getUserOwnerAuthRole(sdTicketMasBean.getOwningRole()).stream()
                                     .map(SdUserOwnerAuthRoleEntity::getAuthRoleId).collect(Collectors.toList());
@@ -469,7 +467,7 @@ public class SdTicketServiceImpl implements SdTicketService {
                         } catch (InsufficientAuthorityException e2) {
                             LOG.warn(e2.getMessage());
                             throw new InvalidInputException("This ticket belongs to another team (" + sdTicketMasBean.getOwningRole() + ").");
-                        }
+                        }*/
                     }
                 }
             }

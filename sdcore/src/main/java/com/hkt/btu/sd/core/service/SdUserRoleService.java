@@ -2,9 +2,7 @@ package com.hkt.btu.sd.core.service;
 
 import com.hkt.btu.sd.core.dao.entity.SdUserRoleEntity;
 import com.hkt.btu.sd.core.exception.InsufficientAuthorityException;
-import com.hkt.btu.sd.core.service.bean.SdUserOwnerAuthRoleBean;
 import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
-import com.hkt.btu.sd.core.service.bean.SdUserRoleWorkgroupBean;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.List;
@@ -37,20 +35,4 @@ public interface SdUserRoleService {
     List<List<Object>> getRole4Chart();
 
     SdUserRoleBean loadUserRoleTree();
-
-    List<SdUserRoleBean> getRole4UserOwnerAuth();
-
-    List<SdUserOwnerAuthRoleBean> getUserOwnerAuthRoleList();
-
-    String createUserOwnerAuthRole(String ownerId, String authRoleId, String serviceTypeCode);
-
-    String delUserOwnerAuthRole(String ownerId, String authRoleId, String serviceTypeCode);
-
-    List<SdUserRoleWorkgroupBean> getUserRoleWorkgroupList();
-
-    String delUserRoleWorkgroup(String roleId, String workgroup);
-
-    String createUserRoleWorkgroup(String roleId, String workgroup);
-
-    List<String> getWorkgroupList();
 }

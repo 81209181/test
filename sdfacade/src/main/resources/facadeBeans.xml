@@ -122,8 +122,4 @@
 
     <alias name="sdTicketTimePeriodSummaryDataPopulator" alias="ticketTimePeriodSummaryDataPopulator"/>
     <bean id="sdTicketTimePeriodSummaryDataPopulator" class="com.hkt.btu.sd.facade.populator.SdTicketTimePeriodSummaryDataPopulator"/>
-
-    <alias name="sdUserOwnerAuthRoleDataPopulator" alias="userOwnerAuthRoleDataPopulator"/>
-    <bean id="sdUserOwnerAuthRoleDataPopulator" class="com.hkt.btu.sd.facade.populator.SdUserOwnerAuthRoleDataPopulator"/>
-
 </beans>
