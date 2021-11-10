@@ -2,10 +2,10 @@ spring:
   main:
     allow-bean-definition-overriding: true
   datasource:
-    url: jdbc:oracle:thin:@10.111.14.154:1521:sdsDEV
+    url: jdbc:oracle:thin:@localhost:1521:test
     #sdsvt
-    username: sd
-    password: dwfm123
+    username: test
+    password: Aa123456
     driver-class-name: oracle.jdbc.OracleDriver
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
@@ -34,7 +34,7 @@ server:
 
 servicedesk:
   aesKeystore:
-    path: D:\IdeaProjects\servicedesk\setup\server\keystore\non-prod\servicedesk-aes-keystore.jck
+    path: D:\IdeaProjects\sd\setup\server\keystore\non-prod\servicedesk-aes-keystore.jck
     storePass: 7284ec9a-11ab-4999-936f-7f823376bd37
 
 keycloak:

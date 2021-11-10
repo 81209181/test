@@ -1,9 +1,11 @@
 package com.hkt.btu.sd;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import com.hkt.btu.common.core.service.BtuUserService;
 import com.hkt.btu.sd.core.dao.mapper.SdUserMapper;
 import com.hkt.btu.sd.core.service.SdCacheService;
 import com.hkt.btu.sd.core.service.SdServiceTypeService;
+import com.hkt.btu.sd.core.service.SdUserService;
 import com.hkt.btu.sd.core.service.bean.SdUserRoleBean;
 import com.hkt.btu.sd.core.service.constant.SdCacheEnum;
 import org.junit.Before;
@@ -11,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -41,6 +44,10 @@ public class AppTest {
     SdServiceTypeService serviceTypeService;
     @Resource(name = "cacheService")
     SdCacheService cacheService;
+    @Resource(name = "userService")
+    BtuUserService userService;
+    @Resource(name = "btuPasswordEncoder")
+    BCryptPasswordEncoder btuPasswordEncoder;
 
     @Test
     public void name() {
@@ -144,5 +151,12 @@ public class AppTest {
     public static void main(String[] args) throws ClassNotFoundException {
          Class<?> aClass = Class.forName("com.hkt.btu.common.core.job.BtuSqlReportJob");
          System.out.println(aClass.toString());
+    }
+
+    @Test
+    public void test(){
+        String password = "Aa123456";
+        String encodedPassword = btuPasswordEncoder.encode(password);
+        System.out.println(encodedPassword);
     }
 }
