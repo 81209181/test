@@ -51,7 +51,7 @@ public class DbDaoAuthenticationProvider extends DaoAuthenticationProvider {
             userService.resetLoginTriedByUsername(user.getUsername());
             if(user instanceof BtuUser){
                 BtuUser btuUser = (BtuUser) user;
-                auditTrailService.insertLoginAuditTrail(btuUser);
+                //auditTrailService.insertLoginAuditTrail(btuUser);
                 BtuUserBean btuUserBean = btuUser.getUserBean();
                 if(btuUserBean!=null){
                     btuUserBean.setLoginTried(0);

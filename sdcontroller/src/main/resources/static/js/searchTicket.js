@@ -35,11 +35,9 @@ $(document).ready(function() {
         input += "&completeDateTo=" + $("#completeDateTo").val();
         input += "&createBy=" + $("#createBy").val();
         input += "&ticketMasId=" + $("#ticket_mas_id").val();
-        input += "&custCode=" + $("#customer_code").val();
         input += "&serviceNumber=" + $("#serviceNumber").val();
         input += "&ticketType=" + $("#ticketType").val();
-        input += "&serviceType=" + $("#serviceType").val();
-        input += "&owningRole=" + $("#owningRole").val();
+        input += "&priority=" + $("#priority").val();
 
         xhr.open("GET", ctx + "/ticket/exportExcel?" + input, true);
         xhr.responseType = 'arraybuffer';
@@ -100,11 +98,9 @@ function createSearchTicketDataTable(){
                 d.completeDateTo = $("#completeDateTo").val();
                 d.createBy = $("#createBy").val();
                 d.ticketMasId = $('#ticket_mas_id').val();
-                d.custCode = $('#customer_code').val();
                 d.serviceNumber = $("#serviceNumber").val();
                 d.ticketType = $('#ticketType').val();
-                d.serviceType = $("#serviceType").val();
-                d.owningRole = $("#owningRole").val();
+                d.priority = $("#priority").val();
             },
             error: function (e) {
                 if(e.responseText){
@@ -118,32 +114,29 @@ function createSearchTicketDataTable(){
             { data: 'ticketMasId' },
             { data: 'ticketType' },
             { data: 'statusDesc' },
-            { data: 'custCode' },
-            { data: 'serviceType' },
             { data: 'serviceNumber'},
-            { data: 'callInCount'},
+            { data: 'priority'},
             { data: 'completeDate'},
             { data: 'createDate' },
             { data: 'createBy' },
-            { data: 'owningRole'}
         ],
         columnDefs: [
             {
-                targets: 7,
+                targets: 5,
                 data: "completeDate",
                 render: function (nextRunTime, type, row, meta) {
                     return nextRunTime==null ? null : nextRunTime.replace('T', ' ');
                 }
             },
             {
-                targets: 8,
+                targets: 6,
                 data: "createDate",
                 render: function (nextRunTime, type, row, meta) {
                      return nextRunTime==null ? null : nextRunTime.replace('T', ' ');
                 }
             },
             {
-                targets: 11,
+                targets: 8,
                 data: "ticketMasId",
                 render: function ( ticketMasId, type, row, meta ) {
                     var ctx = $("meta[name='_ctx']").attr("content");

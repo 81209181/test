@@ -169,7 +169,7 @@ public class SdTicketServiceImpl implements SdTicketService {
         ticketContactMapper.removeContactInfoByTicketMasId(ticketMasId);
     }
 
-    @Override
+    /*@Override
     public Page<SdTicketMasBean> searchTicketList(Pageable pageable, LocalDate createDateFrom, LocalDate createDateTo,
                                                   String status, LocalDate completeDateFrom, LocalDate completeDateTo,
                                                   String createBy, String ticketMasId, String custCode,
@@ -237,7 +237,7 @@ public class SdTicketServiceImpl implements SdTicketService {
         Integer totalCount = ticketMasMapper.searchTicketCount(null, null, null, null, null, createBy, null, null, null, null, null, null, null);
 
         return new PageImpl<>(buildTicketBeanList(entityList), pageable, totalCount);
-    }
+    }*/
 
     private List<SdTicketMasBean> buildTicketBeanList(List<SdTicketMasEntity> entityList) {
         List<SdTicketMasBean> beanList = new LinkedList<>();
@@ -282,7 +282,7 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Transactional(rollbackFor = Exception.class)
     public void updateJobIdInService(Integer jobId, int ticketMasId, String userId) {
         ticketServiceMapper.updateTicketServiceByJobId(jobId, ticketMasId, userId);
-        ticketMasMapper.updateTicketStatus(ticketMasId, TicketStatusEnum.WORKING.getStatusCode(), null, null, userId);
+//        ticketMasMapper.updateTicketStatus(ticketMasId, TicketStatusEnum.WORKING.getStatusCode(), null, null, userId);
         createTicketSysRemarks(ticketMasId, String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_WORKING, userId));
     }
 
@@ -376,7 +376,7 @@ public class SdTicketServiceImpl implements SdTicketService {
             case SdServiceTypeBean.SERVICE_TYPE.VOIP:
             case SdServiceTypeBean.SERVICE_TYPE.FIX_NUMBER:
             case SdServiceTypeBean.SERVICE_TYPE.BROADBAND:
-                entityList = ticketMasMapper.getTicketByServiceNo(serviceType, serviceNo, TicketTypeEnum.JOB.getTypeCode(), TicketStatusEnum.COMPLETE.getStatusCode());
+                entityList = ticketMasMapper.getTicketByServiceNo(serviceType, serviceNo, "JOB", TicketStatusEnum.COMPLETE.getStatusCode());
                 break;
             case SdServiceTypeBean.SERVICE_TYPE.SMART_METER:
             default:
@@ -394,11 +394,7 @@ public class SdTicketServiceImpl implements SdTicketService {
             return false;
         }
 
-        Page<SdTicketMasBean> pageResult = searchTicketList(
-                PageRequest.of(0, 10), null, null,
-                null, null, null,
-                null, String.valueOf(ticketMasId), null, null,
-                null, ticketTypeEnum.getTypeCode(), null, false, null);
+        Page<SdTicketMasBean> pageResult = null;
         return pageResult.getTotalElements() > 0;
     }
 
@@ -409,11 +405,7 @@ public class SdTicketServiceImpl implements SdTicketService {
             return false;
         }
 
-        Page<SdTicketMasBean> pageResult = searchTicketList(
-                PageRequest.of(0, 10), null, null,
-                null, null, null,
-                null, String.valueOf(ticketMasId), null, null,
-                null, null, ticketServiceType, false, null);
+        Page<SdTicketMasBean> pageResult = null;
         return pageResult.getTotalElements() > 0;
     }
 
@@ -478,7 +470,7 @@ public class SdTicketServiceImpl implements SdTicketService {
 
         // close ticket
         String userUserId = userService.getCurrentUserUserId();
-        ticketMasMapper.updateTicketStatus(ticketMasId, TicketStatusEnum.COMPLETE.getStatusCode(), arrivalTime, LocalDateTime.now(), userUserId);
+//        ticketMasMapper.updateTicketStatus(ticketMasId, TicketStatusEnum.COMPLETE.getStatusCode(), arrivalTime, LocalDateTime.now(), userUserId);
 
         // add WFM complete info
         if (CollectionUtils.isNotEmpty(wfmCompleteInfoList)) {
@@ -729,10 +721,10 @@ public class SdTicketServiceImpl implements SdTicketService {
     @Override
     public List<SdTicketExportBean> searchTicketListForExport(LocalDate createDateFrom, LocalDate createDateTo, String status,
                                                               LocalDate completeDateFrom, LocalDate completeDateTo, String createBy,
-                                                              String ticketMasId, String custCode, String serviceNumber,
-                                                              String ticketType, String serviceType, List<String> owningRole) {
+                                                              String ticketMasId, String serviceNumber, String ticketType,
+                                                              Integer priority) {
         List<SdTicketExportEntity> entityList = ticketMasMapper.searchTicketListForExport(createDateFrom, createDateTo, status,
-                completeDateFrom, completeDateTo, createBy, ticketMasId, custCode, serviceNumber, ticketType, serviceType, owningRole);
+                completeDateFrom, completeDateTo, createBy, ticketMasId, serviceNumber, ticketType, priority);
 
         List<SdTicketExportBean> beanList = new LinkedList<>();
         for (SdTicketExportEntity entity : entityList) {
@@ -791,5 +783,87 @@ public class SdTicketServiceImpl implements SdTicketService {
         }
 
         return beanList;
+    }
+
+    @Override
+    public int createTicket(String serviceNumber, String ticketType, Integer priority, String remarks) {
+        // ticket
+        SdTicketMasEntity ticketMasEntity = new SdTicketMasEntity();
+        SdUserBean currentUserBean = (SdUserBean) userService.getCurrentUserBean();
+        String userId = currentUserBean.getUserId();
+        ticketMasEntity.setServiceNumber(serviceNumber);
+        ticketMasEntity.setTicketType(ticketType);
+        ticketMasEntity.setPriority(priority);
+        ticketMasEntity.setCreateby(userId);
+        ticketMasMapper.insertTicket(ticketMasEntity);
+
+        // remark
+        createTicketRemarks(ticketMasEntity.getTicketMasId(), SdTicketRemarkEntity.REMARKS_TYPE.CREATE, remarks, currentUserBean.getUserId());
+        return ticketMasEntity.getTicketMasId();
+    }
+
+    @Override
+    public void closeTicket(int ticketMasId, String reasonContent) throws InvalidInputException {
+        if (StringUtils.isEmpty(reasonContent)) {
+            throw new InvalidInputException("Please input reason.");
+        }
+
+        // check ticket
+        getTicket(ticketMasId).ifPresentOrElse(sdTicketMasBean -> {
+            // check ticket status
+            Optional.ofNullable(sdTicketMasBean.getStatus()).ifPresentOrElse(ticketStatusEnum -> {
+                if (ticketStatusEnum.equals(TicketStatusEnum.COMPLETE)) {
+                    throw new InvalidInputException("Ticket already closed.");
+                }
+            },() -> {
+                throw new InvalidInputException("Ticket status not found.");
+            });
+        },() -> {
+            throw new InvalidInputException(String.format("Ticket not found. (ticketMasId: %d)", ticketMasId));
+        });
+
+        // close ticket
+        String userUserId = userService.getCurrentUserUserId();
+        ticketMasMapper.updateTicketStatus(ticketMasId, TicketStatusEnum.CLOSE.getStatusCode(), userUserId);
+
+        // add ticket remarks
+        createTicketRemarks(ticketMasId, SdTicketRemarkEntity.REMARKS_TYPE.CLOSE, reasonContent, userUserId);
+
+        LOG.info(String.format("Closed ticket. (ticketMasId: %d)", ticketMasId));
+    }
+
+    @Override
+    public Page<SdTicketMasBean> searchTicketList(Pageable pageable, LocalDate createDateFrom,
+                                                  LocalDate createDateTo, String status,
+                                                  LocalDate completeDateFrom, LocalDate completeDateTo,
+                                                  String createBy, String ticketMasId, String serviceNumber,
+                                                  String ticketType, Integer priority) {
+        List<SdTicketMasEntity> entityList;
+        Integer totalCount;
+
+        long offset = pageable.getOffset();
+        int pageSize = pageable.getPageSize();
+
+        if (StringUtils.isNotEmpty(ticketMasId)) {
+            entityList = ticketMasMapper.searchTicketList(offset, pageSize,
+                    null, null, null,
+                    null, null, null,
+                    ticketMasId, null, null, null);
+            totalCount = ticketMasMapper.searchTicketCount(
+                    null, null, null,
+                    null, null, null,
+                    ticketMasId, null, null, null);
+        } else {
+            entityList = ticketMasMapper.searchTicketList(offset, pageSize,
+                    createDateFrom, createDateTo, status,
+                    completeDateFrom, completeDateTo, createBy,
+                    ticketMasId, serviceNumber, ticketType, priority);
+            totalCount = ticketMasMapper.searchTicketCount(
+                    createDateFrom, createDateTo, status,
+                    completeDateFrom, completeDateTo, createBy,
+                    ticketMasId, serviceNumber, ticketType, priority);
+        }
+
+        return new PageImpl<>(buildTicketBeanList(entityList), pageable, totalCount);
     }
 }

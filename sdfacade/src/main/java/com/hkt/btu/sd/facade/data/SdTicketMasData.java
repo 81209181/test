@@ -9,45 +9,29 @@ public class SdTicketMasData implements DataInterface {
     public static class ACTION_TYPE{
         public static final String WORKING ="WORKING";
         public static final String COMPLETE ="COMPLETE";
+
     }
-
     private int ticketMasId ;
-
-    private String custCode;
-
+    private String serviceNumber;
     private String ticketType;
-
     private String status;
-
     private String statusDesc;
-
+    private String priority;
     private LocalDateTime createDate;
-
     private String createBy;
-
     private LocalDateTime modifyDate;
-
     private String modifyBy;
 
+    private String custCode;
     private int callInCount;
-
     private String searchKey;
-
     private String searchKeyDesc;
-
     private String searchValue;
-
     private LocalDateTime completeDate;
     private LocalDateTime arrivalDate;
-
     private String serviceType;
-
     private String owningRole;
-
-    private String serviceNumber;
-
     private String custName;
-
     private String exchangeId;
 
     public String getCustName() {
@@ -208,5 +192,13 @@ public class SdTicketMasData implements DataInterface {
 
     public void setExchangeId(String exchangeId) {
         this.exchangeId = exchangeId;
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
     }
 }

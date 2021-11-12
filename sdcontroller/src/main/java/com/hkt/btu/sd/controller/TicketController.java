@@ -114,7 +114,7 @@ public class TicketController {
         }
     }
 
-    @GetMapping("")
+    /*@GetMapping("")
     public ModelAndView showQueryTicket(int ticketMasId) {
         return ticketFacade.getTicket(ticketMasId).map(data -> {
             if (data.getOwningRole().equalsIgnoreCase(O_CLOUD_SH)) {
@@ -126,7 +126,7 @@ public class TicketController {
             modelAndView.addObject("ticketInfo", null);
             return modelAndView;
         }).orElse(new ModelAndView("redirect:/ticket/search-ticket"));
-    }
+    }*/
 
     @PostMapping("contact/update")
     public ResponseEntity<?> updateContactInfo(@RequestBody List<SdTicketContactData> contactList) {
@@ -147,7 +147,7 @@ public class TicketController {
         return ResponseEntity.ok(data);
     }
 
-    @GetMapping("/search-ticket")
+    /*@GetMapping("/search-ticket")
     public String searchTicket(Model model) {
         List<BtuCodeDescData> ticketStatusList = ticketFacade.getTicketStatusList();
         if (CollectionUtils.isNotEmpty(ticketStatusList)) {
@@ -199,7 +199,7 @@ public class TicketController {
 
         PageData<SdTicketMasData> pageData = ticketFacade.getMyTicket(pageable);
         return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
-    }
+    }*/
 
     @GetMapping("/service")
     public ResponseEntity<?> getServiceInfo(@RequestParam Integer ticketMasId) {
@@ -240,7 +240,7 @@ public class TicketController {
         return ResponseEntity.ok(null);
     }
 
-    @PostMapping("submit")
+    /*@PostMapping("submit")
     public ResponseEntity<?> submit(@RequestBody List<SdCreateWfmTicketFormData> formDataList) {
         try {
             SdCreateWfmTicketFormData formData = formDataList.stream().findFirst().get();
@@ -254,7 +254,7 @@ public class TicketController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         return ResponseEntity.ok(SimpleAjaxResponse.of());
-    }
+    }*/
 
     @GetMapping("ajax-search-ticket-remarks")
     public ResponseEntity<?> ajaxSearchTicketRemarks(@RequestParam Integer ticketMasId) {
@@ -279,7 +279,7 @@ public class TicketController {
         return ResponseEntity.ok(ticketData);
     }
 
-    @PostMapping("close")
+    /*@PostMapping("close")
     public ResponseEntity<?> ticketClose(int ticketMasId, String closeCode, String reasonType, String reasonContent, String contactNumber, String contactName) {
         String errorMsg = ticketFacade.closeTicket(ticketMasId, closeCode, reasonType, reasonContent, contactName, contactNumber);
         if (StringUtils.isEmpty(errorMsg)) {
@@ -287,7 +287,7 @@ public class TicketController {
         } else {
             return ResponseEntity.badRequest().body(errorMsg);
         }
-    }
+    }*/
 
     @PostMapping("callInCount")
     public ResponseEntity<?> callInCount(@RequestParam Integer ticketMasId) {
@@ -408,8 +408,8 @@ public class TicketController {
         List<SdTicketExportData> accessRequestDataList = ticketFacade.searchTicketListForExport(searchFormData);
         if (CollectionUtils.isEmpty(accessRequestDataList)) {
             return ResponseEntity.badRequest().body("Ticket data not found.");
-        } else if (accessRequestDataList.size() > 65536) {
-            return ResponseEntity.badRequest().body("Ticket data exceeds 65536 row(s).");
+        } else if (accessRequestDataList.size() > 10000) {
+            return ResponseEntity.badRequest().body("Ticket data exceeds 10000 row(s).");
         }
 
         HSSFWorkbook workbook = new HSSFWorkbook();
@@ -452,5 +452,88 @@ public class TicketController {
             model.addAttribute("avgFaultCleaningTime", avgFaultCleaningTime);
         }
         return "ticket/dashboard";
+    }
+
+    @GetMapping("/create-ticket")
+    public String createTicket() {
+        return "ticket/createTicket";
+    }
+
+    @PostMapping("submit")
+    public ResponseEntity<?> createTicket(@RequestBody List<SdCreateTicketData> formDataList) {
+        try {
+            SdCreateTicketData formData = formDataList.stream().findFirst().get();
+            String serviceNumber = formData.getServiceNumber();
+            String ticketType = formData.getTicketType();
+            Integer priority = formData.getPriority();
+            List<SdTicketContactData> contactList = formData.getContactList();
+            String remarks = formData.getRemarks();
+            int ticketMasId = ticketFacade.createTicket(serviceNumber, ticketType, priority, contactList, remarks);
+            return ResponseEntity.ok(ticketMasId);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("")
+    public ModelAndView showQueryTicket(int ticketMasId) {
+        return ticketFacade.getTicket(ticketMasId).map(data -> {
+            ModelAndView modelAndView = new ModelAndView("ticket/ticketInfo");
+            modelAndView.addObject("ticketInfo", data);
+            return modelAndView;
+        }).orElse(new ModelAndView("redirect:/ticket/search-ticket"));
+    }
+
+    @PostMapping("close")
+    public ResponseEntity<?> ticketClose(int ticketMasId, String reasonContent) {
+        String errorMsg = ticketFacade.closeTicket(ticketMasId, reasonContent);
+        if (StringUtils.isEmpty(errorMsg)) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of());
+        } else {
+            return ResponseEntity.badRequest().body(errorMsg);
+        }
+    }
+
+    @GetMapping("/search-ticket")
+    public String searchTicket(Model model) {
+        List<BtuCodeDescData> ticketStatusList = ticketFacade.getTicketStatusList();
+        if (CollectionUtils.isNotEmpty(ticketStatusList)) {
+            model.addAttribute("ticketStatusList", ticketStatusList);
+        }
+
+        List<BtuCodeDescData> ticketTypeList = ticketFacade.getTicketTypeList();
+        if (CollectionUtils.isNotEmpty(ticketTypeList)) {
+            model.addAttribute("ticketTypeList", ticketTypeList);
+        }
+
+        return "ticket/searchTicket";
+    }
+
+    @GetMapping("/searchTicket")
+    public ResponseEntity<?> searchTicket(@RequestParam(defaultValue = "0") int draw,
+                                          @RequestParam(defaultValue = "0") int start,
+                                          @RequestParam(defaultValue = "10") int length,
+                                          @RequestParam Map<String, String> searchFormData) {
+        int page = start / length;
+        Pageable pageable = PageRequest.of(page, length);
+
+        PageData<SdTicketMasData> pageData = ticketFacade.searchTicketList(pageable, searchFormData);
+        return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
+    }
+
+    @GetMapping("/my-ticket")
+    public String myTicket() {
+        return "ticket/myTicket";
+    }
+
+    @GetMapping("/myTicket")
+    public ResponseEntity<?> getMyTicket(@RequestParam(defaultValue = "0") int draw,
+                                         @RequestParam(defaultValue = "0") int start,
+                                         @RequestParam(defaultValue = "10") int length) {
+        int page = start / length;
+        Pageable pageable = PageRequest.of(page, length);
+
+        PageData<SdTicketMasData> pageData = ticketFacade.getMyTicket(pageable);
+        return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
     }
 }

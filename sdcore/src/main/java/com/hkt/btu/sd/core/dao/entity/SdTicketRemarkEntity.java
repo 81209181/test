@@ -8,6 +8,10 @@ public class SdTicketRemarkEntity extends BaseEntity {
         public static final String CUSTOMER = "CUST";
         public static final String FIELD = "FIELD";
         public static final String SYSTEM = "SYS";
+
+        public static final String CREATE = "CREATE";
+        public static final String CLOSE = "CLOSE";
+        public static final String COMPLETE = "COMPLETE";
     }
 
     private Integer ticketRemarksId;

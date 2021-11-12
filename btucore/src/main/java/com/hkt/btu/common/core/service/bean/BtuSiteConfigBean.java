@@ -11,11 +11,11 @@ public class BtuSiteConfigBean extends BaseBean {
 
     public static final String DEFAULT_CRONJOB_HOSTNAME = "null.cronjob.hostname";
 
-    public static final String DEFAULT_MAIL_HOST = "smtp.pccw.com";
+    public static final String DEFAULT_MAIL_HOST = "smtp.163.com";//""smtp.pccw.com";
     public static final Integer DEFAULT_MAIL_PORT = 25;
-    public static final String DEFAULT_MAIL_USERNAME = "sdadmin@pccw.com";
+    public static final String DEFAULT_MAIL_USERNAME = "rico_wx_liu@163.com";//""sdadmin@pccw.com";
 
-    public static final String DEFAULT_SYSTEM_SUPPORT_EMAIL = "jason.yh.kong@pccw.com";
+    public static final String DEFAULT_SYSTEM_SUPPORT_EMAIL = "rico_wx_liu@163.com";
 
     public static final String DEFAULT_PROXY_HOST = "proxy.pccw.com";
     public static final Integer DEFAULT_PROXY_PORT = 8080;

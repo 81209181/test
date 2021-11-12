@@ -57,24 +57,13 @@
                     </div>
                 </li>
 
-                <li sec:authorize="hasAnyAuthority('TEAM_HEAD','SYS_ADMIN')" class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="symptomDp" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Symptom
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" th:href="@{/symptom/create-symptom}">Create Symptom</a>
-                        <a class="dropdown-item" th:href="@{/symptom/search-symptom}">Search Symptom</a>
-                        <a class="dropdown-item" th:href="@{/symptom/symptom-group}">Symptom Group</a>
-                        <a class="dropdown-item" th:href="@{/symptom/symptom-workingparty-mapping}">Symptom Working Party Mapping</a>
-                    </div>
-                </li>
-
                 <li sec:authorize="hasAnyAuthority('OPT','ENG')" class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="ticketDp" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Ticket
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" th:href="@{/ticket/service-identity}">Search Service</a>
+                        <a class="dropdown-item" th:href="@{/ticket/create-ticket}">Create Ticket</a>
                         <a class="dropdown-item" th:href="@{/ticket/my-ticket}">My Ticket</a>
                         <a class="dropdown-item" th:href="@{/ticket/team-summary}">Team Summary</a>
                         <a class="dropdown-item" th:href="@{/ticket/search-ticket}">Search Ticket</a>

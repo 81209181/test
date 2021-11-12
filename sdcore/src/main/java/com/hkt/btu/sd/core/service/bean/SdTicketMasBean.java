@@ -1,7 +1,9 @@
 package com.hkt.btu.sd.core.service.bean;
 
 import com.hkt.btu.common.core.service.bean.BaseBean;
+import com.hkt.btu.sd.core.service.constant.TicketPriorityEnum;
 import com.hkt.btu.sd.core.service.constant.TicketStatusEnum;
+import com.hkt.btu.sd.core.service.constant.TicketTypeEnum;
 
 import java.time.LocalDateTime;
 
@@ -10,36 +12,26 @@ public class SdTicketMasBean extends BaseBean {
     public static class STATUS_DESC {
         public static final String OPEN = "OPEN";
         public static final String WORKING = "WORKING";
+        public static final String CLOSE = "CLOSE";
         public static final String COMPLETE = "COMPLETE";
     }
 
-    private int ticketMasId ;
+    private int ticketMasId;
+    private String serviceNumber;
+    private TicketTypeEnum ticketType;
+    private TicketStatusEnum status;
+    private TicketPriorityEnum priority;
 
     private String custCode;
-
-    private String ticketType;
-
-    private TicketStatusEnum status;
-
     private LocalDateTime appointmentDate;
-
     private String asap;
-
     private int callInCount;
-
     private String searchKey;
-
     private String searchValue;
-
     private LocalDateTime arrivalDate;
     private LocalDateTime completeDate;
-
     private String serviceType;
-
     private String owningRole;
-
-    private String serviceNumber;
-
     private String custName;
 
     public String getCustName() {
@@ -82,11 +74,11 @@ public class SdTicketMasBean extends BaseBean {
         this.custCode = custCode;
     }
 
-    public String getTicketType() {
+    public TicketTypeEnum getTicketType() {
         return ticketType;
     }
 
-    public void setTicketType(String ticketType) {
+    public void setTicketType(TicketTypeEnum ticketType) {
         this.ticketType = ticketType;
     }
 
@@ -160,5 +152,13 @@ public class SdTicketMasBean extends BaseBean {
 
     public void setServiceNumber(String serviceNumber) {
         this.serviceNumber = serviceNumber;
+    }
+
+    public TicketPriorityEnum getPriority() {
+        return priority;
+    }
+
+    public void setPriority(TicketPriorityEnum priority) {
+        this.priority = priority;
     }
 }

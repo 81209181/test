@@ -18,47 +18,16 @@ public interface SdTicketMasMapper {
 
     int insertQueryTicket(SdTicketMasEntity ticketMasEntity);
 
-    SdTicketMasEntity findTicketById(@Param("ticketId") Integer ticketId);
-
-    List<SdTicketMasEntity> searchTicketList(@Param("offset") long offset, @Param("pageSize") int pageSize,
-                                             @Param("createDateFrom") LocalDate createDateFrom,
-                                             @Param("createDateTo") LocalDate createDateTo,
-                                             @Param("status") String status,
-                                             @Param("completeDateFrom") LocalDate completeDateFrom,
-                                             @Param("completeDateTo") LocalDate completeDateTo,
-                                             @Param("createBy") String createBy,
-                                             @Param("ticketMasId") String ticketMasId,
-                                             @Param("custCode") String custCode,
-                                             @Param("serviceNumber") String serviceNumber,
-                                             @Param("serviceNumberExact") String serviceNumberExact,
-                                             @Param("ticketType") String ticketType,
-                                             @Param("serviceType") String serviceType,
-                                             @Param("owningRole") List<String> owningRole);
-
-    Integer searchTicketCount(@Param("createDateFrom") LocalDate createDateFrom,
-                              @Param("createDateTo") LocalDate createDateTo,
-                              @Param("status") String status,
-                              @Param("completeDateFrom") LocalDate completeDateFrom,
-                              @Param("completeDateTo") LocalDate completeDateTo,
-                              @Param("createBy") String createBy,
-                              @Param("ticketMasId") String ticketMasId,
-                              @Param("custCode") String custCode,
-                              @Param("serviceNumber") String serviceNumber,
-                              @Param("serviceNumberExact") String serviceNumberExact,
-                              @Param("ticketType") String ticketType,
-                              @Param("serviceType") String serviceType,
-                              @Param("owningRole") List<String> owningRole);
-
     void updateAppointmentInMas(@Param("appointmentDate") LocalDateTime appointmentDate,
                                 @Param("asap") String asap,
                                 @Param("userId") String userId,
                                 @Param("ticketMasId") String ticketMasId);
 
-    void updateTicketStatus(@Param("ticketMasId") int ticketMasId,
+    /*void updateTicketStatus(@Param("ticketMasId") int ticketMasId,
                             @Param("status") String status,
                             @Param("arrivalTime") LocalDateTime arrivalTime,
                             @Param("completeTime") LocalDateTime completeTime,
-                            @Param("userId") String userId);
+                            @Param("userId") String userId);*/
 
     void updateTicketCallInCount(@Param("ticketMasId") Integer ticketMasId, @Param("userId") String userId);
 
@@ -123,15 +92,44 @@ public interface SdTicketMasMapper {
                                                          @Param("completeDateTo") LocalDate completeDateTo,
                                                          @Param("createBy") String createBy,
                                                          @Param("ticketMasId") String ticketMasId,
-                                                         @Param("custCode") String custCode,
                                                          @Param("serviceNumber") String serviceNumber,
                                                          @Param("ticketType") String ticketType,
-                                                         @Param("serviceType") String serviceType,
-                                                         @Param("owningRole") List<String> owningRole);
+                                                         @Param("priority") Integer priority);
 
     List<SdOutstandingFaultEntity> getOutstandingFault();
 
     List<SdTicketTimePeriodSummaryEntity> getTicketTimePeriodSummary();
 
     Double getAvgFaultCleaningTime();
+
+    void insertTicket(SdTicketMasEntity ticketMasEntity);
+
+    void updateTicketStatus(@Param("ticketMasId") int ticketMasId,
+                            @Param("status") String status,
+                            @Param("userId") String userId);
+
+    SdTicketMasEntity findTicketById(@Param("ticketId") Integer ticketId);
+
+    List<SdTicketMasEntity> searchTicketList(@Param("offset") long offset, @Param("pageSize") int pageSize,
+                                             @Param("createDateFrom") LocalDate createDateFrom,
+                                             @Param("createDateTo") LocalDate createDateTo,
+                                             @Param("status") String status,
+                                             @Param("completeDateFrom") LocalDate completeDateFrom,
+                                             @Param("completeDateTo") LocalDate completeDateTo,
+                                             @Param("createBy") String createBy,
+                                             @Param("ticketMasId") String ticketMasId,
+                                             @Param("serviceNumber") String serviceNumber,
+                                             @Param("ticketType") String ticketType,
+                                             @Param("priority") Integer priority);
+
+    Integer searchTicketCount(@Param("createDateFrom") LocalDate createDateFrom,
+                              @Param("createDateTo") LocalDate createDateTo,
+                              @Param("status") String status,
+                              @Param("completeDateFrom") LocalDate completeDateFrom,
+                              @Param("completeDateTo") LocalDate completeDateTo,
+                              @Param("createBy") String createBy,
+                              @Param("ticketMasId") String ticketMasId,
+                              @Param("serviceNumber") String serviceNumber,
+                              @Param("ticketType") String ticketType,
+                              @Param("priority") Integer priority);
 }

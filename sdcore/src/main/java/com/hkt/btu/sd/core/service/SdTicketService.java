@@ -19,12 +19,12 @@ public interface SdTicketService {
     List<TicketTypeEnum> getTicketTypeList();
 
     // get ticket profile
-    Page<SdTicketMasBean> searchTicketList(Pageable pageable, LocalDate createDateFrom, LocalDate createDateTo,
+    /*Page<SdTicketMasBean> searchTicketList(Pageable pageable, LocalDate createDateFrom, LocalDate createDateTo,
                                            String status, LocalDate completeDateFrom, LocalDate completeDateTo,
                                            String createBy, String ticketMasId, String custCode,
                                            String serviceNumber, String serviceNumberExact, String ticketType,
                                            String serviceType,  boolean isReport, List<String> owningRole);
-    Page<SdTicketMasBean> getMyTicket(Pageable pageable);
+    Page<SdTicketMasBean> getMyTicket(Pageable pageable);*/
     SdTeamSummaryBean getTeamSummary();
     List<SdTicketMasBean> getHktCloudTicket(String tenantId, String username);
     List<SdTicketMasBean> getPendingTicketList(String serviceType, String serviceNo);
@@ -81,8 +81,6 @@ public interface SdTicketService {
 
     SdGmbTicketEavBean getGmbTicketOtherInfo(Integer ticketMasId);
 
-    List<SdTicketExportBean> searchTicketListForExport(LocalDate createDateFrom, LocalDate createDateTo, String status, LocalDate completeDateFrom, LocalDate completeDateTo, String createBy, String ticketMasId, String custCode, String serviceNumber, String ticketType, String serviceType, List<String> owningRole);
-
     List<SdOutstandingFaultBean> getOutstandingFault();
 
     List<SdTicketTimePeriodSummaryBean> getTicketTimePeriodSummary();
@@ -90,4 +88,15 @@ public interface SdTicketService {
     String getAvgFaultCleaningTime();
 
     List<SdTicketRemarkBean> getTicketCustRemarks(Integer ticketMasId);
+
+    int createTicket(String serviceNumber, String ticketType, Integer priority, String remarks);
+
+    void closeTicket(int ticketMasId, String reasonContent) throws InvalidInputException;
+
+    Page<SdTicketMasBean> searchTicketList(Pageable pageable, LocalDate createDateFrom, LocalDate createDateTo,
+                                           String status, LocalDate completeDateFrom, LocalDate completeDateTo,
+                                           String createBy, String ticketMasId, String serviceNumber,
+                                           String ticketType, Integer priority);
+
+    List<SdTicketExportBean> searchTicketListForExport(LocalDate createDateFrom, LocalDate createDateTo, String status, LocalDate completeDateFrom, LocalDate completeDateTo, String createBy, String ticketMasId, String serviceNumber, String ticketType, Integer priority);
 }

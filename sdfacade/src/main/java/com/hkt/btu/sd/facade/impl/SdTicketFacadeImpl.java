@@ -90,7 +90,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         return ticketMasId;
     }
 
-    @Override
+    /*@Override
     public Optional<SdTicketMasData> getTicket(Integer ticketId) {
         SdTicketMasData ticketMasData = new SdTicketMasData();
         return ticketService.getTicket(ticketId).map(sdTicketMasBean -> {
@@ -98,7 +98,7 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
             auditTrailFacade.insertViewTicketAuditTrail(userService.getCurrentUserUserId(), String.valueOf(ticketMasData.getTicketMasId()));
             return ticketMasData;
         });
-    }
+    }*/
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -135,57 +135,12 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         return dataList;
     }
 
-    @Override
-    public PageData<SdTicketMasData> searchTicketList(Pageable pageable, Map<String, String> searchFormData) {
-        LocalDate createDateFrom = StringUtils.isEmpty(searchFormData.get("createDateFrom")) ? null : LocalDate.parse(searchFormData.get("createDateFrom"));
-        LocalDate createDateTo = StringUtils.isEmpty(searchFormData.get("createDateTo")) ? null : LocalDate.parse(searchFormData.get("createDateTo"));
-
-        String status = StringUtils.isEmpty(searchFormData.get("status")) ? null : searchFormData.get("status");
-        LocalDate completeDateFrom = StringUtils.isEmpty(searchFormData.get("completeDateFrom")) ? null : LocalDate.parse(searchFormData.get("completeDateFrom"));
-        LocalDate completeDateTo = StringUtils.isEmpty(searchFormData.get("completeDateTo")) ? null : LocalDate.parse(searchFormData.get("completeDateTo"));
-
-        String createBy = StringUtils.isEmpty(searchFormData.get("createBy")) ? null : searchFormData.get("createBy");
-        String ticketMasId = StringUtils.isEmpty(searchFormData.get("ticketMasId")) ? null : searchFormData.get("ticketMasId");
-        String custCode = StringUtils.isEmpty(searchFormData.get("custCode")) ? null : searchFormData.get("custCode");
-
-        String serviceNumber = StringUtils.isEmpty(searchFormData.get("serviceNumber")) ? null : searchFormData.get("serviceNumber");
-        String serviceNumberExact = StringUtils.isEmpty(searchFormData.get("serviceNumberExact")) ? null : searchFormData.get("serviceNumberExact");
-        String ticketType = StringUtils.isEmpty(searchFormData.get("ticketType")) ? null : searchFormData.get("ticketType");
-        String serviceType = StringUtils.isEmpty(searchFormData.get("serviceType")) ? null : searchFormData.get("serviceType");
-        boolean isReport = BooleanUtils.toBoolean(searchFormData.get("isReport"));
-        boolean isApiFlag = BooleanUtils.toBoolean(searchFormData.get("isApiFlag"));
-
-        List<String> owningRole = null;
-        if (StringUtils.isEmpty(searchFormData.get("owningRole"))) {
-            if (!isApiFlag) {
-                owningRole = userRoleFacade.getCurrentUserUserRole().stream()
-                        .filter(sdUserRoleData -> !StringUtils.equals(sdUserRoleData.getRoleId(), "SYS_ADMIN"))
-                        .map(SdUserRoleData::getRoleId).collect(Collectors.toList());
-            }
-        } else {
-            owningRole = List.of(searchFormData.get("owningRole"));
-        }
-
-        Page<SdTicketMasBean> pageBean;
-        try {
-            pageBean = ticketService.searchTicketList(
-                    pageable, createDateFrom, createDateTo,
-                    status, completeDateFrom, completeDateTo,
-                    createBy, ticketMasId, custCode,
-                    serviceNumber, serviceNumberExact, ticketType, serviceType, isReport, owningRole);
-        } catch (AuthorityNotFoundException e) {
-            return new PageData<>(e.getMessage());
-        }
-
-        List<SdTicketMasBean> beanList = pageBean.getContent();
-        return new PageData<>(buildTicketDataList(beanList), pageBean.getPageable(), pageBean.getTotalElements());
-    }
 
     @Override
     public PageData<SdTicketMasData> getMyTicket(Pageable pageable) {
         Page<SdTicketMasBean> pageBean;
         try {
-            pageBean = ticketService.getMyTicket(pageable);
+            pageBean = null;//ticketService.getMyTicket(pageable);
         } catch (AuthorityNotFoundException e) {
             return new PageData<>(e.getMessage());
         }
@@ -651,23 +606,16 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
 
         String createBy = StringUtils.isEmpty(searchFormData.get("createBy")) ? null : searchFormData.get("createBy");
         String ticketMasId = StringUtils.isEmpty(searchFormData.get("ticketMasId")) ? null : searchFormData.get("ticketMasId");
-        String custCode = StringUtils.isEmpty(searchFormData.get("custCode")) ? null : searchFormData.get("custCode");
 
         String serviceNumber = StringUtils.isEmpty(searchFormData.get("serviceNumber")) ? null : searchFormData.get("serviceNumber");
         String ticketType = StringUtils.isEmpty(searchFormData.get("ticketType")) ? null : searchFormData.get("ticketType");
-        String serviceType = StringUtils.isEmpty(searchFormData.get("serviceType")) ? null : searchFormData.get("serviceType");
+        Integer priority = StringUtils.isEmpty(searchFormData.get("priority")) ? null : Integer.parseInt(searchFormData.get("priority"));
 
-        List<String> owningRole = null;
-        if (StringUtils.isEmpty(searchFormData.get("owningRole"))) {
-            owningRole = userRoleFacade.getCurrentUserUserRole().stream()
-                    .filter(sdUserRoleData -> !StringUtils.equals(sdUserRoleData.getRoleId(), "SYS_ADMIN"))
-                    .map(SdUserRoleData::getRoleId).collect(Collectors.toList());
-        } else {
-            owningRole = List.of(searchFormData.get("owningRole"));
-        }
-
-        List<SdTicketExportBean> beanList = ticketService.searchTicketListForExport(createDateFrom, createDateTo,
-                status, completeDateFrom, completeDateTo, createBy, ticketMasId, custCode, serviceNumber, ticketType, serviceType, owningRole);
+        List<SdTicketExportBean> beanList = ticketService.searchTicketListForExport(
+                createDateFrom, createDateTo,
+                status, completeDateFrom, completeDateTo,
+                createBy, ticketMasId, serviceNumber,
+                ticketType, priority);
 
         List<SdTicketExportData> dataList = new LinkedList<>();
         if (!CollectionUtils.isEmpty(beanList)) {
@@ -699,9 +647,8 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         }
 
         POIExcelWriter.appendRetrievedData(sheet, new String[]
-                {"Ticket Id", "Ticket Type", "Status", "Complete Date", "Call In Count", "Service Number", "Owning Role",
-                        "Create Date", "Create By", "Modify Date", "Modify By", "Symptom Description", "Subs ID", "Job ID",
-                        "Report Time", "SD CloseCode Description", "WFM ClearCode", "WFM Sub ClearCode"}, result);
+                {"Ticket Id", "Ticket Type", "Status", "Complete Date", "Service Number", "Priority",
+                        "Create Date", "Create By", "Modify Date", "Modify By"}, result);
     }
 
     @Override
@@ -722,20 +669,12 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         String ticketType = data.getTicketType() == null ? StringUtils.EMPTY : data.getTicketType();
         String status = data.getStatus() == null ? StringUtils.EMPTY : data.getStatus();
         String completeDate = data.getCompleteDate() == null ? StringUtils.EMPTY : data.getCompleteDate().format(DEFAULT_DATE_TIME_FORMAT);
-        String callInCount = String.valueOf(data.getCallInCount());
         String serviceNumber = data.getServiceNumber() == null ? StringUtils.EMPTY : data.getServiceNumber();
-        String owningRole = data.getOwningRole() == null ? StringUtils.EMPTY : data.getOwningRole();
         String createDate = data.getCreateDate() == null ? StringUtils.EMPTY : data.getCreateDate().format(DEFAULT_DATE_TIME_FORMAT);
         String createBy = data.getCreateBy() == null ? StringUtils.EMPTY : data.getCreateBy();
         String modifyDate = data.getModifyDate() == null ? StringUtils.EMPTY : data.getModifyDate().format(DEFAULT_DATE_TIME_FORMAT);
         String modifyBy = data.getModifyBy() == null ? StringUtils.EMPTY : data.getModifyBy();
-        String symptomDescription = data.getSymptomDescription() == null ? StringUtils.EMPTY : data.getSymptomDescription();
-        String subsId = data.getSubsId() == null ? StringUtils.EMPTY : data.getSubsId();
-        String jobId = data.getJobId() == null ? StringUtils.EMPTY : data.getJobId();
-        String reportTime = data.getReportTime() == null ? StringUtils.EMPTY : data.getReportTime().format(DEFAULT_DATE_TIME_FORMAT);
-        String sdCloseCodeDescription = data.getSdCloseCodeDescription() == null ? StringUtils.EMPTY : data.getSdCloseCodeDescription();
-        String wfmClearCode = data.getWfmClearCode() == null ? StringUtils.EMPTY : data.getWfmClearCode();
-        String wfmSubClearCode = data.getWfmSubClearCode() == null ? StringUtils.EMPTY : data.getWfmSubClearCode();
+        String priority = data.getPriority() == null ? StringUtils.EMPTY : data.getPriority();
 
         // add to row
         List<String> row = new ArrayList<>();
@@ -743,20 +682,12 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         row.add(ticketType);
         row.add(status);
         row.add(completeDate);
-        row.add(callInCount);
         row.add(serviceNumber);
-        row.add(owningRole);
+        row.add(priority);
         row.add(createDate);
         row.add(createBy);
         row.add(modifyDate);
         row.add(modifyBy);
-        row.add(symptomDescription);
-        row.add(subsId);
-        row.add(jobId);
-        row.add(reportTime);
-        row.add(sdCloseCodeDescription);
-        row.add(wfmClearCode);
-        row.add(wfmSubClearCode);
         return row;
     }
 
@@ -883,5 +814,87 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         }
 
         return dataList;
+    }
+
+    @Override
+    public int createTicket(String serviceNumber, String ticketType, Integer priority, List<SdTicketContactData> contactList, String remarks) {
+        if (StringUtils.isEmpty(serviceNumber)) {
+            throw new InvalidInputException("please input service number.");
+        } else if (StringUtils.isEmpty(ticketType)) {
+            throw new InvalidInputException("please input ticket type.");
+        } else if (priority == null) {
+            throw new InvalidInputException("please select priority.");
+        }
+
+        for (SdTicketContactData data : contactList) {
+            if (StringUtils.isEmpty(data.getContactName())) {
+                throw new InvalidInputException("In contact type : " + data.getContactType() + ", please input contact name.");
+            } else if (StringUtils.isEmpty(data.getContactNumber()) && StringUtils.isEmpty(data.getContactMobile()) && StringUtils.isEmpty(data.getContactEmail())) {
+                throw new InvalidInputException("In Contact Name : " + data.getContactName() + ", please input Contact No. or Contact Mobile or Contact Email, at least one is not empty.");
+            }
+        }
+
+        int ticketMasId = ticketService.createTicket(serviceNumber,ticketType,priority,remarks);
+        try {
+            contactList.forEach(data -> ticketService.insertTicketContactInfo(ticketMasId, data.getContactType(), data.getContactName(), data.getContactNumber(), data.getContactEmail(), data.getContactMobile()));
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+            throw new InvalidInputException("Create ticket failed.");
+        }
+
+        return ticketMasId;
+    }
+
+    @Override
+    public Optional<SdTicketMasData> getTicket(Integer ticketId) {
+        SdTicketMasData ticketMasData = new SdTicketMasData();
+        return ticketService.getTicket(ticketId).map(sdTicketMasBean -> {
+            ticketMasDataPopulator.populate(sdTicketMasBean, ticketMasData);
+            return ticketMasData;
+        });
+    }
+
+    @Override
+    public String closeTicket(int ticketMasId, String reasonContent) {
+        LOG.info(String.format("Closing ticket. (ticketMasId: %d)", ticketMasId));
+
+        try {
+            ticketService.closeTicket(ticketMasId, reasonContent);
+        } catch (InvalidInputException e) {
+            LOG.warn(e.getMessage());
+            return e.getMessage();
+        }
+
+        return null;
+    }
+    @Override
+    public PageData<SdTicketMasData> searchTicketList(Pageable pageable, Map<String, String> searchFormData) {
+        LocalDate createDateFrom = StringUtils.isEmpty(searchFormData.get("createDateFrom")) ? null : LocalDate.parse(searchFormData.get("createDateFrom"));
+        LocalDate createDateTo = StringUtils.isEmpty(searchFormData.get("createDateTo")) ? null : LocalDate.parse(searchFormData.get("createDateTo"));
+
+        String status = StringUtils.isEmpty(searchFormData.get("status")) ? null : searchFormData.get("status");
+        LocalDate completeDateFrom = StringUtils.isEmpty(searchFormData.get("completeDateFrom")) ? null : LocalDate.parse(searchFormData.get("completeDateFrom"));
+        LocalDate completeDateTo = StringUtils.isEmpty(searchFormData.get("completeDateTo")) ? null : LocalDate.parse(searchFormData.get("completeDateTo"));
+
+        String createBy = StringUtils.isEmpty(searchFormData.get("createBy")) ? null : searchFormData.get("createBy");
+        String ticketMasId = StringUtils.isEmpty(searchFormData.get("ticketMasId")) ? null : searchFormData.get("ticketMasId");
+
+        String serviceNumber = StringUtils.isEmpty(searchFormData.get("serviceNumber")) ? null : searchFormData.get("serviceNumber");
+        String ticketType = StringUtils.isEmpty(searchFormData.get("ticketType")) ? null : searchFormData.get("ticketType");
+        Integer priority = StringUtils.isEmpty(searchFormData.get("priority")) ? null : Integer.parseInt(searchFormData.get("priority"));
+
+        Page<SdTicketMasBean> pageBean;
+        try {
+            pageBean = ticketService.searchTicketList(
+                    pageable, createDateFrom, createDateTo,
+                    status, completeDateFrom, completeDateTo,
+                    createBy, ticketMasId, serviceNumber,
+                    ticketType, priority);
+        } catch (AuthorityNotFoundException e) {
+            return new PageData<>(e.getMessage());
+        }
+
+        List<SdTicketMasBean> beanList = pageBean.getContent();
+        return new PageData<>(buildTicketDataList(beanList), pageBean.getPageable(), pageBean.getTotalElements());
     }
 }

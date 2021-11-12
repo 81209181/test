@@ -9,41 +9,27 @@ public class SdTicketMasEntity extends BaseEntity {
     public static class STATUS {
         public static final String OPEN = "O";
         public static final String WORKING = "W";
+        public static final String CLOSE = "C";
         public static final String COMPLETE = "CP";
     }
 
-    public static class TICKET_TYPE {
-        public static final String QUERY = "QUERY";
-        public static final String JOB = "JOB";
-    }
+    private int ticketMasId;
+    private String serviceNumber;
+    private String ticketType;
+    private String status;
+    private Integer priority;
 
-    private int ticketMasId ;
 
     private String custCode;
-
-    private String ticketType;
-
-    private String status;
-
     private LocalDateTime appointmentDate;
-
     private String asap;
-
     private int callInCount;
-
     private String searchKey;
-
     private String searchValue;
-
     private LocalDateTime arrivalDate;
     private LocalDateTime completeDate;
-
     private String serviceType;
-
     private String owningRole;
-
-    private String serviceNumber;
-
     private String custName;
 
     public LocalDateTime getAppointmentDate() {
@@ -164,5 +150,13 @@ public class SdTicketMasEntity extends BaseEntity {
 
     public void setCustName(String custName) {
         this.custName = custName;
+    }
+
+    public Integer getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
     }
 }

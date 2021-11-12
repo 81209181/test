@@ -83,4 +83,8 @@ public interface SdTicketFacade {
     void createJob4Wfm(Integer ticketMasId, List<SdTicketContactData> contactList, List<SdRequestTicketServiceData> serviceList, String remarks) throws InvalidInputException, RuntimeException;
 
     List<SdTicketRemarkData> getTicketCustRemarks(Integer ticketMasId);
+
+    int createTicket(String serviceNumber, String ticketType, Integer priority, List<SdTicketContactData> contactList, String remarks);
+
+    String closeTicket(int ticketMasId, String reasonContent);
 }

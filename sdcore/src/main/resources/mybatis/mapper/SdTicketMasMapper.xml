@@ -6,8 +6,7 @@
     <resultMap id="TicketMasEntity" type="com.hkt.btu.sd.core.dao.entity.SdTicketMasEntity" >
         <result column="TICKET_MAS_ID" property="ticketMasId" />
         <result column="CUST_CODE" property="custCode" />
-        <result column="TICKET_TYPE" property="ticketType" />
-        <result column="STATUS" property="status" />
+
         <result column="APPOINTMENT_DATE" property="appointmentDate" />
         <result column="ASAP" property="asap" />
         <result column="CALL_IN_COUNT" property="callInCount"/>
@@ -19,6 +18,11 @@
         <result column="OWNING_ROLE" property="owningRole"/>
         <result column="SERVICE_ID" property="serviceNumber"/>
         <result column="CUST_NAME" property="custName"/>
+
+        <result column="SERVICE_NUMBER" property="serviceNumber"/>
+        <result column="TICKET_TYPE" property="ticketType" />
+        <result column="STATUS" property="status" />
+        <result column="PRIORITY" property="priority"/>
 
         <result column="CREATEDATE" property="createdate" />
         <result column="CREATEBY" property="createby" />
@@ -37,16 +41,8 @@
         <result column="TICKET_TYPE" property="ticketType" />
         <result column="STATUS" property="status" />
         <result column="COMPLETE_DATE" property="completeDate"/>
-        <result column="CALL_IN_COUNT" property="callInCount"/>
-        <result column="SERVICE_ID" property="serviceNumber"/>
-        <result column="OWNING_ROLE" property="owningRole"/>
-        <result column="SYMPTOM_DESCRIPTION" property="symptomDescription"/>
-        <result column="SUBS_ID" property="subsId"/>
-        <result column="JOB_ID" property="jobId"/>
-        <result column="REPORT_TIME" property="reportTime"/>
-        <result column="SD_CLOSE_CODE_DESCRIPTION" property="sdCloseCodeDescription"/>
-        <result column="WFM_CLEARCODE" property="wfmClearCode"/>
-        <result column="WFM_SUBCLEARCODE" property="wfmSubClearCode"/>
+        <result column="SERVICE_NUMBER" property="serviceNumber"/>
+        <result column="PRIORITY" property="priority"/>
 
         <result column="CREATEDATE" property="createDate" />
         <result column="CREATEBY" property="createBy" />
@@ -77,10 +73,6 @@
 
     <sql id="searchTicketSql">
         from TICKET_MAS tm
-        INNER JOIN TICKET_DET td
-        ON tm.TICKET_MAS_ID = td.TICKET_MAS_ID
-        LEFT JOIN SERVICE_TYPE st
-        ON td.SERVICE_TYPE_CODE = st.SERVICE_TYPE_CODE
         <where>
             <if test="createDateFrom != null">
                 and trunc(tm.createdate) &gt;= trunc(#{createDateFrom})
@@ -103,32 +95,20 @@
             <if test="ticketMasId != null">
                 and tm.ticket_mas_id = #{ticketMasId}
             </if>
-            <if test="custCode != null">
-                and lower(tm.cust_code) like '%' || lower(#{custCode}) || '%'
-            </if>
             <if test="serviceNumber != null">
-                and lower(td.service_id) like '%' || lower(#{serviceNumber}) || '%'
-            </if>
-            <if test="serviceNumberExact != null">
                 and td.service_id = #{serviceNumberExact}
             </if>
             <if test="ticketType != null">
                 and tm.ticket_type = #{ticketType}
             </if>
-            <if test="serviceType != null">
-                and td.service_type_code = #{serviceType}
-            </if>
-            <if test="owningRole != null">
-                and tm.owning_role in
-                <foreach item="roleId" index="index" collection="owningRole" open="(" separator="," close=")">
-                    #{roleId}
-                </foreach>
+            <if test="priority != null">
+                and tm.priority = #{priority}
             </if>
         </where>
     </sql>
 
     <select id="searchTicketList" resultMap="TicketMasEntity">
-        select tm.*, td.SERVICE_ID, st.SERVICE_TYPE_NAME
+        select tm.*
         <include refid="searchTicketSql"/>
         order by tm.TICKET_MAS_ID desc
         OFFSET #{offset} ROWS FETCH NEXT #{pageSize} ROWS ONLY
@@ -148,7 +128,7 @@
         where TICKET_MAS_ID =#{ticketMasId}
     </update>
 
-    <update id="updateTicketStatus">
+    <!--<update id="updateTicketStatus">
         update TICKET_MAS
         <set >
             STATUS = #{status},
@@ -162,7 +142,7 @@
             </if>
         </set>
         where TICKET_MAS_ID = #{ticketMasId}
-    </update>
+    </update>-->
 
     <select id="getTicketByServiceNo" resultMap="TicketMasEntity">
         SELECT tm.TICKET_MAS_ID,tm.STATUS
@@ -327,27 +307,16 @@
     <select id="searchTicketListForExport" resultMap="TicketExportEntity">
         select
         a.TICKET_MAS_ID,
-        a.TICKET_TYPE,
+        decode(a.TICKET_TYPE, 'I', 'INSTALL', 'M', 'MAINTAIN') AS TICKET_TYPE,
         decode(a.STATUS, 'CP', 'COMPLETE', 'W', 'WORKING' ,'O', 'OPEN') AS STATUS,
         a.COMPLETE_DATE,
-        a.CALL_IN_COUNT,
-        b.SERVICE_ID,
-        a.OWNING_ROLE,
+        a.SERVICE_NUMBER,
+        decode(a.PRIORITY, 1, 'General', 2, 'Minor', 3, 'Major', 4, 'Urgent') AS PRIORITY,
         a.CREATEDATE,
         a.CREATEBY,
         a.MODIFYDATE,
-        a.MODIFYBY,
-        d.SYMPTOM_description,
-        b.SUBS_ID,
-        b.JOB_ID,
-        b.REPORT_TIME,
-        e.CLOSE_CODE_DESCRIPTION as SD_CLOSE_CODE_DESCRIPTION,
-        json_value('{"wfm":'||b.wfm_comp_info || '}', '$.wfm[1].value[0]' ) as wfm_clearcode,
-        json_value('{"wfm":'||b.wfm_comp_info || '}', '$.wfm[3].value[0]' ) as wfm_subclearcode
+        a.MODIFYBY
         from ticket_mas a
-        inner join ticket_det b on a.TICKET_MAS_ID=b.ticket_mas_id
-        left join symptom d on b.symptom_code=d.symptom_code
-        left join closecode e on b.close_code=e.close_code
         <where>
             <if test="createDateFrom != null">
                 and trunc(a.createdate) &gt;= trunc(#{createDateFrom})
@@ -370,23 +339,14 @@
             <if test="ticketMasId != null">
                 and a.ticket_mas_id = #{ticketMasId}
             </if>
-            <if test="custCode != null">
-                and lower(a.cust_code) like '%' || lower(#{custCode}) || '%'
-            </if>
             <if test="serviceNumber != null">
-                and lower(b.service_id) like '%' || lower(#{serviceNumber}) || '%'
+                and a.serviceNumber = #{serviceNumber}
             </if>
             <if test="ticketType != null">
                 and a.ticket_type = #{ticketType}
             </if>
-            <if test="serviceType != null">
-                and b.service_type_code = #{serviceType}
-            </if>
-            <if test="owningRole != null">
-                and a.owning_role in
-                <foreach item="roleId" index="index" collection="owningRole" open="(" separator="," close=")">
-                    #{roleId}
-                </foreach>
+            <if test="priority != null">
+                and a.priority = #{priority}
             </if>
         </where>
         order by a.ticket_mas_id
@@ -415,4 +375,17 @@
         select avg(complete_time)
         from (select ceil((t.modifydate-d.createdate)*24*60) as complete_time from ticket_det d, ticket_mas t where d.ticket_mas_id=t.ticket_mas_id and t.status='CP')
     </select>
+
+    <insert id="insertTicket" parameterType="com.hkt.btu.sd.core.dao.entity.SdTicketMasEntity">
+        <selectKey keyProperty="ticketMasId" order="BEFORE" resultType="Integer">
+            select SEQ_TICKET_MAS_ID.NEXTVAL from dual
+        </selectKey>
+        insert into TICKET_MAS (TICKET_MAS_ID,SERVICE_NUMBER,TICKET_TYPE,STATUS,PRIORITY,CREATEBY,MODIFYBY)
+        values(#{ticketMasId},#{serviceNumber},#{ticketType},'O',#{priority},#{createby},#{createby})
+    </insert>
+
+    <update id="updateTicketStatus">
+        update TICKET_MAS set STATUS = #{status}, MODIFYBY = #{userId}, MODIFYDATE = sysdate
+        where TICKET_MAS_ID = #{ticketMasId}
+    </update>
 </mapper>

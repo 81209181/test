@@ -14,11 +14,7 @@ public class SdTicketExportData implements DataInterface {
 
     private LocalDateTime completeDate;
 
-    private int callInCount;
-
     private String serviceNumber;
-
-    private String owningRole;
 
     private LocalDateTime createDate;
 
@@ -28,19 +24,7 @@ public class SdTicketExportData implements DataInterface {
 
     private String modifyBy;
 
-    private String symptomDescription;
-
-    private String subsId;
-
-    private String jobId;
-
-    private LocalDateTime reportTime;
-
-    private String sdCloseCodeDescription;
-
-    private String wfmClearCode;
-
-    private String wfmSubClearCode;
+    private String priority;
 
     public int getTicketMasId() {
         return ticketMasId;
@@ -74,28 +58,12 @@ public class SdTicketExportData implements DataInterface {
         this.completeDate = completeDate;
     }
 
-    public int getCallInCount() {
-        return callInCount;
-    }
-
-    public void setCallInCount(int callInCount) {
-        this.callInCount = callInCount;
-    }
-
     public String getServiceNumber() {
         return serviceNumber;
     }
 
     public void setServiceNumber(String serviceNumber) {
         this.serviceNumber = serviceNumber;
-    }
-
-    public String getOwningRole() {
-        return owningRole;
-    }
-
-    public void setOwningRole(String owningRole) {
-        this.owningRole = owningRole;
     }
 
     public LocalDateTime getCreateDate() {
@@ -130,59 +98,11 @@ public class SdTicketExportData implements DataInterface {
         this.modifyBy = modifyBy;
     }
 
-    public String getSymptomDescription() {
-        return symptomDescription;
+    public String getPriority() {
+        return priority;
     }
 
-    public void setSymptomDescription(String symptomDescription) {
-        this.symptomDescription = symptomDescription;
-    }
-
-    public String getSubsId() {
-        return subsId;
-    }
-
-    public void setSubsId(String subsId) {
-        this.subsId = subsId;
-    }
-
-    public String getJobId() {
-        return jobId;
-    }
-
-    public void setJobId(String jobId) {
-        this.jobId = jobId;
-    }
-
-    public LocalDateTime getReportTime() {
-        return reportTime;
-    }
-
-    public void setReportTime(LocalDateTime reportTime) {
-        this.reportTime = reportTime;
-    }
-
-    public String getSdCloseCodeDescription() {
-        return sdCloseCodeDescription;
-    }
-
-    public void setSdCloseCodeDescription(String sdCloseCodeDescription) {
-        this.sdCloseCodeDescription = sdCloseCodeDescription;
-    }
-
-    public String getWfmClearCode() {
-        return wfmClearCode;
-    }
-
-    public void setWfmClearCode(String wfmClearCode) {
-        this.wfmClearCode = wfmClearCode;
-    }
-
-    public String getWfmSubClearCode() {
-        return wfmSubClearCode;
-    }
-
-    public void setWfmSubClearCode(String wfmSubClearCode) {
-        this.wfmSubClearCode = wfmSubClearCode;
+    public void setPriority(String priority) {
+        this.priority = priority;
     }
 }

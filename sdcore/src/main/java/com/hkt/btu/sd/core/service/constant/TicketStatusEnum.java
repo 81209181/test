@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 public enum TicketStatusEnum {
     OPEN (SdTicketMasEntity.STATUS.OPEN, SdTicketMasBean.STATUS_DESC.OPEN),
     WORKING (SdTicketMasEntity.STATUS.WORKING, SdTicketMasBean.STATUS_DESC.WORKING),
+    CLOSE (SdTicketMasEntity.STATUS.CLOSE, SdTicketMasBean.STATUS_DESC.CLOSE),
     COMPLETE (SdTicketMasEntity.STATUS.COMPLETE, SdTicketMasBean.STATUS_DESC.COMPLETE)
     ;
 
