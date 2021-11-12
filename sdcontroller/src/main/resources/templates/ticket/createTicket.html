@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout-fluid}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Ticket</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+    <div class="card" style="margin-bottom: 75px;">
+        <div class="card-header bg-primary text-white">Ticket</span></div>
+        <div class="card-body">
+            <div id="ticket" class="row">
+                <div class="col-md-12">
+                    <h3>Ticket</h3>
+                </div>
+                <div class="col-md-6 form-inline pt-2">
+                    <label class="col-form-label col-md-3 justify-content-end">Service Number:</label>
+                    <input type="text" class="form-control col-md-6" name="serviceNumber">
+                </div>
+                <div class="col-md-6 form-inline pt-2">
+                    <label class="col-form-label col-md-3 justify-content-end">Ticket Type:</label>
+                    <select class="form-control col-md-6" name="ticketType">
+                        <option></option>
+                        <option value="M">Maintain</option>
+                        <option value="I">Install</option>
+                    </select>
+                </div>
+                <div class="col-md-6 form-inline pt-2">
+                    <label class="col-form-label col-md-3 justify-content-end">Priority:</label>
+                    <select class="form-control col-md-6" name="priority">
+                        <option></option>
+                        <option value="1">General</option>
+                        <option value="2">Minor</option>
+                        <option value="3">Major</option>
+                        <option value="4">Urgent</option>
+                    </select>
+                </div>
+            </div>
+            <hr>
+            <div id="contact" class="row">
+                <div class="col-md-12">
+                    <h3>Contact</h3>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group form-inline">
+                        <select class="custom-select" id="contactType">
+                            <option value="" hidden>Please select</option>
+                            <option value="CUST">Customer</option>
+                            <option value="ADMIN">Office Admin</option>
+                            <option value="SITE">On-site Contact</option>
+                            <option value="CALL">Caller</option>
+                        </select>
+                        <button type="button" class="btn btn-light ml-2" id="btnAddContact"><i class="fa fa-plus" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="contact_list" style="width:100%"></div>
+            </div>
+            <hr>
+            <h3>Remark</h3>
+            <div id="remark" class="row">
+                <form class="col-md-12 form">
+                    <div class="form-row">
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Remarks: </label>
+                            <textarea rows="3" cols="20" class="form-control col-md-6" name="remarks"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="float-right">
+                <button type="button" class="btn btn-primary " id="btnTicketSubmit">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="tempContact" hidden="hidden">
+        <form class="col-md-12">
+            <div class="form-row">
+                <div class="col-md-12 form-inline pt-2">
+                    <label class="col-form-label justify-content-end">Contact Type:</label>
+                    <input type="text" name="contactType" hidden>
+                    <input type="text" class="form-control-plaintext col-md-1" name="contactTypeDesc">
+                    <button type="button" class="btn btn-light ml-2" onclick="removeContact(this)"><i class="fa fa-times" aria-hidden="true"></i></button>
+                </div>
+                <div class="col-md-6 form-inline pt-2">
+                    <label class="col-form-label col-md-3 justify-content-end">Contact Name:</label>
+                    <input type="text" class="form-control col-md-6" name="contactName">
+                </div>
+                <div class="col-md-6 form-inline pt-2">
+                    <label class="col-form-label col-md-3 justify-content-end">Contact No. :</label>
+                    <input type="text" class="form-control col-md-6" name="contactNumber">
+                </div>
+                <div class="col-md-6 form-inline pt-2">
+                    <label class="col-form-label col-md-3 justify-content-end">Contact Mobile:</label>
+                    <input type="text" class="form-control col-md-6" name="contactMobile">
+                </div>
+                <div class="col-md-6 form-inline pt-2">
+                    <label class="col-form-label col-md-3 justify-content-end">Contact Email:</label>
+                    <input type="text" class="form-control col-md-6" name="contactEmail">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal fade reason">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-white bg-info h-80">
+                    <h6 class="modal-title">Closing Ticket</h6>
+                    <button type="button" class="close text-white" data-dismiss="modal">x</button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation" novalidate>
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <label>Contact Name:</label>
+                                <input type="text" class="form-control" name="contactName" required>
+                                <div class="invalid-feedback">
+                                    Please input contact name.
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label >Contact Number:</label>
+                                <input type="text" class="form-control" name="contactNumber" pattern="[0-9]{8}">
+                                <div class="invalid-feedback">
+                                    Must be 8 digits.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row mt-3">
+                            <label class="col-md-2 justify-content-end" >Reason:</label>
+                            <select class="custom-select col-md-10 reasonType" required name="reasonType"></select>
+                            <div class="invalid-feedback offset-md-2">
+                                Please select on reason.
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label class="col-md-2 justify-content-end">Remark:</label>
+                            <textarea class="form-control col-md-10 mt-2" required name="reasonContent" rows="3"></textarea>
+                            <div class="invalid-feedback offset-md-2">
+                                Please enter a message in the textarea.
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info float-right" id="btnReasonSubmit">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" th:src="@{/js/createTicket.js(v=${projectBuildtime})}"></script>
+    <!--    <script type="text/javascript" th:src="@{/js/appointment_sd_util.js(v=${projectBuildtime})}"></script>
+        <script type="text/javascript" th:src="@{/js/transfer_sd_util.js(v=${projectBuildtime})}"></script>-->
+</div>
+</body>
+</html>

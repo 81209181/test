@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{fragments/layout-fluid}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ticket Info</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/reletedTicket.css(v=${projectBuildtime})}"/>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+    <script>
+        var ticketMasId = '[[${ticketInfo.ticketMasId}]]';
+        var ticketStatusDesc = '[[${ticketInfo.statusDesc}]]';
+    </script>
+    <div class="card" style="margin-bottom: 75px;" th:object="${ticketInfo}">
+        <div class="card-header bg-primary text-white">Ticket - <span th:text="*{ticketMasId}"></span></div>
+        <div class="card-body">
+            <div id="ticket" class="row">
+                <div class="col-md-12">
+                    <h3>Ticket</h3>
+                </div>
+                <div class="col-md-3 form-inline pt-2">
+                    <label class="col-form-label justify-content-end">Ticket Mas ID:</label>
+                    <font class="form-control-plaintext col-md-7" th:text="*{ticketMasId}" id="ticketMasId"></font>
+                </div>
+                <div class="col-md-3 form-inline pt-2">
+                    <label class="col-form-label justify-content-end">Ticket Type:</label>
+                    <font class="form-control-plaintext col-md-3" th:text="*{ticketType}"></font>
+                </div>
+                <div class="col-md-4 form-inline pt-2">
+                    <label class="col-form-label justify-content-end">Ticket Status:</label>
+                    <span class="form-control-plaintext col-md-3" th:text="*{statusDesc}" id="ticketStatusDesc"></span>
+                    <button type="button" class="btn btn-success" id="btnTicketClose" th:unless="*{statusDesc} eq 'COMPLETE'">Close</button>
+                </div>
+                <div class="col-md-3 form-inline pt-2">
+                    <label class="col-form-label justify-content-end">Service Number:</label>
+                    <font class="form-control-plaintext col-md-3" th:text="*{serviceNumber}"></font>
+                </div>
+                <div class="col-md-3 form-inline pt-2">
+                    <label class="col-form-label justify-content-end">Priority:</label>
+                    <font class="form-control-plaintext col-md-3" th:text="*{priority}"></font>
+                </div>
+            </div>
+            <hr>
+            <div id="contact" class="row">
+                <div class="col-md-12">
+                    <h3>Contact</h3>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group form-inline">
+                        <select class="custom-select" id="contactType">
+                            <option value="" hidden>Please select</option>
+                            <option value="CUST">Customer</option>
+                            <option value="ADMIN">Office Admin</option>
+                            <option value="SITE">On-site Contact</option>
+                            <option value="CALL">Caller</option>
+                        </select>
+                        <button type="button" class="btn btn-light ml-2" id="btnAddContact" th:disabled="*{statusDesc} eq 'COMPLETE'"><i class="fa fa-plus" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="contact_list" style="width:100%"></div>
+            </div>
+            <hr>
+            <h3>Remark</h3>
+            <div id="remark" class="row">
+                <form class="col-md-12 form">
+                    <div class="form-row">
+                        <div class="col-md-6 form-inline pt-2">
+                            <label class="col-form-label col-md-3 justify-content-end">Remarks: </label>
+                            <textarea rows="3" cols="20" class="form-control col-md-6" name="remarks"></textarea>
+                        </div>
+                    </div>
+                </form>
+                <hr style="visibility: hidden;">
+                <table id="searchTicketRemarksTable" class="display" cellspacing="0" width="100%" style="table-layout: fixed;word-wrap:break-word;border-collapse: collapse;">
+                    <thead>
+                    <tr>
+                        <th>Create Date</th>
+                        <th>Type</th>
+                        <th>Remarks</th>
+                        <th>Create By</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th>Create Date</th>
+                        <th>Type</th>
+                        <th>Remarks</th>
+                        <th>Create By</th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="float-right">
+                <button type="button" class="btn btn-primary " id="btnTicketSubmit" th:disabled="*{statusDesc} ne 'OPEN'">Update</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="tempContact" hidden="hidden">
+        <form class="col-md-12">
+            <div class="form-row">
+                <div class="col-md-12 form-inline pt-2">
+                    <label class="col-form-label justify-content-end">Contact Type:</label>
+                    <input type="text" name="contactType" hidden>
+                    <input type="text" class="form-control-plaintext col-md-1" name="contactTypeDesc">
+                    <button type="button" class="btn btn-light ml-2" onclick="removeContact(this)"><i class="fa fa-times" aria-hidden="true"></i></button>
+                </div>
+                <div class="col-md-6 form-inline pt-2">
+                    <label class="col-form-label col-md-3 justify-content-end">Contact Name:</label>
+                    <input type="text" class="form-control col-md-6" name="contactName">
+                </div>
+                <div class="col-md-6 form-inline pt-2">
+                    <label class="col-form-label col-md-3 justify-content-end">Contact No. :</label>
+                    <input type="text" class="form-control col-md-6" name="contactNumber">
+                </div>
+                <div class="col-md-6 form-inline pt-2">
+                    <label class="col-form-label col-md-3 justify-content-end">Contact Mobile:</label>
+                    <input type="text" class="form-control col-md-6" name="contactMobile">
+                </div>
+                <div class="col-md-6 form-inline pt-2">
+                    <label class="col-form-label col-md-3 justify-content-end">Contact Email:</label>
+                    <input type="text" class="form-control col-md-6" name="contactEmail">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal fade reason">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-white bg-info h-80">
+                    <h6 class="modal-title">Closing Ticket</h6>
+                    <button type="button" class="close text-white" data-dismiss="modal">x</button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation" novalidate>
+                        <div class="form-row">
+                            <label class="col-md-2 justify-content-end">Reason:</label>
+                            <textarea class="form-control col-md-10 mt-2" required name="reasonContent" rows="3"></textarea>
+                            <div class="invalid-feedback offset-md-2">
+                                Please enter a message in the textarea.
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info float-right" id="btnReasonSubmit">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" th:src="@{/js/ticketInfo.js(v=${projectBuildtime})}"></script>
+</div>
+</body>
+</html>
