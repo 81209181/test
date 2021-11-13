@@ -4,9 +4,17 @@ $().ready(function(){
         $("#ticketStatusDesc").css("color","blue");
     } else if(ticketStatusDesc === "WORKING"){
         $("#ticketStatusDesc").css("color","orange");
+        $("#btnTicketAssign").hide();
     } else if(ticketStatusDesc === "COMPLETE"){
         $("#ticketStatusDesc").css("color","green");
-        $("#btnTicketSubmit").hide();
+        $("#btnUpdateContact").hide();
+        $("#btnTicketClose").hide();
+        $("#btnTicketAssign").hide();
+    } else if (ticketStatusDesc === "CLOSE") {
+        $("#ticketStatusDesc").css("color","red");
+        $("#btnUpdateContact").hide();
+        $("#btnTicketClose").hide();
+        $("#btnTicketAssign").hide();
     }
 
     // contact
@@ -30,10 +38,6 @@ $().ready(function(){
         }
     });
 
-
-    // remark
-    getRemarksTableData();
-
     $('#btnAddContact').on('click',function(){
         clearAllMsg();
         if($(this).prev('select').val().length <1){
@@ -47,13 +51,71 @@ $().ready(function(){
         $('#btnUpdateContact').attr('disabled',false);
     });
 
+    $('#btnUpdateContact').on('click',function(){
+        clearAllMsg();
+        let arr =new Array() ;
+        $('#contact_list').find('form').each(function(index,form){
+            let form_arr =$(form).serializeArray();
+            let form_json = {};
+            $.map(form_arr, function (n, i) {
+              form_json[n['name']] = n['value'];
+            });
+            form_json['ticketMasId']=ticketMasId;
+            arr.push(form_json);
+        })
+        $.ajax({
+            url:'/ticket/contact/update',
+            type : 'POST',
+            dataType: 'text',
+            contentType: "application/json",
+            data: JSON.stringify(arr),
+            success:function(res){
+                if (res === "") {
+                    showInfoMsg("Updated contact info.", false);
+                } else {
+                    showErrorMsg(res);
+                }
+            }
+        }).fail(function(e){
+            var responseError = e.responseText ? e.responseText : "Get failed.";
+            console.log("ERROR : ", responseError);
+            showErrorMsg(responseError);
+        })
+    });
+
+    // remark
+    getRemarksTableData();
+
     // close button
     $('#btnTicketClose').on('click',function(){
         $('.reason').modal('show');
     });
 
     $('#btnReasonSubmit').on('click',function(){
-        let form =$('.needs-validation').get(0);
+        let form =$('.reason-form').get(0);
+        if(form.checkValidity()){
+            $.post('/ticket/close',{
+                ticketMasId:ticketMasId,
+                reasonContent:$(form).find('textarea[name=reasonContent]').val(),
+            },function(res){
+                if(res.success){
+                    location.reload();
+                }
+            }).fail(function(e){
+                var responseError = e.responseText ? e.responseText : "Get failed.";
+                console.log("ERROR : ", responseError);
+            })
+        }
+        $(form).addClass("was-validated");
+    });
+
+    // assign button
+    $('#btnTicketAssign').on('click',function(){
+        $('.assign').modal('show');
+    });
+
+    $('#btnAssignSubmit').on('click',function(){
+        let form =$('.assign-form').get(0);
         if(form.checkValidity()){
             $.post('/ticket/close',{
                 ticketMasId:ticketMasId,

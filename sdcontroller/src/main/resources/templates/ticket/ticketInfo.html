@@ -25,20 +25,21 @@
                 </div>
                 <div class="col-md-3 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Ticket Type:</label>
-                    <font class="form-control-plaintext col-md-3" th:text="*{ticketType}"></font>
+                    <font class="form-control-plaintext col-md-7" th:text="*{ticketType}"></font>
                 </div>
                 <div class="col-md-4 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Ticket Status:</label>
                     <span class="form-control-plaintext col-md-3" th:text="*{statusDesc}" id="ticketStatusDesc"></span>
                     <button type="button" class="btn btn-success" id="btnTicketClose" th:unless="*{statusDesc} eq 'COMPLETE'">Close</button>
+                    <button type="button" class="btn btn-success ml-2" id="btnTicketAssign" th:less="*{statusDesc} eq 'OPEN'">Assign</button>
                 </div>
                 <div class="col-md-3 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Service Number:</label>
-                    <font class="form-control-plaintext col-md-3" th:text="*{serviceNumber}"></font>
+                    <font class="form-control-plaintext col-md-7" th:text="*{serviceNumber}"></font>
                 </div>
                 <div class="col-md-3 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Priority:</label>
-                    <font class="form-control-plaintext col-md-3" th:text="*{priority}"></font>
+                    <font class="form-control-plaintext col-md-7" th:text="*{priority}"></font>
                 </div>
             </div>
             <hr>
@@ -60,19 +61,13 @@
                     </div>
                 </div>
                 <div id="contact_list" style="width:100%"></div>
+                <div class="offset-md-11">
+                    <button type="button" class="btn btn-primary mt-2" id="btnUpdateContact" disabled="disabled" th:disabled="*{statusDesc} eq 'COMPLETE'">Update</button>
+                </div>
             </div>
             <hr>
             <h3>Remark</h3>
             <div id="remark" class="row">
-                <form class="col-md-12 form">
-                    <div class="form-row">
-                        <div class="col-md-6 form-inline pt-2">
-                            <label class="col-form-label col-md-3 justify-content-end">Remarks: </label>
-                            <textarea rows="3" cols="20" class="form-control col-md-6" name="remarks"></textarea>
-                        </div>
-                    </div>
-                </form>
-                <hr style="visibility: hidden;">
                 <table id="searchTicketRemarksTable" class="display" cellspacing="0" width="100%" style="table-layout: fixed;word-wrap:break-word;border-collapse: collapse;">
                     <thead>
                     <tr>
@@ -95,11 +90,11 @@
                 </table>
             </div>
         </div>
-        <div class="card-footer">
+        <!--<div class="card-footer">
             <div class="float-right">
                 <button type="button" class="btn btn-primary " id="btnTicketSubmit" th:disabled="*{statusDesc} ne 'OPEN'">Update</button>
             </div>
-        </div>
+        </div>-->
 
     </div>
 
@@ -139,7 +134,7 @@
                     <button type="button" class="close text-white" data-dismiss="modal">x</button>
                 </div>
                 <div class="modal-body">
-                    <form class="needs-validation" novalidate>
+                    <form class="needs-validation reason-form" novalidate>
                         <div class="form-row">
                             <label class="col-md-2 justify-content-end">Reason:</label>
                             <textarea class="form-control col-md-10 mt-2" required name="reasonContent" rows="3"></textarea>
@@ -151,6 +146,30 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-info float-right" id="btnReasonSubmit">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade assign">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-white bg-info h-80">
+                    <h6 class="modal-title">Assigning Ticket</h6>
+                    <button type="button" class="close text-white" data-dismiss="modal">x</button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation assign-form" novalidate>
+                        <div class="form-row">
+                            <label class="col-md-2 justify-content-end">Assign:</label>
+                            <textarea class="form-control col-md-10 mt-2" required name="assignContent" rows="3"></textarea>
+                            <div class="invalid-feedback offset-md-2">
+                                Please enter a message in the textarea.
+                            </div>
+                        </div>
+                    </form>1
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info float-right" id="btnAssignSubmit">Submit</button>
                 </div>
             </div>
         </div>
