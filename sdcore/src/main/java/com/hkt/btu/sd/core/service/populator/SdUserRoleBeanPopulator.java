@@ -12,6 +12,5 @@ public class SdUserRoleBeanPopulator extends AbstractBeanPopulator<SdUserRoleBea
         super.populate(source, target);
         BeanUtils.copyProperties(source, target);
         target.setActive(StringUtils.equals(SdUserRoleBean.ACTIVE_ROLE_STATUS, source.getStatus()));
-        target.setAbstract(StringUtils.equals(SdUserRoleEntity.IS_ABSTRACT, source.getAbstractFlag()));
     }
 }

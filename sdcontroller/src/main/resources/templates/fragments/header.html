@@ -44,11 +44,11 @@
                         User Management
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" th:href="@{/admin/manage-user/create-user}">Create PCCW/HKT User</a>
-                        <a class="dropdown-item" th:href="@{/admin/manage-user/create-non-pccw-hkt-user}">Create Non PCCW/HKT User</a>
-                        <a class="dropdown-item" th:href="@{/admin/manage-user/create-ldap-user}">Create LDAP User</a>
+                        <a class="dropdown-item" th:href="@{/admin/manage-user/create-user}">Create User</a>
+<!--                        <a class="dropdown-item" th:href="@{/admin/manage-user/create-non-pccw-hkt-user}">Create Non PCCW/HKT User</a>-->
+<!--                        <a class="dropdown-item" th:href="@{/admin/manage-user/create-ldap-user}">Create LDAP User</a>-->
                         <a class="dropdown-item" th:href="@{/admin/manage-user/search-user}">Search User</a>
-                        <a class="dropdown-item" th:href="@{/admin/manage-user/list-team-contact}">Team Contact</a>
+<!--                        <a class="dropdown-item" th:href="@{/admin/manage-user/list-team-contact}">Team Contact</a>-->
 
                         <div sec:authorize="hasAnyAuthority('SYS_ADMIN')" th:remove="tag">
                             <div class="dropdown-divider"></div>
@@ -62,19 +62,19 @@
                         Ticket
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" th:href="@{/ticket/service-identity}">Search Service</a>
+<!--                        <a class="dropdown-item" th:href="@{/ticket/service-identity}">Search Service</a>-->
                         <a class="dropdown-item" th:href="@{/ticket/create-ticket}">Create Ticket</a>
-                        <a class="dropdown-item" th:href="@{/ticket/my-ticket}">My Ticket</a>
-                        <a class="dropdown-item" th:href="@{/ticket/team-summary}">Team Summary</a>
+<!--                        <a class="dropdown-item" th:href="@{/ticket/my-ticket}">My Ticket</a>-->
+<!--                        <a class="dropdown-item" th:href="@{/ticket/team-summary}">Team Summary</a>-->
                         <a class="dropdown-item" th:href="@{/ticket/search-ticket}">Search Ticket</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" th:href="@{/ticket/dashboard}">Dashboard</a>
                     </div>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/public/contact-us}">Contact Us</a>
-                </li>
+<!--                <li class="nav-item">-->
+<!--                    <a class="nav-link" th:href="@{/public/contact-us}">Contact Us</a>-->
+<!--                </li>-->
             </ul>
 
 

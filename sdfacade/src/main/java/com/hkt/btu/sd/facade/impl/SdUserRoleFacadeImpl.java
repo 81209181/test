@@ -118,20 +118,16 @@ public class SdUserRoleFacadeImpl implements SdUserRoleFacade {
 
 
     @Override
-    public String updateUserRole(String roleId, String roleDesc, String status, String abstractFlag) {
+    public String updateUserRole(String roleId, String roleDesc, String status) {
         if (StringUtils.isEmpty(roleId)) {
             return "Empty role id.";
         } else if (StringUtils.isEmpty(roleDesc)) {
             return "Empty role desc.";
         } else if (StringUtils.isEmpty(status)) {
             return "Empty status.";
-        } else if (StringUtils.isEmpty(abstractFlag)) {
-            return "Empty abstract flag.";
         }
 
-        boolean isAbstract = BooleanUtils.toBoolean(abstractFlag);
-
-        sdUserRoleService.updateUserRole(roleId, roleDesc, status, isAbstract);
+        sdUserRoleService.updateUserRole(roleId, roleDesc, status);
         return null;
     }
 

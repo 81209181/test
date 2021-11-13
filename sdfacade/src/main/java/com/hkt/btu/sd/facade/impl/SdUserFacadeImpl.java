@@ -60,7 +60,8 @@ public class SdUserFacadeImpl implements SdUserFacade {
         String name = StringUtils.trim(createUserFormData.getName());
         String email = StringUtils.trim(createUserFormData.getEmail());
         String mobile = StringUtils.trim(createUserFormData.getMobile());
-        String employeeNumber = StringUtils.trim(createUserFormData.getUserId());
+        String userId = StringUtils.trim(createUserFormData.getUserId());
+        String employeeNumber = StringUtils.trim(createUserFormData.getStaffId());
 
         List<String> userRoleIdList = createUserFormData.getUserRoleIdList();
 
@@ -70,11 +71,11 @@ public class SdUserFacadeImpl implements SdUserFacade {
             sdInputCheckService.checkName(name);
             sdInputCheckService.checkEmail(email);
             sdInputCheckService.checkMobile(mobile);
-            sdInputCheckService.checkPccwHktLoginID(employeeNumber);
-            sdInputCheckService.checkAssignRoleByDomain(userRoleIdList, null);
+            sdInputCheckService.checkPccwHktLoginID(userId);
+            sdInputCheckService.checkEmployeeNumber(employeeNumber);
             String primaryRoleId = checkPrimaryRole(createUserFormData.getPrimaryRoleId(), userRoleIdList);
             // create new user
-            resultBean = sdUserService.createUser(employeeNumber, name, mobile, email, primaryRoleId, userRoleIdList);
+            resultBean = sdUserService.createUser(userId, employeeNumber, name, mobile, email, primaryRoleId, userRoleIdList);
         } catch (InvalidInputException | UserNotFoundException | DuplicateUserEmailException e) {
             LOG.warn(e.getMessage());
             return SdCreateResultData.of(e.getMessage());
@@ -115,7 +116,7 @@ public class SdUserFacadeImpl implements SdUserFacade {
             String primaryRoleId = checkPrimaryRole(createUserFormData.getPrimaryRoleId(),userRoleIdList);
             // create new user.
             // Non PCCW / HKT user will use X prefix
-            resultBean = sdUserService.createUser(employeeNumber, name, mobile, email,primaryRoleId, userRoleIdList);
+            resultBean = sdUserService.createUser(employeeNumber, null, name, mobile, email,primaryRoleId, userRoleIdList);
         } catch (InvalidInputException | UserNotFoundException | DuplicateUserEmailException e) {
             LOG.warn(e.getMessage());
             return SdCreateResultData.of(e.getMessage());

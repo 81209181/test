@@ -220,7 +220,6 @@ public class ManageUserController {
         if (sdUserData == null) {
             return ResponseEntity.badRequest().body("User not found.");
         } else {
-            sdAuditTrailFacade.insertViewUserAuditTrail(sdUserData);
             return ResponseEntity.ok(sdUserData);
         }
     }

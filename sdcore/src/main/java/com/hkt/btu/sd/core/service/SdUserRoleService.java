@@ -12,7 +12,7 @@ public interface SdUserRoleService {
     List<String> getPrimaryRoles();
 
     void updateUserRoleByUserId(String userId, List<String> roleIdList);
-    void updateUserRole(String roleId, String roleDesc, String status, Boolean isAbstract);
+    void updateUserRole(String roleId, String roleDesc, String status);
     void reloadCachedRoleTree();
 
     List<SdUserRoleBean> getAllUserRole();

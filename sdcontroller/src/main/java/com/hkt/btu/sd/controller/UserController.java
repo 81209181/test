@@ -38,7 +38,7 @@ public class UserController {
         if(currentUserData==null){
             return ResponseEntity.badRequest().body("Current user not found!");
         }else {
-            sdAuditTrailFacade.insertViewUserAuditTrail(currentUserData);
+            //sdAuditTrailFacade.insertViewUserAuditTrail(currentUserData);
             return ResponseEntity.ok(currentUserData);
         }
     }

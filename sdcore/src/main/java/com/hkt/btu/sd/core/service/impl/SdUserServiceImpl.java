@@ -216,7 +216,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     }
 
     @Override
-    public SdCreateResultBean createUser(String userId, String name, String mobile, String email, String primaryRoleId, List<String> roleIdList)
+    public SdCreateResultBean createUser(String userId, String employeeNumber, String name, String mobile, String email, String primaryRoleId, List<String> roleIdList)
             throws UserNotFoundException {
         if (StringUtils.isEmpty(name)) {
             throw new InvalidInputException("Empty user name.");
@@ -259,7 +259,7 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         sdUserEntity.setUserId(userId);
         sdUserEntity.setName(name);
         sdUserEntity.setStatus(SdUserEntity.STATUS.ACTIVE);
-
+        sdUserEntity.setStaffId(employeeNumber);
         sdUserEntity.setMobile(mobile);
         sdUserEntity.setEmail(email);
         sdUserEntity.setPassword(encodedPassword);
@@ -624,11 +624,11 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
         if (ObjectUtils.isEmpty(resetPwdUser)) {
             throw new UserNotFoundException();
         }
-        if (resetPwdUser.getRoles().stream().noneMatch(s -> StringUtils.equals(s, SdUserRoleEntity.SYS_ADMIN))) {
+        /*if (resetPwdUser.getRoles().stream().noneMatch(s -> StringUtils.equals(s, SdUserRoleEntity.SYS_ADMIN))) {
             if (resetPwdUser.getRoles().stream().noneMatch(s -> resetPwdUser.getRoles().contains("TH__" + s))) {
                 throw new RuntimeException("Reset password error: You are not the team head of this user.");
             }
-        }
+        }*/
         String userId = resetPwdUser.getUserId();
 
         boolean isNewlyCreated = resetPwdUser.getPasswordModifydate() == null;

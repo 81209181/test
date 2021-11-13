@@ -25,6 +25,9 @@
                         <label>Email</label>
                         <input type="email" th:field="*{email}" class="form-control" placeholder="your-email@pccw.com" maxlength="50" required>
 
+                        <label>Employee Number</label>
+                        <input type="text" th:field="*{staffId}" class="form-control" placeholder="Your StaffId" required>
+
                         <div th:replace="admin/manageUser/userRoleFragment :: roles"></div>
                     </div>
                 </div>

@@ -11,7 +11,6 @@ public class SdUserRoleDataPopulator extends AbstractDataPopulator<SdUserRoleDat
         target.setRoleDesc(source.getRoleDesc());
         target.setParentRoleId(source.getParentRoleId());
         target.setStatus(source.getStatus());
-        target.setAbstractFlag(Boolean.toString(source.isAbstract()));
         target.setPrimaryRole(source.isPrimaryRole());
     }
 }

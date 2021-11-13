@@ -76,10 +76,10 @@
     </select>
 
     <insert id="insertUser" parameterType="com.hkt.btu.sd.core.dao.entity.SdUserEntity">
-        insert into USER_PROFILE (USER_ID, NAME, STATUS, MOBILE, LDAP_DOMAIN, EMAIL, STAFF_ID, PASSWORD,
+        insert into USER_PROFILE (USER_ID, NAME, STATUS, MOBILE, EMAIL, STAFF_ID, PASSWORD,
                                   PASSWORD_MODIFYDATE,PRIMARY_ROLE_ID,
                                   CREATEBY, MODIFYBY)
-        values (#{userId}, #{name}, #{status}, #{mobile}, #{ldapDomain}, #{email}, #{staffId}, #{password}, null,#{primaryRoleId},
+        values (#{userId}, #{name}, #{status}, #{mobile}, #{email}, #{staffId}, #{password}, null,#{primaryRoleId},
                 #{createby},
                 #{createby})
     </insert>

@@ -81,7 +81,7 @@ public class SdPathCtrlServiceImpl implements SdPathCtrlService {
     @Override
     public List<SdUserRoleBean> getAbstractParentRole(String roldId) {
         return sdUserRoleMapper.getParentRoleByRoleId(roldId).stream()
-                .filter(entity -> StringUtils.equals(SdUserRoleEntity.IS_ABSTRACT, entity.getAbstractFlag()))
+//                .filter(entity -> StringUtils.equals(SdUserRoleEntity.IS_ABSTRACT, entity.getAbstractFlag()))
                 .map(entity -> {
                     SdUserRoleBean bean = new SdUserRoleBean();
                     sdUserRoleBeanPopulator.populate(entity, bean);

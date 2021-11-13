@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public class SdUserRolePathCtrlBean extends BtuUserRolePathCtrlBean {
 
-    public static final String OPERATOR_LOGON_PATH = "/ticket/service-identity";
+    public static final String OPERATOR_LOGON_PATH = "/ticket/search-ticket";
 
     private String description;
 

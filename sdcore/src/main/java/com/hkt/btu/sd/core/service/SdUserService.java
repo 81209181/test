@@ -17,7 +17,7 @@ import java.util.List;
 
 public interface SdUserService extends BtuUserService {
 
-    SdCreateResultBean createUser(String userId, String name, String mobile, String email, String primaryRoleId, List<String> toGrantRoleIdList)
+    SdCreateResultBean createUser(String userId, String employeeNumber, String name, String mobile, String email, String primaryRoleId, List<String> toGrantRoleIdList)
             throws UserNotFoundException;
     String createLdapUser(String userId, String mobile, String employeeNumber, String ldapDomain,
                           String email, String primaryRoleId, List<String> roleIdList)

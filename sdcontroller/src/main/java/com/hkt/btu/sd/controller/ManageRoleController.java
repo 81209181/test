@@ -87,8 +87,8 @@ public class ManageRoleController {
 
     @PostMapping("/edit-user-role")
     public ResponseEntity<?> editUserForm(@RequestParam String roleId, @RequestParam String roleDesc,
-                                          @RequestParam String status, @RequestParam String abstractFlag) {
-        String errorMsg = userRoleFacade.updateUserRole(roleId, roleDesc, status, abstractFlag);
+                                          @RequestParam String status) {
+        String errorMsg = userRoleFacade.updateUserRole(roleId, roleDesc, status);
         if(errorMsg==null){
             return ResponseEntity.ok(SimpleAjaxResponse.of());
         }else {

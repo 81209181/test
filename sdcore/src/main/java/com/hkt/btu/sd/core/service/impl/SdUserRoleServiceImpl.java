@@ -365,10 +365,9 @@ public class SdUserRoleServiceImpl implements SdUserRoleService {
 
     @Override
     @Transactional
-    public void updateUserRole(String roleId, String roleDesc, String status, Boolean isAbstract) {
+    public void updateUserRole(String roleId, String roleDesc, String status) {
         String modifyby = userService.getCurrentUserUserId();
-        String abstractFlag = isAbstract ? SdUserRoleEntity.IS_ABSTRACT : StringUtils.EMPTY;
-        sdUserRoleMapper.updateUserRole(roleId, roleDesc, status, abstractFlag, modifyby);
+        sdUserRoleMapper.updateUserRole(roleId, roleDesc, status, modifyby);
     }
 
     /**

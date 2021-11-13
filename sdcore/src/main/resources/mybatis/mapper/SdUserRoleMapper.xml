@@ -106,7 +106,6 @@
         UPDATE USER_ROLE
         SET ROLE_DESC  = #{roleDesc},
             STATUS     = #{status},
-            ABSTRACT   = #{abstractFlag},
             MODIFYBY   = #{modifyby},
             MODIFYDATE = CURRENT_TIMESTAMP
         WHERE ROLE_ID = #{roleId}

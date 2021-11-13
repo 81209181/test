@@ -255,16 +255,16 @@ public class BtuEmailServiceImpl implements BtuEmailService {
 
 
         // send email
-//        if (siteConfigService.isDevelopmentServer()) {
+        if (siteConfigService.isDevelopmentServer()) {
             LOG.warn("Email Recipient: " + Arrays.toString(recipients));
             LOG.warn("Email CC Recipient: " + Arrays.toString(ccRecipients));
             LOG.warn("Email Subject: " + subject);
             LOG.warn("Email Body: \n" + bodyText);
-//            LOG.warn("CANNOT send above email in development environment.");
-//        } else {
+            LOG.warn("CANNOT send above email in development environment.");
+        } else {
             mailSender.send(message);
             LOG.info("Sent email [" + subject + "] to " + Arrays.toString(recipients) + ".");
-//        }
+        }
     }
 
 

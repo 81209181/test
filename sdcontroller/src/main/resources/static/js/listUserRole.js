@@ -22,11 +22,10 @@ $(document).ready(function() {
             { data: 'roleId' },
             { data: 'roleDesc' },
             { data: 'parentRoleId' },
-            { data: 'status' },
-            { data: 'abstractFlag' }
+            { data: 'status' }
         ],
         columnDefs: [ {
-            targets: 5,
+            targets: 4,
             data: "roleId",
             render: function ( roleId, type, row, meta ) {
                 var ctx = $("meta[name='_ctx']").attr("content");
