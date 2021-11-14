@@ -34,6 +34,7 @@ public class SdUserDataPopulator extends AbstractDataPopulator<SdUserData> {
         target.setDomainEmail(source.getDomainEmail());
         target.setPrimaryRoleId(source.getPrimaryRoleId());
         target.setTeamHead(source.getTeamHead());
+        target.setStaffId(source.getStaffId());
 
         // use detailed status
         String detailedStatus = STATUS_DESC_MAP.get(source.getStatus());
@@ -44,11 +45,11 @@ public class SdUserDataPopulator extends AbstractDataPopulator<SdUserData> {
         }
 
         // sensitive data
-        target.setStaffId(null);
-        target.setMobile(null);
-        target.setLoginTried(null);
-        target.setPasswordModifyDate(null);
-        target.setUserRoleList(null);
+//        target.setStaffId(null);
+//        target.setMobile(null);
+//        target.setLoginTried(null);
+//        target.setPasswordModifyDate(null);
+//        target.setUserRoleList(null);
     }
 
     public void populateSensitiveData(SdUserBean source, SdUserData target){

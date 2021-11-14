@@ -87,4 +87,8 @@ public interface SdTicketFacade {
     int createTicket(String serviceNumber, String ticketType, Integer priority, List<SdTicketContactData> contactList, String remarks);
 
     String closeTicket(int ticketMasId, String reasonContent);
+
+    String assignTicket(int ticketMasId, String engineer, String remark);
+
+    String completeTicket(int ticketMasId, String remark);
 }

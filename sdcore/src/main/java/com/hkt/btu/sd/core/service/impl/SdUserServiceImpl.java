@@ -729,6 +729,21 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     }
 
     @Override
+    public List<SdUserBean> getUserByRoleId(String roleId) {
+        List<SdUserEntity> sdUserEntityList = sdUserMapper.getUserByRoleId(roleId);
+
+        List<SdUserBean> sdUserBeanList = new LinkedList<>();
+        if (!CollectionUtils.isEmpty(sdUserEntityList)) {
+            for (SdUserEntity sdUserEntity : sdUserEntityList) {
+                SdUserBean sdUserBean = new SdUserBean();
+                sdUserBeanPopulator.populate(sdUserEntity, sdUserBean);
+                sdUserBeanList.add(sdUserBean);
+            }
+        }
+        return sdUserBeanList;
+    }
+
+    @Override
     public List<BtuUserBean> getApiUser() {
         List<SdUserEntity> sdUserEntityList = sdUserMapper.getApiUser();
         List<BtuUserBean> btuUserBeanList = new LinkedList<>();

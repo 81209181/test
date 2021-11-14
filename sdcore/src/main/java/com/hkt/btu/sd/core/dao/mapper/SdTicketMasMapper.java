@@ -132,4 +132,13 @@ public interface SdTicketMasMapper {
                               @Param("serviceNumber") String serviceNumber,
                               @Param("ticketType") String ticketType,
                               @Param("priority") Integer priority);
+
+    void updateTicketAssign(@Param("ticketMasId") int ticketMasId,
+                            @Param("status") String status,
+                            @Param("engineer") String engineer,
+                            @Param("userId") String userId);
+
+    void updateTicketComplete(@Param("ticketMasId") int ticketMasId,
+                              @Param("status") String status,
+                              @Param("userId") String userId);
 }

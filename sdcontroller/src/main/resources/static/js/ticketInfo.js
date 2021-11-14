@@ -2,6 +2,7 @@ $().ready(function(){
     /******************************************** Load and render each part *******************************************/
     if(ticketStatusDesc === "OPEN"){
         $("#ticketStatusDesc").css("color","blue");
+        $("#btnTicketComplete").hide();
     } else if(ticketStatusDesc === "WORKING"){
         $("#ticketStatusDesc").css("color","orange");
         $("#btnTicketAssign").hide();
@@ -10,11 +11,13 @@ $().ready(function(){
         $("#btnUpdateContact").hide();
         $("#btnTicketClose").hide();
         $("#btnTicketAssign").hide();
+        $("#btnTicketComplete").hide();
     } else if (ticketStatusDesc === "CLOSE") {
         $("#ticketStatusDesc").css("color","red");
         $("#btnUpdateContact").hide();
         $("#btnTicketClose").hide();
         $("#btnTicketAssign").hide();
+        $("#btnTicketComplete").hide();
     }
 
     // contact
@@ -114,12 +117,47 @@ $().ready(function(){
         $('.assign').modal('show');
     });
 
+    $('.workGroup').change(function(){
+        let selected = $(this).children('option:selected').val();
+        $.get('/ticket/getAssignEngineer?roleId='+selected, function (res) {
+            if (res != null) {
+                for (item of res) {
+                    $('.engineer').append("<option value=" + item.userId + ">" + item.staffId + "--" + item.name + "</option>");
+                }
+            }
+        });
+    })
+
     $('#btnAssignSubmit').on('click',function(){
         let form =$('.assign-form').get(0);
         if(form.checkValidity()){
-            $.post('/ticket/close',{
+            $.post('/ticket/assign',{
                 ticketMasId:ticketMasId,
-                reasonContent:$(form).find('textarea[name=reasonContent]').val(),
+                engineer:$(form).find('select[name=engineer]').val(),
+                remark:$(form).find('textarea[name=remark]').val()
+            },function(res){
+                if(res.success){
+                    location.reload();
+                }
+            }).fail(function(e){
+                var responseError = e.responseText ? e.responseText : "Get failed.";
+                console.log("ERROR : ", responseError);
+            })
+        }
+        $(form).addClass("was-validated");
+    });
+
+    // close button
+    $('#btnTicketComplete').on('click',function(){
+        $('.complete').modal('show');
+    });
+
+    $('#btnCompleteSubmit').on('click',function(){
+        let form =$('.complete-form').get(0);
+        if(form.checkValidity()){
+            $.post('/ticket/complete',{
+                ticketMasId:ticketMasId,
+                remark:$(form).find('textarea[name=remark]').val(),
             },function(res){
                 if(res.success){
                     location.reload();

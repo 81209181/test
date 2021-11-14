@@ -32,6 +32,7 @@
                     <span class="form-control-plaintext col-md-3" th:text="*{statusDesc}" id="ticketStatusDesc"></span>
                     <button type="button" class="btn btn-success" id="btnTicketClose" th:unless="*{statusDesc} eq 'COMPLETE'">Close</button>
                     <button type="button" class="btn btn-success ml-2" id="btnTicketAssign" th:less="*{statusDesc} eq 'OPEN'">Assign</button>
+                    <button type="button" class="btn btn-success ml-2" id="btnTicketComplete" th:unless="*{statusDesc} eq 'COMPLETE'">Complete</button>
                 </div>
                 <div class="col-md-3 form-inline pt-2">
                     <label class="col-form-label justify-content-end">Service Number:</label>
@@ -159,17 +160,60 @@
                 </div>
                 <div class="modal-body">
                     <form class="needs-validation assign-form" novalidate>
+                        <div class="form-row mt-3">
+                            <label class="col-md-2 justify-content-end" >Work Group:</label>
+                            <select class="custom-select col-md-10 workGroup" required name="workGroup">
+                                <option value=""></option>
+                                <option value="E_FIELD">FIELD</option>
+                                <option value="E_ISRC_BB">ISRC_BB</option>
+                                <option value="E_ISRC_V">ISRC_V</option>
+                            </select>
+                            <div class="invalid-feedback offset-md-2">
+                                Please select one work group.
+                            </div>
+                        </div>
+                        <div class="form-row mt-3">
+                            <label class="col-md-2 justify-content-end" >Engineer:</label>
+                            <select class="custom-select col-md-10 engineer" required name="engineer"></select>
+                            <div class="invalid-feedback offset-md-2">
+                                Please select one engineer.
+                            </div>
+                        </div>
                         <div class="form-row">
-                            <label class="col-md-2 justify-content-end">Assign:</label>
-                            <textarea class="form-control col-md-10 mt-2" required name="assignContent" rows="3"></textarea>
+                            <label class="col-md-2 justify-content-end">Remark:</label>
+                            <textarea class="form-control col-md-10 mt-2" required name="remark" rows="3"></textarea>
                             <div class="invalid-feedback offset-md-2">
                                 Please enter a message in the textarea.
                             </div>
                         </div>
-                    </form>1
+                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-info float-right" id="btnAssignSubmit">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade complete">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-white bg-info h-80">
+                    <h6 class="modal-title">completing Ticket</h6>
+                    <button type="button" class="close text-white" data-dismiss="modal">x</button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation complete-form" novalidate>
+                        <div class="form-row">
+                            <label class="col-md-2 justify-content-end">Remark:</label>
+                            <textarea class="form-control col-md-10 mt-2" required name="remark" rows="3"></textarea>
+                            <div class="invalid-feedback offset-md-2">
+                                Please enter a message in the textarea.
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info float-right" id="btnCompleteSubmit">Submit</button>
                 </div>
             </div>
         </div>

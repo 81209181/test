@@ -52,4 +52,6 @@ public interface SdUserService extends BtuUserService {
     Page<SdUserBean> getTeamHeadUser(Pageable pageable, String teamHead);
 
     void cleanOutDatePwdHistData();
+
+    List<SdUserBean> getUserByRoleId(String roleId);
 }

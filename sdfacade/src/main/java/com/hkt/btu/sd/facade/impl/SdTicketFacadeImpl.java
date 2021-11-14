@@ -897,4 +897,32 @@ public class SdTicketFacadeImpl implements SdTicketFacade {
         List<SdTicketMasBean> beanList = pageBean.getContent();
         return new PageData<>(buildTicketDataList(beanList), pageBean.getPageable(), pageBean.getTotalElements());
     }
+
+    @Override
+    public String assignTicket(int ticketMasId, String engineer, String remark) {
+        LOG.info(String.format("Assigning ticket. (ticketMasId: %d)", ticketMasId));
+
+        try {
+            ticketService.assignTicket(ticketMasId, engineer, remark);
+        } catch (InvalidInputException e) {
+            LOG.warn(e.getMessage());
+            return e.getMessage();
+        }
+
+        return null;
+    }
+
+    @Override
+    public String completeTicket(int ticketMasId, String remark) {
+        LOG.info(String.format("Completing ticket. (ticketMasId: %d)", ticketMasId));
+
+        try {
+            ticketService.completeTicket(ticketMasId, remark);
+        } catch (InvalidInputException e) {
+            LOG.warn(e.getMessage());
+            return e.getMessage();
+        }
+
+        return null;
+    }
 }

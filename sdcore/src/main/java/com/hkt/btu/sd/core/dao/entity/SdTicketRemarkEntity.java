@@ -10,6 +10,7 @@ public class SdTicketRemarkEntity extends BaseEntity {
         public static final String SYSTEM = "SYS";
 
         public static final String CREATE = "CREATE";
+        public static final String ASSIGN = "ASSIGN";
         public static final String CLOSE = "CLOSE";
         public static final String COMPLETE = "COMPLETE";
     }

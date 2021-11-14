@@ -6,6 +6,7 @@ import com.hkt.btu.sd.facade.data.*;
 import org.springframework.data.domain.Pageable;
 
 import javax.mail.MessagingException;
+import java.util.List;
 
 public interface SdUserFacade {
     SdUserData getCurrentUser();
@@ -41,4 +42,6 @@ public interface SdUserFacade {
     void resetPwd4NonLdapUser(String userId) throws MessagingException;
 
     PageData<SdUserData> getTeamHeadUser(Pageable pageable, String teamHead);
+
+    List<SdUserData> getUserByRoleId(String roleId);
 }

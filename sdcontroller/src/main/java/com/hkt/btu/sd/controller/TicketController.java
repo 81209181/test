@@ -536,4 +536,34 @@ public class TicketController {
         PageData<SdTicketMasData> pageData = ticketFacade.getMyTicket(pageable);
         return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
     }
+
+    @GetMapping("/getAssignEngineer")
+    public ResponseEntity<?> getAssignEngineer(@RequestParam String roleId) {
+        List<SdUserData> userDataList = userFacade.getUserByRoleId(roleId);
+        if (CollectionUtils.isEmpty(userDataList)) {
+            return ResponseEntity.badRequest().body("Assign Engineer not found.");
+        } else {
+            return ResponseEntity.ok(userDataList);
+        }
+    }
+
+    @PostMapping("assign")
+    public ResponseEntity<?> ticketAssign(int ticketMasId, String engineer, String remark) {
+        String errorMsg = ticketFacade.assignTicket(ticketMasId, engineer, remark);
+        if (StringUtils.isEmpty(errorMsg)) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of());
+        } else {
+            return ResponseEntity.badRequest().body(errorMsg);
+        }
+    }
+
+    @PostMapping("complete")
+    public ResponseEntity<?> ticketComplete(int ticketMasId, String remark) {
+        String errorMsg = ticketFacade.completeTicket(ticketMasId, remark);
+        if (StringUtils.isEmpty(errorMsg)) {
+            return ResponseEntity.ok(SimpleAjaxResponse.of());
+        } else {
+            return ResponseEntity.badRequest().body(errorMsg);
+        }
+    }
 }

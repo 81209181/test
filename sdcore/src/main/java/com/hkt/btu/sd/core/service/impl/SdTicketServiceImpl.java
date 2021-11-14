@@ -737,6 +737,75 @@ public class SdTicketServiceImpl implements SdTicketService {
     }
 
     @Override
+    @Transactional
+    public void assignTicket(int ticketMasId, String engineer, String remark) {
+        if (StringUtils.isEmpty(engineer)) {
+            throw new InvalidInputException("Empty engineer.");
+        }
+
+        SdUserBean currentUserBean = (SdUserBean) userService.getCurrentUserBean();
+
+        // check ticket
+        getTicket(ticketMasId).ifPresentOrElse(sdTicketMasBean -> {
+            // check ticket status
+            Optional.ofNullable(sdTicketMasBean.getStatus()).ifPresentOrElse(ticketStatusEnum -> {
+                if (ticketStatusEnum.equals(TicketStatusEnum.WORKING)) {
+                    throw new InvalidInputException("Ticket already assigned.");
+                }
+            },() -> {
+                throw new InvalidInputException("Ticket status not found.");
+            });
+        },() -> {
+            throw new InvalidInputException(String.format("Ticket not found. (ticketMasId: %d)", ticketMasId));
+        });
+
+        // assign ticket
+        String userUserId = userService.getCurrentUserUserId();
+        ticketMasMapper.updateTicketAssign(ticketMasId, TicketStatusEnum.WORKING.getStatusCode(), engineer, userUserId);
+
+        // add ticket remarks
+        String assignRemark = String.format(SdTicketRemarkBean.REMARKS.STATUS_TO_WORKING, engineer, userUserId);
+        createTicketRemarks(ticketMasId, SdTicketRemarkEntity.REMARKS_TYPE.ASSIGN, assignRemark, currentUserBean.getUserId());
+        if (StringUtils.isNotEmpty(remark)) {
+            createTicketRemarks(ticketMasId, SdTicketRemarkEntity.REMARKS_TYPE.ASSIGN, remark, currentUserBean.getUserId());
+        }
+
+        LOG.info(String.format("Assigned ticket. (ticketMasId: %d)", ticketMasId));
+    }
+
+    @Override
+    public void completeTicket(int ticketMasId, String remark) {
+        if (StringUtils.isEmpty(remark)) {
+            throw new InvalidInputException("Empty remark.");
+        }
+
+        // check ticket
+        getTicket(ticketMasId).ifPresentOrElse(sdTicketMasBean -> {
+            // check ticket status
+            Optional.ofNullable(sdTicketMasBean.getStatus()).ifPresentOrElse(ticketStatusEnum -> {
+                if (ticketStatusEnum.equals(TicketStatusEnum.COMPLETE)) {
+                    throw new InvalidInputException("Ticket already completed.");
+                }
+            },() -> {
+                throw new InvalidInputException("Ticket status not found.");
+            });
+        },() -> {
+            throw new InvalidInputException(String.format("Ticket not found. (ticketMasId: %d)", ticketMasId));
+        });
+
+        // assign ticket
+        String userUserId = userService.getCurrentUserUserId();
+        ticketMasMapper.updateTicketComplete(ticketMasId, TicketStatusEnum.COMPLETE.getStatusCode(), userUserId);
+
+        // add ticket remarks
+        if (StringUtils.isNotEmpty(remark)) {
+            createTicketRemarks(ticketMasId, SdTicketRemarkEntity.REMARKS_TYPE.COMPLETE, remark, userUserId);
+        }
+
+        LOG.info(String.format("Completed ticket. (ticketMasId: %d)", ticketMasId));
+    }
+
+    @Override
     public List<SdOutstandingFaultBean> getOutstandingFault() {
         List<SdOutstandingFaultEntity> entityList = ticketMasMapper.getOutstandingFault();
         return entityList.stream()
@@ -803,6 +872,7 @@ public class SdTicketServiceImpl implements SdTicketService {
     }
 
     @Override
+    @Transactional
     public void closeTicket(int ticketMasId, String reasonContent) throws InvalidInputException {
         if (StringUtils.isEmpty(reasonContent)) {
             throw new InvalidInputException("Please input reason.");

@@ -49,7 +49,7 @@ $().ready(function(){
             data: JSON.stringify(arr),
             cache: false,
             success:function(res){
-                alert(res);
+                window.location.href = ctx + "/ticket?ticketMasId=" + res;
             }
         }).fail(function(e){
             var responseError = e.responseText ? e.responseText : "Get failed.";

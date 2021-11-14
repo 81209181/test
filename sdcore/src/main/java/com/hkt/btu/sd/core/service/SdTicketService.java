@@ -99,4 +99,8 @@ public interface SdTicketService {
                                            String ticketType, Integer priority);
 
     List<SdTicketExportBean> searchTicketListForExport(LocalDate createDateFrom, LocalDate createDateTo, String status, LocalDate completeDateFrom, LocalDate completeDateTo, String createBy, String ticketMasId, String serviceNumber, String ticketType, Integer priority);
+
+    void assignTicket(int ticketMasId, String engineer, String remark);
+
+    void completeTicket(int ticketMasId, String remark);
 }
