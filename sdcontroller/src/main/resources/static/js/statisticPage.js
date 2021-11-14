@@ -5,8 +5,8 @@ $(document).ready(function() {
 });
 
 function drawCharts() {
-    drawLoginCount90DaysChart();
-    drawLoginCountTwoWeeksChart();
+//    drawLoginCount90DaysChart();
+//    drawLoginCountTwoWeeksChart();
     drawTicketTypeCountOwnerGroupOverLast90days();
     drawTicketStatusCountOwnerGroupOverLast90days();
 }
@@ -213,7 +213,7 @@ function drawTicketTypeCountOwnerGroupOverLast90days() {
     data.addRows(array);
 
     var options = {
-        title: 'The number of ticket type per group over last 90 days',
+        title: 'The number of ticket type per group over last 30 days',
         height: 300,
         width: 1100,
         seriesType: 'bars',
@@ -299,7 +299,7 @@ function drawTicketStatusCountOwnerGroupOverLast90days() {
     data.addRows(array);
 
     var options = {
-        title: 'The number of ticket status per group over last 90 days',
+        title: 'The number of ticket status per group over last 30 days',
         height: 300,
         width: 1100,
         seriesType: 'bars',
