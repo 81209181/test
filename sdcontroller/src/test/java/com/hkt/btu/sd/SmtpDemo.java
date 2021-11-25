@@ -68,7 +68,7 @@ public class SmtpDemo {
             pw.println("subject:test");
             pw.println("from:"+SendUser);
             pw.println("to:"+ReceiveUser);
-            pw.println("Content-Type: text/plain;charset=\"gb2312\"");//设置编码格式可发送中文内容
+            pw.println("Content-Type: text/html;charset=\"utf-8\"");//设置编码格式可发送中文内容
             pw.println();
             pw.println("大家好，欢迎来到我的专栏");
             pw.println(".");

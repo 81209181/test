@@ -51,83 +51,6 @@ public class TicketController {
     @Resource(name = "sdSymptomFacade")
     SdSymptomFacade symptomFacade;
 
-    public static final String O_CLOUD_SH = "O_CLOUD_SH";
-
-    @GetMapping("service-identity")
-    public String serviceIdentity(Model model) {
-        SdUserData userdata = userFacade.getCurrentUser();
-        String userId = userdata.getUserId();
-        EditResultData result = userRoleFacade.getUserRoleByUserId(userId, false);
-        List<String> userRole = result == null ? null : (List<String>) result.getList();
-
-        model.addAttribute("serviceSearchKeyList", serviceTypeUserRoleFacade.getServiceSearchKeyList(userRole));
-        return "ticket/serviceIdentity";
-    }
-
-    @PostMapping("search-service")
-    public ResponseEntity<?> searchService(String searchKey, String searchValue, HttpServletRequest request) {
-        // search service
-        SdRequestCreateSearchResultsData resultsData = null;
-        if (resultsData==null){
-            return ResponseEntity.badRequest().body("Cannot get search service response.");
-        } else if (StringUtils.isNotEmpty(resultsData.getErrorMsg())) {
-            return ResponseEntity.badRequest().body(resultsData.getErrorMsg());
-        }
-
-        // auto check pending ticket for single result
-        List<SdRequestCreateSearchResultData> searchResultDataList = resultsData.getList();
-        if( CollectionUtils.size(searchResultDataList)==1 ){
-            SdRequestCreateSearchResultData searchResultData = searchResultDataList.get(0);
-            List<SdTicketMasData> pendingTicketDataList = ticketFacade.getPendingTicketList(searchResultData.getServiceType(), searchResultData.getServiceNo());
-            if (CollectionUtils.isNotEmpty(pendingTicketDataList)) {
-                String warningMsg = String.format("The service number already exists in Ticket - <a href='%s/ticket?ticketMasId=%d'>%d</a>",
-                        request.getContextPath(), pendingTicketDataList.get(0).getTicketMasId(), pendingTicketDataList.get(0).getTicketMasId());
-                resultsData.setWarningMsg(warningMsg);
-            }
-        }
-
-        return ResponseEntity.ok(resultsData);
-    }
-
-    @PostMapping("service-identity/checkPendingOrder")
-    public ResponseEntity<?> checkPendingOrder(SdQueryTicketRequestData queryTicketRequestData) {
-        if (StringUtils.isEmpty(queryTicketRequestData.getServiceNo()) || StringUtils.isEmpty(queryTicketRequestData.getServiceType())) {
-            return ResponseEntity.badRequest().body("Service No. / Service Type is empty.");
-        }
-
-        return ResponseEntity.ok(SimpleAjaxResponse.of());
-    }
-
-    @PostMapping("service-identity/createQueryTicket")
-    public ResponseEntity<?> createQueryTicket(SdQueryTicketRequestData queryTicketRequestData) {
-        // check pending ticket of same service number
-        List<SdTicketMasData> dataList = ticketFacade.getPendingTicketList(queryTicketRequestData.getServiceType(), queryTicketRequestData.getServiceNo());
-        if (CollectionUtils.isNotEmpty(dataList)) {
-            return ResponseEntity.ok(SdResponseTicketData.of(false, dataList));
-        }
-
-        // create ticket
-        try {
-            return ResponseEntity.ok(SdResponseTicketData.of(true, ticketFacade.createQueryTicket(queryTicketRequestData)));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    /*@GetMapping("")
-    public ModelAndView showQueryTicket(int ticketMasId) {
-        return ticketFacade.getTicket(ticketMasId).map(data -> {
-            if (data.getOwningRole().equalsIgnoreCase(O_CLOUD_SH)) {
-                ModelAndView modelAndView = new ModelAndView("ticket/cloudTicketInfo");
-                modelAndView.addObject("ticketInfo", data);
-                return modelAndView;
-            }
-            ModelAndView modelAndView = new ModelAndView("ticket/ticketInfo");
-            modelAndView.addObject("ticketInfo", null);
-            return modelAndView;
-        }).orElse(new ModelAndView("redirect:/ticket/search-ticket"));
-    }*/
-
     @PostMapping("contact/update")
     public ResponseEntity<?> updateContactInfo(@RequestBody List<SdTicketContactData> contactList) {
         try {
@@ -146,115 +69,6 @@ public class TicketController {
         List<SdTicketContactData> data = ticketFacade.getContactInfo(ticketMasId);
         return ResponseEntity.ok(data);
     }
-
-    /*@GetMapping("/search-ticket")
-    public String searchTicket(Model model) {
-        List<BtuCodeDescData> ticketStatusList = ticketFacade.getTicketStatusList();
-        if (CollectionUtils.isNotEmpty(ticketStatusList)) {
-            model.addAttribute("ticketStatusList", ticketStatusList);
-        }
-
-        List<BtuCodeDescData> ticketTypeList = ticketFacade.getTicketTypeList();
-        if (CollectionUtils.isNotEmpty(ticketTypeList)) {
-            model.addAttribute("ticketTypeList", ticketTypeList);
-        }
-
-        List<SdUserRoleData> userRoleList = userRoleFacade.getCurrentUserUserRole();
-        if (CollectionUtils.isNotEmpty(userRoleList)) {
-            List<String> userRoleId = userRoleList.stream().map(SdUserRoleData::getRoleId).collect(Collectors.toList());
-            List<SdServiceTypeData> serviceTypeList = serviceTypeFacade.getServiceTypeByRoleId(userRoleId);
-            if (CollectionUtils.isNotEmpty(serviceTypeList)) {
-                model.addAttribute("serviceTypeList", serviceTypeList);
-            }
-            model.addAttribute("primaryRoleList", userRoleList.stream().filter(sdUserRoleData -> !StringUtils.equals(sdUserRoleData.getRoleId(), "SYS_ADMIN"))
-                    .sorted(Comparator.comparing(SdUserRoleData::getRoleDesc)).collect(Collectors.toList()));
-        }
-
-        return "ticket/searchTicket";
-    }
-
-    @GetMapping("/searchTicket")
-    public ResponseEntity<?> searchTicket(@RequestParam(defaultValue = "0") int draw,
-                                          @RequestParam(defaultValue = "0") int start,
-                                          @RequestParam(defaultValue = "10") int length,
-                                          @RequestParam Map<String, String> searchFormData) {
-        int page = start / length;
-        Pageable pageable = PageRequest.of(page, length);
-
-        PageData<SdTicketMasData> pageData = ticketFacade.searchTicketList(pageable, searchFormData);
-        return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
-    }
-
-    @GetMapping("/my-ticket")
-    public String myTicket() {
-        return "ticket/myTicket";
-    }
-
-    @GetMapping("/myTicket")
-    public ResponseEntity<?> getMyTicket(@RequestParam(defaultValue = "0") int draw,
-                                         @RequestParam(defaultValue = "0") int start,
-                                         @RequestParam(defaultValue = "10") int length) {
-        int page = start / length;
-        Pageable pageable = PageRequest.of(page, length);
-
-        PageData<SdTicketMasData> pageData = ticketFacade.getMyTicket(pageable);
-        return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
-    }*/
-
-    @GetMapping("/service")
-    public ResponseEntity<?> getServiceInfo(@RequestParam Integer ticketMasId) {
-        List<SdTicketServiceData> serviceInfo = ticketFacade.getServiceInfo(ticketMasId);
-        return ResponseEntity.ok(serviceInfo);
-    }
-
-    @PostMapping("/service/update")
-    public ResponseEntity<?> updateServiceInfo(@RequestBody List<SdRequestTicketServiceData> ticketServiceList) {
-        try {
-            ticketServiceList.stream().map(SdRequestTicketServiceData::getTicketMasId).findFirst().ifPresent(ticketMasId -> {
-                ticketFacade.isAllow(ticketMasId, StringUtils.EMPTY);
-            });
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-        String errorMsg = ticketFacade.updateServiceInfo(ticketServiceList);
-        if (StringUtils.isEmpty(errorMsg)) {
-            return ResponseEntity.ok("Update success.");
-        } else {
-            return ResponseEntity.badRequest().body(errorMsg);
-        }
-    }
-
-    @GetMapping("/service/symptom")
-    public ResponseEntity<?> getSymptom(@RequestParam Integer ticketMasId) {
-        List<SdSymptomData> symptomData = ticketFacade.getSymptom(ticketMasId);
-        if (CollectionUtils.isEmpty(symptomData)) {
-            return ResponseEntity.badRequest().body("Symptom info not found.");
-        } else {
-            return ResponseEntity.ok(symptomData);
-        }
-    }
-
-    @Deprecated // moved to BesController
-    @GetMapping("/ajax-get-fault")
-    public ResponseEntity<?> getFaultInfo(@RequestParam String subscriberId) {
-        return ResponseEntity.ok(null);
-    }
-
-    /*@PostMapping("submit")
-    public ResponseEntity<?> submit(@RequestBody List<SdCreateWfmTicketFormData> formDataList) {
-        try {
-            SdCreateWfmTicketFormData formData = formDataList.stream().findFirst().get();
-            Integer ticketMasId = formData.getTicketMasId();
-            List<SdTicketContactData> contactList = formData.getContactList();
-            List<SdRequestTicketServiceData> serviceList = formData.getServiceList();
-            String remarks = formData.getRemarks();
-            ticketFacade.isAllow(ticketMasId, StringUtils.EMPTY);
-            ticketFacade.createJob4Wfm(ticketMasId, contactList, serviceList, remarks);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-        return ResponseEntity.ok(SimpleAjaxResponse.of());
-    }*/
 
     @GetMapping("ajax-search-ticket-remarks")
     public ResponseEntity<?> ajaxSearchTicketRemarks(@RequestParam Integer ticketMasId) {
@@ -277,129 +91,6 @@ public class TicketController {
     public ResponseEntity<?> getTicketInfo(@RequestParam Integer ticketMasId) {
         SdTicketData ticketData = ticketFacade.getTicketInfo(ticketMasId);
         return ResponseEntity.ok(ticketData);
-    }
-
-    /*@PostMapping("close")
-    public ResponseEntity<?> ticketClose(int ticketMasId, String closeCode, String reasonType, String reasonContent, String contactNumber, String contactName) {
-        String errorMsg = ticketFacade.closeTicket(ticketMasId, closeCode, reasonType, reasonContent, contactName, contactNumber);
-        if (StringUtils.isEmpty(errorMsg)) {
-            return ResponseEntity.ok(SimpleAjaxResponse.of());
-        } else {
-            return ResponseEntity.badRequest().body(errorMsg);
-        }
-    }*/
-
-    @PostMapping("callInCount")
-    public ResponseEntity<?> callInCount(@RequestParam Integer ticketMasId) {
-        boolean result = ticketFacade.increaseCallInCount(ticketMasId);
-        if (result) {
-            return ResponseEntity.ok(SimpleAjaxResponse.of());
-        } else {
-            return ResponseEntity.ok(SimpleAjaxResponse.of(false, "increase call in count failed."));
-        }
-    }
-
-    @PostMapping("getJobInfo")
-    public ResponseEntity<?> getJobInfo(@RequestParam Integer ticketMasId) {
-        return ResponseEntity.ok(null);
-    }
-
-    @PostMapping("getInventory")
-    public ResponseEntity<?> getInventory(@RequestParam String bsn) {
-        return ResponseEntity.badRequest().body("Nora Error: Cannot get Inventory for bsn :" + bsn);
-    }
-
-
-    @GetMapping("/getAppointmentInfo")
-    public ResponseEntity<?> getAppointmentInfo(@RequestParam Integer ticketMasId) {
-        SdAppointmentData appointmentData = ticketFacade.getAppointmentData(ticketMasId);
-        if (appointmentData != null) {
-            return ResponseEntity.ok(appointmentData);
-        }
-
-        return ResponseEntity.badRequest().body("WFM Error: Cannot get appointment info for ticketMasId:" + ticketMasId);
-    }
-
-
-
-    @GetMapping("team-summary")
-    public String showTeamSummary(Model model) {
-        model.addAttribute("teamSummary", ticketFacade.getTeamSummary());
-        return "ticket/teamSummary";
-    }
-
-    @PostMapping("get-upload-files")
-    public ResponseEntity<?> getUploadFiles(int ticketMasId) {
-        return ResponseEntity.ok(ticketFacade.getUploadFiles(ticketMasId));
-    }
-
-
-    @GetMapping("/service/closeCode")
-    public ResponseEntity<?> getCloseCode(@RequestParam String serviceType) {
-        List<SdCloseCodeData> closeCodeData = ticketFacade.getCloseCode(serviceType);
-        if (CollectionUtils.isEmpty(closeCodeData)) {
-            return ResponseEntity.badRequest().body("close code not found.");
-        } else {
-            return ResponseEntity.ok(closeCodeData);
-        }
-    }
-
-
-    @GetMapping("/search-bchsp")
-    public String searchBchsp(Model model) {
-        List<BtuCodeDescData> ticketStatusList = ticketFacade.getTicketStatusList();
-        if (CollectionUtils.isNotEmpty(ticketStatusList)) {
-            model.addAttribute("ticketStatusList", ticketStatusList);
-        }
-
-        List<BtuCodeDescData> ticketTypeList = ticketFacade.getTicketTypeList();
-        if (CollectionUtils.isNotEmpty(ticketTypeList)) {
-            model.addAttribute("ticketTypeList", ticketTypeList);
-        }
-
-        List<SdServiceTypeData> serviceTypeList = serviceTypeFacade.getServiceTypeList();
-        if (CollectionUtils.isNotEmpty(serviceTypeList)) {
-            model.addAttribute("serviceTypeList", serviceTypeList);
-        }
-
-        List<SdUserRoleData> eligibleUserRoleList = userRoleFacade.getEligibleUserRoleList();
-        if (CollectionUtils.isNotEmpty(eligibleUserRoleList)) {
-            model.addAttribute("primaryRoleList", eligibleUserRoleList.stream().filter(SdUserRoleData::isPrimaryRole)
-                    .sorted(Comparator.comparing(SdUserRoleData::getRoleDesc)).collect(Collectors.toList()));
-        }
-
-        List<String> workGroupList = ticketFacade.getWorkGroupList();
-        if (CollectionUtils.isNotEmpty(workGroupList)) {
-            model.addAttribute("workGroupList", workGroupList);
-        }
-
-        return "ticket/searchBchsp";
-    }
-
-    @GetMapping("/searchBchsp")
-    public ResponseEntity<?> searchBchsp(@RequestParam(defaultValue = "0") int draw,
-                                          @RequestParam(defaultValue = "0") int start,
-                                          @RequestParam(defaultValue = "10") int length,
-                                          @RequestParam Map<String, String> searchFormData) {
-        int page = start / length;
-        Pageable pageable = PageRequest.of(page, length);
-
-        PageData<SdTicketMasData> pageData = ticketFacade.searchBchspList(pageable, searchFormData);
-        return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
-    }
-
-    @PostMapping("/service/utTestLog")
-    @ResponseBody
-    public void utTestLog(@RequestParam String ticketMasId){
-        String userId = userFacade.getCurrentUser().getUserId();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String localDateTime = LocalDateTime.now().format(formatter);
-        LOG.info(String.format("UT GUI trigger: {ticketMasId: %s, userId: %s, date: %s}", ticketMasId, userId, localDateTime));
-    }
-
-    @GetMapping("getJobId")
-    public ResponseEntity<?> getJobId(@RequestParam String ticketMasId) {
-        return ResponseEntity.ok(ticketFacade.getJobId(ticketMasId));
     }
 
     @ResponseBody
@@ -426,15 +117,6 @@ public class TicketController {
                 .headers(headers)
                 .contentType(MediaType.parseMediaType(MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE))
                 .<Object>body(baos.toByteArray());
-    }
-
-    @GetMapping("/getApptMode")
-    public ResponseEntity<?> getApptMode(@RequestParam String symptomCode) {
-        SdSymptomData symptomData = symptomFacade.getSymptomBySymptomCode(symptomCode);
-        if (symptomData != null) {
-            return ResponseEntity.ok(symptomData);
-        }
-        return ResponseEntity.badRequest().body("Get fail.");
     }
 
     @GetMapping("dashboard")
@@ -521,22 +203,6 @@ public class TicketController {
         return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
     }
 
-    @GetMapping("/my-ticket")
-    public String myTicket() {
-        return "ticket/myTicket";
-    }
-
-    @GetMapping("/myTicket")
-    public ResponseEntity<?> getMyTicket(@RequestParam(defaultValue = "0") int draw,
-                                         @RequestParam(defaultValue = "0") int start,
-                                         @RequestParam(defaultValue = "10") int length) {
-        int page = start / length;
-        Pageable pageable = PageRequest.of(page, length);
-
-        PageData<SdTicketMasData> pageData = ticketFacade.getMyTicket(pageable);
-        return ResponseEntityHelper.buildDataTablesResponse(draw, pageData);
-    }
-
     @GetMapping("/getAssignEngineer")
     public ResponseEntity<?> getAssignEngineer(@RequestParam String roleId) {
         List<SdUserData> userDataList = userFacade.getUserByRoleId(roleId);
@@ -547,7 +213,7 @@ public class TicketController {
         }
     }
 
-    @PostMapping("assign")
+    @PostMapping("/assign")
     public ResponseEntity<?> ticketAssign(int ticketMasId, String engineer, String remark) {
         String errorMsg = ticketFacade.assignTicket(ticketMasId, engineer, remark);
         if (StringUtils.isEmpty(errorMsg)) {
@@ -557,7 +223,7 @@ public class TicketController {
         }
     }
 
-    @PostMapping("complete")
+    @PostMapping("/complete")
     public ResponseEntity<?> ticketComplete(int ticketMasId, String remark) {
         String errorMsg = ticketFacade.completeTicket(ticketMasId, remark);
         if (StringUtils.isEmpty(errorMsg)) {

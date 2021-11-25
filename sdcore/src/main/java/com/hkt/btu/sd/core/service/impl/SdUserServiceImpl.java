@@ -2,6 +2,7 @@ package com.hkt.btu.sd.core.service.impl;
 
 import com.hkt.btu.common.core.exception.InvalidInputException;
 import com.hkt.btu.common.core.exception.UserNotFoundException;
+import com.hkt.btu.common.core.service.BtuSmtpService;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.common.core.service.impl.BtuUserServiceImpl;
 import com.hkt.btu.common.spring.security.core.userdetails.BtuUser;
@@ -48,6 +49,8 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
     SdOtpService sdOtpService;
     @Resource(name = "emailService")
     SdEmailService sdEmailService;
+    @Resource(name = "smtpService")
+    BtuSmtpService btuSmtpService;
 
     @Resource(name = "userRoleService")
     SdUserRoleService userRoleService;
@@ -649,7 +652,8 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             dataMap.put(SdEmailBean.INIT_PW_EMAIL.NAME_OF_NEW_USER, resetPwdUser.getName());
 
             // send otp email
-            sdEmailService.send(SdEmailBean.INIT_PW_EMAIL.TEMPLATE_ID, recipient, null, dataMap);
+//            sdEmailService.send(SdEmailBean.INIT_PW_EMAIL.TEMPLATE_ID, recipient, null, dataMap);
+            btuSmtpService.send(SdEmailBean.INIT_PW_EMAIL.TEMPLATE_ID, recipient, null, dataMap);
         } else {
             // valid reset password otp
             SdOtpBean sdOtpBean = sdOtpService.getValidOtp(userId, SdOtpEntity.ACTION.RESET_PWD);
@@ -664,7 +668,8 @@ public class SdUserServiceImpl extends BtuUserServiceImpl implements SdUserServi
             dataMap.put(SdEmailBean.RESET_PW_EMAIL.NAME_OF_USER, resetPwdUser.getName());
 
             // send otp email
-            sdEmailService.send(SdEmailBean.RESET_PW_EMAIL.TEMPLATE_ID, recipient, null, dataMap);
+//            sdEmailService.send(SdEmailBean.RESET_PW_EMAIL.TEMPLATE_ID, recipient, null, dataMap);
+            btuSmtpService.send(SdEmailBean.RESET_PW_EMAIL.TEMPLATE_ID, recipient, null, dataMap);
         }
     }
 

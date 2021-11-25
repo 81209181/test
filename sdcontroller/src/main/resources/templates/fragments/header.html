@@ -24,18 +24,11 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li sec:authorize="hasAnyAuthority('SYS_ADMIN')" class="nav-item dropdown">
-                    <!--<li sec:authorize="isAuthenticated()" class="nav-item dropdown">-->
                     <a class="nav-link dropdown-toggle" href="#" id="systemConfigDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         System
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" th:href="@{/system/site-config/index}">Site Info</a>
-<!--                        <a class="dropdown-item" th:href="@{/system/config-param/search}">Config Param</a>-->
-<!--                        <a class="dropdown-item" th:href="@{/system/job/list}">Cron Job</a>-->
-<!--                        <a class="dropdown-item" th:href="@{/cached}">Cached Object</a>-->
-<!--                        <a class="dropdown-item" th:href="@{/system/service-type}">Service Type</a>-->
-<!--                        <a class="dropdown-item" th:href="@{/system/service-type-mapping}">Service Type Mapping</a>-->
-<!--                        <a class="dropdown-item" th:href="@{/system/statistic}">Statistic</a>-->
                     </div>
                 </li>
 
@@ -45,11 +38,7 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" th:href="@{/admin/manage-user/create-user}">Create User</a>
-<!--                        <a class="dropdown-item" th:href="@{/admin/manage-user/create-non-pccw-hkt-user}">Create Non PCCW/HKT User</a>-->
-<!--                        <a class="dropdown-item" th:href="@{/admin/manage-user/create-ldap-user}">Create LDAP User</a>-->
                         <a class="dropdown-item" th:href="@{/admin/manage-user/search-user}">Search User</a>
-<!--                        <a class="dropdown-item" th:href="@{/admin/manage-user/list-team-contact}">Team Contact</a>-->
-
                         <div sec:authorize="hasAnyAuthority('SYS_ADMIN')" th:remove="tag">
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" th:href="@{/admin/manage-role/list-user-role}">List User Role</a>
@@ -62,23 +51,14 @@
                         Ticket
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-<!--                        <a class="dropdown-item" th:href="@{/ticket/service-identity}">Search Service</a>-->
                         <a class="dropdown-item" th:href="@{/ticket/create-ticket}">Create Ticket</a>
-<!--                        <a class="dropdown-item" th:href="@{/ticket/my-ticket}">My Ticket</a>-->
-<!--                        <a class="dropdown-item" th:href="@{/ticket/team-summary}">Team Summary</a>-->
                         <a class="dropdown-item" th:href="@{/ticket/search-ticket}">Search Ticket</a>
-<!--                        <div class="dropdown-divider"></div>-->
-<!--                        <a class="dropdown-item" th:href="@{/ticket/dashboard}">Dashboard</a>-->
                     </div>
                 </li>
 
                 <li sec:authorize="hasAnyAuthority('OPT','ENG')" class="nav-item">
                     <a class="nav-link" th:href="@{/system/statistic}">Dashboard</a>
                 </li>
-
-<!--                <li class="nav-item">-->
-<!--                    <a class="nav-link" th:href="@{/public/contact-us}">Contact Us</a>-->
-<!--                </li>-->
             </ul>
 
 
@@ -95,15 +75,6 @@
             </ul>
         </div>
     </nav>
-    <script sec:authorize="isAuthenticated()">
-        if (null === window.sessionStorage.getItem('utTriggerTimer')) {
-            window.sessionStorage.setItem('utTriggerTimer', '0');
-        }
-    </script>
-    <script sec:authorize="!isAuthenticated()">
-        window.sessionStorage.removeItem('utTriggerTimer')
-    </script>
-
 </th:block>
 </body>
 </html>

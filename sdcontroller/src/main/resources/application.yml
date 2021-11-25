@@ -3,7 +3,6 @@ spring:
     allow-bean-definition-overriding: true
   datasource:
     url: jdbc:oracle:thin:@localhost:1521:test
-    #sdsvt
     username: test
     password: Aa123456
     driver-class-name: oracle.jdbc.OracleDriver

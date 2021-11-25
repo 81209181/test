@@ -54,6 +54,13 @@ public class BtuEmailBean {
         public static final String NAME_OF_USER ="nameOfUser";
     }
 
+    // assign ticket email
+    public class ASSIGN_TICKET_EMAIL{
+        public static final String TEMPLATE_ID = "assignTicketEmail";
+        public static final String OTP = "otp";
+        public static final String NAME_OF_NEW_USER ="nameOfNewUser";
+    }
+
     // access request customer confirmation email
     public class ACCESS_REQUEST_CFM_CUST_EMAIL{
         public static final String TEMPLATE_ID = "accessRequestConfirmCustEmail";

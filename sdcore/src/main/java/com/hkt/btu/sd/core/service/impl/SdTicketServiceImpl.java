@@ -2,7 +2,9 @@ package com.hkt.btu.sd.core.service.impl;
 
 import com.google.gson.Gson;
 import com.hkt.btu.common.core.exception.InvalidInputException;
+import com.hkt.btu.common.core.exception.UserNotFoundException;
 import com.hkt.btu.common.core.service.BtuSensitiveDataService;
+import com.hkt.btu.common.core.service.BtuSmtpService;
 import com.hkt.btu.common.core.service.bean.BtuUserBean;
 import com.hkt.btu.sd.core.dao.entity.*;
 import com.hkt.btu.sd.core.dao.mapper.*;
@@ -24,6 +26,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
@@ -59,6 +62,8 @@ public class SdTicketServiceImpl implements SdTicketService {
     BtuSensitiveDataService sensitiveDataService;
     @Resource(name = "userRoleService")
     SdUserRoleService userRoleService;
+    @Resource(name = "smtpService")
+    BtuSmtpService btuSmtpService;
 
     @Resource(name = "ticketMasBeanPopulator")
     SdTicketMasBeanPopulator ticketMasBeanPopulator;
@@ -769,6 +774,19 @@ public class SdTicketServiceImpl implements SdTicketService {
         if (StringUtils.isNotEmpty(remark)) {
             createTicketRemarks(ticketMasId, SdTicketRemarkEntity.REMARKS_TYPE.ASSIGN, remark, currentUserBean.getUserId());
         }
+
+        // send email
+        SdUserBean userBean = userService.getUserByUserId(engineer);
+        if (ObjectUtils.isEmpty(userBean)) {
+            throw new UserNotFoundException();
+        }
+        String recipient = Optional.ofNullable(userBean.getEmail()).orElseThrow(() -> new UserNotFoundException("Current User not email."));
+
+        Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put(SdEmailBean.EMAIL_BASIC_RECIPIENT_NAME, userBean.getName());
+        dataMap.put(SdEmailBean.INIT_PW_EMAIL.NAME_OF_NEW_USER, userBean.getName());
+        dataMap.put("ticketMasId", ticketMasId);
+        btuSmtpService.send(SdEmailBean.ASSIGN_TICKET_EMAIL.TEMPLATE_ID, recipient, null, dataMap);
 
         LOG.info(String.format("Assigned ticket. (ticketMasId: %d)", ticketMasId));
     }

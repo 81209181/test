@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<body style="margin: 0; padding: 0;">
+<div style="margin:0;padding:10px;text-align:justify">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#f8f9fa">
+        <tbody><tr><td align="center" valign="top">
+
+            <div>
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <div style="margin:20px">
+                                <div class="email-opening" style="margin-bottom: 40px">
+                                    <p>
+                                        Dear
+                                        <span th:if="${#strings.isEmpty(email_basic_recipient_name)}"> Valued Customer,</span>
+                                        <span th:if="!${#strings.isEmpty(email_basic_recipient_name)}" th:text="${email_basic_recipient_name}+','"></span>
+                                    </p>
+                                </div>
+
+
+
+                                <div class="email-content">
+                                    <span th:text="|Name: ${nameOfNewUser}|">User Name: username</span>
+                                    <p>
+                                        You have a new assigned ticket. <br>
+                                        <a th:href="${email_global_web_url}+'/ticket?ticketMasId='+${ticketMasId}" target="_blank" th:text="${email_global_web_url}+'/ticket?ticketMasId='+${ticketMasId}"></a><br>
+                                    </p>
+                                </div>
+
+
+
+                                <div class="email-closing" style="margin-top: 40px">
+                                    <p>
+                                        Thank you for using <span th:text="${email_global_web_name}">SkyExchange</span>.<br>
+                                    </p>
+
+                                    <p>
+                                        <span>Yours faithfully, </span><br>
+                                        <span th:text="${email_global_web_name}">SkyExchange</span><br>
+                                        <a th:href="${email_global_web_url}" target="_blank" th:text="${email_global_web_url}">https://sd01.oss.pccw.com/skyexchange</a><br>
+                                    </p>
+
+                                    <p style="margin-bottom: 0">
+                                        <span><i>* This is an automatically generated email. Please do not reply to it.</i></span><br>
+                                    </p>
+                                </div>
+
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+
+        </td></tr>
+        </tbody></table>
+</div>
+</body>
+</html>
