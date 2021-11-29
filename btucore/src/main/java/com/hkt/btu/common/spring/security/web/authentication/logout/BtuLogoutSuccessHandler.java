@@ -31,7 +31,7 @@ public class BtuLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
                 null : (BtuUser) authentication.getPrincipal();
 
         // add audit trail
-        auditTrailService.insertLogoutAuditTrail(user);
+//        auditTrailService.insertLogoutAuditTrail(user);
 
         // disable session validation,
         // so that the security filter does not throw exception and can land on login page with new session
